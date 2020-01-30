@@ -4,9 +4,10 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
+class ComposerStaticInit99af33f09962420b92564b154ca58d9c
 {
     public static $files = array (
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     );
@@ -23,18 +24,18 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
-            'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
             'Seld\\PharUtils\\' => 15,
             'Seld\\JsonLint\\' => 14,
-            'Seld\\CliPrompt\\' => 15,
         ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Prophecy\\' => 9,
         ),
         'M' => 
         array (
@@ -53,6 +54,7 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         ),
         'C' => 
         array (
+            'Composer\\XdebugHandler\\' => 23,
             'Composer\\Spdx\\' => 14,
             'Composer\\Semver\\' => 16,
             'Composer\\CaBundle\\' => 18,
@@ -75,6 +77,10 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
         'Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
@@ -86,10 +92,6 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
-        ),
-        'Symfony\\Component\\Debug\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/debug',
         ),
         'Symfony\\Component\\Console\\' => 
         array (
@@ -103,13 +105,13 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         array (
             0 => __DIR__ . '/..' . '/seld/jsonlint/src/Seld/JsonLint',
         ),
-        'Seld\\CliPrompt\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/seld/cli-prompt/src',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Prophecy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
         ),
         'Monolog\\' => 
         array (
@@ -135,6 +137,10 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'Composer\\XdebugHandler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/xdebug-handler/src',
+        ),
         'Composer\\Spdx\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/spdx-licenses/src',
@@ -150,16 +156,6 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'Composer\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/composer/src/Composer',
-        ),
-    );
-
-    public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'Prophecy\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
-            ),
         ),
     );
 
@@ -251,6 +247,7 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'PHPUnit\\Framework\\MockObject\\Matcher\\AnyInvokedCount' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/AnyInvokedCount.php',
         'PHPUnit\\Framework\\MockObject\\Matcher\\AnyParameters' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/AnyParameters.php',
         'PHPUnit\\Framework\\MockObject\\Matcher\\ConsecutiveParameters' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/ConsecutiveParameters.php',
+        'PHPUnit\\Framework\\MockObject\\Matcher\\DeferredError' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/DeferredError.php',
         'PHPUnit\\Framework\\MockObject\\Matcher\\Invocation' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/Invocation.php',
         'PHPUnit\\Framework\\MockObject\\Matcher\\InvokedAtIndex' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/InvokedAtIndex.php',
         'PHPUnit\\Framework\\MockObject\\Matcher\\InvokedAtLeastCount' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Matcher/InvokedAtLeastCount.php',
@@ -370,6 +367,7 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'PHP_Token_CLOSE_SQUARE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_CLOSE_TAG' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COALESCE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_COALESCE_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COLON' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COMMA' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_COMMENT' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -415,6 +413,7 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'PHP_Token_FILE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FINAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FINALLY' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_FN' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FOREACH' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_FUNCTION' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -505,6 +504,7 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
         'PHP_Token_UNSET_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_USE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_USE_FUNCTION' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_Util' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token/Util.php',
         'PHP_Token_VAR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_VARIABLE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_WHILE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -688,10 +688,9 @@ class ComposerStaticInitfce3254384a3931aab86b393b1c6dba4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitfce3254384a3931aab86b393b1c6dba4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitfce3254384a3931aab86b393b1c6dba4::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitfce3254384a3931aab86b393b1c6dba4::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitfce3254384a3931aab86b393b1c6dba4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit99af33f09962420b92564b154ca58d9c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit99af33f09962420b92564b154ca58d9c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit99af33f09962420b92564b154ca58d9c::$classMap;
 
         }, null, ClassLoader::class);
     }
