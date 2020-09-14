@@ -15,7 +15,6 @@ use Magento\FunctionalTestingFramework\Test\Handlers\ActionGroupObjectHandler;
 use tests\unit\Util\MagentoTestCase;
 use tests\unit\Util\ActionGroupArrayBuilder;
 use Magento\FunctionalTestingFramework\Test\Parsers\ActionGroupDataParser;
-use tests\unit\Util\ObjectHandlerUtil;
 
 class ActionGroupObjectHandlerTest extends MagentoTestCase
 {
@@ -35,7 +34,7 @@ class ActionGroupObjectHandlerTest extends MagentoTestCase
             ->withFilename()
             ->withActionObjects()
             ->build();
-        ObjectHandlerUtil::mockActionGroupObjectHandlerWithData(['actionGroups' => $actionGroupOne]);
+        $this->setMockParserOutput(['actionGroups' => $actionGroupOne]);
 
         $handler = ActionGroupObjectHandler::getInstance();
 
@@ -69,19 +68,31 @@ class ActionGroupObjectHandlerTest extends MagentoTestCase
             ->withActionObjects()
             ->build();
 
-        ObjectHandlerUtil::mockActionGroupObjectHandlerWithData(
-            [
-                'actionGroups' => array_merge(
-                    $actionGroupOne,
-                    $actionGroupTwo
-                )
-            ]
-        );
+        $this->setMockParserOutput(['actionGroups' => array_merge($actionGroupOne, $actionGroupTwo)]);
 
         $handler = ActionGroupObjectHandler::getInstance();
 
         $this->expectException(\Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException::class);
         $this->expectExceptionMessage("Mftf Action Group can not extend from itself: " . $nameOne);
         $handler->getAllObjects();
+    }
+
+    /**
+     * Function used to set mock for parser return and force init method to run between tests.
+     *
+     * @param array $data
+     * @throws \Exception
+     */
+    private function setMockParserOutput($data)
+    {
+        // Clear action group object handler value to inject parsed content
+        $property = new \ReflectionProperty(ActionGroupObjectHandler::class, 'instance');
+        $property->setAccessible(true);
+        $property->setValue(null);
+
+        $mockDataParser = AspectMock::double(ActionGroupDataParser::class, ['readActionGroupData' => $data])->make();
+        $instance = AspectMock::double(ObjectManager::class, ['create' => $mockDataParser])
+            ->make(); // bypass the private constructor
+        AspectMock::double(ObjectManagerFactory::class, ['getObjectManager' => $instance]);
     }
 }

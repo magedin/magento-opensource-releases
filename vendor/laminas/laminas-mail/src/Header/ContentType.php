@@ -143,7 +143,7 @@ class ContentType implements UnstructuredInterface
      */
     public function addParameter($name, $value)
     {
-        $name  = trim(strtolower($name));
+        $name  = strtolower($name);
         $value = (string) $value;
 
         if (! HeaderValue::isValid($name)) {

@@ -179,8 +179,8 @@ class YamlDumper extends Dumper
             }
         }
 
-        if (!$id->isDeprecated() && $id->isPrivate()) {
-            return sprintf("    %s: '@%s'\n", $alias, $id);
+        if ($id->isPrivate()) {
+            return sprintf("    %s: '@%s'\n%s", $alias, $id, $deprecated);
         }
 
         return sprintf("    %s:\n        alias: %s\n        public: %s\n%s", $alias, $id, $id->isPublic() ? 'true' : 'false', $deprecated);

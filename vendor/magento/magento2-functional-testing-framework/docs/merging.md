@@ -1,6 +1,6 @@
 # Merging
 
-MFTF allows you to merge test components defined in XML files, such as:
+The MFTF allows you to merge test components defined in XML files, such as:
 
 -  [`<tests>`][]
 -  [`<pages>`][]
@@ -20,9 +20,9 @@ For example:
 
 -  All tests with `<test name="SampleTest>` will be merged into one.
 -  All pages with `<page name="SamplePage>` will be merged into one.
--  All sections with `<section name="SampleSection">` will be merged into one.
+-  All sections with `<section name="SampleAction">` will be merged into one.
 -  All data entities with `<entity name="sampleData" type="sample">` will be merged into one.
--  All action groups with `<actionGroup name="SelectNotLoggedInCustomerGroupActionGroup">` will be merged into one.
+-  All action groups with `<actionGroup name="selectNotLoggedInCustomerGroup">` will be merged into one.
 
 Although a file name does not influence merging, we recommend using the same file names in merging updates.
 This makes it easier to search later on.
@@ -39,7 +39,7 @@ This makes it easier to search later on.
 ## Add a test
 
 You cannot add another [`<test>`][tests] using merging functionality.
-To add a `<test>`, create a new `*Test.xml` file.
+To add a `<test>`, create a new `*Test.xml` file or add a `<test>` node to an existing `*Test.xml` file.
 
 ## Remove a test
 
@@ -50,35 +50,38 @@ Learn more about running tests with different options using [`mftf`] or [`codece
 
 ### Example
 
-Skip the `AdminLoginSuccessfulTest` test in the `.../Backend/Test/AdminLoginSuccessfulTest.xml` file while merging with the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+Skip the `AdminLoginTest` test in the `.../Backend/Test/AdminLoginTest.xml` file while merging with the `.../Foo/Test/AdminLoginTest.xml` file:
 
 <!-- {% raw %} -->
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
+    <test name="AdminLoginTest">
         <annotations>
-            <features value="Backend"/>
+            <features value="Admin Login"/>
             <stories value="Login on the Admin Login page"/>
-            <title value="Admin should be able to log into the Magento Admin backend successfully"/>
-            <description value="Admin should be able to log into the Magento Admin backend successfully"/>
+            <title value="You should be able to log into the Magento Admin backend."/>
+            <description value="You should be able to log into the Magento Admin backend."/>
             <severity value="CRITICAL"/>
             <testCaseId value="MAGETWO-71572"/>
             <group value="example"/>
             <group value="login"/>
         </annotations>
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+        <amOnPage url="{{AdminLoginPage.url}}" stepKey="amOnAdminLoginPage"/>
+        <fillField selector="{{AdminLoginFormSection.username}}" userInput="{{_ENV.MAGENTO_ADMIN_USERNAME}}" stepKey="fillUsername"/>
+        <fillField selector="{{AdminLoginFormSection.password}}" userInput="{{_ENV.MAGENTO_ADMIN_PASSWORD}}" stepKey="fillPassword"/>
+        <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickOnSignIn"/>
+        <closeAdminNotification stepKey="closeAdminNotification"/>
+        <seeInCurrentUrl url="{{AdminLoginPage.url}}" stepKey="seeAdminLoginUrl"/>
     </test>
 </tests>
 ```
 
-Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+Create the `.../Foo/Test/AdminLoginTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
+    <test name="AdminLoginTest">
        <annotations>
           <skip>
              <issueId value="Issue#"/>
@@ -88,26 +91,29 @@ Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
 </tests>
 ```
 
-The `AdminLoginSuccessfulTest` result corresponds to:
+The `AdminLoginTest` result corresponds to:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
+<test name="AdminLoginTest">
     <annotations>
-        <features value="Backend"/>
+        <features value="Admin Login"/>
         <stories value="Login on the Admin Login page"/>
-        <title value="Admin should be able to log into the Magento Admin backend successfully"/>
-        <description value="Admin should be able to log into the Magento Admin backend successfully"/>
+        <title value="You should be able to log into the Magento Admin backend."/>
+        <description value="You should be able to log into the Magento Admin backend."/>
         <severity value="CRITICAL"/>
         <testCaseId value="MAGETWO-71572"/>
         <group value="example"/>
         <group value="login"/>
-        <skip>
-            <issueId value="Issue#"/>
-        </skip>
+      <skip>
+         <issueId value="Issue#"/>
+      </skip>
     </annotations>
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-    <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-    <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+    <amOnPage url="{{AdminLoginPage.url}}" stepKey="amOnAdminLoginPage"/>
+    <fillField selector="{{AdminLoginFormSection.username}}" userInput="{{_ENV.MAGENTO_ADMIN_USERNAME}}" stepKey="fillUsername"/>
+    <fillField selector="{{AdminLoginFormSection.password}}" userInput="{{_ENV.MAGENTO_ADMIN_PASSWORD}}" stepKey="fillPassword"/>
+    <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickOnSignIn"/>
+    <closeAdminNotification stepKey="closeAdminNotification"/>
+    <seeInCurrentUrl url="{{AdminLoginPage.url}}" stepKey="seeAdminLoginUrl"/>
 </test>
 ```
 
@@ -120,152 +126,159 @@ See the previous examples.
 
 ### Add a test step
 
-**Use case**: Add `AdminCheckOptionSalesActionGroup` before `AssertAdminSuccessLoginActionGroup` (`stepKey="assertLoggedIn"`) and add `AdminAssertSalesOnDashboardActionGroup` after the `AssertAdminSuccessLoginActionGroup` in the `AdminLoginSuccessfulTest` test (in the `.../Backend/Test/AdminLoginSuccessfulTest.xml` file) while merging with the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+**Use case**: Add `checkOption` before `click` (`stepKey="clickLogin"`) and add `seeInCurrentUrl` after the `click` in the `LogInAsAdminTest` test (in the `.../Backend/Test/LogInAsAdminTest.xml` file) while merging with the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+    <test name="LogInAsAdminTest">
+        <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+        <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+        <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+        <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+        <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
     </test>
 </tests>
 ```
 
-Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+Create the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales" before="assertLoggedIn"/>
-        <actionGroup ref="AdminAssertSalesOnDashboardActionGroup" stepKey="assertSalesOnDashboard" after="assertLoggedIn"/>
+    <test name="LogInAsAdminTest">
+        <checkOption selector="{{AdminLoginFormSection.rememberMe}}" stepKey="checkRememberMe" before="clickLogin"/>
+        <seeInCurrentUrl url="admin/admin/dashboard/" stepKey="seeAdminUrl" after="clickLogin"/>
     </test>
 </tests>
 ```
 
-The `AdminLoginSuccessfulTest` result corresponds to:
+The `LogInAsAdminTest` result corresponds to:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-    <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales" before="assertLoggedIn"/>
-    <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-    <actionGroup ref="AdminAssertSalesOnDashboardActionGroup" stepKey="assertSalesOnDashboard" after="assertLoggedIn"/>
-    <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+<test name="LogInAsAdminTest">
+    <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+    <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+    <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+    <checkOption selector="{{AdminLoginFormSection.rememberMe}}" stepKey="checkRememberMe"/>
+    <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+    <seeInCurrentUrl url="admin/admin/dashboard/" stepKey="seeAdminUrl"/>
+    <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
 </test>
 ```
 
 ### Remove a test step
 
-**Use case**: Remove `AdminCheckOptionSalesActionGroup` (`stepKey="checkOptionSales"`) from the `LogInAsAdminTest` test (in the `.../Backend/Test/AdminLoginSuccessfulTest.xml` file) while merging with the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+**Use case**: Remove `see` (`stepKey="seeLifetimeSales"`) from the `LogInAsAdminTest` test (in the `.../Backend/Test/LogInAsAdminTest.xml` file) while merging with the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales"/>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+    <test name="LogInAsAdminTest">
+        <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+        <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+        <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+        <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+        <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
     </test>
 </tests>
 ```
 
-Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+Create the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <remove keyForRemoval="checkOptionSales"/>
+    <test name="LogInAsAdminTest">
+        <remove keyForRemoval="seeLifetimeSales"/>
     </test>
 </tests>
 ```
 
-The `AdminLoginSuccessfulTest` result corresponds to:
+The `LogInAsAdminTest` result corresponds to:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-    <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-    <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+<test name="LogInAsAdminTest">
+    <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+    <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+    <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+    <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
 </test>
 ```
 
 ### Update a test step
 
-**Use case**: Change argument in `AdminCheckOptionSalesActionGroup` (`stepKey="checkOptionSales"`) of the `AdminLoginSuccessfulTest` test (in the `.../Backend/Test/AdminLoginSuccessfulTest.xml` file) while merging with the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+**Use case**: Change selector in `fillField` (`stepKey="fillPassword"`) of the `LogInAsAdminTest` test (in the `.../Backend/Test/LogInAsAdminTest.xml` file) while merging with the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
 <tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales">
-            <argument name="salesOption" value="{{AdminSalesData.lifeTimeSales}}"/>
-        </actionGroup>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+    <test name="LogInAsAdminTest">
+        <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+        <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+        <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+        <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+        <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
     </test>
 </tests>
 ```
 
-Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
+Create the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-    <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales">
-        <argument name="salesOption" value="{{AdminSalesData.annualSales}}"/>
-    </actionGroup>
-    <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-    <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
-</test>
+<tests ...>
+    <test name="LogInAsAdminTest">
+        <fillField selector="{{AdminLoginFormSection.wrong-password}}" userInput="password" stepKey="fillPassword"/>
+    </test>
+</tests>
 ```
 
-The `AdminLoginSuccessfulTest` result corresponds to:
+The `LogInAsAdminTest` result corresponds to:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-    <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales">
-        <argument name="salesOption" value="{{AdminSalesData.annualSales}}"/>
-    </actionGroup>
-    <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-    <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+<test name="LogInAsAdminTest">
+    <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+    <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+    <fillField selector="{{AdminLoginFormSection.wrong-password}}" userInput="password" stepKey="fillPassword"/>
+    <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+    <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
 </test>
 ```
 
 ### Add several test steps {#insert-after}
 
-**Use case**: Add several action groups after the `AdminLoginActionGroup` (`stepKey="loginAsAdmin"`) in the `AdminLoginSuccessfulTest` test (in the `.../Backend/Test/AdminLoginSuccessfulTest.xml` file) while merging with the `.../Foo/Test/LogInAsAdminTest.xml` file:
+**Use case**: Add several actions after the `click` (`stepKey="clickLogin"`) in the `LogInAsAdminTest` test (in the `.../Backend/Test/LogInAsAdminTest.xml` file) while merging with the `.../Foo/Test/LogInAsAdminTest.xml` file:
 
 ```xml
-<test name="AdminLoginSuccessfulTest">
-    <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+<tests ...>
+    <test name="LogInAsAdminTest">
+        <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+        <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+        <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+        <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+        <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
+    </test>
+</tests>
+```
+
+Create the `.../Foo/Test/LogInAsAdminTest.xml` file:
+
+```xml
+<tests ...>
+    <test name="LogInAsAdminTest" insertAfter="clickLogin">
+        <checkOption selector="{{AdminLoginFormSection.rememberMe}}" stepKey="checkRememberMe"/>
+        <seeInCurrentUrl url="admin/admin/dashboard/" stepKey="seeAdminUrl"/>
+    </test>
+</tests>
+```
+
+The `LogInAsAdminTest` result corresponds to:
+
+```xml
+<test name="LogInAsAdminTest">
+   <amOnPage url="{{AdminLoginPage}}" stepKey="navigateToAdmin"/>
+   <fillField selector="{{AdminLoginFormSection.username}}" userInput="admin" stepKey="fillUsername"/>
+   <fillField selector="{{AdminLoginFormSection.password}}" userInput="password" stepKey="fillPassword"/>
+   <click selector="{{AdminLoginFormSection.signIn}}" stepKey="clickLogin"/>
+   <checkOption selector="{{AdminLoginFormSection.rememberMe}}" stepKey="checkRememberMe"/>
+   <seeInCurrentUrl url="admin/admin/dashboard/" stepKey="seeAdminUrl"/>
+   <see userInput="Lifetime Sales" stepKey="seeLifetimeSales"/>
 </test>
-```
-
-Create the `.../Foo/Test/AdminLoginSuccessfulTest.xml` file:
-
-```xml
-<tests ...>
-    <test name="AdminLoginSuccessfulTest" insertAfter="loginAsAdmin">
-        <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales"/>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
-    </test>
-</tests>
-```
-
-The `AdminLoginSuccessfulTest` result corresponds to:
-
-```xml
-<tests ...>
-    <test name="AdminLoginSuccessfulTest">
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AdminCheckOptionSalesActionGroup" stepKey="checkOptionSales"/>
-        <actionGroup ref="AssertAdminSuccessLoginActionGroup" stepKey="assertLoggedIn"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
-    </test>
-</tests>
 ```
 
 ## Merge action groups
@@ -280,7 +293,7 @@ The controls change drastically in the B2B version, so it was abstracted to an a
 > Action group for selecting `customerGroup` in the `Cart Price Rules` section:
 
 ```xml
-<actionGroup name="SelectNotLoggedInCustomerGroupActionGroup">
+<actionGroup name="selectNotLoggedInCustomerGroup">
     <selectOption selector="{{AdminCartPriceRulesFormSection.customerGroups}}" userInput="NOT LOGGED IN" stepKey="selectCustomerGroup"/>
 </actionGroup>
 ```
@@ -289,7 +302,7 @@ The controls change drastically in the B2B version, so it was abstracted to an a
 
 ```xml
 <!-- name matches -->
-<actionGroup name="SelectNotLoggedInCustomerGroupActionGroup">
+<actionGroup name="selectNotLoggedInCustomerGroup">
     <!-- removes the original action -->
     <remove keyForRemoval="selectCustomerGroup"/>
     <!-- adds in sequence of actions to be performed instead-->
@@ -310,62 +323,62 @@ To merge [pages][page], the `page name` must be the same as in the base module.
 ### Add a section
 
 **Use case**: The `FooBackend` module extends the `Backend` module and requires use of two new sections that must be covered with tests.
-Add `AdminBaseBackendSection` and `AdminAnotherBackendSection` to the `AdminBaseBackendPage` (`.../Backend/Page/AdminBaseBackendPage.xml` file):
+Add `BaseBackendSection` and `AnotherBackendSection` to the `BaseBackendPage` (`.../Backend/Page/BaseBackendPage.xml` file):
 
 ```xml
 <pages ...>
-    <page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
-        <section name="AdminBaseBackendSection"/>
-        <section name="AdminAnotherBackendSection"/>
+    <page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+        <section name="BaseBackendSection"/>
+        <section name="AnotherBackendSection"/>
     </page>
 </pages>
 ```
 
-Create the `.../FooBackend/Page/AdminBaseBackendPage.xml` file:
+Create the `.../FooBackend/Page/BaseBackendPage.xml` file:
 
 ```xml
 <pages ...>
-   <page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
-      <section name="AdminNewExtensionSection"/>
+   <page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+      <section name="NewExtensionSection"/>
    </page>
 </pages>
 ```
 
-The `AdminBaseBackendPage` result corresponds to:
+The `BaseBackendPage` result corresponds to:
 
 ```xml
-<page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+<page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
 
-    <section name="AdminBaseBackendSection"/>
-    <section name="AdminAnotherBackendSection"/>
-    <section name="AdminNewExtensionSection"/>
+    <section name="BaseBackendSection"/>
+    <section name="AnotherBackendSection"/>
+    <section name="NewExtensionSection"/>
 </page>
 ```
 
 ### Remove a section
 
-**Use case**: The `FooBackend` module extends the `Backend` module and requires deletion of the `AdminAnotherBackendSection` section (the `.../Backend/Page/AdminBaseBackendPage.xml` file):
+**Use case**: The `FooBackend` module extends the `Backend` module and requires deletion of the `AnotherBackendSection` section (the `.../Backend/Page/BaseBackendPage.xml` file):
 
 ```xml
-<page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
-    <section name="AdminBaseBackendSection"/>
-    <section name="AdminAnotherBackendSection"/>
+<page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+    <section name="BaseBackendSection"/>
+    <section name="AnotherBackendSection"/>
 </page>
 ```
 
-Create the `.../FooBackend/Page/AdminBaseBackendPage.xml` file:
+Create the `.../FooBackend/Page/BaseBackendPage.xml` file:
 
 ```xml
-<page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
-   <section name="AdminAnotherBackendSection" remove="true"/>
+<page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+   <section name="AnotherBackendSection" remove="true"/>
 </page>
 ```
 
-The `AdminBaseBackendPage` result corresponds to:
+The `BaseBackendPage` result corresponds to:
 
 ```xml
-<page name="AdminBaseBackendPage" url="admin" area="admin" module="Magento_Backend">
-   <section name="AdminBaseBackendSection"/>
+<page name="BaseBackendPage" url="admin" area="admin" module="Magento_Backend">
+   <section name="BaseBackendSection"/>
 </page>
 ```
 

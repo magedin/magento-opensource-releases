@@ -25,7 +25,7 @@ class PHPMD
     /**
      * The current PHPMD version.
      */
-    const VERSION = '@package_version@';
+    const VERSION = '@project.version@';
 
     /**
      * List of valid file extensions for analyzed files.
@@ -175,14 +175,14 @@ class PHPMD
     ) {
 
         // Merge parsed excludes
-        $this->setIgnorePattern($ruleSetFactory->getIgnorePattern($ruleSets));
+        $this->ignorePatterns = array_merge($this->ignorePatterns, $ruleSetFactory->getIgnorePattern($ruleSets));
 
         $this->input = $inputPath;
 
         $report = new Report();
 
         $factory = new ParserFactory();
-        $parser = $factory->create($this);
+        $parser  = $factory->create($this);
 
         foreach ($ruleSetFactory->createRuleSets($ruleSets) as $ruleSet) {
             $parser->addRuleSet($ruleSet);

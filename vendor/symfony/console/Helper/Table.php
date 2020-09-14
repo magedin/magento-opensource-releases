@@ -574,9 +574,6 @@ class Table
                     if (0 === $lineKey) {
                         $rows[$rowKey][$column] = $line;
                     } else {
-                        if (!\array_key_exists($rowKey, $unmergedRows) || !\array_key_exists($lineKey, $unmergedRows[$rowKey])) {
-                            $unmergedRows[$rowKey][$lineKey] = $this->copyRow($rows, $rowKey);
-                        }
                         $unmergedRows[$rowKey][$lineKey][$column] = $line;
                     }
                 }
@@ -588,8 +585,8 @@ class Table
                 yield $this->fillCells($row);
 
                 if (isset($unmergedRows[$rowKey])) {
-                    foreach ($unmergedRows[$rowKey] as $unmergedRow) {
-                        yield $this->fillCells($unmergedRow);
+                    foreach ($unmergedRows[$rowKey] as $row) {
+                        yield $row;
                     }
                 }
             }
@@ -673,7 +670,6 @@ class Table
     private function fillCells($row)
     {
         $newRow = [];
-
         foreach ($row as $column => $cell) {
             $newRow[] = $cell;
             if ($cell instanceof TableCell && $cell->getColspan() > 1) {

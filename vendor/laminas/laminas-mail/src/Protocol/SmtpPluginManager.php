@@ -88,7 +88,7 @@ class SmtpPluginManager extends AbstractPluginManager
             throw new InvalidServiceException(sprintf(
                 'Plugin of type %s is invalid; must extend %s',
                 (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
-                $this->instanceOf
+                Smtp::class
             ));
         }
     }

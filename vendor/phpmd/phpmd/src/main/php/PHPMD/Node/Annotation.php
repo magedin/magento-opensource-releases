@@ -51,7 +51,7 @@ class Annotation
      */
     public function __construct($name, $value)
     {
-        $this->name = $name;
+        $this->name  = $name;
         $this->value = trim($value, '" ');
     }
 
@@ -66,7 +66,6 @@ class Annotation
         if (lcfirst($this->name) === self::SUPPRESS_ANNOTATION) {
             return $this->isSuppressed($rule);
         }
-
         return false;
     }
 
@@ -80,13 +79,9 @@ class Annotation
     {
         if (in_array($this->value, array('PHPMD', 'PMD'))) {
             return true;
-        } elseif (preg_match(
-            '/^(PH)?PMD\.' . preg_replace('/^.*\/([^\/]*)$/', '$1', $rule->getName()) . '/',
-            $this->value
-        )) {
+        } elseif (preg_match('/^(PH)?PMD\.' . $rule->getName() . '/', $this->value)) {
             return true;
         }
-
         return (stripos($rule->getName(), $this->value) !== false);
     }
 }

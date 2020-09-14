@@ -79,8 +79,8 @@ class PageObjectHandler implements ObjectHandlerInterface
 
             if ($deprecated !== null) {
                 LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
-                    "The page '{$pageName}' is deprecated.",
-                    ["fileName" => $filename, "deprecatedMessage" => $deprecated]
+                    $deprecated,
+                    ["pageName" => $filename, "deprecatedPage" => $deprecated]
                 );
             }
 

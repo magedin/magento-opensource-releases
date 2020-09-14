@@ -139,6 +139,3 @@ $closure = function() use (&$var){};
 
 /* testArrowFunctionReturnByReference */
 fn&($x) => $x;
-
-/* testClosureReturnByReference */
-$closure = function &($param) use ($value) {};

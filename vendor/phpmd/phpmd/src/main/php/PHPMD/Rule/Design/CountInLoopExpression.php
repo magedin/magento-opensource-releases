@@ -44,7 +44,7 @@ class CountInLoopExpression extends AbstractRule implements ClassAware
      *
      * @var array
      */
-    protected $unwantedFunctions = array('count', 'sizeof');
+    private $unwantedFunctions = array('count', 'sizeof');
 
     /**
      * List of already processed functions

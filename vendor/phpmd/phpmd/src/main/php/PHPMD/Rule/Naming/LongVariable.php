@@ -22,7 +22,6 @@ use PHPMD\AbstractRule;
 use PHPMD\Rule\ClassAware;
 use PHPMD\Rule\FunctionAware;
 use PHPMD\Rule\MethodAware;
-use PHPMD\Utility\Strings;
 
 /**
  * This rule class will detect variables, parameters and properties with really
@@ -31,19 +30,12 @@ use PHPMD\Utility\Strings;
 class LongVariable extends AbstractRule implements ClassAware, MethodAware, FunctionAware
 {
     /**
-     * Temporary cache of configured suffixes to subtract
-     *
-     * @var string[]|null
-     */
-    protected $subtractSuffixes;
-
-    /**
      * Temporary map holding variables that were already processed in the
      * current context.
      *
      * @var array(string=>boolean)
      */
-    protected $processedVariables = array();
+    private $processedVariables = array();
 
     /**
      * Extracts all variable and variable declarator nodes from the given node
@@ -66,7 +58,6 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
                 }
             }
             $this->resetProcessed();
-
             return;
         }
         $declarators = $node->findChildrenOfType('VariableDeclarator');
@@ -102,20 +93,17 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
      *
      * @param \PHPMD\AbstractNode $node
      * @return void
-     * @SuppressWarnings(PHPMD.LongVariable)
      */
     protected function checkMaximumLength(AbstractNode $node)
     {
         $threshold = $this->getIntProperty('maximum');
-        $variableName = $node->getImage();
-        $lengthWithoutDollarSign = Strings::lengthWithoutSuffixes($variableName, $this->getSubtractSuffixList()) - 1;
-        if ($lengthWithoutDollarSign <= $threshold) {
+        if ($threshold >= strlen($node->getImage()) - 1) {
             return;
         }
         if ($this->isNameAllowedInContext($node)) {
             return;
         }
-        $this->addViolation($node, array($variableName, $threshold));
+        $this->addViolation($node, array($node->getImage(), $threshold));
     }
 
     /**
@@ -125,7 +113,7 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
      * @param \PHPMD\AbstractNode $node
      * @return boolean
      */
-    protected function isNameAllowedInContext(AbstractNode $node)
+    private function isNameAllowedInContext(AbstractNode $node)
     {
         return $this->isChildOf($node, 'MemberPrimaryPrefix');
     }
@@ -138,7 +126,7 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
      * @param string $type
      * @return boolean
      */
-    protected function isChildOf(AbstractNode $node, $type)
+    private function isChildOf(AbstractNode $node, $type)
     {
         $parent = $node->getParent();
         while (is_object($parent)) {
@@ -147,7 +135,6 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
             }
             $parent = $parent->getParent();
         }
-
         return false;
     }
 
@@ -181,19 +168,5 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
     protected function isNotProcessed(AbstractNode $node)
     {
         return !isset($this->processedVariables[$node->getImage()]);
-    }
-
-    /**
-     * Gets array of suffixes from property
-     *
-     * @return string[]
-     */
-    protected function getSubtractSuffixList()
-    {
-        if ($this->subtractSuffixes === null) {
-            $this->subtractSuffixes = Strings::splitToList($this->getStringProperty('subtract-suffixes', ''), ',');
-        }
-
-        return $this->subtractSuffixes;
     }
 }

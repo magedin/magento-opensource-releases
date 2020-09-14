@@ -84,7 +84,7 @@ class Markdown extends Generator
     protected function processSniff(\DOMNode $doc)
     {
         $title = $this->getTitle($doc);
-        echo PHP_EOL."## $title".PHP_EOL;
+        echo "## $title".PHP_EOL;
 
         foreach ($doc->childNodes as $node) {
             if ($node->nodeName === 'standard') {

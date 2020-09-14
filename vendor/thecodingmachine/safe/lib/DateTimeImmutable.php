@@ -32,18 +32,12 @@ class DateTimeImmutable extends \DateTimeImmutable
         $this->innerDateTime = new parent($time, $timezone);
     }
 
-    //switch between regular datetime and safe version
-    public static function createFromRegular(\DateTimeImmutable $datetime): self
+    //switch from regular datetime to safe version
+    private static function createFromRegular(\DateTimeImmutable $datetime): self
     {
         $safeDatetime = new self($datetime->format('Y-m-d H:i:s.u'), $datetime->getTimezone()); //we need to also update the wrapper to not break the operators '<' and '>'
-        $safeDatetime->innerDateTime = $datetime; //to make sure we don't lose information because of the format().
+        $safeDatetime->innerDateTime = $datetime;
         return $safeDatetime;
-    }
-
-    //usefull if you need to switch back to regular DateTimeImmutable (for example when using DatePeriod)
-    public function getInnerDateTime(): \DateTimeImmutable
-    {
-        return $this->innerDateTime;
     }
 
     /////////////////////////////////////////////////////////////////////////////

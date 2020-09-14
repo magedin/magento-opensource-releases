@@ -108,9 +108,9 @@ class Address implements Address\AddressInterface
     }
 
     /**
-     * Retrieve name, if any
+     * Retrieve name
      *
-     * @return null|string
+     * @return string
      */
     public function getName()
     {

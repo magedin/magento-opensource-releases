@@ -5,9 +5,8 @@
     "authors": [
         {
             "name": "Ben Scholzen 'DASPRiD'",
-            "email": "mail@dasprids.de",
             "homepage": "https://dasprids.de/",
-            "role": "Developer"
+            "email": "mail@dasprids.de"
         }
     ],
     "keywords": [
@@ -15,8 +14,8 @@
         "map"
     ],
     "require-dev": {
-        "phpunit/phpunit": "^7 | ^8 | ^9",
-        "squizlabs/php_codesniffer": "^3.4"
+        "phpunit/phpunit": "^6.4",
+        "squizlabs/php_codesniffer": "^3.1"
     },
     "autoload": {
         "psr-4": {

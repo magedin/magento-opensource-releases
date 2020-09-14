@@ -18,6 +18,7 @@
 namespace PHPMD\Rule\CleanCode;
 
 use PDepend\Source\AST\AbstractASTNode;
+use PDepend\Source\AST\ASTArrayElement;
 use PDepend\Source\AST\ASTLiteral;
 use PDepend\Source\AST\ASTNode as PDependASTNode;
 use PHPMD\AbstractNode;
@@ -57,7 +58,7 @@ class DuplicatedArrayKey extends AbstractRule implements MethodAware, FunctionAw
      * @param ASTNode $node Array node.
      * @return void
      */
-    protected function checkForDuplicatedArrayKeys(ASTNode $node)
+    private function checkForDuplicatedArrayKeys(ASTNode $node)
     {
         $keys = array();
         /** @var ASTArrayElement $arrayElement */
@@ -90,7 +91,7 @@ class DuplicatedArrayKey extends AbstractRule implements MethodAware, FunctionAw
      * @param int $index Fallback in case of non-associative arrays
      * @return AbstractASTNode Key name
      */
-    protected function normalizeKey(AbstractASTNode $node, $index)
+    private function normalizeKey(AbstractASTNode $node, $index)
     {
         $childCount = count($node->getChildren());
         // Skip, if there is no array key, just an array value
@@ -99,11 +100,10 @@ class DuplicatedArrayKey extends AbstractRule implements MethodAware, FunctionAw
         }
         // non-associative - key name equals to its index
         if ($childCount === 0) {
-            $node->setImage((string)$index);
-
+            $node->setImage((string) $index);
             return $node;
         }
-
+        
         $node = $node->getChild(0);
         if (!($node instanceof ASTLiteral)) {
             // skip expressions, method calls, globals and constants
@@ -120,7 +120,7 @@ class DuplicatedArrayKey extends AbstractRule implements MethodAware, FunctionAw
      * @param PDependASTNode $key
      * @return string
      */
-    protected function castStringFromLiteral(PDependASTNode $key)
+    private function castStringFromLiteral(PDependASTNode $key)
     {
         $value = $key->getImage();
         switch ($value) {

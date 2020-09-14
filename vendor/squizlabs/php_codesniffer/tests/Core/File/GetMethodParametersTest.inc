@@ -31,10 +31,3 @@ function myFunction($a = 10 & 20) {}
 
 /* testArrowFunction */
 fn(int $a, ...$b) => $b;
-
-/* testPHP8MixedTypeHint */
-function mixedTypeHint(mixed &...$var1) {}
-
-/* testPHP8MixedTypeHintNullable */
-// Intentional fatal error - nullability is not allowed with mixed, but that's not the concern of the method.
-function mixedTypeHintNullable(?Mixed $var1) {}

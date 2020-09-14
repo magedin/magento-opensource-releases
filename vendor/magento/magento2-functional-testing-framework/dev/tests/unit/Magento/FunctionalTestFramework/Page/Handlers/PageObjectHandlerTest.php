@@ -12,19 +12,9 @@ use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Page\Handlers\PageObjectHandler;
 use Magento\FunctionalTestingFramework\XmlParser\PageParser;
 use tests\unit\Util\MagentoTestCase;
-use tests\unit\Util\ObjectHandlerUtil;
-use tests\unit\Util\TestLoggingUtil;
 
 class PageObjectHandlerTest extends MagentoTestCase
 {
-    /**
-     * Setup method
-     */
-    public function setUp(): void
-    {
-        TestLoggingUtil::getInstance()->setMockLoggingUtil();
-    }
-
     public function testGetPageObject()
     {
         $mockData = [
@@ -46,7 +36,7 @@ class PageObjectHandlerTest extends MagentoTestCase
                 ],
                 "area" => "test"
             ]];
-        ObjectHandlerUtil::mockPageObjectHandlerWithData($mockData);
+        $this->setMockParserOutput($mockData);
 
         // get pages
         $pageHandler = PageObjectHandler::getInstance();
@@ -71,7 +61,7 @@ class PageObjectHandlerTest extends MagentoTestCase
                 ],
                 "area" => "test"
             ]];
-        ObjectHandlerUtil::mockPageObjectHandlerWithData($mockData);
+        $this->setMockParserOutput($mockData);
 
         // get pages
         $page = PageObjectHandler::getInstance()->getObject('testPage1');
@@ -80,35 +70,20 @@ class PageObjectHandlerTest extends MagentoTestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testDeprecatedPage()
-    {
-        $mockData = [
-            "testPage1" => [
-                "url" => "testURL1",
-                "module" => "testModule1",
-                "section" => [
-                ],
-                "area" => "test",
-                "deprecated" => "deprecation message",
-                "filename" => "filename.xml"
-            ]];
-        ObjectHandlerUtil::mockPageObjectHandlerWithData($mockData);
-
-        // get pages
-        $page = PageObjectHandler::getInstance()->getObject('testPage1');
-
-        TestLoggingUtil::getInstance()->validateMockLogStatement(
-            'notice',
-            "NOTICE: 1 Page name violations detected. See mftf.log for details.",
-            []
-        );
-    }
-
     /**
-     * clean up function runs after all tests
+     * Function used to set mock for parser return and force init method to run between tests.
+     *
+     * @param array $data
      */
-    public static function tearDownAfterClass(): void
+    private function setMockParserOutput($data)
     {
-        TestLoggingUtil::getInstance()->clearMockLoggingUtil();
+        // clear section object handler value to inject parsed content
+        $property = new \ReflectionProperty(PageObjectHandler::class, 'INSTANCE');
+        $property->setAccessible(true);
+        $property->setValue(null);
+
+        $mockSectionParser = AspectMock::double(PageParser::class, ["getData" => $data])->make();
+        $instance = AspectMock::double(ObjectManager::class, ['get' => $mockSectionParser])->make();
+        AspectMock::double(ObjectManagerFactory::class, ['getObjectManager' => $instance]);
     }
 }

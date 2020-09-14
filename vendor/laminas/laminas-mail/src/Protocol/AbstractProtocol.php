@@ -54,7 +54,7 @@ abstract class AbstractProtocol
 
     /**
      * Socket connection resource
-     * @var null|resource
+     * @var resource
      */
     protected $socket;
 
@@ -194,15 +194,13 @@ abstract class AbstractProtocol
      *
      * An example $remote string may be 'tcp://mail.example.com:25' or 'ssh://hostname.com:2222'
      *
-     * @deprecated Since 1.12.0. Implementations should use the ProtocolTrait::setupSocket() method instead.
-     * @todo Remove for 3.0.0.
      * @param  string $remote Remote
      * @throws Exception\RuntimeException
      * @return bool
      */
     protected function _connect($remote)
     {
-		// @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $errorNum = 0;
         $errorStr = '';
 

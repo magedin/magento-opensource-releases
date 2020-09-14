@@ -67,7 +67,7 @@ final class Preloader
         }
     }
 
-    private static function doPreload(string $class, array &$preloaded): void
+    private static function doPreload(string $class, array &$preloaded)
     {
         if (isset($preloaded[$class]) || \in_array($class, ['self', 'static', 'parent'], true)) {
             return;
@@ -87,7 +87,9 @@ final class Preloader
 
             if (\PHP_VERSION_ID >= 70400) {
                 foreach ($r->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
-                    self::preloadType($p->getType(), $preloaded);
+                    if (($t = $p->getType()) && !$t->isBuiltin()) {
+                        self::doPreload($t->getName(), $preloaded);
+                    }
                 }
             }
 
@@ -101,26 +103,17 @@ final class Preloader
                         }
                     }
 
-                    self::preloadType($p->getType(), $preloaded);
+                    if (($t = $p->getType()) && !$t->isBuiltin()) {
+                        self::doPreload($t->getName(), $preloaded);
+                    }
                 }
 
-                self::preloadType($m->getReturnType(), $preloaded);
+                if (($t = $m->getReturnType()) && !$t->isBuiltin()) {
+                    self::doPreload($t->getName(), $preloaded);
+                }
             }
         } catch (\ReflectionException $e) {
             // ignore missing classes
-        }
-    }
-
-    private static function preloadType(?\ReflectionType $t, array &$preloaded): void
-    {
-        if (!$t || $t->isBuiltin()) {
-            return;
-        }
-
-        foreach ($t instanceof \ReflectionUnionType ? $t->getTypes() : [$t] as $t) {
-            if (!$t->isBuiltin()) {
-                self::doPreload($t instanceof \ReflectionNamedType ? $t->getName() : $t, $preloaded);
-            }
         }
     }
 }

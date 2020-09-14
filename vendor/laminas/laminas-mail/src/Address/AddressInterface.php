@@ -18,9 +18,9 @@ interface AddressInterface
     public function getEmail();
 
     /**
-     * Retrieve name, if any
+     * Retrieve name
      *
-     * @return null|string
+     * @return string
      */
     public function getName();
 

@@ -68,7 +68,7 @@ class DevelopmentCodeFragment extends AbstractRule implements MethodAware, Funct
      *
      * @return array
      */
-    protected function getSuspectImages()
+    private function getSuspectImages()
     {
         return array_map(
             'strtolower',

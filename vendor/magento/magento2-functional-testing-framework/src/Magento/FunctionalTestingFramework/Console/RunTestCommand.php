@@ -119,40 +119,25 @@ class RunTestCommand extends BaseGenerateCommand
      * @param OutputInterface $output
      * @return void
      * @throws TestFrameworkException
-     * @throws \Exception
      */
     private function runTests(array $tests, OutputInterface $output)
     {
-        if ($this->pauseEnabled()) {
-            $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL;
-        } else {
-            $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional ';
-        }
-
+        $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional ';
         $testsDirectory = FilePathFormatter::format(TESTS_MODULE_PATH) .
             TestGenerator::GENERATED_DIR .
             DIRECTORY_SEPARATOR .
             TestGenerator::DEFAULT_DIR .
             DIRECTORY_SEPARATOR ;
 
-        for ($i = 0; $i < count($tests); $i++) {
-            $testName = $tests[$i] . 'Cest.php';
+        foreach ($tests as $test) {
+            $testName = $test . 'Cest.php';
             if (!realpath($testsDirectory . $testName)) {
                 throw new TestFrameworkException(
                     $testName . " is not available under " . $testsDirectory
                 );
             }
-
-            if ($this->pauseEnabled()) {
-                $fullCommand = $codeceptionCommand . $testsDirectory . $testName . ' --verbose --steps --debug';
-                if ($i != count($tests) - 1) {
-                    $fullCommand .= self::CODECEPT_RUN_OPTION_NO_EXIT;
-                }
-                $this->returnCode = max($this->returnCode, $this->codeceptRunTest($fullCommand, $output));
-            } else {
-                $fullCommand = $codeceptionCommand . $testsDirectory . $testName . ' --verbose --steps';
-                $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output));
-            }
+            $fullCommand = $codeceptionCommand . $testsDirectory . $testName . ' --verbose --steps';
+            $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output));
         }
     }
 
@@ -162,32 +147,14 @@ class RunTestCommand extends BaseGenerateCommand
      * @param array           $suitesConfig
      * @param OutputInterface $output
      * @return void
-     * @throws \Exception
      */
     private function runTestsInSuite(array $suitesConfig, OutputInterface $output)
     {
-        if ($this->pauseEnabled()) {
-            $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL . '--verbose --steps --debug';
-        } else {
-            $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept')
-                . ' run functional --verbose --steps ';
-        }
-
-        $count = count($suitesConfig);
-        $index = 0;
+        $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional --verbose --steps ';
         //for tests in suites, run them as a group to run before and after block
         foreach (array_keys($suitesConfig) as $suite) {
             $fullCommand = $codeceptionCommand . " -g {$suite}";
-
-            $index += 1;
-            if ($this->pauseEnabled()) {
-                if ($index != $count) {
-                    $fullCommand .= self::CODECEPT_RUN_OPTION_NO_EXIT;
-                }
-                $this->returnCode = max($this->returnCode, $this->codeceptRunTest($fullCommand, $output));
-            } else {
-                $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output));
-            }
+            $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output));
         }
     }
 
@@ -206,7 +173,6 @@ class RunTestCommand extends BaseGenerateCommand
         $process->setWorkingDirectory(TESTS_BP);
         $process->setIdleTimeout(600);
         $process->setTimeout(0);
-
         return $process->run(function ($type, $buffer) use ($output) {
             $output->write($buffer);
         });

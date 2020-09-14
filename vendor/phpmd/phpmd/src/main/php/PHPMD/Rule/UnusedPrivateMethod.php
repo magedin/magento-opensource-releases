@@ -17,7 +17,6 @@
 
 namespace PHPMD\Rule;
 
-use PDepend\Source\AST\ASTMethodPostfix;
 use PHPMD\AbstractNode;
 use PHPMD\AbstractRule;
 use PHPMD\Node\ASTNode;
@@ -34,7 +33,7 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
      * This method checks that all private class methods are at least accessed
      * by one method.
      *
-     * @param AbstractNode $class
+     * @param \PHPMD\AbstractNode $class
      * @return void
      */
     public function apply(AbstractNode $class)
@@ -49,32 +48,29 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
      * This method collects all methods in the given class that are declared
      * as private and are not used in the same class' context.
      *
-     * @param ClassNode $class
-     * @return ASTMethodPostfix[]
+     * @param \PHPMD\Node\ClassNode $class
+     * @return \PHPMD\AbstractNode[]
      */
-    protected function collectUnusedPrivateMethods(ClassNode $class)
+    private function collectUnusedPrivateMethods(ClassNode $class)
     {
         $methods = $this->collectPrivateMethods($class);
-
         return $this->removeUsedMethods($class, $methods);
     }
 
     /**
      * Collects all private methods declared in the given class node.
      *
-     * @param ClassNode $class
-     * @return AbstractNode[]
+     * @param \PHPMD\Node\ClassNode $class
+     * @return \PHPMD\AbstractNode[]
      */
-    protected function collectPrivateMethods(ClassNode $class)
+    private function collectPrivateMethods(ClassNode $class)
     {
         $methods = array();
-
         foreach ($class->getMethods() as $method) {
             if ($this->acceptMethod($class, $method)) {
                 $methods[strtolower($method->getImage())] = $method;
             }
         }
-
         return $methods;
     }
 
@@ -82,11 +78,11 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
      * Returns <b>true</b> when the given method should be used for this rule's
      * analysis.
      *
-     * @param ClassNode $class
-     * @param MethodNode $method
+     * @param \PHPMD\Node\ClassNode $class
+     * @param \PHPMD\Node\MethodNode $method
      * @return boolean
      */
-    protected function acceptMethod(ClassNode $class, MethodNode $method)
+    private function acceptMethod(ClassNode $class, MethodNode $method)
     {
         return (
             $method->isPrivate() &&
@@ -101,11 +97,11 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
     /**
      * This method removes all used methods from the given methods array.
      *
-     * @param ClassNode $class
-     * @param MethodNode[] $methods
-     * @return ASTMethodPostfix[]
+     * @param \PHPMD\Node\ClassNode $class
+     * @param \PHPMD\Node\MethodNode[] $methods
+     * @return \PHPMD\AbstractNode[]
      */
-    protected function removeUsedMethods(ClassNode $class, array $methods)
+    private function removeUsedMethods(ClassNode $class, array $methods)
     {
         foreach ($class->findChildrenOfType('MethodPostfix') as $postfix) {
             /** @var $postfix ASTNode */
@@ -113,7 +109,6 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
                 unset($methods[strtolower($postfix->getImage())]);
             }
         }
-
         return $methods;
     }
 
@@ -121,16 +116,15 @@ class UnusedPrivateMethod extends AbstractRule implements ClassAware
      * This method checks that the given method postfix is accessed on an
      * instance or static reference to the given class.
      *
-     * @param ClassNode $class
-     * @param ASTNode $postfix
+     * @param \PHPMD\Node\ClassNode $class
+     * @param \PHPMD\Node\ASTNode $postfix
      * @return boolean
      */
-    protected function isClassScope(ClassNode $class, ASTNode $postfix)
+    private function isClassScope(ClassNode $class, ASTNode $postfix)
     {
         $owner = $postfix->getParent()->getChild(0);
-
         return (
-            $owner->isInstanceOf('MethodPostfix') ||
+        $owner->isInstanceOf('MethodPostfix') ||
             $owner->isInstanceOf('SelfReference') ||
             $owner->isInstanceOf('StaticReference') ||
             strcasecmp($owner->getImage(), '$this') === 0 ||

@@ -112,27 +112,17 @@ Attribute|Type|Use
 
 ### severity
 
-The `<severity>` element is an implementation of the [`@Severity`] Allure annotation, which is used to prioritise tests by severity.
+The `<return>` element is an implementation of a [`@Severity`] Allure tag; Metadata for report.
 
 Attribute|Type|Use|Acceptable values
 ---|---|---|---
-`value`|string|required|`MINOR`, `AVERAGE`, `MAJOR`, `CRITICAL`, `BLOCKER`
+`value`|string|required|`MINOR`, `AVERAGE`, `MAJOR`, `BLOCKER`, `CRITICAL`
 
 #### Example
 
 ```xml
 <severity value="CRITICAL"/>
 ```
-
-#### Usage guidelines
-
-Severity Level|Usage
----|---
-`BLOCKER`|If this test fails, the customer is completely blocked from purchasing a product.
-`CRITICAL`|This is a serious problem impacting conversion, or affecting the operation of the store.
-`MAJOR`|Store conversion rate is reduced owing to this issue. For example, something is broken or missing that impacts checkout frequency or cart volume.
-`AVERAGE`|A fault on the storefront that can negatively impact conversion rate (like UI errors or omissions), or problems with Magento admin functionality.
-`MINOR`|An application or configuration fault that has no impact on conversion rate.
 
 ### skip
 
@@ -223,14 +213,14 @@ Attribute|Type|Use
 
 <!-- Link definitions -->
 
-[`@Description`]: https://github.com/allure-framework/allure-phpunit#extended-test-class-or-test-method-description
-[`@Features`]: https://github.com/allure-framework/allure-phpunit#map-test-classes-and-test-methods-to-features-and-stories
+[`@Description`]: https://devhub.io/zh/repos/allure-framework-allure-phpunit#extended-test-class-or-test-method-description
+[`@Features`]: https://devhub.io/zh/repos/allure-framework-allure-phpunit#map-test-classes-and-test-methods-to-features-and-stories
 [`@group`]: http://codeception.com/docs/07-AdvancedUsage#Groups
 [`@return`]: http://codeception.com/docs/07-AdvancedUsage#Examples
-[`@Severity`]: https://github.com/allure-framework/allure-phpunit#set-test-severity
-[`@Stories`]: https://github.com/allure-framework/allure-phpunit#map-test-classes-and-test-methods-to-features-and-stories
+[`@Severity`]: https://devhub.io/zh/repos/allure-framework-allure-phpunit#set-test-severity
+[`@Stories`]: https://devhub.io/zh/repos/allure-framework-allure-phpunit#map-test-classes-and-test-methods-to-features-and-stories
 [`@TestCaseId`]: https://github.com/allure-framework/allure1/wiki/Test-Case-ID
-[`@Title`]: https://github.com/allure-framework/allure-phpunit#human-readable-test-class-or-test-method-title
+[`@Title`]: https://devhub.io/zh/repos/allure-framework-allure-phpunit#human-readable-test-class-or-test-method-title
 [description]: #description
 [features]: #features
 [group]: #group

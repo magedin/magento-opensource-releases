@@ -14,7 +14,7 @@ use ReflectionClass;
 
 final class AbstractEnumTest extends TestCase
 {
-    public function setUp(): void
+    public function setUp()
     {
         $reflectionClass = new ReflectionClass(AbstractEnum::class);
 

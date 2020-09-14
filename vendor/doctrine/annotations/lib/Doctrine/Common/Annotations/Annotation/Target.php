@@ -62,7 +62,7 @@ final class Target
     /**
      * Literal target declaration.
      *
-     * @var string
+     * @var integer
      */
     public $literal;
 

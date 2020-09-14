@@ -37,8 +37,10 @@ We recommend to keep Action Groups having single responsibility, for example `Ad
 
 ## Contribute
 
-Although the Magento Core team and Contributors join forces to cover most of the features with tests, it is impossible to have this done quickly.
+Althought the Magento Core team and Contributors join forces to cover most of the features with tests, it is impossible to have this done quickly.
 If you've covered Magento Core feature with Functional Tests - you are more than welcome to contribute.
+
+You can also help with MFTF Test Migration to get the experience and valuable feedback from other community members and maintainers.
 
 ## Action group
 
@@ -106,7 +108,7 @@ Example: _StorefrontCreateCustomerTest.xml_.
 
 #### Action Group file name
 
-Format: {_Admin_ or _Storefront_}{Action Group Summary}ActionGroup.xml`, where Action Group Summary is a short description of what the action group does.
+Format: {_Admin_ or _Storefront_}{Action Group Summary}ActionGroup.xml`, where Action Group Summary describes with a few words what we can expect from it.
 
 Example: _AdminCreateStoreActionGroup.xml_ 
 
@@ -215,3 +217,4 @@ Since the configurable product module could be disabled, this approach is more r
 [merging]: merging.html
 [parameterized selectors]: section/parameterized-selectors.html
 [sections]: section.html
+[MFTF Test Migration]: https://github.com/magento/magento-functional-tests-migration

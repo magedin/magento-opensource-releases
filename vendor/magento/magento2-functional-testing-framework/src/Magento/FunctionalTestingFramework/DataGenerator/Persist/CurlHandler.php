@@ -123,7 +123,6 @@ class CurlHandler
         $returnRegex = $this->operationDefinition->getReturnRegex();
         $returnIndex = $this->operationDefinition->getReturnIndex();
         $method = $this->operationDefinition->getApiMethod();
-        $this->operationDefinition->logDeprecated();
         AllureHelper::addAttachmentToCurrentStep($apiUrl, 'API Endpoint');
         AllureHelper::addAttachmentToCurrentStep(json_encode($headers, JSON_PRETTY_PRINT), 'Request Headers');
 

@@ -1539,8 +1539,6 @@ class RSA
 
                 return $components;
         }
-
-        return false;
     }
 
     /**

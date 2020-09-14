@@ -26,7 +26,7 @@ abstract class BaseNode implements NodeInterface
 {
     const DEFAULT_PATH_SEPARATOR = '.';
 
-    private static $placeholderUniquePrefixes = [];
+    private static $placeholderUniquePrefix;
     private static $placeholders = [];
 
     protected $name;
@@ -74,7 +74,7 @@ abstract class BaseNode implements NodeInterface
     }
 
     /**
-     * Adds a common prefix for dynamic placeholder values.
+     * Sets a common prefix for dynamic placeholder values.
      *
      * Matching configuration values will be skipped from being processed and are returned as is, thus preserving the
      * placeholder. An exact match provided by {@see setPlaceholder()} might take precedence.
@@ -83,7 +83,7 @@ abstract class BaseNode implements NodeInterface
      */
     public static function setPlaceholderUniquePrefix(string $prefix): void
     {
-        self::$placeholderUniquePrefixes[] = $prefix;
+        self::$placeholderUniquePrefix = $prefix;
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class BaseNode implements NodeInterface
      */
     public static function resetPlaceholders(): void
     {
-        self::$placeholderUniquePrefixes = [];
+        self::$placeholderUniquePrefix = null;
         self::$placeholders = [];
     }
 
@@ -200,10 +200,10 @@ abstract class BaseNode implements NodeInterface
      *
      * @param string $package The name of the composer package that is triggering the deprecation
      * @param string $version The version of the package that introduced the deprecation
-     * @param string $message the deprecation message to use
+     * @param string $message The deprecation message to use
      *
      * You can use %node% and %path% placeholders in your message to display,
-     * respectively, the node name and its complete path
+     * respectively, the node name and its complete path.
      */
     public function setDeprecated(?string $package/*, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.' */)
     {
@@ -543,10 +543,8 @@ abstract class BaseNode implements NodeInterface
                 return self::$placeholders[$value];
             }
 
-            foreach (self::$placeholderUniquePrefixes as $placeholderUniquePrefix) {
-                if (0 === strpos($value, $placeholderUniquePrefix)) {
-                    return [];
-                }
+            if (self::$placeholderUniquePrefix && 0 === strpos($value, self::$placeholderUniquePrefix)) {
+                return [];
             }
         }
 

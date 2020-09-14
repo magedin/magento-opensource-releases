@@ -169,7 +169,6 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
             if (!$parametersWithUndefinedConstants) {
                 yield preg_replace('/^  @@.*/m', '', $m);
             } else {
-                $t = $m->getReturnType();
                 $stack = [
                     $m->getDocComment(),
                     $m->getName(),
@@ -180,16 +179,15 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
                     $m->isPrivate(),
                     $m->isProtected(),
                     $m->returnsReference(),
-                    $t instanceof \ReflectionNamedType ? ((string) $t->allowsNull()).$t->getName() : (string) $t,
+                    $m->hasReturnType() ? $m->getReturnType()->getName() : '',
                 ];
 
                 foreach ($m->getParameters() as $p) {
                     if (!isset($parametersWithUndefinedConstants[$p->name])) {
                         $stack[] = (string) $p;
                     } else {
-                        $t = $p->getType();
                         $stack[] = $p->isOptional();
-                        $stack[] = $t instanceof \ReflectionNamedType ? ((string) $t->allowsNull()).$t->getName() : (string) $t;
+                        $stack[] = $p->hasType() ? $p->getType()->getName() : '';
                         $stack[] = $p->isPassedByReference();
                         $stack[] = $p->isVariadic();
                         $stack[] = $p->getName();

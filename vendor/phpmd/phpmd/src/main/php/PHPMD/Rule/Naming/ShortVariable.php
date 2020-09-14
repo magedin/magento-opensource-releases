@@ -35,7 +35,7 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      *
      * @var array(string=>boolean)
      */
-    protected $processedVariables = array();
+    private $processedVariables = array();
 
     /**
      * Extracts all variable and variable declarator nodes from the given node
@@ -52,7 +52,6 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
 
         if ($node->getType() === 'class') {
             $this->applyClass($node);
-
             return;
         }
 
@@ -68,7 +67,7 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      * @param AbstractNode $node
      * @return void
      */
-    protected function applyClass(AbstractNode $node)
+    private function applyClass(AbstractNode $node)
     {
         $fields = $node->findChildrenOfType('FieldDeclaration');
         foreach ($fields as $field) {
@@ -89,7 +88,7 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      * @param AbstractNode $node
      * @return void
      */
-    protected function applyNonClass(AbstractNode $node)
+    private function applyNonClass(AbstractNode $node)
     {
         $declarators = $node->findChildrenOfType('VariableDeclarator');
         foreach ($declarators as $declarator) {
@@ -150,7 +149,7 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      *
      * @return array
      */
-    protected function getExceptionsList()
+    private function getExceptionsList()
     {
         try {
             $exceptions = $this->getStringProperty('exceptions');
@@ -169,63 +168,12 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      * @param \PHPMD\AbstractNode $node
      * @return boolean
      */
-    protected function isNameAllowedInContext(AbstractNode $node)
+    private function isNameAllowedInContext(AbstractNode $node)
     {
-        if ($this->isChildOf($node, 'ForeachStatement')) {
-            return $this->isInitializedInLoop($node);
-        }
-
         return $this->isChildOf($node, 'CatchStatement')
-            || $this->isChildOf($node, 'ForInit')
-            || $this->isChildOf($node, 'MemberPrimaryPrefix');
-    }
-
-    /**
-     * Checks if a short name is initialized within a foreach loop statement
-     *
-     * @param \PHPMD\AbstractNode $node
-     * @return boolean
-     */
-    protected function isInitializedInLoop(AbstractNode $node)
-    {
-        if (!$this->getBooleanProperty('allow-short-variables-in-loop', true)) {
-            return false;
-        }
-
-        $exceptionVariables = array();
-
-        $parentForeaches = $this->getParentsOfType($node, 'ForeachStatement');
-        foreach ($parentForeaches as $foreach) {
-            foreach ($foreach->getChildren() as $foreachChild) {
-                $exceptionVariables[] = $foreachChild->getImage();
-            }
-        }
-
-        $exceptionVariables = array_filter(array_unique($exceptionVariables));
-
-        return in_array($node->getImage(), $exceptionVariables, true);
-    }
-
-    /**
-     * Returns an array of parent nodes of the specified type
-     *
-     * @param \PHPMD\AbstractNode $node
-     * @return array
-     */
-    protected function getParentsOfType(AbstractNode $node, $type)
-    {
-        $parents = array();
-
-        $parent = $node->getParent();
-
-        while (is_object($parent)) {
-            if ($parent->isInstanceOf($type)) {
-                $parents[] = $parent;
-            }
-            $parent = $parent->getParent();
-        }
-
-        return $parents;
+                || $this->isChildOf($node, 'ForInit')
+                || $this->isChildOf($node, 'ForeachStatement')
+                || $this->isChildOf($node, 'MemberPrimaryPrefix');
     }
 
     /**
@@ -236,7 +184,7 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
      * @param string $type
      * @return boolean
      */
-    protected function isChildOf(AbstractNode $node, $type)
+    private function isChildOf(AbstractNode $node, $type)
     {
         $parent = $node->getParent();
         while (is_object($parent)) {
@@ -245,7 +193,6 @@ class ShortVariable extends AbstractRule implements ClassAware, MethodAware, Fun
             }
             $parent = $parent->getParent();
         }
-
         return false;
     }
 

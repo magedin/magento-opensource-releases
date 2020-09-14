@@ -37,7 +37,6 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 {
     const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
     const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
-    const DEPRECATED_REGEX_PATTERN = '/deprecated=["\']([^\'"]*)/';
 
     const ERROR_LOG_FILENAME = 'mftf-deprecated-entity-usage-checks';
     const ERROR_LOG_MESSAGE = 'MFTF Deprecated Entity Usage Check';
@@ -178,6 +177,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                 MftfApplicationConfig::LEVEL_DEFAULT,
                 true
             );
+            putenv('CUSTOM_MODULE_PATHS=' . realpath($path));
             $modulePaths[] = realpath($path);
             $includeRootPath = false;
         } else {
@@ -225,9 +225,6 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
         /** @var SplFileInfo $filePath */
         foreach ($files as $filePath) {
             $contents = file_get_contents($filePath);
-            if ($this->isDeprecated($contents)) {
-                continue;
-            }
             preg_match_all(ActionObject::ACTION_ATTRIBUTE_VARIABLE_REGEX_PATTERN, $contents, $braceReferences);
             preg_match_all(self::ACTIONGROUP_REGEX_PATTERN, $contents, $actionGroupReferences);
             preg_match_all(self::EXTENDS_REGEX_PATTERN, $contents, $extendReferences);
@@ -320,17 +317,6 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     }
 
     /**
-     * Checks if entity is deprecated in action files.
-     * @param string $contents
-     * @return boolean
-     */
-    private function isDeprecated($contents)
-    {
-        preg_match_all(self::DEPRECATED_REGEX_PATTERN, $contents, $deprecatedEntity);
-        return (!empty($deprecatedEntity[1]));
-    }
-
-    /**
      * Find reference errors in a set of data files
      *
      * @param Finder $files
@@ -349,11 +335,6 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
             $entities = $domDocument->getElementsByTagName('entity');
             foreach ($entities as $entity) {
                 /** @var DOMElement $entity */
-                $deprecated = $entity->getAttribute('deprecated');
-                // skip check if entity is deprecated
-                if (!empty($deprecated)) {
-                    continue;
-                }
                 $entityName = $entity->getAttribute('name');
                 $metadataType = $entity->getAttribute('type');
                 $parentEntityName = $entity->getAttribute('extends');
@@ -628,9 +609,9 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                     $name = $key;
                     list($section,) = explode('.', $key, 2);
                     /** @var SectionObject $references[$section] */
-                    $file = StaticChecksList::getFilePath($references[$section]->getFilename());
+                    $file = $references[$section]->getFilename();
                 } else {
-                    $file = StaticChecksList::getFilePath($entity->getFilename());
+                    $file = $entity->getFilename();
                 }
                 $violatingReferences[$this->getSubjectFromClassType($classType)][] = [
                     'name' => $name,
@@ -652,18 +633,16 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     {
         $testErrors = [];
 
-        $filePath = StaticChecksList::getFilePath($path->getRealPath());
-
         if (!empty($violatingReferences)) {
             // Build error output
-            $errorOutput = "\nFile \"{$filePath}\" contains:\n";
+            $errorOutput = "\nFile \"{$path->getRealPath()}\" contains:\n";
             foreach ($violatingReferences as $subject => $data) {
                 $errorOutput .= "\t- {$subject}:\n";
                 foreach ($data as $item) {
                     $errorOutput .= "\t\t\"" . $item['name'] . "\" in " . $item['file'] . "\n";
                 }
             }
-            $testErrors[$filePath][] = $errorOutput;
+            $testErrors[$path->getRealPath()][] = $errorOutput;
         }
 
         return $testErrors;

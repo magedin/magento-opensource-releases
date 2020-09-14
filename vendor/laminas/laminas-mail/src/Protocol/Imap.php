@@ -8,6 +8,8 @@
 
 namespace Laminas\Mail\Protocol;
 
+use Laminas\Stdlib\ErrorHandler;
+
 class Imap
 {
     use ProtocolTrait;
@@ -18,7 +20,8 @@ class Imap
     const TIMEOUT_CONNECTION = 30;
 
     /**
-     * @var null|resource
+     * socket to imap server
+     * @var resource|null
      */
     protected $socket;
 
@@ -31,16 +34,13 @@ class Imap
     /**
      * Public constructor
      *
-     * @param  string       $host           hostname or IP address of IMAP server, if given connect() is called
-     * @param  int|null     $port           port of IMAP server, null for default (143 or 993 for ssl)
-     * @param  string|bool  $ssl            use ssl? 'SSL', 'TLS' or false
-     * @param  bool         $novalidatecert set to true to skip SSL certificate validation
+     * @param  string   $host  hostname or IP address of IMAP server, if given connect() is called
+     * @param  int|null $port  port of IMAP server, null for default (143 or 993 for ssl)
+     * @param  bool     $ssl   use ssl? 'SSL', 'TLS' or false
      * @throws \Laminas\Mail\Protocol\Exception\ExceptionInterface
      */
-    public function __construct($host = '', $port = null, $ssl = false, $novalidatecert = false)
+    public function __construct($host = '', $port = null, $ssl = false)
     {
-        $this->setNoValidateCert($novalidatecert);
-
         if ($host) {
             $this->connect($host, $port, $ssl);
         }
@@ -61,11 +61,10 @@ class Imap
      * @param  int|null    $port  of IMAP server, default is 143 (993 for ssl)
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
      * @throws Exception\RuntimeException
-     * @return void
+     * @return string welcome message
      */
     public function connect($host, $port = null, $ssl = false)
     {
-        $transport = 'tcp';
         $isTls = false;
 
         if ($ssl) {
@@ -74,7 +73,7 @@ class Imap
 
         switch ($ssl) {
             case 'ssl':
-                $transport = 'ssl';
+                $host = 'ssl://' . $host;
                 if (! $port) {
                     $port = 993;
                 }
@@ -88,7 +87,15 @@ class Imap
                 }
         }
 
-        $this->socket = $this->setupSocket($transport, $host, $port, self::TIMEOUT_CONNECTION);
+        ErrorHandler::start();
+        $this->socket = fsockopen($host, $port, $errno, $errstr, self::TIMEOUT_CONNECTION);
+        $error = ErrorHandler::stop();
+        if (! $this->socket) {
+            throw new Exception\RuntimeException(sprintf(
+                'cannot connect to host %s',
+                ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
+            ), 0, $error);
+        }
 
         if (! $this->assumedNextLine('* OK')) {
             throw new Exception\RuntimeException('host doesn\'t allow connection');

@@ -3,6 +3,7 @@
 namespace PHPMD\Renderer;
 
 use PHPMD\AbstractRenderer;
+use PHPMD\ProcessingError;
 use PHPMD\Report;
 use PHPMD\RuleViolation;
 
@@ -58,7 +59,6 @@ class AnsiRenderer extends AbstractRenderer
                 $maxLength = strlen($violation->getBeginLine());
             }
         }
-
         return $maxLength;
     }
 

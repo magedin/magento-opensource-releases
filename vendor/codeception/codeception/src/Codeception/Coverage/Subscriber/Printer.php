@@ -3,7 +3,6 @@ namespace Codeception\Coverage\Subscriber;
 
 use Codeception\Configuration;
 use Codeception\Coverage\Filter;
-use Codeception\Coverage\PhpCodeCoverageFactory;
 use Codeception\Event\PrintResultEvent;
 use Codeception\Events;
 use Codeception\Subscriber\Shared\StaticEvents;
@@ -35,8 +34,7 @@ class Printer implements EventSubscriberInterface
         $this->options = $options;
         $this->logDir = Configuration::outputDir();
         $this->settings = array_merge($this->settings, Configuration::config()['coverage']);
-
-        self::$coverage = PhpCodeCoverageFactory::build();
+        self::$coverage = new \SebastianBergmann\CodeCoverage\CodeCoverage();
 
         // Apply filter
         $filter = new Filter(self::$coverage);

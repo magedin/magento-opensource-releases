@@ -53,7 +53,7 @@ class ShortMethodName extends AbstractRule implements MethodAware, FunctionAware
             array(
                 $node->getParentName(),
                 $node->getName(),
-                $threshold,
+                $threshold
             )
         );
     }
@@ -63,7 +63,7 @@ class ShortMethodName extends AbstractRule implements MethodAware, FunctionAware
      *
      * @return array
      */
-    protected function getExceptionsList()
+    private function getExceptionsList()
     {
         try {
             $exceptions = $this->getStringProperty('exceptions');

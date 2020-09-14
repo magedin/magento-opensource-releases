@@ -76,15 +76,12 @@ class MftfGlobals
     {
         if (!self::$backendBaseUrl) {
             try {
-                $backendName = getenv('MAGENTO_BACKEND_NAME');
                 $bUrl = getenv('MAGENTO_BACKEND_BASE_URL');
-                if ($bUrl && $backendName) {
-                    self::$backendBaseUrl = UrlFormatter::format(
-                        UrlFormatter::format($bUrl) . $backendName,
-                        false
-                    );
+                if ($bUrl) {
+                    self::$backendBaseUrl = UrlFormatter::format($bUrl, false);
                 } else {
                     $baseUrl = getenv('MAGENTO_BASE_URL');
+                    $backendName = getenv('MAGENTO_BACKEND_NAME');
                     if ($baseUrl && $backendName) {
                         self::$backendBaseUrl = UrlFormatter::format(
                             UrlFormatter::format($baseUrl) . $backendName,

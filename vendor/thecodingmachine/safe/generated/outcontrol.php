@@ -65,8 +65,6 @@ function ob_end_flush(): void
  * url_rewriter.hosts php.ini
  * parameters.
  *
- * Note that this function can be successfully called at most once per request.
- *
  * @param string $name The variable name.
  * @param string $value The variable value.
  * @throws OutcontrolException

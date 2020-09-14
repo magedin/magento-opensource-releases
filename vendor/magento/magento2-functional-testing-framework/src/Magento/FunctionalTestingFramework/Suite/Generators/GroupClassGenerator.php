@@ -6,7 +6,6 @@
 
 namespace Magento\FunctionalTestingFramework\Suite\Generators;
 
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
@@ -33,10 +32,6 @@ class GroupClassGenerator
         'comment' => 'print'
     ];
     const GROUP_DIR_NAME = 'Group';
-    const FUNCTION_PLACEHOLDER = 'PLACEHOLDER';
-    const FUNCTION_START = 'this->getModuleForAction("';
-    const FUNCTION_END = '")';
-    const FUNCTION_REPLACE_REGEX = '/(PLACEHOLDER->([^\(]+))\(/';
 
     /**
      * Mustache_Engine instance for template loading
@@ -147,7 +142,7 @@ class GroupClassGenerator
             //deleteData contains either url or createDataKey, if it contains the former it needs special formatting
             if ($action->getType() !== "createData"
                 && !array_key_exists(TestGenerator::REQUIRED_ENTITY_REFERENCE, $action->getCustomActionAttributes())) {
-                $actions = $this->buildModuleActionsMustacheArray($action, $actions);
+                $actions = $this->buildWebDriverActionsMustacheArray($action, $actions);
                 continue;
             }
 
@@ -170,7 +165,7 @@ class GroupClassGenerator
     }
 
     /**
-     * Takes an action object and array of generated action steps. Convert the action object into generated php and
+     * Takes an action object and array of generated action steps. Converst the action object into generated php and
      * appends the entry to the given array. The result is returned by the function.
      *
      * @param ActionObject $action
@@ -178,22 +173,14 @@ class GroupClassGenerator
      * @return array
      * @throws TestReferenceException
      */
-    private function buildModuleActionsMustacheArray($action, $actionEntries)
+    private function buildWebDriverActionsMustacheArray($action, $actionEntries)
     {
-        $step = TestGenerator::getInstance()->generateStepsPhp(
-            [$action],
-            TestGenerator::SUITE_SCOPE,
-            self::FUNCTION_PLACEHOLDER
-        );
+        $step = TestGenerator::getInstance()->generateStepsPhp([$action], TestGenerator::SUITE_SCOPE, 'webDriver');
         $rawPhp = str_replace(["\t"], "", $step);
         $multipleCommands = explode(PHP_EOL, $rawPhp, -1);
         $multipleCommands = array_filter($multipleCommands);
         foreach ($multipleCommands as $command) {
-            $actionEntries = $this->replaceReservedTesterFunctions(
-                $command . PHP_EOL,
-                $actionEntries,
-                self::FUNCTION_PLACEHOLDER
-            );
+            $actionEntries = $this->replaceReservedTesterFunctions($command . PHP_EOL, $actionEntries, 'webDriver');
         }
 
         return $actionEntries;
@@ -217,17 +204,7 @@ class GroupClassGenerator
                 $resultingStep = str_replace($testActionCall, $replacement, $formattedStep);
                 $actionEntries[] = ['action' => $resultingStep];
             } else {
-                $placeholder = self::FUNCTION_PLACEHOLDER;
-                $begin = self::FUNCTION_START;
-                $end = self::FUNCTION_END;
-                $resultingStep = preg_replace_callback(
-                    self::FUNCTION_REPLACE_REGEX,
-                    function ($matches) use ($placeholder, $begin, $end) {
-                        return str_replace($placeholder, $begin . $matches[2] . $end, $matches[1]) . '(';
-                    },
-                    $formattedStep
-                );
-                $actionEntries[] = ['action' => $resultingStep];
+                $actionEntries[] = ['action' => $formattedStep];
             }
         }
 
@@ -248,16 +225,16 @@ class GroupClassGenerator
             $action->getCustomActionAttributes()[TestGenerator::REQUIRED_ENTITY_REFERENCE];
 
         // append entries for any required entities to this entry
-        $requiredEntities = $this->buildReqEntitiesMustacheArray($action->getCustomActionAttributes());
-        if (!array_key_exists(-1, $requiredEntities)) {
-            $entityArray[self::REQUIRED_ENTITY_KEY] = $requiredEntities;
+        if (array_key_exists('requiredEntities', $action->getCustomActionAttributes())) {
+            $entityArray[self::REQUIRED_ENTITY_KEY] =
+                $this->buildReqEntitiesMustacheArray($action->getCustomActionAttributes());
         }
 
         // append entries for customFields if specified by the user.
         if (array_key_exists('customFields', $action->getCustomActionAttributes())) {
             $entityArray['customFields'] = $action->getStepKey() . 'Fields';
         }
-
+        
         return $entityArray;
     }
 

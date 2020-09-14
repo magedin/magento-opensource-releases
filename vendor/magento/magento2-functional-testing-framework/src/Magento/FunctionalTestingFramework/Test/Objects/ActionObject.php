@@ -77,7 +77,6 @@ class ActionObject
     const ACTION_TYPE_COMMENT = 'comment';
     const ACTION_TYPE_HELPER = 'helper';
     const INVISIBLE_STEP_ACTIONS = ['retrieveEntityField', 'getSecret'];
-    const PAUSE_ACTION_INTERNAL_ATTRIBUTE = 'pauseOnFail';
 
     /**
      * The unique identifier for the action
@@ -727,12 +726,7 @@ class ActionObject
             $resolvedReplacement = $replacement;
         }
         if (get_class($object) == PageObject::class && $object->getArea() == PageObject::ADMIN_AREA) {
-            $urlSegments = [
-                '{{_ENV.MAGENTO_BACKEND_BASE_URL}}',
-                '{{_ENV.MAGENTO_BACKEND_NAME}}',
-                $resolvedReplacement
-            ];
-            $resolvedReplacement = implode('/', $urlSegments);
+            $resolvedReplacement = "/{{_ENV.MAGENTO_BACKEND_NAME}}/" . $resolvedReplacement;
         }
         return $resolvedReplacement;
     }

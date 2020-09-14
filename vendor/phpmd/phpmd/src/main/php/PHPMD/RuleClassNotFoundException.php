@@ -18,6 +18,17 @@
 namespace PHPMD;
 
 /**
- * @deprecated 3.0.0 Use PHPMD\Exception\RuleClassNotFoundException instead.
+ * When a configured rule class does not exist.
  */
-class_alias('PHPMD\Exception\RuleClassNotFoundException', 'PHPMD\RuleClassNotFoundException');
+class RuleClassNotFoundException extends \RuntimeException
+{
+    /**
+     * Constructs a new class not found exception.
+     *
+     * @param string $className The configured but not found ruke class name.
+     */
+    public function __construct($className)
+    {
+        parent::__construct('Cannot find rule class: ' . $className);
+    }
+}

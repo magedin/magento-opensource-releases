@@ -12,19 +12,9 @@ use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Page\Handlers\SectionObjectHandler;
 use Magento\FunctionalTestingFramework\XmlParser\SectionParser;
 use tests\unit\Util\MagentoTestCase;
-use tests\unit\Util\ObjectHandlerUtil;
-use tests\unit\Util\TestLoggingUtil;
 
 class SectionObjectHandlerTest extends MagentoTestCase
 {
-    /**
-     * Setup method
-     */
-    public function setUp(): void
-    {
-        TestLoggingUtil::getInstance()->setMockLoggingUtil();
-    }
-
     public function testGetSectionObject()
     {
         $mockData = [
@@ -47,7 +37,7 @@ class SectionObjectHandlerTest extends MagentoTestCase
             ]
         ];
 
-        ObjectHandlerUtil::mockSectionObjectHandlerWithData($mockData);
+        $this->setMockParserOutput($mockData);
 
         // get sections
         $sectionHandler = SectionObjectHandler::getInstance();
@@ -62,41 +52,20 @@ class SectionObjectHandlerTest extends MagentoTestCase
         $this->assertNull($invalidSection);
     }
 
-    public function testDeprecatedSection()
-    {
-        $mockData = [
-            "testSection1" => [
-                "element" => [
-                    "testElement" => [
-                        "type" => "input",
-                        "selector" => "#element",
-                        "deprecated" => "element deprecation message"
-                    ]
-                ],
-                "filename" => "filename.xml",
-                "deprecated" => "section deprecation message"
-            ]
-        ];
-
-        ObjectHandlerUtil::mockSectionObjectHandlerWithData($mockData);
-
-        // get sections
-        $sectionHandler = SectionObjectHandler::getInstance();
-        $section = $sectionHandler->getObject("testSection1");
-
-        //validate deprecation warning
-        TestLoggingUtil::getInstance()->validateMockLogStatement(
-            'notice',
-            "NOTICE: 1 Section name violations detected. See mftf.log for details.",
-            []
-        );
-    }
-
     /**
-     * clean up function runs after all tests
+     * Set the mock parser return value
+     *
+     * @param array $data
      */
-    public static function tearDownAfterClass(): void
+    private function setMockParserOutput($data)
     {
-        TestLoggingUtil::getInstance()->clearMockLoggingUtil();
+        // clear section object handler value to inject parsed content
+        $property = new \ReflectionProperty(SectionObjectHandler::class, "INSTANCE");
+        $property->setAccessible(true);
+        $property->setValue(null);
+
+        $mockSectionParser = AspectMock::double(SectionParser::class, ["getData" => $data])->make();
+        $instance = AspectMock::double(ObjectManager::class, ["get" => $mockSectionParser])->make();
+        AspectMock::double(ObjectManagerFactory::class, ["getObjectManager" => $instance]);
     }
 }

@@ -24,7 +24,7 @@ use PHPMD\Rule\ClassAware;
 /**
  * This rule class detects violations of Coupling Between Objects metric.
  *
- * @since 1.1.0
+ * @since      1.1.0
  */
 class CouplingBetweenObjects extends AbstractRule implements ClassAware
 {
@@ -38,8 +38,7 @@ class CouplingBetweenObjects extends AbstractRule implements ClassAware
     public function apply(AbstractNode $node)
     {
         $cbo = $node->getMetric('cbo');
-        $threshold = $this->getIntProperty('maximum');
-        if ($cbo >= $threshold) {
+        if ($cbo >= ($threshold = $this->getIntProperty('maximum'))) {
             $this->addViolation($node, array($node->getName(), $cbo, $threshold));
         }
     }

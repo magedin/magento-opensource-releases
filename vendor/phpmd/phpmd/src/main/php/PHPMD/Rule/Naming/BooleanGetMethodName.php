@@ -51,11 +51,11 @@ class BooleanGetMethodName extends AbstractRule implements MethodAware
      * @param \PHPMD\Node\MethodNode $node
      * @return boolean
      */
-    protected function isBooleanGetMethod(MethodNode $node)
+    private function isBooleanGetMethod(MethodNode $node)
     {
         return $this->isGetterMethodName($node)
-            && $this->isReturnTypeBoolean($node)
-            && $this->isParameterizedOrIgnored($node);
+                && $this->isReturnTypeBoolean($node)
+                && $this->isParameterizedOrIgnored($node);
     }
 
     /**
@@ -64,7 +64,7 @@ class BooleanGetMethodName extends AbstractRule implements MethodAware
      * @param \PHPMD\Node\MethodNode $node
      * @return boolean
      */
-    protected function isGetterMethodName(MethodNode $node)
+    private function isGetterMethodName(MethodNode $node)
     {
         return (preg_match('(^_?get)i', $node->getImage()) > 0);
     }
@@ -75,10 +75,9 @@ class BooleanGetMethodName extends AbstractRule implements MethodAware
      * @param \PHPMD\Node\MethodNode $node
      * @return boolean
      */
-    protected function isReturnTypeBoolean(MethodNode $node)
+    private function isReturnTypeBoolean(MethodNode $node)
     {
         $comment = $node->getDocComment();
-
         return (preg_match('(\*\s*@return\s+bool(ean)?\s)i', $comment) > 0);
     }
 
@@ -89,12 +88,11 @@ class BooleanGetMethodName extends AbstractRule implements MethodAware
      * @param \PHPMD\Node\MethodNode $node
      * @return boolean
      */
-    protected function isParameterizedOrIgnored(MethodNode $node)
+    private function isParameterizedOrIgnored(MethodNode $node)
     {
         if ($this->getBooleanProperty('checkParameterizedMethods')) {
             return $node->getParameterCount() === 0;
         }
-
         return true;
     }
 }

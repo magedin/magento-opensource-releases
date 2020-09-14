@@ -151,17 +151,12 @@ class StaticChecksCommand extends Command
         }
 
         if ($input->getOption('path')) {
-            if ((count($this->staticCheckObjects) !== 1)
-                || !in_array(
-                    array_keys($this->staticCheckObjects)[0],
-                    [
-                        StaticChecksList::DEPRECATED_ENTITY_USAGE_CHECK_NAME,
-                        StaticChecksList::PAUSE_ACTION_USAGE_CHECK_NAME
-                    ]
-                )
-            )
+            if ( (count($this->staticCheckObjects) !== 1)
+                || array_keys($this->staticCheckObjects)[0] !== StaticChecksList::DEPRECATED_ENTITY_USAGE_CHECK_NAME )
                 throw new InvalidArgumentException(
-                    '--path option is not supported for the command."'
+                    '--path option can only be used for "'
+                    . StaticChecksList::DEPRECATED_ENTITY_USAGE_CHECK_NAME
+                    . '".'
                 );
         }
     }

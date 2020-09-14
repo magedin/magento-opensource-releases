@@ -1629,7 +1629,6 @@ class File
                 T_CALLABLE     => T_CALLABLE,
                 T_SELF         => T_SELF,
                 T_PARENT       => T_PARENT,
-                T_STATIC       => T_STATIC,
                 T_NS_SEPARATOR => T_NS_SEPARATOR,
             ];
 
@@ -1937,7 +1936,6 @@ class File
         );
 
         if ($this->tokens[$tokenBefore]['code'] === T_FUNCTION
-            || $this->tokens[$tokenBefore]['code'] === T_CLOSURE
             || $this->tokens[$tokenBefore]['code'] === T_FN
         ) {
             // Function returns a reference.
