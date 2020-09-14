@@ -1,6 +1,6 @@
 # Metadata
 
-In this topic we talk about handling entities that you need in your tests (such as categories, products, wish lists, and similar) using the MFTF.
+In this topic we talk about handling entities that you need in your tests (such as categories, products, wish lists, and similar) using MFTF.
 Using data handling actions like [`createData`], [`deleteData`], [`updateData`], and [`getData`], you are able to create, delete, update, and read entities for your tests.
 The framework enables you to send HTTP requests with these statically defined data entities:
 
@@ -29,7 +29,7 @@ Each [operation] includes:
 -  The type of body content encoding in [contentType].
 -  The body of the request represented as a tree of objects, arrays, and fields.
 
-When a test step requires handling the specified data entity, the MFTF performs the following steps:
+When a test step requires handling the specified data entity, MFTF performs the following steps:
 
 -  Reads input data (`<data/>`) and the type (the `type` attribute) of the specified [entity].
 -  Searches the metadata operation for the `dataType` that matches the entity's `type`. For example, `<entity type="product">` matches `<operation dataType="product"`.
@@ -67,8 +67,8 @@ The following diagram demonstrates the XML structure of a metadata file:
 ## Principles {#principles}
 
 1. A `dataType` value must match the `type` value of the corresponding entity.
-2. A file name should contain data type split with `_` and must end with `-meta`.
-   Example: `product_attribute-meta.xml`.
+2. A file name should be PascalCase and end with `Meta.xml`.
+   Example: `ProductAttributeMeta.xml`.
 3. A metadata file may contain different types of operations (`type`) with the same data entity (`dataType`).
 
 Example:
@@ -94,8 +94,8 @@ Example:
 
 ### Sending a REST API request
 
-The MFTF allows you to handle basic CRUD operations with an object using [Magento REST API][api reference] requests.
-To convert a request to the MFTF format, wrap the corresponding REST API request into XML tags according to the [Reference documentation][reference].
+MFTF allows you to handle basic CRUD operations with an object using [Magento REST API][api reference] requests.
+To convert a request to MFTF format, wrap the corresponding REST API request into XML tags according to the [Reference documentation][reference].
 
 -  GET is used for retrieving data from objects.
 -  POST is used for creating new objects.
@@ -123,7 +123,7 @@ Let's see what happens when you create a category:
 <createData entity="_defaultCategory" stepKey="createPreReqCategory"/>
 ```
 
-The MFTF searches in the _Data_ directory an entity with `<entity name="_defaultCategory">` and reads `type` of the entity.
+MFTF searches in the _Data_ directory an entity with `<entity name="_defaultCategory">` and reads `type` of the entity.
 If there are more than one entity with the same name, all of the entities are merged.
 
 _Catalog/Data/CategoryData.xml_:
@@ -136,10 +136,10 @@ _Catalog/Data/CategoryData.xml_:
 </entity>
 ```
 
-Here, `type` is equal to `"category"`, which instructs the MFTF to search an operation with `dataType="category"`.
-Since the action is __to create__ a category, the MFTF will also search for operation with `type="create"` in _Metadata_ for `dataType="category"`.
+Here, `type` is equal to `"category"`, which instructs MFTF to search an operation with `dataType="category"`.
+Since the action is __to create__ a category, MFTF will also search for operation with `type="create"` in _Metadata_ for `dataType="category"`.
 
-_Catalog/Metadata/category-meta.xml_:
+_Catalog/Metadata/CategoryMeta.xml_:
 
 ```xml
 <operation name="CreateCategory" dataType="category" type="create" auth="adminOauth" url="/V1/categories" method="POST">
@@ -187,10 +187,10 @@ Comments in the example below are used to demonstrate relation between JSON requ
 JSON does not support comments.
 </div>
 
-Model schema for _catalogCategoryRepositoryV1SavePostBody_ with XML representation of _Catalog/Metadata/category-meta.xml_ in comments:
+Model schema for _catalogCategoryRepositoryV1SavePostBody_ with XML representation of _Catalog/Metadata/CategoryMeta.xml_ in comments:
 
 ```json
-{                                           // XML representation in the MFTF metadata format (see 'Catalog/Metadata/category-meta.xml')
+{                                           // XML representation in the MFTF metadata format (see 'Catalog/Metadata/CategoryMeta.xml')
   "category": {                             // <object key="category" dataType="category">
     "id": 0,                                // Skipped, because Category ID is not available on UI when you create a new category.
     "parent_id": 0,                         // <field key="parent_id">integer</field>
@@ -206,9 +206,9 @@ Model schema for _catalogCategoryRepositoryV1SavePostBody_ with XML representati
       "string"                              // <value>string</value>
     ],                                      // </array>
     "include_in_menu": true,                // <field key="include_in_menu">boolean</field>
-    "extension_attributes": {},             // <field key="extension_attributes">empty_extension_attribute</field>, where 'empty_extension_attribute' is a reference to operation with 'dataType="empty_extension_attribute"' (see 'Catalog/Metadata/empty_extension_attribute-meta.xml')
+    "extension_attributes": {},             // <field key="extension_attributes">empty_extension_attribute</field>, where 'empty_extension_attribute' is a reference to operation with 'dataType="empty_extension_attribute"' (see 'Catalog/Metadata/EmptyExtensionAttributeMeta.xml')
     "custom_attributes": [                  // <array key="custom_attributes">
-      {                                     // <value>custom_attribute</value>, where 'custom_attribute' is a reference to operation with 'dataType="custom_attribute"' (see 'Catalog/Metadata/custom_attribute-meta.xml')
+      {                                     // <value>custom_attribute</value>, where 'custom_attribute' is a reference to operation with 'dataType="custom_attribute"' (see 'Catalog/Metadata/CustomAttributeMeta.xml')
         "attribute_code": "string",
         "value": "string"
       }
@@ -236,26 +236,26 @@ The corresponding test step is:
 <createData entity="guestCart" stepKey="createGuestCart"/>
 ```
 
-The MFTF searches in the _Data_ directory an entity with `<entity name="guestCart">` and reads `type`.
+MFTF searches in the _Data_ directory an entity with `<entity name="GuestCart">` and reads `type`.
 
 _Quote/Data/GuestCartData.xml_:
 
 ```xml
-<entity name="guestCart" type="guestCart">
+<entity name="GuestCart" type="GuestCart">
 </entity>
 ```
 
-`type="guestCart"` points to the operation with `dataType=guestCart"` and `type="create"` in the _Metadata_ directory.
+`type="guestCart"` points to the operation with `dataType=GuestCart"` and `type="create"` in the _Metadata_ directory.
 
 _Catalog/Data/CategoryData.xml_:
 
 ```xml
-<operation name="CreateGuestCart" dataType="guestCart" type="create" auth="anonymous" url="/V1/guest-carts" method="POST">
+<operation name="CreateGuestCart" dataType="GuestCart" type="create" auth="anonymous" url="/V1/guest-carts" method="POST">
     <contentType>application/json</contentType>
 </operation>
 ```
 
-As a result, the MFTF sends an unauthorized POST request with an empty body to the `https://example.com/rest/V1/guest-carts` and stores the single string response that the endpoint returns.
+As a result, MFTF sends an unauthorized POST request with an empty body to the `https://example.com/rest/V1/guest-carts` and stores the single string response that the endpoint returns.
 
 ### Handling a REST API response {#rest-response}
 
@@ -267,7 +267,7 @@ Let's see how to handle data after you created a category with custom attributes
 <createData entity="customizedCategory" stepKey="createPreReqCategory"/>
 ```
 
-The MFTF receives the corresponding JSON response and enables you to reference its data using a variable of format:
+MFTF receives the corresponding JSON response and enables you to reference its data using a variable of format:
 
 **$** _stepKey_ **.** _JsonKey_ **$**
 
@@ -343,7 +343,7 @@ You are able to create assurances with `successRegex`, and, optionally, return v
 
 The `CreateStoreGroup` operation is used to persist a store group:
 
-Source file is _Store/Metadata/store_group-meta.xml_:
+Source file is _Store/Metadata/StoreGroupMeta.xml_:
 
 ```xml
 <operation name="CreateStoreGroup" dataType="group" type="create" auth="adminFormKey" url="/admin/system_store/save" method="POST" successRegex="/messages-message-success/" >
@@ -377,9 +377,9 @@ The operation enables you to assign the following form fields:
 
 ### Create an object in storefront {#create-object-as-customerFormKey}
 
-The MFTF uses the `CreateWishlist` operation to create a wish list on storefront:
+MFTF uses the `CreateWishlist` operation to create a wish list on storefront:
 
-Source file is _Wishlist/Metadata/wishlist-meta.xml_
+Source file is _Wishlist/Metadata/WishlistMeta.xml_
 
 ```xml
 <operation name="CreateWishlist" dataType="wishlist" type="create" auth="customerFormKey" url="/wishlist/index/add/" method="POST" successRegex="" returnRegex="~\/wishlist_id\/(\d*?)\/~" >
@@ -558,7 +558,7 @@ Example:
 <!-- LINK DEFINITIONS -->
 
 [actions]: test/actions.md
-[api reference]: https://devdocs.magento.com/guides/v2.3/get-started/bk-get-started-api.html
+[api reference]: https://devdocs.magento.com/guides/v2.4/get-started/bk-get-started-api.html
 [application/x-www-form-urlencoded]: https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1
 {:target="_blank"}
 [catalogCategoryRepositoryV1 image]: img/catalogCategoryRepository-operations.png
@@ -573,7 +573,7 @@ Example:
 [getData]: test/actions.md#getdata
 [HTML forms]: https://www.w3.org/TR/html401/interact/forms.html
 {:target="\_blank"}
-[oauth]: https://devdocs.magento.com/guides/v2.3/get-started/authentication/gs-authentication-oauth.html
+[oauth]: https://devdocs.magento.com/guides/v2.4/get-started/authentication/gs-authentication-oauth.html
 {:target="\_blank"}
 [operation]: #operation-tag
 [reference]: #reference

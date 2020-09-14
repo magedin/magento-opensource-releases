@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.13.0 - 2020-08-18
+
+### Added
+
+- [#41](https://github.com/laminas/laminas-http/pull/41) adds a new method to `Laminas\Http\PhpEnvironment\Response`, `setHeadersSentHandler(callable $handler): void`. When a handler is injected, `sendHeaders()` will call it with the current response instance if it detects headers have already been sent (e.g., by the SAPI due to emitting content). Prior to this change, the class would silently ignore the fact, and simply not emit headers from the response instance. Now it is possible to log those headers, or raise an exception.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.12.0 - 2020-06-23
+
+### Added
+
+- [#33](https://github.com/laminas/laminas-http/pull/33) adds a new header type, `Laminas\Http\Header\ContentSecurityPolicyReportOnly`, mapping to Content-Security-Policy-Report-Only headers, which can be used for experimenting with policies without impacting your application.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.11.3 - 2020-06-23
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#39](https://github.com/laminas/laminas-http/pull/39) fixes the default user-agent header to replace escape characters with underscores, ensuring it works with all clients and servers.
+
+- [#31](https://github.com/laminas/laminas-http/pull/31) updates the socket and proxy adapters to retain the previous TLS defaults, which had broken with PHP 5.6.7+ due to a change in the meaning of the STREAM_CRYPTO_METHOD_TLS_CLIENT constant.
+
 ## 2.11.2 - 2019-12-30
 
 ### Added

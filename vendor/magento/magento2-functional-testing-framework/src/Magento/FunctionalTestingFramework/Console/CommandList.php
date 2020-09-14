@@ -30,8 +30,8 @@ class CommandList implements CommandListInterface
     {
         $this->commands = [
             'build:project' => new BuildProjectCommand(),
+            'codecept:run' => new CodeceptRunCommand(),
             'doctor' => new DoctorCommand(),
-            'generate:docs' => new GenerateDocsCommand(),
             'generate:suite' => new GenerateSuiteCommand(),
             'generate:tests' => new GenerateTestsCommand(),
             'generate:urn-catalog' => new GenerateDevUrnCommand(),

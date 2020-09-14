@@ -8,7 +8,7 @@
 -->
 
 <entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../../../src/Magento/FunctionalTestingFramework/DataGenerator/etc/dataProfileSchema.xsd">
+        xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
     <entity name="ReplacementPerson" type="samplePerson">
         <data key="firstname">John</data>
         <data key="lastName">Doe</data>
@@ -21,5 +21,9 @@
         <data key="firstname">Jane</data>
         <data key="lastName">Dane</data>
         <data key="mergedField">unmerged</data>
+    </entity>
+    <entity name="SecretData" type="SecretData">
+        <data key="key1">some/data</data>
+        <data key="key2">{{_CREDS.magento/some/secret}}</data>
     </entity>
 </entities>

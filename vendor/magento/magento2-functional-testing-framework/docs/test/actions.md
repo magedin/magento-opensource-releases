@@ -95,7 +95,7 @@ Here, `url` contains a pointer to a `url` attribute of the `StorefrontCustomerSi
 ### 2. Enter a customer's email  {#example-step2}
 
 ```xml
-<fillField userInput="$$customer.email$$" selector="{{StorefrontCustomerSignInFormSection.emailField}}" stepKey="fillEmail"/>
+<fillField userInput="$customer.email$" selector="{{StorefrontCustomerSignInFormSection.emailField}}" stepKey="fillEmail"/>
 ```
 
 [`<fillField>`](#fillfield) fills a text field with the given string.
@@ -122,7 +122,7 @@ This section is declared in `.../Customer/Section/StorefrontCustomerSignInFormSe
 ### 3. Enter a customer's password  {#example-step3}
 
 ```xml
-<fillField  userInput="$$customer.password$$" selector="{{StorefrontCustomerSignInFormSection.passwordField}}" stepKey="fillPassword"/>
+<fillField  userInput="$customer.password$" selector="{{StorefrontCustomerSignInFormSection.passwordField}}" stepKey="fillPassword"/>
 ```
 
 This `<action>` is very similar to the `<action>` in a previous step.
@@ -150,6 +150,8 @@ The following test actions return a variable:
 *  [grabTextFrom](#grabtextfrom)
 *  [grabValueFrom](#grabvaluefrom)
 *  [executeJS](#executejs)
+*  [getOTP](#getotp)
+*  [return](#return)
 
 Learn more in [Using data returned by test actions](../data.md#use-data-returned-by-test-actions).
 
@@ -217,7 +219,7 @@ Attribute|Type|Use|Description
 
 ```xml
 <!-- Open the `(baseURL)/admin` page. -->
-<amOnPage url="/admin" stepKey="goToLogoutPage"/>
+<amOnPage url="{{AdminLogoutPage.url}}" stepKey="goToLogoutPage"/>
 ```
 
 ### amOnSubdomain
@@ -971,26 +973,6 @@ Attribute|Type|Use|Description
 <dragAndDrop selector1="#block1" selector2="#block2" x="50" y="50" stepKey="dragAndDrop"/>
 ```
 
-### executeInSelenium
-
-#### NOTE: `executeInSelenium` action is DEPRECATED and will be removed in MFTF 3.0.0.
-
-See [executeInSelenium docs on codeception.com](http://codeception.com/docs/modules/WebDriver#executeInSelenium).
-
-Attribute|Type|Use|Description
----|---|---|---
-`function`|string|optional| Name of Selenium function to run.
-`stepKey`|string|required| A unique identifier of the action.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of preceding action.
-
-#### Example
-
-```xml
-<!-- Execute the Selenium function `function(\Facebook\WebDriver\Remote\RemoteWebDriver $webdriver) {$webdriver->get('http://google.com');}`. -->
-<executeInSelenium function="function(\Facebook\WebDriver\Remote\RemoteWebDriver $webdriver) {$webdriver->get('http://google.com');}" stepKey="executeInSelenium"/>
-```
-
 ### executeJS
 
 See [executeJS docs on codeception.com](http://codeception.com/docs/modules/WebDriver#executeJS).
@@ -1032,12 +1014,15 @@ Attribute|Type|Use|Description
 <fillField userInput="Sample text" selector="input#myfield" stepKey="fillField"/>
 ```
 
-### formatMoney
+### formatCurrency
+Format input to specified currency according to the locale specified. Returns formatted string for test use.
+Use NumberFormatter::formatCurrency(), see https://www.php.net/manual/en/numberformatter.formatcurrency.php
 
 Attribute|Type|Use|Description
 ---|---|---|---
-`userInput`|string|optional| Value for the money form field.
-`locale`|string|optional| The PHP locale value for the store.
+`userInput`|string|required| Number to be formatted.
+`locale`|string|required| The locale to format to.
+`currency`|string|required| The 3-letter ISO 4217 currency code indicating the currency to use.
 `stepKey`|string|required| A unique identifier of the action.
 `before`|string|optional| `stepKey` of action that must be executed next.
 `after`|string|optional| `stepKey` of preceding action.
@@ -1088,6 +1073,25 @@ Attribute|Type|Use|Description
 The `ProductAttributeOptionGetter` entity must be defined in the corresponding [data `*.xml`](../data.md).
 
 This action can optionally contain one or more [requiredEntity](#requiredentity) child elements.
+
+### getOTP
+
+Generate a one-time password (OTP) based on a saved `secret` at path `magento/tfa/OTP_SHARED_SECRET` in a MFTF credential storage.
+The one-time password (OTP) is returned and accessible through the stepkey. 
+
+MFTF use TOTP from [Spomky-Labs/otphp](https://github.com/Spomky-Labs/otphp), if you want to learn more about this action.
+
+Attribute|Type|Use|Description
+---|---|---|---
+`stepKey`|string|required| A unique identifier of the action.
+`before`|string|optional| `stepKey` of action that must be executed next.
+`after`|string|optional| `stepKey` of preceding action.
+
+#### Example
+
+```xml
+<getOTP stepKey="getOtp"/>
+```
 
 ### grabAttributeFrom
 
@@ -1235,6 +1239,22 @@ Attribute|Type|Use|Description
 <!-- Store the value currently entered in <input id="name" ... >...</input>.
 To access this value, use `{$grabInputName}` in later actions. -->
 <grabValueFrom selector="input#name" stepKey="grabInputName"/>
+```
+
+### return
+
+Specifies what value is returned by an action group. The value can be then accessed in later steps using the action group stepKey. See [Action groups returning a value](./action-groups.md#return-a-value) for usage information.
+
+Attribute|Type|Use|Description
+---|---|---|---
+`value`|string|required| value returned by action group.
+`stepKey`|string|required| A unique identifier of the action.
+
+#### Example
+
+```xml
+<!-- Returns value of $grabInputName to the calling -->
+<return value="{$grabInputName}" stepKey="returnInputName"/>
 ```
 
 ### loadSessionSnapshot
@@ -1442,9 +1462,9 @@ Attribute|Type|Use|Description
 `before`|string|optional| `stepKey` of action that must be executed next.
 `after`|string|optional| `stepKey` of preceding action.
 
-### pauseExecution
+### pause
 
-See [pauseExecution docs on codeception.com](http://codeception.com/docs/modules/WebDriver#pauseExecution).
+See usage of `<pause` in [interactive-pause](../interactive-pause.md) and [pause docs on codeception.com](https://codeception.com/docs/02-GettingStarted#Interactive-Pause).
 
 Attribute|Type|Use|Description
 ---|---|---|---
@@ -1456,22 +1476,8 @@ Attribute|Type|Use|Description
 
 ```xml
 <!-- Halt test execution until the `enter` key is pressed to continue. -->
-<pauseExecution stepKey="pause"/>
+<pause stepKey="pause"/>
 ```
-
-### performOn
-
-#### NOTE: `performOn` action is DEPRECATED and will be removed in MFTF 3.0.0.
-
-See [performOn docs on codeception.com](http://codeception.com/docs/modules/WebDriver#performOn).
-
-Attribute|Type|Use|Description
----|---|---|---
-`selector`|string|optional| The selector identifying the corresponding HTML element.
-`function`|string|optional| Function or actions to be taken on the selected element.
-`stepKey`|string|required| A unique identifier of the action.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of preceding action.
 
 ### pressKey
 

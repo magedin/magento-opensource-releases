@@ -28,7 +28,7 @@ vendor/bin/mftf build:project
 vendor/bin/mftf build:project --upgrade
 ```
 
-Upgrades the existing MFTF tests after the MFTF major upgrade.
+Upgrades all installed MFTF tests after a major MFTF upgrade.
 
 ### Generate all tests
 
@@ -39,13 +39,13 @@ vendor/bin/mftf generate:tests
 ### Generate tests by test name
 
 ```bash
-vendor/bin/mftf generate:tests AdminLoginTest StorefrontPersistedCustomerLoginTest
+vendor/bin/mftf generate:tests AdminLoginSuccessfulTest StorefrontPersistedCustomerLoginTest
 ```
 
 ### Generate test by test and suite name
 
 ```bash
-vendor/bin/mftf generate:tests LoginSuite:AdminLoginTest
+vendor/bin/mftf generate:tests WYSIWYGDisabledSuite:AdminCMSPageCreatePageTest
 ```
 
 ### Generate and run the tests for a specified group
@@ -59,18 +59,18 @@ This command cleans up the previously generated tests; generates and runs tests 
 ### Generate and run particular tests
 
 ```bash
-vendor/bin/mftf run:test AdminLoginTest StorefrontPersistedCustomerLoginTest -r
+vendor/bin/mftf run:test AdminLoginSuccessfulTest StorefrontPersistedCustomerLoginTest -r
 ```
 
-This command cleans up the previously generated tests; generates and runs the `LoginAsAdminTest` and `LoginAsCustomerTest` tests.
+This command cleans up the previously generated tests; generates and runs the `AdminLoginSuccessfulTest` and `StorefrontPersistedCustomerLoginTest` tests.
 
 ### Generate and run particular test in a specific suite's context
 
 ```bash
-vendor/bin/mftf run:test LoginSuite:AdminLoginTest -r
+vendor/bin/mftf run:test WYSIWYGDisabledSuite:AdminCMSPageCreatePageTest -r
 ```
 
-This command cleans up previously generated tests; generates and run `AdminLoginTest` within the context of the `LoginSuite`.
+This command cleans up previously generated tests; generates and run `AdminCMSPageCreatePageTest` within the context of the `WYSIWYGDisabledSuite`.
 
 ### Generate and run a testManifest.txt file
 
@@ -88,14 +88,6 @@ vendor/bin/mftf run:failed
 
 This command cleans up the previously generated tests; generates and runs the tests listed in `dev/tests/acceptance/tests/_output/failed`.
 For more details about `failed`, refer to [Reporting][].
-
-### Generate documentation for action groups
-
-```bash
-vendor/bin/mftf generate:docs
-```
-
-This command generates documentation for action groups.
 
 ## Reference
 
@@ -115,7 +107,7 @@ vendor/bin/mftf build:project [--upgrade] [config_param_options]
 
 | Option            | Description                                                                                                                                                                                   |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-u`, `--upgrade` | Upgrades existing MFTF tests according to requirements of the last major release. Specifying this flag upgrades only those tests in the default location. Example: `build:project --upgrade`. |
+| `-u`, `--upgrade` | Upgrades all installed MFTF tests according to requirements of the last major release. Specifying this flag upgrades only those tests in the default location. Example: `build:project --upgrade`. |
 
 You can include options to set configuration parameter values for your environment since the project build process also [sets up the environment][setup].
 
@@ -164,7 +156,7 @@ vendor/bin/mftf generate:tests [option] [<test name>] [<test name>] [--remove]
 | `-i,--time` | Set time in minutes to determine the group size when `--config=parallel` is used. The __default value__ is `10`. Example: `generate:tests --config=parallel --time=15`|
 | `--tests` | Defines the test configuration as a JSON string.|
 | `--allow-skipped` | Allows MFTF to generate and run tests marked with `<skip>.`|
-| `--debug or --debug=[<none>]`| Performs schema validations on XML files. <br/> DEFAULT: `generate:tests` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. <br/> DEVELOPER: `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred) when test generation fails because of an invalid XML schema. This option takes extra processing time. Use it after test generation has failed once.<br/>NONE: `--debug=none` skips debugging during test generation. Added for backward compatibility, it will be removed in the next MAJOR release.<br/>|
+| `--debug` | Performs schema validations on XML files. <br/> DEFAULT: `generate:tests` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. <br/> DEVELOPER: `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred) when test generation fails because of an invalid XML schema. This option takes extra processing time. Use it after test generation has failed once.<br/>|
 | `-r,--remove`| Removes the existing generated suites and tests cleaning up the `_generated` directory before the actual run. For example, `generate:tests SampleTest --remove` cleans up the entire `_generated` directory and generates `SampleTest` only.|
 
 #### Examples of the JSON configuration
@@ -270,32 +262,6 @@ vendor/bin/mftf generate:urn-catalog [--force] [<path to the directory with misc
 vendor/bin/mftf generate:urn-catalog .idea/
 ```
 
-### `generate:docs`
-
-#### Description
-
-Generates documentation that lists all action groups available in the codebase.
-The default path is `<projectRoot>/dev/tests/docs/documentation.md`.
-
-#### Usage
-
-```bash
-vendor/bin/mftf generate:docs [--clean] [--output=/path/to/alternate/dir]
-```
-
-#### Options
-
-| Option        | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `-c, --clean` | Overwrites previously existing documentation |
-| `-o, --output` | Changes the default output directory to a user specified directory |
-
-#### Example
-
-```bash
-vendor/bin/mftf generate:docs --clean
-```
-
 ### `reset`
 
 #### Description
@@ -337,7 +303,7 @@ vendor/bin/mftf run:group [--skip-generate|--remove] [--] <group1> [<group2>]
 | --------------------- | --------------------------------------------------------------------------------------------------------- |
 | `-k, --skip-generate` | Skips generating from the source XML. Instead, the command executes previously-generated groups of tests. |
 | `-r, --remove`        | Removes previously generated suites and tests before the actual generation and run.                       |
-| `--debug or --debug=[<none>]`| Performs schema validations on XML files. `run:group` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred). `--debug=none` skips debugging during test run. Added for backward compatibility, it will be removed in the next MAJOR release.|
+| `--debug`             | Performs schema validations on XML files. `run:group` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred).|
 
 #### Examples
 
@@ -369,7 +335,7 @@ vendor/bin/mftf run:test [--skip-generate|--remove] [--] <name1> [<name2>]
 |-----------------------|-----------------------------------------------------------------------------------------------------------|
 | `-k, --skip-generate` | Skips generating from the source XML. Instead, the command executes previously-generated groups of tests. |
 | `-r, --remove`        | Remove previously generated suites and tests.                                                             |
-| `--debug or --debug=[<none>]`| Performs schema validations on XML files. `run:test` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred). `--debug=none` skips debugging during test run. Added for backward compatibility, it will be removed in the next MAJOR release.
+| `--debug`             | Performs schema validations on XML files. `run:test` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred).|
 
 #### Examples
 
@@ -396,7 +362,7 @@ vendor/bin/mftf run:manifest path/to/your/testManifest.txt
 Each line should contain either: one test path or one group (-g) reference.
 
 ```
-tests/functional/tests/MFTF/_generated/default/AdminLoginTestCest.php
+tests/functional/tests/MFTF/_generated/default/AdminLoginSuccessfulTestCest.php
 -g PaypalTestSuite
 tests/functional/tests/MFTF/_generated/default/SomeOtherTestCest.php
 tests/functional/tests/MFTF/_generated/default/ThirdTestCest.php
@@ -419,7 +385,7 @@ vendor/bin/mftf run:failed
 
 | Option                | Description                                                                                               |
 |-----------------------|-----------------------------------------------------------------------------------------------------------|
-| `--debug or --debug=[<none>]`| Performs schema validations on XML files. `run:failed` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred). Use it after test run has failed once. `--debug=none` skips debugging during test run. Added for backward compatibility, it will be removed in the next MAJOR release.|
+| `--debug` | Performs schema validations on XML files. `run:failed` implicitly performs schema validation on merged files. It does not indicate the file name where the error is encountered. `--debug` performs per-file validation and returns additional debug information (such as the filename where an error occurred). Use it after test run has failed once.|
 
 #### Examples
 
@@ -465,7 +431,13 @@ The example parameters are taken from the `etc/config/.env.example` file.
 ### `static-checks`
 
 Runs all or specific MFTF static-checks on the test codebase that MFTF is currently attached to. 
-If no script name argument is specified, all existing static check scripts will run.
+Behavior for determining what tests to run is as follows:
+
+*  If test names are specified, only those tests are run.
+*  If no test names are specified, tests are run according to `staticRuleset.json`.
+*  If no `staticRuleset.json` is found, all tests are run.
+
+Static checks errors are written to *.txt files under TEST_BP/tests/_output/static-results/
 
 #### Usage
 
@@ -473,6 +445,12 @@ If no script name argument is specified, all existing static check scripts will 
 vendor/bin/mftf static-checks [<names>]...
 ```
 
+#### Options
+
+| Option                | Description                                                                                               |
+|-----------------------|-----------------------------------------------------------------------------------------------------------|
+| `-p, --path` | Path to a MFTF test module to run "deprecatedEntityUsage" and "pauseActionUsage" static check scripts. Option is ignored by other static check scripts.
+                
 #### Examples
 
 To check what existing static check scripts are available
@@ -492,32 +470,91 @@ To run specific static check scripts
 ```bash
 vendor/bin/mftf static-checks testDependencies
 ```
+
 ```bash
 vendor/bin/mftf static-checks actionGroupArguments
 ```
+
+```bash
+vendor/bin/mftf static-checks deprecatedEntityUsage
+```
+
+```bash
+vendor/bin/mftf static-checks pauseActionUsage
+```
+
+```bash
+vendor/bin/mftf static-checks annotations
+```
+
+```bash
+vendor/bin/mftf static-checks deprecatedEntityUsage -p path/to/mftf/test/module
+```
+
+```bash
+vendor/bin/mftf static-checks pauseActionUsage -p path/to/mftf/test/module
+```
+
 ```bash
 vendor/bin/mftf static-checks testDependencies actionGroupArguments
 ```
 
 #### Existing static checks
 
-* Test Dependency: Checks that test dependencies do not violate Magento module's composer dependencies.
-* Action Group Unused Arguments: Checks that action groups do not have unused arguments.
-    
+| Argument              | Description                                                                                               |
+|-----------------------|-----------------------------------------------------------------------------------------------------------|
+|`testDependencies`     | Checks that test dependencies do not violate Magento module's composer dependencies.|
+|`actionGroupArguments` | Checks that action groups do not have unused arguments.|
+|`deprecatedEntityUsage`| Checks that deprecated test entities are not being referenced.|
+|`annotations`| Checks various details of test annotations, such as missing annotations or duplicate annotations.|
+|`pauseUsage`| Checks that pause action is not used in action groups, tests or suites.|
+         
+#### Defining ruleset
+
+The `static-checks` command will look for a `staticRuleset.json` file under either:
+
+*  `dev/tests/acceptance/staticRuleset.json`, if embedded with Magento2
+*  `dev/staticRuleset.json`, if standalone
+
+This file works as the default configuration to easily allow for the integration of `static-checks` in a CI environment.
+Currently, the ruleset only defines the tests to run. Here is an example of the expected format:
+
+```json
+{
+  "tests": [
+    "actionGroupArguments",
+    "anotherTest"
+  ]
+}
+```
+
 ### `upgrade:tests`
 
-Applies all the MFTF major version upgrade scripts to test components in the given path (`test.xml`, `data.xml`, etc).
+When the path argument is specified, this `upgrade` command applies all the major version MFTF upgrade scripts to a `Test Module` in the given path.
+Otherwise, it will apply all the major version MFTF upgrade scripts to all installed test components.
+
+`Test Module` should have the directory structure of ActionGroup, Data, Metadata, Page, Section, Test, and Suite.
+
+**Note**:
+
+The upgrade scripts are meant to be used for Test Modules under source code control. If you have old versions of test modules under vendor, those test modules will get upgraded
 
 #### Usage
 
 ```bash
-vendor/bin/mftf upgrade:tests <path>
+vendor/bin/mftf upgrade:tests [<path>]
 ```
 
-`<path>` is the path that contains MFTF test components that need to be upgraded.
+`<path>` is the path to a MFTF `Test Module` that needs to be upgraded.
 The command searches recursively for any `*.xml` files to upgrade.
 
 #### Examples
+
+To upgrade all installed MFTF tests:
+
+```bash
+vendor/bin/mftf upgrade:tests
+```
 
 To upgrade all test components inside modules in the `dev/tests/acceptance/tests/` directory:
 
@@ -530,6 +567,47 @@ To upgrade all test components inside the `Catalog` module:
 ```bash
 vendor/bin/mftf upgrade:tests /Users/user/magento2/app/code/Magento/Catalog/Test/Mftf/
 ```
+
+### `codecept:run`
+
+A MFTF wrapper command that invokes `vendor/bin/codecept run`. This command runs tests in functional suite. Tests must be generated before using this command.
+
+#### Usage
+
+See the [Run Command](https://codeception.com/docs/reference/Commands#Run).
+
+```bash
+vendor/bin/mftf codecept:run [<suite|test>] --[<option(s)>]
+```
+
+#### Examples
+
+```bash
+# Run all tests in functional suite
+vendor/bin/mftf codecept:run functional
+```
+
+```bash
+# Run all tests in functional suite with options
+vendor/bin/mftf codecept:run functional --verbose --steps --debug
+```
+
+```bash
+# Run one test
+vendor/bin/mftf codecept:run functional Magento/_generated/default/AdminCreateCmsPageTestCest.php --debug
+```
+
+```bash
+# Run all tests in default group
+vendor/bin/mftf codecept:run functional --verbose --steps -g default
+```
+
+<div class="bs-callout-warning">
+<p>
+Note: You may want to limit the usage of this Codeception command with arguments and options for "acceptance" only, since it is what's supported by MFTF. 
+When using this command, you should change "acceptance" to "functional" when referring to Codeception documentation.
+</p>
+</div>
 
 <!-- LINK DEFINITIONS -->
 

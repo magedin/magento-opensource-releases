@@ -6,8 +6,8 @@ You can form suites using separate tests, groups, and modules.
 
 Each suite must be defined in the `<VendorName>/<ModuleName>/Test/Mftf/Suite` directory.
 
-The tests for each suite are generated in a separate directory under `<magento 2 root>/dev/tests/acceptance/tests/functional/Magento/FunctionalTest/_generated/`.
-All tests that are not within a suite are generated in the _default_ suite at `.../Magento/FunctionalTest/_generated/default/`.
+The tests for each suite are generated in a separate directory under `<magento 2 root>/dev/tests/acceptance/tests/functional/Magento/_generated/`.
+All tests that are not within a suite are generated in the _default_ suite at `<magento 2 root>/dev/tests/acceptance/tests/functional/Magento/_generated/default`.
 
 <div class="bs-callout bs-callout-info">
  If a test is generated into at least one custom suite, it will not appear in the _default_ suite.
@@ -46,12 +46,13 @@ The format of a suite:
     -  must not match any existing group value.
   For example, the suite `<suite name="ExampleTest">` will fail during test run if any test contains in annotations `<group value="ExampleTest">`.
     -  must not be `default` or `skip`. Tests that are not in any suite are generated under the `default` suite.
-       The suite name `skip` is synonymous to including a test in the `<group value="skip"/>`, which will be deprecated in MFTF 3.0.0.
+       The suite name `skip` is synonymous to including a test in the `<group value="skip"/>`.
     -  can contain letters, numbers, and underscores.
     -  should be upper camel case.
     
 -  A suite must contain at least one `<include>`, or one `<exclude>`, or both.
 -  Using `<before>` in a suite, you must add the corresponding `<after>` to restore the initial state of your testing instance.
+-  One `<suite>` tag is allowed per suite XML file.
 
 ## Conditions
 
@@ -60,7 +61,7 @@ The code lives in one place and executes once per suite.
 
 -  Set up preconditions and postconditions using [actions] in [`<before>`] and [`<after>`] correspondingly, just similar to use in a [test].
 -  Clean up after suites just like after tests.
-  The MFTF enforces the presence of both `<before>` and `<after>` if either is present.
+MFTF enforces the presence of both `<before>` and `<after>` if either is present.
 
 ## Test writing
 
@@ -141,7 +142,7 @@ This suite includes all tests that contain the `<group value="WYSIWYG"/>` annota
 ### Execute Magento CLI commands in suite conditions
 
 ```xml
-<suites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dev/tests/acceptance/vendor/magento/magento2-functional-testing-framework/src/Magento/FunctionalTestingFramework/Suite/etc/suiteSchema.xsd">
+<suites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:mftf:Suite/etc/suiteSchema.xsd">
     <suite name="Cache">
         <before>
             <magentoCLI stepKey="disableCache" command="cache:disable"/>
@@ -169,7 +170,7 @@ The suite includes a specific test `SomeCacheRelatedTest` and every `<test>` tha
 ### Change Magento configurations in suite conditions
 
 ```xml
-<suites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dev/tests/acceptance/vendor/magento/magento2-functional-testing-framework/src/Magento/FunctionalTestingFramework/Suite/etc/suiteSchema.xsd">
+<suites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:mftf:Suite/etc/suiteSchema.xsd">
     <suite name="PaypalConfiguration">
         <before>
             <createData entity="SamplePaypalConfig" stepKey="createSamplePaypalConfig"/>

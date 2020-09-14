@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.15.0 - 2020-07-14
+
+### Added
+
+- [#69](https://github.com/laminas/laminas-form/pull/69) adds support for the "minlength" attribute in the `FormTextarea` view helper.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.14.6 - 2020-06-22
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#68](https://github.com/laminas/laminas-form/pull/68) updates the `FormHidden` view helper to allow `autocomplete` as a valid attribute when rendering the element.
+
 ## 2.14.5 - 2020-03-29
 
 ### Added

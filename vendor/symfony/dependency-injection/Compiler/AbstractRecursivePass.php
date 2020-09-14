@@ -68,11 +68,10 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
      * Processes a value found in a definition tree.
      *
      * @param mixed $value
-     * @param bool  $isRoot
      *
      * @return mixed The processed value
      */
-    protected function processValue($value, $isRoot = false)
+    protected function processValue($value, bool $isRoot = false)
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
@@ -105,13 +104,11 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     }
 
     /**
-     * @param bool $required
-     *
      * @return \ReflectionFunctionAbstract|null
      *
      * @throws RuntimeException
      */
-    protected function getConstructor(Definition $definition, $required)
+    protected function getConstructor(Definition $definition, bool $required)
     {
         if ($definition->isSynthetic()) {
             return null;
@@ -153,27 +150,25 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
                 throw new RuntimeException(sprintf('Invalid service "%s": class "%s" does not exist.', $this->currentId, $class));
             }
         } catch (\ReflectionException $e) {
-            throw new RuntimeException(sprintf('Invalid service "%s": %s.', $this->currentId, lcfirst(rtrim($e->getMessage(), '.'))));
+            throw new RuntimeException(sprintf('Invalid service "%s": ', $this->currentId).lcfirst($e->getMessage()));
         }
         if (!$r = $r->getConstructor()) {
             if ($required) {
                 throw new RuntimeException(sprintf('Invalid service "%s": class%s has no constructor.', $this->currentId, sprintf($class !== $this->currentId ? ' "%s"' : '', $class)));
             }
         } elseif (!$r->isPublic()) {
-            throw new RuntimeException(sprintf('Invalid service "%s": %s must be public.', $this->currentId, sprintf($class !== $this->currentId ? 'constructor of class "%s"' : 'its constructor', $class)));
+            throw new RuntimeException(sprintf('Invalid service "%s": ', $this->currentId).sprintf($class !== $this->currentId ? 'constructor of class "%s"' : 'its constructor', $class).' must be public.');
         }
 
         return $r;
     }
 
     /**
-     * @param string $method
-     *
      * @throws RuntimeException
      *
      * @return \ReflectionFunctionAbstract
      */
-    protected function getReflectionMethod(Definition $definition, $method)
+    protected function getReflectionMethod(Definition $definition, string $method)
     {
         if ('__construct' === $method) {
             return $this->getConstructor($definition, true);
@@ -214,7 +209,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
                     $arg = $this->processValue(new Reference($id));
                     $this->inExpression = false;
                     if (!$arg instanceof Reference) {
-                        throw new RuntimeException(sprintf('"%s::processValue()" must return a Reference when processing an expression, "%s" returned for service("%s").', static::class, \is_object($arg) ? \get_class($arg) : \gettype($arg), $id));
+                        throw new RuntimeException(sprintf('"%s::processValue()" must return a Reference when processing an expression, "%s" returned for service("%s").', static::class, get_debug_type($arg), $id));
                     }
                     $arg = sprintf('"%s"', $arg);
                 }

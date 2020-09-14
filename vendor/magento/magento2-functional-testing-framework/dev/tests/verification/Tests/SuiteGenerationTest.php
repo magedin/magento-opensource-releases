@@ -39,7 +39,7 @@ class SuiteGenerationTest extends MftfTestCase
     /**
      * Set up config.yml for testing
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // destroy _generated if it exists
         if (file_exists(self::GENERATE_RESULT_DIR)) {
@@ -47,7 +47,7 @@ class SuiteGenerationTest extends MftfTestCase
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         // copy config yml file to test dir
         $fileSystem = new \Symfony\Component\Filesystem\Filesystem();
@@ -118,10 +118,10 @@ class SuiteGenerationTest extends MftfTestCase
         $groupName = 'functionalSuite1';
 
         $expectedGroups = [
-            'functionalSuite1_0',
-            'functionalSuite1_1',
-            'functionalSuite1_2',
-            'functionalSuite1_3'
+            'functionalSuite1_0_G',
+            'functionalSuite1_1_G',
+            'functionalSuite1_2_G',
+            'functionalSuite1_3_G'
         ];
 
         $expectedContents = [
@@ -389,10 +389,69 @@ class SuiteGenerationTest extends MftfTestCase
     }
 
     /**
+     * Test suite generation with actions from different modules
+     */
+    public function testSuiteGenerationActionsInDifferentModules()
+    {
+        $groupName = 'ActionsInDifferentModulesSuite';
+
+        $expectedContents = [
+            'IncludeActionsInDifferentModulesTestCest.php'
+        ];
+
+        // Generate the Suite
+        SuiteGenerator::getInstance()->generateSuite($groupName);
+
+        // Validate log message and add group name for later deletion
+        TestLoggingUtil::getInstance()->validateMockLogStatement(
+            'info',
+            "suite generated",
+            ['suite' => $groupName, 'relative_path' => "_generated" . DIRECTORY_SEPARATOR . $groupName]
+        );
+        self::$TEST_GROUPS[] = $groupName;
+
+        // Validate Yaml file updated
+        $yml = Yaml::parse(file_get_contents(self::CONFIG_YML_FILE));
+        $this->assertArrayHasKey($groupName, $yml['groups']);
+
+        $suiteResultBaseDir = self::GENERATE_RESULT_DIR .
+            DIRECTORY_SEPARATOR .
+            $groupName .
+            DIRECTORY_SEPARATOR;
+
+        // Validate tests have been generated
+        $dirContents = array_diff(scandir($suiteResultBaseDir), ['..', '.']);
+
+        foreach ($expectedContents as $expectedFile) {
+            $this->assertTrue(in_array($expectedFile, $dirContents));
+        }
+
+        //assert group file created and contains correct contents
+        $groupFile = PROJECT_ROOT .
+            DIRECTORY_SEPARATOR .
+            "src" .
+            DIRECTORY_SEPARATOR .
+            "Magento" .
+            DIRECTORY_SEPARATOR .
+            "FunctionalTestingFramework" .
+            DIRECTORY_SEPARATOR .
+            "Group" .
+            DIRECTORY_SEPARATOR .
+            $groupName .
+            ".php";
+
+        $this->assertTrue(file_exists($groupFile));
+        $this->assertFileEquals(
+            self::RESOURCES_PATH . DIRECTORY_SEPARATOR . $groupName . ".txt",
+            $groupFile
+        );
+    }
+
+    /**
      * revert any changes made to config.yml
      * remove _generated directory
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         DirSetupUtil::rmdirRecursive(self::GENERATE_RESULT_DIR);
 
@@ -406,7 +465,7 @@ class SuiteGenerationTest extends MftfTestCase
     /**
      * Remove yml if created during tests and did not exist before
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         TestLoggingUtil::getInstance()->clearMockLoggingUtil();
     }

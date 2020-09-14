@@ -37,15 +37,14 @@ We recommend to keep Action Groups having single responsibility, for example `Ad
 
 ## Contribute
 
-Althought the Magento Core team and Contributors join forces to cover most of the features with tests, it is impossible to have this done quickly.
+Although the Magento Core team and Contributors join forces to cover most of the features with tests, it is impossible to have this done quickly.
 If you've covered Magento Core feature with Functional Tests - you are more than welcome to contribute.
-
-You can also help with MFTF Test Migration to get the experience and valuable feedback from other community members and maintainers.
 
 ## Action group
 
 1. [Action group] names should be sufficiently descriptive to inform a test writer of what the action group does and when it should be used. Add additional explanation in annotations if needed.
-1. Provide default values for the arguments that apply to your most common case scenarios.
+2. Provide default values for the arguments that apply to your most common case scenarios.
+3. One `<actionGroup>` tag is allowed per action group XML file.
 
 ## `actionGroups` vs `extends`
 
@@ -107,7 +106,7 @@ Example: _StorefrontCreateCustomerTest.xml_.
 
 #### Action Group file name
 
-Format: {_Admin_ or _Storefront_}{Action Group Summary}ActionGroup.xml`, where Action Group Summary describes with a few words what we can expect from it.
+Format: {_Admin_ or _Storefront_}{Action Group Summary}ActionGroup.xml`, where Action Group Summary is a short description of what the action group does.
 
 Example: _AdminCreateStoreActionGroup.xml_ 
 
@@ -150,7 +149,8 @@ Use a lower case first letter for:
 
 ## Page object
 
-Use [parameterized selectors] for constructing a selector when test specific or runtime generated information is needed.
+1. One `<page>` tag is allowed per page XML file.
+2. Use [parameterized selectors] for constructing a selector when test-specific or runtime-generated information is needed.
 Do not use them for static elements.
 
 <span class="color:red">
@@ -188,6 +188,7 @@ Define these three elements and reference them by name in the tests.
      It helps to inform the reader of what you are testing and to yield a more descriptive Allure report.
    *  Explain in comments unclear or tricky test steps.
 1. Refer to [sections] instead of writing selectors.
+1. One `<test>` tag is allowed per test XML file.
 
 ## Test step merging order
 
@@ -214,4 +215,3 @@ Since the configurable product module could be disabled, this approach is more r
 [merging]: merging.html
 [parameterized selectors]: section/parameterized-selectors.html
 [sections]: section.html
-[MFTF Test Migration]: https://github.com/magento/magento-functional-tests-migration

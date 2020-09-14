@@ -19,12 +19,6 @@
     "config": {
         "sort-packages": true
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.11.x-dev",
-            "dev-develop": "2.12.x-dev"
-        }
-    },
     "require": {
         "php": "^5.6 || ^7.0",
         "laminas/laminas-loader": "^2.5.1",
@@ -62,6 +56,6 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
-        "zendframework/zend-http": "self.version"
+        "zendframework/zend-http": "^2.11.2"
     }
 }

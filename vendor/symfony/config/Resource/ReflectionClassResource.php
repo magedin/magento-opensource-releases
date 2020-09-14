@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Config\Resource;
 
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface as LegacyServiceSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
@@ -19,7 +18,7 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  *
- * @final since Symfony 4.3
+ * @final
  */
 class ReflectionClassResource implements SelfCheckingResourceInterface
 {
@@ -36,7 +35,10 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         $this->excludedVendors = $excludedVendors;
     }
 
-    public function isFresh($timestamp)
+    /**
+     * {@inheritdoc}
+     */
+    public function isFresh(int $timestamp): bool
     {
         if (null === $this->hash) {
             $this->hash = $this->computeHash();
@@ -56,7 +58,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         return true;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'reflection.'.$this->className;
     }
@@ -81,7 +83,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         }
         do {
             $file = $class->getFileName();
-            if (false !== $file && file_exists($file)) {
+            if (false !== $file && is_file($file)) {
                 foreach ($this->excludedVendors as $vendor) {
                     if (0 === strpos($file, $vendor) && false !== strpbrk(substr($file, \strlen($vendor), 1), '/'.\DIRECTORY_SEPARATOR)) {
                         $file = false;
@@ -135,7 +137,11 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
             $defaults = $class->getDefaultProperties();
 
             foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED) as $p) {
-                yield $p->getDocComment().$p;
+                yield $p->getDocComment();
+                yield $p->isDefault() ? '<default>' : '';
+                yield $p->isPublic() ? 'public' : 'protected';
+                yield $p->isStatic() ? 'static' : '';
+                yield '$'.$p->name;
                 yield print_r(isset($defaults[$p->name]) && !\is_object($defaults[$p->name]) ? $defaults[$p->name] : null, true);
             }
         }
@@ -163,6 +169,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
             if (!$parametersWithUndefinedConstants) {
                 yield preg_replace('/^  @@.*/m', '', $m);
             } else {
+                $t = $m->getReturnType();
                 $stack = [
                     $m->getDocComment(),
                     $m->getName(),
@@ -173,15 +180,16 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
                     $m->isPrivate(),
                     $m->isProtected(),
                     $m->returnsReference(),
-                    $m->hasReturnType() ? $m->getReturnType()->getName() : '',
+                    $t instanceof \ReflectionNamedType ? ((string) $t->allowsNull()).$t->getName() : (string) $t,
                 ];
 
                 foreach ($m->getParameters() as $p) {
                     if (!isset($parametersWithUndefinedConstants[$p->name])) {
                         $stack[] = (string) $p;
                     } else {
+                        $t = $p->getType();
                         $stack[] = $p->isOptional();
-                        $stack[] = $p->hasType() ? $p->getType()->getName() : '';
+                        $stack[] = $t instanceof \ReflectionNamedType ? ((string) $t->allowsNull()).$t->getName() : (string) $t;
                         $stack[] = $p->isPassedByReference();
                         $stack[] = $p->isVariadic();
                         $stack[] = $p->getName();
@@ -210,10 +218,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
             }
         }
 
-        if (interface_exists(LegacyServiceSubscriberInterface::class, false) && $class->isSubclassOf(LegacyServiceSubscriberInterface::class)) {
-            yield LegacyServiceSubscriberInterface::class;
-            yield print_r([$class->name, 'getSubscribedServices'](), true);
-        } elseif (interface_exists(ServiceSubscriberInterface::class, false) && $class->isSubclassOf(ServiceSubscriberInterface::class)) {
+        if (interface_exists(ServiceSubscriberInterface::class, false) && $class->isSubclassOf(ServiceSubscriberInterface::class)) {
             yield ServiceSubscriberInterface::class;
             yield print_r($class->name::getSubscribedServices(), true);
         }
