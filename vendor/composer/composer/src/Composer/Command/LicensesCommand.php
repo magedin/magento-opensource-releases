@@ -13,11 +13,13 @@
 namespace Composer\Command;
 
 use Composer\Json\JsonFile;
+use Composer\Package\Version\VersionParser;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Package\PackageInterface;
 use Composer\Repository\RepositoryInterface;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Benoît Merlet <benoit.merlet@gmail.com>
  */
-class LicensesCommand extends BaseCommand
+class LicensesCommand extends Command
 {
     protected function configure()
     {
@@ -55,6 +57,8 @@ EOT
         $root = $composer->getPackage();
         $repo = $composer->getRepositoryManager()->getLocalRepository();
 
+        $versionParser = new VersionParser;
+
         if ($input->getOption('no-dev')) {
             $packages = $this->filterRequiredPackages($repo, $root);
         } else {
@@ -62,15 +66,14 @@ EOT
         }
 
         ksort($packages);
-        $io = $this->getIO();
 
         switch ($format = $input->getOption('format')) {
             case 'text':
-                $io->write('Name: <comment>'.$root->getPrettyName().'</comment>');
-                $io->write('Version: <comment>'.$root->getFullPrettyVersion().'</comment>');
-                $io->write('Licenses: <comment>'.(implode(', ', $root->getLicense()) ?: 'none').'</comment>');
-                $io->write('Dependencies:');
-                $io->write('');
+                $this->getIO()->write('Name: <comment>'.$root->getPrettyName().'</comment>');
+                $this->getIO()->write('Version: <comment>'.$versionParser->formatVersion($root).'</comment>');
+                $this->getIO()->write('Licenses: <comment>'.(implode(', ', $root->getLicense()) ?: 'none').'</comment>');
+                $this->getIO()->write('Dependencies:');
+                $this->getIO()->write('');
 
                 $table = new Table($output);
                 $table->setStyle('compact');
@@ -80,7 +83,7 @@ EOT
                 foreach ($packages as $package) {
                     $table->addRow(array(
                         $package->getPrettyName(),
-                        $package->getFullPrettyVersion(),
+                        $versionParser->formatVersion($package),
                         implode(', ', $package->getLicense()) ?: 'none',
                     ));
                 }
@@ -88,17 +91,16 @@ EOT
                 break;
 
             case 'json':
-                $dependencies = array();
                 foreach ($packages as $package) {
                     $dependencies[$package->getPrettyName()] = array(
-                        'version' => $package->getFullPrettyVersion(),
+                        'version' => $versionParser->formatVersion($package),
                         'license' => $package->getLicense(),
                     );
                 }
 
-                $io->write(JsonFile::encode(array(
+                $this->getIO()->write(JsonFile::encode(array(
                     'name'         => $root->getPrettyName(),
-                    'version'      => $root->getFullPrettyVersion(),
+                    'version'      => $versionParser->formatVersion($root),
                     'license'      => $root->getLicense(),
                     'dependencies' => $dependencies,
                 )));

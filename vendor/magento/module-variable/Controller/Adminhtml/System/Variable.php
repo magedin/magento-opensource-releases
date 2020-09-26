@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Variable\Controller\Adminhtml\System;
@@ -14,13 +14,6 @@ use Magento\Backend\App\Action;
  */
 abstract class Variable extends Action
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Variable::variable';
-
     /**
      * Core registry
      *
@@ -102,5 +95,15 @@ abstract class Variable extends Action
         }
         $this->_coreRegistry->register('current_variable', $variable);
         return $variable;
+    }
+
+    /**
+     * Check current user permission
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Variable::variable');
     }
 }

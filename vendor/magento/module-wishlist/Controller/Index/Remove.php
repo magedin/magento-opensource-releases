@@ -1,40 +1,30 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Wishlist\Controller\Index;
 
 use Magento\Framework\App\Action;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Wishlist\Controller\WishlistProviderInterface;
 
 class Remove extends \Magento\Wishlist\Controller\AbstractIndex
 {
     /**
-     * @var WishlistProviderInterface
+     * @var \Magento\Wishlist\Controller\WishlistProviderInterface
      */
     protected $wishlistProvider;
 
     /**
-     * @var Validator
-     */
-    protected $formKeyValidator;
-
-    /**
      * @param Action\Context $context
-     * @param WishlistProviderInterface $wishlistProvider
-     * @param Validator $formKeyValidator
+     * @param \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider
      */
     public function __construct(
         Action\Context $context,
-        WishlistProviderInterface $wishlistProvider,
-        Validator $formKeyValidator
+        \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider
     ) {
         $this->wishlistProvider = $wishlistProvider;
-        $this->formKeyValidator = $formKeyValidator;
         parent::__construct($context);
     }
 
@@ -46,12 +36,6 @@ class Remove extends \Magento\Wishlist\Controller\AbstractIndex
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        if (!$this->formKeyValidator->validate($this->getRequest())) {
-            return $resultRedirect->setPath('*/*/');
-        }
-
         $id = (int)$this->getRequest()->getParam('item');
         $item = $this->_objectManager->create('Magento\Wishlist\Model\Item')->load($id);
         if (!$item->getId()) {
@@ -84,6 +68,8 @@ class Remove extends \Magento\Wishlist\Controller\AbstractIndex
         } else {
             $redirectUrl = $this->_redirect->getRedirectUrl($this->_url->getUrl('*/*'));
         }
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($redirectUrl);
         return $resultRedirect;
     }

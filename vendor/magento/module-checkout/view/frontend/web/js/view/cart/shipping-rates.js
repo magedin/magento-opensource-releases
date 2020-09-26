@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(
@@ -24,7 +24,6 @@ define(
         checkoutData
     ) {
         'use strict';
-
         return Component.extend({
             defaults: {
                 template: 'Magento_Checkout/cart/shipping-rates'
@@ -87,7 +86,6 @@ define(
             selectShippingMethod: function (methodData) {
                 selectShippingMethodAction(methodData);
                 checkoutData.setSelectedShippingRate(methodData['carrier_code'] + '_' + methodData['method_code']);
-
                 return true;
             }
         });

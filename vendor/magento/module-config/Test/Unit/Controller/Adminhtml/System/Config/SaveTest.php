@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Config\Test\Unit\Controller\Adminhtml\System\Config;
@@ -124,12 +124,6 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $this->_cacheMock = $this->getMock('Magento\Framework\App\Cache\Type\Layout', [], [], '', false);
 
         $configStructureMock->expects($this->any())->method('getElement')->willReturn($this->_sectionMock);
-        $configStructureMock->expects($this->any())->method('getSectionList')->willReturn(
-            [
-                'some_key_0' => '0',
-                'some_key_1' => '1'
-            ]
-        );
 
         $helperMock->expects($this->any())->method('getUrl')->willReturnArgument(0);
 
@@ -225,19 +219,12 @@ class SaveTest extends \PHPUnit_Framework_TestCase
     public function testIndexActionSaveState()
     {
         $this->_sectionCheckerMock->expects($this->any())->method('isSectionAllowed')->will($this->returnValue(false));
-        $inputData = [
-            'some_key'   => 'some_value',
-            'some_key_0' => '0',
-            'some_key_1' => 'some_value_1',
-        ];
-        $extraData = [
-            'some_key_0' => '0',
-            'some_key_1' => '1',
-        ];
+        $data = ['some_key' => 'some_value'];
 
         $userMock = $this->getMock('Magento\User\Model\User', [], [], '', false, false);
-        $userMock->expects($this->once())->method('saveExtra')->with(['configState' => $extraData]);
+        $userMock->expects($this->once())->method('saveExtra')->with(['configState' => $data]);
         $this->_authMock->expects($this->once())->method('getUser')->will($this->returnValue($userMock));
+
         $this->_requestMock->expects(
             $this->any()
         )->method(
@@ -245,9 +232,8 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         )->with(
             'config_state'
         )->will(
-            $this->returnValue($inputData)
+            $this->returnValue($data)
         );
-
         $this->assertEquals($this->resultRedirect, $this->_controller->execute());
     }
 

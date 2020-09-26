@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -112,13 +112,13 @@ class LinksTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 'dbAttributes' => [],
-                'returnedAttributes' => null
+                'returnedAttibutes' => null
             ],
             [
                 'dbAttributes' => [
                     ['code' => 2, 'id' => 6, 'type' => 'sometable']
                 ],
-                'returnedAttributes' => [
+                'returnedAttibutes' => [
                     2 => ['id' => 6, 'table' => 'table_name']
                 ]
             ],
@@ -127,7 +127,7 @@ class LinksTest extends \PHPUnit_Framework_TestCase
                     ['code' => 8, 'id' => 11, 'type' => 'sometable1'],
                     ['code' => 4, 'id' => 7, 'type' => 'sometable2']
                 ],
-                'returnedAttributes' => [
+                'returnedAttibutes' => [
                     4 => ['id' => 7, 'table' => 'table_name'],
                     8 => ['id' => 11, 'table' => 'table_name']
                 ]
@@ -151,15 +151,15 @@ class LinksTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $dbAttributes
-     * @param array $returnedAttributes
+     * @param array $returnedAttibutes
      *
      * @dataProvider attributesDataProvider
      */
-    public function testGetAttributes($dbAttributes, $returnedAttributes)
+    public function testGetAttributes($dbAttributes, $returnedAttibutes)
     {
         $this->processAttributeGetter($dbAttributes);
         $actualAttributes = $this->links->getAttributes();
-        $this->assertEquals($returnedAttributes, $actualAttributes);
+        $this->assertEquals($returnedAttibutes, $actualAttributes);
     }
 
     protected function processBehaviorGetter($behavior)

@@ -14,7 +14,6 @@ namespace Composer\Downloader;
 
 use Composer\Package\PackageInterface;
 use Composer\Util\Svn as SvnUtil;
-use Composer\Repository\VcsRepository;
 
 /**
  * @author Ben Bieker <mail@ben-bieker.de>
@@ -22,8 +21,6 @@ use Composer\Repository\VcsRepository;
  */
 class SvnDownloader extends VcsDownloader
 {
-    protected $cacheCredentials = true;
-
     /**
      * {@inheritDoc}
      */
@@ -31,14 +28,6 @@ class SvnDownloader extends VcsDownloader
     {
         SvnUtil::cleanEnv();
         $ref = $package->getSourceReference();
-
-        $repo = $package->getRepository();
-        if ($repo instanceof VcsRepository) {
-            $repoConfig = $repo->getRepoConfig();
-            if (array_key_exists('svn-cache-credentials', $repoConfig)) {
-                $this->cacheCredentials = (bool) $repoConfig['svn-cache-credentials'];
-            }
-        }
 
         $this->io->writeError("    Checking out ".$package->getSourceReference());
         $this->execute($url, "svn co", sprintf("%s/%s", $url, $ref), null, $path);
@@ -52,8 +41,8 @@ class SvnDownloader extends VcsDownloader
         SvnUtil::cleanEnv();
         $ref = $target->getSourceReference();
 
-        if (!$this->hasMetadataRepository($path)) {
-            throw new \RuntimeException('The .svn directory is missing from '.$path.', see https://getcomposer.org/commit-deps for more information');
+        if (!is_dir($path.'/.svn')) {
+            throw new \RuntimeException('The .svn directory is missing from '.$path.', see http://getcomposer.org/commit-deps for more information');
         }
 
         $flags = "";
@@ -72,7 +61,7 @@ class SvnDownloader extends VcsDownloader
      */
     public function getLocalChanges(PackageInterface $package, $path)
     {
-        if (!$this->hasMetadataRepository($path)) {
+        if (!is_dir($path.'/.svn')) {
             return;
         }
 
@@ -96,7 +85,6 @@ class SvnDownloader extends VcsDownloader
     protected function execute($baseUrl, $command, $url, $cwd = null, $path = null)
     {
         $util = new SvnUtil($baseUrl, $this->io, $this->config);
-        $util->setCacheCredentials($this->cacheCredentials);
         try {
             return $util->execute($command, $url, $cwd, $path, $this->io->isVerbose());
         } catch (\RuntimeException $e) {
@@ -163,7 +151,7 @@ class SvnDownloader extends VcsDownloader
      */
     protected function getCommitLogs($fromReference, $toReference, $path)
     {
-        if (preg_match('{.*@(\d+)$}', $fromReference) && preg_match('{.*@(\d+)$}', $toReference)) {
+        if (preg_match('{.*@(\d+)$}', $fromReference) && preg_match('{.*@(\d+)$}', $toReference) ) {
             // strip paths from references and only keep the actual revision
             $fromRevision = preg_replace('{.*@(\d+)$}', '$1', $fromReference);
             $toRevision = preg_replace('{.*@(\d+)$}', '$1', $toReference);
@@ -187,13 +175,5 @@ class SvnDownloader extends VcsDownloader
         if (0 !== $this->process->execute('svn revert -R .', $output, $path)) {
             throw new \RuntimeException("Could not reset changes\n\n:".$this->process->getErrorOutput());
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function hasMetadataRepository($path)
-    {
-        return is_dir($path.'/.svn');
     }
 }

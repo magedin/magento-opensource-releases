@@ -1,10 +1,20 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 /** @var \Magento\Framework\View\Element\Template $block */
 ?>
 
-<?php /* @escapeVerified */ echo __('%1 has been added to your Wish List.', $block->escapeHtml($block->getData('product_name'))) ?> <?php /* @escapeNotVerified */ echo __('Click <a href="%1">here</a> to continue shopping.', $block->escapeUrl($block->getData('referer')));
+<?php
+echo $block
+    ->escapeHtml(
+        $block->getData('product_name')
+    )
+?> has been added to your Wish List. Click <a href="<?php
+echo $block
+    ->escapeUrl(
+        $block->getData('referer')
+    )
+?>">here</a> to continue shopping.

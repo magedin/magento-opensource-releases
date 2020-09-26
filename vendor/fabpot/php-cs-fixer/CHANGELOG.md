@@ -3,48 +3,16 @@ CHANGELOG for PHP CS Fixer
 
 This file contains changelogs for stable releases only.
 
-Changelog for v1.11.4
----------------------
-
-* bug #1956 SelfUpdateCommand - don't update to non-stable version (keradus)
-* bug #1963 Fix not wanted unneeded_control_parentheses fixer for clone (Soullivaneuh)
-* bug #1960 Fix invalid test cases (keradus)
-* bug #1939 BracesFixer - fix handling comment around control token (keradus)
-* minor #1927 NewWithBracesFixer - remove invalid testcase (keradus)
-
-Changelog for v1.11.3
----------------------
-
-* bug #1868 NewWithBracesFixer - fix handling more neighbor tokens (keradus)
-* bug #1893 BracesFixer - handle comments inside lambda function prototype (keradus)
-* bug #1806 SelfAccessorFixer - skip anonymous classes (gharlan)
-* bug #1813 BlanklineAfterOpenTagFixer, NoBlankLinesBeforeNamespaceFixer - fix priority (SpacePossum)
-* minor #1807 Tokens - simplify isLambda() (gharlan)
-
-Changelog for v1.11.2
----------------------
-
-* bug #1776 EofEndingFixer - new line on end line comment is allowed (Slamdunk)
-* bug #1775 FileCacheManager - ignore corrupted serialized data (keradus)
-* bug #1769 FunctionDeclarationFixer - fix more cases (keradus)
-* bug #1747 Fixer - Fix ordering of fixer when both level and custom fixers are used (SpacePossum)
-* bug #1744 Fixer - fix rare situation when file was visited twice (keradus)
-* bug #1710 LowercaseConstantFixer - Fix comment cases. (SpacePossum)
-* bug #1711 FunctioncallSpaceFixer - do not touch function declarations. (SpacePossum)
-* minor #1798 LintManager - meaningful tempnam (Slamdunk)
-* minor #1759 UniqueFileIterator - performance improvement (GrahamCampbell)
-* minor #1745 appveyor - fix build (keradus)
-
 Changelog for v1.11.1
 ---------------------
 
+* minor #1653 Update license year (gharlan)
 * bug #1680 NewWithBracesFixer - End tags  (SpacePossum)
 * bug #1685 EmptyReturnFixer - Make independent of LowercaseConstantsFixer (SpacePossum)
 * bug #1640 IntegrationTest - fix directory separator (keradus)
 * bug #1595 ShortTagFixer - fix priority (keradus)
 * bug #1576 SpacesBeforeSemicolonFixer - do not remove space before semicolon if that space is after a semicolon (SpacePossum)
 * bug #1570 UnneededControlParenthesesFixer - fix test samples (keradus)
-* minor #1653 Update license year (gharlan)
 
 Changelog for v1.11
 -------------------

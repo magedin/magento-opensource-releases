@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Search\Request;
@@ -55,10 +55,6 @@ class Cleaner
         $this->cleanAggregations();
         $requestData = $this->requestData;
         $this->clear();
-
-        if (empty($requestData['queries']) && empty($requestData['filters'])) {
-            throw new EmptyRequestDataException(new Phrase('Request query and filters are not set'));
-        }
 
         return $requestData;
     }

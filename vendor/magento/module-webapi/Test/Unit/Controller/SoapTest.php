@@ -2,7 +2,7 @@
 /**
  * Test SOAP controller class.
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Test\Unit\Controller;
@@ -49,16 +49,12 @@ class SoapTest extends \PHPUnit_Framework_TestCase
      */
     protected $_appStateMock;
 
-
-    protected $_appconfig;
     /**
      * Set up Controller object.
      */
     protected function setUp()
     {
         parent::setUp();
-        
-        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->_soapServerMock = $this->getMockBuilder('Magento\Webapi\Model\Soap\Server')
             ->disableOriginalConstructor()
@@ -98,15 +94,6 @@ class SoapTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getHeaders')
             ->will($this->returnValue(new \Zend\Http\Headers()));
-
-        $appconfig = $this->getMock(\Magento\Framework\App\Config::class, [], [], '' , false);
-        $objectManagerHelper->setBackwardCompatibleProperty(
-            $this->_requestMock,
-            'appConfig',
-            $appconfig
-        );
-
-
 
         $this->_soapServerMock->expects($this->any())->method('setWSDL')->will($this->returnSelf());
         $this->_soapServerMock->expects($this->any())->method('setEncoding')->will($this->returnSelf());

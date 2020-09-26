@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Update;
@@ -71,13 +71,9 @@ function file_exists($filename)
     return true;
 }
 
-function file_get_contents($filename)
+function file_get_contents()
 {
-    if ($filename === MAGENTO_BP . '/var/' . CronReadinessCheck::SETUP_CRON_JOB_STATUS_FILE) {
-        return json_encode([CronReadinessCheck::KEY_FILE_PATHS => [CronReadinessCheck::KEY_LIST => [__FILE__]]]);
-    } else {
-        return json_encode([CronReadinessCheck::KEY_CURRENT_TIMESTAMP => 150]);
-    }
+    return json_encode([CronReadinessCheck::KEY_CURRENT_TIMESTAMP => 150]);
 }
 
 function is_writable()

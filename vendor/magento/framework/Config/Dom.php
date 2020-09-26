@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -108,26 +108,6 @@ class Dom
         $this->errorFormat = $errorFormat;
         $this->dom = $this->_initDom($xml);
         $this->rootNamespace = $this->dom->lookupNamespaceUri($this->dom->namespaceURI);
-    }
-
-    /**
-     * Retrieve array of xml errors
-     *
-     * @param $errorFormat
-     * @return string[]
-     */
-    private static function getXmlErrors($errorFormat)
-    {
-        $errors = [];
-        $validationErrors = libxml_get_errors();
-        if (count($validationErrors)) {
-            foreach ($validationErrors as $error) {
-                $errors[] = self::_renderErrorMessage($error, $errorFormat);
-            }
-        } else {
-            $errors[] = 'Unknown validation error';
-        }
-        return $errors;
     }
 
     /**
@@ -306,11 +286,18 @@ class Dom
         $schema = self::$urnResolver->getRealPath($schema);
         libxml_use_internal_errors(true);
         libxml_set_external_entity_loader([self::$urnResolver, 'registerEntityLoader']);
-        $errors = [];
         try {
             $result = $dom->schemaValidate($schema);
+            $errors = [];
             if (!$result) {
-                $errors = self::getXmlErrors($errorFormat);
+                $validationErrors = libxml_get_errors();
+                if (count($validationErrors)) {
+                    foreach ($validationErrors as $error) {
+                        $errors[] = self::_renderErrorMessage($error, $errorFormat);
+                    }
+                } else {
+                    $errors[] = 'Unknown validation error';
+                }
             }
         } catch (\Exception $exception) {
             libxml_use_internal_errors(false);
@@ -375,14 +362,7 @@ class Dom
     protected function _initDom($xml)
     {
         $dom = new \DOMDocument();
-        $useErrors = libxml_use_internal_errors(true);
-        $res = $dom->loadXML($xml);
-        if (!$res) {
-            $errors = self::getXmlErrors($this->errorFormat);
-            libxml_use_internal_errors($useErrors);
-            throw new \Magento\Framework\Config\Dom\ValidationException(implode("\n", $errors));
-        }
-        libxml_use_internal_errors($useErrors);
+        $dom->loadXML($xml);
         if ($this->validationState->isValidationRequired() && $this->schema) {
             $errors = $this->validateDomDocument($dom, $this->schema, $this->errorFormat);
             if (count($errors)) {

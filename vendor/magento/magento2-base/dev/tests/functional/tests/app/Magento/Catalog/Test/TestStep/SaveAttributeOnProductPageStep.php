@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,6 +17,13 @@ use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
 class SaveAttributeOnProductPageStep implements TestStepInterface
 {
     /**
+     * Catalog product edit page.
+     *
+     * @var CatalogProductEdit
+     */
+    protected $catalogProductEdit;
+
+    /**
      * Product attribute fixture.
      *
      * @var CatalogProductAttribute
@@ -31,36 +38,29 @@ class SaveAttributeOnProductPageStep implements TestStepInterface
     protected $objectManager;
 
     /**
-     * Catalog product edit page.
-     *
-     * @var CatalogProductEdit
-     */
-    protected $catalogProductEdit;
-
-    /**
      * @constructor
+     * @param CatalogProductEdit $catalogProductEdit
      * @param CatalogProductAttribute $attribute
      * @param ObjectManager $objectManager
-     * @param CatalogProductEdit $catalogProductEdit
      */
     public function __construct(
+        CatalogProductEdit $catalogProductEdit,
         CatalogProductAttribute $attribute,
-        ObjectManager $objectManager,
-        CatalogProductEdit $catalogProductEdit
+        ObjectManager $objectManager
     ) {
+        $this->catalogProductEdit = $catalogProductEdit;
         $this->attribute = $attribute;
         $this->objectManager = $objectManager;
-        $this->catalogProductEdit = $catalogProductEdit;
     }
 
     /**
-     * Click "Save" button on attribute form.
+     * Click "Save" button on attribute form on product page.
      *
-     * @return void
+     * @return array
      */
     public function run()
     {
-        $this->catalogProductEdit->getNewAttributeModal()->saveAttribute();
+        $this->catalogProductEdit->getProductForm()->saveAttributeForm();
     }
 
     /**

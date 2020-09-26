@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -390,26 +390,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
             [false, [['field' => 'field', 'label' => 'label']], 1],
         ];
     }
-
     /**
-     * @param array $backendConfigValue
-     * @param string|bool $configValue
-     * @param string|null $configPath
-     * @param bool $inherit
-     * @param string $expectedValue
-     * @param int $hasBackendModel
-     *
      * @dataProvider initFieldsDataProvider
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function testInitFields(
-        $backendConfigValue,
-        $configValue,
-        $configPath,
-        $inherit,
-        $expectedValue,
-        $hasBackendModel
-    ) {
+    public function testInitFields($backendConfigValue, $configValue, $configPath, $inherit, $expectedValue)
+    {
         // Parameters initialization
         $fieldsetMock = $this->getMock(
             'Magento\Framework\Data\Form\Element\Fieldset',
@@ -491,13 +477,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $fieldMock->expects($this->any())->method('getGroupPath')->will($this->returnValue('some/config/path'));
         $fieldMock->expects($this->once())->method('getSectionId')->will($this->returnValue('some_section'));
 
-        $fieldMock->expects(
-            $this->exactly($hasBackendModel)
-        )->method(
-            'hasBackendModel'
-        )->will(
-            $this->returnValue(false)
-        );
+        $fieldMock->expects($this->once())->method('hasBackendModel')->will($this->returnValue(false));
         $fieldMock->expects(
             $this->once()
         )->method(
@@ -549,7 +529,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
             'scope_label' => '[GLOBAL]',
             'can_use_default_value' => false,
             'can_use_website_value' => false,
-            'can_restore_to_default' => false,
         ];
 
         $formFieldMock->expects($this->once())->method('setRenderer')->with($fieldRendererMock);
@@ -577,8 +556,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
     public function initFieldsDataProvider()
     {
         return [
-            [['section1/group1/field1' => 'some_value'], false, null, false, 'some_value', 1],
-            [[], 'Config Value', 'some/config/path', true, 'Config Value', 0]
+            [['section1/group1/field1' => 'some_value'], false, null, false, 'some_value'],
+            [[], 'Config Value', 'some/config/path', true, 'Config Value']
         ];
     }
 }

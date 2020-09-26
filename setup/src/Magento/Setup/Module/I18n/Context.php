@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Module\I18n;
@@ -100,13 +100,15 @@ class Context
     {
         switch ($type) {
             case self::CONTEXT_TYPE_MODULE:
-                $path = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, $value);
+                $absolutePath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, $value);
+                $path = str_replace(BP . '/', '', $absolutePath);
                 break;
             case self::CONTEXT_TYPE_THEME:
-                $path = $this->componentRegistrar->getPath(ComponentRegistrar::THEME, $value);
+                $absolutePath = $this->componentRegistrar->getPath(ComponentRegistrar::THEME, $value);
+                $path = str_replace(BP . '/', '', $absolutePath);
                 break;
             case self::CONTEXT_TYPE_LIB:
-                $path = BP . '/lib/web';
+                $path = 'lib/web';
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf('Invalid context given: "%s".', $type));

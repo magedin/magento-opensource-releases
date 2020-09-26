@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,8 +16,7 @@ $productId = $block->getSaleableItem()->getId();
 $finalPriceModel = $block->getPrice();
 $minimalPrice = $finalPriceModel->getMinimalPrice();
 $maximalPrice = $finalPriceModel->getMaximalPrice();
-/** ex: \Magento\Bundle\Pricing\Price\BundleRegularPrice */
-/** @var \Magento\Framework\Pricing\Price\PriceInterface $regularPriceModel */
+/** @var \Magento\Bundle\Pricing\Price\BundleRegularPrice $regularPriceModel */
 $regularPriceModel = $block->getPriceType('regular_price');
 $maximalRegularPrice = $regularPriceModel->getMaximalPrice();
 $minimalRegularPrice = $regularPriceModel->getMinimalPrice();

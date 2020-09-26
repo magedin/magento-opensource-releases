@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Test\Unit\Component\Filters\Type;
@@ -40,7 +40,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     /**
      * Set up
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->contextMock = $this->getMockForAbstractClass(
             'Magento\Framework\View\Element\UiComponent\ContextInterface',
@@ -97,15 +97,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     /**
      * Run test prepare method
      *
-     * @param array $data
+     * @param string $name
      * @param array $filterData
      * @param array|null $expectedCondition
      * @dataProvider getPrepareDataProvider
      * @return void
      */
-    public function testPrepare($data, $filterData, $expectedCondition)
+    public function testPrepare($name, $filterData, $expectedCondition)
     {
-        $name = $data['name'];
         /** @var UiComponentInterface $uiComponent */
         $uiComponent = $this->getMockForAbstractClass(
             'Magento\Framework\View\Element\UiComponentInterface',
@@ -125,12 +124,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             ->method('addComponentDefinition')
             ->with(Select::NAME, ['extends' => Select::NAME]);
         $this->contextMock->expects($this->any())
-            ->method('getFiltersParams')
+            ->method('getRequestParam')
+            ->with(AbstractFilter::FILTER_VAR)
             ->willReturn($filterData);
         /** @var DataProviderInterface $dataProvider */
         $dataProvider = $this->getMockForAbstractClass(
             'Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface',
-            ['addFilter'],
+            [],
             '',
             false
         );
@@ -139,24 +139,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             ->willReturn($dataProvider);
 
         if ($expectedCondition !== null) {
-            $filterMock = $this->getMock('Magento\Framework\Api\Filter');
-            $this->filterBuilderMock->expects($this->any())
-                ->method('setConditionType')
-                ->with($expectedCondition)
-                ->willReturnSelf();
-            $this->filterBuilderMock->expects($this->any())
-                ->method('setField')
-                ->with($name)
-                ->willReturnSelf();
-            $this->filterBuilderMock->expects($this->any())
-                ->method('setValue')
-                ->willReturnSelf();
-            $this->filterBuilderMock->expects($this->any())
-                ->method('create')
-                ->willReturn($filterMock);
             $dataProvider->expects($this->any())
                 ->method('addFilter')
-                ->with($filterMock);
+                ->with($expectedCondition, $name);
         }
 
         /** @var \Magento\Framework\Data\OptionSourceInterface $selectOptions */
@@ -179,7 +164,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             $this->filterModifierMock,
             $selectOptions,
             [],
-            $data
+            ['name' => $name]
         );
 
         $date->prepare();
@@ -192,29 +177,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                ['name' => 'test_date', 'config' => []],
-                [],
-                null
-            ],
-            [
-                ['name' => 'test_date', 'config' => []],
+                'test_date',
                 ['test_date' => ''],
-                'eq'
+                null,
             ],
             [
-                ['name' => 'test_date', 'config' => ['dataType' => 'text']],
+                'test_date',
                 ['test_date' => 'some_value'],
-                'eq'
-            ],
-            [
-                ['name' => 'test_date', 'config' => ['dataType' => 'select']],
-                ['test_date' => ['some_value1', 'some_value2']],
-                'in'
-            ],
-            [
-                ['name' => 'test_date', 'config' => ['dataType' => 'multiselect']],
-                ['test_date' => 'some_value'],
-                'finset'
+                ['eq' => 'some_value'],
             ],
         ];
     }

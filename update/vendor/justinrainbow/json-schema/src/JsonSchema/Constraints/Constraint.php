@@ -28,20 +28,13 @@ abstract class Constraint implements ConstraintInterface
     const CHECK_MODE_TYPE_CAST = 2;
 
     /**
-     * @var null|Factory
-     */
-    private $factory;
-
-    /**
      * @param int          $checkMode
      * @param UriRetriever $uriRetriever
-     * @param Factory      $factory
      */
-    public function __construct($checkMode = self::CHECK_MODE_NORMAL, UriRetriever $uriRetriever = null, Factory $factory = null)
+    public function __construct($checkMode = self::CHECK_MODE_NORMAL, UriRetriever $uriRetriever = null)
     {
         $this->checkMode    = $checkMode;
         $this->uriRetriever = $uriRetriever;
-        $this->factory = $factory;
     }
 
     /**
@@ -58,18 +51,6 @@ abstract class Constraint implements ConstraintInterface
     }
 
     /**
-     * @return Factory
-     */
-    public function getFactory()
-    {
-        if (!$this->factory) {
-            $this->factory = new Factory($this->getUriRetriever());
-        }
-
-        return $this->factory;
-    }
-
-    /**
      * @param UriRetriever $uriRetriever
      */
     public function setUriRetriever(UriRetriever $uriRetriever)
@@ -80,20 +61,12 @@ abstract class Constraint implements ConstraintInterface
     /**
      * {@inheritDoc}
      */
-    public function addError($path, $message, $constraint='', array $more=null)
+    public function addError($path, $message)
     {
-        $error = array(
+        $this->errors[] = array(
             'property' => $path,
-            'message' => $message,
-            'constraint' => $constraint,
+            'message' => $message
         );
-
-        if (is_array($more) && count($more) > 0)
-        {
-            $error += $more;
-        }
-
-        $this->errors[] = $error;
     }
 
     /**
@@ -164,7 +137,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkArray($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('collection');
+        $validator = new CollectionConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -181,7 +154,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkObject($value, $schema = null, $path = null, $i = null, $patternProperties = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('object');
+        $validator = new ObjectConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i, $patternProperties);
 
         $this->addErrors($validator->getErrors());
@@ -197,7 +170,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkType($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('type');
+        $validator = new TypeConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -213,7 +186,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkUndefined($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('undefined');
+        $validator = new UndefinedConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -229,7 +202,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkString($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('string');
+        $validator = new StringConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -245,7 +218,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkNumber($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('number');
+        $validator = new NumberConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -261,7 +234,7 @@ abstract class Constraint implements ConstraintInterface
      */
     protected function checkEnum($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('enum');
+        $validator = new EnumConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());
@@ -269,7 +242,7 @@ abstract class Constraint implements ConstraintInterface
 
     protected function checkFormat($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('format');
+        $validator = new FormatConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema, $path, $i);
 
         $this->addErrors($validator->getErrors());

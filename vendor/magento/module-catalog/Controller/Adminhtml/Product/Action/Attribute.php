@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -15,13 +15,6 @@ use Magento\Backend\App\Action;
  */
 abstract class Attribute extends Action
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Catalog::update_attributes';
-
     /**
      *  @var \Magento\Catalog\Helper\Product\Edit\Action\Attribute
      */
@@ -59,5 +52,13 @@ abstract class Attribute extends Action
         }
 
         return !$error;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Catalog::update_attributes');
     }
 }

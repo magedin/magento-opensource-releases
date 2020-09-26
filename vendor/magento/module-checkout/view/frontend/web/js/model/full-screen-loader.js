@@ -1,13 +1,12 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
 /*global alert*/
-define([
-    'jquery',
-    'rjsResolver'
-], function ($, resolver) {
+define(
+    ['jquery'],
+    function ($) {
         'use strict';
 
         var containerId = '#checkout';
@@ -23,14 +22,9 @@ define([
 
             /**
              * Stop full page loader action
-             *
-             * @param {Boolean} forceStop
              */
-            stopLoader: function (forceStop) {
-                var $elem = $(containerId),
-                    stop = $elem.trigger.bind($elem, 'processStop');
-
-                forceStop ? stop() : resolver(stop);
+            stopLoader: function () {
+                $(containerId).trigger('processStop');
             }
         };
     }

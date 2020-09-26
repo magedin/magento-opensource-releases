@@ -85,6 +85,10 @@ class DocBlocks
      * Test constants
      */
     const INDENT = 1;
+    /**
+     * Test without keywords
+     */
+    $without = false;
 
     /**
      * Test with var keyword
@@ -94,22 +98,22 @@ class DocBlocks
     /**
      * Test static
      */
-    public static function test1() {}
+    public static function test() {}
 
     /**
      * Test static first.
      */
-    static public function test2() {}
+    static public function test() {}
 
     /**
      * Test final first.
      */
-    final public function test3() {}
+    final public function test() {}
 
     /**
      * Test no keywords
      */
-    function test4() {}
+    function test() {}
 }',
             '<?php
 class DocBlocks
@@ -118,6 +122,10 @@ class DocBlocks
  * Test constants
  */
     const INDENT = 1;
+/**
+ * Test without keywords
+ */
+    $without = false;
 
 /**
  * Test with var keyword
@@ -127,22 +135,22 @@ class DocBlocks
 /**
  * Test static
  */
-    public static function test1() {}
+    public static function test() {}
 
 /**
  * Test static first.
  */
-    static public function test2() {}
+    static public function test() {}
 
 /**
  * Test final first.
  */
-    final public function test3() {}
+    final public function test() {}
 
 /**
  * Test no keywords
  */
-    function test4() {}
+    function test() {}
 }',
         );
 
@@ -154,6 +162,11 @@ class DocBlocks
 final class DocBlocks
 {
     /**
+     * Test without keywords
+     */
+    $without = false;
+
+    /**
      * Test with var keyword
      */
     var $oldStyle = false;
@@ -164,6 +177,11 @@ final class DocBlocks
  */
 final class DocBlocks
 {
+/**
+ * Test without keywords
+ */
+    $without = false;
+
 /**
  * Test with var keyword
  */

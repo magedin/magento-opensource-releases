@@ -1,9 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Wishlist\Controller;
+
+use Magento\Framework\View\Element\Message\InterpretationStrategyInterface;
 
 class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
 {
@@ -81,29 +83,29 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testAddActionProductNameXss()
     {
-        /** @var \Magento\Framework\Data\Form\FormKey $formKey */
-        $formKey = $this->_objectManager->get('Magento\Framework\Data\Form\FormKey');
-        $this->getRequest()->setPostValue([
-            'form_key' => $formKey->getFormKey(),
-        ]);
+        $this->dispatch('wishlist/index/add/product/1?nocookie=1');
+        $messages = $this->_messages->getMessages()->getItems();
+        $isProductNamePresent = false;
 
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Catalog\Api\ProductRepositoryInterface');
-
-        $product = $productRepository->get('product-with-xss');
-
-        $this->dispatch('wishlist/index/add/product/' . $product->getId() . '?nocookie=1');
-
-        $this->assertSessionMessages(
-            $this->equalTo(
-                [
-                    "\n&lt;script&gt;alert(&quot;xss&quot;);&lt;/script&gt; has been added to your Wish List. "
-                    . 'Click <a href="http://localhost/index.php/">here</a> to continue shopping.',
-                ]
-            ),
-            \Magento\Framework\Message\MessageInterface::TYPE_SUCCESS
+        /** @var InterpretationStrategyInterface $interpretationStrategy */
+        $interpretationStrategy = $this->_objectManager->create(
+            'Magento\Framework\View\Element\Message\InterpretationStrategyInterface'
         );
+        foreach ($messages as $message) {
+            if (
+                strpos(
+                    $interpretationStrategy->interpret($message),
+                    '&lt;script&gt;alert(&quot;xss&quot;);&lt;/script&gt;'
+                ) !== false
+            ) {
+                $isProductNamePresent = true;
+            }
+            $this->assertNotContains(
+                '<script>alert("xss");</script>',
+                $interpretationStrategy->interpret($message)
+            );
+        }
+        $this->assertTrue($isProductNamePresent, 'Product name was not found in session messages');
     }
 
     /**

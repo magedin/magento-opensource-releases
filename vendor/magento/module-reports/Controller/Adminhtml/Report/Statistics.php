@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,13 +16,6 @@ use Magento\Backend\Model\Session;
 
 abstract class Statistics extends \Magento\Backend\App\Action
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Reports::statistics';
-
     /**
      * Admin session model
      *
@@ -94,6 +87,16 @@ abstract class Statistics extends \Magento\Backend\App\Action
             $out[] = $this->reportTypes[$code];
         }
         return $out;
+    }
+
+    /**
+     * Determine if action is allowed for reports module
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Reports::statistics');
     }
 
     /**

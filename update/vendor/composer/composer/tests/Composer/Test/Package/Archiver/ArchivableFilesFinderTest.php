@@ -13,12 +13,12 @@
 namespace Composer\Test\Package\Archiver;
 
 use Composer\Package\Archiver\ArchivableFilesFinder;
-use Composer\TestCase;
 use Composer\Util\Filesystem;
+
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ExecutableFinder;
 
-class ArchivableFilesFinderTest extends TestCase
+class ArchivableFilesFinderTest extends \PHPUnit_Framework_TestCase
 {
     protected $sources;
     protected $finder;
@@ -30,7 +30,7 @@ class ArchivableFilesFinderTest extends TestCase
         $this->fs = $fs;
 
         $this->sources = $fs->normalizePath(
-            $this->getUniqueTmpDirectory()
+            realpath(sys_get_temp_dir()).'/composer_archiver_test'.uniqid(mt_rand(), true)
         );
 
         $fileTree = array(
@@ -75,8 +75,7 @@ class ArchivableFilesFinderTest extends TestCase
             'parameters.yml',
             'parameters.yml.dist',
             '!important!.txt',
-            '!important_too!.txt',
-            '#weirdfile',
+            '!important_too!.txt'
         );
 
         foreach ($fileTree as $relativePath) {
@@ -99,7 +98,7 @@ class ArchivableFilesFinderTest extends TestCase
             '!/prefixB.foo',
             '/prefixA.foo',
             'prefixC.*',
-            '!*/*/*/prefixC.foo',
+            '!*/*/*/prefixC.foo'
         );
 
         $this->finder = new ArchivableFilesFinder($this->sources, $excludes);
@@ -107,7 +106,6 @@ class ArchivableFilesFinderTest extends TestCase
         $this->assertArchivableFiles(array(
             '/!important!.txt',
             '/!important_too!.txt',
-            '/#weirdfile',
             '/A/prefixA.foo',
             '/A/prefixD.foo',
             '/A/prefixE.foo',
@@ -172,8 +170,7 @@ class ArchivableFilesFinderTest extends TestCase
             'H/**',
             'J/',
             'parameters.yml',
-            '\!important!.txt',
-            '\#*',
+            '\!important!.txt'
         )));
 
         // git does not currently support negative git attributes
@@ -184,7 +181,7 @@ class ArchivableFilesFinderTest extends TestCase
             //'!/prefixB.foo export-ignore',
             '/prefixA.foo export-ignore',
             'prefixC.* export-ignore',
-            //'!/*/*/prefixC.foo export-ignore',
+            //'!/*/*/prefixC.foo export-ignore'
         )));
 
         $this->finder = new ArchivableFilesFinder($this->sources, array());
@@ -287,7 +284,7 @@ class ArchivableFilesFinderTest extends TestCase
      *
      * @param string $process The name of the binary to test.
      *
-     * @return bool True if the process is available, false otherwise.
+     * @return boolean True if the process is available, false otherwise.
      */
     protected function isProcessAvailable($process)
     {

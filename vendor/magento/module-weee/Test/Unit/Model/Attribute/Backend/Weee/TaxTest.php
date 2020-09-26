@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -19,13 +19,8 @@ class TaxTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Weee\Model\Attribute\Backend\Weee\Tax
      */
     protected $model;
-        
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->model = $this->objectManager->getObject('Magento\Weee\Model\Attribute\Backend\Weee\Tax');
@@ -36,12 +31,7 @@ class TaxTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Magento\Weee\Model\Attribute\Backend\Weee\Tax', $this->model->getBackendModelName());
     }
 
-    /**
-     * @dataProvider dataProviderValidate
-     * @param $data
-     * @param $expected
-     */
-    public function testValidate($data, $expected)
+    public function testValidate()
     {
         $attributeMock = $this->getMockBuilder('Magento\Eav\Model\Attribute')
             ->setMethods(['getName'])
@@ -61,7 +51,7 @@ class TaxTest extends \PHPUnit_Framework_TestCase
             ->method('getAttribute')
             ->will($this->returnValue($attributeMock));
 
-        $taxes = [reset($data)];
+        $taxes = [['state' => 12, 'country' => 'US', 'website_id' => '1']];
         $productMock = $this->getMockBuilder('Magento\Catalog\Model\Product')
             ->setMethods(['getData'])
             ->disableOriginalConstructor()
@@ -74,7 +64,8 @@ class TaxTest extends \PHPUnit_Framework_TestCase
         // No exception
         $modelMock->validate($productMock);
 
-        $taxes = $data;
+        $taxes = [['state' => 12, 'country' => 'US', 'website_id' => '1'],
+            ['state' => 12, 'country' => 'US', 'website_id' => '1']];
         $productMock = $this->getMockBuilder('Magento\Catalog\Model\Product')
             ->setMethods(['getData'])
             ->disableOriginalConstructor()
@@ -85,26 +76,9 @@ class TaxTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($taxes));
 
         // Exception caught
-        $this->setExpectedException('Exception', $expected);
+        $this->setExpectedException('Exception',
+            'We found a duplicate of website, country and state fields for a fixed product tax');
         $modelMock->validate($productMock);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataProviderValidate()
-    {
-        return [
-            'withDuplicate' => [
-                'data' => [
-                    ['state' => 12, 'country' => 'US', 'website_id' => '1'],
-                    ['state' => 99, 'country' => 'ES', 'website_id' => '1'],
-                    ['state' => 12, 'country' => 'US', 'website_id' => '1'],
-                    ['state' => null, 'country' => 'ES', 'website_id' => '1']
-                ],
-                'expected' => 'You must set unique country-state combinations within the same fixed product tax',
-                ]
-        ];
     }
 
     public function testAfterLoad()

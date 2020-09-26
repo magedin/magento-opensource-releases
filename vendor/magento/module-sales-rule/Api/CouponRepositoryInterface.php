@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Api;
@@ -13,7 +13,7 @@ namespace Magento\SalesRule\Api;
 interface CouponRepositoryInterface
 {
     /**
-     * Save a coupon.
+     * Save coupon.
      *
      * @param \Magento\SalesRule\Api\Data\CouponInterface $coupon
      * @return \Magento\SalesRule\Api\Data\CouponInterface
@@ -34,11 +34,7 @@ interface CouponRepositoryInterface
     public function getById($couponId);
 
     /**
-     * Retrieve a coupon using the specified search criteria.
-     *
-     * This call returns an array of objects, but detailed information about each object’s attributes might not be
-     * included. See http://devdocs.magento.com/codelinks/attributes.html#CouponRepositoryInterface to
-     * determine which call to use to get detailed information about all attributes for an object.
+     * Retrieve coupon.
      *
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\SalesRule\Api\Data\CouponSearchResultInterface

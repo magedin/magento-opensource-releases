@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Model\Product\TypeHandler;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Downloadable\Model\ComponentInterface;
 
@@ -14,9 +13,6 @@ use Magento\Downloadable\Model\ComponentInterface;
  */
 class Sample extends AbstractTypeHandler
 {
-    const DATA_KEY = 'sample';
-    const IDENTIFIER_KEY = 'sample_id';
-
     /**
      * @var \Magento\Downloadable\Model\SampleFactory
      */
@@ -49,7 +45,7 @@ class Sample extends AbstractTypeHandler
      */
     public function getDataKey()
     {
-        return self::DATA_KEY;
+        return 'sample';
     }
 
     /**
@@ -57,7 +53,7 @@ class Sample extends AbstractTypeHandler
      */
     public function getIdentifierKey()
     {
-        return self::IDENTIFIER_KEY;
+        return 'sample_id';
     }
 
     /**
@@ -91,11 +87,8 @@ class Sample extends AbstractTypeHandler
         )->setSampleType(
             $data['type']
         )->setProductId(
-            $product->getData(
-                $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField()
-            )
-        );
-        $model->setStoreId(
+            $product->getId()
+        )->setStoreId(
             $product->getStoreId()
         );
     }

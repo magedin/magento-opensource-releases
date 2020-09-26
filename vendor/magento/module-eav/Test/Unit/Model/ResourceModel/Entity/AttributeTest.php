@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,15 +8,8 @@
 
 namespace Magento\Eav\Test\Unit\Model\ResourceModel\Entity;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-
 class AttributeTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $selectMock;
-
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -42,8 +35,8 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     public function testSaveOptionSystemAttribute()
     {
         /** @var $connectionMock \PHPUnit_Framework_MockObject_MockObject */
-        /** @var $resourceModel \Magento\Eav\Model\ResourceModel\Entity\Attribute */
-        list($connectionMock, $resourceModel) = $this->_prepareResourceModel();
+        /** @var $resourceModelMock \Magento\Eav\Model\ResourceModel\Entity\Attribute */
+        list($connectionMock, $resourceModelMock) = $this->_prepareResourceModel();
 
         $attributeData = [
             'attribute_id' => '123',
@@ -104,7 +97,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         );
         $connectionMock->expects($this->never())->method('delete');
 
-        $resourceModel->save($model);
+        $resourceModelMock->save($model);
     }
 
     /**
@@ -113,8 +106,8 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     public function testSaveOptionNewUserDefinedAttribute()
     {
         /** @var $connectionMock \PHPUnit_Framework_MockObject_MockObject */
-        /** @var $resourceModel \Magento\Eav\Model\ResourceModel\Entity\Attribute */
-        list($connectionMock, $resourceModel) = $this->_prepareResourceModel();
+        /** @var $resourceModelMock \Magento\Eav\Model\ResourceModel\Entity\Attribute */
+        list($connectionMock, $resourceModelMock) = $this->_prepareResourceModel();
 
         $attributeData = [
             'entity_type_id' => 4,
@@ -199,7 +192,7 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $resourceModel->save($model);
+        $resourceModelMock->save($model);
     }
 
     /**
@@ -208,8 +201,8 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
     public function testSaveOptionNoValue()
     {
         /** @var $connectionMock \PHPUnit_Framework_MockObject_MockObject */
-        /** @var $resourceModel \Magento\Eav\Model\ResourceModel\Entity\Attribute */
-        list($connectionMock, $resourceModel) = $this->_prepareResourceModel();
+        /** @var $resourceModelMock \Magento\Eav\Model\ResourceModel\Entity\Attribute */
+        list($connectionMock, $resourceModelMock) = $this->_prepareResourceModel();
 
         $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         /** @var $model \Magento\Framework\Model\AbstractModel */
@@ -222,14 +215,13 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $connectionMock->expects($this->never())->method('delete');
         $connectionMock->expects($this->never())->method('update');
 
-        $resourceModel->save($model);
+        $resourceModelMock->save($model);
     }
 
     /**
      * Retrieve resource model mock instance and its adapter
      *
      * @return array
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareResourceModel()
     {
@@ -247,7 +239,6 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
                 'beginTransaction',
                 'commit',
                 'rollback',
-                'select'
             ],
             [],
             '',
@@ -276,22 +267,6 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
                 ]
             )
         );
-        $this->selectMock = $this->getMock(
-            '\Magento\Framework\DB\Select',
-            [],
-            [],
-            '',
-            false
-        );
-        $connectionMock->expects(
-            $this->any()
-        )->method(
-            'select'
-        )->willReturn(
-            $this->selectMock
-        );
-        $this->selectMock->expects($this->any())->method('from')->willReturnSelf();
-        $this->selectMock->expects($this->any())->method('where')->willReturnSelf();
 
         $storeManager = $this->getMock('Magento\Store\Model\StoreManager', ['getStores'], [], '', false);
         $storeManager->expects(
@@ -332,29 +307,18 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $contextMock->expects($this->once())->method('getResources')->willReturn($resource);
         $contextMock->expects($this->once())->method('getObjectRelationProcessor')->willReturn($relationProcessorMock);
 
-        $configMock = $this->getMockBuilder(\Magento\Eav\Model\Config::class)->disableOriginalConstructor()->getMock();
-        $attributeCacheMock = $this->getMockBuilder(
-            \Magento\Eav\Model\Entity\AttributeCache::class
-        )->disableOriginalConstructor()->getMock();
         $arguments = [
             'context' => $contextMock,
             'storeManager' => $storeManager,
             'eavEntityType' => $eavEntityType,
         ];
-        $helper = new ObjectManager($this);
-        $resourceModel = $helper->getObject(\Magento\Eav\Model\ResourceModel\Entity\Attribute::class, $arguments);
-        $helper->setBackwardCompatibleProperty(
-            $resourceModel,
-            'config',
-            $configMock
+        $resourceModelMock = $this->getMock(
+            'Magento\Eav\Model\ResourceModel\Entity\Attribute',
+            ['getAdditionalAttributeTable'],
+            $arguments
         );
-        $helper->setBackwardCompatibleProperty(
-            $resourceModel,
-            'attributeCache',
-            $attributeCacheMock
-        );
-        
-        return [$connectionMock, $resourceModel];
+
+        return [$connectionMock, $resourceModelMock];
     }
 
     /**

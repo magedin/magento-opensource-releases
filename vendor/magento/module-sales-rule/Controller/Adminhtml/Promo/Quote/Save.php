@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Controller\Adminhtml\Promo\Quote;
@@ -69,9 +69,7 @@ class Save extends \Magento\SalesRule\Controller\Adminhtml\Promo\Quote
                 unset($data['rule']);
                 $model->loadPost($data);
 
-                $useAutoGeneration = (int)(
-                    !empty($data['use_auto_generation']) && $data['use_auto_generation'] !== 'false'
-                );
+                $useAutoGeneration = (int)(!empty($data['use_auto_generation']));
                 $model->setUseAutoGeneration($useAutoGeneration);
 
                 $session->setPageData($model->getData());

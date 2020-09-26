@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogImportExport\Test\Unit\Model\Export;
@@ -99,11 +99,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     protected $rowCustomizer;
 
     /**
-     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $metadataPool;
-
-    /**
      * @var \Magento\ImportExport\Model\Export\Adapter\AbstractAdapter| \PHPUnit_Framework_MockObject_MockObject
      */
     protected $writer;
@@ -112,6 +107,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\CatalogImportExport\Model\Export\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
+
 
     /**
      * @var StubProduct|\Magento\CatalogImportExport\Model\Export\Product
@@ -274,13 +270,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->metadataPool = $this->getMock(
-            '\Magento\Framework\EntityManager\MetadataPool',
-            [],
-            [],
-            '',
-            false
-        );
 
         $this->writer = $this->getMock(
             'Magento\ImportExport\Model\Export\Adapter\AbstractAdapter',
@@ -343,8 +332,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             $this->attributeColFactory,
             $this->typeFactory,
             $this->linkTypeProvider,
-            $this->rowCustomizer,
-            $this->metadataPool
+            $this->rowCustomizer
         );
 
         $this->object = new StubProduct();

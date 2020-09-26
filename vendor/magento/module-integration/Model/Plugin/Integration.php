@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,8 +11,6 @@ use Magento\Authorization\Model\UserContextInterface;
 use Magento\Integration\Model\Integration as IntegrationModel;
 use Magento\Integration\Api\AuthorizationServiceInterface;
 use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Model\IntegrationConfig;
-use Magento\Integration\Model\ConsolidatedConfig;
 
 /**
  * Plugin for \Magento\Integration\Model\IntegrationService.
@@ -25,30 +23,18 @@ class Integration
     /** @var  AclRetriever */
     protected $aclRetriever;
 
-    /** @var IntegrationConfig */
-    protected $integrationConfig;
-
-    /** @var ConsolidatedConfig */
-    protected $consolidatedConfig;
-
     /**
      * Initialize dependencies.
      *
      * @param AuthorizationServiceInterface $integrationAuthorizationService
      * @param AclRetriever $aclRetriever
-     * @param IntegrationConfig $integrationConfig
-     * @param ConsolidatedConfig $consolidatedConfig
      */
     public function __construct(
         AuthorizationServiceInterface $integrationAuthorizationService,
-        AclRetriever $aclRetriever,
-        IntegrationConfig $integrationConfig,
-        ConsolidatedConfig $consolidatedConfig
+        AclRetriever $aclRetriever
     ) {
         $this->integrationAuthorizationService = $integrationAuthorizationService;
         $this->aclRetriever  = $aclRetriever;
-        $this->integrationConfig = $integrationConfig;
-        $this->consolidatedConfig = $consolidatedConfig;
     }
 
     /**
@@ -62,9 +48,6 @@ class Integration
      */
     public function afterCreate(IntegrationServiceInterface $subject, $integration)
     {
-        if ($integration->getSetupType() == IntegrationModel::TYPE_CONFIG) {
-            $this->_addAllowedResources($integration);
-        }
         $this->_saveApiPermissions($integration);
         return $integration;
     }
@@ -80,9 +63,6 @@ class Integration
      */
     public function afterUpdate(IntegrationServiceInterface $subject, $integration)
     {
-        if ($integration->getSetupType() == IntegrationModel::TYPE_CONFIG) {
-            $this->_addAllowedResources($integration);
-        }
         $this->_saveApiPermissions($integration);
         return $integration;
     }
@@ -110,25 +90,14 @@ class Integration
      */
     protected function _addAllowedResources(IntegrationModel $integration)
     {
-        $integrations = array_merge(
-            $this->integrationConfig->getIntegrations(),
-            $this->consolidatedConfig->getIntegrations()
-        );
         if ($integration->getId()) {
-            if ($integration->getSetupType() == IntegrationModel::TYPE_CONFIG) {
-                $integration->setData(
-                    'resource',
-                    $integrations[$integration->getData('name')]['resource']
-                );
-            } else {
-                $integration->setData(
-                    'resource',
-                    $this->aclRetriever->getAllowedResourcesByUser(
-                        UserContextInterface::USER_TYPE_INTEGRATION,
-                        (int)$integration->getId()
-                    )
-                );
-            }
+            $integration->setData(
+                'resource',
+                $this->aclRetriever->getAllowedResourcesByUser(
+                    UserContextInterface::USER_TYPE_INTEGRATION,
+                    (int)$integration->getId()
+                )
+            );
         }
     }
 

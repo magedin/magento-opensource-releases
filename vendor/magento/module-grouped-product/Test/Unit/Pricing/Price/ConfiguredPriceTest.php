@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -42,7 +42,8 @@ class ConfiguredPriceTest extends \PHPUnit_Framework_TestCase
      */
     protected $priceInfo;
 
-    protected function setUp()
+
+    public function setUp()
     {
         $this->price = $this->getMockBuilder('Magento\Framework\Pricing\Price\PriceInterface')
             ->getMock();
@@ -201,7 +202,7 @@ class ConfiguredPriceTest extends \PHPUnit_Framework_TestCase
     {
         $resultPrice = rand(1, 9);
 
-        $this->price->expects($this->exactly(4))
+        $this->price->expects($this->once())
             ->method('getValue')
             ->willReturn($resultPrice);
 

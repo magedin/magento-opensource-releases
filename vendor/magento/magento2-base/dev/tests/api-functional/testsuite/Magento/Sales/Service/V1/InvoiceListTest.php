@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Service\V1;
@@ -47,8 +47,7 @@ class InvoiceListTest extends WebapiAbstract
             [
                 $filterBuilder
                     ->setField('state')
-                    ->setValue((string)\Magento\Sales\Model\Order\Invoice::STATE_PAID)
-                    ->setConditionType('eq')
+                    ->setValue(2)
                     ->create(),
             ]
         );
@@ -71,7 +70,5 @@ class InvoiceListTest extends WebapiAbstract
         // TODO Test fails, due to the inability of the framework API to handle data collection
         $this->assertArrayHasKey('items', $result);
         $this->assertCount(1, $result['items']);
-        $this->assertArrayHasKey('search_criteria', $result);
-        $this->assertEquals($searchData, $result['search_criteria']);
     }
 }

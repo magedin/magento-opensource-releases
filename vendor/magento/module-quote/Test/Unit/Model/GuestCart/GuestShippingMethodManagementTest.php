@@ -1,23 +1,16 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
-use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\ShipmentEstimationInterface;
-use Magento\Quote\Api\Data\ShippingMethodInterface;
-use Magento\Quote\Model\GuestCart\GuestShippingMethodManagement;
-
 class GuestShippingMethodManagementTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var GuestShippingMethodManagement
+     * @var \Magento\Quote\Api\GuestShippingMethodManagementInterface
      */
     private $model;
 
@@ -32,24 +25,19 @@ class GuestShippingMethodManagementTest extends \PHPUnit_Framework_TestCase
     private $quoteIdMaskFactoryMock;
 
     /**
-     * @var ShipmentEstimationInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $shipmentEstimationManagement;
-
-    /**
-     * @var QuoteIdMask|MockObject
-     */
-    private $quoteIdMask;
+    private $quoteIdMaskMock;
 
     /**
      * @var string
      */
-    private $maskedCartId = 'f216207248d65c789b17be8545e0aa73';
+    private $maskedCartId;
 
     /**
-     * @var int
+     * @var string
      */
-    private $cartId = 867;
+    private $cartId;
 
     protected function setUp()
     {
@@ -58,26 +46,22 @@ class GuestShippingMethodManagementTest extends \PHPUnit_Framework_TestCase
         $this->shippingMethodManagementMock =
             $this->getMock('Magento\Quote\Model\ShippingMethodManagement', [], [], '', false);
 
+        $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
+        $this->cartId = 867;
+
         $guestCartTestHelper = new GuestCartTestHelper($this);
-        list($this->quoteIdMaskFactoryMock, $this->quoteIdMask) = $guestCartTestHelper->mockQuoteIdMask(
+        list($this->quoteIdMaskFactoryMock, $this->quoteIdMaskMock) = $guestCartTestHelper->mockQuoteIdMask(
             $this->maskedCartId,
             $this->cartId
         );
 
-        $this->shipmentEstimationManagement = $this->getMockForAbstractClass(ShipmentEstimationInterface::class);
-
         $this->model = $objectManager->getObject(
-            GuestShippingMethodManagement::class,
+            'Magento\Quote\Model\GuestCart\GuestShippingMethodManagement',
             [
                 'shippingMethodManagement' => $this->shippingMethodManagementMock,
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,
             ]
         );
-
-        $refObject = new \ReflectionClass(GuestShippingMethodManagement::class);
-        $refProperty = $refObject->getProperty('shipmentEstimationManagement');
-        $refProperty->setAccessible(true);
-        $refProperty->setValue($this->model, $this->shipmentEstimationManagement);
     }
 
     public function testSet()
@@ -114,24 +98,5 @@ class GuestShippingMethodManagementTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($retValue));
 
         $this->assertEquals($retValue, $this->model->get($this->maskedCartId));
-    }
-
-    /**
-     * @covers \Magento\Quote\Model\GuestCart\GuestShippingMethodManagement::getShipmentEstimationManagement
-     */
-    public function testEstimateByExtendedAddress()
-    {
-        $address = $this->getMockForAbstractClass(AddressInterface::class);
-
-        $methodObject = $this->getMockForAbstractClass(ShippingMethodInterface::class);
-        $expectedRates = [$methodObject];
-
-        $this->shipmentEstimationManagement->expects(static::once())
-            ->method('estimateByExtendedAddress')
-            ->with($this->cartId, $address)
-            ->willReturn($expectedRates);
-
-        $carriersRates = $this->model->estimateByExtendedAddress($this->maskedCartId, $address);
-        static::assertEquals($expectedRates, $carriersRates);
     }
 }

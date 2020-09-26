@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,9 +17,6 @@ use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Request\QueryInterface as RequestQueryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class TableMapper
 {
     /**
@@ -111,7 +108,7 @@ class TableMapper
                 && in_array($attribute->getFrontendInput(), ['select', 'multiselect'], true)
             ) {
                 $table = $this->resource->getTableName('catalog_product_index_eav');
-                $alias = $field . RequestGenerator::FILTER_SUFFIX;
+                $alias = $field . '_filter';
                 $mapOn = sprintf(
                     'search_index.entity_id = %1$s.entity_id AND %1$s.attribute_id = %2$d AND %1$s.store_id = %3$d',
                     $alias,
@@ -121,7 +118,7 @@ class TableMapper
                 $mappedFields = [];
             } elseif ($attribute->getBackendType() === AbstractAttribute::TYPE_STATIC) {
                 $table = $attribute->getBackendTable();
-                $alias = $field . RequestGenerator::FILTER_SUFFIX;
+                $alias = $field . '_filter';
                 $mapOn = 'search_index.entity_id = ' . $alias . '.entity_id';
                 $mappedFields = null;
             }

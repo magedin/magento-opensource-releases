@@ -1,17 +1,14 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Setup\Controller;
 
-use Magento\Setup\Model\ObjectManagerProvider;
-use Magento\Setup\Model\PackagesAuth;
-use Magento\Setup\Model\PackagesData;
-
 /**
  * Controller for component grid tasks
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
 {
@@ -28,9 +25,14 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
     private $packageInfo;
 
     /**
-     * @var ObjectManagerProvider
+     * @var \Magento\Setup\Model\MarketplaceManager
      */
-    private $objectManagerProvider;
+    private $marketplaceManager;
+
+    /**
+     * @var \Magento\Framework\Module\ModuleList
+     */
+    private $enabledModuleList;
 
     /**
      * Full Module info
@@ -40,31 +42,35 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
     private $fullModuleList;
 
     /**
-     * @var PackagesData
+     * @var \Magento\Setup\Model\UpdatePackagesCache
      */
-    private $packagesData;
+    private $updatePackagesCache;
 
     /**
-     * @var PackagesAuth
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
      */
-    private $packagesAuth;
+    private $timezone;
 
     /**
      * @param \Magento\Framework\Composer\ComposerInformation $composerInformation
      * @param \Magento\Setup\Model\ObjectManagerProvider $objectManagerProvider
-     * @param PackagesData $packagesData
-     * @param PackagesAuth $packagesAuth
+     * @param \Magento\Setup\Model\MarketplaceManager $marketplaceManager
+     * @param \Magento\Setup\Model\UpdatePackagesCache $updatePackagesCache
      */
     public function __construct(
         \Magento\Framework\Composer\ComposerInformation $composerInformation,
         \Magento\Setup\Model\ObjectManagerProvider $objectManagerProvider,
-        \Magento\Setup\Model\PackagesData $packagesData,
-        \Magento\Setup\Model\PackagesAuth $packagesAuth
+        \Magento\Setup\Model\UpdatePackagesCache $updatePackagesCache,
+        \Magento\Setup\Model\MarketplaceManager $marketplaceManager
     ) {
         $this->composerInformation = $composerInformation;
-        $this->objectManagerProvider = $objectManagerProvider;
-        $this->packagesData = $packagesData;
-        $this->packagesAuth = $packagesAuth;
+        $objectManager = $objectManagerProvider->get();
+        $this->enabledModuleList = $objectManager->get('Magento\Framework\Module\ModuleList');
+        $this->fullModuleList = $objectManager->get('Magento\Framework\Module\FullModuleList');
+        $this->packageInfo = $objectManager->get('Magento\Framework\Module\PackageInfoFactory')->create();
+        $this->marketplaceManager = $marketplaceManager;
+        $this->updatePackagesCache = $updatePackagesCache;
+        $this->timezone = $objectManager->get('Magento\Framework\Stdlib\DateTime\TimezoneInterface');
     }
 
     /**
@@ -84,19 +90,11 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
      *
      * @return \Zend\View\Model\JsonModel
      * @throws \RuntimeException
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function componentsAction()
     {
-        $objectManager = $this->objectManagerProvider->get();
-        $enabledModuleList = $objectManager->get('Magento\Framework\Module\ModuleList');
-        $this->fullModuleList = $objectManager->get('Magento\Framework\Module\FullModuleList');
-        $this->packageInfo = $objectManager->get('Magento\Framework\Module\PackageInfoFactory')->create();
-
-        $lastSyncData = [];
-        $authDetails = $this->packagesAuth->getAuthJsonData();
-        if ($authDetails) {
-            $lastSyncData = $this->packagesData->syncPackagesData();
-        }
+        $lastSyncData = $this->updatePackagesCache->getPackagesForUpdate();
         $components = $this->composerInformation->getInstalledMagentoPackages();
         $allModules = $this->getAllModules();
         $components = array_replace_recursive($components, $allModules);
@@ -119,7 +117,7 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
             }
             if ($component['type'] === \Magento\Framework\Composer\ComposerInformation::MODULE_PACKAGE_TYPE) {
                 $components[$component['name']]['enable'] =
-                    $enabledModuleList->has($components[$component['name']]['moduleName']);
+                    $this->enabledModuleList->has($components[$component['name']]['moduleName']);
                 $components[$component['name']]['disable'] = !$components[$component['name']]['enable'];
             } else {
                 $components[$component['name']]['enable'] = false;
@@ -128,6 +126,9 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
             $componentNameParts = explode('/', $component['name']);
             $components[$component['name']]['vendor'] = $componentNameParts[0];
         }
+
+        $packagesForInstall = $this->marketplaceManager->getPackagesForInstall();
+        $lastSyncData = $this->formatLastSyncData($packagesForInstall, $lastSyncData);
 
         return new \Zend\View\Model\JsonModel(
             [
@@ -147,12 +148,18 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
     public function syncAction()
     {
         $error = '';
-        $lastSyncData = [];
         try {
-            $lastSyncData = $this->packagesData->syncPackagesData();
+            $this->updatePackagesCache->syncPackagesForUpdate();
+            $lastSyncData = $this->updatePackagesCache->getPackagesForUpdate();
+
+            $this->marketplaceManager->syncPackagesForInstall();
+            $packagesForInstall = $this->marketplaceManager->getPackagesForInstall();
         } catch (\Exception $e) {
             $error = $e->getMessage();
         }
+
+        $lastSyncData = $this->formatLastSyncData($packagesForInstall, $lastSyncData);
+
         return new \Zend\View\Model\JsonModel(
             [
                 'success' => true,
@@ -178,5 +185,45 @@ class ComponentGrid extends \Zend\Mvc\Controller\AbstractActionController
             $modules[$moduleName]['version'] = $this->packageInfo->getVersion($module);
         }
         return $modules;
+    }
+
+    /**
+     * Format the lastSyncData for use on frontend
+     *
+     * @param array $packagesForInstall
+     * @param array $lastSyncData
+     * @return mixed
+     */
+    private function formatLastSyncData($packagesForInstall, $lastSyncData)
+    {
+        $lastSyncData['countOfInstall']
+            = isset($packagesForInstall['packages']) ? count($packagesForInstall['packages']) : 0;
+        $lastSyncData['countOfUpdate'] = isset($lastSyncData['packages']) ? count($lastSyncData['packages']) : 0;
+        if (isset($lastSyncData['lastSyncDate'])) {
+            $lastSyncData['lastSyncDate'] = $this->formatSyncDate($lastSyncData['lastSyncDate']);
+        }
+        return $lastSyncData;
+    }
+
+    /**
+     * Format a UTC timestamp (seconds since epoch) to structure expected by frontend
+     *
+     * @param string $syncDate seconds since epoch
+     * @return array
+     */
+    private function formatSyncDate($syncDate)
+    {
+        return [
+            'date' => $this->timezone->formatDateTime(
+                new \DateTime('@'.$syncDate),
+                \IntlDateFormatter::MEDIUM,
+                \IntlDateFormatter::NONE
+            ),
+            'time' => $this->timezone->formatDateTime(
+                new \DateTime('@'.$syncDate),
+                \IntlDateFormatter::NONE,
+                \IntlDateFormatter::MEDIUM
+            ),
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,7 +16,7 @@ class CacheContextTest extends \PHPUnit_Framework_TestCase
     /**
      * Set up test
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->context = new \Magento\Framework\Indexer\CacheContext();
     }

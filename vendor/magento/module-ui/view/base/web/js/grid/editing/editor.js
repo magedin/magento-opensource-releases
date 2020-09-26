@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,12 +18,8 @@ define([
             headerButtonsTmpl: 'ui/grid/editing/header-buttons',
             successMsg: $t('You have successfully saved your edits.'),
             errorsCount: 0,
-            bulkEnabled: true,
-            multiEditingButtons: true,
-            singleEditingButtons: true,
             isMultiEditing: false,
             isSingleEditing: false,
-            permanentlyActive: false,
             rowsData: [],
             fields: {},
 
@@ -97,9 +93,7 @@ define([
                 .track([
                     'errorsCount',
                     'isMultiEditing',
-                    'isSingleEditing',
-                    'isSingleColumnEditing',
-                    'changed'
+                    'isSingleEditing'
                 ])
                 .observe({
                     canSave: true,
@@ -116,9 +110,7 @@ define([
          * @returns {Editor} Chainable.
          */
         initBulk: function () {
-            if (this.bulkEnabled) {
-                layout([this.bulkConfig]);
-            }
+            layout([this.bulkConfig]);
 
             return this;
         },
@@ -473,7 +465,7 @@ define([
          * @returns {Boolean}
          */
         hasActive: function () {
-            return !!this.activeRecords().length || this.permanentlyActive;
+            return !!this.activeRecords().length;
         },
 
         /**
@@ -619,9 +611,7 @@ define([
             };
 
             this.addMessage(msg)
-                .source('reload', {
-                    refresh: true
-                });
+                .source('reload');
         },
 
         /**

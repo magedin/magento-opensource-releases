@@ -1,20 +1,13 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Controller\Adminhtml\Paypal\Reports;
 
 class Details extends \Magento\Paypal\Controller\Adminhtml\Paypal\Reports
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Paypal::paypal_settlement_reports_view';
-
     /**
      * View transaction details action
      *
@@ -38,5 +31,15 @@ class Details extends \Magento\Paypal\Controller\Adminhtml\Paypal\Reports
             )
         );
         $this->_view->renderLayout();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Paypal::paypal_settlement_reports_view');
     }
 }

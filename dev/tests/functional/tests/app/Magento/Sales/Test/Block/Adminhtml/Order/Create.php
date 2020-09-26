@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,6 @@ namespace Magento\Sales\Test\Block\Adminhtml\Order;
 use Magento\Mtf\Block\Block;
 use Magento\Mtf\Client\Locator;
 use Magento\Mtf\Fixture\FixtureInterface;
-use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Adminhtml sales order create block.
@@ -113,13 +112,6 @@ class Create extends Block
      * @var string
      */
     protected $header = 'header';
-
-    /**
-     * Save credit card check box.
-     *
-     * @var string
-     */
-    protected $vaultCheckbox = '#%s_vault';
 
     /**
      * Getter for order selected products grid.
@@ -288,14 +280,13 @@ class Create extends Block
      */
     public function fillAddresses(FixtureInterface $address, $saveAddress = 'No', $setShippingAddress = true)
     {
-        if ($setShippingAddress) {
-            $this->getShippingAddressBlock()->uncheckSameAsBillingShippingAddress();
-        }
+        $this->getShippingAddressBlock()->uncheckSameAsBillingShippingAddress();
         $this->browser->find($this->header)->hover();
         $this->getBillingAddressBlock()->fill($address);
         $this->getBillingAddressBlock()->saveInAddressBookBillingAddress($saveAddress);
         $this->getTemplateBlock()->waitLoader();
         if ($setShippingAddress) {
+            $this->browser->find($this->header)->hover();
             $this->getShippingAddressBlock()->setSameAsBillingShippingAddress();
             $this->getTemplateBlock()->waitLoader();
         }
@@ -318,13 +309,13 @@ class Create extends Block
      * Select payment method.
      *
      * @param array $paymentCode
-     * @param InjectableFixture|null $creditCard
+     * @return void
      */
-    public function selectPaymentMethod(array $paymentCode, InjectableFixture $creditCard = null)
+    public function selectPaymentMethod(array $paymentCode)
     {
         $this->getTemplateBlock()->waitLoader();
         $this->_rootElement->find($this->orderMethodsSelector)->click();
-        $this->getBillingMethodBlock()->selectPaymentMethod($paymentCode, $creditCard);
+        $this->getBillingMethodBlock()->selectPaymentMethod($paymentCode);
         $this->getTemplateBlock()->waitLoader();
     }
 
@@ -346,29 +337,5 @@ class Create extends Block
     public function addSelectedProductsToOrder()
     {
         $this->_rootElement->find($this->addSelectedProducts)->click();
-    }
-
-    /**
-     * Save credit card.
-     *
-     * @param string $paymentMethod
-     * @param string $creditCardSave
-     * @return void
-     */
-    public function saveCreditCard($paymentMethod, $creditCardSave)
-    {
-        $saveCard = sprintf($this->vaultCheckbox, $paymentMethod);
-        $this->_rootElement->find($saveCard, Locator::SELECTOR_CSS, 'checkbox')->setValue($creditCardSave);
-    }
-
-    /**
-     * Select vault payment token radio button
-     * @param string $selector
-     * @return void
-     */
-    public function selectVaultToken($selector)
-    {
-        $selector = '[id^="' . $selector . '"]';
-        $this->_rootElement->find($selector)->click();
     }
 }

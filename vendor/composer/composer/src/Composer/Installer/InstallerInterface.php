@@ -14,7 +14,6 @@ namespace Composer\Installer;
 
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
-use InvalidArgumentException;
 
 /**
  * Interface for the package installation manager.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,6 +8,7 @@ namespace Magento\ConfigurableProduct\Test\Block\Adminhtml\Product;
 
 use Magento\Mtf\Fixture\FixtureInterface;
 use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Backend\Test\Block\Widget\FormTabs;
 use Magento\Mtf\Client\Element\SimpleElement;
 
 /**
@@ -21,33 +22,19 @@ class ProductForm extends \Magento\Catalog\Test\Block\Adminhtml\Product\ProductF
      * @param FixtureInterface $product
      * @param SimpleElement|null $element [optional]
      * @param FixtureInterface|null $category [optional]
-     * @return $this
+     * @return FormTabs
      */
     public function fill(FixtureInterface $product, SimpleElement $element = null, FixtureInterface $category = null)
     {
-        $sections = $this->getFixtureFieldsByContainers($product);
-        ksort($sections);
+        $tabs = $this->getFieldsByTabs($product);
+        ksort($tabs);
 
         if ($category) {
-            $sections['product-details']['category_ids']['value'] = $category->getName();
+            $tabs['product-details']['category_ids']['value'] = $category->getName();
         }
 
-        return $this->fillContainers($sections, $element);
-    }
-
-    /**
-     * Create data array for filling tabs.
-     * Skip Advanced Price tab
-     *
-     * @param InjectableFixture $fixture
-     * @return array
-     */
-    protected function getFixtureFieldsByContainers(InjectableFixture $fixture)
-    {
-        $sections = parent::getFixtureFieldsByContainers($fixture);
-        if (isset($sections['advanced-pricing'])) {
-            unset($sections['advanced-pricing']);
-        }
-        return $sections;
+        $this->showAdvancedSettings();
+        $this->getTab('variations')->showContent();
+        return $this->fillTabs($tabs, $element);
     }
 }

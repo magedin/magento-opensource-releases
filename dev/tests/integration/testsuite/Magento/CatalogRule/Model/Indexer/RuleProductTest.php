@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Model\Indexer;
@@ -23,10 +23,16 @@ class RuleProductTest extends \PHPUnit_Framework_TestCase
      */
     protected $resourceRule;
 
+    /**
+     * @var \Magento\Catalog\Model\Product
+     */
+    protected $product;
+
     protected function setUp()
     {
         $this->indexBuilder = Bootstrap::getObjectManager()->get('Magento\CatalogRule\Model\Indexer\IndexBuilder');
         $this->resourceRule = Bootstrap::getObjectManager()->get('Magento\CatalogRule\Model\ResourceModel\Rule');
+        $this->product = Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
     }
 
     /**
@@ -35,19 +41,14 @@ class RuleProductTest extends \PHPUnit_Framework_TestCase
      */
     public function testReindexAfterRuleCreation()
     {
-        /** @var \Magento\Catalog\Model\ProductRepository $productRepository */
-        $productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\ProductRepository'
-        );
-        $product = $productRepository->get('simple');
-        $product->setData('test_attribute', 'test_attribute_value')->save();
-        $this->assertFalse($this->resourceRule->getRulePrice(new \DateTime(), 1, 1, $product->getId()));
+        $this->product->load(1)->setData('test_attribute', 'test_attribute_value')->save();
+        $this->assertFalse($this->resourceRule->getRulePrice(new \DateTime(), 1, 1, 1));
 
         $this->saveRule();
         // apply all rules
         $this->indexBuilder->reindexFull();
 
-        $this->assertEquals(9.8, $this->resourceRule->getRulePrice(new \DateTime(), 1, 1, $product->getId()));
+        $this->assertEquals(9.8, $this->resourceRule->getRulePrice(new \DateTime(), 1, 1, 1));
     }
 
     protected function saveRule()

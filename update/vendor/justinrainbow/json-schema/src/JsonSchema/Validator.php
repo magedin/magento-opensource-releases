@@ -32,7 +32,7 @@ class Validator extends Constraint
      */
     public function check($value, $schema = null, $path = null, $i = null)
     {
-        $validator = $this->getFactory()->createInstanceFor('schema');
+        $validator = new SchemaConstraint($this->checkMode, $this->uriRetriever);
         $validator->check($value, $schema);
 
         $this->addErrors(array_unique($validator->getErrors(), SORT_REGULAR));

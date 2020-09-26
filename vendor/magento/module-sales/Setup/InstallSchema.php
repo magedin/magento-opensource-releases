@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -3217,12 +3217,6 @@ class InstallSchema implements InstallSchemaInterface
             [],
             'Grand Total'
         )->addColumn(
-            'base_grand_total',
-            \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-            '12,4',
-            [],
-            'Base Grand Total'
-        )->addColumn(
             'created_at',
             \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
             null,
@@ -3240,9 +3234,6 @@ class InstallSchema implements InstallSchemaInterface
         )->addIndex(
             $installer->getIdxName('sales_invoice_grid', ['grand_total']),
             ['grand_total']
-        )->addIndex(
-            $installer->getIdxName('sales_invoice_grid', ['base_grand_total']),
-            ['base_grand_total']
         )->addIndex(
             $installer->getIdxName('sales_invoice_grid', ['order_id']),
             ['order_id']
@@ -5133,6 +5124,17 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('store'),
             'store_id',
             \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                'sales_bestsellers_aggregated_daily',
+                'product_id',
+                'catalog_product_entity',
+                'entity_id'
+            ),
+            'product_id',
+            $installer->getTable('catalog_product_entity'),
+            'entity_id',
+            \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
         )->setComment(
             'Sales Bestsellers Aggregated Daily'
         );
@@ -5211,6 +5213,17 @@ class InstallSchema implements InstallSchemaInterface
             $installer->getTable('store'),
             'store_id',
             \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                'sales_bestsellers_aggregated_monthly',
+                'product_id',
+                'catalog_product_entity',
+                'entity_id'
+            ),
+            'product_id',
+            $installer->getTable('catalog_product_entity'),
+            'entity_id',
+            \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
         )->setComment(
             'Sales Bestsellers Aggregated Monthly'
         );
@@ -5288,6 +5301,17 @@ class InstallSchema implements InstallSchemaInterface
             'store_id',
             $installer->getTable('store'),
             'store_id',
+            \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                'sales_bestsellers_aggregated_yearly',
+                'product_id',
+                'catalog_product_entity',
+                'entity_id'
+            ),
+            'product_id',
+            $installer->getTable('catalog_product_entity'),
+            'entity_id',
             \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
         )->setComment(
             'Sales Bestsellers Aggregated Yearly'

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -20,7 +20,6 @@ class Factory
      * Default cache entry lifetime
      */
     const DEFAULT_LIFETIME = 7200;
-
     /**
      * Caching params, that applied for all cache frontends regardless of type
      */
@@ -68,7 +67,7 @@ class Factory
      */
     protected $_backendOptions = [
         'hashed_directory_level' => 1,
-        'hashed_directory_umask' => 0777,
+        'hashed_directory_umask' => DriverInterface::WRITEABLE_DIRECTORY_MODE,
         'file_name_prefix' => 'mage',
     ];
 

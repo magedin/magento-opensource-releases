@@ -1,11 +1,10 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
-    'uiClass',
-    'Magento_Paypal/js/rules'
-], function (Class, Rules) {
+    'uiClass'
+], function (Class) {
     'use strict';
 
     return Class.extend({
@@ -17,7 +16,6 @@ define([
          * @returns {exports.initialize}
          */
         initialize: function (config) {
-            this.rules = new Rules();
             this.initConfig(config);
 
             return this;
@@ -27,7 +25,11 @@ define([
          * To apply the rule
          */
         apply: function () {
-            this.rules[this.name](this.$target, this.$owner, this.data);
+            require([
+                    'Magento_Paypal/js/rules/' + this.name
+                ], function (applicableRule) {
+                    applicableRule(this.$target, this.$owner, this.data);
+                }.bind(this));
         }
     });
 });

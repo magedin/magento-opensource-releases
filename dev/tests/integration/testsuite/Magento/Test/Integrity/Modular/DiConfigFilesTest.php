@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Test\Integrity\Modular;
@@ -55,12 +55,11 @@ class DiConfigFilesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $filePath
      * @param string $xml
-     * @throws \Exception
+     * @return void
      * @dataProvider linearFilesProvider
      */
-    public function testDiConfigFileWithoutMerging($filePath, $xml)
+    public function testDiConfigFileWithoutMerging($xml)
     {
         /** @var \Magento\Framework\ObjectManager\Config\SchemaLocator $schemaLocator */
         $schemaLocator = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
@@ -75,10 +74,7 @@ class DiConfigFilesTest extends \PHPUnit_Framework_TestCase
         libxml_use_internal_errors(false);
 
         if (!empty($result)) {
-            $this->fail(
-                'File ' . $filePath . ' has invalid xml structure. '
-                . implode("\n", $result)
-            );
+            $this->fail('File ' . $xml . ' has invalid xml structure.');
         }
     }
 
@@ -95,8 +91,8 @@ class DiConfigFilesTest extends \PHPUnit_Framework_TestCase
         }
 
         $output = [];
-        foreach ($common as $path => $content) {
-            $output[] = [substr($path, strlen(BP)), $content];
+        foreach ($common as $path => $file) {
+            $output[substr($path, strlen(BP))] = [$file];
         }
 
         return $output;

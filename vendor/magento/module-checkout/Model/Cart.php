@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Model;
@@ -14,7 +14,6 @@ use Magento\Framework\DataObject;
 /**
  * Shopping cart model
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @deprecated 
  */
 class Cart extends DataObject implements CartInterface
 {
@@ -257,11 +256,7 @@ class Cart extends DataObject implements CartInterface
         if ($orderItem->getParentItem() === null) {
             $storeId = $this->_storeManager->getStore()->getId();
             try {
-                /**
-                 * We need to reload product in this place, because products
-                 * with the same id may have different sets of order attributes.
-                 */
-                $product = $this->productRepository->getById($orderItem->getProductId(), false, $storeId, true);
+                $product = $this->productRepository->getById($orderItem->getProductId(), false, $storeId);
             } catch (NoSuchEntityException $e) {
                 return $this;
             }
@@ -326,6 +321,9 @@ class Cart extends DataObject implements CartInterface
             $request = new \Magento\Framework\DataObject($requestInfo);
         }
 
+        if (!$request->hasQty()) {
+            $request->setQty(1);
+        }
         !$request->hasFormKey() ?: $request->unsFormKey();
 
         return $request;
@@ -352,7 +350,7 @@ class Cart extends DataObject implements CartInterface
             //If product was not found in cart and there is set minimal qty for it
             if ($minimumQty
                 && $minimumQty > 0
-                && !$request->getQty()
+                && $request->getQty() < $minimumQty
                 && !$this->getQuote()->hasProductId($productId)
             ) {
                 $request->setQty($minimumQty);
@@ -692,7 +690,7 @@ class Cart extends DataObject implements CartInterface
                 // If product was not found in cart and there is set minimal qty for it
                 if ($minimumQty
                     && $minimumQty > 0
-                    && !$request->getQty()
+                    && $request->getQty() < $minimumQty
                     && !$this->getQuote()->hasProductId($productId)
                 ) {
                     $request->setQty($minimumQty);

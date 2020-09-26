@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Interception\Chain;
@@ -47,13 +47,13 @@ class Chain implements \Magento\Framework\Interception\ChainInterface
         $result = null;
         if (isset($pluginInfo[DefinitionInterface::LISTENER_BEFORE])) {
             foreach ($pluginInfo[DefinitionInterface::LISTENER_BEFORE] as $code) {
-                $pluginInstance = $this->pluginList->getPlugin($type, $code);
-                $pluginMethod = 'before' . $capMethod;
-                $beforeResult = $pluginInstance->$pluginMethod($subject, ...array_values($arguments));
+                $beforeResult = call_user_func_array(
+                    [$this->pluginList->getPlugin($type, $code), 'before' . $capMethod],
+                    array_merge([$subject], $arguments)
+                );
                 if ($beforeResult) {
                     $arguments = $beforeResult;
                 }
-                unset($pluginInstance, $pluginMethod);
             }
         }
         if (isset($pluginInfo[DefinitionInterface::LISTENER_AROUND])) {
@@ -62,10 +62,10 @@ class Chain implements \Magento\Framework\Interception\ChainInterface
             $next = function () use ($chain, $type, $method, $subject, $code) {
                 return $chain->invokeNext($type, $method, $subject, func_get_args(), $code);
             };
-            $pluginInstance = $this->pluginList->getPlugin($type, $code);
-            $pluginMethod = 'around' . $capMethod;
-            $result = $pluginInstance->$pluginMethod($subject, $next, ...array_values($arguments));
-            unset($pluginInstance, $pluginMethod);
+            $result = call_user_func_array(
+                [$this->pluginList->getPlugin($type, $code), 'around' . $capMethod],
+                array_merge([$subject, $next], $arguments)
+            );
         } else {
             $result = $subject->___callParent($method, $arguments);
         }

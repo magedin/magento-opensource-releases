@@ -1,14 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\Tab;
 
-use Magento\Framework\App\ObjectManager;
-
 class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
-    \Magento\Ui\Component\Layout\Tabs\TabInterface
+    \Magento\Backend\Block\Widget\Tab\TabInterface
 {
     /**
      * Core registry
@@ -23,18 +21,6 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
     protected $_conditions;
 
     /**
-     * @var string
-     */
-    protected $_nameInLayout = 'conditions_apply_to';
-
-    /**
-     * @var \Magento\SalesRule\Model\RuleFactory
-     */
-    private $ruleFactory;
-
-    /**
-     * Initialize dependencies.
-     *
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
@@ -56,50 +42,7 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
     }
 
     /**
-     * The getter function to get the new RuleFactory dependency
-     *
-     * @return \Magento\SalesRule\Model\RuleFactory
-     *
-     * @deprecated
-     */
-    private function getRuleFactory()
-    {
-        if ($this->ruleFactory === null) {
-            $this->ruleFactory = ObjectManager::getInstance()->get('Magento\SalesRule\Model\RuleFactory');
-        }
-        return $this->ruleFactory;
-    }
-
-    /**
      * {@inheritdoc}
-     * @codeCoverageIgnore
-     */
-    public function getTabClass()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @codeCoverageIgnore
-     */
-    public function getTabUrl()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @codeCoverageIgnore
-     */
-    public function isAjaxLoaded()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @codeCoverageIgnore
      */
     public function getTabLabel()
     {
@@ -108,7 +51,6 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
 
     /**
      * {@inheritdoc}
-     * @codeCoverageIgnore
      */
     public function getTabTitle()
     {
@@ -117,7 +59,6 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
 
     /**
      * {@inheritdoc}
-     * @codeCoverageIgnore
      */
     public function canShowTab()
     {
@@ -126,7 +67,6 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
 
     /**
      * {@inheritdoc}
-     * @codeCoverageIgnore
      */
     public function isHidden()
     {
@@ -140,48 +80,20 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     protected function _prepareForm()
     {
-        $model = $this->_coreRegistry->registry(\Magento\SalesRule\Model\RegistryConstants::CURRENT_SALES_RULE);
-        $form = $this->addTabToForm($model);
-        $this->setForm($form);
-
-        return parent::_prepareForm();
-    }
-
-    /**
-     * Handles addition of conditions tab to supplied form.
-     *
-     * @param \Magento\SalesRule\Model\Rule $model
-     * @param string $fieldsetId
-     * @param string $formName
-     * @return \Magento\Framework\Data\Form
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function addTabToForm($model, $fieldsetId = 'conditions_fieldset', $formName = 'sales_rule_form')
-    {
-        if (!$model) {
-            $id = $this->getRequest()->getParam('id');
-            $model = $this->getRuleFactory()->create();
-            $model->load($id);
-        }
-        $conditionsFieldSetId = $model->getConditionsFieldSetId($formName);
-        $newChildUrl = $this->getUrl(
-            'sales_rule/promo_quote/newConditionHtml/form/' . $conditionsFieldSetId,
-            ['form_namespace' => $formName]
-        );
+        $model = $this->_coreRegistry->registry('current_promo_quote_rule');
 
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
         $form->setHtmlIdPrefix('rule_');
+
         $renderer = $this->_rendererFieldset->setTemplate(
             'Magento_CatalogRule::promo/fieldset.phtml'
         )->setNewChildUrl(
-            $newChildUrl
-        )->setFieldSetId(
-            $conditionsFieldSetId
+            $this->getUrl('sales_rule/promo_quote/newConditionHtml/form/rule_conditions_fieldset')
         );
 
         $fieldset = $form->addFieldset(
-            $fieldsetId,
+            'conditions_fieldset',
             [
                 'legend' => __(
                     'Apply the rule only if the following conditions are met (leave blank for all products).'
@@ -190,16 +102,11 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
         )->setRenderer(
             $renderer
         );
+
         $fieldset->addField(
             'conditions',
             'text',
-            [
-                'name'           => 'conditions',
-                'label'          => __('Conditions'),
-                'title'          => __('Conditions'),
-                'required'       => true,
-                'data-form-part' => $formName
-            ]
+            ['name' => 'conditions', 'label' => __('Conditions'), 'title' => __('Conditions')]
         )->setRule(
             $model
         )->setRenderer(
@@ -207,24 +114,8 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
         );
 
         $form->setValues($model->getData());
-        $this->setConditionFormName($model->getConditions(), $formName);
-        return $form;
-    }
+        $this->setForm($form);
 
-    /**
-     * Handles addition of form name to condition and its conditions.
-     *
-     * @param \Magento\Rule\Model\Condition\AbstractCondition $conditions
-     * @param string $formName
-     * @return void
-     */
-    private function setConditionFormName(\Magento\Rule\Model\Condition\AbstractCondition $conditions, $formName)
-    {
-        $conditions->setFormName($formName);
-        if ($conditions->getConditions() && is_array($conditions->getConditions())) {
-            foreach ($conditions->getConditions() as $condition) {
-                $this->setConditionFormName($condition, $formName);
-            }
-        }
+        return parent::_prepareForm();
     }
 }

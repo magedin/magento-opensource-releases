@@ -1,21 +1,20 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Model\Cache;
 
-use Magento\Framework\UrlInterface;
+use Zend\Uri\Uri;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Config\ConfigOptionsListConstants;
 use Magento\Framework\App\RequestInterface;
-use Zend\Uri\Uri;
 use Zend\Uri\UriFactory;
 
 class Server
 {
     /**
-     * @var UrlInterface
+     * @var \Magento\Framework\UrlInterface
      */
     protected $urlBuilder;
 
@@ -34,12 +33,12 @@ class Server
     /**
      * Constructor
      *
-     * @param UrlInterface $urlBuilder
+     * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param DeploymentConfig $config
      * @param RequestInterface $request
      */
     public function __construct(
-        UrlInterface $urlBuilder,
+        \Magento\Framework\UrlInterface $urlBuilder,
         DeploymentConfig $config,
         RequestInterface $request
     ) {
@@ -57,24 +56,21 @@ class Server
     {
         $servers = [];
         $configuredHosts = $this->config->get(ConfigOptionsListConstants::CONFIG_PATH_CACHE_HOSTS);
+        if (null == $configuredHosts) {
+            $httpHost = $this->request->getHttpHost();
+            $servers[] = $httpHost ?
+                UriFactory::factory('')->setHost($httpHost)->setPort(self::DEFAULT_PORT)->setScheme('http') :
+                UriFactory::factory($this->urlBuilder->getUrl('*', ['_nosid' => true])) // Don't use SID in building URL
+                    ->setScheme('http')
+                    ->setPath(null)
+                    ->setQuery(null);
 
-        if (is_array($configuredHosts)) {
-            foreach ($configuredHosts as $host) {
-                $servers[] = UriFactory::factory('')
-                    ->setHost($host['host'])
-                    ->setPort(isset($host['port']) ? $host['port'] : self::DEFAULT_PORT)
-                ;
-            }
-        } elseif ($this->request->getHttpHost()) {
-            $servers[] = UriFactory::factory('')->setHost($this->request->getHttpHost())->setPort(self::DEFAULT_PORT);
         } else {
-            $servers[] = UriFactory::factory($this->urlBuilder->getUrl('*', ['_nosid' => true]));
-        }
-
-        foreach (array_keys($servers) as $key) {
-            $servers[$key]->setScheme('http')
-                ->setPath('/')
-                ->setQuery(null);
+            foreach ($configuredHosts as $host) {
+                $servers[] = UriFactory::factory('')->setHost($host['host'])
+                    ->setPort(isset($host['port']) ? $host['port'] : self::DEFAULT_PORT)
+                    ->setScheme('http');
+            }
         }
         return $servers;
     }

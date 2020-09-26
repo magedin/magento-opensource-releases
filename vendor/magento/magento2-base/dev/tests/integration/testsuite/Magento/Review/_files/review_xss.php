@@ -1,20 +1,16 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_xss.php';
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-$productRepository = $objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-$product = $productRepository->get('product-with-xss');
-
-$review = $objectManager->create('Magento\Review\Model\Review');
+$review = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Review\Model\Review');
 $review->setEntityId(
     $review->getEntityIdByCode(\Magento\Review\Model\Review::ENTITY_PRODUCT_CODE)
 )->setEntityPkValue(
-    $product->getId()
+    1
 )->setStatusId(
     \Magento\Review\Model\Review::STATUS_PENDING
 )->setStoreId(

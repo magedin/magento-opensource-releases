@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Block\Adminhtml\Edit\Tab\View;
@@ -44,18 +44,7 @@ class PersonalInfoTest extends \PHPUnit_Framework_TestCase
     protected $scopeConfig;
 
     /**
-     * @var \Magento\Customer\Model\CustomerRegistry
-     */
-    protected $customerRegistry;
-
-    /**
-     * @var \Magento\Customer\Model\Customer
-     */
-    protected $customerModel;
-
-    /**
      * @return void
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function setUp()
     {
@@ -133,20 +122,6 @@ class PersonalInfoTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->customerRegistry = $this->getMock(
-            'Magento\Customer\Model\CustomerRegistry',
-            ['retrieve'],
-            [],
-            '',
-            false
-        );
-        $this->customerModel = $this->getMock(
-            'Magento\Customer\Model\Customer',
-            ['isCustomerLocked'],
-            [],
-            '',
-            false
-        );
 
         $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
@@ -161,7 +136,6 @@ class PersonalInfoTest extends \PHPUnit_Framework_TestCase
                 'backendSession' => $backendSession,
             ]
         );
-        $this->block->setCustomerRegistry($this->customerRegistry);
     }
 
     /**
@@ -268,31 +242,6 @@ class PersonalInfoTest extends \PHPUnit_Framework_TestCase
         return [
             ['2015-03-04 12:00:00', '2015-03-04 12:00:00'],
             ['Never', null]
-        ];
-    }
-
-    /**
-     * @param string $expectedResult
-     * @param bool $value
-     * @dataProvider getAccountLockDataProvider
-     * @return void
-     */
-    public function testGetAccountLock($expectedResult, $value)
-    {
-        $this->customerRegistry->expects($this->once())->method('retrieve')->willReturn($this->customerModel);
-        $this->customerModel->expects($this->once())->method('isCustomerLocked')->willReturn($value);
-        $expectedResult =  new \Magento\Framework\Phrase($expectedResult);
-        $this->assertEquals($expectedResult, $this->block->getAccountLock());
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountLockDataProvider()
-    {
-        return [
-            ['result' => 'Locked', 'expectedValue' => true],
-            ['result' => 'Unlocked', 'expectedValue' => false]
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,10 +11,10 @@ use Magento\Catalog\Test\Fixture\Category\LandingPage;
 use Magento\Catalog\Test\Page\Category\CatalogCategoryView;
 use Magento\Mtf\Client\BrowserInterface;
 use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Assert that displayed category data on category page equals to passed from fixture.
- * NOTE: Design settings, Meta Keywords and Meta Description are not verified.
  */
 class AssertCategoryPage extends AbstractConstraint
 {
@@ -43,52 +43,54 @@ class AssertCategoryPage extends AbstractConstraint
     protected $browser;
 
     /**
-     * Category to test.
-     *
-     * @var Category
-     */
-    protected $category;
-
-    /**
      * Assert that displayed category data on category page equals to passed from fixture.
      *
      * @param Category $category
+     * @param Category $initialCategory
+     * @param FixtureFactory $fixtureFactory
      * @param CatalogCategoryView $categoryView
      * @param BrowserInterface $browser
      * @return void
      */
     public function processAssert(
         Category $category,
+        Category $initialCategory,
+        FixtureFactory $fixtureFactory,
         CatalogCategoryView $categoryView,
         BrowserInterface $browser
     ) {
         $this->browser = $browser;
-        $this->category = $category;
         $this->categoryViewPage = $categoryView;
+        $categoryData = $this->prepareData($fixtureFactory, $category, $initialCategory);
         $this->browser->open($this->getCategoryUrl($category));
-        $categoryData = $this->prepareFixtureData($category->getData());
-        $diff = $this->verifyGeneralInformation($categoryData);
-        $diff = array_merge($diff, $this->verifyContent($categoryData));
-        $diff = array_merge($diff, $this->verifyDisplaySettings($categoryData));
-        $diff = array_merge($diff, $this->verifySearchEngineOptimization($categoryData));
-        \PHPUnit_Framework_Assert::assertEmpty(
-            $diff,
-            "Category settings on Storefront page are different.\n" . implode(' ', $diff)
-        );
+        $this->assertGeneralInformation($category, $categoryData);
+        $this->assertDisplaySetting($category, $categoryData);
     }
 
     /**
-     * Prepares fixture data for comparison.
+     * Prepare comparison data.
      *
-     * @param array $data
+     * @param FixtureFactory $fixtureFactory
+     * @param Category $category
+     * @param Category $initialCategory
      * @return array
      */
-    protected function prepareFixtureData(array $data)
+    protected function prepareData(FixtureFactory $fixtureFactory, Category $category, Category $initialCategory)
     {
-        if (isset($data['id'])) {
-            unset($data['id']);
-        }
-        return $data;
+        $product = $fixtureFactory->createByCode(
+            'catalogProductSimple',
+            [
+                'dataset' => 'default',
+                'data' => [
+                    'category_ids' => [
+                        'category' => $initialCategory,
+                    ],
+                ]
+            ]
+        );
+        $product->persist();
+
+        return array_merge($initialCategory->getData(), $category->getData());
     }
 
     /**
@@ -106,7 +108,7 @@ class AssertCategoryPage extends AbstractConstraint
                 : trim(strtolower(preg_replace('#[^0-9a-z%]+#i', '-', $category->getName())), '-');
 
             $category = $category->getDataFieldConfig('parent_id')['source']->getParentCategory();
-            if ($category !== null && 1 == $category->getParentId()) {
+            if (1 == $category->getParentId()) {
                 $category = null;
             }
         }
@@ -115,103 +117,83 @@ class AssertCategoryPage extends AbstractConstraint
     }
 
     /**
-     * Verify category general information:
-     * # Include in menu
-     * # Name
+     * Assert category general information.
      *
+     * @param Category $category
      * @param array $categoryData
-     * @return array
+     * @return void
      */
-    protected function verifyGeneralInformation(array $categoryData)
+    protected function assertGeneralInformation(Category $category, array $categoryData)
     {
-        $errorMessage = [];
-
-        if (isset($categoryData['include_in_menu']) && $categoryData['include_in_menu'] == 'Yes') {
-            if (!$this->categoryViewPage->getTopmenu()->isCategoryVisible($categoryData['name'])) {
-                $errorMessage[] = 'Category is not visible in the navigation pane.';
-            }
-        }
-        if (isset($categoryData['include_in_menu']) && $categoryData['include_in_menu'] == 'No') {
-            if ($this->categoryViewPage->getTopmenu()->isCategoryVisible($categoryData['name'])) {
-                $errorMessage[] = 'Category is visible in the navigation pane.';
-            }
-        }
+        $categoryUrl = $this->getCategoryUrl($category);
+        \PHPUnit_Framework_Assert::assertEquals(
+            $categoryUrl,
+            $this->browser->getUrl(),
+            'Wrong page URL.'
+            . "\nExpected: " . $categoryUrl
+            . "\nActual: " . $this->browser->getUrl()
+        );
 
         if (isset($categoryData['name'])) {
             $title = $this->categoryViewPage->getTitleBlock()->getTitle();
-            if ($categoryData['name'] != $title) {
-                $errorMessage[] = 'Wrong category name.'
-                    . "\nExpected: " . $categoryData['name']
-                    . "\nActual: " . $title;
-            }
+            \PHPUnit_Framework_Assert::assertEquals(
+                $categoryData['name'],
+                $title,
+                'Wrong page title.'
+                . "\nExpected: " . $categoryData['name']
+                . "\nActual: " . $title
+            );
         }
-
-        return $errorMessage;
-    }
-
-    /**
-     * Verify category Content data:
-     * # Description
-     * # CMS Block content
-     *
-     * @param array $categoryData
-     * @return array
-     */
-    protected function verifyContent(array $categoryData)
-    {
-        $errorMessage = [];
 
         if (isset($categoryData['description'])) {
             $description = $this->categoryViewPage->getViewBlock()->getDescription();
-            if ($categoryData['description'] != $description) {
-                $errorMessage[] = 'Wrong category description.'
-                    . "\nExpected: " . $categoryData['description']
-                    . "\nActual: " . $description;
-            }
+            \PHPUnit_Framework_Assert::assertEquals(
+                $categoryData['description'],
+                $description,
+                'Wrong category description.'
+                . "\nExpected: " . $categoryData['description']
+                . "\nActual: " . $description
+            );
         }
+    }
 
+    /**
+     * Assert category display settings.
+     *
+     * @param Category $category
+     * @param array $categoryData
+     * @return void
+     */
+    protected function assertDisplaySetting(Category $category, array $categoryData)
+    {
         if (
             isset($categoryData['landing_page'])
             && isset($categoryData['display_mode'])
             && in_array($categoryData['display_mode'], $this->visibleCmsBlockMode)
         ) {
             /** @var LandingPage $sourceLandingPage */
-            $sourceLandingPage = $this->category->getDataFieldConfig('landing_page')['source'];
+            $sourceLandingPage = $category->getDataFieldConfig('landing_page')['source'];
             $fixtureContent = $sourceLandingPage->getCmsBlock()->getContent();
             $pageContent = $this->categoryViewPage->getViewBlock()->getContent();
 
-            if ($fixtureContent != $pageContent) {
-                $errorMessage[] = 'Wrong category landing page content.'
-                    . "\nExpected: " . $fixtureContent
-                    . "\nActual: " . $pageContent;
-            }
+            \PHPUnit_Framework_Assert::assertEquals(
+                $fixtureContent,
+                $pageContent,
+                'Wrong category landing page content.'
+                . "\nExpected: " . $fixtureContent
+                . "\nActual: " . $pageContent
+            );
         }
-
-        return $errorMessage;
-    }
-
-    /**
-     * Verify category Display Settings data:
-     * # default_sort_by
-     * # available_sort_by
-     *
-     * @param array $categoryData
-     * @return array
-     */
-    protected function verifyDisplaySettings(array $categoryData)
-    {
-        $errorMessage = [];
-
-        //TODO: verify display_mode
-
         if (isset($categoryData['default_sort_by'])) {
-            $expected = $categoryData['default_sort_by'];
-            $actual = $this->categoryViewPage->getTopToolbar()->getSelectSortType();
-            if ($expected != $actual) {
-                $errorMessage[] = 'Wrong sorting type.'
-                    . "\nExpected: " . $expected
-                    . "\nActual: " . $actual;
-            }
+            $sortBy = strtolower($categoryData['default_sort_by']);
+            $sortType = $this->categoryViewPage->getTopToolbar()->getSelectSortType();
+            \PHPUnit_Framework_Assert::assertEquals(
+                $sortBy,
+                $sortType,
+                'Wrong sorting type.'
+                . "\nExpected: " . $sortBy
+                . "\nActual: " . $sortType
+            );
         }
 
         if (isset($categoryData['available_sort_by'])) {
@@ -222,50 +204,17 @@ class AssertCategoryPage extends AbstractConstraint
                 }
             );
             if ($availableSortType) {
-                $expected = array_values($availableSortType);
-                $actual = $this->categoryViewPage->getTopToolbar()->getSortType();
-                if ($expected != $actual) {
-                    $errorMessage[] = 'Wrong available sorting type.'
-                        . "\nExpected: " . implode(PHP_EOL, $expected)
-                        . "\nActual: " . implode(PHP_EOL, $actual);
-                }
+                $availableSortType = array_values($availableSortType);
+                $availableSortTypeOnPage = $this->categoryViewPage->getTopToolbar()->getSortType();
+                \PHPUnit_Framework_Assert::assertEquals(
+                    $availableSortType,
+                    $availableSortTypeOnPage,
+                    'Wrong available sorting type.'
+                    . "\nExpected: " . implode(PHP_EOL, $availableSortType)
+                    . "\nActual: " . implode(PHP_EOL, $availableSortTypeOnPage)
+                );
             }
         }
-
-        // TODO: verify Layered Navigation Price Step
-
-        return $errorMessage;
-    }
-
-    /**
-     * Verify category Search Engine Optimization data:
-     * # URL
-     * # Meta Title
-     *
-     * @param array $categoryData
-     * @return array
-     */
-    protected function verifySearchEngineOptimization(array $categoryData)
-    {
-        $errorMessage = [];
-
-        $categoryUrl = $this->getCategoryUrl($this->category);
-        if ($categoryUrl != $this->browser->getUrl()) {
-            $errorMessage[] = 'Wrong page URL.'
-                . "\nExpected: " . $categoryUrl
-                . "\nActual: " . $this->browser->getUrl();
-        };
-
-        if (isset($categoryData['meta_title'])) {
-            $actual = $this->browser->getTitle();
-            if ($categoryData['meta_title'] != $actual) {
-                $errorMessage[] = 'Wrong page title.'
-                    . "\nExpected: " . $categoryData['meta_title']
-                    . "\nActual: " . $actual;
-            };
-        }
-
-        return $errorMessage;
     }
 
     /**

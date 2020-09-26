@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Model\Api;
 
-use Magento\Payment\Helper\Formatter;
 use Magento\Payment\Model\Method\Logger;
 
 /**
@@ -13,8 +12,6 @@ use Magento\Payment\Model\Method\Logger;
  */
 abstract class AbstractApi extends \Magento\Framework\DataObject
 {
-    use Formatter;
-
     /**
      * Config instance
      *
@@ -425,7 +422,7 @@ abstract class AbstractApi extends \Magento\Framework\DataObject
                 if (isset($this->_lineItemTotalExportMap[$key])) {
                     // !empty($total)
                     $privateKey = $this->_lineItemTotalExportMap[$key];
-                    $request[$privateKey] = $this->formatPrice($total);
+                    $request[$privateKey] = $this->_filterAmount($total);
                 }
             }
         }
@@ -445,7 +442,7 @@ abstract class AbstractApi extends \Magento\Framework\DataObject
                     $value = call_user_func([$this, $callback], $value);
                 }
                 if (is_float($value)) {
-                    $value = $this->formatPrice($value);
+                    $value = $this->_filterAmount($value);
                 }
                 $request[sprintf($privateFormat, $i)] = $value;
             }
@@ -472,7 +469,7 @@ abstract class AbstractApi extends \Magento\Framework\DataObject
             foreach ($this->_shippingOptionsExportItemsFormat as $publicKey => $privateFormat) {
                 $value = $option->getDataUsingMethod($publicKey);
                 if (is_float($value)) {
-                    $value = $this->formatPrice($value);
+                    $value = $this->_filterAmount($value);
                 }
                 if (is_bool($value)) {
                     $value = $this->_filterBool($value);
@@ -482,6 +479,17 @@ abstract class AbstractApi extends \Magento\Framework\DataObject
             $i++;
         }
         return true;
+    }
+
+    /**
+     * Filter amounts in API calls
+     *
+     * @param float|string $value
+     * @return string
+     */
+    protected function _filterAmount($value)
+    {
+        return sprintf('%.2F', $value);
     }
 
     /**

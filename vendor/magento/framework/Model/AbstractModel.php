@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Model;
@@ -220,19 +220,7 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
     public function __sleep()
     {
         $properties = array_keys(get_object_vars($this));
-        $properties = array_diff(
-            $properties,
-            [
-                '_eventManager',
-                '_cacheManager',
-                '_registry',
-                '_appState',
-                '_actionValidator',
-                '_logger',
-                '_resourceCollection',
-                '_resource',
-            ]
-        );
+        $properties = array_diff($properties, ['_eventManager', '_cacheManager', '_registry', '_appState']);
         return $properties;
     }
 
@@ -244,15 +232,12 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
     public function __wakeup()
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_eventManager = $objectManager->get('Magento\Framework\Event\ManagerInterface');
+        $this->_cacheManager = $objectManager->get('Magento\Framework\App\CacheInterface');
         $this->_registry = $objectManager->get('Magento\Framework\Registry');
-
         $context = $objectManager->get('Magento\Framework\Model\Context');
         if ($context instanceof \Magento\Framework\Model\Context) {
             $this->_appState = $context->getAppState();
-            $this->_eventManager = $context->getEventDispatcher();
-            $this->_cacheManager = $context->getCacheManager();
-            $this->_logger = $context->getLogger();
-            $this->_actionValidator = $context->getActionValidator();
         }
     }
 
@@ -277,6 +262,7 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
     {
         return $this->_idFieldName;
     }
+
 
     /**
      * Identifier getter
@@ -523,7 +509,6 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
      * @param integer $modelId
      * @param null|string $field
      * @return $this
-     * @deprecated
      */
     public function load($modelId, $field = null)
     {
@@ -624,7 +609,6 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
      *
      * @return $this
      * @throws \Exception
-     * @deprecated
      */
     public function save()
     {
@@ -809,7 +793,6 @@ abstract class AbstractModel extends \Magento\Framework\DataObject
      *
      * @return $this
      * @throws \Exception
-     * @deprecated
      */
     public function delete()
     {

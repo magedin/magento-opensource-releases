@@ -13,7 +13,8 @@
 namespace Composer\Package\Archiver;
 
 use Composer\Util\Filesystem;
-use Symfony\Component\Finder\Finder;
+
+use Symfony\Component\Finder;
 
 /**
  * A Symfony Finder wrapper which locates files that should go into archives
@@ -26,7 +27,7 @@ use Symfony\Component\Finder\Finder;
 class ArchivableFilesFinder extends \FilterIterator
 {
     /**
-     * @var Finder
+     * @var Symfony\Component\Finder\Finder
      */
     protected $finder;
 
@@ -48,7 +49,7 @@ class ArchivableFilesFinder extends \FilterIterator
             new ComposerExcludeFilter($sources, $excludes),
         );
 
-        $this->finder = new Finder();
+        $this->finder = new Finder\Finder();
 
         $filter = function (\SplFileInfo $file) use ($sources, $filters, $fs) {
             if ($file->isLink() && strpos($file->getLinkTarget(), $sources) !== 0) {

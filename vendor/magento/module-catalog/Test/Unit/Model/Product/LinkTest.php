@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\Product;
@@ -20,9 +20,9 @@ class LinkTest extends \PHPUnit_Framework_TestCase
     protected $resource;
 
     /**
-     * @var \Magento\Catalog\Model\Product\Link\SaveHandler|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\CatalogInventory\Helper\Stock|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $saveProductLinksMock;
+    protected $stockHelperMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -73,7 +73,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->saveProductLinksMock = $this->getMockBuilder('Magento\Catalog\Model\Product\Link\SaveHandler')
+        $this->stockHelperMock = $this->getMockBuilder('Magento\CatalogInventory\Helper\Stock')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -84,7 +84,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
                 'linkCollectionFactory' => $linkCollectionFactory,
                 'productCollectionFactory' => $productCollectionFactory,
                 'resource' => $this->resource,
-                'saveProductLinks' => $this->saveProductLinksMock
+                'stockHelper' => $this->stockHelperMock
             ]
         );
     }
@@ -127,6 +127,10 @@ class LinkTest extends \PHPUnit_Framework_TestCase
 
     public function testGetProductCollection()
     {
+        $this->stockHelperMock
+            ->expects($this->once())
+            ->method('addInStockFilterToCollection')
+            ->with($this->productCollection);
         $this->assertInstanceOf(
             'Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection',
             $this->model->getProductCollection()
@@ -155,13 +159,23 @@ class LinkTest extends \PHPUnit_Framework_TestCase
 
     public function testSaveProductRelations()
     {
-        $product = $this->getMockBuilder('Magento\Catalog\Model\Product')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->saveProductLinksMock
-            ->expects($this->once())
-            ->method('execute')
-            ->with(\Magento\Catalog\Api\Data\ProductInterface::class, $product);
+        $data = [1];
+        $typeId = 1;
+        $this->model->setData('link_type_id', $typeId);
+        $product = $this->getMockBuilder(
+            'Magento\Catalog\Model\Product'
+        )->disableOriginalConstructor()->setMethods(
+            ['getRelatedLinkData', 'getUpSellLinkData', 'getCrossSellLinkData', '__wakeup']
+        )->getMock();
+        $product->expects($this->any())->method('getRelatedLinkData')->will($this->returnValue($data));
+        $product->expects($this->any())->method('getUpSellLinkData')->will($this->returnValue($data));
+        $product->expects($this->any())->method('getCrossSellLinkData')->will($this->returnValue($data));
+        $map = [
+            [$product, $data, Link::LINK_TYPE_RELATED, $this->resource],
+            [$product, $data, Link::LINK_TYPE_UPSELL, $this->resource],
+            [$product, $data, Link::LINK_TYPE_CROSSSELL, $this->resource],
+        ];
+        $this->resource->expects($this->any())->method('saveProductLinks')->will($this->returnValueMap($map));
         $this->model->saveProductRelations($product);
     }
 }

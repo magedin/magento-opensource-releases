@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -42,23 +42,27 @@ class XmlCatalogGenerateCommandTest extends \PHPUnit_Framework_TestCase
             )->will($this->returnValue(null));
 
         $formats = ['phpstorm' => $phpstormFormatMock];
-        $readFactory = $this->getMock('Magento\Framework\Filesystem\Directory\ReadFactory', [], [], '', false);
+        $filesystem = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
         $readDirMock = $this->getMock('\Magento\Framework\Filesystem\Directory\ReadInterface', [], [], '', false);
 
         $content = file_get_contents($fixtureXmlFile);
 
         $readDirMock->expects($this->once())
+            ->method('getRelativePath')
+            ->with($this->equalTo($fixtureXmlFile))
+            ->will($this->returnValue('test'));
+        $readDirMock->expects($this->once())
             ->method('readFile')
-            ->with($this->equalTo('test.xml'))
+            ->with($this->equalTo('test'))
             ->will($this->returnValue($content));
-        $readFactory->expects($this->once())
-            ->method('create')
+        $filesystem->expects($this->once())
+            ->method('getDirectoryRead')
             ->will($this->returnValue($readDirMock));
 
         $this->command = new XmlCatalogGenerateCommand(
             $filesMock,
             $urnResolverMock,
-            $readFactory,
+            $filesystem,
             $formats
         );
 

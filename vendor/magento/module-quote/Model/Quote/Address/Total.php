@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model\Quote\Address;
@@ -114,7 +114,6 @@ class Total extends \Magento\Framework\DataObject
     }
 
     //@codeCoverageIgnoreStart
-
     /**
      * Get all total amount values
      *
@@ -133,34 +132,5 @@ class Total extends \Magento\Framework\DataObject
     public function getAllBaseTotalAmounts()
     {
         return $this->baseTotalAmounts;
-    }
-    
-    //@codeCoverageIgnoreEnd
-
-    /**
-     * Set the full info, which is used to capture tax related information.
-     * If a string is used, it is assumed to be serialized.
-     *
-     * @param array|string $info
-     * @return $this
-     */
-    public function setFullInfo($info)
-    {
-        $this->setData('full_info', $info);
-        return $this;
-    }
-
-    /**
-     * Returns the full info, which is used to capture tax related information.
-     *
-     * @return array
-     */
-    public function getFullInfo()
-    {
-        $fullInfo = $this->getData('full_info');
-        if (is_string($fullInfo)) {
-            $fullInfo = unserialize($fullInfo);
-        }
-        return $fullInfo;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleOptimizer\Test\Unit\Helper;
@@ -118,8 +118,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
                 'value' => $experimentCode,
                 'class' => 'textarea googleoptimizer',
                 'required' => false,
-                'note' => 'Experiment code should be added to the original page only.',
-                'data-form-part' => ''
+                'note' => 'Experiment code should be added to the original page only.'
             ]
         );
 
@@ -130,12 +129,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         )->with(
             'code_id',
             'hidden',
-            [
-                'name' => 'code_id',
-                'value' => $experimentCodeId,
-                'required' => false,
-                'data-form-part' => ''
-            ]
+            ['name' => 'code_id', 'value' => $experimentCodeId, 'required' => false]
         );
         $this->_formMock->expects($this->once())->method('setFieldNameSuffix')->with('google_experiment');
     }

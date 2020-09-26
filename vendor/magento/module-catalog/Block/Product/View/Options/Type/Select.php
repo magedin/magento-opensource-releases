@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -69,7 +69,6 @@ class Select extends \Magento\Catalog\Block\Product\View\Options\AbstractOptions
             if (!$this->getSkipJsReloadPrice()) {
                 $extraParams .= ' onchange="opConfig.reloadPrice()"';
             }
-            $extraParams .= ' data-selector="' . $select->getName() . '"';
             $select->setExtraParams($extraParams);
 
             if ($configValue) {
@@ -98,7 +97,6 @@ class Select extends \Magento\Catalog\Block\Product\View\Options\AbstractOptions
                             ' product-custom-option" name="options[' .
                             $_option->getId() .
                             ']"' .
-                            ' data-selector="options[' . $_option->getId() . ']"' .
                             ($this->getSkipJsReloadPrice() ? '' : ' onclick="opConfig.reloadPrice()"') .
                             ' value="" checked="checked" /><label class="label admin__field-label" for="options_' .
                             $_option->getId() .
@@ -130,11 +128,6 @@ class Select extends \Magento\Catalog\Block\Product\View\Options\AbstractOptions
                     $checked = $configValue == $htmlValue ? 'checked' : '';
                 }
 
-                $dataSelector = 'options[' . $_option->getId() . ']';
-                if ($arraySign) {
-                    $dataSelector .= '[' . $htmlValue . ']';
-                }
-
                 $selectHtml .= '<div class="field choice admin__field admin__field-option' .
                     $require .
                     '">' .
@@ -158,7 +151,6 @@ class Select extends \Magento\Catalog\Block\Product\View\Options\AbstractOptions
                     $htmlValue .
                     '" ' .
                     $checked .
-                    ' data-selector="' . $dataSelector . '"' .
                     ' price="' .
                     $this->pricingHelper->currencyByStore($_value->getPrice(true), $store, false) .
                     '" />' .

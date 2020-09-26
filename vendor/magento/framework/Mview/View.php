@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 // @codingStandardsIgnoreFile
 
 namespace Magento\Framework\Mview;
-
-use Magento\Framework\Mview\View\ChangelogTableNotExistsException;
-use Magento\Framework\Mview\View\SubscriptionFactory;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -51,7 +48,7 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
      * @param ActionFactory $actionFactory
      * @param View\StateInterface $state
      * @param View\ChangelogInterface $changelog
-     * @param SubscriptionFactory $subscriptionFactory
+     * @param View\SubscriptionFactory $subscriptionFactory
      * @param array $data
      */
     public function __construct(
@@ -59,7 +56,7 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
         ActionFactory $actionFactory,
         View\StateInterface $state,
         View\ChangelogInterface $changelog,
-        SubscriptionFactory $subscriptionFactory,
+        View\SubscriptionFactory $subscriptionFactory,
         array $data = []
     ) {
         $this->config = $config;
@@ -178,19 +175,16 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
                 $this->getChangelog()->create();
 
                 // Create subscriptions
-                foreach ($this->getSubscriptions() as $subscriptionConfig) {
+                foreach ($this->getSubscriptions() as $subscription) {
                     /** @var \Magento\Framework\Mview\View\SubscriptionInterface $subscription */
-                    $subscriptionInstance = $this->subscriptionFactory->create(
+                    $subscription = $this->subscriptionFactory->create(
                         [
                             'view' => $this,
-                            'tableName' => $subscriptionConfig['name'],
-                            'columnName' => $subscriptionConfig['column'],
-                            'subscriptionModel' => !empty($subscriptionConfig['subscription_model'])
-                                ? $subscriptionConfig['subscription_model']
-                                : SubscriptionFactory::INSTANCE_NAME,
+                            'tableName' => $subscription['name'],
+                            'columnName' => $subscription['column'],
                         ]
                     );
-                    $subscriptionInstance->create();
+                    $subscription->create();
                 }
 
                 // Update view state
@@ -214,23 +208,23 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
         if ($this->getState()->getMode() != View\StateInterface::MODE_DISABLED) {
             try {
                 // Remove subscriptions
-                foreach ($this->getSubscriptions() as $subscriptionConfig) {
+                foreach ($this->getSubscriptions() as $subscription) {
                     /** @var \Magento\Framework\Mview\View\SubscriptionInterface $subscription */
-                    $subscriptionInstance = $this->subscriptionFactory->create(
+                    $subscription = $this->subscriptionFactory->create(
                         [
                             'view' => $this,
-                            'tableName' => $subscriptionConfig['name'],
-                            'columnName' => $subscriptionConfig['column'],
-                            'subscriptionModel' => !empty($subscriptionConfig['subscriptionModel'])
-                                ? $subscriptionConfig['subscriptionModel']
-                                : SubscriptionFactory::INSTANCE_NAME,
+                            'tableName' => $subscription['name'],
+                            'columnName' => $subscription['column'],
                         ]
                     );
-                    $subscriptionInstance->remove();
+                    $subscription->remove();
                 }
 
+                // Drop changelog table
+                $this->getChangelog()->drop();
+
                 // Update view state
-                $this->getState()->setMode(View\StateInterface::MODE_DISABLED)->save();
+                $this->getState()->setVersionId(null)->setMode(View\StateInterface::MODE_DISABLED)->save();
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -247,12 +241,10 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
      */
     public function update()
     {
-        if ($this->getState()->getStatus() == View\StateInterface::STATUS_IDLE) {
-            try {
-                $currentVersionId = $this->getChangelog()->getVersion();
-            } catch (ChangelogTableNotExistsException $e) {
-                return;
-            }
+        if ($this->getState()->getMode() == View\StateInterface::MODE_ENABLED &&
+            $this->getState()->getStatus() == View\StateInterface::STATUS_IDLE
+        ) {
+            $currentVersionId = $this->getChangelog()->getVersion();
             $lastVersionId = $this->getState()->getVersionId();
             $ids = $this->getChangelog()->getList($lastVersionId, $currentVersionId);
             if ($ids) {
@@ -261,15 +253,13 @@ class View extends \Magento\Framework\DataObject implements ViewInterface
                 try {
                     $action->execute($ids);
                     $this->getState()->loadByView($this->getId());
-                    $statusToRestore = $this->getState()->getStatus() == View\StateInterface::STATUS_SUSPENDED
-                        ? View\StateInterface::STATUS_SUSPENDED
-                        : View\StateInterface::STATUS_IDLE;
+                    $statusToRestore = $this->getState()->getStatus() ==
+                        View\StateInterface::STATUS_SUSPENDED ? View\StateInterface::STATUS_SUSPENDED : View\StateInterface::STATUS_IDLE;
                     $this->getState()->setVersionId($currentVersionId)->setStatus($statusToRestore)->save();
                 } catch (\Exception $exception) {
                     $this->getState()->loadByView($this->getId());
-                    $statusToRestore = $this->getState()->getStatus() == View\StateInterface::STATUS_SUSPENDED
-                        ? View\StateInterface::STATUS_SUSPENDED
-                        : View\StateInterface::STATUS_IDLE;
+                    $statusToRestore = $this->getState()->getStatus() ==
+                        View\StateInterface::STATUS_SUSPENDED ? View\StateInterface::STATUS_SUSPENDED : View\StateInterface::STATUS_IDLE;
                     $this->getState()->setStatus($statusToRestore)->save();
                     throw $exception;
                 }

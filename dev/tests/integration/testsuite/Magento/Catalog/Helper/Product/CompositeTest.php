@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -45,14 +45,9 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRenderConfigureResult()
     {
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = Bootstrap::getObjectManager()->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('simple');
-
         $configureResult = new \Magento\Framework\DataObject();
         $configureResult->setOk(true)
-            ->setProductId($product->getId())
+            ->setProductId(1)
             ->setCurrentCustomerId(1);
 
         $this->helper->renderConfigureResult($configureResult);

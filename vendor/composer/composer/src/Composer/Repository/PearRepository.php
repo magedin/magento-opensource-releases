@@ -13,17 +13,15 @@
 namespace Composer\Repository;
 
 use Composer\IO\IOInterface;
-use Composer\Semver\VersionParser as SemverVersionParser;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\Pear\ChannelReader;
 use Composer\Package\CompletePackage;
 use Composer\Repository\Pear\ChannelInfo;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Package\Link;
-use Composer\Semver\Constraint\Constraint;
+use Composer\Package\LinkConstraint\VersionConstraint;
 use Composer\Util\RemoteFilesystem;
 use Composer\Config;
-use Composer\Factory;
 
 /**
  * Builds list of package from PEAR channel.
@@ -34,13 +32,12 @@ use Composer\Factory;
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class PearRepository extends ArrayRepository implements ConfigurableRepositoryInterface
+class PearRepository extends ArrayRepository
 {
     private $url;
     private $io;
     private $rfs;
     private $versionParser;
-    private $repoConfig;
 
     /** @var string vendor makes additional alias for each channel as {prefix}/{packagename}. It allows smoother
      * package transition to composer-like repositories.
@@ -49,7 +46,6 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
 
     public function __construct(array $repoConfig, IOInterface $io, Config $config, EventDispatcher $dispatcher = null, RemoteFilesystem $rfs = null)
     {
-        parent::__construct();
         if (!preg_match('{^https?://}', $repoConfig['url'])) {
             $repoConfig['url'] = 'http://'.$repoConfig['url'];
         }
@@ -61,15 +57,9 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
 
         $this->url = rtrim($repoConfig['url'], '/');
         $this->io = $io;
-        $this->rfs = $rfs ?: Factory::createRemoteFilesystem($this->io, $config);
+        $this->rfs = $rfs ?: new RemoteFilesystem($this->io, $config);
         $this->vendorAlias = isset($repoConfig['vendor-alias']) ? $repoConfig['vendor-alias'] : null;
         $this->versionParser = new VersionParser();
-        $this->repoConfig = $repoConfig;
-    }
-
-    public function getRepoConfig()
-    {
-        return $this->repoConfig;
     }
 
     protected function initialize()
@@ -95,11 +85,11 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
     /**
      * Builds CompletePackages from PEAR package definition data.
      *
-     * @param  ChannelInfo         $channelInfo
-     * @param  SemverVersionParser $versionParser
+     * @param  ChannelInfo     $channelInfo
+     * @param  VersionParser   $versionParser
      * @return CompletePackage
      */
-    private function buildComposerPackages(ChannelInfo $channelInfo, SemverVersionParser $versionParser)
+    private function buildComposerPackages(ChannelInfo $channelInfo, VersionParser $versionParser)
     {
         $result = array();
         foreach ($channelInfo->getPackages() as $packageDefinition) {
@@ -107,7 +97,9 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
                 try {
                     $normalizedVersion = $versionParser->normalize($version);
                 } catch (\UnexpectedValueException $e) {
-                    $this->io->writeError('Could not load '.$packageDefinition->getPackageName().' '.$version.': '.$e->getMessage(), true, IOInterface::VERBOSE);
+                    if ($this->io->isVerbose()) {
+                        $this->io->writeError('Could not load '.$packageDefinition->getPackageName().' '.$version.': '.$e->getMessage());
+                    }
                     continue;
                 }
 
@@ -128,7 +120,7 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
                 // cause we've know only repository channel alias
                 if ($channelInfo->getName() == $packageDefinition->getChannelName()) {
                     $composerPackageAlias = $this->buildComposerPackageName($channelInfo->getAlias(), $packageDefinition->getPackageName());
-                    $aliasConstraint = new Constraint('==', $normalizedVersion);
+                    $aliasConstraint = new VersionConstraint('==', $normalizedVersion);
                     $replaces[] = new Link($composerPackageName, $composerPackageAlias, $aliasConstraint, 'replaces', (string) $aliasConstraint);
                 }
 
@@ -137,7 +129,7 @@ class PearRepository extends ArrayRepository implements ConfigurableRepositoryIn
                     && ($this->vendorAlias != 'pear-'.$channelInfo->getAlias() || $channelInfo->getName() != $packageDefinition->getChannelName())
                 ) {
                     $composerPackageAlias = "{$this->vendorAlias}/{$packageDefinition->getPackageName()}";
-                    $aliasConstraint = new Constraint('==', $normalizedVersion);
+                    $aliasConstraint = new VersionConstraint('==', $normalizedVersion);
                     $replaces[] = new Link($composerPackageName, $composerPackageAlias, $aliasConstraint, 'replaces', (string) $aliasConstraint);
                 }
 

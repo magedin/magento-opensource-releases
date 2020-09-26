@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -23,12 +23,11 @@ define([
             state: {},
             priceFormat: {},
             optionTemplate: '<%- data.label %>' +
-            "<% if (typeof data.finalPrice.value !== 'undefined') { %>" +
+            '<% if (data.finalPrice.value) { %>' +
             ' <%- data.finalPrice.formatted %>' +
             '<% } %>',
             mediaGallerySelector: '[data-gallery-role=gallery-placeholder]',
-            mediaGalleryInitial: null,
-            onlyMainImg: false
+            mediaGalleryInitial: null
         },
 
         /**
@@ -254,45 +253,14 @@ define([
          * @private
          */
         _changeProductImage: function () {
-            var images,
-                initialImages = $.extend(true, [], this.options.mediaGalleryInitial),
+            var images = this.options.spConfig.images[this.simpleProduct],
                 galleryObject = $(this.options.mediaGallerySelector).data('gallery');
-
-            if (this.options.spConfig.images[this.simpleProduct]) {
-                images = $.extend(true, [], this.options.spConfig.images[this.simpleProduct]);
-            }
-
-            function updateGallery(imagesArr) {
-                var imgToUpdate,
-                    mainImg;
-
-                mainImg = imagesArr.filter(function (img) {
-                    return img.isMain;
-                });
-
-                imgToUpdate = mainImg.length ? mainImg[0] : imagesArr[0];
-                galleryObject.updateDataByIndex(0, imgToUpdate);
-                galleryObject.seek(1);
-            }
 
             if (galleryObject) {
                 if (images) {
-                    images.map(function (img) {
-                        img.type = 'image';
-                    });
-
-                    if (this.options.onlyMainImg) {
-                        updateGallery(images);
-                    } else {
-                        galleryObject.updateData(images)
-                    }
+                    galleryObject.updateData(images);
                 } else {
-                    if (this.options.onlyMainImg) {
-                        updateGallery(initialImages);
-                    } else {
-                        galleryObject.updateData(this.options.mediaGalleryInitial);
-                        $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
-                    }
+                    galleryObject.updateData(this.options.mediaGalleryInitial);
                 }
             }
         },

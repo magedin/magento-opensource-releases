@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Test\Unit\Model\Layout;
@@ -27,7 +27,7 @@ class LayoutPluginTest extends \PHPUnit_Framework_TestCase
      */
     protected $configMock;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->layoutMock = $this->getMockForAbstractClass(
             'Magento\Framework\View\Layout',

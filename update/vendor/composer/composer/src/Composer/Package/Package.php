@@ -43,15 +43,10 @@ class Package extends BasePackage
     protected $stability;
     protected $notificationUrl;
 
-    /** @var Link[] */
     protected $requires = array();
-    /** @var Link[] */
     protected $conflicts = array();
-    /** @var Link[] */
     protected $provides = array();
-    /** @var Link[] */
     protected $replaces = array();
-    /** @var Link[] */
     protected $devRequires = array();
     protected $suggests = array();
     protected $autoload = array();
@@ -374,7 +369,7 @@ class Package extends BasePackage
     /**
      * Set the required packages
      *
-     * @param Link[] $requires A set of package links
+     * @param array $requires A set of package links
      */
     public function setRequires(array $requires)
     {
@@ -392,7 +387,7 @@ class Package extends BasePackage
     /**
      * Set the conflicting packages
      *
-     * @param Link[] $conflicts A set of package links
+     * @param array $conflicts A set of package links
      */
     public function setConflicts(array $conflicts)
     {
@@ -410,7 +405,7 @@ class Package extends BasePackage
     /**
      * Set the provided virtual packages
      *
-     * @param Link[] $provides A set of package links
+     * @param array $provides A set of package links
      */
     public function setProvides(array $provides)
     {
@@ -428,7 +423,7 @@ class Package extends BasePackage
     /**
      * Set the packages this one replaces
      *
-     * @param Link[] $replaces A set of package links
+     * @param array $replaces A set of package links
      */
     public function setReplaces(array $replaces)
     {
@@ -446,7 +441,7 @@ class Package extends BasePackage
     /**
      * Set the recommended packages
      *
-     * @param Link[] $devRequires A set of package links
+     * @param array $devRequires A set of package links
      */
     public function setDevRequires(array $devRequires)
     {

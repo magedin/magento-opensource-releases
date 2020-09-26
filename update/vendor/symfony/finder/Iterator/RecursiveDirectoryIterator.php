@@ -53,7 +53,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 
         parent::__construct($path, $flags);
         $this->ignoreUnreadableDirs = $ignoreUnreadableDirs;
-        $this->rootPath = $path;
+        $this->rootPath = (string) $path;
         if ('/' !== DIRECTORY_SEPARATOR && !($flags & self::UNIX_PATHS)) {
             $this->directorySeparator = DIRECTORY_SEPARATOR;
         }
@@ -118,10 +118,8 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
             return;
         }
 
-        // @see https://bugs.php.net/68557
-        if (PHP_VERSION_ID < 50523 || PHP_VERSION_ID >= 50600 && PHP_VERSION_ID < 50607) {
-            parent::next();
-        }
+        // @see https://bugs.php.net/bug.php?id=49104
+        parent::next();
 
         parent::rewind();
     }

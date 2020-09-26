@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 // jscs:disable jsDoc
@@ -24,28 +24,16 @@ define([
         }
     );
 
-    Wizard = function (steps, modalClass) {
+    Wizard = function (steps) {
         this.steps = steps;
         this.index = 0;
         this.data = {};
+        this.element = $('[data-role=steps-wizard-main]');
+        this.nextLabel = '[data-role="step-wizard-next"]';
+        this.prevLabel = '[data-role="step-wizard-prev"]';
         this.nextLabelText = 'Next';
         this.prevLabelText = 'Back';
-        this.initSelectors = function (modalClass) {
-            var elementSelector = '[data-role=steps-wizard-main]';
-
-            this.nextLabel = '[data-role="step-wizard-next"]';
-            this.prevLabel = '[data-role="step-wizard-prev"]';
-
-            if (modalClass) {
-                this.nextLabel = '.' + modalClass + ' ' + this.nextLabel;
-                this.prevLabel = '.' + modalClass + ' ' + this.prevLabel;
-                elementSelector = '.' + modalClass + elementSelector;
-            }
-
-            this.element = $(elementSelector);
-            $(this.element).notification();
-        };
-        this.initSelectors(modalClass);
+        $(this.element).notification();
         this.move = function (newIndex) {
             if (!this.preventSwitch(newIndex)) {
                 if (newIndex > this.index) {
@@ -155,7 +143,6 @@ define([
 
     return Component.extend({
         defaults: {
-            modalClass: '',
             initData: [],
             stepsNames: [],
             selectedStep: '',
@@ -179,13 +166,6 @@ define([
 
             return this;
         },
-        destroy: function () {
-            _.each(this.steps, function (step) {
-                step.destroy();
-            });
-
-            this._super();
-        },
         wrapDisabledBackButton: function (stepName) {
             if (_.first(this.stepsNames) === stepName) {
                 this.disabled(true);
@@ -204,14 +184,18 @@ define([
             this.selectedStep(this.wizard.prev());
         },
         open: function () {
-            this.selectedStep(this.stepsNames.first());
-            this.wizard = new Wizard(this.steps, this.modalClass);
+            var $form = $('[data-form=edit-product]');
+
+            if (!$form.valid()) {
+                $form.data('validator').focusInvalid();
+            } else {
+                this.selectedStep(this.stepsNames.first());
+                this.wizard = new Wizard(this.steps);
+                $('[data-role=step-wizard-dialog]').trigger('openModal');
+            }
         },
         close: function () {
-            var modal =  uiRegistry.get(this.initData.configurableModal);
-            if (!_.isUndefined(modal)) {
-                modal.closeModal();
-            }
+            $('[data-role=step-wizard-dialog]').trigger('closeModal');
         },
         showSpecificStep: function () {
             var index = _.indexOf(this.stepsNames, event.target.hash.substr(1)),

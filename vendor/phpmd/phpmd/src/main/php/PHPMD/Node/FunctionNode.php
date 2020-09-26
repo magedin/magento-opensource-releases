@@ -82,15 +82,4 @@ class FunctionNode extends AbstractCallableNode
     {
         return null;
     }
-
-    /**
-     * Returns the full qualified name of a class, an interface, a method or
-     * a function.
-     *
-     * @return string
-     */
-    public function getFullQualifiedName()
-    {
-        return sprintf('%s\\%s()', $this->getNamespaceName(), $this->getName());
-    }
 }

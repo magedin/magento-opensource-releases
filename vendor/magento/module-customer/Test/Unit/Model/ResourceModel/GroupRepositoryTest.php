@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -71,7 +71,7 @@ class GroupRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     protected $model;
     
-    protected function setUp()
+    public function setUp()
     {
         $this->groupRegistry = $this->getMock(
             'Magento\Customer\Model\GroupRegistry',
@@ -168,7 +168,7 @@ class GroupRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testSave()
     {
-        $groupId = 0;
+        $groupId = 23;
 
         $taxClass = $this->getMockForAbstractClass('Magento\Tax\Api\Data\TaxClassInterface', [], '', false);
 

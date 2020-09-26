@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Block\System\Config\Form\Field;
@@ -27,10 +27,11 @@ class Export extends \Magento\Config\Block\System\Config\Form\Field
             'varnish' => $this->getVarnishVersion()
         ];
 
+        $url = $this->getUrl("*/PageCache/exportVarnishConfig", $params);
         $data = [
             'id' => 'system_full_page_cache_varnish_export_button_version' . $this->getVarnishVersion(),
-            'label' => $this->getLabel(),
-            'onclick' => "setLocation('" . $this->getVarnishUrl($params) . "')",
+            'label' => __('Export VCL for Varnish ') . $this->getVarnishVersion(),
+            'onclick' => "setLocation('" . $url . "')",
         ];
 
         $html = $buttonBlock->setData($data)->toHtml();
@@ -48,29 +49,10 @@ class Export extends \Magento\Config\Block\System\Config\Form\Field
     }
 
     /**
-     * @return \Magento\Framework\Phrase
-     */
-    private function getLabel()
-    {
-        return  __('Export VCL for Varnish %1', $this->getVarnishVersion());
-    }
-
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    private function getVarnishUrl($params = [])
-    {
-        return $this->getUrl('*/PageCache/exportVarnishConfig', $params);
-    }
-
-    /**
      * Return PageCache TTL value from config
      * to avoid saving empty field
      *
      * @return string
-     * @deprecated
      */
     public function getTtlValue()
     {

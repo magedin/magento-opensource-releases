@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -45,13 +45,6 @@ $product->setTypeId(
     ['qty' => 100, 'is_in_stock' => 1]
 )->save();
 
-/** @var \Magento\Catalog\Api\Data\ProductLinkInterface $productLink */
-$productLink = $objectManager->create('Magento\Catalog\Api\Data\ProductLinkInterface');
-$productLink->setSku('simple_invisible');
-$productLink->setLinkedProductSku('simple_no_images');
-$productLink->setPosition(1);
-$productLink->setLinkType('related');
-
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 $product->setTypeId(
     \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE
@@ -74,15 +67,8 @@ $product->setTypeId(
 )->setStockData(
     ['qty' => 100, 'is_in_stock' => 1]
 )->setRelatedLinkData(
-    [$productLink]
+    [1 => ['position' => 1]]
 )->save();
-
-/** @var \Magento\Catalog\Api\Data\ProductLinkInterface $productLink */
-$productLink = $objectManager->create('Magento\Catalog\Api\Data\ProductLinkInterface');
-$productLink->setSku('simple_disabled');
-$productLink->setLinkedProductSku('simple_no_images');
-$productLink->setPosition(1);
-$productLink->setLinkType('related');
 
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 $product->setTypeId(
@@ -106,15 +92,8 @@ $product->setTypeId(
 )->setStockData(
     ['qty' => 100, 'is_in_stock' => 1]
 )->setRelatedLinkData(
-    [$productLink]
+    [1 => ['position' => 1]]
 )->save();
-
-/** @var \Magento\Catalog\Api\Data\ProductLinkInterface $productLink */
-$productLink = $objectManager->create('Magento\Catalog\Api\Data\ProductLinkInterface');
-$productLink->setSku('simple_with_images');
-$productLink->setLinkedProductSku('simple_no_images');
-$productLink->setPosition(1);
-$productLink->setLinkType('related');
 
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 $product->setTypeId(
@@ -154,15 +133,8 @@ $product->setTypeId(
 )->setStockData(
     ['qty' => 100, 'is_in_stock' => 1]
 )->setRelatedLinkData(
-    [$productLink]
+    [1 => ['position' => 1]]
 )->save();
-
-/** @var \Magento\Catalog\Api\Data\ProductLinkInterface $productLink */
-$productLink = $objectManager->create('Magento\Catalog\Api\Data\ProductLinkInterface');
-$productLink->setSku('simple_with_images');
-$productLink->setLinkedProductSku('simple_no_images');
-$productLink->setPosition(1);
-$productLink->setLinkType('related');
 
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 $product->setTypeId(
@@ -197,5 +169,5 @@ $product->setTypeId(
 )->setStockData(
     ['qty' => 100, 'is_in_stock' => 1]
 )->setRelatedLinkData(
-    [$productLink]
+    [1 => ['position' => 1]]
 )->save();

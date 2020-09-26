@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Framework\Api;
 
-use Magento\Framework\Api\Data\ImageContentInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Filesystem;
@@ -14,7 +13,6 @@ use Magento\Framework\Phrase;
 
 /**
  * Class ImageProcessor
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ImageProcessor implements ImageProcessorInterface
 {
@@ -144,12 +142,11 @@ class ImageProcessor implements ImageProcessorInterface
 
         $fileContent = @base64_decode($imageContent->getBase64EncodedData(), true);
         $tmpDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::SYS_TMP);
-        $fileName = $this->getFileName($imageContent);
-        $tmpFileName = substr(md5(rand()), 0, 7) . '.' . $fileName;
-        $tmpDirectory->writeFile($tmpFileName, $fileContent);
+        $fileName = substr(md5(rand()), 0, 7) . '.' . $imageContent->getName();
+        $tmpDirectory->writeFile($fileName, $fileContent);
 
         $fileAttributes = [
-            'tmp_name' => $tmpDirectory->getAbsolutePath() . $tmpFileName,
+            'tmp_name' => $tmpDirectory->getAbsolutePath() . $fileName,
             'name' => $imageContent->getName()
         ];
 
@@ -159,7 +156,7 @@ class ImageProcessor implements ImageProcessorInterface
             $this->uploader->setFilenamesCaseSensitivity(false);
             $this->uploader->setAllowRenameFiles(true);
             $destinationFolder = $entityType;
-            $this->uploader->save($this->mediaDirectory->getAbsolutePath($destinationFolder), $fileName);
+            $this->uploader->save($this->mediaDirectory->getAbsolutePath($destinationFolder), $imageContent->getName());
         } catch (\Exception $e) {
             $this->logger->critical($e);
         }
@@ -172,23 +169,10 @@ class ImageProcessor implements ImageProcessorInterface
      */
     protected function getMimeTypeExtension($mimeType)
     {
-        return isset($this->mimeTypeExtensionMap[$mimeType]) ? $this->mimeTypeExtensionMap[$mimeType] : '';
-    }
-
-    /**
-     * @param ImageContentInterface $imageContent
-     * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function getFileName($imageContent)
-    {
-        $fileName = $imageContent->getName();
-        if (!pathinfo($fileName, PATHINFO_EXTENSION)) {
-            if (!$imageContent->getType() || !$this->getMimeTypeExtension($imageContent->getType())) {
-                throw new InputException(new Phrase('Cannot recognize image extension.'));
-            }
-            $fileName .= '.' . $this->getMimeTypeExtension($imageContent->getType());
+        if (isset($this->mimeTypeExtensionMap[$mimeType])) {
+            return $this->mimeTypeExtensionMap[$mimeType];
+        } else {
+            return "";
         }
-        return $fileName;
     }
 }

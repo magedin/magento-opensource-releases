@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,14 +11,14 @@ use \Magento\Setup\Controller\Marketplace;
 class MarketplaceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\PackagesAuth
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Composer\ComposerInformation
      */
-    private $packagesAuth;
+    private $composerInformation;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\PackagesData
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\MarketplaceManager
      */
-    private $packagesData;
+    private $marketplaceManager;
 
     /**
      * Controller
@@ -29,18 +29,22 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->packagesAuth = $this->getMock('Magento\Setup\Model\PackagesAuth', [], [], '', false);
-        $this->packagesData = $this->getMock('Magento\Setup\Model\PackagesData', [], [], '', false);
-        $this->controller = new Marketplace($this->packagesAuth, $this->packagesData);
+        $this->composerInformation =
+            $this->getMock('Magento\Framework\Composer\ComposerInformation', [], [], '', false);
+        $this->marketplaceManager = $this->getMock('Magento\Setup\Model\MarketplaceManager', [], [], '', false);
+        $this->controller = new Marketplace($this->composerInformation, $this->marketplaceManager);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::saveAuthJsonAction
+     */
     public function testSaveAuthJsonAction()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
-            ->method('checkCredentials')
+            ->method('checkCredentialsAction')
             ->will($this->returnValue(\Zend_Json::encode(['success' => true])));
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('saveAuthJson')
             ->willReturn(true);
@@ -51,13 +55,18 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($variables['success']);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::saveAuthJsonAction
+     */
     public function testSaveAuthJsonActionWithError()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
-            ->method('checkCredentials')
+            ->method('checkCredentialsAction')
             ->will($this->throwException(new \Exception));
-        $this->packagesAuth->expects($this->never())->method('saveAuthJson');
+        $this->composerInformation
+            ->expects($this->never())
+            ->method('saveAuthJson');
         $jsonModel = $this->controller->saveAuthJsonAction();
         $this->assertInstanceOf('\Zend\View\Model\JsonModel', $jsonModel);
         $variables = $jsonModel->getVariables();
@@ -66,15 +75,18 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($variables['success']);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::checkAuthAction
+     */
     public function testCheckAuthAction()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('getAuthJsonData')
             ->will($this->returnValue(['username' => 'test', 'password' => 'test']));
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
-            ->method('checkCredentials')
+            ->method('checkCredentialsAction')
             ->will($this->returnValue(\Zend_Json::encode(['success' => true])));
         $jsonModel = $this->controller->checkAuthAction();
         $this->assertInstanceOf('Zend\View\Model\ViewModel', $jsonModel);
@@ -83,9 +95,12 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($variables['success']);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::checkAuthAction
+     */
     public function testCheckAuthActionWithError()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('getAuthJsonData')
             ->will($this->throwException(new \Exception));
@@ -97,9 +112,12 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($variables['success']);
     }
 
-    public function testRemoveCredentialsAction()
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::removeAuthAction
+     */
+    public function testRemoveCredetinalsAction()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('removeCredentials')
             ->will($this->returnValue(true));
@@ -111,9 +129,12 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($variables['success']);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::removeAuthAction
+     */
     public function testRemoveCredentialsWithError()
     {
-        $this->packagesAuth
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('removeCredentials')
             ->will($this->throwException(new \Exception));
@@ -125,16 +146,13 @@ class MarketplaceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($variables['success']);
     }
 
+    /**
+     * @covers \Magento\Setup\Controller\Marketplace::popupAuthAction
+     */
     public function testPopupAuthAction()
     {
         $viewModel = $this->controller->popupAuthAction();
         $this->assertInstanceOf('Zend\View\Model\ViewModel', $viewModel);
         $this->assertTrue($viewModel->terminate());
-    }
-
-    public function testIndexAction()
-    {
-        $model = $this->controller->indexAction();
-        $this->assertInstanceOf('Zend\View\Model\ViewModel', $model);
     }
 }

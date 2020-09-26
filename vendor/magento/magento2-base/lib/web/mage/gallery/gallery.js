@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -15,20 +15,28 @@ define([
     'use strict';
 
     /**
-     * Retrieves index if the main item.
-     * @param {Array.<Object>} data - Set of gallery items.
+     * Set main item first in order.
+     * @param {Array.<Object>} data - Set of gallery items to update.
      */
-    var getMainImageIndex = function (data) {
+    var pushMainFirst = function (data) {
             var mainIndex;
-            if (_.every(data, function (item) {
+
+            if (!_.every(data, function (item) {
                     return _.isObject(item);
                 })
             ) {
-                mainIndex = _.findIndex(data, function (item) {
-                    return item.isMain;
-                });
+                return data;
             }
-            return mainIndex > 0 ? mainIndex : 0;
+
+            mainIndex = _.findIndex(data, function (item) {
+                return item.isMain;
+            });
+
+            if (mainIndex > -1) {
+                data.unshift(data.splice(mainIndex, 1)[0]);
+            }
+
+            return data;
         },
 
         /**
@@ -51,17 +59,6 @@ define([
             });
 
             return slideTransform.filter(Boolean);
-        },
-
-        _toNumber = function (str) {
-
-            var type = typeof(str);
-
-            if (type === 'string') {
-                return parseInt(str);
-            } else {
-                return str;
-            }
         };
 
     return Class.extend({
@@ -94,20 +91,6 @@ define([
                 '_focusSwitcher'
             );
 
-            /*turn off arrows for touch devices*/
-            if (this.isTouchEnabled) {
-                config.options.arrows = false;
-
-                if (config.fullscreen) {
-                    config.fullscreen.arrows = false;
-                }
-            }
-
-            config.options.width = _toNumber(config.options.width);
-            config.options.height = _toNumber(config.options.height);
-            config.options.thumbwidth = _toNumber(config.options.thumbwidth);
-            config.options.thumbheight = _toNumber(config.options.thumbheight);
-
             config.options.swipe = true;
             this.config = config;
 
@@ -122,7 +105,7 @@ define([
                 fotoramaApi: null,
                 isFullscreen: false,
                 api: null,
-                data: _.clone(config.data)
+                data: _.clone(pushMainFirst(config.data))
             };
             config.options.ratio = config.options.width / config.options.height;
             config.options.height = null;
@@ -182,36 +165,29 @@ define([
             settings.fullscreenConfig.swipe = true;
 
             settings.$gallery.on('fotorama:fullscreenenter', function () {
-                settings.closeIcon.show();
-                settings.focusableStart.attr('tabindex', '0');
-                settings.focusableEnd.attr('tabindex', '0');
+                settings.$gallery.focus();
                 settings.focusableStart.bind('focusin', self._focusSwitcher);
                 settings.focusableEnd.bind('focusin', self._focusSwitcher);
                 settings.api.updateOptions(settings.defaultConfig.options, true);
                 settings.api.updateOptions(settings.fullscreenConfig, true);
 
-                if (!_.isEqual(settings.activeBreakpoint, {}) && settings.breakpoints) {
+                if (!_.isEqual(settings.activeBreakpoint, {})) {
                     settings.api.updateOptions(settings.activeBreakpoint.options, true);
                 }
                 settings.isFullscreen = true;
             });
 
             settings.$gallery.on('fotorama:fullscreenexit', function () {
-                settings.closeIcon.hide();
-                settings.focusableStart.attr('tabindex', '-1');
-                settings.focusableEnd.attr('tabindex', '-1');
+                settings.$pageWrapper.show();
                 settings.api.updateOptions(settings.defaultConfig.options, true);
                 settings.focusableStart.unbind('focusin', this._focusSwitcher);
                 settings.focusableEnd.unbind('focusin', this._focusSwitcher);
-                settings.closeIcon.hide();
 
-                if (!_.isEqual(settings.activeBreakpoint, {}) && settings.breakpoints) {
+                if (!_.isEqual(settings.activeBreakpoint, {})) {
                     settings.api.updateOptions(settings.activeBreakpoint.options, true);
                 }
                 settings.isFullscreen = false;
-                settings.$element.data('gallery').updateOptions({
-                    swipe: true
-                });
+                settings.$fullscreenIcon.hide();
             });
         },
 
@@ -246,7 +222,7 @@ define([
             if (position === 'end') {
                 settings.$gallery.find(settings.closeIcon).focus();
             } else if (position === 'start') {
-                infelicity = 3; //Constant for find last focusable element
+                infelicity = 2; //Constant for find last focusable element
                 focusableElements = settings.$gallery.find(':focusable');
                 focusableElements.eq(focusableElements.length - infelicity).focus();
             }
@@ -262,8 +238,7 @@ define([
                 tpl = template(galleryTpl, {
                     next: $t('Next'),
                     previous: $t('Previous')
-                }),
-                mainImageIndex;
+                });
 
             if (settings.breakpoints) {
                 _.each(_.values(settings.breakpoints), function (breakpoint) {
@@ -281,6 +256,10 @@ define([
             _.extend(config, config.options);
             config.options = undefined;
 
+            if (this.isTouchEnabled) {
+                config.arrows = false;
+            }
+
             config.click = false;
             config.breakpoints = null;
             settings.currentConfig = config;
@@ -290,11 +269,6 @@ define([
             settings.$elementF.fotorama(config);
             settings.fotoramaApi = settings.$elementF.data('fotorama');
             $.extend(true, config, this.startConfig);
-
-            mainImageIndex = getMainImageIndex(config.data);
-            if (mainImageIndex) {
-                this.settings.fotoramaApi.show(mainImageIndex);
-            }
         },
 
         /**
@@ -304,9 +278,7 @@ define([
             var pairs,
                 settings = this.settings,
                 config = this.config,
-                startConfig = this.startConfig,
-                triggeredBreakpoints = 0,
-                isTouchEnabled = this.isTouchEnabled;
+                startConfig = this.startConfig;
 
             if (_.isObject(settings.breakpoints)) {
                 pairs = _.pairs(settings.breakpoints);
@@ -325,14 +297,6 @@ define([
                             if (settings.isFullscreen) {
                                 settings.api.updateOptions(settings.fullscreenConfig, true);
                             }
-
-                            if (isTouchEnabled) {
-                                settings.breakpoints[pair[0]].options.arrows = false;
-                                if (settings.breakpoints[pair[0]].options.fullscreen) {
-                                    settings.breakpoints[pair[0]].options.fullscreen.arrows = false;
-                                }
-                            }
-
                             settings.api.updateOptions(settings.breakpoints[pair[0]].options, true);
                             $.extend(true, config, settings.breakpoints[pair[0]]);
                             settings.activeBreakpoint = settings.breakpoints[pair[0]];
@@ -416,24 +380,7 @@ define([
                      * @param {Boolean} isInternal - Is this function called via breakpoints.
                      */
                     updateOptions: function (configuration, isInternal) {
-
-                        var $selectable = 
-                                $('a[href], area[href], input, select, textarea, button, iframe, object, embed, *[tabindex], *[contenteditable]')
-                                .not('[tabindex=-1], [disabled], :hidden'),
-                            fotorama = settings.fotoramaApi,
-                            $focus = $(':focus'),
-                            index;
-
                         if (_.isObject(configuration)) {
-
-                            //Saves index of focus
-                            $selectable.each(function (number) {
-            
-                                if ($(this).is($focus)) {
-                                    index = number;
-                                }
-                            });
-
                             if (this.isTouchEnabled) {
                                 configuration.arrows = false;
                             }
@@ -441,7 +388,7 @@ define([
                             configuration.breakpoints = null;
 
                             if (!isInternal) {
-                                !_.isEqual(settings.activeBreakpoint, {} && settings.brekpoints) ?
+                                !_.isEqual(settings.activeBreakpoint, {}) ?
                                     $.extend(true, settings.activeBreakpoint.options, configuration) :
 
                                     settings.isFullscreen ?
@@ -451,10 +398,6 @@ define([
                             }
                             $.extend(true, settings.currentConfig.options, configuration);
                             settings.fotoramaApi.setOptions(settings.currentConfig.options);
-
-                            if (_.isNumber(index)) {
-                                $selectable.eq(index).focus();
-                            }
                         }
                     },
 
@@ -464,6 +407,7 @@ define([
                      */
                     updateData: function (data) {
                         if (_.isArray(data)) {
+                            pushMainFirst(data);
                             settings.fotoramaApi.load(data);
 
                             $.extend(false, settings, {
@@ -485,20 +429,10 @@ define([
                         var images = [];
 
                         _.each(this.fotorama.data, function (item) {
-                            images.push(_.omit(item, '$navThumbFrame', '$navDotFrame', '$stageFrame', 'labelledby'));
+                            images.push(_.omit(item, '$navThumbFrame', '$navDotFrame', '$stageFrame'));
                         });
 
                         return images;
-                    },
-
-                    /**
-                     * Updates gallery data partially by index
-                     * @param {Number} index - Index of image in data array to be updated.
-                     * @param {Object} item - Standart gallery image object.
-                     *
-                     */
-                    updateDataByIndex: function(index, item){
-                        settings.fotoramaApi.spliceByIndex(index, item);
                     }
                 };
 

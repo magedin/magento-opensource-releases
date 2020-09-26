@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Test\Unit\Model\Cron;
@@ -11,7 +11,7 @@ use Magento\Setup\Model\Cron\Status;
 class StatusTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Status
+     * @var Status
      */
     private $status;
 
@@ -25,16 +25,6 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     private $varReaderWriter;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Psr\Log\LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\Cron\SetupLoggerFactory
-     */
-    private $setupLoggerFactory;
-
     public function setUp()
     {
         $this->filesystem = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
@@ -47,14 +37,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->will($this->returnValue($this->varReaderWriter));
-        $this->logger = $this->getMockForAbstractClass('\Psr\Log\LoggerInterface', [], '', false);
-        $this->setupLoggerFactory = $this->getMock('\Magento\Setup\Model\Cron\SetupLoggerFactory', [], [], '', false);
-        $this->setupLoggerFactory
-            ->expects($this->once())
-            ->method('create')
-            ->with('setup-cron')
-            ->willReturn($this->logger);
-        $this->status = new Status($this->filesystem, $this->setupLoggerFactory);
+        $this->status = new Status($this->filesystem);
     }
 
     public function testGetStatusFilePath()
@@ -70,17 +53,19 @@ class StatusTest extends \PHPUnit_Framework_TestCase
     {
         $this->varReaderWriter->expects($this->any())
             ->method('getAbsolutePath')
-            ->with('log/update.log')
-            ->willReturn('DIR/var/log/update.log');
-        $this->assertEquals('DIR/var/log/update.log', $this->status->getLogFilePath());
+            ->with('update_status.log')
+            ->willReturn('DIR/var/update_status.log');
+        $this->assertEquals('DIR/var/update_status.log', $this->status->getLogFilePath());
     }
 
     public function testAdd()
     {
-        $this->varReaderWriter->expects($this->once())->method('isExist')->willReturn(false);
-        $this->varReaderWriter->expects($this->once())->method('writeFile');
-        $this->logger->expects($this->once())->method('log')->with(\Psr\Log\LogLevel::ERROR, 'test1');
-        $this->status->add('test1', \Psr\Log\LogLevel::ERROR);
+        $this->varReaderWriter->expects($this->at(0))->method('isExist')->willReturn(false);
+        $this->varReaderWriter->expects($this->at(1))->method('writeFile');
+        $this->varReaderWriter->expects($this->at(2))->method('isExist')->willReturn(true);
+        $this->varReaderWriter->expects($this->at(3))->method('readFile')->willReturn('test0');
+        $this->varReaderWriter->expects($this->at(4))->method('writeFile');
+        $this->status->add('test1');
     }
 
     public function testToggleUpdateInProgressTrue()

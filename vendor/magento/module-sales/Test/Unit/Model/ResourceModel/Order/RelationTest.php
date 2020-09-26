@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -15,7 +15,6 @@ class RelationTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Sales\Model\ResourceModel\Order\Relation
      */
     protected $relationProcessor;
-
     /**
      * @var \Magento\Sales\Model\ResourceModel\Order\Handler\Address|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -61,7 +60,7 @@ class RelationTest extends \PHPUnit_Framework_TestCase
      */
     protected $orderInvoiceMock;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->addressHandlerMock = $this->getMockBuilder('Magento\Sales\Model\ResourceModel\Order\Handler\Address')
             ->disableOriginalConstructor()

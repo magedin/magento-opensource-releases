@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Test\Unit\Model;
@@ -44,6 +44,12 @@ class CcConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetSsStartYears()
+    {
+        $this->assertCount(6, $this->model->getSsStartYears());
+        $this->assertEquals(date("Y"), $this->model->getSsStartYears()[date("Y")]);
+    }
+
     public function testGetCcAvailableTypes()
     {
         $data = [1, 2, 3];
@@ -77,6 +83,11 @@ class CcConfigTest extends \PHPUnit_Framework_TestCase
     public function testHasVerification()
     {
         $this->assertEquals(true, $this->model->hasVerification());
+    }
+
+    public function testHasSsCardType()
+    {
+        $this->assertEquals(false, $this->model->hasSsCardType());
     }
 
     public function testGetCvvImageUrl()

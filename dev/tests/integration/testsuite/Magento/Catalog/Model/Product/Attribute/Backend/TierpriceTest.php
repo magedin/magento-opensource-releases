@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Attribute\Backend;
-
-use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
  * Test class for \Magento\Catalog\Model\Product\Attribute\Backend\Tierprice.
@@ -15,16 +13,6 @@ use Magento\Catalog\Api\Data\ProductInterface;
 class TierpriceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
-    /**
-     * @var \Magento\Catalog\Model\ProductRepository
-     */
-    protected $productRepository;
-
-    /**
      * @var \Magento\Catalog\Model\Product\Attribute\Backend\Tierprice
      */
     protected $_model;
@@ -33,12 +21,6 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product\Attribute\Backend\Tierprice'
-        );
-        $this->productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\ProductRepository'
-        );
-        $this->metadataPool = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Framework\EntityManager\MetadataPool'
         );
         $this->_model->setAttribute(
             \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
@@ -115,10 +97,7 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
         $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product'
         );
-        $fixtureProduct = $this->productRepository->get('simple');
-        $product->setId($fixtureProduct->getId());
-        $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
-        $product->setData($linkField, $fixtureProduct->getData($linkField));
+        $product->setId(1);
         $this->_model->afterLoad($product);
         $price = $product->getTierPrice();
         $this->assertNotEmpty($price);
@@ -134,7 +113,7 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
         $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product'
         );
-        $product->load($this->productRepository->get('simple')->getId());
+        $product->load(1);
         $product->unlockAttributes();
         $product->setOrigData();
         $product->setTierPrice(
@@ -151,10 +130,7 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
         $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product'
         );
-        $fixtureProduct = $this->productRepository->get('simple');
-        $product->setId($fixtureProduct->getId());
-        $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
-        $product->setData($linkField, $fixtureProduct->getData($linkField));
+        $product->setId(1);
         $this->_model->afterLoad($product);
         $this->assertEquals(3, count($product->getTierPrice()));
     }
@@ -177,7 +153,7 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
         $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product'
         );
-        $product->load($this->productRepository->get('simple')->getId());
+        $product->load(1);
         $product->setOrigData();
         $product->setTierPrice([]);
         $this->_model->afterSave($product);
@@ -185,10 +161,7 @@ class TierpriceTest extends \PHPUnit_Framework_TestCase
         $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product'
         );
-        $fixtureProduct = $this->productRepository->get('simple');
-        $product->setId($fixtureProduct->getId());
-        $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
-        $product->setData($linkField, $fixtureProduct->getData($linkField));
+        $product->setId(1);
         $this->_model->afterLoad($product);
         $this->assertEmpty($product->getTierPrice());
     }

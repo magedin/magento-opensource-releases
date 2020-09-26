@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Controller;
@@ -9,15 +9,21 @@ class ProductTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
      * @magentoDataFixture Magento/Catalog/_files/products.php
+     * @dataProvider listActionDesignDataProvider
      */
-    public function testListActionDesign()
+    public function testListActionDesign($productId, $expectedDesign)
     {
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $product = $objectManager->get('Magento\Catalog\Api\ProductRepositoryInterface')
-            ->get('custom-design-simple-product');
-        $this->getRequest()->setParam('id', $product->getId());
+        $this->getRequest()->setParam('id', $productId);
         $this->dispatch('review/product/listAction');
         $result = $this->getResponse()->getBody();
-        $this->assertContains("static/frontend/Magento/blank/en_US/Magento_Theme/favicon.ico", $result);
+        $this->assertContains("static/frontend/{$expectedDesign}/en_US/Magento_Theme/favicon.ico", $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function listActionDesignDataProvider()
+    {
+        return ['custom product design' => [2, 'Magento/blank']];
     }
 }

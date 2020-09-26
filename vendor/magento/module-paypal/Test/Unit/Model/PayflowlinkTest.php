@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Test\Unit\Model;
@@ -146,7 +146,7 @@ class PayflowlinkTest extends \PHPUnit_Framework_TestCase
                         'partner' => null,
                         'pwd' => null,
                         'verbosity' => null,
-                        'BUTTONSOURCE' => 'build notation code',
+                        'BNCODE' => 'build notation code',
                         'tender' => 'C',
                     ],
                     $this->returnSelf()

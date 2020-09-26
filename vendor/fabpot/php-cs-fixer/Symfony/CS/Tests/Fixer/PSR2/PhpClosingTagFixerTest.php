@@ -78,12 +78,12 @@ class foo
             ),
             array(
                 '<?php
-function bar()
+public function bar()
 {
     echo "Here I am!";
 }',
                 '<?php
-function bar()
+public function bar()
 {
     echo "Here I am!";
 }?>',

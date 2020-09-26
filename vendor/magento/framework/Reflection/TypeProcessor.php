@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Reflection;
@@ -8,8 +8,6 @@ namespace Magento\Framework\Reflection;
 use Magento\Framework\Exception\SerializationException;
 use Magento\Framework\Phrase;
 use Zend\Code\Reflection\ClassReflection;
-use Zend\Code\Reflection\DocBlockReflection;
-use Zend\Code\Reflection\MethodReflection;
 use Zend\Code\Reflection\ParameterReflection;
 
 /**
@@ -60,27 +58,6 @@ class TypeProcessor
      * @var array
      */
     protected $_types = [];
-
-    /**
-     * @var NameFinder
-     */
-    private $nameFinder;
-
-    /**
-     * The getter function to get the new NameFinder dependency
-     *
-     * @return NameFinder
-     *
-     * @deprecated
-     */
-    private function getNameFinder()
-    {
-        if ($this->nameFinder === null) {
-            $this->nameFinder = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('\Magento\Framework\Reflection\NameFinder');
-        }
-        return $this->nameFinder;
-    }
 
     /**
      * Retrieve processed types data.
@@ -190,7 +167,7 @@ class TypeProcessor
             $reflection = new ClassReflection($class);
             $docBlock = $reflection->getDocBlock();
             $this->_types[$typeName]['documentation'] = $docBlock ? $this->getDescription($docBlock) : '';
-            /** @var MethodReflection $methodReflection */
+            /** @var \Zend\Code\Reflection\MethodReflection $methodReflection */
             foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $methodReflection) {
                 if ($methodReflection->class === "Magento\Framework\Model\AbstractModel") {
                     continue;
@@ -205,11 +182,11 @@ class TypeProcessor
     /**
      * Collect metadata for virtual field corresponding to current method if it is a getter (used in WSDL generation).
      *
-     * @param MethodReflection $methodReflection
+     * @param \Zend\Code\Reflection\MethodReflection $methodReflection
      * @param string $typeName
      * @return void
      */
-    protected function _processMethod(MethodReflection $methodReflection, $typeName)
+    protected function _processMethod(\Zend\Code\Reflection\MethodReflection $methodReflection, $typeName)
     {
         $isGetter = (strpos($methodReflection->getName(), 'get') === 0)
             || (strpos($methodReflection->getName(), 'is') === 0)
@@ -217,11 +194,11 @@ class TypeProcessor
         /** Field will not be added to WSDL if getter has params */
         if ($isGetter && !$methodReflection->getNumberOfRequiredParameters()) {
             $returnMetadata = $this->getGetterReturnType($methodReflection);
-            $fieldName = $this->getNameFinder()->getFieldNameFromGetterName($methodReflection->getName());
+            $fieldName = $this->dataObjectGetterNameToFieldName($methodReflection->getName());
             if ($returnMetadata['description']) {
                 $description = $returnMetadata['description'];
             } else {
-                $description = $this->getNameFinder()->getFieldDescriptionFromGetterDescription(
+                $description = $this->dataObjectGetterDescriptionToFieldDescription(
                     $methodReflection->getDocBlock()->getShortDescription()
                 );
             }
@@ -236,10 +213,10 @@ class TypeProcessor
     /**
      * Get short and long description from docblock and concatenate.
      *
-     * @param DocBlockReflection $doc
+     * @param \Zend\Code\Reflection\DocBlockReflection $doc
      * @return string
      */
-    public function getDescription(DocBlockReflection $doc)
+    public function getDescription(\Zend\Code\Reflection\DocBlockReflection $doc)
     {
         $shortDescription = $doc->getShortDescription();
         $longDescription = $doc->getLongDescription();
@@ -259,12 +236,22 @@ class TypeProcessor
      *
      * @param string $getterName
      * @return string
-     * 
-     * @deprecated
      */
     public function dataObjectGetterNameToFieldName($getterName)
     {
-        return $this->getNameFinder()->getFieldNameFromGetterName($getterName);
+        if ((strpos($getterName, 'get') === 0)) {
+            /** Remove 'get' prefix and make the first letter lower case */
+            $fieldName = substr($getterName, strlen('get'));
+        } elseif ((strpos($getterName, 'is') === 0)) {
+            /** Remove 'is' prefix and make the first letter lower case */
+            $fieldName = substr($getterName, strlen('is'));
+        } elseif ((strpos($getterName, 'has') === 0)) {
+            /** Remove 'has' prefix and make the first letter lower case */
+            $fieldName = substr($getterName, strlen('has'));
+        } else {
+            $fieldName = $getterName;
+        }
+        return lcfirst($fieldName);
     }
 
     /**
@@ -272,18 +259,16 @@ class TypeProcessor
      *
      * @param string $shortDescription
      * @return string
-     *
-     * @deprecated
      */
     protected function dataObjectGetterDescriptionToFieldDescription($shortDescription)
     {
-        return $this->getNameFinder()->getFieldDescriptionFromGetterDescription($shortDescription);
+        return ucfirst(substr(strstr($shortDescription, " "), 1));
     }
 
     /**
      * Identify getter return type by its reflection.
      *
-     * @param MethodReflection $methodReflection
+     * @param \Zend\Code\Reflection\MethodReflection $methodReflection
      * @return array <pre>array(
      *     'type' => <string>$type,
      *     'isRequired' => $isRequired,
@@ -322,10 +307,12 @@ class TypeProcessor
         if (preg_match("/.*\\@return\\s+({$escapedReturnType}).*/i", $methodDocBlock->getContents(), $matches)) {
             $returnType = $matches[1];
         }
-        $isNotRequired = (bool)preg_match("/.*\@return\s+\S+\|null.*/i", $methodDocBlock->getContents(), $matches);
+        $isRequired = preg_match("/.*\@return\s+\S+\|null.*/i", $methodDocBlock->getContents(), $matches)
+            ? false
+            : true;
         return [
             'type' => $returnType,
-            'isRequired' => !$isNotRequired,
+            'isRequired' => $isRequired,
             'description' => $returnAnnotation->getDescription(),
             'parameterCount' => $methodReflection->getNumberOfRequiredParameters()
         ];
@@ -334,7 +321,7 @@ class TypeProcessor
     /**
      * Get possible method exceptions
      *
-     * @param MethodReflection $methodReflection
+     * @param \Zend\Code\Reflection\MethodReflection $methodReflection
      * @return array
      */
     public function getExceptions($methodReflection)
@@ -383,8 +370,13 @@ class TypeProcessor
      */
     public function isTypeSimple($type)
     {
+        $type = $this->normalizeType($type);
+        if ($this->isArrayType($type)) {
+            $type = $this->getArrayItemType($type);
+        }
+
         return in_array(
-            $this->getNormalizedType($type),
+            $type,
             [
                 self::NORMALIZED_STRING_TYPE,
                 self::NORMALIZED_INT_TYPE,
@@ -403,7 +395,12 @@ class TypeProcessor
      */
     public function isTypeAny($type)
     {
-        return ($this->getNormalizedType($type) == self::NORMALIZED_ANY_TYPE);
+        $type = $this->normalizeType($type);
+        if ($this->isArrayType($type)) {
+            $type = $this->getArrayItemType($type);
+        }
+
+        return ($type == self::NORMALIZED_ANY_TYPE);
     }
 
     /**
@@ -423,19 +420,13 @@ class TypeProcessor
     }
 
     /**
-     * Check if given type is valid to use as an argument type declaration
-     *
-     * @see http://php.net/manual/en/functions.arguments.php#functions.arguments.type-declaration
-     * @param string $type
-     * @return bool
-     */
-    public function isValidTypeDeclaration($type)
-    {
-        return !($this->isTypeSimple($type) || $this->isTypeAny($type) || $this->isArrayType($type));
-    }
-
-    /**
      * Get item type of the array.
+     * Example:
+     * <pre>
+     *  ComplexType[] => ComplexType
+     *  string[] => string
+     *  int[] => integer
+     * </pre>
      *
      * @param string $arrayType
      * @return string
@@ -505,7 +496,7 @@ class TypeProcessor
                 if ($value !== null && !settype($value[$key], $arrayItemType)) {
                     throw new SerializationException(
                         new Phrase(
-                            'Invalid type for value: "%value". Expected Type: "%type".',
+                            SerializationException::TYPE_MISMATCH,
                             ['value' => $value, 'type' => $type]
                         )
                     );
@@ -514,18 +505,18 @@ class TypeProcessor
         } elseif ($isArrayType && $value === null) {
             return null;
         } elseif (!$isArrayType && !is_array($value)) {
-            if ($value !== null && !$this->isTypeAny($type) && !$this->setType($value, $type)) {
+            if ($value !== null && $type !== self::ANY_TYPE && !$this->setType($value, $type)) {
                 throw new SerializationException(
                     new Phrase(
-                        'Invalid type for value: "%value". Expected Type: "%type".',
+                        SerializationException::TYPE_MISMATCH,
                         ['value' => (string)$value, 'type' => $type]
                     )
                 );
             }
-        } elseif (!$this->isTypeAny($type)) {
+        } else {
             throw new SerializationException(
                 new Phrase(
-                    'Invalid type for value: "%value". Expected Type: "%type".',
+                    SerializationException::TYPE_MISMATCH,
                     ['value' => gettype($value), 'type' => $type]
                 )
             );
@@ -592,12 +583,12 @@ class TypeProcessor
      * @param string $camelCaseProperty
      * @return string processed method name
      * @throws \Exception If $camelCaseProperty has no corresponding getter method
-     * 
-     * @deprecated 
      */
     public function findGetterMethodName(ClassReflection $class, $camelCaseProperty)
     {
-        return $this->getNameFinder()->getGetterMethodName($class, $camelCaseProperty);
+        $getterName = 'get' . $camelCaseProperty;
+        $boolGetterName = 'is' . $camelCaseProperty;
+        return $this->findAccessorMethodName($class, $camelCaseProperty, $getterName, $boolGetterName);
     }
 
     /**
@@ -611,14 +602,9 @@ class TypeProcessor
     {
         // settype doesn't work for boolean string values.
         // ex: custom_attributes passed from SOAP client can have boolean values as string
-        $booleanTypes = ['bool', 'boolean'];
-        if (in_array($type, $booleanTypes)) {
+        if ($type == 'bool' || $type == 'boolean') {
             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             return true;
-        }
-        $numType = ['int', 'float'];
-        if (in_array($type, $numType) && !is_numeric($value)) {
-            return false;
         }
         return settype($value, $type);
     }
@@ -630,12 +616,12 @@ class TypeProcessor
      * @param string $camelCaseProperty
      * @return string processed method name
      * @throws \Exception If $camelCaseProperty has no corresponding setter method
-     * 
-     * @deprecated 
      */
     public function findSetterMethodName(ClassReflection $class, $camelCaseProperty)
     {
-        return $this->getNameFinder()->getSetterMethodName($class, $camelCaseProperty);
+        $setterName = 'set' . $camelCaseProperty;
+        $boolSetterName = 'setIs' . $camelCaseProperty;
+        return $this->findAccessorMethodName($class, $camelCaseProperty, $setterName, $boolSetterName);
     }
 
     /**
@@ -647,8 +633,6 @@ class TypeProcessor
      * @param bool $boolAccessorName
      * @return string processed method name
      * @throws \Exception If $camelCaseProperty has no corresponding setter method
-     * 
-     * @deprecated 
      */
     protected function findAccessorMethodName(
         ClassReflection $class,
@@ -656,8 +640,21 @@ class TypeProcessor
         $accessorName,
         $boolAccessorName
     ) {
-        return $this->getNameFinder()
-            ->findAccessorMethodName($class, $camelCaseProperty, $accessorName, $boolAccessorName);
+        if ($this->classHasMethod($class, $accessorName)) {
+            $methodName = $accessorName;
+            return $methodName;
+        } elseif ($this->classHasMethod($class, $boolAccessorName)) {
+            $methodName = $boolAccessorName;
+            return $methodName;
+        } else {
+            throw new \LogicException(
+                sprintf(
+                    'Property "%s" does not have corresponding setter in class "%s".',
+                    $camelCaseProperty,
+                    $class->getName()
+                )
+            );
+        }
     }
 
     /**
@@ -668,12 +665,10 @@ class TypeProcessor
      * @param ClassReflection $class
      * @param string $methodName
      * @return bool
-     * 
-     * @deprecated 
      */
     protected function classHasMethod(ClassReflection $class, $methodName)
     {
-        return $this->getNameFinder()->hasMethod($class, $methodName);
+        return $class->hasMethod($methodName) && ($class->getMethod($methodName)->getName() == $methodName);
     }
 
     /**
@@ -683,16 +678,11 @@ class TypeProcessor
      * @param string $serviceName API service name
      * @param string $methodName
      * @return $this
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function processInterfaceCallInfo($interface, $serviceName, $methodName)
     {
         foreach ($interface as $direction => $interfaceData) {
             $direction = ($direction == 'in') ? 'requiredInput' : 'returned';
-            if ($direction == 'returned' && !isset($interfaceData['parameters'])) {
-                /** No return value means that service method is asynchronous */
-                return $this;
-            }
             foreach ($interfaceData['parameters'] as $parameterData) {
                 if (!$this->isTypeSimple($parameterData['type']) && !$this->isTypeAny($parameterData['type'])) {
                     $operation = $this->getOperationName($serviceName, $methodName);
@@ -720,20 +710,5 @@ class TypeProcessor
     public function getOperationName($serviceName, $methodName)
     {
         return $serviceName . ucfirst($methodName);
-    }
-
-    /**
-     * Get normalized type
-     *
-     * @param string $type
-     * @return string
-     */
-    private function getNormalizedType($type)
-    {
-        $type = $this->normalizeType($type);
-        if ($this->isArrayType($type)) {
-            $type = $this->getArrayItemType($type);
-        }
-        return $type;
     }
 }

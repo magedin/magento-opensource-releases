@@ -1,12 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Model\Payment\Method\Billing;
-
-use Magento\Paypal\Model\Billing\Agreement;
-use Magento\Quote\Api\Data\PaymentInterface;
 
 /**
  * Billing Agreement Payment Method Abstract model
@@ -113,35 +110,34 @@ abstract class AbstractAgreement extends \Magento\Payment\Model\Method\AbstractM
      */
     public function assignData(\Magento\Framework\DataObject $data)
     {
-        parent::assignData($data);
+        $result = parent::assignData($data);
 
-        $additionalData = $data->getData(PaymentInterface::KEY_ADDITIONAL_DATA);
-
-        if (!is_array($additionalData) || !isset($additionalData[self::TRANSPORT_BILLING_AGREEMENT_ID])) {
-            return $this;
+        $key = self::TRANSPORT_BILLING_AGREEMENT_ID;
+        $id = false;
+        if (is_array($data) && isset($data[$key])) {
+            $id = $data[$key];
+        } elseif ($data instanceof \Magento\Framework\DataObject && $data->getData($key)) {
+            $id = $data->getData($key);
         }
-
-        $id = $additionalData[self::TRANSPORT_BILLING_AGREEMENT_ID];
-        if (!$id || !is_numeric($id)) {
-            return $this;
+        if ($id) {
+            $info = $this->getInfoInstance();
+            $ba = $this->_agreementFactory->create()->load($id);
+            if ($ba->getId() && $ba->getCustomerId() == $info->getQuote()->getCustomerId()) {
+                $info->setAdditionalInformation(
+                    $key,
+                    $id
+                )->setAdditionalInformation(
+                    self::PAYMENT_INFO_REFERENCE_ID,
+                    $ba->getReferenceId()
+                );
+            }
         }
-
-        $info = $this->getInfoInstance();
-        /** @var Agreement $ba */
-        $ba = $this->_agreementFactory->create();
-        $ba->load($id);
-
-        if ($ba->getId() && $ba->getCustomerId() == $info->getQuote()->getCustomerId()) {
-            $info->setAdditionalInformation(self::TRANSPORT_BILLING_AGREEMENT_ID, $id);
-            $info->setAdditionalInformation(self::PAYMENT_INFO_REFERENCE_ID, $ba->getReferenceId());
-        }
-
-        return $this;
+        return $result;
     }
 
     /**
      * @param object $quote
-     * @return bool
+     * @return void
      */
     abstract protected function _isAvailable($quote);
 }

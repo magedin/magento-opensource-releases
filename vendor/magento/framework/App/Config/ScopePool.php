@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Config;
 
-use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class ScopePool
 {
     const CACHE_TAG = 'config_scopes';
@@ -45,11 +42,6 @@ class ScopePool
     protected $_scopeResolverPool;
 
     /**
-     * @var RequestInterface
-     */
-    private $request;
-
-    /**
      * @param \Magento\Framework\App\Config\Scope\ReaderPoolInterface $readerPool
      * @param DataFactory $dataFactory
      * @param \Magento\Framework\Cache\FrontendInterface $cache
@@ -71,17 +63,6 @@ class ScopePool
     }
 
     /**
-     * @return RequestInterface
-     */
-    private function getRequest()
-    {
-        if ($this->request === null) {
-            $this->request = \Magento\Framework\App\ObjectManager::getInstance()->get(RequestInterface::class);
-        }
-        return $this->request;
-    }
-    
-    /**
      * Retrieve config section
      *
      * @param string $scopeType
@@ -91,14 +72,7 @@ class ScopePool
     public function getScope($scopeType, $scopeCode = null)
     {
         $scopeCode = $this->_getScopeCode($scopeType, $scopeCode);
-
-        // Key by url to support dynamic {{base_url}} and port assignments
-        $host = $this->getRequest()->getHttpHost();
-        $port = $this->getRequest()->getServer('SERVER_PORT');
-        $path = $this->getRequest()->getBasePath();
-        $urlInfo = $host . $port . trim($path, '/');
-        $code = $scopeType . '|' . $scopeCode . '|' . $urlInfo;
-
+        $code = $scopeType . '|' . $scopeCode;
         if (!isset($this->_scopes[$code])) {
             $cacheKey = $this->_cacheId . '|' . $code;
             $data = $this->_cache->load($cacheKey);

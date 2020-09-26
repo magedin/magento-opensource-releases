@@ -45,4 +45,5 @@ interface ResourceCheckerInterface
      * @return bool True if the resource has not changed since the given timestamp, false otherwise.
      */
     public function isFresh(ResourceInterface $resource, $timestamp);
+
 }

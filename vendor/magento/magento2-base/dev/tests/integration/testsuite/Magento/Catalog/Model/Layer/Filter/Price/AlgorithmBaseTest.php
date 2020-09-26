@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Layer\Filter\Price;
@@ -67,12 +67,18 @@ class AlgorithmBaseTest extends \PHPUnit_Framework_TestCase
             ['entityMetadata' => $entityMetadata]
         );
 
-        /** @var \Magento\Framework\Api\Search\Document[] $documents */
+        /** @var \Magento\Framework\Search\Document[] $documents */
         $documents = [];
         foreach ($entityIds as $entityId) {
             $rawDocument = [
-                $idKey => $entityId,
-                'score' => 1,
+                [
+                    'name' => $idKey,
+                    'value' => $entityId,
+                ],
+                [
+                    'name' => 'score',
+                    'value' => 1,
+                ],
             ];
             $documents[] = $documentFactory->create($rawDocument);
         }

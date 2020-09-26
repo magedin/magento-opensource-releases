@@ -2,7 +2,7 @@
 /**
  * Scan source code for references to classes and see if they indeed exist
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Test\Integrity;
@@ -209,7 +209,11 @@ class ClassesTest extends \PHPUnit_Framework_TestCase
              * @param array $file
              */
             function ($file) {
-                $relativePath = str_replace(BP . "/", "", $file);
+                $relativePath = str_replace(
+                    Files::init()->getPathToSource() . "/",
+                    "",
+                    $file
+                );
                 // exceptions made for fixture files from tests
                 if (strpos($relativePath, '/_files/') !== false) {
                     return;
@@ -287,7 +291,11 @@ class ClassesTest extends \PHPUnit_Framework_TestCase
              * @param string $file
              */
             function ($file) {
-                $relativePath = str_replace(BP, "", $file);
+                $relativePath = str_replace(
+                    Files::init()->getPathToSource(),
+                    "",
+                    $file
+                );
                 // Due to the examples given with the regex patterns, we skip this test file itself
                 if ($relativePath == "/dev/tests/static/testsuite/Magento/Test/Integrity/ClassesTest.php") {
                     return;
@@ -556,28 +564,45 @@ class ClassesTest extends \PHPUnit_Framework_TestCase
     {
         // Remove usage of classes that do NOT using fully-qualified class names (possibly under same namespace)
         $directories = [
-            BP . '/dev/tools/',
-            BP . '/dev/tests/api-functional/framework/',
-            BP . '/dev/tests/functional/',
-            BP . '/dev/tests/integration/framework/',
-            BP . '/dev/tests/integration/framework/tests/unit/testsuite/',
-            BP . '/dev/tests/integration/testsuite/',
-            BP . '/dev/tests/integration/testsuite/Magento/Test/Integrity/',
-            BP . '/dev/tests/static/framework/',
-            BP . '/dev/tests/static/testsuite/',
-            BP . '/setup/src/',
+            '/dev/tools/',
+            '/dev/tests/api-functional/framework/',
+            '/dev/tests/functional/',
+            '/dev/tests/integration/framework/',
+            '/dev/tests/integration/framework/tests/unit/testsuite/',
+            '/dev/tests/integration/testsuite/',
+            '/dev/tests/integration/testsuite/Magento/Test/Integrity/',
+            '/dev/tests/static/framework/',
+            '/dev/tests/static/testsuite/',
+            '/setup/src/',
         ];
-        $libraryPaths = $componentRegistrar->getPaths(ComponentRegistrar::LIBRARY);
+        $pathToSource = Files::init()->getPathToSource();
+        $libraryPaths = $this->getLibraryPaths($componentRegistrar, $pathToSource);
         $directories = array_merge($directories, $libraryPaths);
         // Full list of directories where there may be namespace classes
         foreach ($directories as $directory) {
-            $fullPath = $directory . $namespacePath . '/' . str_replace('\\', '/', $badClass) . '.php';
+            $fullPath = $pathToSource . $directory . $namespacePath . '/' . str_replace('\\', '/', $badClass) . '.php';
             if (file_exists($fullPath)) {
                 unset($badClasses[array_search($badClass, $badClasses)]);
                 return true;
             }
         }
-        return false;
+    }
+
+    /**
+     * @param ComponentRegistrar $componentRegistrar
+     * @param string $pathToSource
+     * @return array
+     */
+    private function getLibraryPaths($componentRegistrar, $pathToSource)
+    {
+        $libraryPaths = $componentRegistrar->getPaths(ComponentRegistrar::LIBRARY);
+        foreach ($libraryPaths as $key => $libraryPath) {
+            $libraryPath = str_replace($pathToSource, '', $libraryPath);
+            $partsOfLibraryPath = explode('/', $libraryPath);
+            $libraryPaths[$key] = implode('/', array_slice($partsOfLibraryPath, 0, sizeof($partsOfLibraryPath)-2));
+            $libraryPaths[$key] .=  '/';
+        }
+        return $libraryPaths;
     }
 
     /**
@@ -598,13 +623,7 @@ class ClassesTest extends \PHPUnit_Framework_TestCase
     {
         $files = Files::init();
         $errors = [];
-        $filesToTest = $files->getPhpFiles(Files::INCLUDE_TESTS);
-
-        if (($key = array_search(__FILE__, $filesToTest)) !== false) {
-            unset($filesToTest[$key]);
-        }
-
-        foreach ($filesToTest as $file) {
+        foreach ($files->getFiles([BP . '/dev/tests/{integration,unit}'], '*') as $file) {
             $code = file_get_contents($file);
             if (preg_match('/@covers(DefaultClass)?\s+([\w\\\\]+)(::([\w\\\\]+))?/', $code, $matches)) {
                 if ($this->isNonexistentEntityCovered($matches)) {

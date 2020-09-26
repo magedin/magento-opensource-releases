@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav;
-
-use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
  * Catalog Product Eav Attributes abstract indexer resource model
@@ -159,17 +157,11 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
 
         $select = $connection->select()->from($idxTable, null);
 
-        $select->joinLeft(
-            ['cpe' => $this->getTable('catalog_product_entity')],
-            "cpe.entity_id = {$idxTable}.entity_id",
-            []
-        );
-        $linkField = $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField();
         $condition = $connection->quoteInto('=?', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE);
         $this->_addAttributeToSelect(
             $select,
             'visibility',
-            "cpe.{$linkField}",
+            $idxTable . '.entity_id',
             $idxTable . '.store_id',
             $condition
         );
@@ -190,14 +182,10 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
     {
         $connection = $this->getConnection();
         $idxTable = $this->getIdxTable();
-        $linkField = $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField();
+
         $select = $connection->select()->from(
             ['l' => $this->getTable('catalog_product_relation')],
-            []
-        )->joinLeft(
-            ['e' => $this->getTable('catalog_product_entity')],
-            'e.' . $linkField .' = l.parent_id',
-            ['e.entity_id as parent_id']
+            'parent_id'
         )->join(
             ['cs' => $this->getTable('store')],
             '',
@@ -207,10 +195,10 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
             'l.child_id = i.entity_id AND cs.store_id = i.store_id',
             ['attribute_id', 'store_id', 'value']
         )->group(
-            ['parent_id', 'i.attribute_id', 'i.store_id', 'i.value']
+            ['l.parent_id', 'i.attribute_id', 'i.store_id', 'i.value']
         );
         if ($parentIds !== null) {
-            $select->where('e.entity_id IN(?)', $parentIds);
+            $select->where('l.parent_id IN(?)', $parentIds);
         }
 
         /**

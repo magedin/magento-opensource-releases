@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /** @var \Magento\Customer\Model\Customer $customer */
@@ -27,7 +27,6 @@ $addressOneData = [
     'lastname' => 'test lastname',
     'street' => ['test street'],
     'city' => 'test city',
-    'region_id' => 10,
     'country_id' => 'US',
     'postcode' => '01001',
     'telephone' => '+7000000001',
@@ -43,7 +42,6 @@ $addressTwoData = [
     'lastname' => 'test lastname',
     'street' => ['test street'],
     'city' => 'test city',
-    'region_id' => 10,
     'country_id' => 'US',
     'postcode' => '01001',
     'telephone' => '+7000000001',
@@ -59,7 +57,6 @@ $addressThreeData = [
     'lastname' => 'removed lastname',
     'street' => ['removed street'],
     'city' => 'removed city',
-    'region_id' => 10,
     'country_id' => 'US',
     'postcode' => '01001',
     'telephone' => '+7000000001',

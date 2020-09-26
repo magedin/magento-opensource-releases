@@ -1,44 +1,33 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
 define(
     [
-        'Magento_GiftMessage/js/model/url-builder',
+        '../model/url-builder',
         'mage/storage',
         'Magento_Ui/js/model/messageList',
         'Magento_Checkout/js/model/error-processor',
-        'mage/url',
-        'Magento_Checkout/js/model/quote'
+        'mage/url'
     ],
-    function (urlBuilder, storage, messageList, errorProcessor, url, quote) {
-        'use strict';
-
-        return function (giftMessage, remove) {
-            var serviceUrl;
-
+    function(urlBuilder, storage, messageList, errorProcessor, url) {
+        "use strict";
+        return function(giftMessage, remove) {
             url.setBaseUrl(giftMessage.getConfigValue('baseUrl'));
-
+            var quoteId = giftMessage.getConfigValue('quoteId');
+            var serviceUrl;
             if (giftMessage.getConfigValue('isCustomerLoggedIn')) {
                 serviceUrl = urlBuilder.createUrl('/carts/mine/gift-message', {});
-
                 if (giftMessage.itemId != 'orderLevel') {
-                    serviceUrl = urlBuilder.createUrl('/carts/mine/gift-message/:itemId', {
-                        itemId: giftMessage.itemId
-                    });
+                    serviceUrl = urlBuilder.createUrl('/carts/mine/gift-message/:itemId', {itemId: giftMessage.itemId});
                 }
             } else {
-                serviceUrl = urlBuilder.createUrl('/guest-carts/:cartId/gift-message', {
-                    cartId: quote.getQuoteId()
-                });
-
+                serviceUrl = urlBuilder.createUrl('/guest-carts/:cartId/gift-message', {cartId: quoteId});
                 if (giftMessage.itemId != 'orderLevel') {
                     serviceUrl = urlBuilder.createUrl(
                         '/guest-carts/:cartId/gift-message/:itemId',
-                        {
-                            cartId: quote.getQuoteId(), itemId: giftMessage.itemId
-                        }
+                        {cartId: quoteId, itemId: giftMessage.itemId}
                     );
                 }
             }
@@ -50,16 +39,16 @@ define(
                     gift_message: giftMessage.getSubmitParams(remove)
                 })
             ).done(
-                function (response) {
+                function(result) {
                     giftMessage.reset();
-                    _.each(giftMessage.getAfterSubmitCallbacks(), function (callback) {
+                    _.each(giftMessage.getAfterSubmitCallbacks(), function(callback) {
                         if (_.isFunction(callback)) {
                             callback();
                         }
                     });
                 }
             ).fail(
-                function (response) {
+                function(response) {
                     errorProcessor.process(response);
                 }
             );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -37,8 +37,6 @@ class Payment extends Info implements OrderPaymentInterface
     const REVIEW_ACTION_DENY = 'deny';
 
     const REVIEW_ACTION_UPDATE = 'update';
-
-    const PARENT_TXN_ID = 'parent_transaction_id';
 
     /**
      * Order model object
@@ -242,17 +240,7 @@ class Payment extends Info implements OrderPaymentInterface
      */
     public function getParentTransactionId()
     {
-        return $this->getData(self::PARENT_TXN_ID);
-    }
-
-    /**
-     * Returns transaction parent
-     *
-     * @return string
-     */
-    public function setParentTransactionId($txnId)
-    {
-        return $this->setData(self::PARENT_TXN_ID, $txnId);
+        return $this->getData('parent_transaction_id');
     }
 
     /**
@@ -759,7 +747,7 @@ class Payment extends Info implements OrderPaymentInterface
             true
         )->setAutomaticallyCreated(
             true
-        )->addComment(
+        )->register()->addComment(
             __('The credit memo has been created automatically.')
         );
         $creditmemo->save();
@@ -1703,7 +1691,6 @@ class Payment extends Info implements OrderPaymentInterface
      * Returns cc_ss_issue
      *
      * @return string
-     * @deprecated unused
      */
     public function getCcSsIssue()
     {
@@ -1714,7 +1701,6 @@ class Payment extends Info implements OrderPaymentInterface
      * Returns cc_ss_start_month
      *
      * @return string
-     * @deprecated unused
      */
     public function getCcSsStartMonth()
     {
@@ -1725,7 +1711,6 @@ class Payment extends Info implements OrderPaymentInterface
      * Returns cc_ss_start_year
      *
      * @return string
-     * @deprecated unused
      */
     public function getCcSsStartYear()
     {
@@ -2090,7 +2075,6 @@ class Payment extends Info implements OrderPaymentInterface
 
     /**
      * {@inheritdoc}
-     * @deprecated unused
      */
     public function setCcSsStartYear($ccSsStartYear)
     {
@@ -2179,7 +2163,6 @@ class Payment extends Info implements OrderPaymentInterface
 
     /**
      * {@inheritdoc}
-     * @deprecated unused
      */
     public function setCcSsStartMonth($ccSsStartMonth)
     {
@@ -2284,7 +2267,6 @@ class Payment extends Info implements OrderPaymentInterface
 
     /**
      * {@inheritdoc}
-     * @deprecated unused
      */
     public function setCcSsIssue($ccSsIssue)
     {

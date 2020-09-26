@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,23 +12,12 @@ return [
     ],
     'navUpdater' => [
         [
-            'id'          => 'root.select-version',
-            'url'         => 'select-version',
-            'templateUrl' => "$base/select-version",
-            'title'       => 'System Upgrade',
-            'controller'  => 'selectVersionController',
-            'header'      => 'Step 1: Select Version',
-            'order'       => 2,
-            'nav'         => true,
-            'type'        => 'upgrade'
-        ],
-        [
             'id'          => 'root.readiness-check-upgrade',
             'url'         => 'readiness-check-updater',
             'templateUrl' => "$base/readiness-check-updater",
             'title'       => "Readiness \n Check",
             'header'      => 'Step 2: Readiness Check',
-            'order'       => 3,
+            'order'       => 2,
             'nav'         => true,
             'type'        => 'upgrade'
         ],
@@ -40,7 +29,7 @@ return [
             'header'      => 'Step 2: Readiness Check',
             'controller'  => 'readinessCheckController',
             'nav'         => false,
-            'order'       => 4,
+            'order'       => 3,
             'type'        => 'upgrade'
         ],
         [
@@ -50,7 +39,7 @@ return [
             'title'       => 'Create Backup',
             'controller'  => 'createBackupController',
             'header'      => 'Step 3: Create Backup',
-            'order'       => 5,
+            'order'       => 4,
             'nav'         => true,
             'type'        => 'upgrade'
         ],
@@ -62,7 +51,7 @@ return [
             'header'      => 'Step 3: Create Backup',
             'controller'  => 'completeBackupController',
             'nav'         => false,
-            'order'       => 6,
+            'order'       => 5,
             'type'        => 'upgrade'
         ],
         [
@@ -72,7 +61,7 @@ return [
             'title'       => "System \n Upgrade",
             'controller'  => 'startUpdaterController',
             'header'      => 'Step 4: System Upgrade',
-            'order'       => 7,
+            'order'       => 6,
             'nav'         => true,
             'type'        => 'upgrade'
         ],
@@ -81,7 +70,7 @@ return [
             'url'         => 'updater-success',
             'templateUrl' => "$base/updater-success",
             'controller'  => 'updaterSuccessController',
-            'order'       => 8,
+            'order'       => 7,
             'noMenu'      => true
         ],
         [

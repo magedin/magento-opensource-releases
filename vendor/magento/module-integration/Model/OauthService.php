@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Integration\Model;
@@ -62,11 +62,6 @@ class OauthService implements \Magento\Integration\Api\OauthServiceInterface
     protected $_tokenProvider;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\DateTime
-     */
-    private $_dateHelper;
-
-    /**
      * Initialize dependencies.
      *
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
@@ -96,22 +91,6 @@ class OauthService implements \Magento\Integration\Api\OauthServiceInterface
         $this->_logger = $logger;
         $this->_oauthHelper = $oauthHelper;
         $this->_tokenProvider = $tokenProvider;
-    }
-
-    /**
-     * The getter function to get the new DateTime dependency
-     *
-     * @return \Magento\Framework\Stdlib\DateTime\DateTime
-     *
-     * @deprecated
-     */
-    private function getDateHelper()
-    {
-        if ($this->_dateHelper === null) {
-            $this->_dateHelper = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\Stdlib\DateTime\DateTime::class);
-        }
-        return $this->_dateHelper;
     }
 
     /**
@@ -213,9 +192,7 @@ class OauthService implements \Magento\Integration\Api\OauthServiceInterface
     public function postToConsumer($consumerId, $endpointUrl)
     {
         try {
-            $consumer = $this->loadConsumer($consumerId);
-            $consumer->setUpdatedAt($this->getDateHelper()->gmtDate());
-            $consumer->save();
+            $consumer = $this->_consumerFactory->create()->load($consumerId);
             if (!$consumer->getId()) {
                 throw new \Magento\Framework\Oauth\Exception(
                     __('A consumer with ID %1 does not exist', $consumerId)

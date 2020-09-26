@@ -14,7 +14,6 @@ namespace Composer\Downloader;
 
 use Composer\Package\PackageInterface;
 use Symfony\Component\Finder\Finder;
-use Composer\IO\IOInterface;
 
 /**
  * Base downloader for archives
@@ -35,7 +34,9 @@ abstract class ArchiveDownloader extends FileDownloader
         while ($retries--) {
             $fileName = parent::download($package, $path);
 
-            $this->io->writeError('    Extracting archive', true, IOInterface::VERBOSE);
+            if ($this->io->isVerbose()) {
+                $this->io->writeError('    Extracting archive');
+            }
 
             try {
                 $this->filesystem->ensureDirectoryExists($temporaryDir);
@@ -43,7 +44,7 @@ abstract class ArchiveDownloader extends FileDownloader
                     $this->extract($fileName, $temporaryDir);
                 } catch (\Exception $e) {
                     // remove cache if the file was corrupted
-                    parent::clearLastCacheWrite($package);
+                    parent::clearCache($package, $path);
                     throw $e;
                 }
 
@@ -76,11 +77,7 @@ abstract class ArchiveDownloader extends FileDownloader
 
                 // retry downloading if we have an invalid zip file
                 if ($retries && $e instanceof \UnexpectedValueException && class_exists('ZipArchive') && $e->getCode() === \ZipArchive::ER_NOZIP) {
-                    if ($this->io->isDebug()) {
-                        $this->io->writeError('    Invalid zip file ('.$e->getMessage().'), retrying...');
-                    } else {
-                        $this->io->writeError('    Invalid zip file, retrying...');
-                    }
+                    $this->io->writeError('    Invalid zip file, retrying...');
                     usleep(500000);
                     continue;
                 }
@@ -118,11 +115,10 @@ abstract class ArchiveDownloader extends FileDownloader
                 // update api archives to the proper reference
                 $url = 'https://api.github.com/repos/' . $match[1] . '/'. $match[2] . '/' . $match[3] . 'ball/' . $package->getDistReference();
             }
-        } elseif ($package->getDistReference() && strpos($url, 'bitbucket.org')) {
-            if (preg_match('{^https?://(?:www\.)?bitbucket\.org/([^/]+)/([^/]+)/get/(.+)\.(zip|tar\.gz|tar\.bz2)$}i', $url, $match)) {
-                // update Bitbucket archives to the proper reference
-                $url = 'https://bitbucket.org/' . $match[1] . '/'. $match[2] . '/get/' . $package->getDistReference() . '.' . $match[4];
-            }
+        }
+
+        if (!extension_loaded('openssl') && (0 === strpos($url, 'https:') || 0 === strpos($url, 'http://github.com'))) {
+            throw new \RuntimeException('You must enable the openssl extension to download files via https');
         }
 
         return parent::processUrl($package, $url);

@@ -9,13 +9,17 @@
  * file that was distributed with this source code.
  */
 
-pcntl_signal(SIGUSR1, function () {echo 'SIGUSR1'; exit;});
+// required for signal handling
+declare (ticks = 1);
 
-echo 'Caught ';
+pcntl_signal(SIGUSR1, function () {echo 'Caught SIGUSR1'; exit;});
 
 $n = 0;
 
-while ($n++ < 400) {
+// ticks require activity to work - sleep(4); does not work
+while ($n < 400) {
     usleep(10000);
-    pcntl_signal_dispatch();
+    ++$n;
 }
+
+return;

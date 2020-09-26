@@ -94,10 +94,6 @@ class CamelCaseVariableName extends AbstractRule implements MethodAware, Functio
                 continue;
             }
 
-            if ($variable->getParent()->isInstanceOf('PropertyPostfix')) {
-                continue;
-            }
-
             $this->addViolation($node, array($image));
         }
     }

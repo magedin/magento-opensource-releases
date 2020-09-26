@@ -31,8 +31,8 @@ class EnumNodeDefinition extends ScalarNodeDefinition
     {
         $values = array_unique($values);
 
-        if (empty($values)) {
-            throw new \InvalidArgumentException('->values() must be called with at least one value.');
+        if (count($values) <= 1) {
+            throw new \InvalidArgumentException('->values() must be called with at least two distinct values.');
         }
 
         $this->values = $values;

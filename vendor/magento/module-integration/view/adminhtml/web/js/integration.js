@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint jquery:true*/
@@ -133,11 +133,11 @@ define([
                 TOP: screen.height - 510 - 300
             },
 
-            invokePopup: function (identityCallbackUrl, consumerKey, jqInfoDialog) {
+            invokePopup: function (identityCallbackUrl, consumerId, jqInfoDialog) {
                 // Callback should be invoked only once. Reset callback flag on subsequent invocations.
                 IdentityLogin.isCalledBack = false;
                 IdentityLogin.jqInfoDialog = jqInfoDialog;
-                var param = $.param({"oauth_consumer_key": consumerKey, "success_call_back": IdentityLogin.successCallbackUrl});
+                var param = $.param({"consumer_id": consumerId, "success_call_back": IdentityLogin.successCallbackUrl});
                 IdentityLogin.win = window.open(identityCallbackUrl + '?' + param, '',
                     'top=' + IdentityLogin.Constants.TOP +
                         ', left=' + IdentityLogin.Constants.LEFT +
@@ -185,18 +185,6 @@ define([
             }
         };
 
-        var isPopupBlocked = function(popupWindow) {
-            try {
-                popupWindow.focus();
-            } catch (e) {
-                alert({
-                    content: $.mage.__("Popup Blocker is enabled! Please add this site to your exception list.")
-                });
-                return true;
-            }
-            return false;
-        };
-
         var _showPopup = function (dialog, title, okButton, url) {
             $.ajax({
                 url: url,
@@ -217,7 +205,7 @@ define([
                     }
 
                     var identityLinkUrl = null,
-                        consumerKey = null,
+                        consumerId = null,
                         popupHtml = null,
                         popup = $('#integration-popup-container');
 
@@ -227,18 +215,15 @@ define([
                             result;
 
                         identityLinkUrl = resultObj['identity_link_url'];
-                        consumerKey      = resultObj['oauth_consumer_key'];
+                        consumerId      = resultObj['consumer_id'];
                         popupHtml       = resultObj['popup_content'];
-
+                        
                     } catch (e) {
                         //This is expected if result is not json. Do nothing.
                     }
 
-                    if (identityLinkUrl && consumerKey && popupHtml) {
-                        IdentityLogin.invokePopup(identityLinkUrl, consumerKey, popup);
-                        if (isPopupBlocked(IdentityLogin.win)) {
-                            return;
-                        }
+                    if (identityLinkUrl && consumerId && popupHtml) {
+                        IdentityLogin.invokePopup(identityLinkUrl, consumerId, popup);
                     } else {
                         popupHtml = result;
                     }

@@ -25,6 +25,8 @@ class DefinitionDecorator extends Definition
     private $changes = array();
 
     /**
+     * Constructor.
+     *
      * @param string $parent The id of Definition instance to decorate.
      */
     public function __construct($parent)
@@ -76,6 +78,7 @@ class DefinitionDecorator extends Definition
 
     /**
      * {@inheritdoc}
+     *
      */
     public function setFactoryClass($class)
     {
@@ -97,11 +100,11 @@ class DefinitionDecorator extends Definition
     /**
      * {@inheritdoc}
      */
-    public function setFactoryService($service, $triggerDeprecationError = true)
+    public function setFactoryService($service)
     {
         $this->changes['factory_service'] = true;
 
-        return parent::setFactoryService($service, $triggerDeprecationError);
+        return parent::setFactoryService($service);
     }
 
     /**

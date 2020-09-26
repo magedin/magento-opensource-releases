@@ -15,22 +15,19 @@ namespace Composer\Repository;
 use Composer\IO\IOInterface;
 use Composer\Json\JsonFile;
 use Composer\Package\Loader\ArrayLoader;
-use Composer\Package\Loader\LoaderInterface;
 
 /**
  * @author Serge Smertin <serg.smertin@gmail.com>
  */
-class ArtifactRepository extends ArrayRepository implements ConfigurableRepositoryInterface
+class ArtifactRepository extends ArrayRepository
 {
     /** @var LoaderInterface */
     protected $loader;
 
     protected $lookup;
-    protected $repoConfig;
 
     public function __construct(array $repoConfig, IOInterface $io)
     {
-        parent::__construct();
         if (!extension_loaded('zip')) {
             throw new \RuntimeException('The artifact repository requires PHP\'s zip extension');
         }
@@ -38,12 +35,6 @@ class ArtifactRepository extends ArrayRepository implements ConfigurableReposito
         $this->loader = new ArrayLoader();
         $this->lookup = $repoConfig['url'];
         $this->io = $io;
-        $this->repoConfig = $repoConfig;
-    }
-
-    public function getRepoConfig()
-    {
-        return $this->repoConfig;
     }
 
     protected function initialize()
@@ -57,7 +48,7 @@ class ArtifactRepository extends ArrayRepository implements ConfigurableReposito
     {
         $io = $this->io;
 
-        $directory = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS);
+        $directory = new \RecursiveDirectoryIterator($path);
         $iterator = new \RecursiveIteratorIterator($directory);
         $regex = new \RegexIterator($iterator, '/^.+\.(zip|phar)$/i');
         foreach ($regex as $file) {
@@ -68,12 +59,16 @@ class ArtifactRepository extends ArrayRepository implements ConfigurableReposito
 
             $package = $this->getComposerInformation($file);
             if (!$package) {
-                $io->writeError("File <comment>{$file->getBasename()}</comment> doesn't seem to hold a package", true, IOInterface::VERBOSE);
+                if ($io->isVerbose()) {
+                    $io->writeError("File <comment>{$file->getBasename()}</comment> doesn't seem to hold a package");
+                }
                 continue;
             }
 
-            $template = 'Found package <info>%s</info> (<comment>%s</comment>) in file <info>%s</info>';
-            $io->writeError(sprintf($template, $package->getName(), $package->getPrettyVersion(), $file->getBasename()), true, IOInterface::VERBOSE);
+            if ($io->isVerbose()) {
+                $template = 'Found package <info>%s</info> (<comment>%s</comment>) in file <info>%s</info>';
+                $io->writeError(sprintf($template, $package->getName(), $package->getPrettyVersion(), $file->getBasename()));
+            }
 
             $this->addPackage($package);
         }
@@ -82,7 +77,7 @@ class ArtifactRepository extends ArrayRepository implements ConfigurableReposito
     /**
      * Find a file by name, returning the one that has the shortest path.
      *
-     * @param \ZipArchive $zip
+     * @param  \ZipArchive $zip
      * @param $filename
      * @return bool|int
      */
@@ -144,8 +139,8 @@ class ArtifactRepository extends ArrayRepository implements ConfigurableReposito
         $package = JsonFile::parseJson($json, $composerFile);
         $package['dist'] = array(
             'type' => 'zip',
-            'url' => strtr($file->getPathname(), '\\', '/'),
-            'shasum' => sha1_file($file->getRealPath()),
+            'url' => $file->getPathname(),
+            'shasum' => sha1_file($file->getRealPath())
         );
 
         $package = $this->loader->load($package);

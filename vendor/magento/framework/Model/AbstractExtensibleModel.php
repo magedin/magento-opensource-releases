@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Framework\Model;
 
 use Magento\Framework\Api\AttributeValueFactory;
-use Magento\Framework\Api\ExtensionAttributesFactory;
 
 /**
  * Abstract model with custom attributes support.
@@ -20,7 +19,7 @@ abstract class AbstractExtensibleModel extends AbstractModel implements
     \Magento\Framework\Api\CustomAttributesDataInterface
 {
     /**
-     * @var ExtensionAttributesFactory
+     * @var \Magento\Framework\Api\ExtensionAttributesFactory
      */
     protected $extensionAttributesFactory;
 
@@ -47,7 +46,7 @@ abstract class AbstractExtensibleModel extends AbstractModel implements
     /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
-     * @param ExtensionAttributesFactory $extensionFactory
+     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
      * @param AttributeValueFactory $customAttributeFactory
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
@@ -56,7 +55,7 @@ abstract class AbstractExtensibleModel extends AbstractModel implements
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        ExtensionAttributesFactory $extensionFactory,
+        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
         AttributeValueFactory $customAttributeFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -328,24 +327,5 @@ abstract class AbstractExtensibleModel extends AbstractModel implements
     protected function _getExtensionAttributes()
     {
         return $this->getData(self::EXTENSION_ATTRIBUTES_KEY);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function __sleep()
-    {
-        return array_diff(parent::__sleep(), ['extensionAttributesFactory', 'customAttributeFactory']);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function __wakeup()
-    {
-        parent::__wakeup();
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->extensionAttributesFactory = $objectManager->get(ExtensionAttributesFactory::class);
-        $this->customAttributeFactory = $objectManager->get(AttributeValueFactory::class);
     }
 }

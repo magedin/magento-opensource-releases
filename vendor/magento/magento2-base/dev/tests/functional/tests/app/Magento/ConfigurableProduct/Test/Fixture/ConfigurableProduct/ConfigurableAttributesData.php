@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct;
 
-use Magento\Catalog\Test\Fixture\CatalogAttributeSet;
 use Magento\Mtf\Fixture\DataSource;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\Fixture\FixtureInterface;
@@ -46,13 +45,6 @@ class ConfigurableAttributesData extends DataSource
      * @var array
      */
     protected $attributes = [];
-
-    /**
-     * Prepared Attribute Set.
-     *
-     * @var CatalogAttributeSet
-     */
-    protected $attributeSet;
 
     /**
      * Prepared products.
@@ -145,21 +137,6 @@ class ConfigurableAttributesData extends DataSource
     }
 
     /**
-     * Create and assign products.
-     *
-     * @return void
-     */
-    public function generateProducts()
-    {
-        $assignedProducts = ['products' => []];
-        foreach (array_keys($this->variationsMatrix) as $variation) {
-            $assignedProducts['products'][$variation] = 'catalogProductSimple::default';
-        }
-
-        $this->prepareProducts($assignedProducts);
-    }
-
-    /**
      * Prepare products.
      *
      * @param array $data
@@ -180,13 +157,20 @@ class ConfigurableAttributesData extends DataSource
             if (is_string($product)) {
                 list($fixture, $dataset) = explode('::', $product);
                 $attributeData = ['attributes' => $this->getProductAttributeData($key)];
-                $productData = isset($this->variationsMatrix[$key]) ? $this->variationsMatrix[$key] : [];
+                $stock = [];
+
+                if (isset($data['matrix'][$key]['quantity_and_stock_status']['qty'])) {
+                    $stock['quantity_and_stock_status'] = [
+                        'qty' => $data['matrix'][$key]['quantity_and_stock_status']['qty'],
+                        'is_in_stock' => 'In Stock',
+                    ];
+                }
 
                 $product = $this->fixtureFactory->createByCode(
                     $fixture,
                     [
                         'dataset' => $dataset,
-                        'data' => array_merge($attributeSetData, $attributeData, $productData)
+                        'data' => array_merge($attributeSetData, $attributeData, $stock)
                     ]
                 );
             }
@@ -205,22 +189,19 @@ class ConfigurableAttributesData extends DataSource
      */
     protected function createAttributeSet()
     {
-        if (!$this->attributeSet) {
-            $this->attributeSet = $this->fixtureFactory->createByCode(
-                'catalogAttributeSet',
-                [
-                    'dataset' => 'custom_attribute_set',
-                    'data' => [
-                        'assigned_attributes' => [
-                            'attributes' => array_values($this->attributes),
-                        ],
-                    ]
+        $attributeSet = $this->fixtureFactory->createByCode(
+            'catalogAttributeSet',
+            [
+                'dataset' => 'custom_attribute_set',
+                'data' => [
+                    'assigned_attributes' => [
+                        'attributes' => array_values($this->attributes),
+                    ],
                 ]
-            );
-            $this->attributeSet->persist();
-        }
-
-        return $this->attributeSet;
+            ]
+        );
+        $attributeSet->persist();
+        return $attributeSet;
     }
 
     /**
@@ -290,9 +271,10 @@ class ConfigurableAttributesData extends DataSource
                     'configurable_attribute' => $product->getId(),
                     'name' => $product->getName(),
                     'sku' => $product->getSku(),
-                    'qty' => $quantityAndStockStatus['qty'],
+                    'quantity_and_stock_status' => [
+                        'qty' => $quantityAndStockStatus['qty'],
+                    ],
                     'weight' => $product->getWeight(),
-                    'price' => $product->getPrice()
                 ];
                 $this->variationsMatrix[$key] = array_replace_recursive($this->variationsMatrix[$key], $productData);
             } else {
@@ -300,7 +282,9 @@ class ConfigurableAttributesData extends DataSource
                     $this->variationsMatrix[$key],
                     [
                         'weight' => 1,
-                        'qty' => 10,
+                        'quantity_and_stock_status' => [
+                            'qty' => 10,
+                        ],
                     ],
                     $row
                 );
@@ -325,24 +309,23 @@ class ConfigurableAttributesData extends DataSource
 
         /* If empty matrix add one empty row */
         if (empty($variationsMatrix)) {
-            $variationIsolation = mt_rand(10000, 70000);
             $variationsMatrix = [
                 [
-                    'name' => "In configurable product {$variationIsolation}",
-                    'sku' => "in_configurable_product_{$variationIsolation}",
+                    'name' => 'In configurable product %isolation%',
+                    'sku' => 'in_configurable_product_%isolation%',
                 ],
             ];
         }
 
         foreach ($variationsMatrix as $rowKey => $row) {
             $randIsolation = mt_rand(1, 100);
-            $rowName = $row['name'];
-            $rowSku = $row['sku'];
+            $row['name'] .= ' ' . $randIsolation;
+            $row['sku'] .= '_' . $randIsolation;
             $index = 1;
             foreach ($attribute['options'] as $optionKey => $option) {
                 $compositeKey = "{$attributeKey}:{$optionKey}";
-                $row['name'] = $rowName . ' ' . $randIsolation . ' ' . $index;
-                $row['sku'] = $rowSku . '_' . $randIsolation . '_' . $index;
+                $row['name'] .= ' ' . $index;
+                $row['sku'] .= '_' . $index;
                 $row['price'] = $option['pricing_value'];
                 $newRowKey = $rowKey ? "{$rowKey} {$compositeKey}" : $compositeKey;
                 $result[$newRowKey] = $row;
@@ -373,6 +356,7 @@ class ConfigurableAttributesData extends DataSource
             'admin',
             'label',
             'pricing_value',
+            'is_percent',
             'include',
         ];
         $variationMatrixFields = [
@@ -380,7 +364,7 @@ class ConfigurableAttributesData extends DataSource
             'name',
             'sku',
             'price',
-            'qty',
+            'quantity_and_stock_status',
             'weight',
         ];
 
@@ -434,16 +418,6 @@ class ConfigurableAttributesData extends DataSource
     public function getAttributes()
     {
         return $this->attributes;
-    }
-
-    /**
-     * Get created attribute set.
-     *
-     * @return CatalogAttributeSet
-     */
-    public function getAttributeSet()
-    {
-        return $this->attributeSet;
     }
 
     /**

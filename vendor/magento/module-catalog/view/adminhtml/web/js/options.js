@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,13 +18,14 @@ define([
     'use strict';
 
     return function (config) {
-        var attributeOption = {
+        var optionDefaultInputType = 'radio',
+            attributeOption = {
                 table: $('attribute-options-table'),
                 itemCount: 0,
                 totalItems: 0,
                 rendered: 0,
                 template: mageTemplate('#row-template'),
-                isReadOnly: config.isReadOnly,
+                isReadOnly: config.idReadOnly,
                 add: function (data, render) {
                     var isNewOption = false,
                         element;
@@ -38,9 +39,12 @@ define([
                     }
 
                     if (!data.intype) {
-                        data.intype = this.getOptionInputType();
+                        data.intype = optionDefaultInputType;
                     }
 
+                    if (!this.totalItems) {
+                        data.checked = 'checked';
+                    }
                     element = this.template({
                         data: data
                     });
@@ -54,7 +58,6 @@ define([
 
                     if (render) {
                         this.render();
-                        this.updateItemsCountField();
                     }
                 },
                 remove: function (event) {
@@ -125,21 +128,13 @@ define([
                         '.ignore-validate textarea';
 
                     jQuery('#edit_form').data('validator').settings.forceIgnore = ignore;
-                },
-                getOptionInputType: function () {
-                    var optionDefaultInputType = 'radio';
-
-                    if ($('frontend_input') && $('frontend_input').value === 'multiselect') {
-                        optionDefaultInputType = 'checkbox';
-                    }
-
-                    return optionDefaultInputType;
                 }
             };
 
         if ($('add_new_option_button')) {
             Event.observe('add_new_option_button', 'click', attributeOption.add.bind(attributeOption, {}, true));
         }
+
         $('manage-options-panel').on('click', '.delete-option', function (event) {
             attributeOption.remove(event);
         });
@@ -172,7 +167,7 @@ define([
         }
 
         window.attributeOption = attributeOption;
-        window.optionDefaultInputType = attributeOption.getOptionInputType();
+        window.optionDefaultInputType = optionDefaultInputType;
 
         rg.set('manage-options-panel', attributeOption);
     };

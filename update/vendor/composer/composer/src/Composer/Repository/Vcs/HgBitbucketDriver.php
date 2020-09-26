@@ -12,7 +12,6 @@
 
 namespace Composer\Repository\Vcs;
 
-use Composer\Cache;
 use Composer\Config;
 use Composer\Json\JsonFile;
 use Composer\IO\IOInterface;
@@ -22,7 +21,6 @@ use Composer\IO\IOInterface;
  */
 class HgBitbucketDriver extends VcsDriver
 {
-    protected $cache;
     protected $owner;
     protected $repository;
     protected $tags;
@@ -39,7 +37,6 @@ class HgBitbucketDriver extends VcsDriver
         $this->owner = $match[1];
         $this->repository = $match[2];
         $this->originUrl = 'bitbucket.org';
-        $this->cache = new Cache($this->io, $this->config->get('cache-repo-dir').'/'.$this->originUrl.'/'.$this->owner.'/'.$this->repository);
     }
 
     /**
@@ -90,10 +87,6 @@ class HgBitbucketDriver extends VcsDriver
      */
     public function getComposerInformation($identifier)
     {
-        if (preg_match('{[a-f0-9]{40}}i', $identifier) && $res = $this->cache->read($identifier)) {
-            $this->infoCache[$identifier] = JsonFile::parseJson($res);
-        }
-
         if (!isset($this->infoCache[$identifier])) {
             $resource = $this->getScheme() . '://bitbucket.org/api/1.0/repositories/'.$this->owner.'/'.$this->repository.'/src/'.$identifier.'/composer.json';
             $repoData = JsonFile::parseJson($this->getContents($resource), $resource);
@@ -114,11 +107,6 @@ class HgBitbucketDriver extends VcsDriver
                 $changeset = JsonFile::parseJson($this->getContents($resource), $resource);
                 $composer['time'] = $changeset['timestamp'];
             }
-
-            if (preg_match('{[a-f0-9]{40}}i', $identifier)) {
-                $this->cache->write($identifier, json_encode($composer));
-            }
-
             $this->infoCache[$identifier] = $composer;
         }
 
@@ -170,7 +158,9 @@ class HgBitbucketDriver extends VcsDriver
         }
 
         if (!extension_loaded('openssl')) {
-            $io->writeError('Skipping Bitbucket hg driver for '.$url.' because the OpenSSL PHP extension is missing.', true, IOInterface::VERBOSE);
+            if ($io->isVerbose()) {
+                $io->writeError('Skipping Bitbucket hg driver for '.$url.' because the OpenSSL PHP extension is missing.');
+            }
 
             return false;
         }

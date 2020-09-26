@@ -2,7 +2,7 @@
 /**
  * Test for \Magento\Checkout\Controller\Index\Index
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -100,7 +100,7 @@ class IndexTest extends \PHPUnit_Framework_TestCase
      */
     protected $resultRedirectMock;
 
-    protected function setUp()
+    public function setUp()
     {
         // mock objects
         $this->objectManager = new ObjectManager($this);

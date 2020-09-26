@@ -2,7 +2,7 @@
 /**
  * Google Experiment Abstract Save observer
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleOptimizer\Observer;
@@ -52,12 +52,13 @@ abstract class AbstractSave implements ObserverInterface
      *
      * @param Observer $observer
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function execute(Observer $observer)
     {
         $this->_initEntity($observer);
 
-        if ($this->_isGoogleExperimentActive() && $this->isDataAvailable()) {
+        if ($this->_isGoogleExperimentActive()) {
             $this->_processCode();
         }
 
@@ -111,10 +112,11 @@ abstract class AbstractSave implements ObserverInterface
      */
     protected function _initRequestParams()
     {
-        if (!$this->isDataAvailable()) {
+        $params = $this->_request->getParam('google_experiment');
+        if (!is_array($params) || !isset($params['experiment_script']) || !isset($params['code_id'])) {
             throw new \InvalidArgumentException('Wrong request parameters');
         }
-        $this->_params = $this->getRequestData();
+        $this->_params = $params;
     }
 
     /**
@@ -178,22 +180,5 @@ abstract class AbstractSave implements ObserverInterface
     protected function _deleteCode()
     {
         $this->_modelCode->delete();
-    }
-
-    /**
-     * @return bool
-     */
-    private function isDataAvailable()
-    {
-        $params = $this->getRequestData();
-        return is_array($params) && isset($params['experiment_script']) && isset($params['code_id']);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getRequestData()
-    {
-        return $this->_request->getParam('google_experiment');
     }
 }

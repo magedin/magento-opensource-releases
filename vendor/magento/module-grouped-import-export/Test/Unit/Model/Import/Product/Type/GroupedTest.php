@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,9 +8,6 @@ namespace Magento\GroupedImportExport\Test\Unit\Model\Import\Product\Type;
 
 use \Magento\GroupedImportExport;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractImportTestCase
 {
     /** @var GroupedImportExport\Model\Import\Product\Type\Grouped */
@@ -61,22 +58,19 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
      */
     protected $entityModel;
 
-    /**
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     */
     protected function setUp()
     {
         parent::setUp();
 
         $this->setCollectionFactory = $this->getMock(
-            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory::class,
+            'Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory',
             ['create'],
             [],
             '',
             false
         );
         $this->setCollection = $this->getMock(
-            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection::class,
+            'Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection',
             ['setEntityTypeFilter'],
             [],
             '',
@@ -87,7 +81,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         );
         $this->setCollection->expects($this->any())->method('setEntityTypeFilter')->will($this->returnValue([]));
         $this->attrCollectionFactory = $this->getMock(
-            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class,
+            'Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory',
             ['create', 'addFieldToFilter'],
             [],
             '',
@@ -96,7 +90,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $this->attrCollectionFactory->expects($this->any())->method('create')->will($this->returnSelf());
         $this->attrCollectionFactory->expects($this->any())->method('addFieldToFilter')->willReturn([]);
         $this->entityModel = $this->getMock(
-            \Magento\CatalogImportExport\Model\Import\Product::class,
+            'Magento\CatalogImportExport\Model\Import\Product',
             ['getErrorAggregator', 'getNewSku', 'getOldSku', 'getNextBunch', 'isRowAllowedToImport', 'getRowScope'],
             [],
             '',
@@ -108,7 +102,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
             1 => 'grouped'
         ];
         $this->links = $this->getMock(
-            \Magento\GroupedImportExport\Model\Import\Product\Type\Grouped\Links::class,
+            'Magento\GroupedImportExport\Model\Import\Product\Type\Grouped\Links',
             [],
             [],
             '',
@@ -119,7 +113,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
             'attribute_id' => 'attributeSetName',
         ]];
         $this->connection = $this->getMock(
-            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
+            'Magento\Framework\DB\Adapter\Pdo\Mysql',
             ['select', 'fetchAll', 'fetchPairs', 'joinLeft', 'insertOnDuplicate', 'delete', 'quoteInto'],
             [],
             '',
@@ -136,7 +130,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $this->select->expects($this->any())->method('where')->will($this->returnSelf());
         $this->select->expects($this->any())->method('joinLeft')->will($this->returnSelf());
         $this->connection->expects($this->any())->method('select')->will($this->returnValue($this->select));
-        $connectionMock = $this->getMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, [], [], '', false);
+        $connectionMock = $this->getMock('Magento\Framework\DB\Adapter\Pdo\Mysql', [], [], '', false);
         $connectionMock->expects($this->any())->method('quoteInto')->will($this->returnValue('query'));
         $this->select->expects($this->any())->method('getConnection')->willReturn($connectionMock);
         $this->connection->expects($this->any())->method('insertOnDuplicate')->willReturnSelf();
@@ -144,7 +138,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $this->connection->expects($this->any())->method('quoteInto')->willReturn('');
         $this->connection->expects($this->any())->method('fetchAll')->will($this->returnValue($entityAttributes));
         $this->resource = $this->getMock(
-            \Magento\Framework\App\ResourceConnection::class,
+            '\Magento\Framework\App\ResourceConnection',
             ['getConnection', 'getTableName'],
             [],
             '',
@@ -153,7 +147,7 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $this->resource->expects($this->any())->method('getConnection')->will($this->returnValue($this->connection));
         $this->resource->expects($this->any())->method('getTableName')->will($this->returnValue('tableName'));
         $this->grouped = $this->objectManagerHelper->getObject(
-            \Magento\GroupedImportExport\Model\Import\Product\Type\Grouped::class,
+            'Magento\GroupedImportExport\Model\Import\Product\Type\Grouped',
             [
                 'attrSetColFac' => $this->setCollectionFactory,
                 'prodAttrColFac' => $this->attrCollectionFactory,
@@ -162,22 +156,6 @@ class GroupedTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
                 'links' => $this->links
             ]
         );
-        $metadataPoolMock = $this->getMock(\Magento\Framework\EntityManager\MetadataPool::class, [], [], '', false);
-        $entityMetadataMock = $this->getMock(\Magento\Framework\EntityManager\EntityMetadata::class, [], [], '', false);
-        $metadataPoolMock->expects($this->any())
-            ->method('getMetadata')
-            ->with(\Magento\Catalog\Api\Data\ProductInterface::class)
-            ->willReturn($entityMetadataMock);
-        $entityMetadataMock->expects($this->any())
-            ->method('getLinkField')
-            ->willReturn('entity_id');
-        $entityMetadataMock->expects($this->any())
-            ->method('getIdentifierField')
-            ->willReturn('entity_id');
-        $reflection = new \ReflectionClass(\Magento\GroupedImportExport\Model\Import\Product\Type\Grouped::class);
-        $reflectionProperty = $reflection->getProperty('metadataPool');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($this->grouped, $metadataPoolMock);
     }
 
     /**

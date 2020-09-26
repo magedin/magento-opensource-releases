@@ -1,15 +1,13 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Model;
 
 use Magento\Webapi\Controller\Rest;
-use Magento\Webapi\Model\Cache\Type\Webapi;
-use Magento\Webapi\Model\ServiceMetadata;
-use Magento\Framework\Webapi\Authorization;
+use Magento\Framework\App\Cache\Type\Webapi;
 
 /**
  * Abstract API schema generator.
@@ -27,60 +25,51 @@ abstract class AbstractSchemaGenerator
     protected $typeProcessor;
 
     /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      * @var \Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface
      */
     protected $customAttributeTypeLocator;
 
      /**
-      * @var ServiceMetadata
+      * @var \Magento\Webapi\Model\ServiceMetadata
       */
     protected $serviceMetadata;
-
-    /**
-     * @var Authorization
-     */
-    protected $authorization;
 
     /**
      * Initialize dependencies.
      *
      * @param Webapi $cache
      * @param \Magento\Framework\Reflection\TypeProcessor $typeProcessor
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface $customAttributeTypeLocator
      * @param \Magento\Webapi\Model\ServiceMetadata $serviceMetadata
-     * @param Authorization $authorization
      */
     public function __construct(
         Webapi $cache,
         \Magento\Framework\Reflection\TypeProcessor $typeProcessor,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface $customAttributeTypeLocator,
-        ServiceMetadata $serviceMetadata,
-        Authorization $authorization
+        \Magento\Webapi\Model\ServiceMetadata $serviceMetadata
     ) {
         $this->cache = $cache;
         $this->typeProcessor = $typeProcessor;
+        $this->storeManager = $storeManager;
         $this->customAttributeTypeLocator = $customAttributeTypeLocator;
         $this->serviceMetadata = $serviceMetadata;
-        $this->authorization = $authorization;
     }
 
     /**
-     * Retrieve a list of services visible to current user.
+     * Retrieve an array of services
      *
-     * @return string[]
+     * @return array
      */
     public function getListOfServices()
     {
-        $listOfAllowedServices = [];
-        foreach ($this->serviceMetadata->getServicesConfig() as $serviceName => $service) {
-            foreach ($service[ServiceMetadata::KEY_SERVICE_METHODS] as $method) {
-                if ($this->authorization->isAllowed($method[ServiceMetadata::KEY_ACL_RESOURCES])) {
-                    $listOfAllowedServices[] = $serviceName;
-                    break;
-                }
-            }
-        }
-        return $listOfAllowedServices;
+        return $this->serviceMetadata->getServicesConfig();
     }
 
     /**
@@ -96,14 +85,19 @@ abstract class AbstractSchemaGenerator
     {
         /** Sort requested services by names to prevent caching of the same schema file more than once. */
         ksort($requestedServices);
-        $cacheId = $this->cache->generateCacheIdUsingContext(get_class($this) . serialize($requestedServices));
+        $currentStore = $this->storeManager->getStore();
+        $cacheId = get_class($this). hash('md5', serialize($requestedServices) . $currentStore->getCode());
         $cachedSchemaContent = $this->cache->load($cacheId);
         if ($cachedSchemaContent !== false) {
             return $cachedSchemaContent;
         }
-        $allowedServicesMetadata = $this->getAllowedServicesMetadata($requestedServices);
-        $this->collectCallInfo($allowedServicesMetadata);
-        $schemaContent = $this->generateSchema($allowedServicesMetadata, $requestScheme, $requestHost, $endPointUrl);
+        $requestedServiceMetadata = [];
+        foreach ($requestedServices as $serviceName) {
+            $requestedServiceMetadata[$serviceName] = $this->getServiceMetadata($serviceName);
+        }
+
+        $this->collectCallInfo($requestedServiceMetadata);
+        $schemaContent = $this->generateSchema($requestedServiceMetadata, $requestScheme, $requestHost, $endPointUrl);
         $this->cache->save($schemaContent, $cacheId, [Webapi::CACHE_TAG]);
 
         return $schemaContent;
@@ -124,7 +118,7 @@ abstract class AbstractSchemaGenerator
      * Get service metadata
      *
      * @param string $serviceName
-     * @return array
+     * @return string[]
      */
     abstract protected function getServiceMetadata($serviceName);
 
@@ -152,54 +146,6 @@ abstract class AbstractSchemaGenerator
         foreach ($requestedServiceMetadata as $serviceName => $serviceData) {
             foreach ($serviceData['methods'] as $methodName => $methodData) {
                 $this->typeProcessor->processInterfaceCallInfo($methodData['interface'], $serviceName, $methodName);
-            }
-        }
-    }
-
-    /**
-     * Retrieve information only about those services/methods which are visible to current user.
-     *
-     * @param string[] $requestedServices
-     * @return array
-     */
-    protected function getAllowedServicesMetadata($requestedServices)
-    {
-        $allowedServicesMetadata = [];
-        foreach ($requestedServices as $serviceName) {
-            $serviceMetadata = $this->getServiceMetadata($serviceName);
-            foreach ($serviceMetadata[ServiceMetadata::KEY_SERVICE_METHODS] as $methodName => $methodData) {
-                if (!$this->authorization->isAllowed($methodData[ServiceMetadata::KEY_ACL_RESOURCES])) {
-                    unset($serviceMetadata[ServiceMetadata::KEY_SERVICE_METHODS][$methodName]);
-                }
-            }
-            if (!empty($serviceMetadata[ServiceMetadata::KEY_SERVICE_METHODS])) {
-                $this->removeRestrictedRoutes($serviceMetadata);
-                $allowedServicesMetadata[$serviceName] = $serviceMetadata;
-            }
-        }
-        return $allowedServicesMetadata;
-    }
-
-    /**
-     * Remove routes which should not be visible to current user.
-     *
-     * @param array &$serviceMetadata
-     * @return void
-     */
-    protected function removeRestrictedRoutes(&$serviceMetadata)
-    {
-        $allowedMethodNames = array_keys($serviceMetadata[ServiceMetadata::KEY_SERVICE_METHODS]);
-        /** Remove routes which reference methods not visible to current user */
-        if (isset($serviceMetadata[ServiceMetadata::KEY_ROUTES])) {
-            foreach ($serviceMetadata[ServiceMetadata::KEY_ROUTES] as $path => &$routeGroup) {
-                foreach ($routeGroup as $httpMethod => &$route) {
-                    if (!in_array($route[ServiceMetadata::KEY_ROUTE_METHOD], $allowedMethodNames)) {
-                        unset($routeGroup[$httpMethod]);
-                    }
-                }
-                if (empty($routeGroup)) {
-                    unset($serviceMetadata[ServiceMetadata::KEY_ROUTES][$path]);
-                }
             }
         }
     }

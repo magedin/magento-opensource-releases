@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Block\Cart;
@@ -13,14 +13,9 @@ use Magento\Store\Model\ScopeInterface;
 class Sidebar extends AbstractCart
 {
     /**
-     * Xml pah to checkout sidebar display value
-     */
-    const XML_PATH_CHECKOUT_SIDEBAR_DISPLAY = 'checkout/sidebar/display';
-
-    /**
      * Xml pah to checkout sidebar count value
      */
-    const XML_PATH_CHECKOUT_SIDEBAR_COUNT = 'checkout/sidebar/count';
+    const XML_PATH_CHECKOUT_SIDEBAR_DISPLAY = 'checkout/sidebar/display';
 
     /**
      * @var \Magento\Catalog\Helper\Image
@@ -68,8 +63,7 @@ class Sidebar extends AbstractCart
             'updateItemQtyUrl' => $this->getUpdateItemQtyUrl(),
             'removeItemUrl' => $this->getRemoveItemUrl(),
             'imageTemplate' => $this->getImageHtmlTemplate(),
-            'baseUrl' => $this->getBaseUrl(),
-            'minicartMaxItemsVisible' => $this->getMiniCartMaxItemsCount()
+            'baseUrl' => $this->getBaseUrl()
         ];
     }
 
@@ -176,15 +170,5 @@ class Sidebar extends AbstractCart
     public function getBaseUrl()
     {
         return $this->_storeManager->getStore()->getBaseUrl();
-    }
-
-    /**
-     * Return max visible item count for minicart
-     *
-     * @return int
-     */
-    private function getMiniCartMaxItemsCount()
-    {
-        return (int)$this->_scopeConfig->getValue('checkout/sidebar/count', ScopeInterface::SCOPE_STORE);
     }
 }

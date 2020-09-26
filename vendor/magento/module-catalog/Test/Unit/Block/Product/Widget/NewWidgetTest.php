@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Block\Product\Widget;
@@ -144,11 +144,9 @@ class NewWidgetTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCurrentPage($pageNumber, $expectedResult)
     {
-        $this->block->setData('page_var_name', 'page_number');
-
         $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->with('page_number')
+            ->with(\Magento\Catalog\Block\Product\Widget\NewWidget::PAGE_VAR_NAME)
             ->willReturn($pageNumber);
 
         $this->assertEquals($expectedResult, $this->block->getCurrentPage());

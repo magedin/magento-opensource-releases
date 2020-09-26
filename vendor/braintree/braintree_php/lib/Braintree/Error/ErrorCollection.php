@@ -1,8 +1,4 @@
 <?php
-namespace Braintree\Error;
-
-use Braintree\Util;
-
 /**
  *
  * Error handler
@@ -13,18 +9,18 @@ use Braintree\Util;
  * @package    Braintree
  * @subpackage Errors
  * @category   Errors
- * @copyright  2015 Braintree, a division of PayPal, Inc.
+ * @copyright  2014 Braintree, a division of PayPal, Inc.
  *
  * @property-read object $errors
  */
-class ErrorCollection
+class Braintree_Error_ErrorCollection
 {
     private $_errors;
 
     public function __construct($errorData)
     {
         $this->_errors =
-                new ValidationErrorCollection($errorData);
+                new Braintree_Error_ValidationErrorCollection($errorData);
     }
 
 
@@ -72,10 +68,10 @@ class ErrorCollection
         $pieces = preg_split("/[\[\]]+/", $field, 0, PREG_SPLIT_NO_EMPTY);
         $errors = $this;
         foreach(array_slice($pieces, 0, -1) as $key) {
-            $errors = $errors->forKey(Util::delimiterToCamelCase($key));
-            if (!isset($errors)) { return []; }
+            $errors = $errors->forKey(Braintree_Util::delimiterToCamelCase($key));
+            if (!isset($errors)) { return array(); }
         }
-        $finalKey = Util::delimiterToCamelCase(end($pieces));
+        $finalKey = Braintree_Util::delimiterToCamelCase(end($pieces));
         return $errors->onAttribute($finalKey);
     }
 
@@ -83,7 +79,7 @@ class ErrorCollection
      * Returns the errors at the given nesting level (see forKey) in a single, flat array:
      *
      * <code>
-     *   $result = Customer::create(...);
+     *   $result = Braintree_Customer::create(...);
      *   $customerErrors = $result->errors->forKey('customer')->shallowAll();
      * </code>
      */
@@ -111,4 +107,3 @@ class ErrorCollection
         return sprintf('%s', $this->_errors);
     }
 }
-class_alias('Braintree\Error\ErrorCollection', 'Braintree_Error_ErrorCollection');

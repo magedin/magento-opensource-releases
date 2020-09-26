@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Test\Unit\Module\I18n\Pack;
@@ -56,6 +56,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function testGenerate()
     {
         $dictionaryPath = 'dictionary_path';
+        $packPath = 'pack_path';
         $localeString = 'locale';
         $mode = 'mode';
         $allowDuplicates = true;
@@ -75,10 +76,10 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
             ->with($dictionaryPath)
             ->will($this->returnValue($this->dictionaryMock));
         $this->packWriterMock->expects($this->once())
-            ->method('writeDictionary')
-            ->with($this->dictionaryMock, $localeMock, $mode);
+            ->method('write')
+            ->with($this->dictionaryMock, $packPath, $localeMock, $mode);
 
-        $this->_generator->generate($dictionaryPath, $localeString, $mode, $allowDuplicates);
+        $this->_generator->generate($dictionaryPath, $packPath, $localeString, $mode, $allowDuplicates);
     }
 
     /**
@@ -88,6 +89,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function testGenerateEmptyFile()
     {
         $dictionaryPath = 'dictionary_path';
+        $packPath = 'pack_path';
         $localeString = 'locale';
         $mode = 'mode';
         $allowDuplicates = true;
@@ -102,7 +104,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
             ->with($dictionaryPath)
             ->will($this->returnValue($this->dictionaryMock));
 
-        $this->_generator->generate($dictionaryPath, $localeString, $mode, $allowDuplicates);
+        $this->_generator->generate($dictionaryPath, $packPath, $localeString, $mode, $allowDuplicates);
     }
 
     public function testGenerateWithNotAllowedDuplicatesAndDuplicatesExist()
@@ -130,6 +132,6 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
             ->method('getDuplicates')
             ->will($this->returnValue([[$phraseFirstMock], [$phraseSecondMock]]));
 
-        $this->_generator->generate('dictionary_path', 'locale', 'mode', $allowDuplicates);
+        $this->_generator->generate('dictionary_path', 'pack_path', 'locale', 'mode', $allowDuplicates);
     }
 }

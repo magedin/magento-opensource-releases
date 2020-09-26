@@ -13,7 +13,6 @@
 namespace Composer\Test\DependencyResolver;
 
 use Composer\DependencyResolver\Rule;
-use Composer\DependencyResolver\RuleSet;
 use Composer\DependencyResolver\Pool;
 use Composer\Repository\ArrayRepository;
 use Composer\TestCase;
@@ -31,8 +30,15 @@ class RuleTest extends TestCase
     {
         $rule = new Rule(array(123), 'job1', null);
 
-        $hash = unpack('ihash', md5('123', true));
-        $this->assertEquals($hash['hash'], $rule->getHash());
+        $this->assertEquals(substr(md5('123'), 0, 5), $rule->getHash());
+    }
+
+    public function testSetAndGetId()
+    {
+        $rule = new Rule(array(), 'job1', null);
+        $rule->setId(666);
+
+        $this->assertEquals(666, $rule->getId());
     }
 
     public function testEqualsForRulesWithDifferentHashes()
@@ -62,9 +68,9 @@ class RuleTest extends TestCase
     public function testSetAndGetType()
     {
         $rule = new Rule(array(), 'job1', null);
-        $rule->setType(RuleSet::TYPE_JOB);
+        $rule->setType('someType');
 
-        $this->assertEquals(RuleSet::TYPE_JOB, $rule->getType());
+        $this->assertEquals('someType', $rule->getType());
     }
 
     public function testEnable()

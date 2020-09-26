@@ -1,19 +1,14 @@
 <?php
 
 /*
- * This file is part of Composer.
- *
- * (c) Nils Adermann <naderman@naderman.de>
- *     Jordi Boggiano <j.boggiano@seld.be>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-/*
  * This file is copied from the Symfony package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license MIT
  */
 
 namespace Composer\Autoload;
@@ -50,14 +45,15 @@ class ClassMapGenerator
      * Iterate over all files in the given directory searching for classes
      *
      * @param \Iterator|string $path      The path to search in or an iterator
-     * @param string           $blacklist Regex that matches against the file path that exclude from the classmap.
+     * @param string           $whitelist Regex that matches against the file path
      * @param IOInterface      $io        IO object
      * @param string           $namespace Optional namespace prefix to filter by
      *
+     * @return array A class map array
+     *
      * @throws \RuntimeException When the path is neither an existing file nor directory
-     * @return array             A class map array
      */
-    public static function createMap($path, $blacklist = null, IOInterface $io = null, $namespace = null)
+    public static function createMap($path, $whitelist = null, IOInterface $io = null, $namespace = null)
     {
         if (is_string($path)) {
             if (is_file($path)) {
@@ -81,7 +77,7 @@ class ClassMapGenerator
                 continue;
             }
 
-            if ($blacklist && preg_match($blacklist, strtr($filePath, '\\', '/'))) {
+            if ($whitelist && !preg_match($whitelist, strtr($filePath, '\\', '/'))) {
                 continue;
             }
 
@@ -95,7 +91,7 @@ class ClassMapGenerator
 
                 if (!isset($map[$class])) {
                     $map[$class] = $filePath;
-                } elseif ($io && $map[$class] !== $filePath && !preg_match('{/(test|fixture|example|stub)s?/}i', strtr($map[$class].' '.$filePath, '\\', '/'))) {
+                } elseif ($io && $map[$class] !== $filePath && !preg_match('{/(test|fixture|example)s?/}i', strtr($map[$class].' '.$filePath, '\\', '/'))) {
                     $io->writeError(
                         '<warning>Warning: Ambiguous class resolution, "'.$class.'"'.
                         ' was found in both "'.$map[$class].'" and "'.$filePath.'", the first will be used.</warning>'
@@ -116,30 +112,23 @@ class ClassMapGenerator
      */
     private static function findClasses($path)
     {
-        $extraTypes = PHP_VERSION_ID < 50400 ? '' : '|trait';
+        $extraTypes = version_compare(PHP_VERSION, '5.4', '<') ? '' : '|trait';
         if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.3', '>=')) {
             $extraTypes .= '|enum';
         }
 
-        // Use @ here instead of Silencer to actively suppress 'unhelpful' output
-        // @link https://github.com/composer/composer/pull/4886
-        $contents = @php_strip_whitespace($path);
-        if (!$contents) {
-            if (!file_exists($path)) {
-                $message = 'File at "%s" does not exist, check your classmap definitions';
-            } elseif (!is_readable($path)) {
-                $message = 'File at "%s" is not readable, check its permissions';
-            } elseif ('' === trim(file_get_contents($path))) {
-                // The input file was really empty and thus contains no classes
-                return array();
-            } else {
-                $message = 'File at "%s" could not be parsed as PHP, it may be binary or corrupted';
+        try {
+            $contents = @php_strip_whitespace($path);
+            if (!$contents) {
+                if (!file_exists($path)) {
+                    throw new \Exception('File does not exist');
+                }
+                if (!is_readable($path)) {
+                    throw new \Exception('File is not readable');
+                }
             }
-            $error = error_get_last();
-            if (isset($error['message'])) {
-                $message .= PHP_EOL . 'The following message may be helpful:' . PHP_EOL . $error['message'];
-            }
-            throw new \RuntimeException(sprintf($message, $path));
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Could not scan for classes inside '.$path.": \n".$e->getMessage(), 0, $e);
         }
 
         // return early if there is no chance of matching anything in this file
@@ -150,7 +139,7 @@ class ClassMapGenerator
         // strip heredocs/nowdocs
         $contents = preg_replace('{<<<\s*(\'?)(\w+)\\1(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)\\2(?=\r\n|\n|\r|;)}s', 'null', $contents);
         // strip strings
-        $contents = preg_replace('{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s', 'null', $contents);
+        $contents = preg_replace('{"[^"\\\\]*(\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(\\\\.[^\'\\\\]*)*\'}s', 'null', $contents);
         // strip leading non-php code if needed
         if (substr($contents, 0, 2) !== '<?') {
             $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
@@ -168,8 +157,8 @@ class ClassMapGenerator
 
         preg_match_all('{
             (?:
-                 \b(?<![\$:>])(?P<type>class|interface'.$extraTypes.') \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
-               | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s++[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\s*+\\\\\s*+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+)? \s*+ [\{;]
+                 \b(?<![\$:>])(?P<type>class|interface'.$extraTypes.') \s+ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*)
+               | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\s*\\\\\s*[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*)? \s*[\{;]
             )
         }ix', $contents, $matches);
 
@@ -184,7 +173,7 @@ class ClassMapGenerator
                 if ($name[0] === ':') {
                     // This is an XHP class, https://github.com/facebook/xhp
                     $name = 'xhp'.substr(str_replace(array('-', ':'), array('_', '__'), $name), 1);
-                } elseif ($matches['type'][$i] === 'enum') {
+                } else if ($matches['type'][$i] === 'enum') {
                     // In Hack, something like:
                     //   enum Foo: int { HERP = '123'; }
                     // The regex above captures the colon, which isn't part of

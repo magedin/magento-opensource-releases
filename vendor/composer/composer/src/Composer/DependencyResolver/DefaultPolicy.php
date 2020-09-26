@@ -15,7 +15,7 @@ namespace Composer\DependencyResolver;
 use Composer\Package\PackageInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\BasePackage;
-use Composer\Semver\Constraint\Constraint;
+use Composer\Package\LinkConstraint\VersionConstraint;
 
 /**
  * @author Nils Adermann <naderman@naderman.de>
@@ -38,8 +38,8 @@ class DefaultPolicy implements PolicyInterface
             return BasePackage::$stabilities[$stabA] < BasePackage::$stabilities[$stabB];
         }
 
-        $constraint = new Constraint($operator, $b->getVersion());
-        $version = new Constraint('==', $a->getVersion());
+        $constraint = new VersionConstraint($operator, $b->getVersion());
+        $version = new VersionConstraint('==', $a->getVersion());
 
         return $constraint->matchSpecific($version, true);
     }
@@ -62,7 +62,7 @@ class DefaultPolicy implements PolicyInterface
         return $pool->getPriority($package->getRepository());
     }
 
-    public function selectPreferredPackages(Pool $pool, array $installedMap, array $literals, $requiredPackage = null)
+    public function selectPreferedPackages(Pool $pool, array $installedMap, array $literals, $requiredPackage = null)
     {
         $packages = $this->groupLiteralsByNamePreferInstalled($pool, $installedMap, $literals);
 
@@ -74,9 +74,9 @@ class DefaultPolicy implements PolicyInterface
         }
 
         foreach ($packages as &$literals) {
-            $literals = $this->pruneToHighestPriorityOrInstalled($pool, $installedMap, $literals);
-
             $literals = $this->pruneToBestVersion($pool, $literals);
+
+            $literals = $this->pruneToHighestPriorityOrInstalled($pool, $installedMap, $literals);
 
             $literals = $this->pruneRemoteAliases($pool, $literals);
         }
@@ -186,7 +186,7 @@ class DefaultPolicy implements PolicyInterface
         foreach ($source->getReplaces() as $link) {
             if ($link->getTarget() === $target->getName()
 //                && (null === $link->getConstraint() ||
-//                $link->getConstraint()->matches(new Constraint('==', $target->getVersion())))) {
+//                $link->getConstraint()->matches(new VersionConstraint('==', $target->getVersion())))) {
                 ) {
                 return true;
             }

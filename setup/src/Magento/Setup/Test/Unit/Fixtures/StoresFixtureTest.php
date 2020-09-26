@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -75,6 +75,7 @@ class StoresFixtureTest extends \PHPUnit_Framework_TestCase
         $categoryMock = $this->getMock(
             'Magento\Catalog\Model\Category',
             [
+                'setId',
                 'setName',
                 'setPath',
                 'setLevel',
@@ -82,13 +83,15 @@ class StoresFixtureTest extends \PHPUnit_Framework_TestCase
                 'setDefaultSortBy',
                 'setIsActive',
                 'getId',
-                'save',
-                'load'
+                'save'
             ],
             [],
             '',
             false
         );
+        $categoryMock->expects($this->once())
+            ->method('setId')
+            ->willReturnSelf();
         $categoryMock->expects($this->once())
             ->method('setName')
             ->willReturnSelf();

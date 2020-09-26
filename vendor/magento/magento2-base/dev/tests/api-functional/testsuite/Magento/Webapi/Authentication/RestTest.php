@@ -2,7 +2,7 @@
 /**
  * Test authentication mechanisms in REST.
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Authentication;
@@ -85,13 +85,11 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 401 Unauthorized
+     * @expectedExceptionMessage HTTP/1.1 401
      */
     public function testGetRequestTokenExpiredConsumer()
     {
         $this::consumerFixture('2012-01-01 00:00:00');
-        $this::$_consumer->setUpdatedAt('2012-01-01 00:00:00');
-        $this::$_consumer->save();
         /** @var $oAuthClient \Magento\TestFramework\Authentication\Rest\OauthClient */
         $oAuthClient = $this->_getOauthClient(self::$_consumerKey, self::$_consumerSecret);
         $oAuthClient->requestRequestToken();
@@ -99,7 +97,7 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 401 Unauthorized
+     * @expectedExceptionMessage HTTP/1.1 401
      */
     public function testGetRequestTokenInvalidConsumerKey()
     {
@@ -109,7 +107,7 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 401 Unauthorized
+     * @expectedExceptionMessage HTTP/1.1 401
      */
     public function testGetRequestTokenInvalidConsumerSecret()
     {
@@ -143,7 +141,7 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 401 Unauthorized
+     * @expectedExceptionMessage HTTP/1.1 401
      */
     public function testGetAccessTokenInvalidVerifier()
     {
@@ -158,7 +156,7 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 401 Unauthorized
+     * @expectedExceptionMessage HTTP/1.1 401
      */
     public function testGetAccessTokenConsumerMismatch()
     {
@@ -178,7 +176,7 @@ class RestTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage 400 Bad Request
+     * @expectedExceptionMessage HTTP/1.1 400
      */
     public function testAccessApiInvalidAccessToken()
     {

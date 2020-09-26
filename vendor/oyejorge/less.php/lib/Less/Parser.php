@@ -20,7 +20,7 @@ class Less_Parser{
 		'strictUnits'			=> false,			// whether units need to evaluate correctly
 		'strictMath'			=> false,			// whether math has to be within parenthesis
 		'relativeUrls'			=> true,			// option - whether to adjust URL's to be relative
-		'urlArgs'				=> '',				// whether to add args into url tokens
+		'urlArgs'				=> array(),			// whether to add args into url tokens
 		'numPrecision'			=> 8,
 
 		'import_dirs'			=> array(),
@@ -35,8 +35,6 @@ class Less_Parser{
 		'sourceMapWriteTo'		=> null,
 		'sourceMapURL'			=> null,
 
-		'indentation' 			=> '  ',
-
 		'plugins'				=> array(),
 
 	);
@@ -49,14 +47,13 @@ class Less_Parser{
 	private $pos;					// current index in `input`
 	private $saveStack = array();	// holds state for backtracking
 	private $furthest;
-	private $mb_internal_encoding = ''; // for remember exists value of mbstring.internal_encoding
 
 	/**
 	 * @var Less_Environment
 	 */
 	private $env;
 
-	protected $rules = array();
+	private $rules = array();
 
 	private static $imports = array();
 
@@ -84,14 +81,6 @@ class Less_Parser{
 		}else{
 			$this->SetOptions(Less_Parser::$default_options);
 			$this->Reset( $env );
-		}
-
-		// mbstring.func_overload > 1 bugfix
-		// The encoding value must be set for each source file,
-		// therefore, to conserve resources and improve the speed of this design is taken here
-		if (ini_get('mbstring.func_overload')) {
-			$this->mb_internal_encoding = ini_get('mbstring.internal_encoding');
-			@ini_set('mbstring.internal_encoding', 'ascii');
 		}
 
 	}
@@ -215,26 +204,17 @@ class Less_Parser{
 			}
 
 		} catch (Exception $exc) {
-			// Intentional fall-through so we can reset environment
-		}
+        	   // Intentional fall-through so we can reset environment
+        	}
 
 		//reset php settings
 		@ini_set('precision',$precision);
 		setlocale(LC_NUMERIC, $locale);
 
-		// If you previously defined $this->mb_internal_encoding
-		// is required to return the encoding as it was before
-		if ($this->mb_internal_encoding != '') {
-			@ini_set("mbstring.internal_encoding", $this->mb_internal_encoding);
-			$this->mb_internal_encoding = '';
-		}
-
 		// Rethrow exception after we handled resetting the environment
 		if (!empty($exc)) {
-			throw $exc;
-		}
-
-
+            		throw $exc;
+        	}
 
 		return $css;
 	}
@@ -305,7 +285,7 @@ class Less_Parser{
 			$filename = 'anonymous-file-'.Less_Parser::$next_id++.'.less';
 		}else{
 			$file_uri = self::WinPath($file_uri);
-			$filename = $file_uri;
+			$filename = basename($file_uri);
 			$uri_root = dirname($file_uri);
 		}
 
@@ -486,7 +466,17 @@ class Less_Parser{
 	 * @param string $file_path
 	 */
 	private function _parse( $file_path = null ){
+		if (ini_get("mbstring.func_overload")) {
+			$mb_internal_encoding = ini_get("mbstring.internal_encoding");
+			@ini_set("mbstring.internal_encoding", "ascii");
+		}
+
 		$this->rules = array_merge($this->rules, $this->GetRules( $file_path ));
+
+		//reset php settings
+		if (isset($mb_internal_encoding)) {
+			@ini_set("mbstring.internal_encoding", $mb_internal_encoding);
+		}
 	}
 
 
@@ -1991,7 +1981,7 @@ class Less_Parser{
 	}
 
 	private function parseImportOption(){
-		$opt = $this->MatchReg('/\\G(less|css|multiple|once|inline|reference|optional)/');
+		$opt = $this->MatchReg('/\\G(less|css|multiple|once|inline|reference)/');
 		if( $opt ){
 			return $opt[1];
 		}
@@ -2625,3 +2615,5 @@ class Less_Parser{
 	}
 
 }
+
+

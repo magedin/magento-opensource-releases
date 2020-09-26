@@ -21,7 +21,10 @@ use Symfony\Component\Yaml\Exception\ParseException;
 class Yaml
 {
     /**
-     * Parses YAML into a PHP value.
+     * Parses YAML into a PHP array.
+     *
+     * The parse method, when supplied with a YAML stream (string or file),
+     * will do its best to convert YAML in a file into a PHP array.
      *
      *  Usage:
      *  <code>
@@ -40,7 +43,7 @@ class Yaml
      * @param bool   $objectSupport          True if object support is enabled, false otherwise
      * @param bool   $objectForMap           True if maps should return a stdClass instead of array()
      *
-     * @return mixed The YAML converted to a PHP value
+     * @return array The YAML converted to a PHP array
      *
      * @throws ParseException If the YAML is not valid
      */
@@ -88,10 +91,6 @@ class Yaml
      */
     public static function dump($array, $inline = 2, $indent = 4, $exceptionOnInvalidType = false, $objectSupport = false)
     {
-        if ($indent < 1) {
-            throw new \InvalidArgumentException('The indentation must be greater than zero.');
-        }
-
         $yaml = new Dumper();
         $yaml->setIndentation($indent);
 

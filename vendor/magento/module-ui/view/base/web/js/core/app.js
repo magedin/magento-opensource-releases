@@ -1,16 +1,16 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
     './renderer/types',
     './renderer/layout',
-    '../lib/knockout/bootstrap'
+    'Magento_Ui/js/lib/ko/initialize'
 ], function (types, layout) {
     'use strict';
 
-    return function (data, merge) {
+    return function (data) {
         types.set(data.types);
-        layout(data.components, undefined, true, merge);
+        layout(data.components);
     };
 });

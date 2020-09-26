@@ -50,9 +50,6 @@
         "symfony/process":"*",
         "mikey179/vfsStream":"*"
     },
-    "replace": {
-        "magento-hackathon/magento-composer-installer": "*"
-    },
     "autoload":{
         "psr-0":{
             "MagentoHackathon\\Composer\\Magento":"src/"

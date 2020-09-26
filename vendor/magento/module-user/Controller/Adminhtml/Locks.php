@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,9 +12,12 @@ namespace Magento\User\Controller\Adminhtml;
 abstract class Locks extends \Magento\Backend\App\Action
 {
     /**
-     * Authorization level of a basic admin session
+     * Check whether access is allowed for current admin session
      *
-     * @see _isAllowed()
+     * @return bool
      */
-    const ADMIN_RESOURCE = 'Magento_User::locks';
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_User::locks');
+    }
 }

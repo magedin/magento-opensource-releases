@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -118,13 +118,6 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
      * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
      */
     protected $_productCollectionFactory;
-
-    /**
-     * @inheritdoc
-     */
-    protected $_debugReplacePrivateDataKeys = [
-        'Key', 'Password', 'MeterNumber'
-    ];
 
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -461,7 +454,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
         $ratesRequest = $this->_formRateRequest($purpose);
         $requestString = serialize($ratesRequest);
         $response = $this->_getCachedQuotes($requestString);
-        $debugData = ['request' => $this->filterDebugData($ratesRequest)];
+        $debugData = ['request' => $ratesRequest];
         if ($response === null) {
             try {
                 $client = $this->_createRateSoapClient();
@@ -501,10 +494,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
         // make general request for all methods
         $response = $this->_doRatesRequest(self::RATE_REQUEST_GENERAL);
         $preparedGeneral = $this->_prepareRateResponse($response);
-        if (!$preparedGeneral->getError()
-            || $this->_result->getError() && $preparedGeneral->getError()
-            || empty($this->_result->getAllRates())
-        ) {
+        if (!$preparedGeneral->getError() || $this->_result->getError() && $preparedGeneral->getError()) {
             $this->_result->append($preparedGeneral);
         }
 
@@ -1260,6 +1250,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
         $width = $packageParams->getWidth();
         $length = $packageParams->getLength();
         $weightUnits = $packageParams->getWeightUnits() == \Zend_Measure_Weight::POUND ? 'LB' : 'KG';
+        $dimensionsUnits = $packageParams->getDimensionUnits() == \Zend_Measure_Length::INCH ? 'IN' : 'CM';
         $unitPrice = 0;
         $itemsQty = 0;
         $itemsDesc = [];
@@ -1402,12 +1393,12 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
         // set dimensions
         if ($length || $width || $height) {
-            $requestClient['RequestedShipment']['RequestedPackageLineItems']['Dimensions'] = [
-                'Length' => $length,
-                'Width' => $width,
-                'Height' => $height,
-                'Units' => $packageParams->getDimensionUnits() == \Zend_Measure_Length::INCH ? 'IN' : 'CM'
-            ];
+            $requestClient['RequestedShipment']['RequestedPackageLineItems']['Dimensions'] = [];
+            $dimenssions = &$requestClient['RequestedShipment']['RequestedPackageLineItems']['Dimensions'];
+            $dimenssions['Length'] = $length;
+            $dimenssions['Width'] = $width;
+            $dimenssions['Height'] = $height;
+            $dimenssions['Units'] = $dimensionsUnits;
         }
 
         return $this->_getAuthDetails() + $requestClient;
@@ -1568,22 +1559,5 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
     public function getDeliveryConfirmationTypes(\Magento\Framework\DataObject $params = null)
     {
         return $this->getCode('delivery_confirmation_types');
-    }
-
-    /**
-     * Recursive replace sensitive fields in debug data by the mask
-     * @param string $data
-     * @return string
-     */
-    protected function filterDebugData($data)
-    {
-        foreach (array_keys($data) as $key) {
-            if (is_array($data[$key])) {
-                $data[$key] = $this->filterDebugData($data[$key]);
-            } elseif (in_array($key, $this->_debugReplacePrivateDataKeys)) {
-                $data[$key] = self::DEBUG_KEYS_MASK;
-            }
-        }
-        return $data;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,8 +8,6 @@
  * Tests, that perform search of words, that signal of obsolete code
  */
 namespace Magento\Test\Legacy;
-
-use Magento\Framework\Component\ComponentRegistrar;
 
 class WordsTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,8 +20,7 @@ class WordsTest extends \PHPUnit_Framework_TestCase
     {
         self::$_wordsFinder = new \Magento\TestFramework\Inspection\WordsFinder(
             glob(__DIR__ . '/_files/words_*.xml'),
-            BP,
-            new ComponentRegistrar()
+            \Magento\Framework\App\Utility\Files::init()->getPathToSource()
         );
     }
 
@@ -35,7 +32,7 @@ class WordsTest extends \PHPUnit_Framework_TestCase
              * @param string $file
              */
             function ($file) {
-                $words = self::$_wordsFinder->findWords(realpath($file));
+                $words = self::$_wordsFinder->findWords($file);
                 if ($words) {
                     $this->fail("Found words: '" . implode("', '", $words) . "' in '{$file}' file");
                 }

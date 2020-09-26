@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Observer;
@@ -59,8 +59,6 @@ class ProcessLayoutRenderElement implements ObserverInterface
                 'handles' => json_encode($layout->getUpdate()->getHandles())
             ]
         );
-        // Varnish does not support ESI over HTTPS must change to HTTP
-        $url = substr($url, 0, 5) === 'https' ? 'http' . substr($url, 5) : $url;
         return sprintf('<esi:include src="%s" />', $url);
     }
 

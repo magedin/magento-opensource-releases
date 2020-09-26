@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -44,8 +44,7 @@
     <div class="mass-select-wrap">
         <select
             id="<?php echo $block->getHtmlId() ?>-mass-select"
-            class="action-select-multiselect _disabled"
-            disabled="disabled"
+            class="action-select-multiselect"
             data-menu="grid-mass-select">
             <optgroup label="<?php /* @escapeNotVerified */ echo __('Mass Actions')?>">
                 <option disabled selected></option>
@@ -69,14 +68,10 @@
     </div>
 
 <script>
-    require(['jquery', 'domReady!'], function($){
+    require(['jquery'], function($){
         'use strict';
-        $('#<?php echo $block->getHtmlId() ?>-mass-select')
-            .removeClass('_disabled')
-            .prop('disabled', false)
-            .change(function () {
+        $('#<?php echo $block->getHtmlId() ?>-mass-select').change(function () {
             var massAction = $('option:selected', this).val();
-            this.blur();
             switch (massAction) {
                 <?php if ($block->getUseSelectAll()):?>
                 case 'selectAll':
@@ -93,6 +88,7 @@
                     return <?php /* @escapeNotVerified */ echo $block->getJsObjectName() ?>.unselectVisible();
                     break;
             }
+            this.blur();
         });
     });
     <?php if (!$block->getParentBlock()->canDisplayContainer()): ?>

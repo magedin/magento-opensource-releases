@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Adminhtml\Product\Edit\Tab\Options;
@@ -53,7 +53,8 @@ class OptionTest extends \PHPUnit_Framework_TestCase
             'Magento\Catalog\Model\Product\Option',
             ['data' => ['id' => 1, 'title' => 'some_title']]
         );
-        $productWithOptions->setOptions([$option]);
+        $productWithOptions->addOption($option);
+
         $block->setProduct($productWithOptions);
         $this->assertNotEmpty($block->getOptionValues());
 

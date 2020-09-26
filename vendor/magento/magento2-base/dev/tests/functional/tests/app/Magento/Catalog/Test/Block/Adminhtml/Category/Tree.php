@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -54,13 +54,6 @@ class Tree extends Block
     protected $treeElement = '.tree-holder';
 
     /**
-     * Page header selector.
-     *
-     * @var string
-     */
-    protected $header = 'header';
-
-    /**
      * Get backend abstract block.
      *
      * @return Template
@@ -80,7 +73,6 @@ class Tree extends Block
      */
     public function addSubcategory()
     {
-        $this->browser->find($this->header)->hover();
         $this->_rootElement->find($this->addSubcategory, Locator::SELECTOR_CSS)->click();
         $this->getTemplateBlock()->waitLoader();
     }
@@ -92,7 +84,6 @@ class Tree extends Block
      */
     public function addRootCategory()
     {
-        $this->browser->find($this->header)->hover();
         $this->_rootElement->find($this->addRootCategory, Locator::SELECTOR_CSS)->click();
         $this->getTemplateBlock()->waitLoader();
     }

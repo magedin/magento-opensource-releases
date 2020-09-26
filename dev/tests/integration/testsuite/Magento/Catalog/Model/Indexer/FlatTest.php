@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Indexer;
@@ -109,7 +109,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             2
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $category->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $category->getResource());
 
         $result = $category->getAllChildren(true);
         $this->assertNotEmpty($result);
@@ -117,7 +117,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Populate EAV category data`
+     * Populate EAV category data
      *
      * @magentoConfigFixture current_store catalog/frontend/flat_catalog_category true
      */
@@ -127,14 +127,13 @@ class FlatTest extends \PHPUnit_Framework_TestCase
         $category = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Category'
         );
-        $category->getResource()->load($category, 2);
+        $category->load(2);
 
         /** @var \Magento\Catalog\Model\Category $categoryOne */
         $categoryOne = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Category'
         );
-        $categoryOne->setName('Category One')->setPath($category->getPath())->setIsActive(true);
-        $category->getResource()->save($categoryOne);
+        $categoryOne->setName('Category One')->setPath($category->getPath())->setIsActive(true)->save();
         self::loadAttributeValues($categoryOne);
 
         self::$categoryOne = $categoryOne->getId();
@@ -144,8 +143,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             'Magento\Catalog\Model\Category'
         );
 
-        $categoryTwo->setName('Category Two')->setPath($categoryOne->getPath())->setIsActive(true);
-        $category->getResource()->save($categoryTwo);
+        $categoryTwo->setName('Category Two')->setPath($categoryOne->getPath())->setIsActive(true)->save();
 
         self::loadAttributeValues($categoryTwo);
 
@@ -176,7 +174,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             2
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $category->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $category->getResource());
 
         $result = $category->getAllChildren(true);
         $this->assertNotEmpty($result);
@@ -190,7 +188,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             self::$categoryOne
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $categoryOne->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $categoryOne->getResource());
 
         $result = $categoryOne->getAllChildren(true);
         $this->assertNotEmpty($result);
@@ -200,12 +198,12 @@ class FlatTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Magento\Catalog\Model\Category $categoryTwo */
         $categoryTwo = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Catalog\Model\Category::class
+            'Magento\Catalog\Model\Category'
         )->load(
             self::$categoryTwo
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $categoryTwo->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $categoryTwo->getResource());
 
         $this->assertEquals(self::$categoryOne, $categoryTwo->getParentId());
         $this->checkCategoryData($categoryTwo);
@@ -266,7 +264,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             2
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $category->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $category->getResource());
 
         $this->checkCategoryData($category);
 
@@ -334,7 +332,7 @@ class FlatTest extends \PHPUnit_Framework_TestCase
             2
         );
 
-        $this->assertInstanceOf(\Magento\Catalog\Model\ResourceModel\Category\Flat::class, $category->getResource());
+        $this->assertInstanceOf('Magento\Catalog\Model\ResourceModel\Category\Flat', $category->getResource());
 
         $result = $category->getAllChildren(true);
         $this->assertNotEmpty($result);

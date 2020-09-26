@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Store\App\FrontController\Plugin;
@@ -26,11 +26,6 @@ class RequestPreprocessor
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $_storeManager;
-
-    /**
-     * @var \Magento\Store\Model\BaseUrlChecker
-     */
-    private $baseUrlChecker;
 
     /**
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
@@ -66,14 +61,14 @@ class RequestPreprocessor
         \Closure $proceed,
         \Magento\Framework\App\RequestInterface $request
     ) {
-        if (!$request->isPost() && $this->getBaseUrlChecker()->isEnabled()) {
+        if (!$request->isPost() && $this->_isBaseUrlCheckEnabled()) {
             $baseUrl = $this->_storeManager->getStore()->getBaseUrl(
                 \Magento\Framework\UrlInterface::URL_TYPE_WEB,
                 $this->_storeManager->getStore()->isCurrentlySecure()
             );
             if ($baseUrl) {
                 $uri = parse_url($baseUrl);
-                if (!$this->getBaseUrlChecker()->execute($uri, $request)) {
+                if (!$this->_isBaseUrlCorrect($uri, $request)) {
                     $redirectUrl = $this->_url->getRedirectUrl(
                         $this->_url->getUrl(ltrim($request->getPathInfo(), '/'), ['_nosid' => true])
                     );
@@ -95,19 +90,37 @@ class RequestPreprocessor
     }
 
     /**
-     * Gets base URL checker.
+     * Is base url check enabled
      *
-     * @return \Magento\Store\Model\BaseUrlChecker
-     * @deprecated
+     * @return bool
      */
-    private function getBaseUrlChecker()
+    protected function _isBaseUrlCheckEnabled()
     {
-        if ($this->baseUrlChecker === null) {
-            $this->baseUrlChecker = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Store\Model\BaseUrlChecker'
-            );
-        }
+        return (bool)$this->_scopeConfig->getValue(
+            'web/url/redirect_to_base',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+    }
 
-        return $this->baseUrlChecker;
+    /**
+     * Check if base url enabled
+     *
+     * @param array $uri
+     * @param \Magento\Framework\App\Request\Http $request
+     * @return bool
+     */
+    protected function _isBaseUrlCorrect($uri, $request)
+    {
+        $requestUri = $request->getRequestUri() ? $request->getRequestUri() : '/';
+        return (!isset(
+            $uri['scheme']
+        ) || $uri['scheme'] === $request->getScheme()) && (!isset(
+            $uri['host']
+        ) || $uri['host'] === $request->getHttpHost()) && (!isset(
+            $uri['path']
+        ) || strpos(
+            $requestUri,
+            $uri['path']
+        ) !== false);
     }
 }

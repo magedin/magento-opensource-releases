@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -46,16 +46,14 @@ class Backup
     {
         $backupFilePath = $this->backupInfo->getBackupPath() . $this->backupInfo->generateBackupFilename();
         $command = $this->buildShellCommand($backupFilePath);
-        $this->status->add(sprintf('Creating backup archive "%s" ...', $backupFilePath), \Psr\Log\LogLevel::INFO);
+        $this->status->add(sprintf('Creating backup archive "%s" ...', $backupFilePath));
         exec($command, $output, $return);
         if ($return) {
             throw new \RuntimeException(
-                sprintf('Cannot create backup with command "%s": %s', $command, implode("\n", $output),
-                    \Psr\Log\LogLevel::ERROR
-                )
+                sprintf('Cannot create backup with command "%s": %s', $command, implode("\n", $output))
             );
         }
-        $this->status->add(sprintf('Backup archive "%s" has been created.', $backupFilePath), \Psr\Log\LogLevel::INFO);
+        $this->status->add(sprintf('Backup archive "%s" has been created.', $backupFilePath));
         return $this;
     }
 

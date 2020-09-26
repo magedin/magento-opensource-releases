@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -16,10 +16,8 @@ define([
             minVisible: 1,
             maxVisible: 30,
             viewportSize: 18,
-            displayArea: 'dataGridActions',
-            columnsProvider: 'ns = ${ $.ns }, componentType = columns',
             imports: {
-                addColumns: '${ $.columnsProvider }:elems'
+                addColumns: '${ $.columnsData.provider }:elems'
             },
             templates: {
                 headerMsg: $t('${ $.visible } out of ${ $.total } visible')

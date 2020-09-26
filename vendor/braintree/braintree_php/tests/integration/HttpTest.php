@@ -1,66 +1,61 @@
 <?php
-namespace Test\Integration;
+require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-require_once dirname(__DIR__) . '/Setup.php';
-
-use Test\Setup;
-use Braintree;
-
-class HttpTest extends Setup
+class Braintree_HttpTest extends PHPUnit_Framework_TestCase
 {
-    public function testProductionSSL()
+    function testProductionSSL()
     {
         try {
-            Braintree\Configuration::environment('production');
-            $this->setExpectedException('Braintree\Exception\Authentication');
-            $http = new Braintree\Http(Braintree\Configuration::$global);
+            Braintree_Configuration::environment('production');
+            $this->setExpectedException('Braintree_Exception_Authentication');
+            $http = new Braintree_Http(Braintree_Configuration::$global);
             $http->get('/');
-        } catch (Braintree\Exception $e) {
-            Braintree\Configuration::environment('development');
+        } catch (Exception $e) {
+            Braintree_Configuration::environment('development');
             throw $e;
         }
-        Braintree\Configuration::environment('development');
+        Braintree_Configuration::environment('development');
     }
 
-    public function testSandboxSSL()
+    function testSandboxSSL()
     {
         try {
-            Braintree\Configuration::environment('sandbox');
-            $this->setExpectedException('Braintree\Exception\Authentication');
-            $http = new Braintree\Http(Braintree\Configuration::$global);
+            Braintree_Configuration::environment('sandbox');
+            $this->setExpectedException('Braintree_Exception_Authentication');
+            $http = new Braintree_Http(Braintree_Configuration::$global);
             $http->get('/');
-        } catch (Braintree\Exception $e) {
-            Braintree\Configuration::environment('development');
+        } catch (Exception $e) {
+            Braintree_Configuration::environment('development');
             throw $e;
         }
-        Braintree\Configuration::environment('development');
+        Braintree_Configuration::environment('development');
     }
 
-    public function testSslError()
+    function testSslError()
     {
         try {
-            Braintree\Configuration::environment('sandbox');
-            $this->setExpectedException('Braintree\Exception\SSLCertificate');
-            $http = new Braintree\Http(Braintree\Configuration::$global);
+            Braintree_Configuration::environment('sandbox');
+            $this->setExpectedException('Braintree_Exception_SSLCertificate');
+            $http = new Braintree_Http(Braintree_Configuration::$global);
             //ip address of api.braintreegateway.com
             $http->_doUrlRequest('get', '204.109.13.121');
-        } catch (Braintree\Exception $e) {
-            Braintree\Configuration::environment('development');
+        } catch (Exception $e) {
+            Braintree_Configuration::environment('development');
             throw $e;
         }
-        Braintree\Configuration::environment('development');
+        Braintree_Configuration::environment('development');
     }
 
-    public function testAuthorizationWithConfig()
+    function testAuthorizationWithConfig()
     {
-        $config = new Braintree\Configuration([
+        $config = new Braintree_Configuration(array(
             'environment' => 'development',
             'merchant_id' => 'integration_merchant_id',
             'publicKey' => 'badPublicKey',
             'privateKey' => 'badPrivateKey'
-        ]);
+        ));
 
-        $http = new Braintree\Http($config);
+        $http = new Braintree_Http($config);
         $result = $http->_doUrlRequest('GET', $config->baseUrl() . '/merchants/integration_merchant_id/customers');
         $this->assertEquals(401, $result['status']);
     }

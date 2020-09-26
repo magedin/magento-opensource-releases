@@ -1,12 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Mview\Config;
-
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Mview\View\SubscriptionInterface;
 
 class Converter implements \Magento\Framework\Config\ConverterInterface
 {
@@ -76,22 +73,7 @@ class Converter implements \Magento\Framework\Config\ConverterInterface
                     }
                     $name = $this->getAttributeValue($subscription, 'name');
                     $column = $this->getAttributeValue($subscription, 'entity_column');
-                    $subscriptionModel = $this->getAttributeValue($subscription, 'subscription_model');
-                    if (!empty($subscriptionModel)
-                        && !in_array(
-                            SubscriptionInterface::class,
-                            class_implements(ltrim($subscriptionModel, '\\'))
-                        )
-                    ) {
-                        throw new \InvalidArgumentException(
-                            'Subscription model must implement ' . SubscriptionInterface::class
-                        );
-                    }
-                    $data['subscriptions'][$name] = [
-                        'name' => $name,
-                        'column' => $column,
-                        'subscription_model' => $subscriptionModel
-                    ];
+                    $data['subscriptions'][$name] = ['name' => $name, 'column' => $column];
                 }
                 break;
         }

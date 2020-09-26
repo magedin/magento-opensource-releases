@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,6 @@ namespace Magento\Checkout\Test\TestStep;
 use Magento\Checkout\Test\Constraint\AssertGrandTotalOrderReview;
 use Magento\Checkout\Test\Page\CheckoutOnepage;
 use Magento\Checkout\Test\Page\CheckoutOnepageSuccess;
-use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
@@ -46,38 +45,22 @@ class PlaceOrderStep implements TestStepInterface
     protected $prices;
 
     /**
-     * @var FixtureFactory
-     */
-    private $fixtureFactory;
-
-    /**
-     * @var array
-     */
-    private $products;
-
-    /**
      * @construct
      * @param CheckoutOnepage $checkoutOnepage
      * @param AssertGrandTotalOrderReview $assertGrandTotalOrderReview
      * @param CheckoutOnepageSuccess $checkoutOnepageSuccess
-     * @param FixtureFactory $fixtureFactory
-     * @param array $products
      * @param array $prices
      */
     public function __construct(
         CheckoutOnepage $checkoutOnepage,
         AssertGrandTotalOrderReview $assertGrandTotalOrderReview,
         CheckoutOnepageSuccess $checkoutOnepageSuccess,
-        FixtureFactory $fixtureFactory,
-        array $products = [],
         array $prices = []
     ) {
         $this->checkoutOnepage = $checkoutOnepage;
         $this->assertGrandTotalOrderReview = $assertGrandTotalOrderReview;
         $this->prices = $prices;
         $this->checkoutOnepageSuccess = $checkoutOnepageSuccess;
-        $this->fixtureFactory = $fixtureFactory;
-        $this->products = $products;
     }
 
     /**
@@ -91,18 +74,7 @@ class PlaceOrderStep implements TestStepInterface
             $this->assertGrandTotalOrderReview->processAssert($this->checkoutOnepage, $this->prices['grandTotal']);
         }
         $this->checkoutOnepage->getPaymentBlock()->getSelectedPaymentMethodBlock()->clickPlaceOrder();
-        $order = $this->fixtureFactory->createByCode(
-            'orderInjectable',
-            [
-                'data' => [
-                    'entity_id' => ['products' => $this->products]
-                ]
-            ]
-        );
 
-        return [
-            'orderId' => $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId(),
-            'order' => $order
-        ];
+        return ['orderId' => $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId()];
     }
 }

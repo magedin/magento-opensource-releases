@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -15,8 +15,7 @@ define(
         'Magento_Checkout/js/model/payment-service',
         'Magento_Checkout/js/model/payment/method-converter',
         'Magento_Checkout/js/action/get-payment-information',
-        'Magento_Checkout/js/model/checkout-data-resolver',
-        'mage/translate'
+        'Magento_Checkout/js/model/checkout-data-resolver'
     ],
     function (
         $,
@@ -28,8 +27,7 @@ define(
         paymentService,
         methodConverter,
         getPaymentInformation,
-        checkoutDataResolver,
-        $t
+        checkoutDataResolver
     ) {
         'use strict';
 
@@ -53,7 +51,7 @@ define(
                 stepNavigator.registerStep(
                     'payment',
                     null,
-                    $t('Review & Payments'),
+                    'Review & Payments',
                     this.isVisible,
                     _.bind(this.navigate, this),
                     20

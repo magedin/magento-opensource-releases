@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Component\Form;
@@ -84,17 +84,11 @@ class Field extends AbstractComponent
         $this->wrappedComponent->setData(
             'config',
             array_replace_recursive(
-                ['dataScope' => $this->getName()],
                 (array) $this->wrappedComponent->getData('config'),
                 (array) $this->getData('config')
             )
         );
-
-        foreach ($this->components as $nameComponent => $component) {
-            $this->wrappedComponent->addComponent($nameComponent, $component);
-        }
-        $this->prepareChildComponent($this->wrappedComponent);
-
+        $this->wrappedComponent->prepare();
         $this->components = $this->wrappedComponent->getChildComponents();
         // Merge JS configuration with wrapped component configuration
         $wrappedComponentConfig = $this->getJsConfig($this->wrappedComponent);

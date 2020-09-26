@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -34,10 +34,7 @@ abstract class AbstractGroupPrice extends \Magento\Framework\Model\ResourceModel
 
         $columns = $this->_loadPriceDataColumns($columns);
 
-        $productIdFieldName = $this->getProductIdFieldName();
-        $select = $connection->select()
-            ->from($this->getMainTable(), $columns)
-            ->where("{$productIdFieldName} = ?", $productId);
+        $select = $connection->select()->from($this->getMainTable(), $columns)->where('entity_id=?', $productId);
 
         $this->_loadPriceDataSelect($select);
 
@@ -50,16 +47,6 @@ abstract class AbstractGroupPrice extends \Magento\Framework\Model\ResourceModel
         }
 
         return $connection->fetchAll($select);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getProductIdFieldName()
-    {
-        $table = $this->getTable('catalog_product_entity');
-        $indexList = $this->getConnection()->getIndexList($table);
-        return $indexList[$this->getConnection()->getPrimaryKeyName($table)]['COLUMNS_LIST'][0];
     }
 
     /**
@@ -96,7 +83,7 @@ abstract class AbstractGroupPrice extends \Magento\Framework\Model\ResourceModel
     {
         $connection = $this->getConnection();
 
-        $conds = [$connection->quoteInto($this->getProductIdFieldName() . ' = ?', $productId)];
+        $conds = [$connection->quoteInto('entity_id = ?', $productId)];
 
         if ($websiteId !== null) {
             $conds[] = $connection->quoteInto('website_id = ?', $websiteId);

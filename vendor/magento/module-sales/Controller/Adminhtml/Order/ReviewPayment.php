@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order;
@@ -9,13 +9,6 @@ use Magento\Backend\App\Action;
 
 class ReviewPayment extends \Magento\Sales\Controller\Adminhtml\Order
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Sales::review_payment';
-
     /**
      * Manage payment state
      *
@@ -66,5 +59,13 @@ class ReviewPayment extends \Magento\Sales\Controller\Adminhtml\Order
         }
         $resultRedirect->setPath('sales/order/view', ['order_id' => $order->getEntityId()]);
         return $resultRedirect;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Sales::review_payment');
     }
 }

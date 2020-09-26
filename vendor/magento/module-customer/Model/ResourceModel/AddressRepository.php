@@ -2,7 +2,7 @@
 /**
  * Customer address entity resource model
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Model\ResourceModel;
@@ -257,50 +257,43 @@ class AddressRepository implements \Magento\Customer\Api\AddressRepositoryInterf
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getFirstname(), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'firstname']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'firstname']));
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getLastname(), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'lastname']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'lastname']));
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getStreetLine(1), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'street']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'street']));
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getCity(), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'city']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'city']));
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getTelephone(), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'telephone']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'telephone']));
         }
 
         $havingOptionalZip = $this->directoryData->getCountriesWithOptionalZip();
         if (!in_array($customerAddressModel->getCountryId(), $havingOptionalZip)
             && !\Zend_Validate::is($customerAddressModel->getPostcode(), 'NotEmpty')
         ) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'postcode']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'postcode']));
         }
 
         if (!\Zend_Validate::is($customerAddressModel->getCountryId(), 'NotEmpty')) {
-            $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'countryId']));
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'countryId']));
         }
 
-        if ($this->directoryData->isRegionRequired($customerAddressModel->getCountryId())) {
-            $regionCollection = $customerAddressModel->getCountryModel()->getRegionCollection();
-            if (!$regionCollection->count() && empty($customerAddressModel->getRegion())) {
-                $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'region']));
-            } elseif (
-                $regionCollection->count()
-                && !in_array(
-                    $customerAddressModel->getRegionId(),
-                    array_column($regionCollection->getData(), 'region_id')
-                )
-            ) {
-                $exception->addError(__('%fieldName is a required field.', ['fieldName' => 'regionId']));
-            }
+        if ($customerAddressModel->getCountryModel()->getRegionCollection()->getSize()
+            && !\Zend_Validate::is($customerAddressModel->getRegionId(), 'NotEmpty')
+            && $this->directoryData->isRegionRequired($customerAddressModel->getCountryId())
+        ) {
+            $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'regionId']));
         }
+
         return $exception;
     }
 }

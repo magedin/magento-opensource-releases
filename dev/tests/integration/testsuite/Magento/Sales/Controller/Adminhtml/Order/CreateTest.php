@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order;
@@ -11,19 +11,6 @@ namespace Magento\Sales\Controller\Adminhtml\Order;
  */
 class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->get('Magento\Catalog\Api\ProductRepositoryInterface');
-    }
-
-
     public function testLoadBlockAction()
     {
         $this->getRequest()->setParam('block', ',');
@@ -37,11 +24,10 @@ class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendControll
      */
     public function testLoadBlockActionData()
     {
-        $product = $this->productRepository->get('simple');
         $this->_objectManager->get(
             'Magento\Sales\Model\AdminOrder\Create'
         )->addProducts(
-            [$product->getId() => ['qty' => 1]]
+            [1 => ['qty' => 1]]
         );
         $this->getRequest()->setParam('block', 'data');
         $this->getRequest()->setParam('json', 1);
@@ -81,11 +67,10 @@ class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendControll
      */
     public function testLoadBlockActionItems()
     {
-        $product = $this->productRepository->get('simple');
         $this->_objectManager->get(
             'Magento\Sales\Model\AdminOrder\Create'
         )->addProducts(
-            [$product->getId() => ['qty' => 1]]
+            [1 => ['qty' => 1]]
         );
         $this->getRequest()->setParam('block', 'items');
         $this->getRequest()->setParam('json', 1);
@@ -100,10 +85,9 @@ class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendControll
      */
     public function testIndexAction()
     {
-        $product = $this->productRepository->get('simple');
         /** @var $order \Magento\Sales\Model\AdminOrder\Create */
         $order = $this->_objectManager->get('Magento\Sales\Model\AdminOrder\Create');
-        $order->addProducts([$product->getId() => ['qty' => 1]]);
+        $order->addProducts([1 => ['qty' => 1]]);
         $this->dispatch('backend/sales/order_create/index');
         $html = $this->getResponse()->getBody();
 
@@ -163,8 +147,7 @@ class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendControll
      */
     public function testConfigureProductToAddAction()
     {
-        $product = $this->productRepository->get('configurable');
-        $this->getRequest()->setParam('id', $product->getEntityId())
+        $this->getRequest()->setParam('id', 1)
             ->setParam('isAjax', true);
 
         $this->dispatch('backend/sales/order_create/configureProductToAdd');
@@ -175,7 +158,7 @@ class CreateTest extends \Magento\TestFramework\TestCase\AbstractBackendControll
         $this->assertContains('><span>Quantity</span></label>', $body);
         $this->assertContains('>Test Configurable</label>', $body);
         $this->assertContains('"code":"test_configurable","label":"Test Configurable"', $body);
-        $this->assertContains(sprintf('"productId":"%s"', $product->getEntityId()), $body);
+        $this->assertContains('"productId":"1"', $body);
     }
 
     public function testDeniedSaveAction()

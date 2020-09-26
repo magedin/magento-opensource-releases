@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Config\Test\Unit\Block\System\Config\Form;
@@ -116,10 +116,11 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $expected = '<tr id="row_' . $this->_testData['htmlId'] . '">';
         $expected .= '<td class="label"><label for="' .
             $this->_testData['htmlId'] .
-            '"><span>' .
+            '">' .
             $this->_testData['label'] .
-            '</span></label></td>';
+            '</label></td>';
         $expected .= '<td class="value">' . $this->_testData['elementHTML'] . '</td>';
+        $expected .= '<td class="scope-label"></td>';
         $expected .= '<td class=""></td></tr>';
 
         $actual = $this->_object->render($this->_elementMock);
@@ -170,10 +171,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->_elementMock->expects($this->any())->method('getScope')->will($this->returnValue(true));
         $this->_elementMock->expects($this->any())->method('getScopeLabel')->will($this->returnValue($testScopeLabel));
 
-        $expected = '<tr id="row_test_field_id">' .
-            '<td class="label"><label for="test_field_id">' .
-            '<span data-config-scope="' . $testScopeLabel . '">test_label</span>' .
-            '</label></td><td class="value">test_html</td><td class=""></td></tr>';
+        $expected = '<td class="scope-label">' . $testScopeLabel . '</td>';
         $actual = $this->_object->render($this->_elementMock);
 
         $this->assertContains($expected, $actual);

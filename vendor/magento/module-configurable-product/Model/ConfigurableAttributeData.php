@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -33,9 +33,8 @@ class ConfigurableAttributeData
                 $attributes[$attributeId] = [
                     'id' => $attributeId,
                     'code' => $productAttribute->getAttributeCode(),
-                    'label' => $productAttribute->getStoreLabel($product->getStoreId()),
+                    'label' => $attribute->getLabel(),
                     'options' => $attributeOptionsData,
-                    'position' => $attribute->getPosition(),
                 ];
                 $defaultValues[$attributeId] = $this->getAttributeConfigValue($attributeId, $product);
             }

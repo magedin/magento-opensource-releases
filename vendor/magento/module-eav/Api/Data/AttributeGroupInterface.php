@@ -1,16 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Api\Data;
 
 use Magento\Framework\Api\ExtensibleDataInterface;
 
-/**
- * Interface AttributeGroupInterface
- * @api
- */
 interface AttributeGroupInterface extends ExtensibleDataInterface
 {
     const GROUP_ID = 'attribute_group_id';

@@ -1,12 +1,13 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
+use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct;
 use Magento\Mtf\Client\BrowserInterface;
 use Magento\Mtf\Constraint\AbstractAssertForm;
 use Magento\Mtf\Fixture\FixtureInterface;
@@ -20,14 +21,14 @@ class AssertProductPage extends AbstractAssertForm
     /**
      * Product view block on frontend page
      *
-     * @var \Magento\Catalog\Test\Block\Product\View
+     * @var \Magento\ConfigurableProduct\Test\Block\Product\View
      */
     protected $productView;
 
     /**
      * Product fixture
      *
-     * @var FixtureInterface
+     * @var ConfigurableProduct
      */
     protected $product;
 
@@ -167,7 +168,7 @@ class AssertProductPage extends AbstractAssertForm
         $fixtureProductDescription = $this->product->getDescription();
         $formProductDescription = $this->productView->getProductDescription();
 
-        if ($fixtureProductDescription === null || $fixtureProductDescription == $formProductDescription) {
+        if ($fixtureProductDescription == $formProductDescription) {
             return null;
         }
         return "Displayed product description on product page(front-end) not equals passed from fixture. "
@@ -181,14 +182,14 @@ class AssertProductPage extends AbstractAssertForm
      */
     protected function verifyShortDescription()
     {
-        $fixtureShortDescription = $this->product->getShortDescription();
+        $fixtureProductShortDescription = $this->product->getShortDescription();
         $formProductShortDescription = $this->productView->getProductShortDescription();
 
-        if ($fixtureShortDescription === null || $fixtureShortDescription == $formProductShortDescription) {
+        if ($fixtureProductShortDescription == $formProductShortDescription) {
             return null;
         }
         return "Displayed product short description on product page(front-end) not equals passed from fixture. "
-            . "Actual: {$formProductShortDescription}, expected: {$fixtureShortDescription}.";
+            . "Actual: {$formProductShortDescription}, expected: {$fixtureProductShortDescription}.";
     }
 
     /**

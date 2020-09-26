@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Product\Widget;
@@ -32,8 +32,6 @@ class NewWidget extends \Magento\Catalog\Block\Product\NewProduct implements \Ma
 
     /**
      * Name of request parameter for page number value
-     *
-     * @deprecated
      */
     const PAGE_VAR_NAME = 'np';
 
@@ -90,7 +88,7 @@ class NewWidget extends \Magento\Catalog\Block\Product\NewProduct implements \Ma
      */
     public function getCurrentPage()
     {
-        return abs((int)$this->getRequest()->getParam($this->getData('page_var_name')));
+        return abs((int)$this->getRequest()->getParam(self::PAGE_VAR_NAME));
     }
 
     /**
@@ -105,8 +103,7 @@ class NewWidget extends \Magento\Catalog\Block\Product\NewProduct implements \Ma
             [
                 $this->getDisplayType(),
                 $this->getProductsPerPage(),
-                intval($this->getRequest()->getParam($this->getData('page_var_name'), 1)),
-                serialize($this->getRequest()->getParams())
+                intval($this->getRequest()->getParam(self::PAGE_VAR_NAME))
             ]
         );
     }
@@ -190,7 +187,7 @@ class NewWidget extends \Magento\Catalog\Block\Product\NewProduct implements \Ma
                 $this->_pager->setUseContainer(true)
                     ->setShowAmounts(true)
                     ->setShowPerPage(false)
-                    ->setPageVarName($this->getData('page_var_name'))
+                    ->setPageVarName(self::PAGE_VAR_NAME)
                     ->setLimit($this->getProductsPerPage())
                     ->setTotalLimit($this->getProductsCount())
                     ->setCollection($this->getProductCollection());

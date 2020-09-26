@@ -115,16 +115,6 @@ final class UnneededControlParenthesesFixerTest extends AbstractFixerTestBase
             ),
             array(
                 '<?php
-                $var = clone ($obj1 ?: $obj2);
-                ',
-            ),
-            array(
-                '<?php
-                $var = clone ($obj1 ? $obj1->getSubject() : $obj2);
-                ',
-            ),
-            array(
-                '<?php
                 clone $object;
                 ',
                 '<?php
@@ -175,10 +165,16 @@ final class UnneededControlParenthesesFixerTest extends AbstractFixerTestBase
                 '<?php
                 echo (1 + 2) * 10, "\n";
                 ',
+                '<?php
+                echo ((1 + 2) * 10, "\n");
+                ',
             ),
             array(
                 '<?php
                 echo (1 + 2) * 10, "\n";
+                ',
+                '<?php
+                echo((1 + 2) * 10, "\n");
                 ',
             ),
             array(
@@ -303,26 +299,18 @@ final class UnneededControlParenthesesFixerTest extends AbstractFixerTestBase
             ),
             array(
                 '<?php
-                switch ($a) {
-                    case $x;
-                }
+                case $x;
                 ',
                 '<?php
-                switch ($a) {
-                    case($x);
-                }
+                case($x);
                 ',
             ),
             array(
                 '<?php
-                switch ($a) {
-                    case 2;
-                }
+                case 2;
                 ',
                 '<?php
-                switch ($a) {
-                    case(2);
-                }
+                case(2);
                 ',
             ),
             array(

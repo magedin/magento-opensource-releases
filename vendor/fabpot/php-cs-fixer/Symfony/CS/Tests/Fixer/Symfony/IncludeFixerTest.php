@@ -137,7 +137,7 @@ class IncludeFixerTest extends AbstractFixerTestBase
                 '<?php require($a ? $b : $c) . $d;',
             ),
             array(
-                '<?php $foo = (false === include($zfLibraryPath."/Zend/Loader/StandardAutoloader.php"));',
+                '<?php $foo = (false === include($zfLibraryPath."/Zend/Loader/StandardAutoloader.php")) {$foo = "asd";};',
             ),
             array(
                 '<?php require_once SOME_CONST . "file.php"; require Foo::Bar($baz);',

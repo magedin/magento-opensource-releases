@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Block\Adminhtml\Queue;
@@ -161,12 +161,7 @@ class Edit extends \Magento\Backend\Block\Template
      */
     public function getPreviewUrl()
     {
-        if ($this->getTemplateId()) {
-            $params = ['template_id' => $this->getTemplateId()];
-        } else {
-            $params = ['id' => $this->getRequest()->getParam('id')];
-        }
-        return $this->getUrl('*/*/preview', $params);
+        return $this->getUrl('*/*/preview');
     }
 
     /**

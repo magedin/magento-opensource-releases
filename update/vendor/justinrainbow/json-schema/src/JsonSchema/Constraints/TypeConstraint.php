@@ -82,7 +82,7 @@ class TypeConstraint extends Constraint
                         implode(', ', array_filter(self::$wording)))
                 );
             }
-            $this->addError($path, ucwords(gettype($value)) . " value found, but " . self::$wording[$type] . " is required", 'type');
+            $this->addError($path, gettype($value) . " value found, but " . self::$wording[$type] . " is required");
         }
     }
 
@@ -125,10 +125,6 @@ class TypeConstraint extends Constraint
         }
 
         if ('string' === $type) {
-            return is_string($value);
-        }
-        
-        if ('email' === $type) {
             return is_string($value);
         }
 

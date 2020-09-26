@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Api;
@@ -99,8 +99,7 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
     protected function getTargetGalleryEntryId()
     {
         $mediaGallery = $this->getTargetSimpleProduct()->getData('media_gallery');
-        $image = array_shift($mediaGallery['images']);
-        return (int)$image['value_id'];
+        return (int)$mediaGallery['images'][0]['value_id'];
     }
 
     /**
@@ -127,40 +126,7 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
         $mediaGallery = $targetProduct->getData('media_gallery');
 
         $this->assertCount(1, $mediaGallery['images']);
-        $updatedImage = array_shift($mediaGallery['images']);
-        $this->assertEquals($actualResult, $updatedImage['value_id']);
-        $this->assertEquals('Image Text', $updatedImage['label']);
-        $this->assertEquals(1, $updatedImage['position']);
-        $this->assertEquals(0, $updatedImage['disabled']);
-        $this->assertStringStartsWith('/t/e/test_image', $updatedImage['file']);
-        $this->assertEquals($updatedImage['file'], $targetProduct->getData('image'));
-    }
-
-    /**
-     * @magentoApiDataFixture Magento/Catalog/_files/product_simple.php
-     */
-    public function testCreateWithoutFileExtension()
-    {
-        $requestData = [
-            'id' => null,
-            'media_type' => \Magento\Catalog\Model\Product\Attribute\Backend\Media\ImageEntryConverter::MEDIA_TYPE_CODE,
-            'label' => 'Image Text',
-            'position' => 1,
-            'types' => ['image'],
-            'disabled' => false,
-            'content' => [
-                ImageContentInterface::BASE64_ENCODED_DATA => base64_encode(file_get_contents($this->testImagePath)),
-                ImageContentInterface::TYPE => 'image/jpeg',
-                ImageContentInterface::NAME => 'test_image'
-            ]
-        ];
-
-        $actualResult = $this->_webApiCall($this->createServiceInfo, ['sku' => 'simple', 'entry' => $requestData]);
-        $targetProduct = $this->getTargetSimpleProduct();
-        $mediaGallery = $targetProduct->getData('media_gallery');
-
-        $this->assertCount(1, $mediaGallery['images']);
-        $updatedImage = array_shift($mediaGallery['images']);
+        $updatedImage = $mediaGallery['images'][0];
         $this->assertEquals($actualResult, $updatedImage['value_id']);
         $this->assertEquals('Image Text', $updatedImage['label']);
         $this->assertEquals(1, $updatedImage['position']);
@@ -199,7 +165,7 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
         $targetProduct = $this->getTargetSimpleProduct();
         $mediaGallery = $targetProduct->getData('media_gallery');
         $this->assertCount(1, $mediaGallery['images']);
-        $updatedImage = array_shift($mediaGallery['images']);
+        $updatedImage = $mediaGallery['images'][0];
         // Values for not default store view were provided
         $this->assertEquals('Image Text', $updatedImage['label']);
         $this->assertEquals($actualResult, $updatedImage['value_id']);
@@ -241,7 +207,7 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
         $this->assertNull($targetProduct->getData('small_image'));
         $mediaGallery = $targetProduct->getData('media_gallery');
         $this->assertCount(1, $mediaGallery['images']);
-        $updatedImage = array_shift($mediaGallery['images']);
+        $updatedImage = $mediaGallery['images'][0];
         $this->assertEquals('Updated Image Text', $updatedImage['label']);
         $this->assertEquals('/m/a/magento_image.jpg', $updatedImage['file']);
         $this->assertEquals(10, $updatedImage['position']);
@@ -275,9 +241,11 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
 
         $targetProduct = $this->getTargetSimpleProduct();
         $this->assertEquals('/m/a/magento_image.jpg', $targetProduct->getData('thumbnail'));
+        $this->assertNull($targetProduct->getData('image'));
+        $this->assertNull($targetProduct->getData('small_image'));
         $mediaGallery = $targetProduct->getData('media_gallery');
         $this->assertCount(1, $mediaGallery['images']);
-        $updatedImage = array_shift($mediaGallery['images']);
+        $updatedImage = $mediaGallery['images'][0];
         // Not default store view values were updated
         $this->assertEquals('Updated Image Text', $updatedImage['label']);
         $this->assertEquals('/m/a/magento_image.jpg', $updatedImage['file']);
@@ -438,7 +406,7 @@ class ProductAttributeMediaGalleryManagementInterfaceTest extends \Magento\TestF
     public function testUpdateThrowsExceptionIfTargetProductDoesNotExist()
     {
         $this->updateServiceInfo['rest']['resourcePath'] = '/V1/products/wrong_product_sku/media'
-            . '/' . 'wrong-sku';
+            . '/' . $this->getTargetGalleryEntryId();
         $requestData = [
             'sku' => 'wrong_product_sku',
             'entry' => [

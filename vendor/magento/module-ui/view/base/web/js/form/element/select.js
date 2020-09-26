@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -13,9 +13,7 @@ define([
 
     var inputNode = {
         parent: '${ $.$data.parentName }',
-        component: 'Magento_Ui/js/form/element/abstract',
-        template: '${ $.$data.template }',
-        provider: '${ $.$data.provider }',
+        type: 'form.input',
         name: '${ $.$data.index }_input',
         dataScope: '${ $.$data.customEntry }',
         customScope: '${ $.$data.customScope }',
@@ -51,7 +49,7 @@ define([
 
         return {
             options: _.compact(nodes),
-            caption: _.isString(caption) ? caption : false
+            caption: caption || false
         };
     }
 
@@ -104,8 +102,7 @@ define([
 
     return Abstract.extend({
         defaults: {
-            customName: '${ $.parentName }.${ $.index }_input',
-            elementTmpl: 'ui/form/element/select'
+            customName: '${ $.parentName }.${ $.index }_input'
         },
 
         /**
@@ -228,7 +225,7 @@ define([
             field = field || this.filterBy.field;
 
             result = _.filter(source, function (item) {
-                return item[field] === value || item.value === '';
+                return item[field] === value;
             });
 
             this.setOptions(result);
@@ -288,19 +285,6 @@ define([
 
         getOption: function (value) {
             return this.indexedOptions[value];
-        },
-
-        /**
-         * Select first available option
-         *
-         * @returns {Object} Chainable.
-         */
-        clear: function () {
-            var value = this.caption ? '' : findFirst(this.options);
-
-            this.value(value);
-
-            return this;
         }
     });
 });

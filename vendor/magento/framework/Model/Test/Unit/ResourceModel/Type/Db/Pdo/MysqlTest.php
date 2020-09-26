@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -20,18 +20,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     private $dateTime;
 
-    /**
-     * @var \Magento\Framework\DB\SelectFactory
-     */
-    protected $selectFactory;
-
     protected function setUp()
     {
-        $this->string = $this->getMock('Magento\Framework\Stdlib\StringUtils');
-        $this->dateTime = $this->getMock('Magento\Framework\Stdlib\DateTime');
-        $this->selectFactory = $this->getMockBuilder('Magento\Framework\DB\SelectFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->string = $this->getMock('\Magento\Framework\Stdlib\StringUtils');
+        $this->dateTime = $this->getMock('\Magento\Framework\Stdlib\DateTime');
     }
 
     /**
@@ -42,7 +34,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor(array $inputConfig, array $expectedConfig)
     {
-        $object = new Mysql($this->string, $this->dateTime, $this->selectFactory, $inputConfig);
+        $object = new Mysql($this->string, $this->dateTime, $inputConfig);
         $this->assertAttributeEquals($expectedConfig, 'connectionConfig', $object);
     }
 
@@ -85,7 +77,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorException()
     {
-        new Mysql($this->string, $this->dateTime, $this->selectFactory, []);
+        new Mysql($this->string, $this->dateTime, []);
     }
 
     /**
@@ -95,7 +87,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     public function testGetConnectionInactive()
     {
         $config = ['host' => 'localhost', 'active' => false];
-        $object = new Mysql($this->string, $this->dateTime, $this->selectFactory, $config);
+        $object = new Mysql($this->string, $this->dateTime, $config);
         $logger = $this->getMockForAbstractClass('Magento\Framework\DB\LoggerInterface');
         $this->assertNull($object->getConnection($logger));
     }

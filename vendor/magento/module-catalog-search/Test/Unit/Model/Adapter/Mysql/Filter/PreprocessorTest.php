@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\CatalogSearch\Test\Unit\Model\Adapter\Mysql\Filter;
 
 use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadata;
 use Magento\Framework\Search\Request\FilterInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -72,11 +71,6 @@ class PreprocessorTest extends \PHPUnit_Framework_TestCase
      */
     private $conditionManager;
 
-    /**
-     * @var MockObject
-     */
-    private $metadataPoolMock;
-
     protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
@@ -114,7 +108,7 @@ class PreprocessorTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $this->select = $this->getMockBuilder('\Magento\Framework\DB\Select')
             ->disableOriginalConstructor()
-            ->setMethods(['from', 'join', 'where', '__toString', 'joinLeft', 'columns', 'having'])
+            ->setMethods(['from', 'where', '__toString', 'joinLeft', 'columns', 'having'])
             ->getMock();
         $this->connection->expects($this->any())
             ->method('select')
@@ -144,16 +138,6 @@ class PreprocessorTest extends \PHPUnit_Framework_TestCase
         $this->tableMapper = $this->getMockBuilder('\Magento\CatalogSearch\Model\Search\TableMapper')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $metadata = $this->getMockBuilder(EntityMetadata::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($metadata);
-        $metadata->expects($this->any())->method('getLinkField')->willReturn('entity_id');
 
         $this->target = $objectManagerHelper->getObject(
             'Magento\CatalogSearch\Model\Adapter\Mysql\Filter\Preprocessor',
@@ -163,7 +147,6 @@ class PreprocessorTest extends \PHPUnit_Framework_TestCase
                 'config' => $this->config,
                 'resource' => $resource,
                 'attributePrefix' => 'attr_',
-                'metadataPool' => $this->metadataPoolMock,
                 'tableMapper' => $this->tableMapper,
             ]
         );
@@ -370,14 +353,9 @@ class PreprocessorTest extends \PHPUnit_Framework_TestCase
             ->method('getIfNullSql')
             ->with('current_store.value', 'main_table.value')
             ->will($this->returnValue('IF NULL SQL'));
-        $this->resource->expects($this->once())->method('getTableName')->willReturn('catalog_product_entity');
         $this->select->expects($this->once())
             ->method('from')
-            ->with(['e' => 'catalog_product_entity'], ['entity_id'])
-            ->will($this->returnSelf());
-        $this->select->expects($this->once())
-            ->method('join')
-            ->with(['main_table' => 'backend_table'], "main_table.entity_id = e.entity_id")
+            ->with(['main_table' => 'backend_table'], 'entity_id')
             ->will($this->returnSelf());
         $this->select->expects($this->once())
             ->method('joinLeft')

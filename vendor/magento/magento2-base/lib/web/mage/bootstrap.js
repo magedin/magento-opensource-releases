@@ -1,11 +1,10 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
     'jquery',
-    'mage/apply/main',
-    'Magento_Ui/js/lib/knockout/bootstrap'
+    'mage/apply/main'
 ], function ($, mage) {
     'use strict';
 

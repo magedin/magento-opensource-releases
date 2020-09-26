@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Code;
@@ -22,7 +22,7 @@ class Generator
     protected $_ioObject;
 
     /**
-     * @var array
+     * @var string[] of EntityAbstract classes
      */
     protected $_generatedEntities;
 
@@ -57,7 +57,7 @@ class Generator
     /**
      * Get generated entities
      *
-     * @return array
+     * @return string[]
      */
     public function getGeneratedEntities()
     {
@@ -65,23 +65,11 @@ class Generator
     }
 
     /**
-     * Set entity-to-generator map
-     *
-     * @param array $generatedEntities
-     * @return $this
-     */
-    public function setGeneratedEntities($generatedEntities)
-    {
-        $this->_generatedEntities = $generatedEntities;
-        return $this;
-    }
-
-    /**
      * Generate Class
      *
      * @param string $className
      * @return string | void
-     * @throws \RuntimeException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \InvalidArgumentException
      */
     public function generateClass($className)
@@ -112,7 +100,9 @@ class Generator
             $this->tryToLoadSourceClass($className, $generator);
             if (!($file = $generator->generate())) {
                 $errors = $generator->getErrors();
-                throw new \RuntimeException(implode(' ', $errors));
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    new \Magento\Framework\Phrase(implode(' ', $errors))
+                );
             }
             if (!$this->definedClasses->isClassLoadableFromMemory($className)) {
                 $this->_ioObject->includeFile($file);
@@ -171,18 +161,19 @@ class Generator
      * @param string $className
      * @param \Magento\Framework\Code\Generator\EntityAbstract $generator
      * @return void
-     * @throws \RuntimeException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function tryToLoadSourceClass($className, $generator)
     {
         $sourceClassName = $generator->getSourceClassName();
         if (!$this->definedClasses->isClassLoadable($sourceClassName)) {
             if ($this->generateClass($sourceClassName) !== self::GENERATION_SUCCESS) {
-                $phrase = new \Magento\Framework\Phrase(
-                    'Source class "%1" for "%2" generation does not exist.',
-                    [$sourceClassName, $className]
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    new \Magento\Framework\Phrase(
+                        'Source class "%1" for "%2" generation does not exist.',
+                        [$sourceClassName, $className]
+                    )
                 );
-                throw new \RuntimeException($phrase->__toString());
             }
         }
     }

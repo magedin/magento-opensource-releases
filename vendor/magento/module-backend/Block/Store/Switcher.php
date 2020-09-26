@@ -1,14 +1,17 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-namespace Magento\Backend\Block\Store;
 
 /**
  * Store switcher block
  *
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
+namespace Magento\Backend\Block\Store;
+
+/**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Switcher extends \Magento\Backend\Block\Template
@@ -16,7 +19,7 @@ class Switcher extends \Magento\Backend\Block\Template
     /**
      * URL for store switcher hint
      */
-    const HINT_URL = 'http://docs.magento.com/m2/ce/user_guide/configuration/scope.html';
+    const HINT_URL = 'http://www.magentocommerce.com/knowledge-base/entry/understanding-store-scopes';
 
     /**
      * Name of website variable

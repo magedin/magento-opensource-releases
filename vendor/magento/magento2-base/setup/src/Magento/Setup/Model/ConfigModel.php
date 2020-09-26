@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,7 +10,6 @@ use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Config\Data\ConfigData;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\Setup\Option\AbstractConfigOption;
-use Magento\Framework\Setup\FilePermissions;
 
 class ConfigModel
 {
@@ -92,13 +91,14 @@ class ConfigModel
     {
         $this->checkInstallationFilePermissions();
 
+        $fileConfigStorage = [];
         $options = $this->collector->collectOptionsLists();
 
         foreach ($options as $moduleName => $option) {
+
             $configData = $option->createConfig($inputOptions, $this->deploymentConfig);
 
             foreach ($configData as $config) {
-                $fileConfigStorage = [];
                 if (!$config instanceof ConfigData) {
                     throw new \Exception(
                         'In module : '
@@ -115,9 +115,11 @@ class ConfigModel
                 } else {
                     $fileConfigStorage[$config->getFileKey()] = $config->getData();
                 }
-                $this->writer->saveConfig($fileConfigStorage, $config->isOverrideWhenSave());
             }
+
         }
+
+        $this->writer->saveConfig($fileConfigStorage, true);
     }
 
     /**
@@ -160,9 +162,9 @@ class ConfigModel
      */
     private function checkInstallationFilePermissions()
     {
-        $results = $this->filePermissions->getMissingWritablePathsForInstallation();
+        $results = $this->filePermissions->getMissingWritableDirectoriesForInstallation();
         if ($results) {
-            $errorMsg = "Missing write permissions to the following paths:" . PHP_EOL . implode(PHP_EOL, $results);
+            $errorMsg = "Missing write permissions to the following directories: '" . implode("', '", $results) . "'";
             throw new \Exception($errorMsg);
         }
     }

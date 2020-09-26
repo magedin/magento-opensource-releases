@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -21,8 +21,7 @@ $payment->setMethod('checkmo');
 
 /** @var $product \Magento\Catalog\Model\Product */
 $product = $objectManager->create('Magento\Catalog\Model\Product');
-$repository = $objectManager->create('Magento\Catalog\Model\ProductRepository');
-$product = $repository->get('simple');
+$product->load(1);
 
 $optionValuesByType = [
     'field' => 'Test value',

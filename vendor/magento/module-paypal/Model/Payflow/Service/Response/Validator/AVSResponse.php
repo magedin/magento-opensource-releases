@@ -1,18 +1,17 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Model\Payflow\Service\Response\Validator;
 
 use Magento\Framework\DataObject;
 use Magento\Paypal\Model\Payflow\Service\Response\ValidatorInterface;
-use Magento\Paypal\Model\Payflow\Transparent;
 
 /**
  * Class AVSResponse
  */
-class AVSResponse implements ValidatorInterface
+class AVSResponse extends AbstractFilterValidator implements ValidatorInterface
 {
     /**
      * AVS address responses are for advice only. This
@@ -73,13 +72,12 @@ class AVSResponse implements ValidatorInterface
     /**
      * Validate data
      *
-     * @param DataObject|Object $response
-     * @param Transparent $transparentModel
+     * @param Object $response
      * @return bool
      */
-    public function validate(DataObject $response, Transparent $transparentModel)
+    public function validate(DataObject $response)
     {
-        $config = $transparentModel->getConfig();
+        $config = $this->getConfig();
         foreach ($this->avsCheck as $fieldName => $settingName) {
             if ($config->getValue($settingName) == static::CONFIG_ON
                 && strtolower((string) $response->getData($fieldName)) === static::RESPONSE_NO

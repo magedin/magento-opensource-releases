@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -110,8 +110,12 @@ class FixtureModel
         foreach ($files as $file) {
             $file = basename($file, '.php');
             /** @var \Magento\Setup\Fixtures\Fixture $fixture */
-            $type = 'Magento\Setup\Fixtures' . '\\' . $file;
-            $fixture = new $type($this);
+            $fixture = $this->objectManager->create(
+                'Magento\Setup\Fixtures' . '\\' . $file,
+                [
+                    'fixtureModel' => $this
+                ]
+            );
             $this->fixtures[$fixture->getPriority()] = $fixture;
         }
 

@@ -311,23 +311,9 @@ class BracesFixer extends AbstractFixer
                 continue;
             }
 
-            $braceIndex = $tokens->getNextTokenOfKind($index, array('{'));
+            $nextIndex = $tokens->getNextTokenOfKind($index, array('{'));
 
-            $commentIndex = $tokens->getPrevNonWhitespace($braceIndex);
-            $comment = $tokens[$commentIndex];
-            if ($comment->isGivenKind(T_COMMENT) && '/*' !== substr($comment->getContent(), 0, 2)) {
-                $commentPrototype = $comment->getPrototype();
-                $commentPrototype[1] = rtrim($commentPrototype[1]);
-                $tokens[$commentIndex]->override($tokens[$braceIndex]->getPrototype());
-                $tokens[$braceIndex]->override($commentPrototype);
-                $braceIndex = $commentIndex;
-
-                if ($tokens[$commentIndex + 1]->isWhitespace()) {
-                    $tokens[$commentIndex + 1]->clear();
-                }
-            }
-
-            $tokens->ensureWhitespaceAtIndex($braceIndex - 1, 1, ' ');
+            $tokens->ensureWhitespaceAtIndex($nextIndex - 1, 1, ' ');
         }
     }
 
@@ -450,7 +436,7 @@ class BracesFixer extends AbstractFixer
      */
     private function findParenthesisEnd(Tokens $tokens, $structureTokenIndex)
     {
-        $nextIndex = $tokens->getNextMeaningfulToken($structureTokenIndex);
+        $nextIndex = $tokens->getNextNonWhitespace($structureTokenIndex);
         $nextToken = $tokens[$nextIndex];
 
         // return if next token is not opening parenthesis

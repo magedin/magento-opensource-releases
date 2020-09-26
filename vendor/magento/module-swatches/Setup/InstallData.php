@@ -1,8 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\Swatches\Setup;
 
 use Magento\Framework\Setup\InstallDataInterface;
@@ -54,7 +55,7 @@ class InstallData implements InstallDataInterface
             'swatch_image',
             [
                 'type' => 'varchar',
-                'label' => 'Swatch',
+                'label' => 'Swatch Image',
                 'input' => 'media_image',
                 'frontend' => 'Magento\Catalog\Model\Product\Attribute\Frontend\Image',
                 'required' => false,

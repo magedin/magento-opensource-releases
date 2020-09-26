@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -141,14 +141,17 @@ class AssertConfigurableProductForm extends AssertProductForm
     }
 
     /**
-     * Remove price\special price fields from fixture as it should not be retrieved from product form
+     * Remove price field from fixture as it should not be retrieved from product page
      *
      * @param FixtureInterface $product
      * @return mixed
      */
     protected function processFixture(FixtureInterface $product)
     {
-        $data = array_diff_key($product->getData(), ['price' => 0, 'special_price' => 0]);
+        $data = $product->getData();
+        if (isset($data['price'])) {
+            unset($data['price']);
+        }
         return $this->objectManager->create(
             'Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct',
             ['data' => $data]

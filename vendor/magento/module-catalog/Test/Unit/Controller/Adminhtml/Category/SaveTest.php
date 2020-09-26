@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Category;
@@ -84,7 +84,6 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->markTestSkipped('Due to MAGETWO-48956');
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->contextMock = $this->getMock(
@@ -193,25 +192,21 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      *
      * @param int|bool $categoryId
      * @param int $storeId
+     * @param int|string $activeTabId
      * @param int|null $parentId
      * @return void
      *
      * @dataProvider dataProviderExecute
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function testExecute($categoryId, $storeId, $parentId)
+    public function testExecute($categoryId, $storeId, $activeTabId, $parentId)
     {
-        $rootCategoryId = \Magento\Catalog\Model\Category::TREE_ROOT_ID;
+        $rootCategoryId = 896;
         $products = [['any_product']];
         $postData = [
-            'general-data',
-            'parent' => $parentId,
+            'general' => ['general-data'],
             'category_products' => json_encode($products),
         ];
-
-        if (isset($storeId)) {
-            $postData['store_id'] = $storeId;
-        }
         /**
          * @var \Magento\Backend\Model\View\Result\Redirect
          * |\PHPUnit_Framework_MockObject_MockObject $resultRedirectMock
@@ -293,7 +288,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
          */
         $sessionMock = $this->getMock(
             'Magento\Backend\Model\Auth\Session',
-            [],
+            ['setActiveTabId'],
             [],
             '',
             false
@@ -369,10 +364,6 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $messagesMock->expects($this->once())
-            ->method('getCountByType')
-            ->will($this->returnValue(0));
-
         $this->resultRedirectFactoryMock->expects($this->once())
             ->method('create')
             ->will($this->returnValue($resultRedirectMock));
@@ -383,6 +374,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
                     [
                         ['id', false, $categoryId],
                         ['store', null, $storeId],
+                        ['active_tab_id', null, $activeTabId],
                         ['parent', null, $parentId],
                     ]
                 )
@@ -405,6 +397,14 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $categoryMock->expects($this->once())
             ->method('setStoreId')
             ->with($storeId);
+        if ($activeTabId) {
+            $sessionMock->expects($this->once())
+                ->method('setActiveTabId')
+                ->with($activeTabId);
+        } else {
+            $sessionMock->expects($this->never())
+                ->method('setActiveTabId');
+        }
         $registryMock->expects($this->any())
             ->method('register')
             ->will(
@@ -432,12 +432,10 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->expects($this->atLeastOnce())
             ->method('getPostValue')
             ->willReturn($postData);
-        $addData = $postData;
-        $addData['image'] = ['delete' => true];
         $categoryMock->expects($this->once())
             ->method('addData')
-            ->with($addData);
-        $categoryMock->expects($this->any())
+            ->with($postData['general']);
+        $categoryMock->expects($this->at(0))
             ->method('getId')
             ->will($this->returnValue($categoryId));
 
@@ -459,9 +457,6 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $parentCategoryMock->expects($this->once())
             ->method('getPath')
             ->will($this->returnValue('parent_category_path'));
-        $parentCategoryMock->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue($parentId));
         $categoryMock->expects($this->once())
             ->method('setPath')
             ->with('parent_category_path');
@@ -528,8 +523,9 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $layoutMock->expects($this->once())
             ->method('getMessagesBlock')
             ->will($this->returnValue($blockMock));
-        $this->messageManagerMock->expects($this->any())
+        $this->messageManagerMock->expects($this->once())
             ->method('getMessages')
+            ->with(true)
             ->will($this->returnValue($messagesMock));
         $blockMock->expects($this->once())
             ->method('setMessages')
@@ -568,11 +564,13 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             [
                 'categoryId' => false,
                 'storeId' => 7,
+                'activeTabId' => 33,
                 'parentId' => 123,
             ],
             [
                 'categoryId' => false,
                 'storeId' => 7,
+                'activeTabId' => '',
                 'parentId' => null,
             ]
         ];

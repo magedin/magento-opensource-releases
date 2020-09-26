@@ -1,16 +1,12 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Tax\Api\Data;
 
-/**
- * Interface OrderTaxDetailsItemInterface
- * @api
- */
 interface OrderTaxDetailsItemInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\Entity;
@@ -278,11 +278,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     public function getEntityTable()
     {
-        if (isset($this->_data['entity_table'])) {
-            return $this->getResource()->getTable($this->_data['entity_table']);
-        }
-
-        return null;
+        return isset($this->_data['entity_table']) ? $this->_data['entity_table'] : null;
     }
 
     /**

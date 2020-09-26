@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -58,14 +58,29 @@ class AssertProductAttributeIsUnique extends AbstractConstraint
         $productForm = $catalogProductEdit->getProductForm();
         $productForm->fill($simpleProduct);
         $catalogProductEdit->getFormPageActions()->save();
-        $actualErrorMessage = $catalogProductEdit->getMessagesBlock()->getErrorMessage();
+        $failedAttributes = $productForm->getRequireNoticeAttributes($simpleProduct);
         $attributeLabel = $attribute->getFrontendLabel();
+        $actualMessage = $this->getActualMessage($failedAttributes, $attributeLabel);
 
         \PHPUnit_Framework_Assert::assertEquals(
             sprintf(self::UNIQUE_MESSAGE, $attributeLabel),
-            $actualErrorMessage,
+            $actualMessage,
             'JS error notice on product edit page is not equal to expected.'
         );
+    }
+
+    /**
+     * Get actual message.
+     *
+     * @param array $errors
+     * @param string $attributeLabel
+     * @return mixed
+     */
+    protected function getActualMessage(array $errors, $attributeLabel)
+    {
+        return isset($errors['product-details'][$attributeLabel])
+            ? $errors['product-details'][$attributeLabel]
+            : null;
     }
 
     /**

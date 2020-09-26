@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Invoice;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
 
 /**
  * Class ViewTest
@@ -51,6 +50,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     protected $invoiceLoaderMock;
 
     /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $objectManagerMock;
+
+    /**
      * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageMock;
@@ -80,12 +84,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     protected $resultForwardFactoryMock;
 
-    /**
-     * @var InvoiceRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $invoiceRepository;
-
-    protected function setUp()
+    public function setUp()
     {
         $objectManager = new ObjectManager($this);
 
@@ -113,6 +112,7 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getCommentText', 'setIsUrlNotice'])
             ->getMock();
+        $this->objectManagerMock = $this->getMock('Magento\Framework\ObjectManagerInterface');
         $this->resultPageMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\Page')
             ->disableOriginalConstructor()
             ->getMock();
@@ -145,6 +145,9 @@ class ViewTest extends \PHPUnit_Framework_TestCase
         $contextMock->expects($this->any())
             ->method('getSession')
             ->will($this->returnValue($this->sessionMock));
+        $contextMock->expects($this->any())
+            ->method('getObjectManager')
+            ->will($this->returnValue($this->objectManagerMock));
         $this->viewMock->expects($this->any())
             ->method('getPage')
             ->willReturn($this->resultPageMock);
@@ -159,13 +162,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
+
         $this->resultForwardFactoryMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\ForwardFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->invoiceRepository = $this->getMockBuilder(InvoiceRepositoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
 
         $this->controller = $objectManager->getObject(
             'Magento\Sales\Controller\Adminhtml\Order\Invoice\View',
@@ -174,12 +175,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
                 'resultPageFactory' => $this->resultPageFactoryMock,
                 'resultForwardFactory' => $this->resultForwardFactoryMock
             ]
-        );
-
-        $objectManager->setBackwardCompatibleProperty(
-            $this->controller,
-            'invoiceRepository',
-            $this->invoiceRepository
         );
     }
 
@@ -231,9 +226,17 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])
             ->getMock();
 
-        $this->invoiceRepository->expects($this->once())
+        $invoiceRepository = $this->getMockBuilder('Magento\Sales\Api\InvoiceRepositoryInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $invoiceRepository->expects($this->any())
             ->method('get')
             ->willReturn($invoiceMock);
+
+        $this->objectManagerMock->expects($this->at(0))
+            ->method('create')
+            ->with('Magento\Sales\Api\InvoiceRepositoryInterface')
+            ->willReturn($invoiceRepository);
 
         $this->resultPageMock->expects($this->once())->method('setActiveMenu')->with('Magento_Sales::sales_order');
 
@@ -253,9 +256,17 @@ class ViewTest extends \PHPUnit_Framework_TestCase
             ->with('invoice_id')
             ->will($this->returnValue($invoiceId));
 
-        $this->invoiceRepository->expects($this->once())
+        $invoiceRepository = $this->getMockBuilder('Magento\Sales\Api\InvoiceRepositoryInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $invoiceRepository->expects($this->any())
             ->method('get')
             ->willReturn(null);
+
+        $this->objectManagerMock->expects($this->at(0))
+            ->method('create')
+            ->with('Magento\Sales\Api\InvoiceRepositoryInterface')
+            ->willReturn($invoiceRepository);
 
         $resultForward = $this->getMockBuilder('Magento\Backend\Model\View\Result\Forward')
             ->disableOriginalConstructor()

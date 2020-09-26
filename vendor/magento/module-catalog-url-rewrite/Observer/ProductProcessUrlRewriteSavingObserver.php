@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogUrlRewrite\Observer;
 
-use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
@@ -37,27 +37,24 @@ class ProductProcessUrlRewriteSavingObserver implements ObserverInterface
 
     /**
      * Generate urls for UrlRewrite and save it in storage
+     *
      * @param \Magento\Framework\Event\Observer $observer
      * @return void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        /** @var Product $product */
+        /** @var \Magento\Catalog\Model\Product $product */
         $product = $observer->getEvent()->getProduct();
 
-        if ($product->dataHasChangedFor('url_key')
-            || $product->getIsChangedCategories()
-            || $product->getIsChangedWebsites()
-            || $product->dataHasChangedFor('visibility')
-        ) {
-            $this->urlPersist->deleteByData([
-                UrlRewrite::ENTITY_ID => $product->getId(),
-                UrlRewrite::ENTITY_TYPE => ProductUrlRewriteGenerator::ENTITY_TYPE,
-                UrlRewrite::REDIRECT_TYPE => 0,
-                UrlRewrite::STORE_ID => $product->getStoreId()
-            ]);
-
-            if ($product->isVisibleInSiteVisibility()) {
+        $isChangedWebsites = $product->getIsChangedWebsites();
+        if ($product->dataHasChangedFor('url_key') || $product->getIsChangedCategories() || $isChangedWebsites) {
+            if ($isChangedWebsites) {
+                $this->urlPersist->deleteByData([
+                    UrlRewrite::ENTITY_ID => $product->getId(),
+                    UrlRewrite::ENTITY_TYPE => ProductUrlRewriteGenerator::ENTITY_TYPE,
+                ]);
+            }
+            if ($product->getVisibility() != Visibility::VISIBILITY_NOT_VISIBLE) {
                 $this->urlPersist->replace($this->productUrlRewriteGenerator->generate($product));
             }
         }

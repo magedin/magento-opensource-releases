@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Exception;
@@ -18,17 +18,17 @@ class NoSuchEntityExceptionTest extends \PHPUnit_Framework_TestCase
 
         $exception = new NoSuchEntityException(
             new Phrase(
-                'No such entity with %fieldName = %fieldValue',
+                NoSuchEntityException::MESSAGE_SINGLE_FIELD,
                 ['fieldName' => 'field', 'fieldValue' => 'value']
             )
         );
         $this->assertEquals('No such entity with field = value', $exception->getMessage());
-        $this->assertEquals('No such entity with %fieldName = %fieldValue', $exception->getRawMessage());
+        $this->assertEquals(NoSuchEntityException::MESSAGE_SINGLE_FIELD, $exception->getRawMessage());
         $this->assertEquals('No such entity with field = value', $exception->getLogMessage());
 
         $exception = new NoSuchEntityException(
             new Phrase(
-                'No such entity with %fieldName = %fieldValue, %field2Name = %field2Value',
+                NoSuchEntityException::MESSAGE_DOUBLE_FIELDS,
                 [
                     'fieldName' => 'field1',
                     'fieldValue' => 'value1',
@@ -38,7 +38,7 @@ class NoSuchEntityExceptionTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertEquals(
-            'No such entity with %fieldName = %fieldValue, %field2Name = %field2Value',
+            NoSuchEntityException::MESSAGE_DOUBLE_FIELDS,
             $exception->getRawMessage()
         );
         $this->assertEquals('No such entity with field1 = value1, field2 = value2', $exception->getMessage());

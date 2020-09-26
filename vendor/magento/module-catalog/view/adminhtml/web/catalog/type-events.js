@@ -1,10 +1,11 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
-    'jquery'
-], function ($) {
+    'jquery',
+    'Magento_Catalog/js/product/weight-handler'
+], function ($, weight) {
     'use strict';
 
     return {
@@ -14,10 +15,19 @@ define([
          * Init
          */
         init: function () {
-            this.type = {
-                init: this.$type.val(),
-                current: this.$type.val()
-            };
+
+            if (weight.productHasWeight()) {
+                this.type = {
+                    virtual: 'virtual',
+                    real: this.$type.val() //simple, configurable
+                };
+            } else {
+                this.type = {
+                    virtual: this.$type.val(), //downloadable, virtual, grouped, bundle
+                    real: 'simple'
+                };
+            }
+            this.type.current = this.$type.val();
 
             this.bindAll();
         },
@@ -43,7 +53,7 @@ define([
          * @returns {*}
          */
         setType: function (type) {
-            return this.$type.val(type || this.type.init).trigger('change');
+            return this.$type.val(type || this.type.real).trigger('change');
         },
 
         /**

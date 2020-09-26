@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -17,15 +17,8 @@ define([
             placeholder: $t('Search by keyword'),
             label: $t('Keyword'),
             value: '',
-            previews: [],
-            chipsProvider: 'componentType = filtersChips, ns = ${ $.ns }',
             statefull: {
                 value: true
-            },
-            tracks: {
-                value: true,
-                previews: true,
-                inputValue: true
             },
             imports: {
                 inputValue: 'value',
@@ -45,19 +38,23 @@ define([
          * @returns {Search} Chainable.
          */
         initialize: function () {
-            var urlParams = window.location.href.slice(window.location.href.search('[\&\?](search=)')).split('&'),
-                searchTerm = [];
-
             this._super()
                 .initChips();
 
-            if (urlParams[0]) {
-                searchTerm = urlParams[0].split('=');
+            return this;
+        },
 
-                if (searchTerm[1]) {
-                    this.apply(decodeURIComponent(searchTerm[1]));
-                }
-            }
+        /**
+         * Initializes observable properties.
+         *
+         * @returns {Search} Chainable.
+         */
+        initObservable: function () {
+            this._super()
+                .track('inputValue value')
+                .track({
+                    previews: []
+                });
 
             return this;
         },

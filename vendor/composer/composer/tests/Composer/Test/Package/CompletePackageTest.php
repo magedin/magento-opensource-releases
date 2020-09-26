@@ -13,7 +13,7 @@
 namespace Composer\Test\Package;
 
 use Composer\Package\Package;
-use Composer\Semver\VersionParser;
+use Composer\Package\Version\VersionParser;
 use Composer\TestCase;
 
 class CompletePackageTest extends TestCase

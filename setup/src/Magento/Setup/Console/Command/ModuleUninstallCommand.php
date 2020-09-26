@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Console\Command;
@@ -198,8 +198,7 @@ class ModuleUninstallCommand extends AbstractModuleCommand
             $output->writeln(
                 '<error>You cannot run this command because the Magento application is not installed.</error>'
             );
-            // we must have an exit code higher than zero to indicate something was wrong
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+            return;
         }
 
         $modules = $input->getArgument(self::INPUT_KEY_MODULES);
@@ -207,16 +206,14 @@ class ModuleUninstallCommand extends AbstractModuleCommand
         $messages = $this->validate($modules);
         if (!empty($messages)) {
             $output->writeln($messages);
-            // we must have an exit code higher than zero to indicate something was wrong
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+            return;
         }
 
         // check dependencies
         $dependencyMessages = $this->checkDependencies($modules);
         if (!empty($dependencyMessages)) {
             $output->writeln($dependencyMessages);
-            // we must have an exit code higher than zero to indicate something was wrong
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+            return;
         }
 
         $helper = $this->getHelper('question');
@@ -225,7 +222,7 @@ class ModuleUninstallCommand extends AbstractModuleCommand
             false
         );
         if (!$helper->ask($input, $output, $question) && $input->isInteractive()) {
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+            return;
         }
         try {
             $output->writeln('<info>Enabling maintenance mode</info>');
@@ -260,7 +257,6 @@ class ModuleUninstallCommand extends AbstractModuleCommand
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             $output->writeln('<error>Please disable maintenance mode after you resolved above issues</error>');
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
     }
 
@@ -306,6 +302,8 @@ class ModuleUninstallCommand extends AbstractModuleCommand
         }
         $this->moduleUninstaller->uninstallData($output, $modules);
     }
+
+
 
     /**
      * Validate list of modules against installed composer packages and return error messages

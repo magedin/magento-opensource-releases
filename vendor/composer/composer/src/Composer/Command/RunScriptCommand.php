@@ -14,7 +14,6 @@ namespace Composer\Command;
 
 use Composer\Script\CommandEvent;
 use Composer\Script\ScriptEvents;
-use Composer\Util\ProcessExecutor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Fabien Potencier <fabien.potencier@gmail.com>
  */
-class RunScriptCommand extends BaseCommand
+class RunScriptCommand extends Command
 {
     /**
      * @var array Array with command events
@@ -51,7 +50,6 @@ class RunScriptCommand extends BaseCommand
             ->setDefinition(array(
                 new InputArgument('script', InputArgument::OPTIONAL, 'Script name to run.'),
                 new InputArgument('args', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, ''),
-                new InputOption('timeout', null, InputOption::VALUE_REQUIRED, 'Sets script timeout in seconds, or 0 for never.'),
                 new InputOption('dev', null, InputOption::VALUE_NONE, 'Sets the dev mode.'),
                 new InputOption('no-dev', null, InputOption::VALUE_NONE, 'Disables the dev mode.'),
                 new InputOption('list', 'l', InputOption::VALUE_NONE, 'List scripts.'),
@@ -86,15 +84,14 @@ EOT
             throw new \InvalidArgumentException(sprintf('Script "%s" is not defined in this package', $script));
         }
 
-        $args = $input->getArgument('args');
-
-        if (!is_null($timeout = $input->getOption('timeout'))) {
-            if (!ctype_digit($timeout)) {
-                throw new \RuntimeException('Timeout value must be numeric and positive if defined, or 0 for forever');
-            }
-            // Override global timeout set before in Composer by environment or config
-            ProcessExecutor::setTimeout((int) $timeout);
+        // add the bin dir to the PATH to make local binaries of deps usable in scripts
+        $binDir = $composer->getConfig()->get('bin-dir');
+        if (is_dir($binDir)) {
+            $_SERVER['PATH'] = realpath($binDir).PATH_SEPARATOR.getenv('PATH');
+            putenv('PATH='.$_SERVER['PATH']);
         }
+
+        $args = $input->getArgument('args');
 
         return $composer->getEventDispatcher()->dispatchScript($script, $input->getOption('dev') || !$input->getOption('no-dev'), $args);
     }
@@ -107,10 +104,9 @@ EOT
             return 0;
         }
 
-        $io = $this->getIO();
-        $io->writeError('<info>scripts:</info>');
+        $this->getIO()->writeError('<info>scripts:</info>');
         foreach ($scripts as $name => $script) {
-            $io->write('  ' . $name);
+            $this->getIO()->write('  ' . $name);
         }
 
         return 0;

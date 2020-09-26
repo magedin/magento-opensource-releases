@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -24,12 +24,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $session \Magento\Checkout\Model\Session  */
         $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('simple');
-
-        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), 1);
         $this->assertNotNull($quoteItem, 'Cannot get quote item for simple product');
 
         $this->dispatch(
@@ -57,12 +52,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $session \Magento\Checkout\Model\Session  */
         $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('simple');
-
-        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), 1);
         $this->assertNotNull($quoteItem, 'Cannot get quote item for simple product with custom option');
 
         $this->dispatch(
@@ -97,12 +87,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $session \Magento\Checkout\Model\Session  */
         $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('bundle-product');
-
-        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), 3);
         $this->assertNotNull($quoteItem, 'Cannot get quote item for bundle product');
 
         $this->dispatch(
@@ -130,12 +115,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $session \Magento\Checkout\Model\Session  */
         $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('downloadable-product');
-
-        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), 1);
         $this->assertNotNull($quoteItem, 'Cannot get quote item for downloadable product');
 
         $this->dispatch(
@@ -167,14 +147,9 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testUpdatePostAction()
     {
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = $productRepository->get('simple');
-
         /** Preconditions */
         $customerFromFixture = 1;
-        $productId = $product->getId();
+        $productId = 1;
         $originalQuantity = 1;
         $updatedQuantity = 2;
         /** @var $checkoutSession \Magento\Checkout\Model\Session  */
@@ -207,7 +182,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->_objectManager->create('Magento\Quote\Model\Quote');
         $quote->load($checkoutSession->getQuote()->getId());
-        $quoteItem = $this->_getQuoteItemIdByProductId($quote, $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($quote, 1);
         $this->assertEquals($updatedQuantity, $quoteItem->getQty(), "Invalid quote item quantity");
     }
 

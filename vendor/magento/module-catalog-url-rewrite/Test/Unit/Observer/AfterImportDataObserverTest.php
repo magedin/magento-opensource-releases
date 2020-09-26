@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -144,7 +144,7 @@ class AfterImportDataObserverTest extends \PHPUnit_Framework_TestCase
      * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->importProduct = $this->getMock(
             '\Magento\CatalogImportExport\Model\Import\Product',
@@ -299,6 +299,7 @@ class AfterImportDataObserverTest extends \PHPUnit_Framework_TestCase
      * Test for afterImportData()
      * Covers afterImportData() + protected methods used inside
      *
+     * @covers \Magento\CatalogUrlRewrite\Observer\AfterImportDataObserver::afterImportData
      * @covers \Magento\CatalogUrlRewrite\Observer\AfterImportDataObserver::_populateForUrlGeneration
      * @covers \Magento\CatalogUrlRewrite\Observer\AfterImportDataObserver::isGlobalScope
      * @covers \Magento\CatalogUrlRewrite\Observer\AfterImportDataObserver::populateGlobalProduct

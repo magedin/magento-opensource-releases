@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Model\Export;
@@ -125,18 +125,13 @@ class ConvertToXml
         $this->filter->prepareComponent($component);
         $this->filter->applySelectionOnTargetProvider();
 
-        $component->getContext()->getDataProvider()->setLimit(0, 0);
-
         /** @var SearchResultInterface $searchResult */
         $searchResult = $component->getContext()->getDataProvider()->getSearchResult();
 
-        /** @var DocumentInterface[] $searchResultItems */
-        $searchResultItems = $searchResult->getItems();
-
-        $this->prepareItems($component->getName(), $searchResultItems);
+        $this->prepareItems($component->getName(), $searchResult->getItems());
 
         /** @var SearchResultIterator $searchResultIterator */
-        $searchResultIterator = $this->iteratorFactory->create(['items' => $searchResultItems]);
+        $searchResultIterator = $this->iteratorFactory->create(['items' => $searchResult->getItems()]);
 
         /** @var Excel $excel */
         $excel = $this->excelFactory->create([

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Test\Unit\Block\Adminhtml\Attribute\Edit\Options;
@@ -45,12 +45,7 @@ class AbstractSwatchTest extends \PHPUnit_Framework_TestCase
      */
     protected $block;
 
-    /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $connectionMock;
-
-    protected function setUp()
+    public function setUp()
     {
         $this->contextMock = $this->getMock('\Magento\Backend\Block\Template\Context', [], [], '', false);
         $this->registryMock = $this->getMock('\Magento\Framework\Registry', [], [], '', false);
@@ -87,10 +82,7 @@ class AbstractSwatchTest extends \PHPUnit_Framework_TestCase
             true
         );
 
-        $this->connectionMock = $this->getMockBuilder('\Magento\Framework\DB\Adapter\AdapterInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(['quoteInto'])
-            ->getMockForAbstractClass();
+
     }
 
     /**
@@ -135,19 +127,15 @@ class AbstractSwatchTest extends \PHPUnit_Framework_TestCase
                 ->with(23)
                 ->will($this->returnSelf());
 
-            $this->connectionMock
-                ->expects($this->any())
-                ->method('quoteInto')
-                ->willReturn('quoted_string_with_value');
-
             $attrOptionCollectionMock
-                ->expects($this->any())
-                ->method('getConnection')
-                ->willReturn($this->connectionMock);
+                ->expects($this->once())
+                ->method('setStoreFilter')
+                ->with(1, false)
+                ->will($this->returnSelf());
 
             $zendDbSelectMock = $this->getMock('Magento\Framework\DB\Select', [], [], '', false);
-            $attrOptionCollectionMock->expects($this->any())->method('getSelect')->willReturn($zendDbSelectMock);
-            $zendDbSelectMock->expects($this->any())->method('joinLeft')->willReturnSelf();
+            $attrOptionCollectionMock->expects($this->once())->method('getSelect')->willReturn($zendDbSelectMock);
+            $zendDbSelectMock->expects($this->once())->method('joinLeft')->will($this->returnSelf());
 
             $option->expects($this->at(0))->method('getId')->willReturn(14);
             $option->expects($this->at(1))->method('getValue')->willReturn('Blue');

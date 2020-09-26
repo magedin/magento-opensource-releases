@@ -12,12 +12,11 @@
 
 namespace Composer\Test\Package\Archiver;
 
-use Composer\TestCase;
 use Composer\Util\Filesystem;
 use Composer\Util\ProcessExecutor;
 use Composer\Package\Package;
 
-abstract class ArchiverTest extends TestCase
+abstract class ArchiverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Composer\Util\Filesystem
@@ -38,7 +37,8 @@ abstract class ArchiverTest extends TestCase
     {
         $this->filesystem = new Filesystem();
         $this->process    = new ProcessExecutor();
-        $this->testDir    = $this->getUniqueTmpDirectory();
+        $this->testDir    = sys_get_temp_dir().'/composer_archiver_test_'.mt_rand();
+        $this->filesystem->ensureDirectoryExists($this->testDir);
     }
 
     public function tearDown()

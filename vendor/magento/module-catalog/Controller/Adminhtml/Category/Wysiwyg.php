@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Category;
@@ -9,9 +9,12 @@ namespace Magento\Catalog\Controller\Adminhtml\Category;
 class Wysiwyg extends \Magento\Catalog\Controller\Adminhtml\Product\Wysiwyg
 {
     /**
-     * Authorization level of a basic admin session
+     * Check if admin has permissions to visit related pages
      *
-     * @see _isAllowed()
+     * @return bool
      */
-    const ADMIN_RESOURCE = 'Magento_Catalog::categories';
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_Catalog::categories');
+    }
 }

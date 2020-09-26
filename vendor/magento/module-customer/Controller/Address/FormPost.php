@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Address;
@@ -146,10 +146,12 @@ class FormPost extends \Magento\Customer\Controller\Address
      */
     protected function updateRegionData(&$attributeValues)
     {
-        if (!empty($attributeValues['region_id'])) {
+        if ($this->helperData->isRegionRequired($attributeValues['country_id'])) {
             $newRegion = $this->regionFactory->create()->load($attributeValues['region_id']);
             $attributeValues['region_code'] = $newRegion->getCode();
             $attributeValues['region'] = $newRegion->getDefaultName();
+        } else {
+            $attributeValues['region_id'] = null;
         }
 
         $regionData = [

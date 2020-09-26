@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,9 +18,6 @@ $rule->loadPost([
     'simple_action' => 'by_percent',
     'from_date' => '',
     'to_date' => '',
-    'sort_order' => 0,
-    'sub_is_enable' => 0,
-    'sub_discount_amount' => 0,
     'conditions' => [
         '1' => [
             'type' => 'Magento\CatalogRule\Model\Rule\Condition\Combine',
@@ -45,9 +42,6 @@ $rule->loadPost([
         'simple_action' => 'by_fixed',
         'from_date' => '',
         'to_date' => '',
-        'sort_order' => 0,
-        'sub_is_enable' => 0,
-        'sub_discount_amount' => 0,
         'conditions' => [
             '1' => [
                 'type' => 'Magento\CatalogRule\Model\Rule\Condition\Combine',

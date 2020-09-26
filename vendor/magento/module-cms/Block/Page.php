@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Block;
@@ -101,8 +101,7 @@ class Page extends \Magento\Framework\View\Element\AbstractBlock implements
         $page = $this->getPage();
         $this->_addBreadcrumbs($page);
         $this->pageConfig->addBodyClass('cms-' . $page->getIdentifier());
-        $metaTitle = $page->getMetaTitle();
-        $this->pageConfig->getTitle()->set($metaTitle ? $metaTitle : $page->getTitle());
+        $this->pageConfig->getTitle()->set($page->getTitle());
         $this->pageConfig->setKeywords($page->getMetaKeywords());
         $this->pageConfig->setDescription($page->getMetaDescription());
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -72,7 +72,7 @@ class AssertAttributeSetOnProductForm extends AbstractConstraint
         );
 
         if ($attributeSetOriginal === null) {
-            $productEdit->getProductForm()->openSection('product-details');
+            $productEdit->getProductForm()->openTab('product-details');
 
             \PHPUnit_Framework_Assert::assertTrue(
                 $productEdit->getProductForm()->checkAttributeLabel($productAttribute),

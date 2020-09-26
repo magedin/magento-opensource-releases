@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cron\Test\Unit\Model\Groups\Config\Converter;
@@ -12,7 +12,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new \Magento\Cron\Model\Groups\Config\Converter\Xml();
     }
@@ -33,6 +33,6 @@ XML;
         $results = $this->object->convert($xml);
         $this->assertArrayHasKey('test', $results);
         $this->assertArrayHasKey('schedule_generate_every', $results['test']);
-        $this->assertEquals('1', $results['test']['schedule_generate_every']['value']);
+        $this->assertEquals('1', $results['test']['schedule_generate_every']);
     }
 }

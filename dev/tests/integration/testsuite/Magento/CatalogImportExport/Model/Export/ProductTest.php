@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogImportExport\Model\Export;
@@ -13,17 +13,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Magento\CatalogImportExport\Model\Export\Product
      */
-    protected $model;
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Framework\Filesystem
-     */
-    protected $fileSystem;
+    protected $_model;
 
     /**
      * Stock item attributes which must be exported
@@ -50,17 +40,15 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         'qty_increments',
         'use_config_enable_qty_inc',
         'enable_qty_increments',
-        'is_decimal_divided'
+        'is_decimal_divided',
     ];
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->fileSystem = $this->objectManager->get(\Magento\Framework\Filesystem::class);
-        $this->model = $this->objectManager->create(
-            \Magento\CatalogImportExport\Model\Export\Product::class
+        $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+            'Magento\CatalogImportExport\Model\Export\Product'
         );
     }
 
@@ -69,33 +57,12 @@ class ProductTest extends \PHPUnit_Framework_TestCase
      */
     public function testExport()
     {
-        $this->model->setWriter(
-            $this->objectManager->create(
-                \Magento\ImportExport\Model\Export\Adapter\Csv::class
-            )
-        );
-        $exportData = $this->model->export();
-        $this->assertContains('New Product', $exportData);
-
-        $this->assertContains('Option 1 & Value 1"', $exportData);
-        $this->assertContains('Option 1 & Value 2"', $exportData);
-        $this->assertContains('Option 1 & Value 3"', $exportData);
-        $this->assertContains('Option 4 ""!@#$%^&*', $exportData);
-        $this->assertContains('test_option_code_2', $exportData);
-        $this->assertContains('max_characters=10', $exportData);
-    }
-
-    /**
-     * @magentoDataFixture Magento/CatalogImportExport/_files/product_export_with_product_links_data.php
-     */
-    public function testExportWithProductLinks()
-    {
-        $this->model->setWriter(
+        $this->_model->setWriter(
             \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
                 'Magento\ImportExport\Model\Export\Adapter\Csv'
             )
         );
-        $this->assertNotEmpty($this->model->export());
+        $this->assertNotEmpty($this->_model->export());
     }
 
     /**
@@ -106,8 +73,8 @@ class ProductTest extends \PHPUnit_Framework_TestCase
      */
     public function testExportStockItemAttributesAreFilled()
     {
-        $fileWrite = $this->getMock(\Magento\Framework\Filesystem\File\Write::class, [], [], '', false);
-        $directoryMock = $this->getMock(\Magento\Framework\Filesystem\Directory\Write::class, [], [], '', false);
+        $fileWrite = $this->getMock('Magento\Framework\Filesystem\File\Write', [], [], '', false);
+        $directoryMock = $this->getMock('Magento\Framework\Filesystem\Directory\Write', [], [], '', false);
         $directoryMock->expects($this->any())->method('getParentDirectory')->will($this->returnValue('some#path'));
         $directoryMock->expects($this->any())->method('isWritable')->will($this->returnValue(true));
         $directoryMock->expects($this->any())->method('isFile')->will($this->returnValue(true));
@@ -120,12 +87,12 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         );
         $directoryMock->expects($this->once())->method('openFile')->will($this->returnValue($fileWrite));
 
-        $filesystemMock = $this->getMock(\Magento\Framework\Filesystem::class, [], [], '', false);
+        $filesystemMock = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
         $filesystemMock->expects($this->once())->method('getDirectoryWrite')->will($this->returnValue($directoryMock));
 
         $exportAdapter = new \Magento\ImportExport\Model\Export\Adapter\Csv($filesystemMock);
 
-        $this->model->setWriter($exportAdapter)->export();
+        $this->_model->setWriter($exportAdapter)->export();
     }
 
     /**
@@ -169,18 +136,17 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new \Exception('Error');
 
-        $rowCustomizerMock =
-            $this->getMockBuilder(\Magento\CatalogImportExport\Model\Export\RowCustomizerInterface::class)
+        $rowCustomizerMock = $this->getMockBuilder('Magento\CatalogImportExport\Model\Export\RowCustomizerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
+        $loggerMock = $this->getMockBuilder('\Psr\Log\LoggerInterface')->getMock();
 
-        $directoryMock = $this->getMock(\Magento\Framework\Filesystem\Directory\Write::class, [], [], '', false);
+        $directoryMock = $this->getMock('Magento\Framework\Filesystem\Directory\Write', [], [], '', false);
         $directoryMock->expects($this->any())->method('getParentDirectory')->will($this->returnValue('some#path'));
         $directoryMock->expects($this->any())->method('isWritable')->will($this->returnValue(true));
 
-        $filesystemMock = $this->getMock(\Magento\Framework\Filesystem::class, [], [], '', false);
+        $filesystemMock = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
         $filesystemMock->expects($this->once())->method('getDirectoryWrite')->will($this->returnValue($directoryMock));
 
         $exportAdapter = new \Magento\ImportExport\Model\Export\Adapter\Csv($filesystemMock);
@@ -189,12 +155,12 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $loggerMock->expects($this->once())->method('critical')->with($exception);
 
         $collection = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Catalog\Model\ResourceModel\Product\Collection::class
+            '\Magento\Catalog\Model\ResourceModel\Product\Collection'
         );
 
         /** @var \Magento\CatalogImportExport\Model\Export\Product $model */
         $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\CatalogImportExport\Model\Export\Product::class,
+            'Magento\CatalogImportExport\Model\Export\Product',
             [
                 'rowCustomizer' => $rowCustomizerMock,
                 'logger' => $loggerMock,

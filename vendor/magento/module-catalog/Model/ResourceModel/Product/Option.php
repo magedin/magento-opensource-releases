@@ -1,25 +1,17 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Product;
-
-use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
  * Catalog product custom option resource model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-    /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
     /**
      * Store manager
      *
@@ -447,7 +439,6 @@ class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * @param int $productId
      * @param int $storeId
      * @return array
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function getSearchableData($productId, $storeId)
     {
@@ -486,19 +477,12 @@ class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ['option_title_default' => $this->getTable('catalog_product_option_title')],
             $defaultOptionJoin,
             []
-        )->join(
-            ['cpe' => $this->getTable('catalog_product_entity')],
-            sprintf(
-                'cpe.%s = product_option.product_id',
-                $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField()
-            ),
-            []
         )->joinLeft(
             ['option_title_store' => $this->getTable('catalog_product_option_title')],
             $storeOptionJoin,
             ['title' => $titleCheckSql]
         )->where(
-            'cpe.entity_id = ?',
+            'product_option.product_id = ?',
             $productId
         );
 
@@ -534,13 +518,6 @@ class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             'option_type.option_id=product_option.option_id',
             []
         )->join(
-            ['cpe' => $this->getTable('catalog_product_entity')],
-            sprintf(
-                'cpe.%s = product_option.product_id',
-                $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField()
-            ),
-            []
-        )->join(
             ['option_title_default' => $this->getTable('catalog_product_option_type_title')],
             $defaultOptionJoin,
             []
@@ -549,7 +526,7 @@ class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $storeOptionJoin,
             ['title' => $titleCheckSql]
         )->where(
-            'cpe.entity_id = ?',
+            'product_option.product_id = ?',
             $productId
         );
 
@@ -558,17 +535,5 @@ class Option extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
 
         return $searchData;
-    }
-
-    /**
-     * @return \Magento\Framework\EntityManager\MetadataPool
-     */
-    private function getMetadataPool()
-    {
-        if (null === $this->metadataPool) {
-            $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\EntityManager\MetadataPool');
-        }
-        return $this->metadataPool;
     }
 }

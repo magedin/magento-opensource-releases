@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,9 +10,6 @@ namespace Magento\Wishlist\Test\Unit\Model\Rss;
 
 use Magento\Directory\Helper\Data;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class WishlistTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -56,7 +53,7 @@ class WishlistTest extends \PHPUnit_Framework_TestCase
     protected $catalogOutputMock;
 
     /**
-     * @var \Magento\Catalog\Helper\Output|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Catalog\Helper\Output
      */
     protected $layoutMock;
 
@@ -70,7 +67,7 @@ class WishlistTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->catalogOutputMock = $this->getMock('Magento\Catalog\Helper\Output', [], [], '', false);
         $this->rssFactoryMock = $this->getMock('Magento\Rss\Model\RssFactory', ['create'], [], '', false);
@@ -317,69 +314,5 @@ class WishlistTest extends \PHPUnit_Framework_TestCase
         $this->wishlistHelperMock->expects($this->any())->method('getWishlist')
             ->will($this->returnValue($wishlist));
         $this->assertEquals(false, $this->model->isAuthRequired());
-    }
-
-    public function testGetProductPriceHtmlBlockDoesntExists()
-    {
-        $price = 10.;
-
-        $productMock = $this->getMockBuilder('Magento\Catalog\Model\Product')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $renderBlockMock = $this->getMockBuilder('Magento\Framework\Pricing\Render')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $renderBlockMock->expects($this->once())
-            ->method('render')
-            ->with(
-                'wishlist_configured_price',
-                $productMock,
-                ['zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST]
-            )
-            ->willReturn($price);
-
-        $this->layoutMock->expects($this->once())
-            ->method('getBlock')
-            ->with('product.price.render.default')
-            ->willReturn(false);
-        $this->layoutMock->expects($this->once())
-            ->method('createBlock')
-            ->with(
-                'Magento\Framework\Pricing\Render',
-                'product.price.render.default',
-                ['data' => ['price_render_handle' => 'catalog_product_prices']]
-            )
-            ->willReturn($renderBlockMock);
-
-        $this->assertEquals($price, $this->model->getProductPriceHtml($productMock));
-    }
-
-    public function testGetProductPriceHtmlBlockExists()
-    {
-        $price = 10.;
-
-        $productMock = $this->getMockBuilder('Magento\Catalog\Model\Product')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $renderBlockMock = $this->getMockBuilder('Magento\Framework\Pricing\Render')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $renderBlockMock->expects($this->once())
-            ->method('render')
-            ->with(
-                'wishlist_configured_price',
-                $productMock,
-                ['zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST]
-            )
-            ->willReturn($price);
-
-        $this->layoutMock->expects($this->once())
-            ->method('getBlock')
-            ->with('product.price.render.default')
-            ->willReturn($renderBlockMock);
-
-        $this->assertEquals($price, $this->model->getProductPriceHtml($productMock));
     }
 }

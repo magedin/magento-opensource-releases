@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Test\Unit\Block\Adminhtml\Export;
@@ -127,7 +127,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
      */
     private $dateTimeFormatter;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->modelContext = $this->getMock('Magento\Framework\Model\Context', [], [], '', false);
         $this->registry = $this->getMock('Magento\Framework\Registry', [], [], '', false);

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,13 +9,13 @@ namespace Magento\Customer\Api;
 
 /**
  * Customer CRUD interface.
- * @api
  */
 interface CustomerRepositoryInterface
 {
     /**
-     * Create or update a customer.
+     * Create customer.
      *
+     * @api
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @param string $passwordHash
      * @return \Magento\Customer\Api\Data\CustomerInterface
@@ -28,6 +28,7 @@ interface CustomerRepositoryInterface
     /**
      * Retrieve customer.
      *
+     * @api
      * @param string $email
      * @param int|null $websiteId
      * @return \Magento\Customer\Api\Data\CustomerInterface
@@ -37,8 +38,9 @@ interface CustomerRepositoryInterface
     public function get($email, $websiteId = null);
 
     /**
-     * Get customer by customer ID.
+     * Retrieve customer.
      *
+     * @api
      * @param int $customerId
      * @return \Magento\Customer\Api\Data\CustomerInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException If customer with the specified ID does not exist.
@@ -49,10 +51,7 @@ interface CustomerRepositoryInterface
     /**
      * Retrieve customers which match a specified criteria.
      *
-     * This call returns an array of objects, but detailed information about each object’s attributes might not be
-     * included. See http://devdocs.magento.com/codelinks/attributes.html#CustomerRepositoryInterface to determine
-     * which call to use to get detailed information about all attributes for an object.
-     *
+     * @api
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\Customer\Api\Data\CustomerSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -62,6 +61,7 @@ interface CustomerRepositoryInterface
     /**
      * Delete customer.
      *
+     * @api
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -71,6 +71,7 @@ interface CustomerRepositoryInterface
     /**
      * Delete customer by ID.
      *
+     * @api
      * @param int $customerId
      * @return bool true on success
      * @throws \Magento\Framework\Exception\NoSuchEntityException

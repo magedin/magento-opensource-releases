@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -515,6 +515,11 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
         $this->setShippingMethod($order->getShippingMethod());
         $quote->getShippingAddress()->setShippingDescription($order->getShippingDescription());
 
+        $paymentData = $order->getPayment()->getData();
+        unset($paymentData['cc_type'], $paymentData['cc_last_4']);
+        unset($paymentData['cc_exp_month'], $paymentData['cc_exp_year']);
+        $quote->getPayment()->addData($paymentData);
+
         $orderCouponCode = $order->getCouponCode();
         if ($orderCouponCode) {
             $quote->setCouponCode($orderCouponCode);
@@ -546,9 +551,6 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
              */
             $this->collectRates();
         }
-
-        $quote->getShippingAddress()->unsCachedItemsAll();
-        $quote->setTotalsCollectedFlag(false);
 
         $this->quoteRepository->save($quote);
 
@@ -929,8 +931,6 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
             $this->quoteRepository->save($this->getCustomerCart());
         }
 
-        $this->recollectCart();
-
         return $this;
     }
 
@@ -951,7 +951,8 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
                 $cart = $this->getCustomerCart();
                 if ($cart) {
                     $cart->removeItem($itemId);
-                    $this->_needCollectCart = true;
+                    $cart->collectTotals();
+                    $this->quoteRepository->save($cart);
                 }
                 break;
             case 'wishlist':
@@ -1559,13 +1560,11 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
     {
         $customer = $this->getQuote()->getCustomer();
         $form = $this->_createCustomerForm($customer);
-        $customerData = $this->customerMapper->toFlatArray($customer);
 
         // emulate request
         $request = $form->prepareRequest($accountData);
         $data = $form->extractData($request);
         $data = $form->restoreData($data);
-        $data = array_merge($customerData, array_filter($data));
         $customer = $this->customerFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $customer,
@@ -1575,6 +1574,7 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
         $this->getQuote()->updateCustomerData($customer);
         $data = [];
 
+        $customerData = $this->customerMapper->toFlatArray($customer);
         foreach ($form->getAttributes() as $attribute) {
             $code = sprintf('customer_%s', $attribute->getAttributeCode());
             $data[$code] = isset($customerData[$attribute->getAttributeCode()])
@@ -1731,7 +1731,6 @@ class Create extends \Magento\Framework\DataObject implements \Magento\Checkout\
                 ->setMiddlename($customerBillingAddressDataObject->getMiddlename())
                 ->setPrefix($customerBillingAddressDataObject->getPrefix())
                 ->setStoreId($store->getId())
-                ->setWebsiteId($store->getWebsiteId())
                 ->setEmail($this->_getNewCustomerEmail());
             $customer = $this->_validateCustomerData($customer);
         }

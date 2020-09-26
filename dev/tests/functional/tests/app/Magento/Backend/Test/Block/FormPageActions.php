@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,63 +17,56 @@ use Magento\Mtf\Client\Locator;
 class FormPageActions extends PageActions
 {
     /**
-     * "Back" button.
+     * "Back" button
      *
      * @var string
      */
     protected $backButton = '#back';
 
     /**
-     * "Reset" button.
+     * "Reset" button
      *
      * @var string
      */
     protected $resetButton = '#reset';
 
     /**
-     * "Save and Continue Edit" button.
+     * "Save and Continue Edit" button
      *
      * @var string
      */
     protected $saveAndContinueButton = '#save_and_continue';
 
     /**
-     * "Save" button.
+     * "Save" button
      *
      * @var string
      */
     protected $saveButton = '#save';
 
     /**
-     * "Delete" button.
+     * "Delete" button
      *
      * @var string
      */
     protected $deleteButton = '.delete';
 
     /**
-     * Magento new loader.
-     *
-     * @var string
-     */
-    protected $spinner = '[data-role="spinner"]';
-
-    /**
-     * Magento loader.
+     * Magento loader
      *
      * @var string
      */
     protected $loader = '//ancestor::body/div[@data-role="loader"]';
 
     /**
-     * Magento varienLoader.js loader.
+     * Magento varienLoader.js loader
      *
      * @var string
      */
     protected $loaderOld = '//ancestor::body/div[@id="loading-mask"]';
 
     /**
-     * Click "Back" button.
+     * Click on "Back" button
      */
     public function back()
     {
@@ -81,7 +74,7 @@ class FormPageActions extends PageActions
     }
 
     /**
-     * Click "Reset" button.
+     * Click on "Reset" button
      */
     public function reset()
     {
@@ -90,7 +83,7 @@ class FormPageActions extends PageActions
     }
 
     /**
-     * Click "Save and Continue Edit" button.
+     * Click on "Save and Continue Edit" button
      */
     public function saveAndContinue()
     {
@@ -101,28 +94,26 @@ class FormPageActions extends PageActions
     }
 
     /**
-     * Click "Save" button.
+     * Click on "Save" button
      */
     public function save()
     {
         $this->waitBeforeClick();
         $this->_rootElement->find($this->saveButton)->click();
-        $this->waitForElementNotVisible($this->spinner);
         $this->waitForElementNotVisible($this->loader, Locator::SELECTOR_XPATH);
         $this->waitForElementNotVisible($this->loaderOld, Locator::SELECTOR_XPATH);
     }
 
     /**
-     * Click "Delete" button.
+     * Click on "Delete" button
      */
     public function delete()
     {
-        $this->waitBeforeClick();
         $this->_rootElement->find($this->deleteButton)->click();
     }
 
     /**
-     * Check 'Delete' button availability.
+     * Check 'Delete' button availability
      *
      * @return bool
      */
@@ -132,7 +123,7 @@ class FormPageActions extends PageActions
     }
 
     /**
-     * Wait for User before clicking any Button which calls JS validation on correspondent form.
+     * Wait for User before click on any Button which calls JS validation on correspondent form.
      * See details in MAGETWO-31121.
      *
      * @return void
@@ -140,6 +131,6 @@ class FormPageActions extends PageActions
     protected function waitBeforeClick()
     {
         time_nanosleep(0, 600000000);
-        usleep(1000000);
+        usleep(500000);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,7 +11,8 @@ use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeIndex;
 use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
- * Assert that created product attribute is found in grid.
+ * Class AssertProductAttributeInGrid
+ * Assert that created product attribute is found in grid
  */
 class AssertProductAttributeInGrid extends AbstractConstraint
 {

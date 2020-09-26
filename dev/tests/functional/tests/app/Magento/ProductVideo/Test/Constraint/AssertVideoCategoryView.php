@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -21,17 +21,17 @@ class AssertVideoCategoryView extends AbstractConstraint
      *
      * @param CmsIndex $cmsIndex
      * @param CatalogCategoryView $catalogCategoryView
-     * @param InjectableFixture $product
+     * @param InjectableFixture $initialProduct
      * @return void
      */
     public function processAssert(
         CmsIndex $cmsIndex,
         CatalogCategoryView $catalogCategoryView,
-        InjectableFixture $product
+        InjectableFixture $initialProduct
     ) {
         $cmsIndex->open();
-        $cmsIndex->getTopmenu()->selectCategoryByName($product->getCategoryIds()[0]);
-        $src = $catalogCategoryView->getListProductBlock()->getProductItem($product)->getBaseImageSource();
+        $cmsIndex->getTopmenu()->selectCategoryByName($initialProduct->getCategoryIds()[0]);
+        $src = $catalogCategoryView->getListProductBlock()->getProductItem($initialProduct)->getBaseImageSource();
         \PHPUnit_Framework_Assert::assertFalse(
             strpos($src, '/placeholder/') !== false,
             'Video preview image is not displayed on category view when it should.'

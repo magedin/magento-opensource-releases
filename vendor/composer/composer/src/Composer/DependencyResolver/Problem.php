@@ -47,7 +47,7 @@ class Problem
      */
     public function addRule(Rule $rule)
     {
-        $this->addReason(spl_object_hash($rule), array(
+        $this->addReason($rule->getId(), array(
             'rule' => $rule,
             'job' => $rule->getJob(),
         ));
@@ -87,12 +87,8 @@ class Problem
             }
 
             if ($job && $job['cmd'] === 'install' && empty($packages)) {
-
                 // handle php/hhvm
                 if ($job['packageName'] === 'php' || $job['packageName'] === 'php-64bit' || $job['packageName'] === 'hhvm') {
-                    $available = $this->pool->whatProvides($job['packageName']);
-                    $version = count($available) ? $available[0]->getPrettyVersion() : phpversion();
-
                     $msg = "\n    - This package requires ".$job['packageName'].$this->constraintToText($job['constraint']).' but ';
 
                     if (defined('HHVM_VERSION')) {
@@ -101,7 +97,7 @@ class Problem
                         return $msg . 'you are running this with PHP and not HHVM.';
                     }
 
-                    return $msg . 'your PHP version ('. $version .') does not satisfy that requirement.';
+                    return $msg . 'your PHP version does not satisfy that requirement.';
                 }
 
                 // handle php extensions
@@ -109,7 +105,7 @@ class Problem
                     $ext = substr($job['packageName'], 4);
                     $error = extension_loaded($ext) ? 'has the wrong version ('.(phpversion($ext) ?: '0').') installed' : 'is missing from your system';
 
-                    return "\n    - The requested PHP extension ".$job['packageName'].$this->constraintToText($job['constraint']).' '.$error.'. Install or enable PHP\'s '.$ext.' extension.';
+                    return "\n    - The requested PHP extension ".$job['packageName'].$this->constraintToText($job['constraint']).' '.$error.'.';
                 }
 
                 // handle linked libs
@@ -222,7 +218,7 @@ class Problem
     /**
      * Turns a constraint into text usable in a sentence describing a job
      *
-     * @param  \Composer\Semver\Constraint\ConstraintInterface $constraint
+     * @param  \Composer\Package\LinkConstraint\LinkConstraintInterface $constraint
      * @return string
      */
     protected function constraintToText($constraint)

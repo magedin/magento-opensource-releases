@@ -1,67 +1,34 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
 /*global alert*/
 define(
-    [
-        'jquery',
-        'uiComponent',
-        'Magento_Ui/js/model/messageList'
-    ],
-    function ($, Component, messageList) {
+    ['jquery', 'uiComponent'],
+    function ($, Component) {
         'use strict';
-
         return Component.extend({
             defaults: {
                 template: 'Magento_Checkout/registration',
                 accountCreated: false,
-                creationStarted: false,
-                isFormVisible: true
+                creationStarted: false
             },
-
-            /**
-             * Initialize observable properties
-             */
+            /** Initialize observable properties */
             initObservable: function () {
                 this._super()
                     .observe('accountCreated')
-                    .observe('isFormVisible')
                     .observe('creationStarted');
-
                 return this;
             },
-
-            /**
-             * @return {*}
-             */
-            getEmailAddress: function () {
+            getEmailAddress: function() {
                 return this.email;
             },
-
-            /**
-             * Create new user account
-             */
-            createAccount: function () {
+            createAccount: function() {
                 this.creationStarted(true);
-                $.post(
-                    this.registrationUrl
-                ).done(
-                    function (response) {
-
-                        if (response.errors == false) {
-                            this.accountCreated(true)
-                        } else {
-                            messageList.addErrorMessage(response);
-                        }
-                        this.isFormVisible(false);
-                    }.bind(this)
-                ).fail(
-                    function (response) {
-                        this.accountCreated(false)
-                        this.isFormVisible(false);
-                        messageList.addErrorMessage(response);
+                $.post(this.registrationUrl).done(
+                    function() {
+                        this.accountCreated(true)
                     }.bind(this)
                 );
             }

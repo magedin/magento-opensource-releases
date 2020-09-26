@@ -24,7 +24,7 @@ use Symfony\CS\Tokenizer\Tokens;
  */
 class Fixer
 {
-    const VERSION = '1.11.4';
+    const VERSION = '1.11.1';
 
     protected $fixers = array();
     protected $configs = array();
@@ -78,10 +78,7 @@ class Fixer
         }
     }
 
-    /**
-     * @param FixerInterface[] $fixers
-     */
-    public function registerCustomFixers(array $fixers)
+    public function registerCustomFixers($fixers)
     {
         foreach ($fixers as $fixer) {
             $this->addFixer($fixer);
@@ -98,7 +95,7 @@ class Fixer
      */
     public function getFixers()
     {
-        $this->fixers = $this->sortFixers($this->fixers);
+        $this->sortFixers();
 
         return $this->fixers;
     }
@@ -134,19 +131,19 @@ class Fixer
     public function fix(ConfigInterface $config, $dryRun = false, $diff = false)
     {
         $fixers = $this->prepareFixers($config);
-        $fixers = $this->sortFixers($fixers);
-
         $changed = array();
+
         if ($this->stopwatch) {
             $this->stopwatch->openSection();
         }
 
-        $fileCacheManager = new FileCacheManager($config->usingCache(), $config->getDir(), $fixers);
+        $fileCacheManager = new FileCacheManager($config->usingCache(), $config->getDir(), $config->getFixers());
 
-        $finder = $config->getFinder();
-        $finderIterator = $finder instanceof \IteratorAggregate ? $finder->getIterator() : $finder;
+        foreach ($config->getFinder() as $file) {
+            if ($file->isDir() || $file->isLink()) {
+                continue;
+            }
 
-        foreach (new UniqueFileIterator($finderIterator) as $file) {
             if ($this->stopwatch) {
                 $this->stopwatch->start($this->getFileRelativePathname($file));
             }
@@ -336,25 +333,13 @@ class Fixer
         return $diff;
     }
 
-    /**
-     * @param FixerInterface[] $fixers
-     *
-     * @return FixerInterface[]
-     */
-    private function sortFixers(array $fixers)
+    private function sortFixers()
     {
-        usort($fixers, function (FixerInterface $a, FixerInterface $b) {
+        usort($this->fixers, function (FixerInterface $a, FixerInterface $b) {
             return Utils::cmpInt($b->getPriority(), $a->getPriority());
         });
-
-        return $fixers;
     }
 
-    /**
-     * @param ConfigInterface $config
-     *
-     * @return FixerInterface[]
-     */
     private function prepareFixers(ConfigInterface $config)
     {
         $fixers = $config->getFixers();

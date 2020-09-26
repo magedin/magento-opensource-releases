@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Api;
@@ -22,10 +22,10 @@ interface StockItemRepositoryInterface
     /**
      * Load Stock Item data by given stockId and parameters
      *
-     * @param int $stockItemId
+     * @param int $stockId
      * @return \Magento\CatalogInventory\Api\Data\StockItemInterface
      */
-    public function get($stockItemId);
+    public function get($stockId);
 
     /**
      * Load Stock Item data collection by given search criteria

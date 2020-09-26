@@ -1,42 +1,32 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
-define(
-    [
+define([
         'uiComponent',
         'Magento_GiftMessage/js/model/gift-message',
         'Magento_GiftMessage/js/model/gift-options',
         'Magento_GiftMessage/js/action/gift-options'
     ],
-    function (Component, GiftMessage, giftOptions, giftOptionsService) {
-        'use strict';
-
+    function (Component, giftMessage, giftOptions, giftOptionsService) {
+        "use strict";
         return Component.extend({
             formBlockVisibility: null,
             resultBlockVisibility: null,
             model: {},
-
-            /**
-             * Component init
-             */
-            initialize: function () {
-                var self = this,
-                    model;
-
+            initialize: function() {
+                var self = this;
                 this._super()
                     .observe('formBlockVisibility')
-                    .observe({
-                        'resultBlockVisibility': false
-                    });
+                    .observe({'resultBlockVisibility': false});
 
                 this.itemId = this.itemId || 'orderLevel';
-                model = new GiftMessage(this.itemId);
+                var model = new giftMessage(this.itemId);
                 giftOptions.addOption(model);
                 this.model = model;
 
-                this.model.getObservable('isClear').subscribe(function (value) {
+                this.model.getObservable('isClear').subscribe(function(value) {
                     if (value == true) {
                         self.formBlockVisibility(false);
                         self.model.getObservable('alreadyAdded')(true);
@@ -45,95 +35,57 @@ define(
 
                 this.isResultBlockVisible();
             },
-
-            /**
-             * Is reslt block visible
-             */
-            isResultBlockVisible: function () {
+            isResultBlockVisible: function() {
                 var self = this;
-
                 if (this.model.getObservable('alreadyAdded')()) {
                     this.resultBlockVisibility(true);
                 }
-                this.model.getObservable('additionalOptionsApplied').subscribe(function (value) {
+                this.model.getObservable('additionalOptionsApplied').subscribe(function(value) {
                     if (value == true) {
                         self.resultBlockVisibility(true);
                     }
                 });
             },
-
-            /**
-             * @param {String} key
-             * @return {*}
-             */
-            getObservable: function (key) {
+            getObservable: function(key) {
                 return this.model.getObservable(key);
             },
-
-            /**
-             * Hide\Show form block
-             */
-            toggleFormBlockVisibility: function () {
+            toggleFormBlockVisibility: function() {
                 if (!this.model.getObservable('alreadyAdded')()) {
                     this.formBlockVisibility(!this.formBlockVisibility());
-                } else {
-                    this.resultBlockVisibility(!this.resultBlockVisibility());
                 }
             },
-
-            /**
-             * Edit options
-             */
-            editOptions: function () {
+            editOptions: function() {
                 this.resultBlockVisibility(false);
                 this.formBlockVisibility(true);
             },
-
-            /**
-             * Delete options
-             */
-            deleteOptions: function () {
+            deleteOptions: function() {
                 giftOptionsService(this.model, true);
             },
-
-            /**
-             * Hide form block
-             */
-            hideFormBlock: function () {
+            hideFormBlock: function() {
                 this.formBlockVisibility(false);
-
                 if (this.model.getObservable('alreadyAdded')()) {
                     this.resultBlockVisibility(true);
                 }
             },
-
-            /**
-             * @return {Boolean}
-             */
-            hasActiveOptions: function () {
-                var regionData = this.getRegion('additionalOptions'),
-                    options = regionData();
-
-                for (var i = 0; i < options.length; i++) {
+            hasActiveOptions: function() {
+                var regionData = this.getRegion('additionalOptions');
+                var options = regionData();
+                for (var i in options) {
                     if (options[i].isActive()) {
                         return true;
                     }
                 }
-
                 return false;
             },
-
-            /**
-             * @return {Boolean}
-             */
-            isActive: function () {
-                return this.model.isGiftMessageAvailable();
+            isActive: function() {
+                switch (this.itemId) {
+                    case 'orderLevel':
+                        return this.model.getConfigValue('isOrderLevelGiftOptionsEnabled') == true;
+                    default:
+                        return this.model.getConfigValue('isItemLevelGiftOptionsEnabled') == true;
+                }
             },
-
-            /**
-             * Submit options
-             */
-            submitOptions: function () {
+            submitOptions: function() {
                 giftOptionsService(this.model);
             }
         });

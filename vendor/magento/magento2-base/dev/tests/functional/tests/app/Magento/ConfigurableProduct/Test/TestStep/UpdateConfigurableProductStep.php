@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,8 +9,6 @@ namespace Magento\ConfigurableProduct\Test\TestStep;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
 use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct;
-use Magento\ConfigurableProduct\Test\Block\Adminhtml\Product\Edit\Section\Variations\Config;
-use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\TestStep\TestStepInterface;
 
@@ -62,14 +60,8 @@ class UpdateConfigurableProductStep implements TestStepInterface
     protected $attributeTypeAction = '';
 
     /**
-     * @var CatalogProductIndex
-     */
-    private $productGrid;
-
-    /**
      * @constructor
      * @param FixtureFactory $fixtureFactory
-     * @param CatalogProductIndex $productGrid
      * @param CatalogProductEdit $catalogProductEdit
      * @param ConfigurableProduct $product
      * @param ConfigurableProduct $updatedProduct
@@ -77,7 +69,6 @@ class UpdateConfigurableProductStep implements TestStepInterface
      */
     public function __construct(
         FixtureFactory $fixtureFactory,
-        CatalogProductIndex $productGrid,
         CatalogProductEdit $catalogProductEdit,
         ConfigurableProduct $product,
         ConfigurableProduct $updatedProduct,
@@ -88,7 +79,6 @@ class UpdateConfigurableProductStep implements TestStepInterface
         $this->initialProduct = $product;
         $this->product = $updatedProduct;
         $this->attributeTypeAction = $attributeTypeAction;
-        $this->productGrid = $productGrid;
     }
 
     /**
@@ -125,6 +115,7 @@ class UpdateConfigurableProductStep implements TestStepInterface
 
         $dataProduct = $product->getData();
         $dataInitialProduct = $initialProduct->getData();
+        $oldMatrix = [];
 
         if ($attributeTypeAction == 'deleteLast') {
             array_pop($dataInitialProduct['configurable_attributes_data']['attributes_data']);
@@ -135,6 +126,7 @@ class UpdateConfigurableProductStep implements TestStepInterface
 
         $attributesData = $dataInitialProduct['configurable_attributes_data']['attributes_data'];
         if ($attributeTypeAction == 'addOptions') {
+            $oldMatrix = $dataInitialProduct['configurable_attributes_data']['matrix'];
             $this->addOptions($attributesData, $dataProduct['configurable_attributes_data']['attributes_data']);
         } else {
             $this->addAttributes($attributesData, $dataProduct['configurable_attributes_data']['attributes_data']);
@@ -142,6 +134,7 @@ class UpdateConfigurableProductStep implements TestStepInterface
 
         $dataProduct['configurable_attributes_data'] = [
             'attributes_data' => $attributesData,
+            'matrix' => $oldMatrix,
         ];
 
         if ($product->hasData('category_ids')) {
@@ -196,17 +189,9 @@ class UpdateConfigurableProductStep implements TestStepInterface
      */
     protected function updateProduct(ConfigurableProduct $product)
     {
-        //open product
-        $filter = ['sku' => $this->initialProduct->getSku()];
-        $this->productGrid->open();
-        $this->productGrid->getProductGrid()->searchAndOpen($filter);
-
-        //update
         $productForm = $this->catalogProductEdit->getProductForm();
-        $productForm->openSection('variations');
-        /** @var Config $variationsSection */
-        $variationsSection = $productForm->getSection('variations');
-        $variationsSection->deleteVariations();
+        $productForm->openTab('variations');
+        $productForm->getTab('variations')->deleteAttributes();
         $this->catalogProductEdit->getProductForm()->fill($product);
     }
 }

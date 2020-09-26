@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true*/
@@ -46,9 +46,8 @@ define(
             },
             countryData = customerData.get('directory-data'),
             addressOptions = addressList().filter(function (address) {
-                return address.getType() == 'customer-address';
-            });
-
+            return address.getType() == 'customer-address';
+        });
         addressOptions.push(newAddressOption);
 
         return Component.extend({
@@ -79,7 +78,7 @@ define(
                         isAddressDetailsVisible: quote.billingAddress() != null,
                         isAddressFormVisible: !customer.isLoggedIn() || addressOptions.length == 1,
                         isAddressSameAsShipping: false,
-                        saveInAddressBook: 1
+                        saveInAddressBook: true
                     });
 
                 quote.billingAddress.subscribe(function (newAddress) {
@@ -94,8 +93,6 @@ define(
 
                     if (newAddress != null && newAddress.saveInAddressBook !== undefined) {
                         this.saveInAddressBook(newAddress.saveInAddressBook);
-                    } else {
-                        this.saveInAddressBook(1);
                     }
                     this.isAddressDetailsVisible(true);
                 }, this);
@@ -157,9 +154,9 @@ define(
                             newBillingAddress;
 
                         if (customer.isLoggedIn() && !this.customerHasAddresses) {
-                            this.saveInAddressBook(1);
+                            this.saveInAddressBook(true);
                         }
-                        addressData.save_in_address_book = this.saveInAddressBook() ? 1 : 0;
+                        addressData.save_in_address_book = this.saveInAddressBook();
                         newBillingAddress = createBillingAddress(addressData);
 
                         // New address must be selected as a billing address

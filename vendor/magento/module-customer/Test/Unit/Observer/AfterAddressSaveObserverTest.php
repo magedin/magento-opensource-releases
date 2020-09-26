@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Observer;
@@ -74,11 +74,6 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
      */
     protected $customerMock;
 
-    /**
-     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $customerSessionMock;
-
     protected function setUp()
     {
         $this->vat = $this->getMockBuilder('Magento\Customer\Model\Vat')
@@ -110,9 +105,6 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->customerSessionMock = $this->getMockBuilder('Magento\Customer\Model\Session')
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $this->model = new AfterAddressSaveObserver(
             $this->vat,
@@ -122,8 +114,7 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
             $this->scopeConfig,
             $this->messageManager,
             $this->escaper,
-            $this->appState,
-            $this->customerSessionMock
+            $this->appState
         );
     }
 
@@ -469,11 +460,6 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
         $customer->expects($this->once())
             ->method('save')
-            ->willReturnSelf();
-
-        $this->customerSessionMock->expects($this->once())
-            ->method('setCustomerGroupId')
-            ->with($newGroupId)
             ->willReturnSelf();
 
         $address = $this->getMockBuilder('Magento\Customer\Model\Address')

@@ -1,13 +1,12 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
     'jquery',
     'underscore',
-    'uiRegistry',
     'jquery/ui'
-], function ($, _, registry) {
+], function ($, _) {
     'use strict';
 
     $.widget('mage.productAttributes', {
@@ -21,7 +20,7 @@ define([
             var self = this;
 
             this.modal = $('<div id="create_new_attribute"/>').modal({
-                 title: $.mage.__('New Attribute'),
+                title: $.mage.__('New Attribute'),
                 type: 'slide',
                 buttons: [],
                 opened: function () {
@@ -32,7 +31,7 @@ define([
                     });
                     self.modal.append(self.iframe);
                     self._changeIframeSize();
-                    $(window).off().on('resize.modal', _.debounce(self._changeIframeSize.bind(self), 400));
+                    $(window).off().on('resize', _.debounce(self._changeIframeSize.bind(self), 400));
                 },
                 closed: function () {
                     var doc = self.iframe.get(0).document;
@@ -43,7 +42,6 @@ define([
                         self.iframe.remove();
                     }
                     self.modal.data('modal').modal.remove();
-                    $(window).off('resize.modal');
                 }
             });
         },
@@ -70,19 +68,13 @@ define([
         },
 
         _prepareUrl: function () {
-            var productSource,
-                attributeSetId = '';
-
-            if (this.options.dataProvider) {
-                try {
-                    productSource = registry.get(this.options.dataProvider);
-                    attributeSetId = productSource.data.product['attribute_set_id'];
-                } catch (e) {}
-            }
+            var name = $('[data-role=product-attribute-search]').val();
 
             return this.options.url +
                 (/\?/.test(this.options.url) ? '&' : '?') +
-                'set=' + attributeSetId;
+                'set=' + $('#attribute_set_id').val() +
+                '&attribute[frontend_label]=' +
+                window.encodeURIComponent(name);
         },
 
         _showPopup: function () {

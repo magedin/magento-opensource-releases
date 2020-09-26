@@ -2,50 +2,34 @@
 /**
  * Adminhtml block for fieldset of configurable product
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Block\Adminhtml\Product\Steps;
 
-use Magento\Catalog\Helper\Image;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Media\Config;
-use Magento\Catalog\Model\Product\Type;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Framework\View\Element\Template\Context;
-
 class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
 {
-    /** @var Image */
+    /** @var \Magento\Catalog\Helper\Image */
     protected $image;
 
     /**
-     * @var ProductFactory
+     * @var \Magento\ConfigurableProduct\Model\Product\VariationMediaAttributes
      */
-    private $productFactory;
+    protected $variationMediaAttributes;
 
     /**
-     * @var Config
-     */
-    private $catalogProductMediaConfig;
-
-    /**
-     * @param Context $context
-     * @param Image $image
-     * @param Config $catalogProductMediaConfig
-     * @param ProductFactory $productFactory
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Magento\Catalog\Helper\Image $image
+     * @param \Magento\ConfigurableProduct\Model\Product\VariationMediaAttributes $variationMediaAttributes
      */
     public function __construct(
-        Context $context,
-        Image $image,
-        Config $catalogProductMediaConfig,
-        ProductFactory $productFactory
+        \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Catalog\Helper\Image $image,
+        \Magento\ConfigurableProduct\Model\Product\VariationMediaAttributes $variationMediaAttributes
     ) {
         parent::__construct($context);
         $this->image = $image;
-        $this->productFactory = $productFactory;
-        $this->catalogProductMediaConfig = $catalogProductMediaConfig;
+        $this->variationMediaAttributes = $variationMediaAttributes;
     }
 
     /**
@@ -72,14 +56,12 @@ class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
     public function getImageTypes()
     {
         $imageTypes = [];
-        foreach ($this->catalogProductMediaConfig->getMediaAttributeCodes() as $attributeCode) {
-            /* @var $attribute Attribute */
-            $imageTypes[$attributeCode] = [
-                'code' => $attributeCode,
+        foreach ($this->variationMediaAttributes->getMediaAttributes() as $attribute) {
+            /* @var $attribute \Magento\Eav\Model\Entity\Attribute */
+            $imageTypes[$attribute->getAttributeCode()] = [
+                'code' => $attribute->getAttributeCode(),
                 'value' => '',
-                'label' => $attributeCode,
-                'scope' => '',
-                'name' => $attributeCode,
+                'name' => '',
             ];
         }
         return $imageTypes;
@@ -90,10 +72,6 @@ class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
      */
     public function getMediaAttributes()
     {
-        static $simple;
-        if (empty($simple)) {
-            $simple = $this->productFactory->create()->setTypeId(Type::TYPE_SIMPLE)->getMediaAttributes();
-        }
-        return $simple;
+        return $this->variationMediaAttributes->getMediaAttributes();
     }
 }

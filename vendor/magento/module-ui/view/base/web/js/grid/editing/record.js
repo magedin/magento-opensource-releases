@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -198,8 +198,7 @@ define([
             data = this.normalizeData(data);
             data = utils.extend({}, currentData, data);
 
-            this.set('data', data)
-                .updateState();
+            this.set('data', data);
 
             return this;
         },
@@ -294,7 +293,7 @@ define([
          */
         checkChanges: function () {
             var savedData   = this.getSavedData(),
-                data        = this.normalizeData(this.getData());
+                data        = this.getData();
 
             return utils.compare(savedData, data);
         },
@@ -323,12 +322,9 @@ define([
          * @returns {Record} Chainable.
          */
         updateState: function () {
-            var diff = this.checkChanges(),
-                changed = {};
+            var diff = this.checkChanges();
 
             this.hasChanges = !diff.equal;
-            changed[this.index] = this.data;
-            this.editor().set('changed', [changed]);
 
             return this;
         },

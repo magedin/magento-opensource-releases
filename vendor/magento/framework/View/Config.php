@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View;
@@ -57,25 +57,16 @@ class Config implements \Magento\Framework\View\ConfigInterface
     public function getViewConfig(array $params = [])
     {
         $this->assetRepo->updateDesignParams($params);
-        $viewConfigParams = [];
-
-        if (isset($params['themeModel'])) {
-            /** @var \Magento\Framework\View\Design\ThemeInterface $currentTheme */
-            $currentTheme = $params['themeModel'];
-            $key = $currentTheme->getCode();
-            if (isset($this->viewConfigs[$key])) {
-                return $this->viewConfigs[$key];
-            }
-            $viewConfigParams['themeModel'] = $currentTheme;
+        /** @var $currentTheme \Magento\Framework\View\Design\ThemeInterface */
+        $currentTheme = $params['themeModel'];
+        $key = $currentTheme->getCode();
+        if (isset($this->viewConfigs[$key])) {
+            return $this->viewConfigs[$key];
         }
-        $viewConfigParams['area'] = (isset($params['area'])) ? $params['area'] : null;
 
-        /** @var \Magento\Framework\Config\View $config */
-        $config = $this->viewConfigFactory->create($viewConfigParams);
+        $config = $this->viewConfigFactory->create();
 
-        if (isset($key)) {
-            $this->viewConfigs[$key] = $config;
-        }
+        $this->viewConfigs[$key] = $config;
         return $config;
     }
 }

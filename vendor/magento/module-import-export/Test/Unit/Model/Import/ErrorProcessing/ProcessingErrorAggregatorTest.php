@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Test\Unit\Model\Import\ErrorProcessing;
@@ -39,7 +39,7 @@ class ProcessingErrorAggregatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Preparing mock objects
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->processingErrorFactoryMock = $this->getMock(
             '\Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorFactory',
@@ -117,7 +117,10 @@ class ProcessingErrorAggregatorTest extends \PHPUnit_Framework_TestCase
         $this->model->addError('columnNotFound', 'critical', 7, 'Some column name', null, 'Description');
         $this->model->addError('columnEmptyHeader', 'not-critical', 4, 'Some column name', 'No header', 'Description');
         $result = $this->model->getRowsGroupedByErrorCode(['systemException']);
-        $expectedResult = ['systemException' => [0 => 1]];
+        $expectedResult = [
+            'Template: No column' => [8],
+            'No header' => [5]
+        ];
         $this->assertEquals($expectedResult, $result);
     }
 
@@ -345,71 +348,18 @@ class ProcessingErrorAggregatorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test for method getRowsGroupedByErrorCode. Expects errors.
-     *
-     * @param array $params
-     * @param array $expectedResult
-     *
-     * @dataProvider getRowsGroupedByErrorCodeWithErrorsDataProvider
      */
-    public function testGetRowsGroupedByErrorCodeWithErrors(array $params = [], array $expectedResult = [])
+    public function testGetRowsGroupedByErrorCodeWithErrors()
     {
         $this->model->addError('systemException');
         $this->model->addError('columnNotFound', 'critical', 7, 'Some column name', 'No column', 'Description');
         $this->model->addError('columnEmptyHeader', 'not-critical', 4, 'Some column name', 'No header', 'Description');
-
-        $result = call_user_func_array([$this->model, 'getRowsGroupedByErrorCode'], $params);
-
-        $this->assertEquals($expectedResult, $result);
-    }
-
-    /**
-     * @return array
-     */
-    public function getRowsGroupedByErrorCodeWithErrorsDataProvider()
-    {
-        $errorCode1 = 'systemException';
-        $errorCode2 = 'columnNotFound';
-        $errorCode3 = 'columnEmptyHeader';
-
-        $message1 = 'systemException';
-        $message2 = 'No column';
-        $message3 = 'No header';
-
-        return [
-            [
-                [[$errorCode1]],
-                [$message1 => [1]]
-            ],
-            [
-                [[], [$errorCode2]],
-                [$message1 => [1], $message3 => [5]]
-            ],
-            [
-                [[$errorCode3, $errorCode2], [$errorCode2]],
-                [$message3 => [5]]
-            ],
-            [
-                [[], []],
-                [$message1 => [1], $message2 => [8], $message3 => [5]]
-            ],
-
-            [
-                [[$errorCode1], [], false],
-                [$errorCode1 => [1]]
-            ],
-            [
-                [[], [$errorCode2], false],
-                [$errorCode1 => [1], $errorCode3 => [5]]
-            ],
-            [
-                [[$errorCode3, $errorCode2], [$errorCode2], false],
-                [$errorCode3 => [5]]
-            ],
-            [
-                [[], [], false],
-                [$errorCode1 => [1], $errorCode2 => [8], $errorCode3 => [5]]
-            ],
+        $result = $this->model->getRowsGroupedByErrorCode(['systemException']);
+        $expectedResult = [
+            'No column' => [8],
+            'No header' => [5]
         ];
+        $this->assertEquals($expectedResult, $result);
     }
 
     /**

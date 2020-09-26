@@ -74,6 +74,8 @@ class ScriptEvents
      */
     const POST_STATUS_CMD = 'post-status-cmd';
 
+    /** Deprecated constants below */
+
     /**
      * The PRE_AUTOLOAD_DUMP event occurs before the autoload file is generated.
      *
@@ -128,8 +130,6 @@ class ScriptEvents
      * @var string
      */
     const POST_ARCHIVE_CMD = 'post-archive-cmd';
-
-    /** Deprecated constants below */
 
     /**
      * The PRE_PACKAGE_INSTALL event occurs before a package is installed.

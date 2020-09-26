@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -149,12 +149,9 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $select = $connection->select();
             $select->from($this->getTable('authorization_role'))
                 ->where('parent_id > :parent_id')
-                ->where('user_id = :user_id')
-                ->where('user_type = :user_type');
+                ->where('user_id = :user_id');
 
-            $binds = ['parent_id' => 0, 'user_id' => $userId,
-                      'user_type' => UserContextInterface::USER_TYPE_ADMIN
-            ];
+            $binds = ['parent_id' => 0, 'user_id' => $userId];
 
             return $connection->fetchAll($select, $binds);
         } else {
@@ -186,7 +183,7 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     public function _clearUserRoles(ModelUser $user)
     {
-        $conditions = ['user_id = ?' => (int)$user->getId(), 'user_type = ?' => UserContextInterface::USER_TYPE_ADMIN];
+        $conditions = ['user_id = ?' => (int)$user->getId()];
         $this->getConnection()->delete($this->getTable('authorization_role'), $conditions);
     }
 
@@ -255,13 +252,13 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $uid = $user->getId();
         $connection->beginTransaction();
         try {
-            $connection->delete($this->getMainTable(), ['user_id = ?' => $uid]);
-            $connection->delete(
-                $this->getTable('authorization_role'),
-                ['user_id = ?' => $uid, 'user_type = ?' => UserContextInterface::USER_TYPE_ADMIN]
-            );
+            $conditions = ['user_id = ?' => $uid];
+
+            $connection->delete($this->getMainTable(), $conditions);
+            $connection->delete($this->getTable('authorization_role'), $conditions);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             throw $e;
+            return false;
         } catch (\Exception $e) {
             $connection->rollBack();
             return false;
@@ -295,13 +292,9 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ['role_id']
         )->where(
             "{$table}.user_id = :user_id"
-        )->where(
-            "{$table}.user_type = :user_type"
         );
 
-        $binds = ['user_id' => (int)$user->getId(),
-                  'user_type' => UserContextInterface::USER_TYPE_ADMIN
-        ];
+        $binds = ['user_id' => (int)$user->getId()];
 
         $roles = $connection->fetchCol($select, $binds);
 
@@ -329,11 +322,7 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
         $dbh = $this->getConnection();
 
-        $condition = [
-            'user_id = ?' => (int)$user->getId(),
-            'parent_id = ?' => (int)$user->getRoleId(),
-            'user_type = ?' => UserContextInterface::USER_TYPE_ADMIN
-        ];
+        $condition = ['user_id = ?' => (int)$user->getId(), 'parent_id = ?' => (int)$user->getRoleId()];
 
         $dbh->delete($this->getTable('authorization_role'), $condition);
         return $this;
@@ -352,16 +341,9 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
             $dbh = $this->getConnection();
 
-            $binds = [
-                'parent_id' => $user->getRoleId(),
-                'user_id' => $user->getUserId(),
-                'user_type' => UserContextInterface::USER_TYPE_ADMIN
-            ];
+            $binds = ['parent_id' => $user->getRoleId(), 'user_id' => $user->getUserId()];
 
-            $select = $dbh->select()->from($roleTable)
-                ->where('parent_id = :parent_id')
-                ->where('user_type = :user_type')
-                ->where('user_id = :user_id');
+            $select = $dbh->select()->from($roleTable)->where('parent_id = :parent_id')->where('user_id = :user_id');
 
             return $dbh->fetchCol($select, $binds);
         } else {

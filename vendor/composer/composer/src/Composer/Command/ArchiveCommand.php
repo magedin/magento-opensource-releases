@@ -14,13 +14,13 @@ namespace Composer\Command;
 
 use Composer\Factory;
 use Composer\IO\IOInterface;
-use Composer\Config;
+use Composer\DependencyResolver\Pool;
 use Composer\Repository\CompositeRepository;
-use Composer\Repository\RepositoryFactory;
 use Composer\Script\ScriptEvents;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
-use Composer\Util\Filesystem;
+use Composer\Package\Version\VersionParser;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Nils Adermann <naderman@naderman.de>
  */
-class ArchiveCommand extends BaseCommand
+class ArchiveCommand extends Command
 {
     protected function configure()
     {
@@ -41,10 +41,8 @@ class ArchiveCommand extends BaseCommand
             ->setDefinition(array(
                 new InputArgument('package', InputArgument::OPTIONAL, 'The package to archive instead of the current project'),
                 new InputArgument('version', InputArgument::OPTIONAL, 'A version constraint to find the package to archive'),
-                new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'Format of the resulting archive: tar or zip'),
-                new InputOption('dir', null, InputOption::VALUE_REQUIRED, 'Write the archive to this directory'),
-                new InputOption('file', null, InputOption::VALUE_REQUIRED, 'Write the archive with the given file name.'
-                    .' Note that the format will be appended.'),
+                new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'Format of the resulting archive: tar or zip', 'tar'),
+                new InputOption('dir', false, InputOption::VALUE_REQUIRED, 'Write the archive to this directory', '.'),
             ))
             ->setHelp(<<<EOT
 The <info>archive</info> command creates an archive of the specified format
@@ -60,7 +58,6 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = Factory::createConfig();
         $composer = $this->getComposer(false);
         if ($composer) {
             $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'archive', $input, $output);
@@ -68,21 +65,12 @@ EOT
             $composer->getEventDispatcher()->dispatchScript(ScriptEvents::PRE_ARCHIVE_CMD);
         }
 
-        if (null === $input->getOption('format')) {
-            $input->setOption('format', $config->get('archive-format'));
-        }
-        if (null === $input->getOption('dir')) {
-            $input->setOption('dir', $config->get('archive-dir'));
-        }
-
         $returnCode = $this->archive(
             $this->getIO(),
-            $config,
             $input->getArgument('package'),
             $input->getArgument('version'),
             $input->getOption('format'),
-            $input->getOption('dir'),
-            $input->getOption('file')
+            $input->getOption('dir')
         );
 
         if (0 === $returnCode && $composer) {
@@ -92,8 +80,9 @@ EOT
         return $returnCode;
     }
 
-    protected function archive(IOInterface $io, Config $config, $packageName = null, $version = null, $format = 'tar', $dest = '.', $fileName = null)
+    protected function archive(IOInterface $io, $packageName = null, $version = null, $format = 'tar', $dest = '.')
     {
+        $config = Factory::createConfig();
         $factory = new Factory;
         $downloadManager = $factory->createDownloadManager($io, $config);
         $archiveManager = $factory->createArchiveManager($config, $downloadManager);
@@ -108,13 +97,8 @@ EOT
             $package = $this->getComposer()->getPackage();
         }
 
-        $io->writeError('<info>Creating the archive into "'.$dest.'".</info>');
-        $packagePath = $archiveManager->archive($package, $format, $dest, $fileName);
-        $fs = new Filesystem;
-        $shortPath = $fs->findShortestPath(getcwd(), $packagePath, true);
-
-        $io->writeError('Created: ', false);
-        $io->write(strlen($shortPath) < strlen($packagePath) ? $shortPath : $packagePath);
+        $io->writeError('<info>Creating the archive.</info>');
+        $archiveManager->archive($package, $format, $dest);
 
         return 0;
     }
@@ -125,14 +109,19 @@ EOT
 
         if ($composer = $this->getComposer(false)) {
             $localRepo = $composer->getRepositoryManager()->getLocalRepository();
-            $repo = new CompositeRepository(array_merge(array($localRepo), $composer->getRepositoryManager()->getRepositories()));
+            $repos = new CompositeRepository(array_merge(array($localRepo), $composer->getRepositoryManager()->getRepositories()));
         } else {
-            $defaultRepos = RepositoryFactory::defaultRepos($this->getIO());
+            $defaultRepos = Factory::createDefaultRepositories($this->getIO());
             $io->writeError('No composer.json found in the current directory, searching packages from ' . implode(', ', array_keys($defaultRepos)));
-            $repo = new CompositeRepository($defaultRepos);
+            $repos = new CompositeRepository($defaultRepos);
         }
 
-        $packages = $repo->findPackages($packageName, $version);
+        $pool = new Pool();
+        $pool->addRepository($repos);
+
+        $parser = new VersionParser();
+        $constraint = ($version) ? $parser->parseConstraints($version) : null;
+        $packages = $pool->whatProvides($packageName, $constraint, true);
 
         if (count($packages) > 1) {
             $package = reset($packages);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GroupedProduct\Test\Unit\Model\Product\Type;
@@ -375,6 +375,7 @@ class GroupedTest extends \PHPUnit_Framework_TestCase
             $this->_model->prepareForCartAdvanced($buyRequest, $this->product)
         );
 
+
         $buyRequest->setSuperGroup(1);
         $this->assertEquals(
             $expectedMsg,
@@ -601,15 +602,5 @@ class GroupedTest extends \PHPUnit_Framework_TestCase
             ->method('getData')
             ->will($this->returnValue([$associatedProduct]));
         $this->assertEquals($expectedMsg, $this->_model->prepareForCartAdvanced($buyRequest, $this->product));
-    }
-
-    public function testFlushAssociatedProductsCache()
-    {
-        $productMock = $this->getMock('\Magento\Catalog\Model\Product', ['unsData'], [], '', false);
-        $productMock->expects($this->once())
-            ->method('unsData')
-            ->with('_cache_instance_associated_products')
-            ->willReturnSelf();
-        $this->assertEquals($productMock, $this->_model->flushAssociatedProductsCache($productMock));
     }
 }

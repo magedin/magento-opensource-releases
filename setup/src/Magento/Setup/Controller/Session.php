@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Controller;
@@ -34,19 +34,6 @@ class Session extends AbstractActionController
     }
 
     /**
-     * No index action, return 404 error page
-     * 
-     * @return ViewModel|\Zend\Http\Response
-     */
-    public function indexAction()
-    {
-        $view = new ViewModel;
-        $view->setTemplate('/error/404.phtml');
-        $this->getResponse()->setStatusCode(\Zend\Http\Response::STATUS_CODE_404);
-        return $view;
-    }
-
-    /**
      * Prolong session
      *
      * @return string
@@ -59,13 +46,10 @@ class Session extends AbstractActionController
                 /** @var \Magento\Framework\App\State $adminAppState */
                 $adminAppState = $objectManager->get('Magento\Framework\App\State');
                 $adminAppState->setAreaCode(\Magento\Framework\App\Area::AREA_ADMIN);
-                $sessionConfig = $objectManager->get('Magento\Backend\Model\Session\AdminConfig');
-                /** @var \Magento\Backend\Model\Url $backendUrl */
-                $backendUrl = $objectManager->get('Magento\Backend\Model\Url');
-                $urlPath = parse_url($backendUrl->getBaseUrl(), PHP_URL_PATH);
-                $cookiePath = $urlPath . 'setup';
-                $sessionConfig->setCookiePath($cookiePath);
+
                 /* @var \Magento\Backend\Model\Auth\Session $session */
+                $sessionConfig = $objectManager->get('Magento\Backend\Model\Session\AdminConfig');
+                $sessionConfig->setCookiePath('/setup');
                 $session = $objectManager->create(
                     'Magento\Backend\Model\Auth\Session',
                     [

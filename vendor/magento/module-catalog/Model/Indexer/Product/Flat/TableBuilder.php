@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Indexer\Product\Flat;
@@ -23,16 +23,6 @@ class TableBuilder
     protected $_connection;
 
     /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
-    /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resource;
-
-    /**
      * Check whether builder was executed
      *
      * @var bool
@@ -48,7 +38,6 @@ class TableBuilder
         \Magento\Framework\App\ResourceConnection $resource
     ) {
         $this->_productIndexerHelper = $productIndexerHelper;
-        $this->resource = $resource;
         $this->_connection = $resource->getConnection();
     }
 
@@ -246,7 +235,6 @@ class TableBuilder
         $valueFieldSuffix,
         $storeId
     ) {
-        $metadata = $this->getMetadataPool()->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class);
         if (!empty($tableColumns)) {
             $columnsChunks = array_chunk(
                 $tableColumns,
@@ -267,12 +255,7 @@ class TableBuilder
                 $flatColumns = $this->_productIndexerHelper->getFlatColumns();
                 $iterationNum = 1;
 
-                $select->from(['et' => $entityTableName], $keyColumn)
-                    ->join(
-                        ['e' => $this->resource->getTableName('catalog_product_entity')],
-                        'e.entity_id = et.entity_id',
-                        []
-                    );
+                $select->from(['e' => $entityTableName], $keyColumn);
 
                 $selectValue->from(['e' => $temporaryTableName], $keyColumn);
 
@@ -280,10 +263,9 @@ class TableBuilder
                 foreach ($columnsList as $columnName => $attribute) {
                     $countTableName = 't' . $iterationNum++;
                     $joinCondition = sprintf(
-                        'e.%3$s = %1$s.%3$s AND %1$s.attribute_id = %2$d AND %1$s.store_id = 0',
+                        'e.entity_id = %1$s.entity_id AND %1$s.attribute_id = %2$d AND %1$s.store_id = 0',
                         $countTableName,
-                        $attribute->getId(),
-                        $metadata->getLinkField()
+                        $attribute->getId()
                     );
 
                     $select->joinLeft(
@@ -331,17 +313,5 @@ class TableBuilder
                 }
             }
         }
-    }
-
-    /**
-     * @return \Magento\Framework\EntityManager\MetadataPool
-     */
-    private function getMetadataPool()
-    {
-        if (null === $this->metadataPool) {
-            $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\EntityManager\MetadataPool');
-        }
-        return $this->metadataPool;
     }
 }

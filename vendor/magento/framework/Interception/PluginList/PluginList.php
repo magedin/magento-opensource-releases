@@ -2,7 +2,7 @@
 /**
  * Plugin configuration storage. Provides list of plugins configured for type.
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Interception\PluginList;
@@ -17,6 +17,7 @@ use Magento\Framework\Interception\ObjectManager\ConfigInterface;
 use Magento\Framework\ObjectManager\RelationsInterface;
 use Magento\Framework\ObjectManager\DefinitionInterface as ClassDefinitions;
 use Magento\Framework\ObjectManagerInterface;
+use Zend\Soap\Exception\InvalidArgumentException;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -114,7 +115,7 @@ class PluginList extends Scoped implements InterceptionPluginList
      *
      * @param string $type
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -161,7 +162,7 @@ class PluginList extends Scoped implements InterceptionPluginList
                     }
                     $pluginType = $this->_omConfig->getOriginalInstanceType($plugin['instance']);
                     if (!class_exists($pluginType)) {
-                        throw new \InvalidArgumentException('Plugin class ' . $pluginType . ' doesn\'t exist');
+                        throw new InvalidArgumentException('Plugin class ' . $pluginType . ' doesn\'t exist');
                     }
                     foreach ($this->_definitions->getMethodList($pluginType) as $pluginMethod => $methodTypes) {
                         $current = isset($lastPerMethod[$pluginMethod]) ? $lastPerMethod[$pluginMethod] : '__self';
@@ -212,9 +213,9 @@ class PluginList extends Scoped implements InterceptionPluginList
             }
             return $itemA['sortOrder'];
         } elseif (isset($itemB['sortOrder'])) {
-            return (0 - (int)$itemB['sortOrder']);
+            return $itemB['sortOrder'];
         } else {
-            return 0;
+            return 1;
         }
     }
 

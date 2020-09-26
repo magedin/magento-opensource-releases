@@ -66,7 +66,7 @@ class LintManager
     public function createProcessForSource($source)
     {
         if (null === $this->temporaryFile) {
-            $this->temporaryFile = tempnam('.', 'cs_fixer_tmp_');
+            $this->temporaryFile = tempnam('.', 'tmp');
         }
 
         file_put_contents($this->temporaryFile, $source);

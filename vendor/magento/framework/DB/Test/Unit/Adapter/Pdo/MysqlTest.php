@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,7 +13,6 @@ namespace Magento\Framework\DB\Test\Unit\Adapter\Pdo;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\SelectRenderer;
 
 class MysqlTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,11 +36,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     protected $_mockAdapter;
 
     /**
-     * @var \Magento\Framework\DB\SelectFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $selectFactory;
-
-    /**
      * Setup
      */
     protected function setUp()
@@ -49,15 +43,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $string = $this->getMock('Magento\Framework\Stdlib\StringUtils');
         $dateTime = $this->getMock('Magento\Framework\Stdlib\DateTime');
         $logger = $this->getMockForAbstractClass('Magento\Framework\DB\LoggerInterface');
-        $selectFactory = $this->getMockBuilder('Magento\Framework\DB\SelectFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-//        StringUtils $string,
-//        DateTime $dateTime,
-//        LoggerInterface $logger,
-//        SelectFactory $selectFactory,
-//        array $config = []
         $this->_mockAdapter = $this->getMock(
             'Magento\Framework\DB\Adapter\Pdo\Mysql',
             ['beginTransaction', 'getTransactionLevel'],
@@ -65,7 +50,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'string' => $string,
                 'dateTime' => $dateTime,
                 'logger' => $logger,
-                'selectFactory' => $selectFactory,
                 'config' => [
                     'dbname' => 'dbname',
                     'username' => 'user',
@@ -95,7 +79,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'string' => $string,
                 'dateTime' => $dateTime,
                 'logger' => $logger,
-                'selectFactory' => $selectFactory,
                 'config' => [
                     'dbname' => 'not_exists',
                     'username' => 'not_valid',
@@ -173,7 +156,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $select = new Select($this->_mockAdapter, new SelectRenderer([]));
+        $select = new Select($this->_mockAdapter);
         $select->from('user');
         try {
             $this->_mockAdapter->query($select);
@@ -454,6 +437,77 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($stmtMock));
 
         $this->_adapter->insertOnDuplicate($table, $data, $fields);
+    }
+
+    public function testSelectsByRange()
+    {
+        $rangeField = 'test_id';
+        $tableName = 'test';
+
+        $this->_adapter->expects($this->once())
+            ->method('fetchRow')
+            ->with(
+                $this->_adapter->select()
+                    ->from(
+                        $tableName,
+                        [
+                            new \Zend_Db_Expr('MIN(' . $this->_adapter->quoteIdentifier($rangeField) . ') AS min'),
+                            new \Zend_Db_Expr('MAX(' . $this->_adapter->quoteIdentifier($rangeField) . ') AS max'),
+                        ]
+                    )
+            )
+            ->will($this->returnValue(['min' => 1, 'max' => 200]));
+        $this->_adapter->expects($this->any())
+            ->method('quote')
+            ->will(
+                $this->returnCallback(
+                    function ($values) {
+                        if (!is_array($values)) {
+                            $values = [$values];
+                        }
+                        foreach ($values as &$value) {
+                            $value = "'" . $value . "'";
+                        }
+                        return implode(',', $values);
+                    }
+                )
+            );
+
+        $expectedSelect = $this->_adapter->select()
+            ->from($tableName);
+
+        $result = $this->_adapter->selectsByRange($rangeField, $expectedSelect, 50);
+        $this->assertCount(200/50, $result);
+        $prepareField = $this->_adapter->quoteIdentifier($tableName)
+            . '.' . $this->_adapter->quoteIdentifier($rangeField);
+        $this->assertEquals(
+            $this->_adapter->select()
+                ->from($tableName)
+                ->where($prepareField . ' >= ?', 1)
+                ->where($prepareField . ' < ?', 51),
+            $result[0]
+        );
+        $this->assertEquals(
+            $this->_adapter->select()
+                ->from($tableName)
+                ->where($prepareField . ' >= ?', 51)
+                ->where($prepareField . ' < ?', 101),
+            $result[1]
+        );
+        $this->assertEquals(
+            $this->_adapter->select()
+                ->from($tableName)
+                ->where($prepareField . ' >= ?', 101)
+                ->where($prepareField . ' < ?', 151),
+            $result[2]
+        );
+        $this->assertEquals(
+            $this->_adapter->select()
+                ->from($tableName)
+                ->where($prepareField . ' >= ?', 151)
+                ->where($prepareField . ' < ?', 201),
+            $result[3]
+        );
     }
 
     /**

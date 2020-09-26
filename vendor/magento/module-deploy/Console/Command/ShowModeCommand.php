@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -14,7 +14,7 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\App\State;
 
 /**
- * Command to show application mode
+ * Command for change the Magento mode
  */
 class ShowModeCommand extends Command
 {
@@ -62,9 +62,7 @@ class ShowModeCommand extends Command
                 ]
             );
             $currentMode = $mode->getMode() ?: State::MODE_DEFAULT;
-            $output->writeln(
-                "Current application mode: $currentMode. (Note: Environment variables may override this value.)"
-            );
+            $output->writeln("Current application mode: $currentMode.");
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -18,7 +18,6 @@
                         <item name="price" xsi:type="string">10</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_1</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                 </item>
             </field>
@@ -32,7 +31,6 @@
                         <item name="price" xsi:type="string">20</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_2</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                 </item>
             </field>
@@ -49,14 +47,12 @@
                         <item name="price" xsi:type="string">10</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_1</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                     <item name="1" xsi:type="array">
                         <item name="title" xsi:type="string">20 percent</item>
                         <item name="price" xsi:type="string">20</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_2</item>
-                        <item name="sort_order" xsi:type="string">1</item>
                     </item>
                 </item>
             </field>
@@ -86,7 +82,6 @@
                         <item name="price" xsi:type="string">30</item>
                         <item name="price_type" xsi:type="string">Fixed</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_1</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                 </item>
             </field>
@@ -103,7 +98,6 @@
                         <item name="price" xsi:type="string">40</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_1</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                 </item>
             </field>
@@ -146,14 +140,12 @@
                         <item name="price" xsi:type="string">110.01</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">Percent</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                     <item name="1" xsi:type="array">
                         <item name="title" xsi:type="string">Test3-2 %isolation%</item>
                         <item name="price" xsi:type="string">210.02</item>
                         <item name="price_type" xsi:type="string">Fixed</item>
                         <item name="sku" xsi:type="string">sku3_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">1</item>
                     </item>
                 </item>
             </field>
@@ -167,14 +159,12 @@
                         <item name="price" xsi:type="string">10.01</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku2_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                     <item name="1" xsi:type="array">
                         <item name="title" xsi:type="string">Test4-2 %isolation%</item>
                         <item name="price" xsi:type="string">20.02</item>
                         <item name="price_type" xsi:type="string">Fixed</item>
                         <item name="sku" xsi:type="string">sku3_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">1</item>
                     </item>
                 </item>
             </field>
@@ -232,21 +222,18 @@
                         <item name="price" xsi:type="string">10</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_1_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                     <item name="1" xsi:type="array">
                         <item name="title" xsi:type="string">20 percent</item>
                         <item name="price" xsi:type="string">20</item>
                         <item name="price_type" xsi:type="string">Percent</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_2_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">1</item>
                     </item>
                     <item name="2" xsi:type="array">
                         <item name="title" xsi:type="string">30 fixed</item>
                         <item name="price" xsi:type="string">30</item>
                         <item name="price_type" xsi:type="string">Fixed</item>
                         <item name="sku" xsi:type="string">sku_drop_down_row_3_%isolation%</item>
-                        <item name="sort_order" xsi:type="string">2</item>
                     </item>
                 </item>
             </field>
@@ -286,7 +273,6 @@
                         <item name="price" xsi:type="string">20</item>
                         <item name="price_type" xsi:type="string">Fixed</item>
                         <item name="sku" xsi:type="string">sku_multiple_select_row%isolation%</item>
-                        <item name="sort_order" xsi:type="string">0</item>
                     </item>
                 </item>
             </field>

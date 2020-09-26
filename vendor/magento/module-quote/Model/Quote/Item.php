@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model\Quote;
@@ -561,10 +561,8 @@ class Item extends \Magento\Quote\Model\Quote\Item\AbstractItem implements \Mage
      */
     public function setOptions($options)
     {
-        if (is_array($options)) {
-            foreach ($options as $option) {
-                $this->addOption($option);
-            }
+        foreach ($options as $option) {
+            $this->addOption($option);
         }
         return $this;
     }

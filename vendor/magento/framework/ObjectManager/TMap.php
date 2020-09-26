@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\ObjectManager;
@@ -45,23 +45,16 @@ class TMap implements \IteratorAggregate, \Countable, \ArrayAccess
     private $configInterface;
 
     /**
-     * @var \Closure
-     */
-    private $objectCreationStrategy;
-
-    /**
      * @param string $type
      * @param ObjectManagerInterface $objectManager
      * @param ConfigInterface $configInterface
      * @param array $array
-     * @param \Closure $objectCreationStrategy
      */
     public function __construct(
         $type,
         ObjectManagerInterface $objectManager,
         ConfigInterface $configInterface,
-        array $array = [],
-        \Closure $objectCreationStrategy = null
+        array $array = []
     ) {
         if (!class_exists($this->type) && !interface_exists($type)) {
             throw new \InvalidArgumentException(sprintf('Unknown type %s', $type));
@@ -81,7 +74,6 @@ class TMap implements \IteratorAggregate, \Countable, \ArrayAccess
 
         $this->array = $array;
         $this->counter = count($array);
-        $this->objectCreationStrategy = $objectCreationStrategy;
     }
 
     /**
@@ -137,10 +129,7 @@ class TMap implements \IteratorAggregate, \Countable, \ArrayAccess
             return $this->objectsArray[$index];
         }
 
-        $objectCreationStrategy = $this->objectCreationStrategy;
-        return $this->objectsArray[$index] = $objectCreationStrategy === null
-            ? $this->objectManager->create($this->array[$index])
-            : $objectCreationStrategy($this->objectManager, $this->array[$index]);
+        return $this->objectsArray[$index] = $this->objectManager->create($this->array[$index]);
     }
 
     /**

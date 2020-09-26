@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,13 +18,6 @@ use Magento\Framework\Stdlib\DateTime\Filter\Date;
 
 abstract class Catalog extends Action
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_CatalogRule::promo_catalog';
-
     /**
      * Dirty rules notice message
      *
@@ -76,6 +69,16 @@ abstract class Catalog extends Action
             __('Promotions')
         );
         return $this;
+    }
+
+    /**
+     * Is access to section allowed
+     *
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_CatalogRule::promo_catalog');
     }
 
     /**

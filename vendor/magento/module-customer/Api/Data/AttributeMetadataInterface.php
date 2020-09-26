@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,7 +8,6 @@ namespace Magento\Customer\Api\Data;
 
 /**
  * Customer attribute metadata interface.
- * @api
  */
 interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObjectInterface
 {
@@ -41,6 +40,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Frontend HTML for input element.
      *
+     * @api
      * @return string
      */
     public function getFrontendInput();
@@ -48,6 +48,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set frontend HTML for input element.
      *
+     * @api
      * @param string $frontendInput
      * @return $this
      */
@@ -56,6 +57,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get template used for input (e.g. "date")
      *
+     * @api
      * @return string
      */
     public function getInputFilter();
@@ -63,6 +65,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set template used for input (e.g. "date")
      *
+     * @api
      * @param string $inputFilter
      * @return $this
      */
@@ -71,6 +74,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get label of the store.
      *
+     * @api
      * @return string
      */
     public function getStoreLabel();
@@ -78,6 +82,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set label of the store.
      *
+     * @api
      * @param string $storeLabel
      * @return $this
      */
@@ -86,6 +91,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Retrieve validation rules.
      *
+     * @api
      * @return \Magento\Customer\Api\Data\ValidationRuleInterface[]
      */
     public function getValidationRules();
@@ -93,6 +99,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set validation rules.
      *
+     * @api
      * @param \Magento\Customer\Api\Data\ValidationRuleInterface[] $validationRules
      * @return $this
      */
@@ -101,6 +108,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Number of lines of the attribute value.
      *
+     * @api
      * @return int
      */
     public function getMultilineCount();
@@ -108,6 +116,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set number of lines of the attribute value.
      *
+     * @api
      * @param int $multilineCount
      * @return $this
      */
@@ -116,6 +125,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Whether attribute is visible on frontend.
      *
+     * @api
      * @return bool
      */
     public function isVisible();
@@ -123,6 +133,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set whether attribute is visible on frontend.
      *
+     * @api
      * @param bool $isVisible
      * @return $this
      */
@@ -131,6 +142,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Whether attribute is required.
      *
+     * @api
      * @return bool
      */
     public function isRequired();
@@ -138,6 +150,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set whether attribute is required.
      *
+     * @api
      * @param bool $isRequired
      * @return $this
      */
@@ -146,6 +159,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get data model for attribute.
      *
+     * @api
      * @return string
      */
     public function getDataModel();
@@ -153,6 +167,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get data model for attribute.
      *
+     * @api
      * @param string $dataModel
      * @return $this
      */
@@ -161,6 +176,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Return options of the attribute (key => value pairs for select)
      *
+     * @api
      * @return \Magento\Customer\Api\Data\OptionInterface[]
      */
     public function getOptions();
@@ -168,6 +184,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set options of the attribute (key => value pairs for select)
      *
+     * @api
      * @param \Magento\Customer\Api\Data\OptionInterface[] $options
      * @return $this
      */
@@ -176,6 +193,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get class which is used to display the attribute on frontend.
      *
+     * @api
      * @return string
      */
     public function getFrontendClass();
@@ -183,6 +201,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set class which is used to display the attribute on frontend.
      *
+     * @api
      * @param string $frontendClass
      * @return $this
      */
@@ -191,6 +210,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Whether current attribute has been defined by a user.
      *
+     * @api
      * @return bool
      */
     public function isUserDefined();
@@ -198,6 +218,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set whether current attribute has been defined by a user.
      *
+     * @api
      * @param bool $isUserDefined
      * @return $this
      */
@@ -206,6 +227,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get attributes sort order.
      *
+     * @api
      * @return int
      */
     public function getSortOrder();
@@ -213,6 +235,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get attributes sort order.
      *
+     * @api
      * @param int $sortOrder
      * @return $this
      */
@@ -221,6 +244,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get label which supposed to be displayed on frontend.
      *
+     * @api
      * @return string
      */
     public function getFrontendLabel();
@@ -228,6 +252,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set label which supposed to be displayed on frontend.
      *
+     * @api
      * @param string $frontendLabel
      * @return $this
      */
@@ -236,6 +261,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get the note attribute for the element.
      *
+     * @api
      * @return string
      */
     public function getNote();
@@ -243,6 +269,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set the note attribute for the element.
      *
+     * @api
      * @param string $note
      * @return $this
      */
@@ -251,6 +278,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Whether this is a system attribute.
      *
+     * @api
      * @return bool
      */
     public function isSystem();
@@ -258,6 +286,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set whether this is a system attribute.
      *
+     * @api
      * @param bool $isSystem
      * @return $this
      */
@@ -266,6 +295,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Get backend type.
      *
+     * @api
      * @return string
      */
     public function getBackendType();
@@ -273,6 +303,7 @@ interface AttributeMetadataInterface extends \Magento\Framework\Api\MetadataObje
     /**
      * Set backend type.
      *
+     * @api
      * @param string $backendType
      * @return $this
      */

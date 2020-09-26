@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Test\Unit\Observer;
@@ -60,7 +60,7 @@ class CatalogProductViewObserverTest extends \PHPUnit_Framework_TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp()
+    public function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
@@ -180,6 +180,7 @@ class CatalogProductViewObserverTest extends \PHPUnit_Framework_TestCase
             'visitor_id' => $visitorId,
             'store_id' => $storeId,
         ];
+
 
         $expectedEventData = [
             'event_type_id' => \Magento\Reports\Model\Event::EVENT_PRODUCT_VIEW,

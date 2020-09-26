@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Deploy\Console\Command;
 
-use Magento\Framework\App\Utility\Files;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +16,7 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Validator\Locale;
 
 /**
- * Deploy static content command
+ * Command for deploy static content
  */
 class DeployStaticContentCommand extends Command
 {
@@ -71,7 +70,6 @@ class DeployStaticContentCommand extends Command
 
     /**
      * {@inheritdoc}
-     * @throws \InvalidArgumentException
      */
     protected function configure()
     {
@@ -111,13 +109,22 @@ class DeployStaticContentCommand extends Command
             }
         }
 
-        // run the deployment logic
-        $filesUtil = $this->objectManager->create(Files::class);
+        try {
+            // run the deployment logic
+            $filesUtil = $this->objectManager->create('\Magento\Framework\App\Utility\Files');
 
-        $deployer = $this->objectManager->create(
-            'Magento\Deploy\Model\Deployer',
-            ['filesUtil' => $filesUtil, 'output' => $output, 'isDryRun' => $options[self::DRY_RUN_OPTION]]
-        );
-        return $deployer->deploy($this->objectManagerFactory, $languages);
+            $deployer = $this->objectManager->create(
+                'Magento\Deploy\Model\Deployer',
+                ['filesUtil' => $filesUtil, 'output' => $output, 'isDryRun' => $options[self::DRY_RUN_OPTION]]
+            );
+            $deployer->deploy($this->objectManagerFactory, $languages);
+
+        } catch (\Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>>');
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln($e->getTraceAsString());
+            }
+            return;
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -34,7 +34,7 @@ class CompiledTest extends \PHPUnit_Framework_TestCase
      */
     private $sharedInstances;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->objectManager = $this->getMockBuilder('Magento\Framework\ObjectManagerInterface')
             ->setMethods([])
@@ -212,14 +212,12 @@ class CompiledTest extends \PHPUnit_Framework_TestCase
                 '_vac_' => [
                     'array_value' => 'value',
                     'array_configured_instance' => [
-                        '_i_' => 'Magento\Framework\ObjectManager\Test\Unit'
-                            . '\Factory\Fixture\Compiled\DependencySharedTesting',
+                        '_i_' => 'Magento\Framework\ObjectManager\Test\Unit\Factory\Fixture\Compiled\DependencySharedTesting',
                     ],
                     'array_configured_array' => [
                         'array_array_value' => 'value',
                         'array_array_configured_instance' => [
-                            '_ins_' => 'Magento\Framework\ObjectManager'
-                                . '\Test\Unit\Factory\Fixture\Compiled\DependencyTesting',
+                            '_ins_' => 'Magento\Framework\ObjectManager\Test\Unit\Factory\Fixture\Compiled\DependencyTesting',
                         ],
                     ],
                     'array_global_argument' => [

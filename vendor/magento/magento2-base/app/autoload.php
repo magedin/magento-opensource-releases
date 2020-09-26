@@ -2,7 +2,7 @@
 /**
  * Register basic autoloader that uses include path
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 use Magento\Framework\Autoload\AutoloaderRegistry;
@@ -13,16 +13,7 @@ use Magento\Framework\Autoload\ClassLoaderWrapper;
  */
 define('BP', dirname(__DIR__));
 
-define('VENDOR_PATH', BP . '/app/etc/vendor_path.php');
-
-if (!file_exists(VENDOR_PATH)) {
-    throw new \Exception(
-        'We can\'t read some files that are required to run the Magento application. '
-         . 'This usually means file permissions are set incorrectly.'
-    );
-}
-
-$vendorDir = require VENDOR_PATH;
+$vendorDir = require BP . '/app/etc/vendor_path.php';
 $vendorAutoload = BP . "/{$vendorDir}/autoload.php";
 
 /* 'composer install' validation */

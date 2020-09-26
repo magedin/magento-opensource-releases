@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -51,8 +51,7 @@ class AssertProductCrossSells extends AbstractConstraint
         $checkoutCart->open();
         foreach ($promotedProducts as $promotedProduct) {
             if (!$checkoutCart->getCrosssellBlock()->getProductItem($promotedProduct)->isVisible()) {
-                $errors[] = 'Product \'' . $promotedProduct->getName()
-                    . '\' is absent in cross-sell section of a product \'' . $product->getName() . '\'.';
+                $errors[] = 'Product \'' . $promotedProduct->getName() . '\' is absent in cross-sell section.';
             }
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,6 +11,26 @@ use Magento\Setup\Controller\StartUpdater;
 
 class StartUpdaterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Magento\Setup\Model\Updater|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $updater;
+
+    /**
+     * @var \Magento\Framework\Module\FullModuleList|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $fullModuleList;
+
+    /**
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $filesystem;
+
+    /**
+     * @var Navigation|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $navigation;
+
     /**
      * @var StartUpdater|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -30,26 +50,27 @@ class StartUpdaterTest extends \PHPUnit_Framework_TestCase
      * @var \Zend\Mvc\MvcEvent|\PHPUnit_Framework_MockObject_MockObject
      */
     private $mvcEvent;
-
-    /**
-     * @var Magento\Setup\Model\PayloadValidator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $payloadValidator;
-
-    /**
-     * @var Magento\Setup\Model\UpdaterTaskCreator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $updaterTaskCreator;
-
+    
     public function setUp()
     {
-        $this->payloadValidator = $this->getMock('Magento\Setup\Model\PayloadValidator', [], [], '', false);
-        $this->updaterTaskCreator = $this->getMock('Magento\Setup\Model\UpdaterTaskCreator', [], [], '', false);
-
+        $this->updater = $this->getMock('Magento\Setup\Model\Updater', [], [], '', false);
+        $this->fullModuleList = $this->getMock('Magento\Framework\Module\FullModuleList', [], [], '', false);
+        $this->filesystem = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
+        $this->navigation = $this->getMock('Magento\Setup\Model\Navigation', [], [], '', false);
         $this->controller = new StartUpdater(
-            $this->updaterTaskCreator,
-            $this->payloadValidator
+            $this->filesystem,
+            $this->navigation,
+            $this->updater,
+            $this->fullModuleList
         );
+        $this->navigation->expects($this->any())
+            ->method('getMenuItems')
+            ->willReturn([
+                ['title' => 'A', 'type' => 'update'],
+                ['title' => 'B', 'type' => 'upgrade'],
+                ['title' => 'C', 'type' => 'enable'],
+                ['title' => 'D', 'type' => 'disable'],
+            ]);
         $this->request = $this->getMock('\Zend\Http\PhpEnvironment\Request', [], [], '', false);
         $this->response = $this->getMock('\Zend\Http\PhpEnvironment\Response', [], [], '', false);
         $routeMatch = $this->getMock('\Zend\Mvc\Router\RouteMatch', [], [], '', false);
@@ -76,41 +97,113 @@ class StartUpdaterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($viewModel->terminate());
     }
 
-    /**
-     * @param string $content
-     * @param int $payload
-     * @dataProvider updateInvalidRequestDataProvider
-     */
-    public function testUpdateInvalidRequest($content, $payload)
+    public function testUpdateInvalidRequestNoParam()
     {
+        $content = '{}';
         $this->request->expects($this->any())->method('getContent')->willReturn($content);
-        $this->payloadValidator->expects($this->exactly($payload))->method('validatePayload');
+        $this->filesystem->expects($this->never())->method('getDirectoryWrite');
         $this->controller->setEvent($this->mvcEvent);
         $this->controller->dispatch($this->request, $this->response);
         $this->controller->updateAction();
     }
 
-    /**
-     * @return array
-     */
-    public function updateInvalidRequestDataProvider()
+    public function testUpdateInvalidRequestNotArray()
     {
-        return [
-            'NoParmas' => ['{}', 0],
-            'NoArray' => ['{"packages":"test","type":"update"}', 0],
-            'NoVersion' => ['{"packages":[{"name":"vendor\/package"}],"type":"update"}', 1],
-            'NoDataOption' => ['{"packages":[{"name":"vendor\/package", "version": "1.0.0"}],"type":"uninstall"}', 1],
-            'NoPackageInfo' => ['{"packages":"test","type":"update"}', 0]
-        ];
+        $content = '{"packages":"test","type":"update"}';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->filesystem->expects($this->never())->method('getDirectoryWrite');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
     }
 
-    public function testUpdateActionSuccess()
+    public function testUpdateInvalidRequestMissingVersion()
+    {
+        $content = '{"packages":[{"name":"vendor\/package"}],"type":"update"}';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->filesystem->expects($this->never())->method('getDirectoryWrite');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateInvalidRequestMissingDataOption()
+    {
+        $content = '{"packages":[{"name":"vendor\/package", "version": "1.0.0"}],"type":"uninstall"}';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->filesystem->expects($this->never())->method('getDirectoryWrite');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateMissingPackageInfo()
+    {
+        $content = '{"packages":"test","type":"update"}';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->filesystem->expects($this->never())->method('getDirectoryWrite');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateActionSuccessUpdate()
     {
         $content = '{"packages":[{"name":"vendor\/package","version":"1.0"}],"type":"update",'
             . '"headerTitle": "Update package 1" }';
         $this->request->expects($this->any())->method('getContent')->willReturn($content);
-        $this->payloadValidator->expects($this->once())->method('validatePayload')->willReturn('');
-        $this->updaterTaskCreator->expects($this->once())->method('createUpdaterTasks')->willReturn('');
+        $write = $this->getMockForAbstractClass('Magento\Framework\Filesystem\Directory\WriteInterface', [], '', false);
+        $this->filesystem->expects($this->once())->method('getDirectoryWrite')->willReturn($write);
+        $write->expects($this->once())
+            ->method('writeFile')
+            ->with('.type.json', '{"type":"update","headerTitle":"Update package 1","titles":["A"]}');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateActionSuccessUpgrade()
+    {
+        $content = '{"packages":[{"name":"vendor\/package","version":"1.0"}],"type":"upgrade",'
+            . '"headerTitle": "System Upgrade" }';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $write = $this->getMockForAbstractClass('Magento\Framework\Filesystem\Directory\WriteInterface', [], '', false);
+        $this->filesystem->expects($this->once())->method('getDirectoryWrite')->willReturn($write);
+        $write->expects($this->once())
+            ->method('writeFile')
+            ->with('.type.json', '{"type":"upgrade","headerTitle":"System Upgrade","titles":["B"]}');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateActionSuccessEnable()
+    {
+        $content = '{"packages":[{"name":"vendor\/package"}],"type":"enable",'
+            . '"headerTitle": "Enable Package 1" }';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->fullModuleList->expects($this->once())->method('has')->willReturn(true);
+        $write = $this->getMockForAbstractClass('Magento\Framework\Filesystem\Directory\WriteInterface', [], '', false);
+        $this->filesystem->expects($this->once())->method('getDirectoryWrite')->willReturn($write);
+        $write->expects($this->once())
+            ->method('writeFile')
+            ->with('.type.json', '{"type":"enable","headerTitle":"Enable Package 1","titles":["C"]}');
+        $this->controller->setEvent($this->mvcEvent);
+        $this->controller->dispatch($this->request, $this->response);
+        $this->controller->updateAction();
+    }
+
+    public function testUpdateActionSuccessDisable()
+    {
+        $content = '{"packages":[{"name":"vendor\/package"}],"type":"disable",'
+            . '"headerTitle": "Disable Package 1" }';
+        $this->request->expects($this->any())->method('getContent')->willReturn($content);
+        $this->fullModuleList->expects($this->once())->method('has')->willReturn(true);
+        $write = $this->getMockForAbstractClass('Magento\Framework\Filesystem\Directory\WriteInterface', [], '', false);
+        $this->filesystem->expects($this->once())->method('getDirectoryWrite')->willReturn($write);
+        $write->expects($this->once())
+            ->method('writeFile')
+            ->with('.type.json', '{"type":"disable","headerTitle":"Disable Package 1","titles":["D"]}');
         $this->controller->setEvent($this->mvcEvent);
         $this->controller->dispatch($this->request, $this->response);
         $this->controller->updateAction();

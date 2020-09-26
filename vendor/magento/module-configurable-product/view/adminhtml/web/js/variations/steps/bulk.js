@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -13,7 +13,6 @@ define([
     'Magento_Ui/js/lib/collapsible',
     'mage/template',
     'Magento_Ui/js/modal/alert',
-    'Magento_Catalog/js/product-gallery',
     'jquery/file-uploader',
     'mage/translate',
     'Magento_ConfigurableProduct/js/variations/variations'
@@ -251,15 +250,13 @@ define([
                 switch (section.type()) {
                     case 'each':
                         if (!section.attribute()) {
-                            throw new Error($.mage.__('Please select attribute for {section} section.')
-                                .replace('{section}', section.label));
+                            throw new Error($.mage.__('Please, select attribute for the section ' + section.label));
                         }
                         break;
 
                     case 'single':
                         if (!section.value()) {
-                            throw new Error($.mage.__('Please fill in the values for {section} section.')
-                                .replace('{section}', section.label));
+                            throw new Error($.mage.__('Please fill in the values for the section ' + section.label));
                         }
                         break;
                 }
@@ -270,7 +267,7 @@ define([
             });
 
             if (!formValid) {
-                throw new Error($.mage.__('Please fill-in correct values.'));
+                throw new Error($.mage.__('Please, fill correct values'));
             }
         },
         validateImage: function () {
@@ -278,14 +275,14 @@ define([
                 case 'each':
                     _.each(this.sections()['images'].attribute().chosen, function (option) {
                         if (!option.sections().images.images.length) {
-                            throw new Error($.mage.__('Please select image(s) for your attribute.'));
+                            throw new Error($.mage.__('Please, select image(s) for your attribute'));
                         }
                     });
                     break;
 
                 case 'single':
                     if (this.sections().images.value().file == null) {
-                        throw new Error($.mage.__('Please choose image(s).'));
+                        throw new Error($.mage.__('Please choose image(s)'));
                     }
                     break;
             }
@@ -296,25 +293,21 @@ define([
         bindGalleries: function () {
             $('[data-role=bulk-step] [data-role=gallery]').each(function (index, element) {
                 var gallery = $(element),
-                    uploadInput = $(gallery.find('[name=image]')),
-                    dropZone = $(gallery).find('.image-placeholder');
+                    uploadInput = $(gallery.find('[name=image]'));
 
                 if (!gallery.data('gallery-initialized')) {
                     gallery.mage('productGallery', {
-                        template: '[data-template=gallery-content]',
-                        dialogTemplate: '.dialog-template',
-                        dialogContainerTmpl: '[data-role=img-dialog-container-tmpl]'
+                        template: '[data-template=gallery-content]'
                     });
 
                     uploadInput.fileupload({
                         dataType: 'json',
-                        dropZone: dropZone,
                         process: [{
                             action: 'load',
                             fileTypes: /^image\/(gif|jpeg|png)$/
                         }, {
                             action: 'resize',
-                            maxWidth: 1920,
+                            maxWidth: 1920 ,
                             maxHeight: 1200
                         }, {
                             action: 'save'

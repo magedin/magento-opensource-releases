@@ -1,31 +1,17 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Product\Option;
-
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 
 /**
  * Catalog product options collection
  *
  * @SuppressWarnings(PHPMD.LongVariable)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-    /**
-     * @var JoinProcessorInterface
-     */
-    protected $joinProcessor;
-
-    /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
     /**
      * Store manager
      *
@@ -49,7 +35,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
@@ -235,53 +220,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     }
 
     /**
-     * @return void
-     * @throws \Exception
-     */
-    protected function _initSelect()
-    {
-        parent::_initSelect();
-        $this->getSelect()->join(
-            ['cpe' => $this->getTable('catalog_product_entity')],
-            sprintf(
-                'cpe.%s = main_table.product_id',
-                $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField()
-            ),
-            []
-        );
-    }
-
-    /**
-     * @param int $productId
-     * @param int $storeId
-     * @param bool $requiredOnly
-     * @return \Magento\Catalog\Api\Data\ProductCustomOptionInterface[]
-     */
-    public function getProductOptions($productId, $storeId, $requiredOnly = false)
-    {
-        $collection = $this->addFieldToFilter(
-            'cpe.entity_id',
-            $productId
-        )->addTitleToResult(
-            $storeId
-        )->addPriceToResult(
-            $storeId
-        )->setOrder(
-            'sort_order',
-            'asc'
-        )->setOrder(
-            'title',
-            'asc'
-        );
-        if ($requiredOnly) {
-            $collection->addRequiredFilter();
-        }
-        $collection->addValuesToResult($storeId);
-        $this->getJoinProcessor()->process($collection);
-        return $collection->getItems();
-    }
-
-    /**
      * Add is_required filter to select
      *
      * @param bool $required
@@ -289,7 +227,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function addRequiredFilter($required = true)
     {
-        $this->addFieldToFilter('main_table.is_require', (int)$required);
+        $this->addFieldToFilter('main_table.is_require', (string)$required);
         return $this;
     }
 
@@ -313,29 +251,5 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     public function reset()
     {
         return $this->_reset();
-    }
-
-    /**
-     * @return \Magento\Framework\EntityManager\MetadataPool
-     */
-    private function getMetadataPool()
-    {
-        if (null === $this->metadataPool) {
-            $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\EntityManager\MetadataPool');
-        }
-        return $this->metadataPool;
-    }
-
-    /**
-     * @return JoinProcessorInterface
-     */
-    private function getJoinProcessor()
-    {
-        if (null === $this->joinProcessor) {
-            $this->joinProcessor = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface');
-        }
-        return $this->joinProcessor;
     }
 }

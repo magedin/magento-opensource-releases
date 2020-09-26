@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 // jscs:disable jsDoc
@@ -15,8 +15,7 @@ define([
     return Component.extend({
         defaults: {
             modules: {
-                variationsComponent: '${ $.variationsComponent }',
-                modalComponent: '${ $.modalComponent }'
+                variationsComponent: '${ $.variationsComponent }'
             },
             notificationMessage: {
                 text: null,
@@ -42,7 +41,7 @@ define([
         variations: [],
         generateGrid: function (variations, getSectionValue) {
             var productSku = this.variationsComponent().getProductValue('sku'),
-                productPrice = this.variationsComponent().getProductPrice(),
+                productPrice = this.variationsComponent().getProductValue('price'),
                 productWeight = this.variationsComponent().getProductValue('weight'),
                 variationsKeys = [],
                 gridExisting = [],
@@ -81,7 +80,6 @@ define([
                     options: options,
                     images: images,
                     sku: sku,
-                    name: sku,
                     quantity: quantity,
                     price: price,
                     productId: productId,
@@ -92,7 +90,6 @@ define([
                 if (productId) {
                     variation.sku = product.sku;
                     variation.weight = product.weight;
-                    variation.name = product.name;
                     gridExisting.push(this.prepareRowForGrid(variation));
                 } else {
                     gridNew.push(this.prepareRowForGrid(variation));
@@ -162,7 +159,7 @@ define([
         },
         force: function () {
             this.variationsComponent().render(this.variations, this.attributes());
-            this.modalComponent().closeModal();
+            $('[data-role=step-wizard-dialog]').trigger('closeModal');
         },
         back: function () {
         }

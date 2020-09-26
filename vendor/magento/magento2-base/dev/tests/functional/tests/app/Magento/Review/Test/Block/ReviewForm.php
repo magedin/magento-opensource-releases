@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -37,7 +37,7 @@ class ReviewForm extends AbstractForm
      *
      * @var string
      */
-    protected $rating = './/*[@id="%s_rating_label"]/span';
+    protected $rating = './/*[@id="%s_rating_label"]/..[contains(@class,"rating")]';
 
     /**
      * Selector for label of rating vote.

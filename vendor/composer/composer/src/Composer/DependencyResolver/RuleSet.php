@@ -30,7 +30,7 @@ class RuleSet implements \IteratorAggregate, \Countable
     public $ruleById;
 
     protected static $types = array(
-        255 => 'UNKNOWN',
+        -1 => 'UNKNOWN',
         self::TYPE_PACKAGE => 'PACKAGE',
         self::TYPE_JOB => 'JOB',
         self::TYPE_LEARNED => 'LEARNED',
@@ -66,6 +66,7 @@ class RuleSet implements \IteratorAggregate, \Countable
         $this->ruleById[$this->nextRuleId] = $rule;
         $rule->setType($type);
 
+        $rule->setId($this->nextRuleId);
         $this->nextRuleId++;
 
         $hash = $rule->getHash();
@@ -130,7 +131,7 @@ class RuleSet implements \IteratorAggregate, \Countable
     public function getTypes()
     {
         $types = self::$types;
-        unset($types[255]);
+        unset($types[-1]);
 
         return array_keys($types);
     }

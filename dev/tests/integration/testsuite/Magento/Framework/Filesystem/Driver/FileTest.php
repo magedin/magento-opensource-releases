@@ -2,12 +2,10 @@
 /**
  * Test for \Magento\Framework\Filesystem\Driver\File
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filesystem\Driver;
-
-use Magento\Framework\Filesystem\DriverInterface;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
@@ -77,7 +75,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         if (is_dir($generatedPath)) {
             $this->assertTrue($this->driver->deleteDirectory($generatedPathBase));
         }
-        $this->assertTrue($this->driver->createDirectory($generatedPath));
+        $this->assertTrue($this->driver->createDirectory($generatedPath, '755'));
         $this->assertTrue(is_dir($generatedPath));
     }
 }

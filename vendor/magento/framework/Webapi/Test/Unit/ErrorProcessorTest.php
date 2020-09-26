@@ -2,7 +2,7 @@
 /**
  * Test Webapi Error Processor.
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Webapi\Test\Unit;
@@ -226,25 +226,6 @@ class ErrorProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test logged exception is the same as the thrown one in production mode
-     */
-    public function testCriticalExceptionStackTrace()
-    {
-        $thrownException = new \Exception('', 0);
-
-        $this->_loggerMock->expects($this->once())
-            ->method('critical')
-            ->will(
-                $this->returnCallback(
-                    function (\Exception $loggedException) use ($thrownException) {
-                        $this->assertSame($thrownException, $loggedException->getPrevious());
-                    }
-                )
-            );
-        $this->_errorProcessor->maskException($thrownException);
-    }
-
-    /**
      * @return array
      */
     public function dataProviderForSendResponseExceptions()
@@ -253,7 +234,7 @@ class ErrorProcessorTest extends \PHPUnit_Framework_TestCase
             'NoSuchEntityException' => [
                 new NoSuchEntityException(
                     new Phrase(
-                        'No such entity with %fieldName = %fieldValue, %field2Name = %field2Value',
+                        NoSuchEntityException::MESSAGE_DOUBLE_FIELDS,
                         [
                             'fieldName' => 'detail1',
                             'fieldValue' => 'value1',
@@ -263,7 +244,7 @@ class ErrorProcessorTest extends \PHPUnit_Framework_TestCase
                     )
                 ),
                 \Magento\Framework\Webapi\Exception::HTTP_NOT_FOUND,
-                'No such entity with %fieldName = %fieldValue, %field2Name = %field2Value',
+                NoSuchEntityException::MESSAGE_DOUBLE_FIELDS,
                 [
                     'fieldName' => 'detail1',
                     'fieldValue' => 'value1',
@@ -280,12 +261,12 @@ class ErrorProcessorTest extends \PHPUnit_Framework_TestCase
             'AuthorizationException' => [
                 new AuthorizationException(
                     new Phrase(
-                        'Consumer %consumer_id is not authorized to access %resources',
+                        AuthorizationException::NOT_AUTHORIZED,
                         ['consumer_id' => '3', 'resources' => '4']
                     )
                 ),
                 WebapiException::HTTP_UNAUTHORIZED,
-                'Consumer %consumer_id is not authorized to access %resources',
+                AuthorizationException::NOT_AUTHORIZED,
                 ['consumer_id' => '3', 'resources' => '4'],
             ],
             'Exception' => [

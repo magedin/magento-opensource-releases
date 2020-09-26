@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class AboutCommand extends BaseCommand
+class AboutCommand extends Command
 {
     protected function configure()
     {
@@ -37,7 +37,7 @@ EOT
         $this->getIO()->write(<<<EOT
 <info>Composer - Package Management for PHP</info>
 <comment>Composer is a dependency manager tracking local dependencies of your projects and libraries.
-See https://getcomposer.org/ for more information.</comment>
+See http://getcomposer.org/ for more information.</comment>
 EOT
         );
     }

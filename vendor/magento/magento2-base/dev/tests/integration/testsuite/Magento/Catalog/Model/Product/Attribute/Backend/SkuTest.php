@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Attribute\Backend;
@@ -16,10 +16,11 @@ class SkuTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerateUniqueSkuExistingProduct()
     {
-        $repository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\ProductRepository'
+        /** @var $product \Magento\Catalog\Model\Product */
+        $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+            'Magento\Catalog\Model\Product'
         );
-        $product = $repository->get('simple');
+        $product->load(1);
         $product->setId(null);
         $this->assertEquals('simple', $product->getSku());
         $product->getResource()->getAttribute('sku')->getBackend()->beforeSave($product);
@@ -38,18 +39,13 @@ class SkuTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @param $product \Magento\Catalog\Model\Product
+     * @dataProvider uniqueLongSkuDataProvider
      * @magentoAppArea adminhtml
      * @magentoDbIsolation enabled
      */
-    public function testGenerateUniqueLongSku()
+    public function testGenerateUniqueLongSku($product)
     {
-        $repository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\ProductRepository'
-        );
-        $product = $repository->get('simple');
-        $product->setSku('0123456789012345678901234567890123456789012345678901234567890123');
-
         /** @var \Magento\Catalog\Model\Product\Copier $copier */
         $copier = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             'Magento\Catalog\Model\Product\Copier'
@@ -68,6 +64,19 @@ class SkuTest extends \PHPUnit_Framework_TestCase
     public function uniqueSkuDataProvider()
     {
         $product = $this->_getProduct();
+        return [[$product]];
+    }
+
+    /**
+     * Returns simple product
+     *
+     * @return array
+     */
+    public function uniqueLongSkuDataProvider()
+    {
+        $product = $this->_getProduct();
+        $product->setSku('0123456789012345678901234567890123456789012345678901234567890123');
+        //strlen === 64
         return [[$product]];
     }
 

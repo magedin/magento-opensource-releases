@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Model\ResourceModel;
-
-use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
  * Downloadable Product  Samples resource model
@@ -14,25 +12,6 @@ use Magento\Catalog\Api\Data\ProductInterface;
  */
 class Sample extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-    /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
-    /**
-     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
-     * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param null $connectionName
-     */
-    public function __construct(
-        \Magento\Framework\Model\ResourceModel\Db\Context $context,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
-        $connectionName = null
-    ) {
-        $this->metadataPool = $metadataPool;
-        parent::__construct($context, $connectionName);
-    }
-
     /**
      * Initialize connection
      *
@@ -121,19 +100,12 @@ class Sample extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ['d' => $this->getTable('downloadable_sample_title')],
             'd.sample_id=m.sample_id AND d.store_id=0',
             []
-        )->join(
-            ['cpe' => $this->getTable('catalog_product_entity')],
-            sprintf(
-                'cpe.entity_id = m.product_id',
-                $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField()
-            ),
-            []
         )->joinLeft(
             ['st' => $this->getTable('downloadable_sample_title')],
             'st.sample_id=m.sample_id AND st.store_id=:store_id',
             ['title' => $ifNullDefaultTitle]
         )->where(
-            'cpe.entity_id=:product_id',
+            'm.product_id=:product_id',
             $productId
         );
         $bind = [':store_id' => (int)$storeId, ':product_id' => $productId];

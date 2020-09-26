@@ -123,19 +123,6 @@ foo () {}',
         public function setConfig(ConfigInterface $config);
     }',
             ),
-            // do not remove multiline space before { when end of previous line is a comment
-            array(
-                '<?php
-function foo() // bar
-{              // baz
-}',
-            ),
-            array(
-                '<?php
-function foo() /* bar */
-{              /* baz */
-}',
-            ),
         );
     }
 }

@@ -1,14 +1,13 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Fedex\Test\Unit\Model;
 
-use Magento\Fedex\Model\Carrier;
+use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Framework\DataObject;
 use Magento\Framework\Xml\Security;
-use Magento\Quote\Model\Quote\Address\RateRequest;
 
 /**
  * Class CarrierTest
@@ -47,7 +46,7 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
     /**
      * @return void
      */
-    protected function setUp()
+    public function setUp()
     {
         $this->scope = $this->getMockBuilder(
             '\Magento\Framework\App\Config\ScopeConfigInterface'
@@ -212,60 +211,5 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
         $request->setPackageWeight(1);
 
         $this->assertSame($this->error, $this->_model->collectRates($request));
-    }
-
-    /**
-     * @param string $data
-     * @param array $maskFields
-     * @param string $expected
-     * @dataProvider logDataProvider
-     */
-    public function testFilterDebugData($data, array $maskFields, $expected)
-    {
-        $refClass = new \ReflectionClass(Carrier::class);
-        $property = $refClass->getProperty('_debugReplacePrivateDataKeys');
-        $property->setAccessible(true);
-        $property->setValue($this->_model, $maskFields);
-
-        $refMethod = $refClass->getMethod('filterDebugData');
-        $refMethod->setAccessible(true);
-        $result = $refMethod->invoke($this->_model, $data);
-        static::assertEquals($expected, $result);
-    }
-
-    /**
-     * Get list of variations
-     */
-    public function logDataProvider()
-    {
-        return [
-            [
-                [
-                    'WebAuthenticationDetail' => [
-                        'UserCredential' => [
-                            'Key' => 'testKey',
-                            'Password' => 'testPassword'
-                        ]
-                    ],
-                    'ClientDetail' => [
-                        'AccountNumber' => 4121213,
-                        'MeterNumber' => 'testMeterNumber'
-                    ]
-                ],
-                ['Key', 'Password', 'MeterNumber'],
-                [
-                    'WebAuthenticationDetail' => [
-                        'UserCredential' => [
-                            'Key' => '****',
-                            'Password' => '****'
-                        ]
-                    ],
-                    'ClientDetail' => [
-                        'AccountNumber' => 4121213,
-                        'MeterNumber' => '****'
-                    ]
-                ],
-            ],
-        ];
     }
 }

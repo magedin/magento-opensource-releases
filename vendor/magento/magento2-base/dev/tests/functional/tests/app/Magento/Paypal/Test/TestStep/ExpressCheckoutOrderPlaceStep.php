@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Paypal\Test\TestStep;
 
-use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestStep\TestStepInterface;
 use Magento\Paypal\Test\Page\OrderReviewExpress;
@@ -61,23 +60,11 @@ class ExpressCheckoutOrderPlaceStep implements TestStepInterface
     protected $prices;
 
     /**
-     * @var FixtureFactory
-     */
-    private $fixtureFactory;
-
-    /**
-     * @var array
-     */
-    private $products;
-
-    /**
      * @constructor
      * @param ObjectManager $objectManager
      * @param OrderReviewExpress $orderReviewExpress
      * @param CheckoutOnepage $checkoutOnepage
      * @param CheckoutOnepageSuccess $checkoutOnepageSuccess
-     * @param FixtureFactory $fixtureFactory
-     * @param array $products
      * @param array $shipping
      * @param array $prices
      */
@@ -86,8 +73,6 @@ class ExpressCheckoutOrderPlaceStep implements TestStepInterface
         OrderReviewExpress $orderReviewExpress,
         CheckoutOnepage $checkoutOnepage,
         CheckoutOnepageSuccess $checkoutOnepageSuccess,
-        FixtureFactory $fixtureFactory,
-        array $products = [],
         array $shipping = [],
         array $prices = []
     ) {
@@ -97,8 +82,6 @@ class ExpressCheckoutOrderPlaceStep implements TestStepInterface
         $this->checkoutOnepageSuccess = $checkoutOnepageSuccess;
         $this->shipping = $shipping;
         $this->prices = $prices;
-        $this->fixtureFactory = $fixtureFactory;
-        $this->products = $products;
     }
 
     /**
@@ -115,17 +98,8 @@ class ExpressCheckoutOrderPlaceStep implements TestStepInterface
             $assert->processAssert($this->checkoutOnepage, $value);
         }
         $this->orderReviewExpress->getReviewBlock()->placeOrder();
-        $order = $this->fixtureFactory->createByCode(
-            'orderInjectable',
-            [
-                'data' => [
-                    'entity_id' => ['products' => $this->products]
-                ]
-            ]
-        );
         return [
-            'orderId' => $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId(),
-            'order' => $order
+            'orderId' => $this->checkoutOnepageSuccess->getSuccessBlock()->getGuestOrderId()
         ];
     }
 }

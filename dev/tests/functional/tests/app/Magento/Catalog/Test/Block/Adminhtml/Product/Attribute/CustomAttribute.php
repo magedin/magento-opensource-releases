@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -19,7 +19,7 @@ class CustomAttribute extends SimpleElement
      *
      * @var string
      */
-    protected $inputSelector = '[name="product[%s]"]';
+    protected $inputSelector = '.control [name]:not([type="hidden"]), table';
 
     /**
      * Attribute class to element type reference.
@@ -27,12 +27,11 @@ class CustomAttribute extends SimpleElement
      * @var array
      */
     protected $classReference = [
-        'admin__control-text' => null,
+        'input-text' => null,
         'textarea' => null,
         'hasDatepicker' => 'datepicker',
-        'admin__control-select' => 'select',
-        'admin__control-multiselect' => 'multiselect',
-        'admin__actions-switch-checkbox' => 'switcher'
+        'select' => 'select',
+        'multiselect' => 'multiselect',
     ];
 
     /**
@@ -44,11 +43,10 @@ class CustomAttribute extends SimpleElement
     public function setValue($data)
     {
         $this->eventManager->dispatchEvent(['set_value'], [__METHOD__, $this->getAbsoluteSelector()]);
-        $code = isset($data['code']) ? $data['code'] : $this->getAttributeCode($this->getAbsoluteSelector());
-        $element = $this->getElementByClass($this->getElementClass($code));
+        $element = $this->getElementByClass($this->getElementClass());
         $value = is_array($data) ? $data['value'] : $data;
         if ($value !== null) {
-            $this->find(sprintf($this->inputSelector, $code), Locator::SELECTOR_CSS, $element)->setValue($value);
+            $this->find($this->inputSelector, Locator::SELECTOR_CSS, $element)->setValue($value);
         }
     }
 
@@ -60,9 +58,8 @@ class CustomAttribute extends SimpleElement
     public function getValue()
     {
         $this->eventManager->dispatchEvent(['get_value'], [__METHOD__, $this->getAbsoluteSelector()]);
-        $code = $this->getAttributeCode($this->getAbsoluteSelector());
-        $inputType = $this->getElementByClass($this->getElementClass($code));
-        return $this->find(sprintf($this->inputSelector, $code), Locator::SELECTOR_CSS, $inputType)->getValue();
+        $inputType = $this->getElementByClass($this->getElementClass());
+        return $this->find($this->inputSelector, Locator::SELECTOR_CSS, $inputType)->getValue();
     }
 
     /**
@@ -71,7 +68,7 @@ class CustomAttribute extends SimpleElement
      * @param string $class
      * @return string
      */
-    private function getElementByClass($class)
+    protected function getElementByClass($class)
     {
         $element = null;
         foreach ($this->classReference as $key => $reference) {
@@ -85,25 +82,10 @@ class CustomAttribute extends SimpleElement
     /**
      * Get element class.
      *
-     * @param string $code
      * @return string
      */
-    private function getElementClass($code)
+    protected function getElementClass()
     {
-        return $this->find(sprintf($this->inputSelector, $code), Locator::SELECTOR_CSS)->getAttribute('class');
-    }
-
-    /**
-     * Get attribute code.
-     *
-     * @param string $attributeSelector
-     * @return string
-     */
-    private function getAttributeCode($attributeSelector)
-    {
-        preg_match('/data-index="(.*)"/', $attributeSelector, $matches);
-        $code = !empty($matches[1]) ? $matches[1] : '';
-
-        return $code;
+        return $this->find($this->inputSelector, Locator::SELECTOR_CSS)->getAttribute('class');
     }
 }

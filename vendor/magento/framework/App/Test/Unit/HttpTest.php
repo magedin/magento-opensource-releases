@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -62,7 +62,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase
      */
     protected $filesystemMock;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $cookieReaderMock = $this->getMockBuilder('Magento\Framework\Stdlib\Cookie\CookieReaderInterface')
@@ -205,7 +205,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase
             ->will($this->throwException(new \Exception('strange error')));
         $this->responseMock->expects($this->once())->method('setHttpResponseCode')->with(500);
         $this->responseMock->expects($this->once())->method('setHeader')->with('Content-Type', 'text/plain');
-        $constraint = new \PHPUnit_Framework_Constraint_StringStartsWith('1 exception(s):');
+        $constraint = new \PHPUnit_Framework_Constraint_StringStartsWith('strange error');
         $this->responseMock->expects($this->once())->method('setBody')->with($constraint);
         $this->responseMock->expects($this->once())->method('sendResponse');
         $bootstrap = $this->getBootstrapNotInstalled();

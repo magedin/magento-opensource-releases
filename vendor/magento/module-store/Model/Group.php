@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -19,8 +19,7 @@ namespace Magento\Store\Model;
  */
 class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
     \Magento\Framework\DataObject\IdentityInterface,
-    \Magento\Store\Api\Data\GroupInterface,
-    \Magento\Framework\App\ScopeInterface
+    \Magento\Store\Api\Data\GroupInterface
 {
     const ENTITY = 'store_group';
 
@@ -337,7 +336,7 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
             return false;
         }
 
-        return $this->getWebsite()->getGroupsCount() > 1;
+        return $this->getWebsite()->getDefaultGroupId() != $this->getId();
     }
 
     /**
@@ -401,27 +400,6 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
     }
 
     /**
-     * @inheritdoc
-     */
-    public function afterDelete()
-    {
-        $result = parent::afterDelete();
-
-        if ($this->getId() === $this->getWebsite()->getDefaultGroupId()) {
-            $ids = $this->getWebsite()->getGroupIds();
-            if (!empty($ids) && count($ids) > 1) {
-                unset($ids[$this->getId()]);
-                $defaultId = current($ids);
-            } else {
-                $defaultId = null;
-            }
-            $this->getWebsite()->setDefaultGroupId($defaultId);
-            $this->getWebsite()->save();
-        }
-        return $result;
-    }
-
-    /**
      * Get/Set isReadOnly flag
      *
      * @param bool $value
@@ -476,31 +454,5 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
         \Magento\Store\Api\Data\GroupExtensionInterface $extensionAttributes
     ) {
         return $this->_setExtensionAttributes($extensionAttributes);
-    }
-
-    /**
-     * Retrieve scope code
-     *
-     * @return string
-     */
-    public function getCode()
-    {
-        return '';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getScopeType()
-    {
-        return ScopeInterface::SCOPE_GROUP;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getScopeTypeName()
-    {
-        return 'Store';
     }
 }

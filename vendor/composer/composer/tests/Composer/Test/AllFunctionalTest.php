@@ -12,15 +12,14 @@
 
 namespace Composer\Test;
 
-use Composer\TestCase;
+use Symfony\Component\Process\Process;
 use Composer\Util\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Process;
 
 /**
  * @group slow
  */
-class AllFunctionalTest extends TestCase
+class AllFunctionalTest extends \PHPUnit_Framework_TestCase
 {
     protected $oldcwd;
     protected $oldenv;
@@ -30,21 +29,17 @@ class AllFunctionalTest extends TestCase
     public function setUp()
     {
         $this->oldcwd = getcwd();
-
         chdir(__DIR__.'/Fixtures/functional');
     }
 
     public function tearDown()
     {
         chdir($this->oldcwd);
-
         $fs = new Filesystem;
-
         if ($this->testDir) {
             $fs->removeDirectory($this->testDir);
             $this->testDir = null;
         }
-
         if ($this->oldenv) {
             $fs->removeDirectory(getenv('COMPOSER_HOME'));
             $_SERVER['COMPOSER_HOME'] = $this->oldenv;
@@ -55,7 +50,7 @@ class AllFunctionalTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$pharPath = self::getUniqueTmpDirectory() . '/composer.phar';
+        self::$pharPath = sys_get_temp_dir().'/composer-phar-test/composer.phar';
     }
 
     public static function tearDownAfterClass()
@@ -70,29 +65,16 @@ class AllFunctionalTest extends TestCase
             $this->markTestSkipped('Building the phar does not work on HHVM.');
         }
 
-        $target = dirname(self::$pharPath);
-        $fs = new Filesystem();
-        chdir($target);
+        $fs = new Filesystem;
+        $fs->removeDirectory(dirname(self::$pharPath));
+        $fs->ensureDirectoryExists(dirname(self::$pharPath));
+        chdir(dirname(self::$pharPath));
 
-        $it = new \RecursiveDirectoryIterator(__DIR__.'/../../../', \RecursiveDirectoryIterator::SKIP_DOTS);
-        $ri = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::SELF_FIRST);
-
-        foreach ($ri as $file) {
-            $targetPath = $target . DIRECTORY_SEPARATOR . $ri->getSubPathName();
-            if ($file->isDir()) {
-                $fs->ensureDirectoryExists($targetPath);
-            } else {
-                copy($file->getPathname(), $targetPath);
-            }
-        }
-
-        $proc = new Process('php '.escapeshellarg('./bin/compile'), $target);
+        $proc = new Process('php '.escapeshellarg(__DIR__.'/../../../bin/compile'), dirname(self::$pharPath));
         $exitcode = $proc->run();
-
         if ($exitcode !== 0 || trim($proc->getOutput())) {
             $this->fail($proc->getOutput());
         }
-
         $this->assertTrue(file_exists(self::$pharPath));
     }
 
@@ -145,7 +127,7 @@ class AllFunctionalTest extends TestCase
         $data = array();
         $section = null;
 
-        $testDir = self::getUniqueTmpDirectory();
+        $testDir = sys_get_temp_dir().'/composer_functional_test'.uniqid(mt_rand(), true);
         $this->testDir = $testDir;
         $varRegex = '#%([a-zA-Z_-]+)%#';
         $variableReplacer = function ($match) use (&$data, $testDir) {

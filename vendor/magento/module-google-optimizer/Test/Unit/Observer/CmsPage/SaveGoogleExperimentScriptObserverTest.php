@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleOptimizer\Test\Unit\Observer\CmsPage;
@@ -70,7 +70,7 @@ class SaveGoogleExperimentScriptObserverTest extends \PHPUnit_Framework_TestCase
         $this->_helperMock->expects($this->once())->method('isGoogleExperimentActive')->will($this->returnValue(true));
 
         $this->_requestMock->expects(
-            $this->exactly(3)
+            $this->once()
         )->method(
             'getParam'
         )->with(
@@ -98,6 +98,8 @@ class SaveGoogleExperimentScriptObserverTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $params
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Wrong request parameters
      * @dataProvider dataProviderWrongRequestForCreating
      */
     public function testCreatingCodeIfRequestIsNotValid($params)
@@ -141,7 +143,7 @@ class SaveGoogleExperimentScriptObserverTest extends \PHPUnit_Framework_TestCase
         $this->_helperMock->expects($this->once())->method('isGoogleExperimentActive')->will($this->returnValue(true));
 
         $this->_requestMock->expects(
-            $this->exactly(3)
+            $this->once()
         )->method(
             'getParam'
         )->with(
@@ -182,7 +184,7 @@ class SaveGoogleExperimentScriptObserverTest extends \PHPUnit_Framework_TestCase
         $this->_helperMock->expects($this->once())->method('isGoogleExperimentActive')->will($this->returnValue(true));
 
         $this->_requestMock->expects(
-            $this->exactly(3)
+            $this->once()
         )->method(
             'getParam'
         )->with(
@@ -213,7 +215,7 @@ class SaveGoogleExperimentScriptObserverTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->_requestMock->expects(
-            $this->exactly(3)
+            $this->once()
         )->method(
             'getParam'
         )->with(

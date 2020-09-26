@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Config\Tests\Util;
+namespace Symfony\Component\Config\Tests\Loader;
 
 use Symfony\Component\Config\Util\XmlUtils;
 

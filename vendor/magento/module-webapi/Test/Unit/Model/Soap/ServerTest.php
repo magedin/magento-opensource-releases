@@ -2,7 +2,7 @@
 /**
  * Test SOAP server model.
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Test\Unit\Model\Soap;
@@ -26,9 +26,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     /** @var \Magento\Framework\Reflection\TypeProcessor|\PHPUnit_Framework_MockObject_MockObject */
     protected $_typeProcessor;
-
-    /** @var \Magento\Webapi\Model\Soap\Wsdl\Generator|\PHPUnit_Framework_MockObject_MockObject */
-    protected $wsdlGenerator;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_scopeConfig;
@@ -78,7 +75,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->wsdlGenerator = $this->getMock('Magento\Webapi\Model\Soap\Wsdl\Generator', [], [], '', false);
+
         $this->_scopeConfig = $this->getMock('Magento\Framework\App\Config\ScopeConfigInterface');
 
         /** Init SUT. */
@@ -89,8 +86,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $this->_storeManagerMock,
             $this->_soapServerFactory,
             $this->_typeProcessor,
-            $this->_scopeConfig,
-            $this->wsdlGenerator
+            $this->_scopeConfig
         );
 
         parent::setUp();

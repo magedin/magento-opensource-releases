@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Theme;
@@ -68,7 +68,7 @@ class DownloadCustomCssTest extends \PHPUnit_Framework_TestCase
      */
     protected $controller;
 
-    protected function setUp()
+    public function setUp()
     {
         $context = $this->getMockBuilder('Magento\Backend\App\Action\Context')
             ->disableOriginalConstructor()

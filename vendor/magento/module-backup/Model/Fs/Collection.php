@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backup\Model\Fs;
@@ -91,6 +91,7 @@ class Collection extends \Magento\Framework\Data\Collection\Filesystem
         $filename = '.htaccess';
         if (!$this->_varDirectory->isFile($filename)) {
             $this->_varDirectory->writeFile($filename, 'deny from all');
+            $this->_varDirectory->changePermissions($filename, 0640);
         }
     }
 
@@ -110,10 +111,7 @@ class Collection extends \Magento\Framework\Data\Collection\Filesystem
             $row[$key] = $value;
         }
         $row['size'] = $this->_varDirectory->stat($this->_varDirectory->getRelativePath($filename))['size'];
-        if (isset($row['display_name']) && $row['display_name'] == '') {
-            $row['display_name'] = 'WebSetupWizard';
-        }
-        $row['id'] = $row['time'] . '_' . $row['type'] . (isset($row['display_name']) ? $row['display_name'] : '');
+        $row['id'] = $row['time'] . '_' . $row['type'];
         return $row;
     }
 }

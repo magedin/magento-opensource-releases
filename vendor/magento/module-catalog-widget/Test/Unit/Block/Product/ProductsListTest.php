@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -126,21 +126,9 @@ class ProductsListTest extends \PHPUnit_Framework_TestCase
         $this->httpContext->expects($this->once())->method('getValue')->willReturn('context_group');
         $this->productsList->setData('conditions', 'some_serialized_conditions');
 
-        $this->productsList->setData('page_var_name', 'page_number');
-        $this->request->expects($this->once())->method('getParam')->with('page_number')->willReturn(1);
+        $this->request->expects($this->once())->method('getParam')->with('np')->willReturn(1);
 
-        $this->request->expects($this->once())->method('getParams')->willReturn('request_params');
-
-        $cacheKey = [
-            'CATALOG_PRODUCTS_LIST_WIDGET',
-            1,
-            'blank',
-            'context_group',
-            1,
-            5,
-            'some_serialized_conditions',
-            serialize('request_params')
-        ];
+        $cacheKey = ['CATALOG_PRODUCTS_LIST_WIDGET', 1, 'blank', 'context_group', 1, 5, 'some_serialized_conditions'];
         $this->assertEquals($cacheKey, $this->productsList->getCacheKeyInfo());
     }
 
@@ -261,9 +249,21 @@ class ProductsListTest extends \PHPUnit_Framework_TestCase
         $this->collectionFactory->expects($this->once())->method('create')->willReturn($collection);
         $this->productsList->setData('conditions_encoded', 'some_serialized_conditions');
 
-        $this->builder->expects($this->once())->method('attachConditionToCollection')
-            ->with($collection, $this->getConditionsForCollection($collection))
+        $conditions = $this->getMockBuilder('\Magento\Rule\Model\Condition\Combine')
+            ->setMethods(['collectValidatedAttributes'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $conditions->expects($this->once())->method('collectValidatedAttributes')
+            ->with($collection)
             ->willReturnSelf();
+
+        $this->builder->expects($this->once())->method('attachConditionToCollection')
+            ->with($collection, $conditions)
+            ->willReturnSelf();
+
+        $this->rule->expects($this->once())->method('loadPost')->willReturnSelf();
+        $this->rule->expects($this->once())->method('getConditions')->willReturn($conditions);
+
 
         if ($productsPerPage) {
             $this->productsList->setData('products_per_page', $productsPerPage);
@@ -322,44 +322,7 @@ class ProductsListTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIdentities()
     {
-        $collection = $this->getMockBuilder('\Magento\Catalog\Model\ResourceModel\Product\Collection')
-            ->setMethods([
-                'addAttributeToSelect',
-                'getIterator',
-            ])->disableOriginalConstructor()
-            ->getMock();
-
-        $product = $this->getMock('Magento\Framework\DataObject\IdentityInterface', ['getIdentities']);
-        $notProduct = $this->getMock('NotProduct', ['getIdentities']);
-        $product->expects($this->once())->method('getIdentities')->willReturn(['product_identity']);
-        $collection->expects($this->once())->method('getIterator')->willReturn(
-            new \ArrayIterator([$product, $notProduct])
-        );
-        $this->productsList->setData('product_collection', $collection);
-
-        $this->assertEquals(
-            ['product_identity'],
-            $this->productsList->getIdentities()
-        );
-    }
-
-    /**
-     * @param $collection
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getConditionsForCollection($collection)
-    {
-        $conditions = $this->getMockBuilder('\Magento\Rule\Model\Condition\Combine')
-            ->setMethods(['collectValidatedAttributes'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $conditions->expects($this->once())->method('collectValidatedAttributes')
-            ->with($collection)
-            ->willReturnSelf();
-
-        $this->rule->expects($this->once())->method('loadPost')->willReturnSelf();
-        $this->rule->expects($this->once())->method('getConditions')->willReturn($conditions);
-        return $conditions;
+        $this->assertEquals([\Magento\Catalog\Model\Product::CACHE_TAG], $this->productsList->getIdentities());
     }
 
     public function testGetTitle()

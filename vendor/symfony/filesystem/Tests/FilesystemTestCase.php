@@ -17,8 +17,6 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
 {
     private $umask;
 
-    protected $longPathNamesWindows = array();
-
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
@@ -36,8 +34,9 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
         if ('\\' === DIRECTORY_SEPARATOR && null === self::$symlinkOnWindows) {
             $target = tempnam(sys_get_temp_dir(), 'sl');
             $link = sys_get_temp_dir().'/sl'.microtime(true).mt_rand();
-            self::$symlinkOnWindows = @symlink($target, $link) && is_link($link);
-            @unlink($link);
+            if (self::$symlinkOnWindows = @symlink($target, $link)) {
+                unlink($link);
+            }
             unlink($target);
         }
     }
@@ -45,21 +44,14 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->umask = umask(0);
-        $this->filesystem = new Filesystem();
-        $this->workspace = sys_get_temp_dir().'/'.microtime(true).'.'.mt_rand();
+        $this->workspace = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.time().mt_rand(0, 1000);
         mkdir($this->workspace, 0777, true);
         $this->workspace = realpath($this->workspace);
+        $this->filesystem = new Filesystem();
     }
 
     protected function tearDown()
     {
-        if (!empty($this->longPathNamesWindows)) {
-            foreach ($this->longPathNamesWindows as $path) {
-                exec('DEL '.$path);
-            }
-            $this->longPathNamesWindows = array();
-        }
-
         $this->filesystem->remove($this->workspace);
         umask($this->umask);
     }
@@ -100,15 +92,14 @@ class FilesystemTestCase extends \PHPUnit_Framework_TestCase
         $this->markTestSkipped('Unable to retrieve file group name');
     }
 
-    protected function markAsSkippedIfSymlinkIsMissing($relative = false)
+    protected function markAsSkippedIfSymlinkIsMissing()
     {
-        if ('\\' === DIRECTORY_SEPARATOR && false === self::$symlinkOnWindows) {
-            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on Windows');
+        if (!function_exists('symlink')) {
+            $this->markTestSkipped('Function symlink is required.');
         }
 
-        // https://bugs.php.net/bug.php?id=69473
-        if ($relative && '\\' === DIRECTORY_SEPARATOR && 1 === PHP_ZTS) {
-            $this->markTestSkipped('symlink does not support relative paths on thread safe Windows PHP versions');
+        if ('\\' === DIRECTORY_SEPARATOR && false === self::$symlinkOnWindows) {
+            $this->markTestSkipped('symlink requires "Create symbolic links" privilege on Windows');
         }
     }
 

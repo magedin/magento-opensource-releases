@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogUrlRewrite\Model\Category\Plugin\Store;
@@ -100,7 +100,7 @@ class View
         $collection = $this->productFactory->create()
             ->getCollection()
             ->addCategoryIds()
-            ->addAttributeToSelect(['name', 'url_path', 'url_key', 'visibility'])
+            ->addAttributeToSelect(['name', 'url_path', 'url_key'])
             ->addWebsiteFilter($websiteIds);
         foreach ($collection as $product) {
             $product->setStoreId($storeId);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -34,10 +34,10 @@ $category->setId(
 
 /** @var $product \Magento\Catalog\Model\Product */
 $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
-$product->setId(
-    1
-)->setTypeId(
+$product->setTypeId(
     \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE
+)->setId(
+    1
 )->setAttributeSetId(
     $installer->getAttributeSetId('catalog_product', 'Default')
 )->setStoreId(
@@ -53,18 +53,11 @@ $product->setId(
 )->setWeight(
     18
 )->setStockData(
-    [
-        'use_config_manage_stock'   => 1,
-        'qty'                       => 100,
-        'is_qty_decimal'            => 0,
-        'is_in_stock'               => 1,
-    ]
+    ['use_config_manage_stock' => 0]
+)->setCategoryIds(
+    [9]
 )->setVisibility(
     \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH
 )->setStatus(
     \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
 )->save();
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-/** @var \Magento\Catalog\Api\CategoryLinkManagementInterface $categoryLinkManagement */
-$categoryLinkManagement = $objectManager->create('Magento\Catalog\Api\CategoryLinkManagementInterface');
-$categoryLinkManagement->assignProductToCategories('simple', [9]);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -92,7 +92,7 @@ class Editor extends Textarea
                 if ($this->getForceLoad()) {
                     $forceLoad = $jsSetupObject . '.setup("exact");';
                 } else {
-                    $forceLoad = 'jQuery(window).on("load", ' .
+                    $forceLoad = 'Event.observe(window, "load", ' .
                         $jsSetupObject .
                         '.setup.bind(' .
                         $jsSetupObject .
@@ -123,9 +123,9 @@ class Editor extends Textarea
                 '
                 <script type="text/javascript">
                 //<![CDATA[
-                window.tinyMCE_GZ = window.tinyMCE_GZ || {}; window.tinyMCE_GZ.loaded = true;require(["jquery", "mage/translate", "mage/adminhtml/events", "mage/adminhtml/wysiwyg/tiny_mce/setup", "mage/adminhtml/wysiwyg/widget"], function(jQuery){' .
+                require(["jquery", "mage/translate", "mage/adminhtml/events", "mage/adminhtml/wysiwyg/tiny_mce/setup", "mage/adminhtml/wysiwyg/widget"], function(jQuery){' .
                 "\n" .
-                '  (function($) {$.mage.translate.add(' .
+                '(function($) {$.mage.translate.add(' .
                 \Zend_Json::encode(
                     $this->getButtonTranslations()
                 ) .
@@ -208,8 +208,7 @@ class Editor extends Textarea
     {
         $buttonsHtml = '<div id="buttons' . $this->getHtmlId() . '" class="buttons-set">';
         if ($this->isEnabled()) {
-            $buttonsHtml .= $this->_getToggleButtonHtml($this->isToggleButtonVisible());
-            $buttonsHtml .= $this->_getPluginButtonsHtml($this->isHidden());
+            $buttonsHtml .= $this->_getToggleButtonHtml() . $this->_getPluginButtonsHtml($this->isHidden());
         } else {
             $buttonsHtml .= $this->_getPluginButtonsHtml(true);
         }
@@ -436,11 +435,10 @@ class Editor extends Textarea
      */
     public function isEnabled()
     {
-        $result = false;
-        if ($this->getConfig('enabled')) {
-            $result = $this->hasData('wysiwyg') ? $result = $this->getWysiwyg() : true;
+        if ($this->hasData('wysiwyg')) {
+            return $this->getWysiwyg();
         }
-        return $result;
+        return $this->getConfig('enabled');
     }
 
     /**
@@ -451,13 +449,5 @@ class Editor extends Textarea
     public function isHidden()
     {
         return $this->getConfig('hidden');
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isToggleButtonVisible()
-    {
-        return !$this->getConfig()->hasData('toggle_button') || $this->getConfig('toggle_button');
     }
 }

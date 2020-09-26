@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model\Quote;
@@ -564,7 +564,8 @@ class Address extends \Magento\Customer\Model\Address\AbstractAddress implements
     public function getAllItems()
     {
         // We calculate item list once and cache it in three arrays - all items
-        $key = 'cached_items_all';
+        $cachedItems = 'all';
+        $key = 'cached_items_' . $cachedItems;
         if (!$this->hasData($key)) {
             $quoteItems = $this->getQuote()->getItemsCollection();
             $addressItems = $this->getItemsCollection();
@@ -1008,14 +1009,13 @@ class Address extends \Magento\Customer\Model\Address\AbstractAddress implements
                     if ($item) {
                         $item->setBaseShippingAmount($rate->getPrice());
                     } else {
-
-                        /** @var \Magento\Quote\Model\Quote $quote */
-                        $quote = $this->getQuote();
-                        $amountPrice = $quote->getStore()
-                            ->getBaseCurrency()
-                            ->convert($rate->getPrice(), $quote->getQuoteCurrencyCode());
-                        $this->setBaseShippingAmount($rate->getPrice());
-                        $this->setShippingAmount($amountPrice);
+                        /**
+                         * possible bug: this should be setBaseShippingAmount(),
+                         * see \Magento\Quote\Model\Quote\Address\Total\Shipping::collect()
+                         * where this value is set again from the current specified rate price
+                         * (looks like a workaround for this bug)
+                         */
+                        $this->setShippingAmount($rate->getPrice());
                     }
 
                     $found = true;
@@ -1027,7 +1027,6 @@ class Address extends \Magento\Customer\Model\Address\AbstractAddress implements
     }
 
     /******************************* Total Collector Interface *******************************************/
-
     /**
      * Get address totals as array
      *
@@ -1302,7 +1301,6 @@ class Address extends \Magento\Customer\Model\Address\AbstractAddress implements
     }
 
     //@codeCoverageIgnoreStart
-
     /**
      * Get all total amount values
      *

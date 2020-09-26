@@ -1,11 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * @category    Magento
+ * @package     Magento_CatalogInventory
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\CatalogInventory\Model\Indexer;
 
-use Magento\Framework\Indexer\CacheContext;
+namespace Magento\CatalogInventory\Model\Indexer;
 
 class Stock implements \Magento\Framework\Indexer\ActionInterface, \Magento\Framework\Mview\ActionInterface
 {
@@ -23,11 +24,6 @@ class Stock implements \Magento\Framework\Indexer\ActionInterface, \Magento\Fram
      * @var \Magento\CatalogInventory\Model\Indexer\Stock\Action\Full
      */
     protected $_productStockIndexerFull;
-
-    /**
-     * @var \Magento\Framework\Indexer\CacheContext
-     */
-    private $cacheContext;
 
     /**
      * @param Stock\Action\Row $productStockIndexerRow
@@ -54,7 +50,6 @@ class Stock implements \Magento\Framework\Indexer\ActionInterface, \Magento\Fram
     public function execute($ids)
     {
         $this->_productStockIndexerRows->execute($ids);
-        $this->getCacheContext()->registerEntities(\Magento\Catalog\Model\Product::CACHE_TAG, $ids);
     }
 
     /**
@@ -65,12 +60,6 @@ class Stock implements \Magento\Framework\Indexer\ActionInterface, \Magento\Fram
     public function executeFull()
     {
         $this->_productStockIndexerFull->execute();
-        $this->getCacheContext()->registerTags(
-            [
-                \Magento\Catalog\Model\Category::CACHE_TAG,
-                \Magento\Catalog\Model\Product::CACHE_TAG
-            ]
-        );
     }
 
     /**
@@ -95,20 +84,5 @@ class Stock implements \Magento\Framework\Indexer\ActionInterface, \Magento\Fram
     public function executeRow($id)
     {
         $this->_productStockIndexerRow->execute($id);
-    }
-
-    /**
-     * Get cache context
-     *
-     * @return \Magento\Framework\Indexer\CacheContext
-     * @deprecated
-     */
-    protected function getCacheContext()
-    {
-        if (!($this->cacheContext instanceof CacheContext)) {
-            return \Magento\Framework\App\ObjectManager::getInstance()->get(CacheContext::class);
-        } else {
-            return $this->cacheContext;
-        }
     }
 }

@@ -62,28 +62,28 @@ class NullIO extends BaseIO
     /**
      * {@inheritDoc}
      */
-    public function write($messages, $newline = true, $verbosity = self::NORMAL)
+    public function write($messages, $newline = true)
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function writeError($messages, $newline = true, $verbosity = self::NORMAL)
+    public function writeError($messages, $newline = true)
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function overwrite($messages, $newline = true, $size = 80, $verbosity = self::NORMAL)
+    public function overwrite($messages, $newline = true, $size = 80)
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function overwriteError($messages, $newline = true, $size = 80, $verbosity = self::NORMAL)
+    public function overwriteError($messages, $newline = true, $size = 80)
     {
     }
 
@@ -117,13 +117,5 @@ class NullIO extends BaseIO
     public function askAndHideAnswer($question)
     {
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function select($question, $choices, $default, $attempts = false, $errorMessage = 'Value "%s" is invalid', $multiselect = false)
-    {
-        return $default;
     }
 }

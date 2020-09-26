@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Service\V1;
@@ -49,7 +49,6 @@ class OrderListTest extends WebapiAbstract
                 $filterBuilder
                     ->setField('status')
                     ->setValue('processing')
-                    ->setConditionType('eq')
                     ->create(),
             ]
         );
@@ -71,7 +70,5 @@ class OrderListTest extends WebapiAbstract
         $result = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertArrayHasKey('items', $result);
         $this->assertCount(1, $result['items']);
-        $this->assertArrayHasKey('search_criteria', $result);
-        $this->assertEquals($searchData, $result['search_criteria']);
     }
 }

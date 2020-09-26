@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(['underscore'], function (_) {
@@ -34,14 +34,10 @@ define(['underscore'], function (_) {
         },
 
         filterClientSideSections: function (sections) {
-            if (Array.isArray(sections)) {
+            if (_.isArray(sections)) {
                 return _.difference(sections, clientSideSections);
             }
             return sections;
-        },
-
-        isClientSideSection: function (sectionName) {
-            return _.contains(clientSideSections, sectionName);
         },
 
         'Magento_Customer/js/section-config': function(options) {

@@ -1,22 +1,17 @@
 <?php
-namespace Test\Unit;
+require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-require_once dirname(__DIR__) . '/Setup.php';
-
-use Test\Setup;
-use Braintree;
-
-class PaymentMethodTest extends Setup
+class Braintree_PaymentMethodTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreate_throwsIfInvalidKey()
+    function testCreate_throwsIfInvalidKey()
     {
         $this->setExpectedException('InvalidArgumentException', 'invalid keys: invalidKey');
-        Braintree\PaymentMethod::create(['invalidKey' => 'foo']);
+        Braintree_PaymentMethod::create(array('invalidKey' => 'foo'));
     }
 
-    public function testCreateSignature()
+    function testCreateSignature()
     {
-        $expected = [
+        $expected = array(
             'billingAddressId',
             'cardholderName',
             'cvv',
@@ -27,33 +22,33 @@ class PaymentMethodTest extends Setup
             'number',
             'paymentMethodNonce',
             'token',
-            ['options' => [
+            array('options' => array(
                 'failOnDuplicatePaymentMethod',
                 'makeDefault',
                 'verificationMerchantAccountId',
                 'verifyCard'
-            ]],
-            ['billingAddress' => Braintree\AddressGateway::createSignature()],
+            )),
+            array('billingAddress' => Braintree_AddressGateway::createSignature()),
             'customerId'
-        ];
-        $this->assertEquals($expected, Braintree\PaymentMethodGateway::createSignature());
+        );
+        $this->assertEquals($expected, Braintree_PaymentMethodGateway::createSignature());
     }
 
-    public function testErrorsOnFindWithBlankArgument()
+    function testErrorsOnFindWithBlankArgument()
     {
         $this->setExpectedException('InvalidArgumentException');
-        Braintree\PaymentMethod::find('');
+        Braintree_PaymentMethod::find('');
     }
 
-    public function testErrorsOnFindWithWhitespaceArgument()
+    function testErrorsOnFindWithWhitespaceArgument()
     {
         $this->setExpectedException('InvalidArgumentException');
-        Braintree\PaymentMethod::find('  ');
+        Braintree_PaymentMethod::find('  ');
     }
 
-    public function testErrorsOnFindWithWhitespaceCharacterArgument()
+    function testErrorsOnFindWithWhitespaceCharacterArgument()
     {
         $this->setExpectedException('InvalidArgumentException');
-        Braintree\PaymentMethod::find('\t');
+        Braintree_PaymentMethod::find('\t');
     }
 }

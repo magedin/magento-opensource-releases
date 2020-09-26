@@ -2,14 +2,13 @@
 /**
  * Origin filesystem driver
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filesystem\Driver;
 
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\DriverInterface;
-use Magento\Framework\Filesystem\Glob;
 
 /**
  * Class File
@@ -194,7 +193,7 @@ class File implements DriverInterface
      * @return bool
      * @throws FileSystemException
      */
-    public function createDirectory($path, $permissions = 0777)
+    public function createDirectory($path, $permissions)
     {
         return $this->mkdirRecursive($path, $permissions);
     }
@@ -207,7 +206,7 @@ class File implements DriverInterface
      * @return bool
      * @throws FileSystemException
      */
-    private function mkdirRecursive($path, $permissions = 0777)
+    private function mkdirRecursive($path, $permissions)
     {
         $path = $this->getScheme() . $path;
         if (is_dir($path)) {
@@ -269,7 +268,7 @@ class File implements DriverInterface
     {
         clearstatcache();
         $globPattern = rtrim($path, '/') . '/' . ltrim($pattern, '/');
-        $result = Glob::glob($globPattern, Glob::GLOB_BRACE);
+        $result = @glob($globPattern, GLOB_BRACE);
         return is_array($result) ? $result : [];
     }
 
@@ -297,7 +296,7 @@ class File implements DriverInterface
         if (!$result) {
             throw new FileSystemException(
                 new \Magento\Framework\Phrase(
-                    'The path "%1" cannot be renamed into "%2" %3',
+                    'The "%1" path cannot be renamed into "%2" %3',
                     [$oldPath, $newPath, $this->getWarningMessage()]
                 )
             );
@@ -702,34 +701,16 @@ class File implements DriverInterface
      */
     public function fileWrite($resource, $data)
     {
-        $lenData = strlen($data);
-        for ($result = 0; $result < $lenData; $result += $fwrite) {
-            $fwrite = @fwrite($resource, substr($data, $result));
-            if (0 === $fwrite) {
-                $this->fileSystemException('Unable to write');
-            }
-            if (false === $fwrite) {
-                $this->fileSystemException(
+        $result = @fwrite($resource, $data);
+        if (false === $result) {
+            throw new FileSystemException(
+                new \Magento\Framework\Phrase(
                     'Error occurred during execution of fileWrite %1',
                     [$this->getWarningMessage()]
-                );
-            }
+                )
+            );
         }
-
         return $result;
-    }
-
-    /**
-     * Throw a FileSystemException with a Phrase of message and optional arguments
-     *
-     * @param string $message
-     * @param array $arguments
-     * @return void
-     * @throws FileSystemException
-     */
-    private function fileSystemException($message, $arguments = [])
-    {
-        throw new FileSystemException(new \Magento\Framework\Phrase($message, $arguments));
     }
 
     /**

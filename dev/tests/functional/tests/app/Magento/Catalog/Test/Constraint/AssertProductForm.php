@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -27,14 +27,15 @@ class AssertProductForm extends AbstractAssertForm
     ];
 
     /**
-     * Sort fields for fixture and form data.
+     * Sort fields for fixture and form data
      *
      * @var array
      */
     protected $sortFields = [
-        'cross_sell_products::id',
-        'up_sell_products::id',
-        'related_products::id',
+        'custom_options::title',
+        'cross_sell_products::entity_id',
+        'up_sell_products::entity_id',
+        'related_products::entity_id',
     ];
 
     /**

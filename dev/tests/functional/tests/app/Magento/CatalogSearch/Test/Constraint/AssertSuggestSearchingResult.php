@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,6 @@ namespace Magento\CatalogSearch\Test\Constraint;
 use Magento\CatalogSearch\Test\Fixture\CatalogSearchQuery;
 use Magento\Cms\Test\Page\CmsIndex;
 use Magento\Mtf\Constraint\AbstractConstraint;
-use Magento\CatalogSearch\Test\Page\AdvancedResult;
 
 /**
  * Class AssertSuggestSearchingResult
@@ -19,20 +18,13 @@ class AssertSuggestSearchingResult extends AbstractConstraint
     /**
      * Check that after input some text(e.g. product name) into search field, drop-down window is appeared.
      * Window contains requested entity and number of quantity.
-     * Click on search suggestion and verify that search is performed.
      *
      * @param CmsIndex $cmsIndex
      * @param CatalogSearchQuery $catalogSearch
-     * @param AssertCatalogSearchResult $assertCatalogSearchResult
-     * @param AdvancedResult $resultPage
      * @return void
      */
-    public function processAssert(
-        CatalogSearchQuery $catalogSearch,
-        CmsIndex $cmsIndex,
-        AssertCatalogSearchResult $assertCatalogSearchResult,
-        AdvancedResult $resultPage
-    ) {
+    public function processAssert(CmsIndex $cmsIndex, CatalogSearchQuery $catalogSearch)
+    {
         $cmsIndex->open();
         $searchBlock = $cmsIndex->getSearchBlock();
 
@@ -49,8 +41,6 @@ class AssertSuggestSearchingResult extends AbstractConstraint
             $isVisible,
             'Block "Suggest Search" when searching was not found'
         );
-        $searchBlock->clickSuggestedText($queryText);
-        $assertCatalogSearchResult->processAssert($catalogSearch, $resultPage);
     }
 
     /**
@@ -60,6 +50,6 @@ class AssertSuggestSearchingResult extends AbstractConstraint
      */
     public function toString()
     {
-        return 'Asserts window contains requested entity and quantity. Searched product has been successfully found.';
+        return 'Asserts window contains requested entity and quantity';
     }
 }

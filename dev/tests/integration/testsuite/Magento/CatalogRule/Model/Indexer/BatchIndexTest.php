@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,11 +17,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 class BatchIndexTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Magento\Catalog\Model\ProductRepository
-     */
-    protected $productRepository;
-
-    /**
      * @var \Magento\Catalog\Model\Product
      */
     protected $product;
@@ -35,7 +30,6 @@ class BatchIndexTest extends \PHPUnit_Framework_TestCase
     {
         $this->resourceRule = Bootstrap::getObjectManager()->get('Magento\CatalogRule\Model\ResourceModel\Rule');
         $this->product = Bootstrap::getObjectManager()->get('Magento\Catalog\Model\Product');
-        $this->productRepository = Bootstrap::getObjectManager()->get('Magento\Catalog\Model\ProductRepository');
     }
 
     /**
@@ -71,7 +65,7 @@ class BatchIndexTest extends \PHPUnit_Framework_TestCase
      */
     protected function prepareProducts($price)
     {
-        $this->product = $this->productRepository->get('simple');
+        $this->product->load(1);
         $productSecond = clone $this->product;
         $productSecond->setId(null)
             ->setUrlKey(null)
@@ -89,8 +83,8 @@ class BatchIndexTest extends \PHPUnit_Framework_TestCase
             ->save();
         $productThird->setPrice($price)->save();
         return [
-            $productSecond->getEntityId(),
-            $productThird->getEntityId(),
+            $productSecond->getId(),
+            $productThird->getId(),
         ];
     }
 

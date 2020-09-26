@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,17 +11,8 @@ namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Option;
 use \Magento\Catalog\Model\ResourceModel\Product\Option\Collection;
 use \Magento\Catalog\Model\ResourceModel\Product\Option\Value;
 
-/**
- * Class CollectionTest
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPoolMock;
-
     /**
      * @var Collection
      */
@@ -58,11 +49,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     protected $storeManagerMock;
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $joinProcessor;
-
-    /**
      * @var \Magento\Catalog\Model\ResourceModel\Product\Option|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
@@ -95,9 +81,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->storeManagerMock = $this->getMock('Magento\Store\Model\StoreManager', [], [], '', false);
-        $this->joinProcessor = $this->getMockBuilder('Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
         $this->resourceMock = $this->getMock(
             'Magento\Catalog\Model\ResourceModel\Product\Option',
             ['getConnection', '__wakeup', 'getMainTable', 'getTable'],
@@ -105,7 +88,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->selectMock = $this->getMock('Magento\Framework\DB\Select', ['from', 'reset', 'join'], [], '', false);
+        $this->selectMock = $this->getMock('Magento\Framework\DB\Select', ['from', 'reset'], [], '', false);
         $this->connection =
             $this->getMock('Magento\Framework\DB\Adapter\Pdo\Mysql', ['select'], [], '', false);
         $this->connection->expects($this->once())
@@ -117,27 +100,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->resourceMock->expects($this->once())
             ->method('getMainTable')
             ->will($this->returnValue('test_main_table'));
-        $this->resourceMock->expects($this->exactly(3))
+        $this->resourceMock->expects($this->once())
             ->method('getTable')
-            ->withConsecutive(
-                ['test_main_table'],
-                ['catalog_product_entity'],
-                ['catalog_product_entity']
-            )->willReturnOnConsecutiveCalls(
-                $this->returnValue('test_main_table'),
-                'catalog_product_entity',
-                'catalog_product_entity'
-            );
-        $this->metadataPoolMock = $this->getMock('Magento\Framework\EntityManager\MetadataPool', [], [], '', false);
-        $metadata = $this->getMock('Magento\Framework\EntityManager\EntityMetadata', [], [], '', false);
-        $metadata->expects($this->any())->method('getLinkField')->willReturn('id');
-        $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($metadata);
-        $this->selectMock->expects($this->exactly(2))->method('join');
-
-        $this->prepareObjectManager([
-            ['Magento\Framework\EntityManager\MetadataPool', $this->metadataPoolMock],
-            ['Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface', $this->joinProcessor]
-        ]);
+            ->with('test_main_table')
+            ->will($this->returnValue('test_main_table'));
 
         $this->collection = new Collection(
             $this->entityFactoryMock,
@@ -154,21 +120,5 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testReset()
     {
         $this->collection->reset();
-    }
-
-    /**
-     * @param $map
-     */
-    private function prepareObjectManager($map)
-    {
-        $objectManagerMock = $this->getMock('Magento\Framework\ObjectManagerInterface');
-        $objectManagerMock->expects($this->any())->method('getInstance')->willReturnSelf();
-        $objectManagerMock->expects($this->any())
-            ->method('get')
-            ->will($this->returnValueMap($map));
-        $reflectionClass = new \ReflectionClass('Magento\Framework\App\ObjectManager');
-        $reflectionProperty = $reflectionClass->getProperty('_instance');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($objectManagerMock);
     }
 }

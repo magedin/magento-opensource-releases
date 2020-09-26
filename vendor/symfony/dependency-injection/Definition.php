@@ -47,6 +47,8 @@ class Definition
     protected $arguments;
 
     /**
+     * Constructor.
+     *
      * @param string|null $class     The service class
      * @param array       $arguments An array of arguments to pass to the service constructor
      */
@@ -198,11 +200,9 @@ class Definition
      *
      * @deprecated since version 2.6, to be removed in 3.0.
      */
-    public function setFactoryService($factoryService, $triggerDeprecationError = true)
+    public function setFactoryService($factoryService)
     {
-        if ($triggerDeprecationError) {
-            @trigger_error(sprintf('%s(%s) is deprecated since version 2.6 and will be removed in 3.0. Use Definition::setFactory() instead.', __METHOD__, $factoryService), E_USER_DEPRECATED);
-        }
+        @trigger_error(sprintf('%s(%s) is deprecated since version 2.6 and will be removed in 3.0. Use Definition::setFactory() instead.', __METHOD__, $factoryService), E_USER_DEPRECATED);
 
         $this->factoryService = $factoryService;
 

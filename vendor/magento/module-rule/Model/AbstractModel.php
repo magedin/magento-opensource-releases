@@ -1,16 +1,15 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-namespace Magento\Rule\Model;
-
 /**
  * Abstract Rule entity data model
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractModel extends \Magento\Framework\Model\AbstractExtensibleModel
+namespace Magento\Rule\Model;
+
+abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
 {
     /**
      * Store rule combine conditions model
@@ -76,14 +75,14 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractExtensible
     protected $_localeDate;
 
     /**
-     * AbstractModel constructor.
+     * Constructor
      *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
      */
     public function __construct(
@@ -97,15 +96,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractExtensible
     ) {
         $this->_formFactory = $formFactory;
         $this->_localeDate = $localeDate;
-        parent::__construct(
-            $context,
-            $registry,
-            $this->getExtensionFactory(),
-            $this->getCustomAttributeFactory(),
-            $resource,
-            $resourceCollection,
-            $data
-        );
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
     /**
@@ -127,13 +118,13 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractExtensible
         // Serialize conditions
         if ($this->getConditions()) {
             $this->setConditionsSerialized(serialize($this->getConditions()->asArray()));
-            $this->_conditions = null;
+            $this->unsConditions();
         }
 
         // Serialize actions
         if ($this->getActions()) {
             $this->setActionsSerialized(serialize($this->getActions()->asArray()));
-            $this->_actions = null;
+            $this->unsActions();
         }
 
         /**
@@ -459,25 +450,5 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractExtensible
             $this->setData('website_ids', (array)$websiteIds);
         }
         return $this->_getData('website_ids');
-    }
-
-    /**
-     * @return \Magento\Framework\Api\ExtensionAttributesFactory
-     * @deprecated
-     */
-    private function getExtensionFactory()
-    {
-        return \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Magento\Framework\Api\ExtensionAttributesFactory::class);
-    }
-
-    /**
-     * @return \Magento\Framework\Api\AttributeValueFactory
-     * @deprecated
-     */
-    private function getCustomAttributeFactory()
-    {
-        return \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Magento\Framework\Api\AttributeValueFactory::class);
     }
 }

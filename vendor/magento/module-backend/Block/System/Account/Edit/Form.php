@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\System\Account\Edit;
@@ -100,7 +100,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'name' => 'password',
                 'label' => __('New Password'),
                 'title' => __('New Password'),
-                'class' => 'validate-admin-password admin__control-text'
+                'class' => 'input-text validate-admin-password'
             ]
         );
 
@@ -110,7 +110,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
             [
                 'name' => 'password_confirmation',
                 'label' => __('Password Confirmation'),
-                'class' => 'validate-cpassword admin__control-text'
+                'class' => 'input-text validate-cpassword'
             ]
         );
 
@@ -138,7 +138,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'label' => __('Your Password'),
                 'id' => self::IDENTITY_VERIFICATION_PASSWORD_FIELD,
                 'title' => __('Your Password'),
-                'class' => 'validate-current-password required-entry admin__control-text',
+                'class' => 'input-text validate-current-password required-entry',
                 'required' => true
             ]
         );

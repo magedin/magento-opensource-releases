@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Translation\Controller\Ajax;
@@ -36,11 +36,12 @@ class Index extends \Magento\Framework\App\Action\Action
         $translate = (array)$this->getRequest()->getPost('translate');
 
         try {
-            $response = $this->inlineParser->processAjaxPost($translate);
+            $this->inlineParser->processAjaxPost($translate);
+            $response = "{success:true}";
         } catch (\Exception $e) {
             $response = "{error:true,message:'" . $e->getMessage() . "'}";
         }
-        $this->getResponse()->representJson(json_encode($response));
+        $this->getResponse()->representJson($response);
         $this->_actionFlag->set('', self::FLAG_NO_POST_DISPATCH, true);
     }
 }

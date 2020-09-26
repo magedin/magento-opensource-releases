@@ -1,14 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data;
 
 /**
  * Source of option values in a form of value-label pairs
- *
- * @api
  */
 interface OptionSourceInterface
 {

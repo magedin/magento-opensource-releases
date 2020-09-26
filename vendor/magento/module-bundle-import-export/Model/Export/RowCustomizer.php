@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\BundleImportExport\Model\Export;
@@ -11,7 +11,6 @@ use Magento\CatalogImportExport\Model\Import\Product as ImportProductModel;
 use Magento\Bundle\Model\ResourceModel\Selection\Collection as SelectionCollection;
 use Magento\ImportExport\Controller\Adminhtml\Import;
 use Magento\ImportExport\Model\Import as ImportModel;
-use \Magento\Catalog\Model\Product\Type\AbstractType;
 
 /**
  * Class RowCustomizer
@@ -89,32 +88,6 @@ class RowCustomizer implements RowCustomizerInterface
     protected $bundleData = [];
 
     /**
-     * Column name for shipment_type attribute
-     *
-     * @var string
-     */
-    private $shipmentTypeColumn = 'bundle_shipment_type';
-
-    /**
-     * Mapping for shipment type
-     *
-     * @var array
-     */
-    private $shipmentTypeMapping = [
-        AbstractType::SHIPMENT_TOGETHER => 'together',
-        AbstractType::SHIPMENT_SEPARATELY => 'separately',
-    ];
-
-    /**
-     * Retrieve list of bundle specific columns
-     * @return array
-     */
-    private function getBundleColumns()
-    {
-        return array_merge($this->bundleColumns, [$this->shipmentTypeColumn]);
-    }
-
-    /**
      * Prepare data for export
      *
      * @param \Magento\Catalog\Model\ResourceModel\Product\Collection $collection
@@ -143,7 +116,7 @@ class RowCustomizer implements RowCustomizerInterface
      */
     public function addHeaderColumns($columns)
     {
-        $columns = array_merge($columns, $this->getBundleColumns());
+        $columns = array_merge($columns, $this->bundleColumns);
 
         return $columns;
     }
@@ -186,16 +159,14 @@ class RowCustomizer implements RowCustomizerInterface
     protected function populateBundleData($collection)
     {
         foreach ($collection as $product) {
-            $id = $product->getEntityId();
+            $id = $product->getId();
             $this->bundleData[$id][self::BUNDLE_PRICE_TYPE_COL] = $this->getTypeValue($product->getPriceType());
-            $this->bundleData[$id][$this->shipmentTypeColumn] = $this->getShipmentTypeValue(
-                $product->getShipmentType()
-            );
             $this->bundleData[$id][self::BUNDLE_SKU_TYPE_COL] = $this->getTypeValue($product->getSkuType());
             $this->bundleData[$id][self::BUNDLE_PRICE_VIEW_COL] = $this->getPriceViewValue($product->getPriceView());
             $this->bundleData[$id][self::BUNDLE_WEIGHT_TYPE_COL] = $this->getTypeValue($product->getWeightType());
             $this->bundleData[$id][self::BUNDLE_VALUES_COL] = $this->getFormattedBundleOptionValues($product);
         }
+
         return $this;
     }
 
@@ -312,17 +283,6 @@ class RowCustomizer implements RowCustomizerInterface
     }
 
     /**
-     * Retrieve bundle shipment type value by code
-     *
-     * @param string $type
-     * @return string
-     */
-    private function getShipmentTypeValue($type)
-    {
-        return isset($this->shipmentTypeMapping[$type]) ? $this->shipmentTypeMapping[$type] : null;
-    }
-
-    /**
      * Remove bundle specified additional attributes as now they are stored in specified columns
      *
      * @param array $dataRow
@@ -352,7 +312,7 @@ class RowCustomizer implements RowCustomizerInterface
         $cleanedAdditionalAttributes = '';
         foreach ($additionalAttributes as $attribute) {
             list($attributeCode, $attributeValue) = explode(ImportProductModel::PAIR_NAME_VALUE_SEPARATOR, $attribute);
-            if (!in_array('bundle_' . $attributeCode, $this->getBundleColumns())) {
+            if (!in_array('bundle_' . $attributeCode, $this->bundleColumns)) {
                 $cleanedAdditionalAttributes .= $attributeCode
                     . ImportProductModel::PAIR_NAME_VALUE_SEPARATOR
                     . $attributeValue

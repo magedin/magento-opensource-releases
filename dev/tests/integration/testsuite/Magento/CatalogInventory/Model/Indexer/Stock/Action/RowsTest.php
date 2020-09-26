@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Model\Indexer\Stock\Action;
@@ -55,13 +55,7 @@ class RowsTest extends \PHPUnit_Framework_TestCase
             'Magento\CatalogInventory\Model\ResourceModel\Stock\Item'
         );
 
-        /** @var \Magento\Catalog\Model\ProductRepository $productRepository */
-        $productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\ProductRepository'
-        );
-        $product = $productRepository->get('simple');
-
-        $stockItem = $stockRegistry->getStockItem($product->getId(), 1);
+        $stockItem = $stockRegistry->getStockItem(1, 1);
 
         $stockItemData = [
             'qty' => $stockItem->getQty() + 12,

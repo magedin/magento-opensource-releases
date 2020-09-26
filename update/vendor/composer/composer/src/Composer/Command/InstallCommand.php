@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  * @author Nils Adermann <naderman@naderman.de>
  */
-class InstallCommand extends BaseCommand
+class InstallCommand extends Command
 {
     protected function configure()
     {
@@ -46,7 +46,6 @@ class InstallCommand extends BaseCommand
                 new InputOption('no-progress', null, InputOption::VALUE_NONE, 'Do not output download progress.'),
                 new InputOption('verbose', 'v|vv|vvv', InputOption::VALUE_NONE, 'Shows more details including new commits pulled in when updating packages.'),
                 new InputOption('optimize-autoloader', 'o', InputOption::VALUE_NONE, 'Optimize autoloader during autoloader dump'),
-                new InputOption('classmap-authoritative', 'a', InputOption::VALUE_NONE, 'Autoload classes from the classmap only. Implicitly enables `--optimize-autoloader`.'),
                 new InputOption('ignore-platform-reqs', null, InputOption::VALUE_NONE, 'Ignore platform requirements (php & ext- packages).'),
                 new InputArgument('packages', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Should not be provided, use composer require instead to add a given package to composer.json.'),
             ))
@@ -65,24 +64,24 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = $this->getIO();
         if ($args = $input->getArgument('packages')) {
-            $io->writeError('<error>Invalid argument '.implode(' ', $args).'. Use "composer require '.implode(' ', $args).'" instead to add packages to your composer.json.</error>');
+            $this->getIO()->writeError('<error>Invalid argument '.implode(' ', $args).'. Use "composer require '.implode(' ', $args).'" instead to add packages to your composer.json.</error>');
 
             return 1;
         }
 
         if ($input->getOption('no-custom-installers')) {
-            $io->writeError('<warning>You are using the deprecated option "no-custom-installers". Use "no-plugins" instead.</warning>');
+            $this->getIO()->writeError('<warning>You are using the deprecated option "no-custom-installers". Use "no-plugins" instead.</warning>');
             $input->setOption('no-plugins', true);
         }
 
         if ($input->getOption('dev')) {
-            $io->writeError('<warning>You are using the deprecated option "dev". Dev packages are installed by default now.</warning>');
+            $this->getIO()->writeError('<warning>You are using the deprecated option "dev". Dev packages are installed by default now.</warning>');
         }
 
         $composer = $this->getComposer(true, $input->getOption('no-plugins'));
         $composer->getDownloadManager()->setOutputProgress(!$input->getOption('no-progress'));
+        $io = $this->getIO();
 
         $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'install', $input, $output);
         $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
@@ -111,8 +110,7 @@ EOT
             $preferDist = $input->getOption('prefer-dist');
         }
 
-        $optimize = $input->getOption('optimize-autoloader') || $config->get('optimize-autoloader');
-        $authoritative = $input->getOption('classmap-authoritative') || $config->get('classmap-authoritative');
+        $optimize = $input->getOption('optimize-autoloader') || $config->get('optimize-autoloader') || $config->get('classmap-authoritative');
 
         $install
             ->setDryRun($input->getOption('dry-run'))
@@ -123,7 +121,6 @@ EOT
             ->setDumpAutoloader(!$input->getOption('no-autoloader'))
             ->setRunScripts(!$input->getOption('no-scripts'))
             ->setOptimizeAutoloader($optimize)
-            ->setClassMapAuthoritative($authoritative)
             ->setIgnorePlatformRequirements($input->getOption('ignore-platform-reqs'))
         ;
 

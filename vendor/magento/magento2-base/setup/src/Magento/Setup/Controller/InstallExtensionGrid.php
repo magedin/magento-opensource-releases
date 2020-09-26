@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,7 @@ namespace Magento\Setup\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Magento\Setup\Model\PackagesData;
+use Magento\Setup\Model\MarketplaceManager;
 
 /**
  * Controller for extensions grid tasks
@@ -17,16 +17,16 @@ use Magento\Setup\Model\PackagesData;
 class InstallExtensionGrid extends AbstractActionController
 {
     /**
-     * @var PackagesData
+     * @var MarketplaceManager
      */
-    private $packagesData;
+    private $marketplaceManager;
 
     /**
-     * @param PackagesData $packagesData
+     * @param MarketplaceManager $marketplaceManager
      */
-    public function __construct(PackagesData $packagesData)
+    public function __construct(MarketplaceManager $marketplaceManager)
     {
-        $this->packagesData = $packagesData;
+        $this->marketplaceManager = $marketplaceManager;
     }
 
     /**
@@ -48,7 +48,7 @@ class InstallExtensionGrid extends AbstractActionController
      */
     public function extensionsAction()
     {
-        $extensions = $this->packagesData->getPackagesForInstall();
+        $extensions = $this->getMarketplaceManager()->getPackagesForInstall();
         $packages = isset($extensions['packages']) ? $extensions['packages'] : [];
         return new JsonModel(
             [
@@ -57,5 +57,14 @@ class InstallExtensionGrid extends AbstractActionController
                 'total' => count($packages)
             ]
         );
+    }
+
+    /**
+     * @return MarketplaceManager
+     */
+
+    public function getMarketplaceManager()
+    {
+        return $this->marketplaceManager;
     }
 }

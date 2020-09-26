@@ -2,7 +2,7 @@
 /**
  * Adminhtml AdminNotification controller
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\AdminNotification\Controller\Adminhtml;
@@ -10,7 +10,10 @@ namespace Magento\AdminNotification\Controller\Adminhtml;
 abstract class Notification extends \Magento\Backend\App\AbstractAction
 {
     /**
-     * Authorization level of a basic admin session
+     * @return bool
      */
-    const ADMIN_RESOURCE = 'Magento_AdminNotification::show_list';
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_AdminNotification::show_list');
+    }
 }

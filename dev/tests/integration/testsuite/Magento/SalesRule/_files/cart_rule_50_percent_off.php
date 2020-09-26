@@ -1,15 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-/** @var Magento\Framework\Registry $registry */
-$registry = $objectManager->get('Magento\Framework\Registry');
-
 /** @var \Magento\SalesRule\Model\Rule $salesRule */
-$salesRule = $objectManager->create('Magento\SalesRule\Model\Rule');
+$salesRule = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\SalesRule\Model\Rule');
 $salesRule->setData(
     [
         'name' => '50% Off on Large Orders',
@@ -26,7 +22,6 @@ $salesRule->setData(
         ],
         'simple_action' => 'by_percent',
         'discount_amount' => 50,
-        'discount_step' => 0,
         'stop_rules_processing' => 1,
         'website_ids' => [
             \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
@@ -36,5 +31,3 @@ $salesRule->setData(
     ]
 );
 $salesRule->save();
-$registry->unregister('Magento/SalesRule/_files/cart_rule_50_percent_off');
-$registry->register('Magento/SalesRule/_files/cart_rule_50_percent_off', $salesRule->getRuleId());

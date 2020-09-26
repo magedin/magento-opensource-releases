@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Theme\Model\View;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
 
 /**
  * Keeps design settings for current request
@@ -173,12 +172,12 @@ class Design implements \Magento\Framework\View\DesignInterface
             if ($this->_storeManager->isSingleStoreMode()) {
                 $theme = $this->_scopeConfig->getValue(
                     self::XML_PATH_THEME_ID,
-                    ScopeInterface::SCOPE_WEBSITES
+                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT
                 );
             } else {
                 $theme = (string) $this->_scopeConfig->getValue(
                     self::XML_PATH_THEME_ID,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                     $store
                 );
             }

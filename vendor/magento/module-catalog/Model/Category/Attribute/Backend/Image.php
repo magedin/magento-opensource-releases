@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,12 +11,12 @@
  */
 namespace Magento\Catalog\Model\Category\Attribute\Backend;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
 {
     /**
      * @var \Magento\MediaStorage\Model\File\UploaderFactory
-     *
-     * @deprecated
      */
     protected $_uploaderFactory;
 
@@ -24,8 +24,6 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
      * Filesystem facade
      *
      * @var \Magento\Framework\Filesystem
-     *
-     * @deprecated
      */
     protected $_filesystem;
 
@@ -33,27 +31,16 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
      * File Uploader factory
      *
      * @var \Magento\MediaStorage\Model\File\UploaderFactory
-     *
-     * @deprecated
      */
     protected $_fileUploaderFactory;
 
     /**
      * @var \Psr\Log\LoggerInterface
-     *
-     * @deprecated
      */
     protected $_logger;
 
     /**
-     * Image uploader
-     *
-     * @var \Magento\Catalog\Model\ImageUploader
-     */
-    private $imageUploader;
-
-    /**
-     * Image constructor.
+     * Construct
      *
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Filesystem $filesystem
@@ -70,23 +57,6 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
     }
 
     /**
-     * Get image uploader
-     *
-     * @return \Magento\Catalog\Model\ImageUploader
-     *
-     * @deprecated
-     */
-    private function getImageUploader()
-    {
-        if ($this->imageUploader === null) {
-            $this->imageUploader = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Catalog\CategoryImageUpload'
-            );
-        }
-        return $this->imageUploader;
-    }
-
-    /**
      * Save uploaded file and set its name to category
      *
      * @param \Magento\Framework\DataObject $object
@@ -94,12 +64,36 @@ class Image extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
      */
     public function afterSave($object)
     {
-        $image = $object->getData($this->getAttribute()->getName(), null);
+        $value = $object->getData($this->getAttribute()->getName() . '_additional_data');
 
-        if ($image !== null) {
-            try {
-                $this->getImageUploader()->moveFileFromTmp($image);
-            } catch (\Exception $e) {
+        // if no image was set - nothing to do
+        if (empty($value) && empty($_FILES)) {
+            return $this;
+        }
+
+        if (is_array($value) && !empty($value['delete'])) {
+            $object->setData($this->getAttribute()->getName(), '');
+            $this->getAttribute()->getEntity()->saveAttribute($object, $this->getAttribute()->getName());
+            return $this;
+        }
+
+        $path = $this->_filesystem->getDirectoryRead(
+            DirectoryList::MEDIA
+        )->getAbsolutePath(
+            'catalog/category/'
+        );
+
+        try {
+            /** @var $uploader \Magento\MediaStorage\Model\File\Uploader */
+            $uploader = $this->_fileUploaderFactory->create(['fileId' => $this->getAttribute()->getName()]);
+            $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+            $uploader->setAllowRenameFiles(true);
+            $result = $uploader->save($path);
+
+            $object->setData($this->getAttribute()->getName(), $result['file']);
+            $this->getAttribute()->getEntity()->saveAttribute($object, $this->getAttribute()->getName());
+        } catch (\Exception $e) {
+            if ($e->getCode() != \Magento\MediaStorage\Model\File\Uploader::TMP_NAME_EMPTY) {
                 $this->_logger->critical($e);
             }
         }

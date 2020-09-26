@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Model\Order\Creditmemo;
@@ -17,7 +17,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Sales\Model\Order\Creditmemo\Item */
     protected $item;
 
-    protected function setUp()
+    public function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->orderItemFactoryMock = $this->getMockBuilder('Magento\Sales\Model\Order\ItemFactory')
@@ -92,9 +92,72 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Magento\Sales\Model\Order\Item', $result);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage We found an invalid quantity to refund item "test_item_name".
+     */
+    public function testSetQtyDecimalException()
+    {
+        $qty = 100;
+        $orderItemQty = 10;
+        $name = 'test_item_name';
+
+        $orderItemMock = $this->getMockBuilder('Magento\Sales\Model\Order\Item')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $orderItemMock->expects($this->once())
+            ->method('getIsQtyDecimal')
+            ->willReturn(true);
+        $orderItemMock->expects($this->once())
+            ->method('getQtyToRefund')
+            ->willReturn($orderItemQty);
+
+        $this->item->setData(CreditmemoItemInterface::NAME, $name);
+        $this->item->setOrderItem($orderItemMock);
+        $this->item->setQty($qty);
+    }
+
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage We found an invalid quantity to refund item "test_item_name2".
+     */
+    public function testSetQtyNumericException()
+    {
+        $qty = 100;
+        $orderItemQty = 10;
+        $name = 'test_item_name2';
+
+        $orderItemMock = $this->getMockBuilder('Magento\Sales\Model\Order\Item')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $orderItemMock->expects($this->once())
+            ->method('getIsQtyDecimal')
+            ->willReturn(false);
+        $orderItemMock->expects($this->once())
+            ->method('getQtyToRefund')
+            ->willReturn($orderItemQty);
+
+        $this->item->setData(CreditmemoItemInterface::NAME, $name);
+        $this->item->setOrderItem($orderItemMock);
+        $this->item->setQty($qty);
+    }
+
     public function testSetQty()
     {
         $qty = 10;
+        $orderItemQty = 100;
+
+        $orderItemMock = $this->getMockBuilder('Magento\Sales\Model\Order\Item')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $orderItemMock->expects($this->once())
+            ->method('getIsQtyDecimal')
+            ->willReturn(false);
+        $orderItemMock->expects($this->once())
+            ->method('getQtyToRefund')
+            ->willReturn($orderItemQty);
+
+        $this->item->setOrderItem($orderItemMock);
         $this->item->setQty($qty);
         $this->assertEquals($qty, $this->item->getQty());
     }
@@ -131,39 +194,19 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $orderItemMock->expects($this->once())
             ->method('getBaseDiscountRefunded')
             ->willReturn(1);
-        $orderItemMock->expects($this->once())
-            ->method('getQtyToRefund')
-            ->willReturn(1);
-        $this->item->setQty(1);
-        $this->item->setTaxAmount(1);
-        $this->item->setBaseTaxAmount(1);
-        $this->item->setDiscountTaxCompensationAmount(1);
-        $this->item->setBaseDiscountTaxCompensationAmount(1);
-        $this->item->setRowTotal(1);
-        $this->item->setBaseRowTotal(1);
-        $this->item->setDiscountAmount(1);
-        $this->item->setBaseDiscountAmount(1);
+        $data = [
+            'qty' => 1,
+            'tax_amount' => 1,
+            'base_tax_amount' => 1,
+            'discount_tax_compensation_amount' => 1,
+            'base_discount_tax_compensation_amount' => 1,
+            'row_total' => 1,
+            'base_row_total' => 1,
+            'discount_amount' => 1,
+            'base_discount_amount' => 1
+        ];
         $this->item->setOrderItem($orderItemMock);
-        $result = $this->item->register();
-        $this->assertInstanceOf('Magento\Sales\Model\Order\Creditmemo\Item', $result);
-    }
-
-    /**
-     * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage We found an invalid quantity to refund item "test".
-     */
-    public function testRegisterWithException()
-    {
-        $orderItemMock = $this->getMockBuilder('Magento\Sales\Model\Order\Item')
-            ->disableOriginalConstructor()
-            ->setMethods(['getQtyRefunded'])
-            ->getMock();
-        $orderItemMock->expects($this->once())
-            ->method('getQtyRefunded')
-            ->willReturn(1);
-        $this->item->setQty(2);
-        $this->item->setOrderItem($orderItemMock);
-        $this->item->setName('test');
+        $this->item->setData($data);
         $result = $this->item->register();
         $this->assertInstanceOf('Magento\Sales\Model\Order\Creditmemo\Item', $result);
     }
@@ -172,6 +215,19 @@ class ItemTest extends \PHPUnit_Framework_TestCase
     {
         $orderItemMock = $this->getMockBuilder('Magento\Sales\Model\Order\Item')
             ->disableOriginalConstructor()
+            ->setMethods(
+                [
+                    'setQtyRefunded',
+                    'getQtyRefunded',
+                    'getTaxRefunded',
+                    'getBaseTaxAmount',
+                    'getQtyOrdered',
+                    'setTaxRefunded',
+                    'setDiscountTaxCompensationRefunded',
+                    'getDiscountTaxCompensationRefunded',
+                    'getDiscountTaxCompensationAmount'
+                ]
+            )
             ->getMock();
         $orderItemMock->expects($this->once())
             ->method('getQtyRefunded')
@@ -201,11 +257,8 @@ class ItemTest extends \PHPUnit_Framework_TestCase
         $orderItemMock->expects($this->once())
             ->method('getDiscountTaxCompensationAmount')
             ->willReturn(10);
-        $orderItemMock->expects($this->once())
-            ->method('getQtyToRefund')
-            ->willReturn(1);
 
-        $this->item->setQty(1);
+        $this->item->setData('qty', 1);
         $this->item->setOrderItem($orderItemMock);
         $result = $this->item->cancel();
         $this->assertInstanceOf('Magento\Sales\Model\Order\Creditmemo\Item', $result);
@@ -274,7 +327,7 @@ class ItemTest extends \PHPUnit_Framework_TestCase
             ->method('getQtyToRefund')
             ->willReturn($qtyAvailable);
 
-        $this->item->setQty($qty);
+        $this->item->setData('qty', $qty);
         $this->item->setCreditmemo($creditmemoMock);
         $this->item->setOrderItem($orderItemMock);
         $result = $this->item->calcRowTotal();

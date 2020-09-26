@@ -12,6 +12,7 @@
 
 namespace Composer\DependencyResolver\Operation;
 
+use Composer\Package\Version\VersionParser;
 use Composer\Package\PackageInterface;
 
 /**
@@ -45,6 +46,6 @@ abstract class SolverOperation implements OperationInterface
 
     protected function formatVersion(PackageInterface $package)
     {
-        return $package->getFullPrettyVersion();
+        return VersionParser::formatVersion($package);
     }
 }

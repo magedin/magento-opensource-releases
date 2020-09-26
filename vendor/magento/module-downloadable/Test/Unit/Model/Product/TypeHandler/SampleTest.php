@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Test\Unit\Model\Product\TypeHandler;
 
-use Magento\Downloadable\Model\Product\TypeHandler\Sample;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
@@ -13,15 +12,6 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
  */
 class SampleTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $metadataPoolMock;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $metadataMock;
 
     /**
      * @var \Magento\Downloadable\Model\ResourceModel\Link|\PHPUnit_Framework_MockObject_MockObject
@@ -56,23 +46,13 @@ class SampleTest extends \PHPUnit_Framework_TestCase
         $sampleResourceFactory->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->sampleResource));
-        $this->metadataPoolMock = $this->getMockBuilder('Magento\Framework\EntityManager\MetadataPool')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->metadataMock = $this->getMock('Magento\Framework\EntityManager\EntityMetadata', [], [], '', false);
-        $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($this->metadataMock);
         $this->target = $objectManagerHelper->getObject(
-            Sample::class,
+            'Magento\Downloadable\Model\Product\TypeHandler\Sample',
             [
                 'sampleFactory' => $this->sampleFactory,
                 'sampleResourceFactory' => $sampleResourceFactory,
-                'metadataPool' => $this->metadataPoolMock
             ]
         );
-        $refClass = new \ReflectionClass(Sample::class);
-        $refProperty = $refClass->getProperty('metadataPool');
-        $refProperty->setAccessible(true);
-        $refProperty->setValue($this->target, $this->metadataPoolMock);
     }
 
     /**
@@ -84,10 +64,9 @@ class SampleTest extends \PHPUnit_Framework_TestCase
     public function testSave($product, array $data, array $modelData)
     {
         $link = $this->createSampleModel($product, $modelData, true);
-        $this->metadataMock->expects($this->once())->method('getLinkField')->willReturn('id');
         $this->sampleFactory->expects($this->once())
             ->method('create')
-            ->willReturn($link);
+            ->will($this->returnValue($link));
         $this->target->save($product, $data);
     }
 
@@ -206,8 +185,8 @@ class SampleTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $sample->expects($this->once())
             ->method('setProductId')
-            ->with($product->getData('id'))
-            ->willReturnSelf();
+            ->with($product->getId())
+            ->will($this->returnSelf());
         $sample->expects($this->once())
             ->method('setStoreId')
             ->with($product->getStoreId())
@@ -232,7 +211,7 @@ class SampleTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $product->expects($this->any())
             ->method('getId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $product->expects($this->any())
             ->method('getStoreId')
             ->will($this->returnValue($storeId));
@@ -249,10 +228,6 @@ class SampleTest extends \PHPUnit_Framework_TestCase
         $product->expects($this->any())
             ->method('getStore')
             ->will($this->returnValue($store));
-        $product->expects($this->any())
-            ->method('getData')
-            ->with('id')
-            ->willReturn($id);
         return $product;
     }
 }

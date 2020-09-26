@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -73,27 +73,20 @@ class CatalogPriceRulesFixtureTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('category_id'));
 
         $modelMock = $this->getMock('Magento\CatalogRule\Model\Rule', [], [], '', false);
-        $metadataMock = $this->getMock('\Magento\Framework\EntityManager\EntityMetadata', [], [], '', false);
-        $metadataPoolMock = $this->getMock('Magento\Framework\EntityManager\MetadataPool', [], [], '', false);
-        $metadataMock->expects($this->once())
-            ->method('getLinkField')
+        $modelMock->expects($this->once())
+            ->method('getIdFieldName')
             ->will($this->returnValue('Field Id Name'));
 
         $valueMap = [
             ['Magento\CatalogRule\Model\Rule', $modelMock],
-            ['Magento\Catalog\Model\Category', $categoryMock],
-            ['Magento\Framework\EntityManager\MetadataPool', $metadataPoolMock]
+            ['Magento\Catalog\Model\Category', $categoryMock]
         ];
-        $metadataPoolMock
-            ->expects($this->once())
-            ->method('getMetadata')
-            ->with('Magento\CatalogRule\Api\Data\RuleInterface')
-            ->willReturn($metadataMock);
+
         $objectManagerMock = $this->getMock('Magento\Framework\ObjectManager\ObjectManager', [], [], '', false);
         $objectManagerMock->expects($this->once())
             ->method('create')
             ->will($this->returnValue($storeManagerMock));
-        $objectManagerMock->expects($this->exactly(3))
+        $objectManagerMock->expects($this->exactly(2))
             ->method('get')
             ->will($this->returnValueMap($valueMap));
 
@@ -102,7 +95,7 @@ class CatalogPriceRulesFixtureTest extends \PHPUnit_Framework_TestCase
             ->method('getValue')
             ->will($this->returnValue(1));
         $this->fixtureModelMock
-            ->expects($this->exactly(4))
+            ->expects($this->exactly(3))
             ->method('getObjectManager')
             ->will($this->returnValue($objectManagerMock));
 

@@ -1,39 +1,35 @@
 <?php
-namespace Test\Integration;
+require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
+require_once realpath(dirname(__FILE__)) . '/HttpClientApi.php';
 
-require_once dirname(__DIR__) . '/Setup.php';
-
-use Test\Setup;
-use Braintree;
-
-class PaymentMethodNonceTest extends Setup
+class Braintree_PaymentMethodNonceTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreate_fromPaymentMethodToken()
+    function testCreate_fromPaymentMethodToken()
     {
-        $customer = Braintree\Customer::createNoValidate();
-        $card = Braintree\CreditCard::create([
+        $customer = Braintree_Customer::createNoValidate();
+        $card = Braintree_CreditCard::create(array(
             'customerId' => $customer->id,
             'cardholderName' => 'Cardholder',
             'number' => '5105105105105100',
-            'expirationDate' => '05/12',
-        ])->creditCard;
+            'expirationDate' => '05/12'
+        ))->creditCard;
 
-        $result = Braintree\PaymentMethodNonce::create($card->token);
+        $result = Braintree_PaymentMethodNonce::create($card->token);
 
         $this->assertTrue($result->success);
         $this->assertNotNull($result->paymentMethodNonce);
         $this->assertNotNull($result->paymentMethodNonce->nonce);
     }
 
-    public function testCreate_fromNonExistentPaymentMethodToken()
+    function testCreate_fromNonExistentPaymentMethodToken()
     {
-        $this->setExpectedException('Braintree\Exception\NotFound');
-        Braintree\PaymentMethodNonce::create('not_a_token');
+        $this->setExpectedException('Braintree_Exception_NotFound');
+        Braintree_PaymentMethodNonce::create('not_a_token');
     }
 
-    public function testFind_exposesThreeDSecureInfo()
+    function testFind_exposesThreeDSecureInfo()
     {
-        $nonce = Braintree\PaymentMethodNonce::find('threedsecurednonce');
+        $nonce = Braintree_PaymentMethodNonce::find('threedsecurednonce');
         $info = $nonce->threeDSecureInfo;
 
         $this->assertEquals('threedsecurednonce', $nonce->nonce);
@@ -44,27 +40,27 @@ class PaymentMethodNonceTest extends Setup
         $this->assertTrue($info->liabilityShiftPossible);
     }
 
-    public function testFind_exposesNullThreeDSecureInfoIfNoneExists()
+    function testFind_exposesNullThreeDSecureInfoIfNoneExists()
     {
-        $http = new HttpClientApi(Braintree\Configuration::$global);
-        $nonce = $http->nonce_for_new_card([
-            "creditCard" => [
+        $http = new Braintree_HttpClientApi(Braintree_Configuration::$global);
+        $nonce = $http->nonce_for_new_card(array(
+            "creditCard" => array(
                 "number" => "4111111111111111",
                 "expirationMonth" => "11",
                 "expirationYear" => "2099"
-            ]
-        ]);
+            )
+        ));
 
-        $foundNonce = Braintree\PaymentMethodNonce::find($nonce);
+        $foundNonce = Braintree_PaymentMethodNonce::find($nonce);
         $info = $foundNonce->threeDSecureInfo;
 
         $this->assertEquals($nonce, $foundNonce->nonce);
         $this->assertNull($info);
     }
 
-    public function testFind_nonExistantNonce()
+    function testFind_nonExistantNonce()
     {
-        $this->setExpectedException('Braintree\Exception\NotFound');
-        Braintree\PaymentMethodNonce::find('not_a_nonce');
+        $this->setExpectedException('Braintree_Exception_NotFound');
+        Braintree_PaymentMethodNonce::create('not_a_nonce');
     }
 }

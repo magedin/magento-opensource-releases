@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,11 +9,11 @@ require __DIR__ . '/../../Customer/_files/customer_two_addresses.php';
 
 \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
 
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-
-$objectManager->get('Magento\Framework\App\Config\MutableScopeConfigInterface')
+\Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->get('Magento\Framework\App\Config\MutableScopeConfigInterface')
     ->setValue('carriers/flatrate/active', 1, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-$objectManager->get('Magento\Framework\App\Config\MutableScopeConfigInterface')
+\Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->get('Magento\Framework\App\Config\MutableScopeConfigInterface')
     ->setValue('payment/paypal_express/active', 1, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
 /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */
@@ -21,7 +21,7 @@ $customerRepository = $objectManager->create('Magento\Customer\Api\CustomerRepos
 $customer = $customerRepository->getById(1);
 
 /** @var $product \Magento\Catalog\Model\Product */
-$product = $objectManager->create('Magento\Catalog\Model\Product');
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 $product->setTypeId('simple')
     ->setId(1)
     ->setAttributeSetId(4)
@@ -39,18 +39,22 @@ $product->setTypeId('simple')
     ->save();
 $product->load(1);
 
-$customerBillingAddress = $objectManager->create('Magento\Customer\Model\Address');
+$customerBillingAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Customer\Model\Address');
 $customerBillingAddress->load(1);
 $billingAddressDataObject = $customerBillingAddress->getDataModel();
-$billingAddress = $objectManager->create('Magento\Quote\Model\Quote\Address');
+$billingAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Quote\Model\Quote\Address');
 $billingAddress->importCustomerAddressData($billingAddressDataObject);
 $billingAddress->setAddressType('billing');
 
 /** @var \Magento\Customer\Model\Address $customerShippingAddress */
-$customerShippingAddress = $objectManager->create('Magento\Customer\Model\Address');
+$customerShippingAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Customer\Model\Address');
 $customerShippingAddress->load(2);
 $shippingAddressDataObject = $customerShippingAddress->getDataModel();
-$shippingAddress = $objectManager->create('Magento\Quote\Model\Quote\Address');
+$shippingAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Quote\Model\Quote\Address');
 $shippingAddress->importCustomerAddressData($shippingAddressDataObject);
 $shippingAddress->setAddressType('shipping');
 
@@ -58,11 +62,15 @@ $shippingAddress->setShippingMethod('flatrate_flatrate');
 $shippingAddress->setCollectShippingRates(true);
 
 /** @var $quote \Magento\Quote\Model\Quote */
-$quote = $objectManager->create('Magento\Quote\Model\Quote');
+$quote = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Quote\Model\Quote');
 $quote->setCustomerIsGuest(false)
     ->setCustomerId($customer->getId())
     ->setCustomer($customer)
-    ->setStoreId($objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId())
+    ->setStoreId(
+        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get('Magento\Store\Model\StoreManagerInterface')
+            ->getStore()->getId()
+    )
     ->setReservedOrderId('test02')
     ->setBillingAddress($billingAddress)
     ->setShippingAddress($shippingAddress)
@@ -70,12 +78,9 @@ $quote->setCustomerIsGuest(false)
 $quote->getShippingAddress()->setShippingMethod('flatrate_flatrate');
 $quote->getShippingAddress()->setCollectShippingRates(true);
 $quote->getPayment()->setMethod(\Magento\Paypal\Model\Config::METHOD_WPS_EXPRESS);
-
-/** @var \Magento\Quote\Api\CartRepositoryInterface $quoteRepository */
-$quoteRepository = $objectManager->create(\Magento\Quote\Api\CartRepositoryInterface::class);
-$quoteRepository->save($quote);
-$quote = $quoteRepository->get($quote->getId());
+$quote->collectTotals()->save();
 
 /** @var $service \Magento\Quote\Api\CartManagementInterface */
-$service = $objectManager->create('\Magento\Quote\Api\CartManagementInterface');
+$service = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('\Magento\Quote\Api\CartManagementInterface');
 $order = $service->submit($quote, ['increment_id' => '100000002']);

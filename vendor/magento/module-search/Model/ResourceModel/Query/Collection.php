@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Search\Model\ResourceModel\Query;
@@ -102,12 +102,14 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function setQueryFilter($query)
     {
+        $ifSynonymFor = $this->getConnection()->getIfNullSql('synonym_for', 'query_text');
         $this->getSelect()->reset(
             \Magento\Framework\DB\Select::FROM
         )->distinct(
             true
         )->from(
-            ['main_table' => $this->getTable('search_query')]
+            ['main_table' => $this->getTable('search_query')],
+            ['query' => $ifSynonymFor, 'num_results']
         )->where(
             'num_results > 0 AND display_in_terms = 1 AND query_text LIKE ?',
             $this->_resourceHelper->addLikeEscape($query, ['position' => 'start'])
@@ -128,6 +130,13 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function setPopularQueryFilter($storeIds = null)
     {
+        $ifSynonymFor = new \Zend_Db_Expr(
+            $this->getConnection()->getCheckSql(
+                "synonym_for IS NOT NULL AND synonym_for != ''",
+                'synonym_for',
+                'query_text'
+            )
+        );
 
         $this->getSelect()->reset(
             \Magento\Framework\DB\Select::FROM
@@ -136,7 +145,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         )->distinct(
             true
         )->from(
-            ['main_table' => $this->getTable('search_query')]
+            ['main_table' => $this->getTable('search_query')],
+            ['name' => $ifSynonymFor, 'num_results', 'popularity', 'query_id']
         );
         if ($storeIds) {
             $this->addStoreFilter($storeIds);
@@ -146,7 +156,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             $this->getSelect()->where('num_results > 0');
         }
 
-        $this->getSelect()->order(['popularity desc']);
+        $this->getSelect()->order(['popularity desc', 'name']);
 
         return $this;
     }

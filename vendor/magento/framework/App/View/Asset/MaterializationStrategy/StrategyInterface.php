@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -14,14 +14,14 @@ interface StrategyInterface
     /**
      * Publish file
      *
-     * @param WriteInterface $sourceDir
+     * @param WriteInterface $rootDir
      * @param WriteInterface $targetDir
      * @param string $sourcePath
      * @param string $destinationPath
      * @return bool
      */
     public function publishFile(
-        WriteInterface $sourceDir,
+        WriteInterface $rootDir,
         WriteInterface $targetDir,
         $sourcePath,
         $destinationPath

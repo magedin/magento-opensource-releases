@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Response\Validator;
 
 use Magento\Framework\DataObject;
-use Magento\Paypal\Model\Payflow\Transparent;
 use Magento\Paypal\Model\Payflowpro;
 use Magento\Paypal\Model\Payflow\Service\Response\ValidatorInterface;
 use Magento\Paypal\Model\Payflow\Service\Response\Validator\ResponseValidator;
@@ -28,11 +27,6 @@ class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
      */
     protected $validatorMock;
 
-    /**
-     * @var Transparent|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $payflowFacade;
-
     protected function setUp()
     {
         $this->validatorMock = $this->getMockBuilder(
@@ -40,10 +34,6 @@ class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
         )
             ->setMethods(['validate'])
             ->getMockForAbstractClass();
-        $this->payflowFacade = $this->getMockBuilder(Transparent::class)
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMock();
 
         $this->responseValidator = new ResponseValidator([$this->validatorMock]);
     }
@@ -60,7 +50,7 @@ class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('validate')
             ->with($response);
 
-        $this->responseValidator->validate($response, $this->payflowFacade);
+        $this->responseValidator->validate($response);
     }
 
     /**
@@ -102,7 +92,7 @@ class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
             ->with($response)
             ->willReturn(false);
 
-        $this->responseValidator->validate($response, $this->payflowFacade);
+        $this->responseValidator->validate($response);
     }
 
     /**
@@ -123,6 +113,6 @@ class ResponseValidatorTest extends \PHPUnit_Framework_TestCase
             ->with($response)
             ->willReturn(false);
 
-        $this->responseValidator->validate($response, $this->payflowFacade);
+        $this->responseValidator->validate($response);
     }
 }

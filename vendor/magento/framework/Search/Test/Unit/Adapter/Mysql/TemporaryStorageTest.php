@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Search\Test\Unit\Adapter\Mysql;
@@ -83,57 +83,27 @@ class TemporaryStorageTest extends \PHPUnit_Framework_TestCase
         $documentId = 312432;
         $documentValue = 1.235123;
 
-        $attributeValue = $this->getMockBuilder('Magento\Framework\Api\AttributeValue')
+        $documentField = $this->getMockBuilder('Magento\Framework\Search\DocumentField')
             ->disableOriginalConstructor()
             ->getMock();
-        $attributeValue->expects($this->once())
+        $documentField->expects($this->once())
             ->method('getValue')
             ->willReturn($documentValue);
 
-        $document = $this->getMockBuilder('Magento\Framework\Api\Search\Document')
+        $document = $this->getMockBuilder('Magento\Framework\Search\Document')
             ->disableOriginalConstructor()
             ->getMock();
         $document->expects($this->once())
             ->method('getId')
             ->willReturn($documentId);
         $document->expects($this->once())
-            ->method('getCustomAttribute')
+            ->method('getField')
             ->with('score')
-            ->willReturn($attributeValue);
+            ->willReturn($documentField);
 
         $table = $this->createTemporaryTable();
 
         $result = $this->model->storeDocuments([$document]);
-
-        $this->assertEquals($result, $table);
-    }
-
-    public function testStoreApiDocuments()
-    {
-        $documentId = 312432;
-        $documentValue = 1.235123;
-
-        $attributeValue = $this->getMockBuilder('Magento\Framework\Api\AttributeValue')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $attributeValue->expects($this->once())
-            ->method('getValue')
-            ->willReturn($documentValue);
-
-        $document = $this->getMockBuilder('Magento\Framework\Api\Search\Document')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $document->expects($this->once())
-            ->method('getId')
-            ->willReturn($documentId);
-        $document->expects($this->once())
-            ->method('getCustomAttribute')
-            ->with('score')
-            ->willReturn($attributeValue);
-
-        $table = $this->createTemporaryTable();
-
-        $result = $this->model->storeApiDocuments([$document]);
 
         $this->assertEquals($result, $table);
     }

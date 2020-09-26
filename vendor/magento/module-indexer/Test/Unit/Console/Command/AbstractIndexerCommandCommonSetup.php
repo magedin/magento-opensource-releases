@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Indexer\Test\Unit\Console\Command;
@@ -13,7 +13,7 @@ class AbstractIndexerCommandCommonSetup extends \PHPUnit_Framework_TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\ObjectManager\ConfigLoader
      */
-    protected $configLoaderMock;
+    private $configLoaderMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Indexer\Model\IndexerFactory
@@ -51,7 +51,10 @@ class AbstractIndexerCommandCommonSetup extends \PHPUnit_Framework_TestCase
 
         $this->objectManager->expects($this->any())
             ->method('get')
-            ->will($this->returnValueMap($this->getObjectManagerReturnValueMap()));
+            ->will($this->returnValueMap([
+                ['Magento\Framework\App\State', $this->stateMock],
+                ['Magento\Framework\ObjectManager\ConfigLoaderInterface', $this->configLoaderMock]
+            ]));
 
         $this->collectionFactory = $this->getMockBuilder('Magento\Indexer\Model\Indexer\CollectionFactory')
             ->disableOriginalConstructor()
@@ -69,19 +72,6 @@ class AbstractIndexerCommandCommonSetup extends \PHPUnit_Framework_TestCase
                 ['Magento\Indexer\Model\Indexer\CollectionFactory', [], $this->collectionFactory],
                 ['Magento\Indexer\Model\IndexerFactory', [], $this->indexerFactory],
             ]));
-    }
-
-    /**
-     * Return value map for object manager
-     *
-     * @return array
-     */
-    protected function getObjectManagerReturnValueMap()
-    {
-        return [
-            ['Magento\Framework\App\State', $this->stateMock],
-            ['Magento\Framework\ObjectManager\ConfigLoaderInterface', $this->configLoaderMock]
-        ];
     }
 
     protected function configureAdminArea()

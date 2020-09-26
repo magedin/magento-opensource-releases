@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true*/
@@ -17,18 +17,15 @@ define(
 
             getFinalRowDisplayPriceExclTax: function(item) {
                 var rowTotalExclTax = parseFloat(item.row_total);
-                if (!window.checkoutConfig.getIncludeWeeeFlag) {
-                    rowTotalExclTax += parseFloat(item.weee_tax_applied_amount);
+                if(!window.checkoutConfig.getIncludeWeeeFlag) {
+                    return rowTotalExclTax + parseFloat(item.weee_tax_applied_amount);
                 }
                 return rowTotalExclTax;
             },
 
             getRowDisplayPriceExclTax: function(item) {
                 var rowTotalExclTax = parseFloat(item.row_total);
-                if (window.checkoutConfig.getIncludeWeeeFlag) {
-                    rowTotalExclTax += this.getRowWeeeTaxExclTax(item);
-                }
-                return rowTotalExclTax;
+                return rowTotalExclTax + this.getRowWeeeTaxExclTax(item);
             },
 
             getRowWeeeTaxExclTax: function(item) {

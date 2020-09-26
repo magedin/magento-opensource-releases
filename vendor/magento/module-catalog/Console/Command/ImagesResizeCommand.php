@@ -1,10 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Console\Command;
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Image\Cache as ImageCache;
 use Magento\Catalog\Model\Product\Image\CacheFactory as ImageCacheFactory;
@@ -29,7 +30,7 @@ class ImagesResizeCommand extends Command
     protected $productCollectionFactory;
 
     /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     * @var ProductRepositoryInterface
      */
     protected $productRepository;
 
@@ -41,13 +42,13 @@ class ImagesResizeCommand extends Command
     /**
      * @param AppState $appState
      * @param ProductCollectionFactory $productCollectionFactory
-     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param ProductRepositoryInterface $productRepository
      * @param ImageCacheFactory $imageCacheFactory
      */
     public function __construct(
         AppState $appState,
         ProductCollectionFactory $productCollectionFactory,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        ProductRepositoryInterface $productRepository,
         ImageCacheFactory $imageCacheFactory
     ) {
         $this->appState = $appState;
@@ -78,8 +79,7 @@ class ImagesResizeCommand extends Command
         $productIds = $productCollection->getAllIds();
         if (!count($productIds)) {
             $output->writeln("<info>No product images to resize</info>");
-            // we must have an exit code higher than zero to indicate something was wrong
-            return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
+            return;
         }
 
         try {
@@ -99,8 +99,7 @@ class ImagesResizeCommand extends Command
             }
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
-            // we must have an exit code higher than zero to indicate something was wrong
-            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
+            return;
         }
 
         $output->write("\n");

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,7 +10,6 @@ use Magento\SalesRule\Test\Fixture\SalesRule;
 use Magento\SalesRule\Test\Page\Adminhtml\PromoQuoteEdit;
 use Magento\SalesRule\Test\Page\Adminhtml\PromoQuoteIndex;
 use Magento\Mtf\Constraint\AbstractConstraint;
-use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Assert sales rule form.
@@ -35,7 +34,6 @@ class AssertCartPriceRuleForm extends AbstractConstraint
      *
      * @param PromoQuoteIndex $promoQuoteIndex
      * @param PromoQuoteEdit $promoQuoteEdit
-     * @param FixtureFactory $fixtureFactory
      * @param SalesRule $salesRule
      * @param SalesRule $salesRuleOrigin
      * @return void
@@ -43,7 +41,6 @@ class AssertCartPriceRuleForm extends AbstractConstraint
     public function processAssert(
         PromoQuoteIndex $promoQuoteIndex,
         PromoQuoteEdit $promoQuoteEdit,
-        FixtureFactory $fixtureFactory,
         SalesRule $salesRule,
         SalesRule $salesRuleOrigin = null
     ) {
@@ -53,11 +50,7 @@ class AssertCartPriceRuleForm extends AbstractConstraint
 
         $promoQuoteIndex->open();
         $promoQuoteIndex->getPromoQuoteGrid()->searchAndOpen($filter);
-        $fixtureData = $salesRuleOrigin != null
-            ? array_merge($salesRuleOrigin->getData(), $salesRule->getData())
-            : $salesRule->getData();
-        $salesRuleMerged = $fixtureFactory->createByCode('salesRule', ['data' => $fixtureData]);
-        $formData = $promoQuoteEdit->getSalesRuleForm()->getData($salesRuleMerged);
+        $formData = $promoQuoteEdit->getSalesRuleForm()->getData();
         $fixtureData = $salesRuleOrigin != null
             ? array_merge($salesRuleOrigin->getData(), $salesRule->getData())
             : $salesRule->getData();

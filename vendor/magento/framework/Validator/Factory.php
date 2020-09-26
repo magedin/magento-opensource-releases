@@ -2,7 +2,7 @@
 /**
  * Magento validator config factory
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,13 +10,8 @@
 
 namespace Magento\Framework\Validator;
 
-use Magento\Framework\Cache\FrontendInterface;
-
 class Factory
 {
-    /** cache key */
-    const CACHE_KEY = __CLASS__;
-
     /**
      * @var \Magento\Framework\ObjectManagerInterface
      */
@@ -35,46 +30,17 @@ class Factory
     private $isDefaultTranslatorInitialized = false;
 
     /**
-     * @var \Magento\Framework\Module\Dir\Reader
-     */
-    private $moduleReader;
-
-    /**
-     * @var FrontendInterface
-     */
-    private $cache;
-
-    /**
      * Initialize dependencies
      *
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Framework\Module\Dir\Reader $moduleReader
-     * @param FrontendInterface $cache
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Framework\Module\Dir\Reader $moduleReader,
-        FrontendInterface $cache
+        \Magento\Framework\Module\Dir\Reader $moduleReader
     ) {
         $this->_objectManager = $objectManager;
-        $this->moduleReader = $moduleReader;
-        $this->cache = $cache;
-    }
-
-    /**
-     * Init cached list of validation files
-     */
-    protected function _initializeConfigList()
-    {
-        if (!$this->_configFiles) {
-            $this->_configFiles = $this->cache->load(self::CACHE_KEY);
-            if (!$this->_configFiles) {
-                $this->_configFiles = $this->moduleReader->getConfigurationFiles('validation.xml');
-                $this->cache->save(serialize($this->_configFiles), self::CACHE_KEY);
-            } else {
-                $this->_configFiles = unserialize($this->_configFiles);
-            }
-        }
+        $this->_configFiles = $moduleReader->getConfigurationFiles('validation.xml');
     }
 
     /**
@@ -107,7 +73,6 @@ class Factory
      */
     public function getValidatorConfig()
     {
-        $this->_initializeConfigList();
         $this->_initializeDefaultTranslator();
         return $this->_objectManager->create('Magento\Framework\Validator\Config', ['configFiles' => $this->_configFiles]);
     }

@@ -1,19 +1,19 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\CatalogRule\Test\Block\Adminhtml\Promo\Catalog\Edit;
 
-use \Magento\Ui\Test\Block\Adminhtml\FormSections;
+use Magento\Backend\Test\Block\Widget\FormTabs;
 use Magento\Mtf\Client\Element\SimpleElement;
 use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Form for creation of a Catalog Price Rule.
  */
-class PromoForm extends FormSections
+class PromoForm extends FormTabs
 {
     /**
      * Fill form with tabs.
@@ -21,15 +21,15 @@ class PromoForm extends FormSections
      * @param FixtureInterface $fixture
      * @param SimpleElement $element
      * @param array $replace
-     * @return $this
+     * @return $this|FormTabs
      */
     public function fill(FixtureInterface $fixture, SimpleElement $element = null, array $replace = null)
     {
-        $sections = $this->getFixtureFieldsByContainers($fixture);
+        $tabs = $this->getFieldsByTabs($fixture);
         if ($replace) {
-            $sections = $this->prepareData($sections, $replace);
+            $tabs = $this->prepareData($tabs, $replace);
         }
-        return $this->fillContainers($sections, $element);
+        $this->fillTabs($tabs, $element);
     }
 
     /**

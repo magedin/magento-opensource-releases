@@ -1,8 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CatalogRule\Test\Unit\Model\Indexer\Product;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
@@ -19,11 +20,6 @@ class ProductRuleIndexerTest extends \PHPUnit_Framework_TestCase
      */
     protected $indexer;
 
-    /**
-     * @var \Magento\Framework\Indexer\CacheContext|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $cacheContextMock;
-
     protected function setUp()
     {
         $this->indexBuilder = $this->getMock('Magento\CatalogRule\Model\Indexer\IndexBuilder', [], [], '', false);
@@ -34,17 +30,7 @@ class ProductRuleIndexerTest extends \PHPUnit_Framework_TestCase
                 'indexBuilder' => $this->indexBuilder,
             ]
         );
-
-        $this->cacheContextMock = $this->getMock(\Magento\Framework\Indexer\CacheContext::class, [], [], '', false);
-
-        $cacheContextProperty = new \ReflectionProperty(
-            \Magento\CatalogRule\Model\Indexer\Product\ProductRuleIndexer::class,
-            'cacheContext'
-        );
-        $cacheContextProperty->setAccessible(true);
-        $cacheContextProperty->setValue($this->indexer, $this->cacheContextMock);
     }
-
     /**
      * @param array $ids
      * @param array $idsForIndexer
@@ -52,12 +38,8 @@ class ProductRuleIndexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDoExecuteList($ids, $idsForIndexer)
     {
-        $this->indexBuilder->expects($this->once())
-            ->method('reindexByIds')
-            ->with($idsForIndexer);
-        $this->cacheContextMock->expects($this->once())
-            ->method('registerEntities')
-            ->with(\Magento\Catalog\Model\Product::CACHE_TAG, $ids);
+        $this->indexBuilder->expects($this->once())->method('reindexByIds')->with($idsForIndexer);
+
         $this->indexer->executeList($ids);
     }
 

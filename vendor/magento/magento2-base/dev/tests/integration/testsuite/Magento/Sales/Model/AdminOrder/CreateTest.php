@@ -1,13 +1,11 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\AdminOrder;
 
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Sales\Model\Order;
-use Magento\Framework\Registry;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -123,32 +121,6 @@ class CreateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Sales/_files/order.php
-     */
-    public function testInitFromOrderWithEmptyPaymentDetails()
-    {
-        /** @var $objectManager \Magento\TestFramework\ObjectManager */
-        $objectManager = Bootstrap::getObjectManager();
-        /** @var $order \Magento\Sales\Model\Order */
-        $order = $objectManager->create(Order::class);
-        $order->loadByIncrementId('100000001');
-
-        $objectManager->get(Registry::class)
-            ->unregister('rule_data');
-
-        $initOrder = $this->_model->initFromOrder($order);
-        $payment = $initOrder->getQuote()->getPayment();
-
-        static::assertEquals($initOrder->getQuote()->getId(), $payment->getData('quote_id'));
-        $payment->unsetData('quote_id');
-
-        static::assertEmpty($payment->getMethod());
-        static::assertEmpty($payment->getAdditionalInformation());
-        static::assertEmpty($payment->getAdditionalData());
-        static::assertEmpty($payment->getData());
-    }
-
-    /**
      * @magentoAppIsolation enabled
      */
     public function testGetCustomerWishlistNoCustomerId()
@@ -234,12 +206,11 @@ class CreateTest extends \PHPUnit_Framework_TestCase
                 'region_id' => 1,
             ]
         );
-
-        $result = $this->_model->getBillingAddress()->getData();
-        foreach ($expectedAddressData as $key => $value) {
-            $this->assertArrayHasKey($key, $result);
-            $this->assertEquals($value, $result[$key]);
-        }
+        $this->assertEquals(
+            $expectedAddressData,
+            $this->_model->getBillingAddress()->getData(),
+            'Created billing address is invalid.'
+        );
     }
 
     /**

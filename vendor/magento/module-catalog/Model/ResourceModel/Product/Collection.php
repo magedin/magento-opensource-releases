@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,8 +13,6 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\Customer\Api\GroupManagementInterface;
 use Magento\Framework\DB\Select;
 use Magento\Store\Model\Store;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Catalog\Api\Data\CategoryInterface;
 
 /**
  * Product collection
@@ -100,9 +98,21 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     protected $_addTaxPercents = false;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation
+     * Product limitation filters
+     * Allowed filters
+     *  store_id                int;
+     *  category_id             int;
+     *  category_is_anchor      int;
+     *  visibility              array|int;
+     *  website_ids             array|int;
+     *  store_table             string;
+     *  use_price_index         bool;   join price index table flag
+     *  customer_group_id       int;    required for price; customer group limitation for price
+     *  website_id              int;    required for price; website limitation for price
+     *
+     * @var array
      */
-    protected $_productLimitationFilters;
+    protected $_productLimitationFilters = [];
 
     /**
      * Category product count select
@@ -299,7 +309,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         $this->_resourceHelper = $resourceHelper;
         $this->dateTime = $dateTime;
         $this->_groupManagement = $groupManagement;
-        $this->_productLimitationFilters = $this->createLimitationFilters();
         parent::__construct(
             $entityFactory,
             $logger,
@@ -800,7 +809,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     /**
      * Get filters applied to collection
      *
-     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation
+     * @return array
      */
     public function getLimitationFilters()
     {
@@ -1010,16 +1019,13 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         $select = clone $this->getSelect();
         $attribute = $this->getEntity()->getAttribute($attribute);
 
-        $aiField = $this->getConnection()->getAutoIncrementField($this->getMainTable());
-        $select->reset()
-            ->from(
-                ['cpe' => $this->getMainTable()],
-                ['entity_id']
-            )->join(
-                ['cpa' => $attribute->getBackend()->getTable()],
-                'cpe.' . $aiField . ' = cpa.' . $aiField,
-                ['store_id', 'value']
-            )->where('attribute_id = ?', (int)$attribute->getId());
+        $select->reset()->from(
+            $attribute->getBackend()->getTable(),
+            ['entity_id', 'store_id', 'value']
+        )->where(
+            'attribute_id = ?',
+            (int)$attribute->getId()
+        );
 
         $data = $this->getConnection()->fetchAll($select);
         $res = [];
@@ -1423,7 +1429,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
      */
     public function addPriceData($customerGroupId = null, $websiteId = null)
     {
-        $this->_productLimitationFilters->setUsePriceIndex(true);
+        $this->_productLimitationFilters['use_price_index'] = true;
 
         if (!isset($this->_productLimitationFilters['customer_group_id']) && is_null($customerGroupId)) {
             $customerGroupId = $this->_customerSession->getCustomerGroupId();
@@ -1510,14 +1516,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function getEntityPkName(\Magento\Eav\Model\Entity\AbstractEntity $entity)
-    {
-        return $entity->getLinkField();
-    }
-
-    /**
      * Add requere tax percent flag for product collection
      *
      * @return $this
@@ -1545,28 +1543,22 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
      */
     public function addOptionsToResult()
     {
-        $productsByLinkId = [];
-
+        $productIds = [];
         foreach ($this as $product) {
-            $productId = $product->getData(
-                $product->getResource()->getLinkField()
-            );
-
-            $productsByLinkId[$productId] = $product;
+            $productIds[] = $product->getId();
         }
-
-        if (!empty($productsByLinkId)) {
+        if (!empty($productIds)) {
             $options = $this->_productOptionFactory->create()->getCollection()->addTitleToResult(
                 $this->_storeManager->getStore()->getId()
             )->addPriceToResult(
                 $this->_storeManager->getStore()->getId()
             )->addProductToFilter(
-                array_keys($productsByLinkId)
+                $productIds
             )->addValuesToResult();
 
             foreach ($options as $option) {
-                if (isset($productsByLinkId[$option->getProductId()])) {
-                    $productsByLinkId[$option->getProductId()]->addOption($option);
+                if ($this->getItemById($option->getProductId())) {
+                    $this->getItemById($option->getProductId())->addOption($option);
                 }
             }
         }
@@ -1635,10 +1627,9 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         $storeId = $this->getStoreId();
         if ($attribute == 'price' && $storeId != 0) {
             $this->addPriceData();
-            if ($this->_productLimitationFilters->isUsingPriceIndex()) {
-                $this->getSelect()->order("price_index.min_price {$dir}");
-                return $this;
-            }
+            $this->getSelect()->order("price_index.min_price {$dir}");
+
+            return $this;
         }
 
         if ($this->isEnabledFlat()) {
@@ -1854,7 +1845,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     protected function _productLimitationPrice($joinLeft = false)
     {
         $filters = $this->_productLimitationFilters;
-        if (!$filters->isUsingPriceIndex()) {
+        if (empty($filters['use_price_index'])) {
             return $this;
         }
 
@@ -1913,7 +1904,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
      */
     public function applyFrontendPriceLimitations()
     {
-        $this->_productLimitationFilters->setUsePriceIndex(true);
+        $this->_productLimitationFilters['use_price_index'] = true;
         if (!isset($this->_productLimitationFilters['customer_group_id'])) {
             $customerGroupId = $this->_customerSession->getCustomerGroupId();
             $this->_productLimitationFilters['customer_group_id'] = $customerGroupId;
@@ -1991,10 +1982,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
 
         $conditions = [
             'cat_pro.product_id=e.entity_id',
-            $this->getConnection()->quoteInto(
-                'cat_pro.category_id=?',
-                $filters['category_id']
-            ),
+            $this->getConnection()->quoteInto('cat_pro.category_id=?', $filters['category_id']),
         ];
         $joinCond = join(' AND ', $conditions);
 
@@ -2090,7 +2078,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
                 $websiteId = $this->_storeManager->getStore($this->getStoreId())->getWebsiteId();
             }
         }
-        $linkField = $this->getConnection()->getAutoIncrementField($this->getTable('catalog_product_entity'));
+
         $connection = $this->getConnection();
         $columns = [
             'price_id' => 'value_id',
@@ -2099,16 +2087,16 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
             'cust_group' => 'customer_group_id',
             'price_qty' => 'qty',
             'price' => 'value',
-            'product_id' => $linkField,
+            'product_id' => 'entity_id',
         ];
         $select = $connection->select()->from(
             $this->getTable('catalog_product_entity_tier_price'),
             $columns
         )->where(
-            $linkField .' IN(?)',
+            'entity_id IN(?)',
             $productIds
         )->order(
-            [$linkField, 'qty']
+            ['entity_id', 'qty']
         );
 
         if ($websiteId == '0') {
@@ -2261,14 +2249,5 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         }
 
         return $this->_pricesCount;
-    }
-
-    /**
-     * @return Collection\ProductLimitation
-     */
-    private function createLimitationFilters()
-    {
-        return \Magento\Framework\App\ObjectManager::getInstance()
-                ->create('Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation');
     }
 }

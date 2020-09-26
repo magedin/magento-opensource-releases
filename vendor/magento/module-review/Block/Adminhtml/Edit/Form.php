@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -128,7 +128,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
         $fieldset->addField('customer', 'note', ['label' => __('Author'), 'text' => $customerText]);
 
         $fieldset->addField(
-            'summary-rating',
+            'summary_rating',
             'note',
             [
                 'label' => __('Summary Rating'),
@@ -137,7 +137,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
         );
 
         $fieldset->addField(
-            'detailed-rating',
+            'detailed_rating',
             'note',
             [
                 'label' => __('Detailed Rating'),

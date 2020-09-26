@@ -2,7 +2,7 @@
 /**
  * Unit test for Magento\Customer\Test\Unit\Model\Account\Redirect
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,7 +12,6 @@ namespace Magento\Customer\Test\Unit\Model\Account;
 
 use Magento\Customer\Model\Account\Redirect;
 use Magento\Customer\Model\Url as CustomerUrl;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
@@ -69,16 +68,11 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
     protected $resultRedirect;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Controller\Result\Forward
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Controller\Result\RedirectFactory
      */
-    protected $resultForward;
+    protected $resultRedirectFactory;
 
-    /**
-     * @var ResultFactory | \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $resultFactory;
-
-    protected function setUp()
+    public function setUp()
     {
         $this->request = $this->getMockForAbstractClass('Magento\Framework\App\RequestInterface');
 
@@ -94,10 +88,6 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
                 'setBeforeAuthUrl',
                 'getAfterAuthUrl',
                 'setAfterAuthUrl',
-                'getBeforeRequestParams',
-                'getBeforeModuleName',
-                'getBeforeControllerName',
-                'getBeforeAction',
             ])
             ->getMock();
 
@@ -123,13 +113,12 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultForward = $this->getMockBuilder('Magento\Framework\Controller\Result\Forward')
+        $this->resultRedirectFactory = $this->getMockBuilder('Magento\Framework\Controller\Result\RedirectFactory')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->resultFactory = $this->getMockBuilder('Magento\Framework\Controller\ResultFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resultRedirectFactory->expects($this->once())
+            ->method('create')
+            ->willReturn($this->resultRedirect);
 
         $objectManager = new ObjectManager($this);
         $this->model = $objectManager->getObject(
@@ -142,24 +131,12 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
                 'url'                   => $this->url,
                 'urlDecoder'            => $this->urlDecoder,
                 'customerUrl'           => $this->customerUrl,
-                'resultFactory'         => $this->resultFactory
+                'resultRedirectFactory' => $this->resultRedirectFactory
             ]
         );
     }
 
     /**
-     * @param int $customerId
-     * @param int $lastCustomerId
-     * @param string $referer
-     * @param string $baseUrl
-     * @param string $beforeAuthUrl
-     * @param string $afterAuthUrl
-     * @param string $accountUrl
-     * @param string $loginUrl
-     * @param string $logoutUrl
-     * @param string $dashboardUrl
-     * @param bool $customerLoggedIn
-     * @param bool $redirectToDashboard
      * @dataProvider getRedirectDataProvider
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -213,9 +190,6 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             ->method('setAfterAuthUrl')
             ->with($beforeAuthUrl)
             ->willReturnSelf();
-        $this->customerSession->expects($this->any())
-            ->method('getBeforeRequestParams')
-            ->willReturn(false);
 
         $this->customerUrl->expects($this->any())
             ->method('getAccountUrl')
@@ -253,11 +227,6 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             ->method('setUrl')
             ->willReturnSelf();
 
-        $this->resultFactory->expects($this->once())
-            ->method('create')
-            ->with(ResultFactory::TYPE_REDIRECT)
-            ->willReturn($this->resultRedirect);
-
         $this->model->getRedirect();
     }
 
@@ -292,54 +261,5 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             // Default redirect
             [1, 2, 'referer', 'base', 'defined', '', 'account', 'login', 'logout', 'dashboard', true, true],
         ];
-    }
-
-    public function testBeforeRequestParams()
-    {
-        $requestParams = [
-            'param1' => 'value1',
-        ];
-
-        $module = 'module';
-        $controller = 'controller';
-        $action = 'action';
-
-        $this->customerSession->expects($this->exactly(2))
-            ->method('getBeforeRequestParams')
-            ->willReturn($requestParams);
-        $this->customerSession->expects($this->once())
-            ->method('getBeforeModuleName')
-            ->willReturn($module);
-        $this->customerSession->expects($this->once())
-            ->method('getBeforeControllerName')
-            ->willReturn($controller);
-        $this->customerSession->expects($this->once())
-            ->method('getBeforeAction')
-            ->willReturn($action);
-
-        $this->resultForward->expects($this->once())
-            ->method('setParams')
-            ->with($requestParams)
-            ->willReturnSelf();
-        $this->resultForward->expects($this->once())
-            ->method('setModule')
-            ->with($module)
-            ->willReturnSelf();
-        $this->resultForward->expects($this->once())
-            ->method('setController')
-            ->with($controller)
-            ->willReturnSelf();
-        $this->resultForward->expects($this->once())
-            ->method('forward')
-            ->with($action)
-            ->willReturnSelf();
-
-        $this->resultFactory->expects($this->once())
-            ->method('create')
-            ->with(ResultFactory::TYPE_FORWARD)
-            ->willReturn($this->resultForward);
-
-        $result = $this->model->getRedirect();
-        $this->assertSame($this->resultForward, $result);
     }
 }

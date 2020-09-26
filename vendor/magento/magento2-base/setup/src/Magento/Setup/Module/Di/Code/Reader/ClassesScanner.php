@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Module\Di\Code\Reader;
 
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Setup\Module\Di\Code\Reader\FileScanner;
+use Zend\Code\Scanner\FileScanner;
 
 class ClassesScanner implements ClassesScannerInterface
 {
@@ -55,7 +55,7 @@ class ClassesScanner implements ClassesScannerInterface
         $classes = [];
         foreach ($recursiveIterator as $fileItem) {
             /** @var $fileItem \SplFileInfo */
-            if ($fileItem->isDir() || $fileItem->getExtension() !== 'php') {
+            if ($fileItem->getExtension() !== 'php') {
                 continue;
             }
             foreach ($this->excludePatterns as $excludePatterns) {
@@ -88,7 +88,7 @@ class ClassesScanner implements ClassesScannerInterface
             $patterns = (array)$patterns;
         }
         foreach ($patterns as $pattern) {
-            if (preg_match($pattern, str_replace('\\', '/', $fileItem->getRealPath()))) {
+            if (preg_match($pattern, $fileItem->getRealPath())) {
                 return true;
             }
         }

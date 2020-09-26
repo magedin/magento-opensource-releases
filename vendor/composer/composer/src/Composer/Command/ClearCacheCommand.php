@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author David Neilsen <petah.p@gmail.com>
  */
-class ClearCacheCommand extends BaseCommand
+class ClearCacheCommand extends Command
 {
     protected function configure()
     {

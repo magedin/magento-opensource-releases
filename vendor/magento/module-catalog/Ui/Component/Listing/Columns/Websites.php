@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Ui\Component\Listing\Columns;
@@ -43,7 +43,6 @@ class Websites extends \Magento\Ui\Component\Listing\Columns\Column
 
     /**
      * {@inheritdoc}
-     * @deprecated
      */
     public function prepareDataSource(array $dataSource)
     {
@@ -56,9 +55,6 @@ class Websites extends \Magento\Ui\Component\Listing\Columns\Column
             foreach ($dataSource['data']['items'] as & $item) {
                 $websites = [];
                 foreach ($item[$fieldName] as $websiteId) {
-                    if (!isset($websiteNames[$websiteId])) {
-                        continue;
-                    }
                     $websites[] = $websiteNames[$websiteId];
                 }
                 $item[$fieldName] = implode(', ', $websites);
@@ -67,16 +63,15 @@ class Websites extends \Magento\Ui\Component\Listing\Columns\Column
 
         return $dataSource;
     }
-    
+
     /**
      * Prepare component configuration
      * @return void
      */
     public function prepare()
     {
-        parent::prepare();
-        if ($this->storeManager->isSingleStoreMode()) {
-            $this->_data['config']['componentDisabled'] = true;
+        if (!$this->storeManager->isSingleStoreMode()) {
+            parent::prepare();
         }
     }
 }

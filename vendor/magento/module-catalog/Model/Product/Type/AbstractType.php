@@ -1,16 +1,14 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Type;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\LocalizedException;
 
 /**
- * @api
  * Abstract model for product type implementation
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.TooManyFields)
@@ -27,6 +25,7 @@ abstract class AbstractType
     protected $_typeId;
 
     /**
+     *
      * @var array
      */
     protected $_editableAttributes;
@@ -295,7 +294,15 @@ abstract class AbstractType
      */
     public function getEditableAttributes($product)
     {
-        return $this->getSetAttributes($product);
+        $cacheKey = '_cache_editable_attributes';
+        if (!$product->hasData($cacheKey)) {
+            $editableAttributes = [];
+            foreach ($this->getSetAttributes($product) as $attributeCode => $attribute) {
+                $editableAttributes[$attributeCode] = $attribute;
+            }
+            $product->setData($cacheKey, $editableAttributes);
+        }
+        return $product->getData($cacheKey);
     }
 
     /**
@@ -562,39 +569,23 @@ abstract class AbstractType
      * @param \Magento\Catalog\Model\Product $product
      * @param string $processMode
      * @return array
-     * @throws LocalizedException
      */
     protected function _prepareOptions(\Magento\Framework\DataObject $buyRequest, $product, $processMode)
     {
         $transport = new \StdClass();
         $transport->options = [];
-        $options = null;
-        if ($product->getHasOptions()) {
-            $options = $product->getOptions();
-        }
-        if ($options !== null) {
-            $results = [];
-            foreach ($options as $option) {
-                /* @var $option \Magento\Catalog\Model\Product\Option */
-                try {
-                    $group = $option->groupFactory($option->getType())
-                        ->setOption($option)
-                        ->setProduct($product)
-                        ->setRequest($buyRequest)
-                        ->setProcessMode($processMode)
-                        ->validateUserValue($buyRequest->getOptions());
-                } catch (LocalizedException $e) {
-                    $results[] = $e->getMessage();
-                    continue;
-                }
+        foreach ($product->getOptions() as $option) {
+            /* @var $option \Magento\Catalog\Model\Product\Option */
+            $group = $option->groupFactory($option->getType())
+                ->setOption($option)
+                ->setProduct($product)
+                ->setRequest($buyRequest)
+                ->setProcessMode($processMode)
+                ->validateUserValue($buyRequest->getOptions());
 
-                $preparedValue = $group->prepareForCart();
-                if ($preparedValue !== null) {
-                    $transport->options[$option->getId()] = $preparedValue;
-                }
-            }
-            if (count($results) > 0) {
-                throw new LocalizedException(__(implode("\n", $results)));
+            $preparedValue = $group->prepareForCart();
+            if ($preparedValue !== null) {
+                $transport->options[$option->getId()] = $preparedValue;
             }
         }
 
@@ -615,9 +606,8 @@ abstract class AbstractType
      */
     public function checkProductBuyState($product)
     {
-        if (!$product->getSkipCheckRequiredOption() && $product->getHasOptions()) {
-            $options = $product->getProductOptionsCollection();
-            foreach ($options as $option) {
+        if (!$product->getSkipCheckRequiredOption()) {
+            foreach ($product->getOptions() as $option) {
                 if ($option->getIsRequire()) {
                     $customOption = $product->getCustomOption(self::OPTION_PREFIX . $option->getId());
                     if (!$customOption || strlen($customOption->getValue()) == 0) {
@@ -980,10 +970,7 @@ abstract class AbstractType
     {
         $searchData = [];
         if ($product->getHasOptions()) {
-            $searchData = $this->_catalogProductOption->getSearchableData(
-                $product->getEntityId(),
-                $product->getStoreId()
-            );
+            $searchData = $this->_catalogProductOption->getSearchableData($product->getId(), $product->getStoreId());
         }
 
         return $searchData;

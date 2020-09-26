@@ -1,30 +1,14 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Mview\View;
 
-/**
- * Class SubscriptionFactory
- * @package Magento\Framework\Mview\View
- *
- */
 class SubscriptionFactory extends AbstractFactory
 {
     /**
      * Instance name
      */
-    const INSTANCE_NAME = SubscriptionInterface::class;
-
-    /**
-     * @param array $data
-     * @return SubscriptionInterface
-     */
-    public function create(array $data = [])
-    {
-        $instanceName = isset($data['subscriptionModel']) ? $data['subscriptionModel'] : self::INSTANCE_NAME;
-        unset($data['subscriptionModel']);
-        return $this->objectManager->create($instanceName, $data);
-    }
+    const INSTANCE_NAME = 'Magento\Framework\Mview\View\SubscriptionInterface';
 }

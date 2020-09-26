@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -35,7 +35,7 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
      */
     protected $model;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->orderExtensionFactoryMock = $this->getMockBuilder(
             '\Magento\Sales\Api\Data\OrderExtensionFactory'
@@ -75,18 +75,10 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $appliedTaxes
-     * @param array $expectedAppliedTaxes
-     * @param array $itemsAppliedTaxes
-     * @param array $itemAppliedTaxesExpected
      * @dataProvider afterConvertDataProvider
      */
-    public function testAfterConvert(
-        $appliedTaxes,
-        $expectedAppliedTaxes,
-        $itemsAppliedTaxes,
-        $itemAppliedTaxesExpected
-    ) {
+    public function testAfterConvert($appliedTaxes, $itemsAppliedTaxes)
+    {
         $this->model->beforeConvert($this->subjectMock, $this->quoteAddressMock);
 
         $this->quoteAddressMock->expects($this->once())
@@ -108,13 +100,13 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
 
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setAppliedTaxes')
-            ->with($expectedAppliedTaxes);
+            ->with($appliedTaxes);
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setConvertingFromQuote')
             ->with(true);
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setItemAppliedTaxes')
-            ->with($itemAppliedTaxesExpected);
+            ->with($itemsAppliedTaxes);
         $orderMock->expects($this->once())
             ->method('setExtensionAttributes')
             ->with($orderExtensionAttributeMock);
@@ -123,18 +115,10 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $appliedTaxes
-     * @param array $expectedAppliedTaxes
-     * @param array $itemsAppliedTaxes
-     * @param array $itemAppliedTaxesExpected
      * @dataProvider afterConvertDataProvider
      */
-    public function testAfterConvertNullExtensionAttribute(
-        $appliedTaxes,
-        $expectedAppliedTaxes,
-        $itemsAppliedTaxes,
-        $itemAppliedTaxesExpected
-    ) {
+    public function testAfterConvertNullExtensionAttribute($appliedTaxes, $itemsAppliedTaxes)
+    {
         $this->model->beforeConvert($this->subjectMock, $this->quoteAddressMock);
 
         $this->quoteAddressMock->expects($this->once())
@@ -160,13 +144,13 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
 
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setAppliedTaxes')
-            ->with($expectedAppliedTaxes);
+            ->with($appliedTaxes);
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setConvertingFromQuote')
             ->with(true);
         $orderExtensionAttributeMock->expects($this->once())
             ->method('setItemAppliedTaxes')
-            ->with($itemAppliedTaxesExpected);
+            ->with($itemsAppliedTaxes);
         $orderMock->expects($this->once())
             ->method('setExtensionAttributes')
             ->with($orderExtensionAttributeMock);
@@ -174,11 +158,6 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($orderMock, $this->model->afterConvert($this->subjectMock, $orderMock));
     }
 
-    /**
-     * Data provider for testAfterConvert and testAfterConvertNullExtensionAttribute
-     *
-     * @return array
-     */
     public function afterConvertDataProvider()
     {
         return [
@@ -193,100 +172,21 @@ class ToOrderConverterTest extends \PHPUnit_Framework_TestCase
                                 'code' => 'IL',
                                 'title' => 'IL',
                             ]
-                        ],
-                    ],
-                ],
-                'expected_applied_taxes' => [
-                    'IL' => [
-                        'amount' => 0.36,
-                        'percent' => 6,
-                        'extension_attributes' => [
-                            'rates' => [
-                                [
-                                    'percent' => 6,
-                                    'code' => 'IL',
-                                    'title' => 'IL',
-                                ]
-                            ],
-                        ],
-                    ],
+                        ]
+                    ]
                 ],
                 'item_applied_taxes' => [
                     'sequence-1' => [
                         [
                             'amount' => 0.06,
                             'item_id' => 146,
-                            'item_type' => 'product',
-                            'associated_item_id' => null,
-                            'rates' => [
-                                    [
-                                        'percent' => 6,
-                                        'code' => 'IL',
-                                        'title' => 'IL',
-                                    ],
-                                ],
                         ],
                     ],
                     'shipping' => [
                         [
                             'amount' => 0.30,
-                            'item_id' => 146,
                             'item_type' => 'shipping',
-                            'associated_item_id' => null,
-                            'rates' => [
-                                [
-                                    'percent' => 6,
-                                    'code' => 'IL',
-                                    'title' => 'IL',
-                                ],
-                            ],
                         ]
-                    ],
-                ],
-                'item_applied_taxes_expected' => [
-                    'sequence-1' => [
-                            'item_id' => 146,
-                            'type' => 'product',
-                            'associated_item_id' => null,
-                            'applied_taxes' => [
-                                [
-                                'amount' => 0.06,
-                                'item_id' => 146,
-                                'item_type' => 'product',
-                                'associated_item_id' => null,
-                                'extension_attributes' => [
-                                    'rates' => [
-                                        [
-                                            'percent' => 6,
-                                            'code' => 'IL',
-                                            'title' => 'IL',
-                                        ]
-                                    ],
-                                ],
-                                ]
-                            ],
-                    ],
-                    'shipping' => [
-                        'item_id' => 146,
-                        'type' => 'shipping',
-                        'associated_item_id' => null,
-                        'applied_taxes' => [
-                            [
-                                'amount' => 0.30,
-                                'item_id' => 146,
-                                'item_type' => 'shipping',
-                                'associated_item_id' => null,
-                                'extension_attributes' => [
-                                    'rates' => [
-                                        [
-                                            'percent' => 6,
-                                            'code' => 'IL',
-                                            'title' => 'IL',
-                                        ]
-                                    ],
-                                ],
-                            ]
-                        ],
                     ],
                 ],
             ],

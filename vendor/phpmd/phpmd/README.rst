@@ -87,7 +87,7 @@ Command line options
     instead of the default output target ``STDOUT``.
 
   - ``--suffixes`` - Comma-separated string of valid source code filename
-    extensions, e.g. php,phtml.
+    extensions.
 
   - ``--exclude`` - Comma-separated string of patterns that are used to ignore
     directories.
@@ -96,7 +96,7 @@ Command line options
 
   An example command line: ::
 
-    phpmd PHP/Depend/DbusUI xml codesize --reportfile phpmd.xml --suffixes php,phtml
+    phpmd PHP/Depend/DbusUI xml codesize --reportfile phpmd.xml --suffixes .php
 
 Using multiple rule sets
 ````````````````````````

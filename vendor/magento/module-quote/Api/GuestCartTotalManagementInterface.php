@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Api;
 
 /**
  * Bundled API to collect totals for cart based on shipping/payment methods and additional data.
- * @api
  */
 interface GuestCartTotalManagementInterface
 {

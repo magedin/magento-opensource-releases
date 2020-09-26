@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Helper;
@@ -83,8 +83,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @magentoDataFixture Magento/Catalog/_files/categories.php
-     * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
      */
     public function testGetBreadcrumbPath()
     {
@@ -257,10 +255,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $productClassName = 'DefaultProductClass'
     ) {
         $this->setUpDefaultRules();
-        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
-        $productRepository = $this->objectManager->get('Magento\Catalog\Api\ProductRepositoryInterface');
+        $fixtureProductId = 1;
         /** @var \Magento\Catalog\Model\Product $product */
-        $product = $productRepository->get('simple');
+        $product = $this->objectManager->create('Magento\Catalog\Model\Product')->load($fixtureProductId);
         $product->setTaxClassId($this->taxClasses[$productClassName]);
         $shippingAddress = $this->getCustomerAddress();
         $billingAddress = $shippingAddress;

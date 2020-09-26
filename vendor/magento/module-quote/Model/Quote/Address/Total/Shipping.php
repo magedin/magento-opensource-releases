@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model\Quote\Address\Total;
@@ -60,10 +60,9 @@ class Shipping extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         $addressWeight = $address->getWeight();
         $freeMethodWeight = $address->getFreeMethodWeight();
 
-        $isAllFree = $this->freeShipping->isFreeShipping($quote, $shippingAssignment->getItems());
-        if ($isAllFree && !$address->getFreeShipping()) {
-            $address->setFreeShipping(true);
-        }
+        $address->setFreeShipping(
+            $this->freeShipping->isFreeShipping($quote, $shippingAssignment->getItems())
+        );
         $total->setTotalAmount($this->getCode(), 0);
         $total->setBaseTotalAmount($this->getCode(), 0);
 

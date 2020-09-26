@@ -1,50 +1,45 @@
 <?php
-namespace Test\Unit;
+require_once realpath(dirname(__FILE__)) . '/../TestHelper.php';
 
-require_once dirname(__DIR__) . '/Setup.php';
-
-use Test\Setup;
-use Braintree;
-
-class TransactionTest extends Setup
+class Braintree_TransactionTest extends PHPUnit_Framework_TestCase
 {
-    public function testGet_givesErrorIfInvalidProperty()
+    function testGet_givesErrorIfInvalidProperty()
     {
-        $t = Braintree\Transaction::factory([
-            'creditCard' => ['expirationMonth' => '05', 'expirationYear' => '2010', 'bin' => '510510', 'last4' => '5100'],
-            'customer' => [],
-            'billing' => [],
-            'descriptor' => [],
-            'shipping' => [],
-            'subscription' => ['billingPeriodStartDate' => '1983-07-12'],
-            'statusHistory' => []
-        ]);
-        $this->setExpectedException('PHPUnit_Framework_Error', 'Undefined property on Braintree\Transaction: foo');
+        $t = Braintree_Transaction::factory(array(
+            'creditCard' => array('expirationMonth' => '05', 'expirationYear' => '2010', 'bin' => '510510', 'last4' => '5100'),
+            'customer' => array(),
+            'billing' => array(),
+            'descriptor' => array(),
+            'shipping' => array(),
+            'subscription' => array('billingPeriodStartDate' => '1983-07-12'),
+            'statusHistory' => array()
+        ));
+        $this->setExpectedException('PHPUnit_Framework_Error', 'Undefined property on Braintree_Transaction: foo');
         $t->foo;
     }
 
-	public function testCloneTransaction_RaisesErrorOnInvalidProperty()
+	function testCloneTransaction_RaisesErrorOnInvalidProperty()
 	{
         $this->setExpectedException('InvalidArgumentException');
-		Braintree\Transaction::cloneTransaction('an id', ['amount' => '123.45', 'invalidProperty' => 'foo']);
+		Braintree_Transaction::cloneTransaction('an id', array('amount' => '123.45', 'invalidProperty' => 'foo'));
 	}
 
-	public function testErrorsWhenFindWithBlankString()
+	function testErrorsWhenFindWithBlankString()
 	{
         $this->setExpectedException('InvalidArgumentException');
-        Braintree\Transaction::find('');
+        Braintree_Transaction::find('');
 	}
 
-	public function testErrorsWhenFindWithWhitespaceString()
+	function testErrorsWhenFindWithWhitespaceString()
 	{
         $this->setExpectedException('InvalidArgumentException');
-        Braintree\Transaction::find('\t');
+        Braintree_Transaction::find('\t');
 	}
 
-    public function testInitializationWithoutArguments()
+    function testInitializationWithoutArguments()
     {
-        $transaction = Braintree\Transaction::factory([]);
+        $transaction = Braintree_Transaction::factory(array());
 
-        $this->assertTrue($transaction instanceof Braintree\Transaction);
+        $this->assertTrue($transaction instanceof Braintree_Transaction);
     }
 }

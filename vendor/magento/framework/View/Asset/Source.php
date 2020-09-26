@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Framework\View\Asset;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\View\Asset\PreProcessor\ChainFactoryInterface;
 use Magento\Framework\View\Design\FileResolution\Fallback\Resolver\Simple;
 
@@ -54,15 +53,7 @@ class Source
     private $chainFactory;
 
     /**
-     * @var ReadFactory
-     */
-    private $readFactory;
-
-    /**
-     * Constructor
-     *
      * @param \Magento\Framework\Filesystem $filesystem
-     * @param ReadFactory $readFactory
      * @param PreProcessor\Pool $preProcessorPool
      * @param \Magento\Framework\View\Design\FileResolution\Fallback\StaticFile $fallback
      * @param \Magento\Framework\View\Design\Theme\ListInterface $themeList
@@ -70,14 +61,12 @@ class Source
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
-        ReadFactory $readFactory,
         PreProcessor\Pool $preProcessorPool,
         \Magento\Framework\View\Design\FileResolution\Fallback\StaticFile $fallback,
         \Magento\Framework\View\Design\Theme\ListInterface $themeList,
         ChainFactoryInterface $chainFactory
     ) {
         $this->filesystem = $filesystem;
-        $this->readFactory = $readFactory;
         $this->rootDir = $filesystem->getDirectoryRead(DirectoryList::ROOT);
         $this->varDir = $filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->preProcessorPool = $preProcessorPool;
@@ -98,8 +87,8 @@ class Source
         if (!$result) {
             return false;
         }
-        list($dir, $path) = $result;
-        return $this->readFactory->create($dir)->getAbsolutePath($path);
+        list($dirCode, $path) = $result;
+        return $this->filesystem->getDirectoryRead($dirCode)->getAbsolutePath($path);
     }
 
     /**
@@ -114,15 +103,15 @@ class Source
         if (!$result) {
             return false;
         }
-        list($dir, $path) = $result;
-        return $this->readFactory->create($dir)->readFile($path);
+        list($dirCode, $path) = $result;
+        return $this->filesystem->getDirectoryRead($dirCode)->readFile($path);
     }
 
     /**
      * Perform necessary preprocessing and materialization when the specified asset is requested
      *
      * Returns an array of two elements:
-     * - directory where the file is supposed to be found
+     * - directory code where the file is supposed to be found
      * - relative path to the file
      *
      * returns false if source file was not found
@@ -133,26 +122,18 @@ class Source
     private function preProcess(LocalInterface $asset)
     {
         $sourceFile = $this->findSourceFile($asset);
-        $dir = $this->rootDir->getAbsolutePath();
-        $path = '';
-        if ($sourceFile) {
-            $path = basename($sourceFile);
-            $dir = dirname($sourceFile);
-        }
+        $path = $this->rootDir->getRelativePath($sourceFile);
 
-        $chain = $this->createChain($asset, $dir, $path);
+        $chain = $this->createChain($asset, $path);
         $this->preProcessorPool->process($chain);
         $chain->assertValid();
+        $dirCode = DirectoryList::ROOT;
         if ($chain->isChanged()) {
-            $dir = $this->varDir->getAbsolutePath();
+            $dirCode = DirectoryList::VAR_DIR;
             $path = DirectoryList::TMP_MATERIALIZATION_DIR . '/source/' . $chain->getTargetAssetPath();
             $this->varDir->writeFile($path, $chain->getContent());
         }
-        if (empty($path)) {
-            $result = false;
-        } else {
-            $result = [$dir, $path];
-        }
+        $result = [$dirCode, $path];
         return $result;
     }
 
@@ -237,7 +218,6 @@ class Source
      * @param \Magento\Framework\View\Asset\LocalInterface $asset
      *
      * @return bool|string
-     * @deprecated If custom vendor directory is outside Magento root, then this method will return unexpected result
      */
     public function findRelativeSourceFilePath(LocalInterface $asset)
     {
@@ -252,14 +232,13 @@ class Source
      * Creates a chain for pre-processing
      *
      * @param LocalInterface $asset
-     * @param string|bool $dir
      * @param string|bool $path
      * @return PreProcessor\Chain
      */
-    private function createChain(LocalInterface $asset, $dir, $path)
+    private function createChain(LocalInterface $asset, $path)
     {
         if ($path) {
-            $origContent = $this->readFactory->create($dir)->readFile($path);
+            $origContent = $this->rootDir->readFile($path);
             $origContentType = $this->getContentType($path);
         } else {
             $origContent = '';
@@ -271,7 +250,7 @@ class Source
                 'asset' => $asset,
                 'origContent' => $origContent,
                 'origContentType' => $origContentType,
-                'origAssetPath' => $dir . '/' . $path
+                'origAssetPath' => $path
             ]
         );
         return $chain;

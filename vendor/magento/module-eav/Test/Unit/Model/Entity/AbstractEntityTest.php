@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Test\Unit\Model\Entity;
@@ -119,16 +119,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     {
         $connection = $this->getMock(
             'Magento\Framework\DB\Adapter\Pdo\Mysql',
-            [
-                'describeTable',
-                'getIndexList',
-                'lastInsertId',
-                'insert',
-                'prepareColumnValue',
-                'select',
-                'query',
-                'delete'
-            ],
+            ['describeTable', 'lastInsertId', 'insert', 'prepareColumnValue', 'query', 'delete'],
             [],
             '',
             false
@@ -140,17 +131,6 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-
-        $select = $this->getMock(
-            'Magento\Framework\DB\Select',
-            [],
-            [],
-            '',
-            false
-        );
-        $select->expects($this->any())
-            ->method('from')
-            ->willReturnSelf();
 
         $connection->expects($this->any())->method('query')->will($this->returnValue($statement));
 
@@ -173,22 +153,6 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         )->will(
             $this->returnValue(true)
         );
-
-        $connection->expects($this->any())
-            ->method('select')
-            ->willReturn($select);
-
-        $connection->expects($this->any())
-            ->method('getIndexList')
-            ->willReturn(
-                [
-                    'PK_ENTITYTABLE' => [
-                        'COLUMNS_LIST' => [
-                            'entity_id'
-                        ]
-                    ]
-                ]
-            );
 
         return $connection;
     }

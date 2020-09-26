@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -36,11 +36,6 @@ class Suffix extends \Magento\Framework\App\Config\Value
     protected $connection;
 
     /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resource;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
@@ -72,7 +67,6 @@ class Suffix extends \Magento\Framework\App\Config\Value
         $this->connection = $appResource->getConnection();
         $this->urlFinder = $urlFinder;
         $this->storeManager = $storeManager;
-        $this->resource = $appResource;
     }
 
     /**
@@ -124,7 +118,7 @@ class Suffix extends \Magento\Framework\App\Config\Value
                 ? [UrlRewrite::REQUEST_PATH => preg_replace($oldSuffixPattern, $suffix, $urlRewrite->getRequestPath())]
                 : [UrlRewrite::TARGET_PATH => preg_replace($oldSuffixPattern, $suffix, $urlRewrite->getTargetPath())];
             $this->connection->update(
-                $this->resource->getTableName(DbStorage::TABLE_NAME),
+                DbStorage::TABLE_NAME,
                 $bind,
                 $this->connection->quoteIdentifier(UrlRewrite::URL_REWRITE_ID) . ' = ' . $urlRewrite->getUrlRewriteId()
             );

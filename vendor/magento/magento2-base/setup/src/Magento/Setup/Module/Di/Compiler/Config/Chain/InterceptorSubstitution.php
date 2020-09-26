@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Module\Di\Compiler\Config\Chain;
@@ -38,8 +38,11 @@ class InterceptorSubstitution implements ModificationInterface
         }
 
         $config['preferences'] = $this->resolvePreferences($config['preferences'], $interceptors);
-        $config['preferences'] = array_merge($interceptors, $config['preferences']);
+
+        $config['preferences'] = array_merge($config['preferences'], $interceptors);
         $config['instanceTypes'] = $this->resolvePreferences($config['instanceTypes'], $interceptors);
+
+
 
         return $config;
     }

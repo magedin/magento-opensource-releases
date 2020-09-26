@@ -1,37 +1,26 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Model;
 
 use Magento\Cms\Api\Data\BlockInterface;
-use Magento\Cms\Model\ResourceModel\Block as ResourceCmsBlock;
 use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\Model\AbstractModel;
 
 /**
  * CMS block model
  *
- * @method ResourceCmsBlock _getResource()
- * @method ResourceCmsBlock getResource()
- * @method Block setStoreId(array $storeId)
- * @method array getStoreId()
+ * @method \Magento\Cms\Model\ResourceModel\Block _getResource()
+ * @method \Magento\Cms\Model\ResourceModel\Block getResource()
  */
-class Block extends AbstractModel implements BlockInterface, IdentityInterface
+class Block extends \Magento\Framework\Model\AbstractModel implements BlockInterface, IdentityInterface
 {
     /**
      * CMS block cache tag
      */
     const CACHE_TAG = 'cms_block';
 
-    /**#@+
-     * Block's statuses
-     */
-    const STATUS_ENABLED = 1;
-    const STATUS_DISABLED = 0;
-
-    /**#@-*/
     /**
      * @var string
      */
@@ -55,7 +44,7 @@ class Block extends AbstractModel implements BlockInterface, IdentityInterface
     /**
      * Prevent blocks recursion
      *
-     * @return AbstractModel
+     * @return \Magento\Framework\Model\AbstractModel
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function beforeSave()
@@ -234,15 +223,5 @@ class Block extends AbstractModel implements BlockInterface, IdentityInterface
     public function getStores()
     {
         return $this->hasData('stores') ? $this->getData('stores') : $this->getData('store_id');
-    }
-
-    /**
-     * Prepare block's statuses.
-     *
-     * @return array
-     */
-    public function getAvailableStatuses()
-    {
-        return [self::STATUS_ENABLED => __('Enabled'), self::STATUS_DISABLED => __('Disabled')];
     }
 }

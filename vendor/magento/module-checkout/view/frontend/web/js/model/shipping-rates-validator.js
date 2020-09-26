@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
@@ -11,26 +11,15 @@ define(
         '../model/address-converter',
         '../action/select-shipping-address',
         './postcode-validator',
-        'mage/translate',
-        'uiRegistry'
+        'mage/translate'
     ],
-    function (
-        $,
-        ko,
-        shippingRatesValidationRules,
-        addressConverter,
-        selectShippingAddress,
-        postcodeValidator,
-        $t,
-        uiRegistry
-    ) {
+    function ($, ko, shippingRatesValidationRules, addressConverter, selectShippingAddress, postcodeValidator, $t) {
         'use strict';
 
         var checkoutConfig = window.checkoutConfig,
             validators = [],
             observedElements = [],
-            postcodeElement = null,
-            postcodeElementName = 'postcode';
+            postcodeElement = null;
 
         return {
             validateAddressTimeout: 0,
@@ -51,50 +40,9 @@ define(
              * @return {Boolean}
              */
             validateAddressData: function (address) {
-                return validators.some(function (validator) {
+                return validators.some(function(validator) {
                     return validator.validate(address);
                 });
-            },
-
-            /**
-             * Perform postponed binding for fieldset elements
-             *
-             * @param {String} formPath
-             */
-            initFields: function (formPath) {
-                var self = this,
-                    elements = shippingRatesValidationRules.getObservableFields();
-
-                if ($.inArray(postcodeElementName, elements) === -1) {
-                    // Add postcode field to observables if not exist for zip code validation support
-                    elements.push(postcodeElementName);
-                }
-
-                $.each(elements, function (index, field) {
-                    uiRegistry.async(formPath + '.' + field)(self.doElementBinding.bind(self));
-                });
-            },
-
-            /**
-             * Bind shipping rates request to form element
-             *
-             * @param {Object} element
-             * @param {Boolean} force
-             * @param {Number} delay
-             */
-            doElementBinding: function (element, force, delay) {
-                var observableFields = shippingRatesValidationRules.getObservableFields();
-
-                if (element && (observableFields.indexOf(element.index) !== -1 || force)) {
-                    if (element.index !== postcodeElementName) {
-                        this.bindHandler(element, delay);
-                    }
-                }
-
-                if (element.index === postcodeElementName) {
-                    this.bindHandler(element, delay);
-                    postcodeElement = element;
-                }
             },
 
             /**
@@ -103,10 +51,20 @@ define(
              * @param {Number} delay
              */
             bindChangeHandlers: function (elements, force, delay) {
-                var self = this;
+                var self = this,
+                    observableFields = shippingRatesValidationRules.getObservableFields();
 
                 $.each(elements, function (index, elem) {
-                    self.doElementBinding(elem, force, delay);
+                    if (elem && (observableFields.indexOf(elem.index) != -1 || force)) {
+                        if (elem.index !== 'postcode') {
+                            self.bindHandler(elem, delay);
+                        }
+                    }
+
+                    if (elem.index === 'postcode') {
+                        self.bindHandler(elem, delay);
+                        postcodeElement = elem;
+                    }
                 });
             },
 
@@ -117,9 +75,9 @@ define(
             bindHandler: function (element, delay) {
                 var self = this;
 
-                delay = typeof delay === 'undefined' ? self.validateDelay : delay;
+                delay = typeof delay === "undefined" ? self.validateDelay : delay;
 
-                if (element.component.indexOf('/group') !== -1) {
+                if (element.component.indexOf('/group') != -1) {
                     $.each(element.elems(), function (index, elem) {
                         self.bindHandler(elem);
                     });
@@ -141,7 +99,7 @@ define(
              */
             postcodeValidation: function () {
                 var countryId = $('select[name="country_id"]').val(),
-                    validationResult,
+                    validationResult = postcodeValidator.validate(postcodeElement.value(), countryId),
                     warnMessage;
 
                 if (postcodeElement == null || postcodeElement.value() == null) {
@@ -149,11 +107,9 @@ define(
                 }
 
                 postcodeElement.warn(null);
-                validationResult = postcodeValidator.validate(postcodeElement.value(), countryId);
 
                 if (!validationResult) {
                     warnMessage = $t('Provided Zip/Postal Code seems to be invalid.');
-
                     if (postcodeValidator.validatedPostCodeExample.length) {
                         warnMessage += $t(' Example: ') + postcodeValidator.validatedPostCodeExample.join('; ') + '. ';
                     }

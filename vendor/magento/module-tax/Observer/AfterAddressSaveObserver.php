@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Observer;
 
-use Magento\Customer\Model\Address;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -70,7 +69,7 @@ class AfterAddressSaveObserver implements ObserverInterface
             $address = $observer->getCustomerAddress();
 
             // Check if the address is either the default billing, shipping, or both
-            if ($this->isDefaultBilling($address)) {
+            if ($address->getIsPrimaryBilling() || $address->getIsDefaultBilling()) {
                 $this->customerSession->setDefaultTaxBillingAddress(
                     [
                         'country_id' => $address->getCountryId(),
@@ -79,8 +78,8 @@ class AfterAddressSaveObserver implements ObserverInterface
                     ]
                 );
             }
-            
-            if ($this->isDefaultShipping($address)) {
+
+            if ($address->getIsPrimaryShipping() || $address->getIsDefaultShipping()) {
                 $this->customerSession->setDefaultTaxShippingAddress(
                     [
                         'country_id' => $address->getCountryId(),
@@ -90,31 +89,5 @@ class AfterAddressSaveObserver implements ObserverInterface
                 );
             }
         }
-    }
-
-    /**
-     * Check whether specified billing address is default for its customer
-     *
-     * @param Address $address
-     * @return bool
-     */
-    protected function isDefaultBilling($address)
-    {
-        return $address->getId() && $address->getId() == $address->getCustomer()->getDefaultBilling()
-        || $address->getIsPrimaryBilling()
-        || $address->getIsDefaultBilling();
-    }
-
-    /**
-     * Check whether specified shipping address is default for its customer
-     *
-     * @param Address $address
-     * @return bool
-     */
-    protected function isDefaultShipping($address)
-    {
-        return $address->getId() && $address->getId() == $address->getCustomer()->getDefaultShipping()
-        || $address->getIsPrimaryShipping()
-        || $address->getIsDefaultShipping();
     }
 }

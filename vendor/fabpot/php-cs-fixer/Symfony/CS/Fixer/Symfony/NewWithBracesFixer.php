@@ -25,56 +25,6 @@ class NewWithBracesFixer extends AbstractFixer
      */
     public function fix(\SplFileInfo $file, $content)
     {
-        static $nextTokenKinds = null;
-
-        if (null === $nextTokenKinds) {
-            $nextTokenKinds = array(
-                '?',
-                ';',
-                ',',
-                '(',
-                ')',
-                '[',
-                ']',
-                ':',
-                '<',
-                '>',
-                '+',
-                '-',
-                '*',
-                '/',
-                '%',
-                '&',
-                '^',
-                '|',
-                array(T_IS_SMALLER_OR_EQUAL),
-                array(T_IS_GREATER_OR_EQUAL),
-                array(T_IS_EQUAL),
-                array(T_IS_NOT_EQUAL),
-                array(T_IS_IDENTICAL),
-                array(T_IS_NOT_IDENTICAL),
-                array(T_CLOSE_TAG),
-                array(T_LOGICAL_AND),
-                array(T_LOGICAL_OR),
-                array(T_LOGICAL_XOR),
-                array(T_BOOLEAN_AND),
-                array(T_BOOLEAN_OR),
-                array(T_SL),
-                array(T_SR),
-                array(T_INSTANCEOF),
-                array(T_AS),
-                array(T_DOUBLE_ARROW),
-            );
-
-            if (defined('T_POW')) {
-                $nextTokenKinds[] = array(T_POW);
-            }
-
-            if (defined('T_SPACESHIP')) {
-                $nextTokenKinds[] = array(T_SPACESHIP);
-            }
-        }
-
         $tokens = Tokens::fromCode($content);
 
         for ($index = $tokens->count() - 3; $index > 0; --$index) {
@@ -84,7 +34,7 @@ class NewWithBracesFixer extends AbstractFixer
                 continue;
             }
 
-            $nextIndex = $tokens->getNextTokenOfKind($index, $nextTokenKinds);
+            $nextIndex = $tokens->getNextTokenOfKind($index, array(';', ',', '(', ')', '[', ']', ':', array(T_CLOSE_TAG)));
             $nextToken = $tokens[$nextIndex];
 
             // entrance into array index syntax - need to look for exit

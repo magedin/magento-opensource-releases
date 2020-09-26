@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -68,13 +68,6 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
     protected $_code = self::CODE;
 
     /**
-     * Weight precision
-     *
-     * @var int
-     */
-    private static $weightPrecision = 10;
-
-    /**
      * Rate request data
      *
      * @var \Magento\Quote\Model\Quote\Address\RateRequest|null
@@ -118,13 +111,6 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
      * @var \Magento\Framework\HTTP\ZendClientFactory
      */
     protected $_httpClientFactory;
-
-    /**
-     * @inheritdoc
-     */
-    protected $_debugReplacePrivateDataKeys = [
-        'USERID'
-    ];
 
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -331,7 +317,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
         $weight = $this->getTotalNumOfBoxes($request->getPackageWeight());
         $r->setWeightPounds(floor($weight));
-        $r->setWeightOunces(round(($weight - floor($weight)) * self::OUNCES_POUND, self::$weightPrecision));
+        $r->setWeightOunces(round(($weight - floor($weight)) * self::OUNCES_POUND, 1));
         if ($request->getFreeMethodWeight() != $request->getPackageWeight()) {
             $r->setFreeMethodWeight($request->getFreeMethodWeight());
         }
@@ -378,7 +364,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
         $weight = $this->getTotalNumOfBoxes($r->getFreeMethodWeight());
         $r->setWeightPounds(floor($weight));
-        $r->setWeightOunces(round(($weight - floor($weight)) * self::OUNCES_POUND, self::$weightPrecision));
+        $r->setWeightOunces(round(($weight - floor($weight)) * self::OUNCES_POUND, 1));
         $r->setService($freeMethod);
     }
 
@@ -481,7 +467,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
         $responseBody = $this->_getCachedQuotes($request);
         if ($responseBody === null) {
-            $debugData = ['request' => $this->filterDebugData($request)];
+            $debugData = ['request' => $request];
             try {
                 $url = $this->getConfigData('gateway_url');
                 if (!$url) {
@@ -564,9 +550,6 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
                                 $serviceName = $this->_filterServiceName((string)$service->SvcDescription);
                                 $serviceCode = 'INT_' . (string)$service->attributes()->ID;
                                 $serviceCodeToActualNameMap[$serviceCode] = $serviceName;
-                                if (!$this->isServiceAvailable($service)) {
-                                    continue;
-                                }
                                 if (in_array($serviceCode, $allowedMethods)) {
                                     $costArr[$serviceCode] = (string)$service->Postage;
                                     $priceArr[$serviceCode] = $this->getMethodPrice(
@@ -2037,54 +2020,5 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
         }
 
         return [$zip5, $zip4];
-    }
-
-    /**
-     * Check availability of post service
-     *
-     * @param \SimpleXMLElement $service
-     * @return boolean
-     */
-    private function isServiceAvailable(\SimpleXMLElement $service)
-    {
-        foreach ($service->ExtraServices->children() as $child) {
-            if (filter_var($child->Available, FILTER_VALIDATE_BOOLEAN)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Replace sensitive fields.
-     *
-     * Replace sensitive fields, which specified as attributes of xml node.
-     * For followed xml:
-     * ```xml
-     * <RateV4Request USERID="1">
-     *     <Revision>2</Revision>
-     * </RateV4Request>
-     * ```xml
-     * the `USERID` attribute value will be replaced by specified mask
-     *
-     * @param string $data
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     */
-    protected function filterDebugData($data)
-    {
-        try {
-            $xml = new \SimpleXMLElement($data);
-            $attributes = $xml->attributes();
-            /** @var \SimpleXMLElement $attribute */
-            foreach ($attributes as $key => $attribute) {
-                if (in_array((string) $key, $this->_debugReplacePrivateDataKeys)) {
-                    $attributes[$key] = self::DEBUG_KEYS_MASK;
-                }
-            }
-            $data = $xml->asXML();
-        } catch (\Exception $e) {}
-
-        return $data;
     }
 }

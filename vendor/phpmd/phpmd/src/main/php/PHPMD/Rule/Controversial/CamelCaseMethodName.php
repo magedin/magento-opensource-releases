@@ -71,7 +71,6 @@ class CamelCaseMethodName extends AbstractRule implements MethodAware
         '__invoke',
         '__set_state',
         '__clone',
-        '__debugInfo',
     );
 
     /**

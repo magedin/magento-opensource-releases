@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Gateway\Validator;
@@ -9,11 +9,6 @@ use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\ObjectManager\TMap;
 use Magento\Framework\ObjectManager\TMapFactory;
 
-/**
- * Class ValidatorPool
- * @package Magento\Payment\Gateway\Validator
- * @api
- */
 class ValidatorPool implements \Magento\Payment\Gateway\Validator\ValidatorPoolInterface
 {
     /**

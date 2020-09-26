@@ -22,7 +22,6 @@ class LibraryInstallerTest extends TestCase
 {
     protected $composer;
     protected $config;
-    protected $rootDir;
     protected $vendorDir;
     protected $binDir;
     protected $dm;
@@ -38,11 +37,10 @@ class LibraryInstallerTest extends TestCase
         $this->config = new Config();
         $this->composer->setConfig($this->config);
 
-        $this->rootDir = $this->getUniqueTmpDirectory();
-        $this->vendorDir = $this->rootDir.DIRECTORY_SEPARATOR.'vendor';
+        $this->vendorDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'composer-test-vendor';
         $this->ensureDirectoryExistsAndClear($this->vendorDir);
 
-        $this->binDir = $this->rootDir.DIRECTORY_SEPARATOR.'bin';
+        $this->binDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'composer-test-bin';
         $this->ensureDirectoryExistsAndClear($this->binDir);
 
         $this->config->merge(array(
@@ -63,7 +61,8 @@ class LibraryInstallerTest extends TestCase
 
     protected function tearDown()
     {
-        $this->fs->removeDirectory($this->rootDir);
+        $this->fs->removeDirectory($this->vendorDir);
+        $this->fs->removeDirectory($this->binDir);
     }
 
     public function testInstallerCreationShouldNotCreateVendorDirectory()

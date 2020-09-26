@@ -426,117 +426,55 @@ foo: !!php/object:O:30:"Symfony\Component\Yaml\Tests\B":1:{s:1:"b";s:3:"foo";}
 bar: 1
 EOF;
         $this->assertEquals(array('foo' => new B(), 'bar' => 1), $this->parser->parse($input, false, true), '->parse() is able to parse objects');
-
-        $input = <<<EOF
-foo: !php/object:O:30:"Symfony\Component\Yaml\Tests\B":1:{s:1:"b";s:3:"foo";}
-bar: 1
-EOF;
-        $this->assertEquals(array('foo' => new B(), 'bar' => 1), $this->parser->parse($input, false, true), '->parse() is able to parse objects');
     }
 
-    /**
-     * @dataProvider invalidDumpedObjectProvider
-     */
-    public function testObjectSupportDisabledButNoExceptions($input)
+    public function testObjectSupportDisabledButNoExceptions()
     {
+        $input = <<<EOF
+foo: !!php/object:O:30:"Symfony\Tests\Component\Yaml\B":1:{s:1:"b";s:3:"foo";}
+bar: 1
+EOF;
+
         $this->assertEquals(array('foo' => null, 'bar' => 1), $this->parser->parse($input), '->parse() does not parse objects');
     }
 
-    /**
-     * @dataProvider getObjectForMapTests
-     */
-    public function testObjectForMap($yaml, $expected)
+    public function testObjectForMapEnabledWithMapping()
     {
-        $this->assertEquals($expected, $this->parser->parse($yaml, false, false, true));
-    }
-
-    public function getObjectForMapTests()
-    {
-        $tests = array();
-
         $yaml = <<<EOF
 foo:
     fiz: [cat]
 EOF;
-        $expected = new \stdClass();
-        $expected->foo = new \stdClass();
-        $expected->foo->fiz = array('cat');
-        $tests['mapping'] = array($yaml, $expected);
+        $result = $this->parser->parse($yaml, false, false, true);
 
-        $yaml = '{ "foo": "bar", "fiz": "cat" }';
-        $expected = new \stdClass();
-        $expected->foo = 'bar';
-        $expected->fiz = 'cat';
-        $tests['inline-mapping'] = array($yaml, $expected);
+        $this->assertInstanceOf('stdClass', $result);
+        $this->assertInstanceOf('stdClass', $result->foo);
+        $this->assertEquals(array('cat'), $result->foo->fiz);
+    }
 
-        $yaml = "foo: bar\nbaz: foobar";
+    public function testObjectForMapEnabledWithInlineMapping()
+    {
+        $result = $this->parser->parse('{ "foo": "bar", "fiz": "cat" }', false, false, true);
+
+        $this->assertInstanceOf('stdClass', $result);
+        $this->assertEquals('bar', $result->foo);
+        $this->assertEquals('cat', $result->fiz);
+    }
+
+    public function testObjectForMapIsAppliedAfterParsing()
+    {
         $expected = new \stdClass();
         $expected->foo = 'bar';
         $expected->baz = 'foobar';
-        $tests['object-for-map-is-applied-after-parsing'] = array($yaml, $expected);
 
-        $yaml = <<<EOT
-array:
-  - key: one
-  - key: two
-EOT;
-        $expected = new \stdClass();
-        $expected->array = array();
-        $expected->array[0] = new \stdClass();
-        $expected->array[0]->key = 'one';
-        $expected->array[1] = new \stdClass();
-        $expected->array[1]->key = 'two';
-        $tests['nest-map-and-sequence'] = array($yaml, $expected);
-
-        $yaml = <<<YAML
-map:
-  1: one
-  2: two
-YAML;
-        $expected = new \stdClass();
-        $expected->map = new \stdClass();
-        $expected->map->{1} = 'one';
-        $expected->map->{2} = 'two';
-        $tests['numeric-keys'] = array($yaml, $expected);
-
-        $yaml = <<<YAML
-map:
-  0: one
-  1: two
-YAML;
-        $expected = new \stdClass();
-        $expected->map = new \stdClass();
-        $expected->map->{0} = 'one';
-        $expected->map->{1} = 'two';
-        $tests['zero-indexed-numeric-keys'] = array($yaml, $expected);
-
-        return $tests;
+        $this->assertEquals($expected, $this->parser->parse("foo: bar\nbaz: foobar", false, false, true));
     }
 
     /**
-     * @dataProvider invalidDumpedObjectProvider
      * @expectedException \Symfony\Component\Yaml\Exception\ParseException
      */
-    public function testObjectsSupportDisabledWithExceptions($yaml)
+    public function testObjectsSupportDisabledWithExceptions()
     {
-        $this->parser->parse($yaml, true, false);
-    }
-
-    public function invalidDumpedObjectProvider()
-    {
-        $yamlTag = <<<EOF
-foo: !!php/object:O:30:"Symfony\Tests\Component\Yaml\B":1:{s:1:"b";s:3:"foo";}
-bar: 1
-EOF;
-        $localTag = <<<EOF
-foo: !php/object:O:30:"Symfony\Tests\Component\Yaml\B":1:{s:1:"b";s:3:"foo";}
-bar: 1
-EOF;
-
-        return array(
-            'yaml-tag' => array($yamlTag),
-            'local-tag' => array($localTag),
-        );
+        $this->parser->parse('foo: !!php/object:O:30:"Symfony\Tests\Component\Yaml\B":1:{s:1:"b";s:3:"foo";}', true, false);
     }
 
     /**
@@ -596,7 +534,7 @@ EOF;
 
     /**
      * @expectedException \Symfony\Component\Yaml\Exception\ParseException
-     * @expectedExceptionMessageRegExp /^Multiple documents are not supported.+/
+     * @expectedExceptionMessage Multiple documents are not supported.
      */
     public function testMultipleDocumentsNotSupportedException()
     {
@@ -626,34 +564,6 @@ yaml:
   - array stuff
 EOF
         );
-    }
-
-    public function testSequenceInMappingStartedBySingleDashLine()
-    {
-        $yaml = <<<EOT
-a:
--
-  b:
-  -
-    bar: baz
-- foo
-d: e
-EOT;
-        $expected = array(
-            'a' => array(
-                array(
-                    'b' => array(
-                        array(
-                            'bar' => 'baz',
-                        ),
-                    ),
-                ),
-                'foo',
-            ),
-            'd' => 'e',
-        );
-
-        $this->assertSame($expected, $this->parser->parse($yaml));
     }
 
     /**
@@ -917,21 +827,17 @@ EOF;
 
         $deprecations = array();
         set_error_handler(function ($type, $msg) use (&$deprecations) {
-            if (E_USER_DEPRECATED !== $type) {
-                restore_error_handler();
-
-                return call_user_func_array('PHPUnit_Util_ErrorHandler::handleError', func_get_args());
+            if (E_USER_DEPRECATED === $type) {
+                $deprecations[] = $msg;
             }
-
-            $deprecations[] = $msg;
         });
 
         $this->parser->parse($yaml);
 
-        restore_error_handler();
-
         $this->assertCount(1, $deprecations);
         $this->assertContains('Using a colon in the unquoted mapping value "bar: baz" in line 1 is deprecated since Symfony 2.8 and will throw a ParseException in 3.0.', $deprecations[0]);
+
+        restore_error_handler();
     }
 
     public function testColonInMappingValueExceptionNotTriggeredByColonInComment()
@@ -1021,7 +927,6 @@ EOT
 foo
 # bar
 baz
-
 EOT
                     ,
                 ),
@@ -1050,7 +955,7 @@ EOT;
         $expected = array(
             'foo' => array(
                 'bar' => array(
-                    'scalar-block' => "line1 line2>\n",
+                    'scalar-block' => 'line1 line2>',
                 ),
                 'baz' => array(
                     'foobar' => null,

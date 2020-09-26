@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\TaxImportExport\Controller\Adminhtml\Rate;
@@ -9,13 +9,6 @@ use Magento\Framework\Controller\ResultFactory;
 
 class ImportExport extends \Magento\TaxImportExport\Controller\Adminhtml\Rate
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_TaxImportExport::import_export';
-
     /**
      * Import and export Page
      *
@@ -36,5 +29,13 @@ class ImportExport extends \Magento\TaxImportExport\Controller\Adminhtml\Rate
         $resultPage->getConfig()->getTitle()->prepend(__('Tax Zones and Rates'));
         $resultPage->getConfig()->getTitle()->prepend(__('Import and Export Tax Rates'));
         return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Magento_TaxImportExport::import_export');
     }
 }

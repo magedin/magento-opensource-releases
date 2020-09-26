@@ -1,17 +1,18 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Review\Test\Block\Adminhtml\Product;
 
-use Magento\Ui\Test\Block\Adminhtml\DataGrid;
+use Magento\Backend\Test\Block\Widget\Grid as ParentGrid;
 
 /**
- * Review catalog product grid.
+ * Class Grid
+ * Review catalog product grid
  */
-class Grid extends DataGrid
+class Grid extends ParentGrid
 {
     /**
      * Grid filter selectors
@@ -19,11 +20,18 @@ class Grid extends DataGrid
      * @var array
      */
     protected $filters = [
-        'title' => [
-            'selector' => 'input[name="title"]',
+        'id' => [
+            'selector' => 'input[name="entity_id"]',
         ],
-        'sku' => [
-            'selector' => 'input[name="sku"]',
+        'name' => [
+            'selector' => 'input[name="name"]',
         ],
     ];
+
+    /**
+     * Locator value for link in action column
+     *
+     * @var string
+     */
+    protected $editLink = '.col-entity_id';
 }

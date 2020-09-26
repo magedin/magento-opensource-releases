@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 // @codingStandardsIgnoreFile
 
 namespace Magento\Framework\App\Test\Unit;
-
-use Magento\Framework\App\Bootstrap;
-use Magento\Framework\Filesystem;
 
 class StaticResourceTest extends \PHPUnit_Framework_TestCase
 {
@@ -191,13 +188,17 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
         $this->object->launch();
     }
 
-    public function testCatchExceptionDeveloperMode()
+    public function testCatchException()
     {
-        $bootstrap = $this->getMockBuilder(Bootstrap::class)->disableOriginalConstructor()->getMock();
-        $bootstrap->expects($this->once())->method('isDeveloperMode')->willReturn(true);
-        $exception = new \Exception('Error: nothing works');
-        $this->response->expects($this->once())->method('setHttpResponseCode')->with(404);
-        $this->response->expects($this->once())->method('sendResponse');
+        $bootstrap = $this->getMock('Magento\Framework\App\Bootstrap', [], [], '', false);
+        $bootstrap->expects($this->at(0))->method('isDeveloperMode')->willReturn(false);
+        $bootstrap->expects($this->at(1))->method('isDeveloperMode')->willReturn(true);
+        $exception = new \Exception('message');
+        $this->response->expects($this->exactly(2))->method('setHttpResponseCode')->with(404);
+        $this->response->expects($this->exactly(2))->method('setHeader')->with('Content-Type', 'text/plain');
+        $this->response->expects($this->exactly(2))->method('sendResponse');
+        $this->response->expects($this->once())->method('setBody')->with($this->stringStartsWith('message'));
+        $this->assertTrue($this->object->catchException($bootstrap, $exception));
         $this->assertTrue($this->object->catchException($bootstrap, $exception));
     }
 }

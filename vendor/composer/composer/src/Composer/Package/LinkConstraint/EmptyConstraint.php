@@ -12,13 +12,36 @@
 
 namespace Composer\Package\LinkConstraint;
 
-use Composer\Semver\Constraint\EmptyConstraint as SemverEmptyConstraint;
-
-trigger_error('The ' . __NAMESPACE__ . '\EmptyConstraint class is deprecated, use Composer\Semver\Constraint\EmptyConstraint instead.', E_USER_DEPRECATED);
-
 /**
- * @deprecated use Composer\Semver\Constraint\EmptyConstraint instead
+ * Defines an absence of constraints
+ *
+ * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class EmptyConstraint extends SemverEmptyConstraint implements LinkConstraintInterface
+class EmptyConstraint implements LinkConstraintInterface
 {
+    protected $prettyString;
+
+    public function matches(LinkConstraintInterface $provider)
+    {
+        return true;
+    }
+
+    public function setPrettyString($prettyString)
+    {
+        $this->prettyString = $prettyString;
+    }
+
+    public function getPrettyString()
+    {
+        if ($this->prettyString) {
+            return $this->prettyString;
+        }
+
+        return $this->__toString();
+    }
+
+    public function __toString()
+    {
+        return '[]';
+    }
 }

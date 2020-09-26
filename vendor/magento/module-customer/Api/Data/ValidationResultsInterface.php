@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,6 @@ namespace Magento\Customer\Api\Data;
 
 /**
  * Validation results interface.
- * @api
  */
 interface ValidationResultsInterface
 {
@@ -23,6 +22,7 @@ interface ValidationResultsInterface
     /**
      * Check if the provided data is valid.
      *
+     * @api
      * @return bool
      */
     public function isValid();
@@ -30,6 +30,7 @@ interface ValidationResultsInterface
     /**
      * Set if the provided data is valid.
      *
+     * @api
      * @param bool $isValid
      * @return $this
      */
@@ -38,6 +39,7 @@ interface ValidationResultsInterface
     /**
      * Get error messages as array in case of validation failure, else return empty array.
      *
+     * @api
      * @return string[]
      */
     public function getMessages();
@@ -45,6 +47,7 @@ interface ValidationResultsInterface
     /**
      * Set error messages as array in case of validation failure.
      *
+     * @api
      * @param string[] $messages
      * @return string[]
      */

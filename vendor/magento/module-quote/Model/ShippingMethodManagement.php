@@ -1,18 +1,14 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model;
 
-use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\Data\EstimateAddressInterface;
-use Magento\Quote\Api\ShipmentEstimationInterface;
-use Magento\Quote\Model\Quote;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\CouldNotSaveException;
 
 /**
  * Shipping method read service.
@@ -20,8 +16,7 @@ use Magento\Quote\Model\Quote;
  */
 class ShippingMethodManagement implements
     \Magento\Quote\Api\ShippingMethodManagementInterface,
-    \Magento\Quote\Model\ShippingMethodManagementInterface,
-    ShipmentEstimationInterface
+    \Magento\Quote\Model\ShippingMethodManagementInterface
 {
     /**
      * Quote repository.
@@ -128,36 +123,17 @@ class ShippingMethodManagement implements
 
     /**
      * {@inheritDoc}
-     */
-    public function set($cartId, $carrierCode, $methodCode)
-    {
-        /** @var \Magento\Quote\Model\Quote $quote */
-        $quote = $this->quoteRepository->getActive($cartId);
-        try {
-            $this->apply($cartId, $carrierCode, $methodCode);
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
-        try {
-            $this->quoteRepository->save($quote->collectTotals());
-        } catch (\Exception $e) {
-            throw new CouldNotSaveException(__('Cannot set shipping method. %1', $e->getMessage()));
-        }
-        return true;
-    }
-
-    /**
+     *
      * @param int $cartId The shopping cart ID.
      * @param string $carrierCode The carrier code.
      * @param string $methodCode The shipping method code.
-     * @return void
+     * @return bool
      * @throws InputException The shipping method is not valid for an empty cart.
      * @throws CouldNotSaveException The shipping method could not be saved.
      * @throws NoSuchEntityException Cart contains only virtual products. Shipping method is not applicable.
      * @throws StateException The billing or shipping address is not set.
      */
-    public function apply($cartId, $carrierCode, $methodCode)
+    public function set($cartId, $carrierCode, $methodCode)
     {
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
@@ -174,6 +150,17 @@ class ShippingMethodManagement implements
             throw new StateException(__('Shipping address is not set'));
         }
         $shippingAddress->setShippingMethod($carrierCode . '_' . $methodCode);
+        if (!$shippingAddress->getShippingRateByCode($shippingAddress->getShippingMethod())) {
+            throw new NoSuchEntityException(
+                __('Carrier with such method not found: %1, %2', $carrierCode, $methodCode)
+            );
+        }
+        try {
+            $this->quoteRepository->save($quote->collectTotals());
+        } catch (\Exception $e) {
+            throw new CouldNotSaveException(__('Cannot set shipping method. %1', $e->getMessage()));
+        }
+        return true;
     }
 
     /**
@@ -196,21 +183,6 @@ class ShippingMethodManagement implements
             $address->getRegionId(),
             $address->getRegion()
         );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function estimateByExtendedAddress($cartId, AddressInterface $address)
-    {
-        /** @var \Magento\Quote\Model\Quote $quote */
-        $quote = $this->quoteRepository->getActive($cartId);
-
-        // no methods applicable for empty carts or carts with virtual products
-        if ($quote->isVirtual() || 0 == $quote->getItemsCount()) {
-            return [];
-        }
-        return $this->getShippingMethods($quote, $address->getData());
     }
 
     /**
@@ -248,28 +220,13 @@ class ShippingMethodManagement implements
      */
     protected function getEstimatedRates(\Magento\Quote\Model\Quote $quote, $country, $postcode, $regionId, $region)
     {
-        $data = [
-            EstimateAddressInterface::KEY_COUNTRY_ID => $country,
-            EstimateAddressInterface::KEY_POSTCODE => $postcode,
-            EstimateAddressInterface::KEY_REGION_ID => $regionId,
-            EstimateAddressInterface::KEY_REGION => $region
-        ];
-        return $this->getShippingMethods($quote, $data);
-    }
-
-    /**
-     * Get list of available shipping methods
-     * @param \Magento\Quote\Model\Quote $quote
-     * @param array $addressData
-     * @return \Magento\Quote\Api\Data\ShippingMethodInterface[]
-     */
-    private function getShippingMethods(Quote $quote, array $addressData)
-    {
         $output = [];
         $shippingAddress = $quote->getShippingAddress();
-        $shippingAddress->addData($addressData);
+        $shippingAddress->setCountryId($country);
+        $shippingAddress->setPostcode($postcode);
+        $shippingAddress->setRegionId($regionId);
+        $shippingAddress->setRegion($region);
         $shippingAddress->setCollectShippingRates(true);
-
         $this->totalsCollector->collectAddressTotals($quote, $shippingAddress);
         $shippingRates = $shippingAddress->getGroupedAllShippingRates();
         foreach ($shippingRates as $carrierRates) {

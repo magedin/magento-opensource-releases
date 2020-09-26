@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Model\Payflow\Service;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ZendClient;
 use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Framework\Math\Random;
@@ -56,7 +55,7 @@ class Gateway implements GatewayInterface
      * @param ConfigInterface $config
      *
      * @return DataObject
-     * @throws \Zend_Http_Client_Exception
+     * @throws \Exception
      */
     public function postRequest(DataObject $request, ConfigInterface $config)
     {
@@ -105,7 +104,7 @@ class Gateway implements GatewayInterface
             $result->setData(array_change_key_case($responseArray, CASE_LOWER));
             $result->setData('result_code', $result->getData('result'));
 
-        } catch (\Zend_Http_Client_Exception $e) {
+        } catch (\Exception $e) {
             $result->addData(
                 [
                     'response_code' => -1,
@@ -113,6 +112,7 @@ class Gateway implements GatewayInterface
                     'response_reason_text' => $e->getMessage()
                 ]
             );
+
             throw $e;
         } finally {
             $this->logger->debug(

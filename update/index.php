@@ -1,19 +1,17 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 require_once __DIR__ . '/app/bootstrap.php';
 
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 8') === false) {
-    $xssHeaderValue = '1; mode=block';
-} else {
-    $xssHeaderValue = '0';
+if (!file_exists(MAGENTO_BP . '/app/etc/config.php') || !file_exists(MAGENTO_BP . '/app/etc/env.php')) {
+    header('Location: ../setup');
+    die();
 }
-header('X-XSS-Protection: ' . $xssHeaderValue);
+
+header('X-Frame-Options: SAMEORIGIN');
 
 $status = new \Magento\Update\Status();
 
@@ -33,9 +31,9 @@ if (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) {
             $backupPaths = $backupInfo->getBackupFilePaths();
             if (isset($backupPaths['error'])) {
                 $status->add('WARNING: There is a problem with backup files! Performing rollback from these'
-                    . ' files may cause the Magento application to be unstable', \Psr\Log\LogLevel::WARNING);
+                    . ' files may cause the Magento application to be unstable');
                 foreach ($backupPaths['error'] as $error) {
-                    $status->add($error, \Psr\Log\LogLevel::WARNING);
+                    $status->add($error);
                 }
                 unset($backupPaths['error']);
             }
@@ -54,7 +52,7 @@ if (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) {
             $status->setUpdateError(false);
         } catch (\Exception $e) {
             $status->setUpdateError(true);
-            $status->add('Error in Rollback:' . $e->getMessage(), \Psr\Log\LogLevel::ERROR);
+            $status->add('Error in Rollback:' . $e->getMessage());
         }
     } elseif ($_SERVER['PATH_INFO'] === '/status') {
         $complete = !$status->isUpdateInProgress() && $queue->isEmpty() && !$status->isUpdateError();
@@ -72,10 +70,6 @@ if (isset($_SERVER['PATH_INFO']) && !empty($_SERVER['PATH_INFO'])) {
         );
     }
 } else {
-    if (!file_exists(MAGENTO_BP . '/app/etc/config.php') || !file_exists(MAGENTO_BP . '/app/etc/env.php')) {
-        header('Location: ../setup');
-        die();
-    }
     $type = 'default';
     $titles = [];
     $defaultHeaderTitle = 'Magento Updater';

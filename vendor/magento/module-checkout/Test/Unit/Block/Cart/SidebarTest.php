@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Test\Unit\Block\Cart;
@@ -138,8 +138,7 @@ class SidebarTest extends \PHPUnit_Framework_TestCase
             'updateItemQtyUrl' => $updateItemQtyUrl,
             'removeItemUrl' => $removeItemUrl,
             'imageTemplate' => $imageTemplate,
-            'baseUrl' => $baseUrl,
-            'minicartMaxItemsVisible' => 3
+            'baseUrl' => $baseUrl
         ];
 
         $valueMap = [
@@ -159,13 +158,6 @@ class SidebarTest extends \PHPUnit_Framework_TestCase
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
         $storeMock->expects($this->once())->method('getBaseUrl')->willReturn($baseUrl);
         $this->imageHelper->expects($this->once())->method('getFrame')->willReturn(false);
-
-        $this->scopeConfigMock->expects($this->once())
-            ->method('getValue')
-            ->with(
-                \Magento\Checkout\Block\Cart\Sidebar::XML_PATH_CHECKOUT_SIDEBAR_COUNT,
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            )->willReturn(3);
 
         $this->assertEquals($expectedResult, $this->model->getConfig());
     }

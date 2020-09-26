@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,13 +13,13 @@ class CacheTest extends \PHPUnit_Framework_TestCase
      */
     private $cacheHelperMock;
 
-    protected function setUp()
+    public function setUp()
     {
         $this->cacheHelperMock = $this->getCacheHelperMock(['getCache']);
     }
 
     /**
-     * @covers \Magento\Marketplace\Helper\Cache::loadPartnersFromCache
+     * @covers \Magento\Marketplace\Helper::loadPartnersFromCache
      */
     public function testLoadPartnersFromCache()
     {
@@ -36,7 +36,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Magento\Marketplace\Helper\Cache::savePartnersToCache
+     * @covers \Magento\Marketplace\Helper::savePartnersToCache
      */
     public function testSavePartnersToCache()
     {
@@ -51,6 +51,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
         $this->cacheHelperMock->savePartnersToCache([]);
     }
+
 
     /**
      * Gets cache helper mock

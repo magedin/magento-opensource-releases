@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Model\Cron;
@@ -9,8 +9,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory class to create jobs
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class JobFactory
 {
@@ -23,8 +21,6 @@ class JobFactory
     const JOB_MODULE_ENABLE = 'setup:module:enable';
     const JOB_MODULE_DISABLE = 'setup:module:disable';
     const JOB_STATIC_REGENERATE = 'setup:static:regenerate';
-    const JOB_ENABLE_CACHE = 'setup:cache:enable';
-    const JOB_DISABLE_CACHE = 'setup:cache:disable';
 
     /**
      * @var ServiceLocatorInterface
@@ -54,7 +50,7 @@ class JobFactory
         $cronStatus = $this->serviceLocator->get('Magento\Setup\Model\Cron\Status');
         $statusStream = fopen($cronStatus->getStatusFilePath(), 'a+');
         $logStream = fopen($cronStatus->getLogFilePath(), 'a+');
-        $streamOutput = new MultipleStreamOutput([$statusStream, $logStream]);
+        $multipleStreamOutput = new MultipleStreamOutput([$statusStream, $logStream]);
         $objectManagerProvider = $this->serviceLocator->get('Magento\Setup\Model\ObjectManagerProvider');
         /** @var \Magento\Framework\ObjectManagerInterface $objectManager */
         $objectManager = $objectManagerProvider->get();
@@ -63,7 +59,7 @@ class JobFactory
                 return new JobUpgrade(
                     $this->serviceLocator->get('Magento\Setup\Console\Command\UpgradeCommand'),
                     $objectManagerProvider,
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $this->serviceLocator->get('Magento\Setup\Model\Cron\Queue'),
                     $cronStatus,
                     $name,
@@ -73,7 +69,7 @@ class JobFactory
             case self::JOB_DB_ROLLBACK:
                 return new JobDbRollback(
                     $objectManager->get('Magento\Framework\Setup\BackupRollbackFactory'),
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $cronStatus,
                     $objectManagerProvider,
                     $name,
@@ -83,7 +79,7 @@ class JobFactory
             case self::JOB_STATIC_REGENERATE:
                 return new JobStaticRegenerate(
                     $objectManagerProvider,
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $cronStatus,
                     $name,
                     $params
@@ -104,7 +100,7 @@ class JobFactory
                     $moduleUninstall,
                     $themeUninstall,
                     $objectManagerProvider,
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $this->serviceLocator->get('Magento\Setup\Model\Cron\Queue'),
                     $cronStatus,
                     $this->serviceLocator->get('Magento\Setup\Model\Updater'),
@@ -116,7 +112,7 @@ class JobFactory
                 return new JobModule(
                     $this->serviceLocator->get('Magento\Setup\Console\Command\ModuleEnableCommand'),
                     $objectManagerProvider,
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $cronStatus,
                     $name,
                     $params
@@ -126,19 +122,11 @@ class JobFactory
                 return new JobModule(
                     $this->serviceLocator->get('Magento\Setup\Console\Command\ModuleDisableCommand'),
                     $objectManagerProvider,
-                    $streamOutput,
+                    $multipleStreamOutput,
                     $cronStatus,
                     $name,
                     $params
                 );
-                break;
-            case self::JOB_ENABLE_CACHE:
-                $cmd = $objectManager->get('Magento\Backend\Console\Command\CacheEnableCommand');
-                return new JobSetCache($cmd, $objectManagerProvider, $streamOutput, $cronStatus, $name, $params);
-                break;
-            case self::JOB_DISABLE_CACHE:
-                $cmd = $objectManager->get('Magento\Backend\Console\Command\CacheDisableCommand');
-                return new JobSetCache($cmd, $objectManagerProvider, $streamOutput, $cronStatus, $name);
                 break;
             default:
                 throw new \RuntimeException(sprintf('"%s" job is not supported.', $name));

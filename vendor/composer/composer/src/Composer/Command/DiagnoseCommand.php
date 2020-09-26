@@ -14,7 +14,6 @@ namespace Composer\Command;
 
 use Composer\Composer;
 use Composer\Factory;
-use Composer\Config;
 use Composer\Downloader\TransportException;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
@@ -22,14 +21,13 @@ use Composer\Util\ConfigValidator;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\RemoteFilesystem;
 use Composer\Util\StreamContextFactory;
-use Composer\Util\Keys;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class DiagnoseCommand extends BaseCommand
+class DiagnoseCommand extends Command
 {
     /** @var RemoteFileSystem */
     protected $rfs;
@@ -53,19 +51,15 @@ EOT
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $composer = $this->getComposer(false);
-        $io = $this->getIO();
 
         if ($composer) {
             $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'diagnose', $input, $output);
             $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
 
-            $io->write('Checking composer.json: ', false);
+            $this->getIO()->write('Checking composer.json: ', false);
             $this->outputResult($this->checkComposerSchema());
         }
 
@@ -75,74 +69,58 @@ EOT
             $config = Factory::createConfig();
         }
 
-        $config->merge(array('config' => array('secure-http' => false)));
+        $this->rfs = new RemoteFilesystem($this->getIO(), $config);
+        $this->process = new ProcessExecutor($this->getIO());
 
-        $this->rfs = Factory::createRemoteFilesystem($io, $config);
-        $this->process = new ProcessExecutor($io);
-
-        $io->write('Checking platform settings: ', false);
+        $this->getIO()->write('Checking platform settings: ', false);
         $this->outputResult($this->checkPlatform());
 
-        $io->write('Checking git settings: ', false);
+        $this->getIO()->write('Checking git settings: ', false);
         $this->outputResult($this->checkGit());
 
-        $io->write('Checking http connectivity to packagist: ', false);
-        $this->outputResult($this->checkHttp('http', $config));
-
-        $io->write('Checking https connectivity to packagist: ', false);
-        $this->outputResult($this->checkHttp('https', $config));
+        $this->getIO()->write('Checking http connectivity: ', false);
+        $this->outputResult($this->checkHttp());
 
         $opts = stream_context_get_options(StreamContextFactory::getContext('http://example.org'));
         if (!empty($opts['http']['proxy'])) {
-            $io->write('Checking HTTP proxy: ', false);
+            $this->getIO()->write('Checking HTTP proxy: ', false);
             $this->outputResult($this->checkHttpProxy());
-            $io->write('Checking HTTP proxy support for request_fulluri: ', false);
+            $this->getIO()->write('Checking HTTP proxy support for request_fulluri: ', false);
             $this->outputResult($this->checkHttpProxyFullUriRequestParam());
-            $io->write('Checking HTTPS proxy support for request_fulluri: ', false);
+            $this->getIO()->write('Checking HTTPS proxy support for request_fulluri: ', false);
             $this->outputResult($this->checkHttpsProxyFullUriRequestParam());
         }
 
         if ($oauth = $config->get('github-oauth')) {
             foreach ($oauth as $domain => $token) {
-                $io->write('Checking '.$domain.' oauth access: ', false);
+                $this->getIO()->write('Checking '.$domain.' oauth access: ', false);
                 $this->outputResult($this->checkGithubOauth($domain, $token));
             }
         } else {
-            $io->write('Checking github.com rate limit: ', false);
-            try {
-                $rate = $this->getGithubRateLimit('github.com');
-                $this->outputResult(true);
-                if (10 > $rate['remaining']) {
-                    $io->write('<warning>WARNING</warning>');
-                    $io->write(sprintf(
-                        '<comment>Github has a rate limit on their API. '
-                        . 'You currently have <options=bold>%u</options=bold> '
-                        . 'out of <options=bold>%u</options=bold> requests left.' . PHP_EOL
-                        . 'See https://developer.github.com/v3/#rate-limiting and also' . PHP_EOL
-                        . '    https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens</comment>',
-                        $rate['remaining'],
-                        $rate['limit']
-                    ));
-                }
-            } catch (\Exception $e) {
-                if ($e instanceof TransportException && $e->getCode() === 401) {
-                    $this->outputResult('<comment>The oauth token for github.com seems invalid, run "composer config --global --unset github-oauth.github.com" to remove it</comment>');
-                } else {
-                    $this->outputResult($e);
-                }
+            $this->getIO()->write('Checking github.com rate limit: ', false);
+            $rate = $this->getGithubRateLimit('github.com');
+
+            if (10 > $rate['remaining']) {
+                $this->getIO()->write('<warning>WARNING</warning>');
+                $this->getIO()->write(sprintf(
+                    '<comment>Github has a rate limit on their API. '
+                    . 'You currently have <options=bold>%u</options=bold> '
+                    . 'out of <options=bold>%u</options=bold> requests left.' . PHP_EOL
+                    . 'See https://developer.github.com/v3/#rate-limiting and also' . PHP_EOL
+                    . '    https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens</comment>',
+                    $rate['remaining'],
+                    $rate['limit']
+                ));
+            } else {
+                $this->getIO()->write('<info>OK</info>');
             }
         }
 
-        $io->write('Checking disk free space: ', false);
+        $this->getIO()->write('Checking disk free space: ', false);
         $this->outputResult($this->checkDiskSpace($config));
 
-        if ('phar:' === substr(__FILE__, 0, 5)) {
-            $io->write('Checking pubkeys: ', false);
-            $this->outputResult($this->checkPubKeys($config));
-
-            $io->write('Checking composer version: ', false);
-            $this->outputResult($this->checkVersion());
-        }
+        $this->getIO()->write('Checking composer version: ', false);
+        $this->outputResult($this->checkVersion());
 
         return $this->failures;
     }
@@ -150,11 +128,11 @@ EOT
     private function checkComposerSchema()
     {
         $validator = new ConfigValidator($this->getIO());
-        list($errors, , $warnings) = $validator->validate(Factory::getComposerFile());
+        list($errors, $publishErrors, $warnings) = $validator->validate(Factory::getComposerFile());
 
-        if ($errors || $warnings) {
+        if ($errors || $publishErrors || $warnings) {
             $messages = array(
-                'error' => $errors,
+                'error' => array_merge($errors, $publishErrors),
                 'warning' => $warnings,
             );
 
@@ -181,32 +159,13 @@ EOT
         return true;
     }
 
-    private function checkHttp($proto, Config $config)
+    private function checkHttp()
     {
-        $disableTls = false;
-        $result = array();
-        if ($proto === 'https' && $config->get('disable-tls') === true) {
-            $disableTls = true;
-            $result[] = '<warning>Composer is configured to disable SSL/TLS protection. This will leave remote HTTPS requests vulnerable to Man-In-The-Middle attacks.</warning>';
-        }
-        if ($proto === 'https' && !extension_loaded('openssl') && !$disableTls) {
-            $result[] = '<error>Composer is configured to use SSL/TLS protection but the openssl extension is not available.</error>';
-        }
-
+        $protocol = extension_loaded('openssl') ? 'https' : 'http';
         try {
-            $this->rfs->getContents('packagist.org', $proto . '://packagist.org/packages.json', false);
-        } catch (TransportException $e) {
-            if (false !== strpos($e->getMessage(), 'cafile')) {
-                $result[] = '<error>[' . get_class($e) . '] ' . $e->getMessage() . '</error>';
-                $result[] = '<error>Unable to locate a valid CA certificate file. You must set a valid \'cafile\' option.</error>';
-                $result[] = '<error>You can alternatively disable this error, at your own risk, by enabling the \'disable-tls\' option.</error>';
-            } else {
-                array_unshift($result, '[' . get_class($e) . '] ' . $e->getMessage());
-            }
-        }
-
-        if (count($result) > 0) {
-            return $result;
+            $this->rfs->getContents('packagist.org', $protocol . '://packagist.org/packages.json', false);
+        } catch (\Exception $e) {
+            return $e;
         }
 
         return true;
@@ -290,10 +249,10 @@ EOT
     {
         $this->getIO()->setAuthentication($domain, $token, 'x-oauth-basic');
         try {
-            $url = $domain === 'github.com' ? 'https://api.'.$domain.'/' : 'https://'.$domain.'/api/v3/';
+            $url = $domain === 'github.com' ? 'https://api.'.$domain.'/user/repos' : 'https://'.$domain.'/api/v3/user/repos';
 
             return $this->rfs->getContents($domain, $url, false, array(
-                'retry-auth-failure' => false,
+                'retry-auth-failure' => false
             )) ? true : 'Unexpected error';
         } catch (\Exception $e) {
             if ($e instanceof TransportException && $e->getCode() === 401) {
@@ -304,28 +263,30 @@ EOT
         }
     }
 
-    /**
-     * @param  string             $domain
-     * @param  string             $token
-     * @throws TransportException
-     * @return array
-     */
     private function getGithubRateLimit($domain, $token = null)
     {
         if ($token) {
             $this->getIO()->setAuthentication($domain, $token, 'x-oauth-basic');
         }
 
-        $url = $domain === 'github.com' ? 'https://api.'.$domain.'/rate_limit' : 'https://'.$domain.'/api/rate_limit';
-        $json = $this->rfs->getContents($domain, $url, false, array('retry-auth-failure' => false));
-        $data = json_decode($json, true);
+        try {
+            $url = $domain === 'github.com' ? 'https://api.'.$domain.'/rate_limit' : 'https://'.$domain.'/api/rate_limit';
+            $json = $this->rfs->getContents($domain, $url, false, array('retry-auth-failure' => false));
+            $data = json_decode($json, true);
 
-        return $data['resources']['core'];
+            return $data['resources']['core'];
+        } catch (\Exception $e) {
+            if ($e instanceof TransportException && $e->getCode() === 401) {
+                return '<comment>The oauth token for '.$domain.' seems invalid, run "composer config --global --unset github-oauth.'.$domain.'" to remove it</comment>';
+            }
+
+            return $e;
+        }
     }
 
     private function checkDiskSpace($config)
     {
-        $minSpaceFree = 1024 * 1024;
+        $minSpaceFree = 1024*1024;
         if ((($df = @disk_free_space($dir = $config->get('home'))) !== false && $df < $minSpaceFree)
             || (($df = @disk_free_space($dir = $config->get('vendor-dir'))) !== false && $df < $minSpaceFree)
         ) {
@@ -335,68 +296,29 @@ EOT
         return true;
     }
 
-    private function checkPubKeys($config)
-    {
-        $home = $config->get('home');
-        $errors = array();
-        $io = $this->getIO();
-
-        if (file_exists($home.'/keys.tags.pub') && file_exists($home.'/keys.dev.pub')) {
-            $io->write('');
-        }
-
-        if (file_exists($home.'/keys.tags.pub')) {
-            $io->write('Tags Public Key Fingerprint: ' . Keys::fingerprint($home.'/keys.tags.pub'));
-        } else {
-            $errors[] = '<error>Missing pubkey for tags verification</error>';
-        }
-
-        if (file_exists($home.'/keys.dev.pub')) {
-            $io->write('Dev Public Key Fingerprint: ' . Keys::fingerprint($home.'/keys.dev.pub'));
-        } else {
-            $errors[] = '<error>Missing pubkey for dev verification</error>';
-        }
-
-        if ($errors) {
-            $errors[] = '<error>Run composer self-update --update-keys to set them up</error>';
-        }
-
-        return $errors ?: true;
-    }
-
     private function checkVersion()
     {
         $protocol = extension_loaded('openssl') ? 'https' : 'http';
         $latest = trim($this->rfs->getContents('getcomposer.org', $protocol . '://getcomposer.org/version', false));
 
         if (Composer::VERSION !== $latest && Composer::VERSION !== '@package_version@') {
-            return '<comment>You are not running the latest version, run `composer self-update` to update</comment>';
+            return '<comment>You are not running the latest version</comment>';
         }
 
         return true;
     }
 
-    /**
-     * @param bool|string|\Exception $result
-     */
     private function outputResult($result)
     {
-        $io = $this->getIO();
         if (true === $result) {
-            $io->write('<info>OK</info>');
+            $this->getIO()->write('<info>OK</info>');
         } else {
             $this->failures++;
-            $io->write('<error>FAIL</error>');
+            $this->getIO()->write('<error>FAIL</error>');
             if ($result instanceof \Exception) {
-                $io->write('['.get_class($result).'] '.$result->getMessage());
+                $this->getIO()->write('['.get_class($result).'] '.$result->getMessage());
             } elseif ($result) {
-                if (is_array($result)) {
-                    foreach ($result as $message) {
-                        $io->write($message);
-                    }
-                } else {
-                    $io->write($result);
-                }
+                $this->getIO()->write(trim($result));
             }
         }
     }
@@ -437,8 +359,8 @@ EOT
             $errors['hash'] = true;
         }
 
-        if (!extension_loaded('iconv') && !extension_loaded('mbstring')) {
-            $errors['iconv_mbstring'] = true;
+        if (!extension_loaded('ctype')) {
+            $errors['ctype'] = true;
         }
 
         if (!ini_get('allow_url_fopen')) {
@@ -449,20 +371,16 @@ EOT
             $errors['ioncube'] = ioncube_loader_version();
         }
 
-        if (PHP_VERSION_ID < 50302) {
+        if (version_compare(PHP_VERSION, '5.3.2', '<')) {
             $errors['php'] = PHP_VERSION;
         }
 
-        if (!isset($errors['php']) && PHP_VERSION_ID < 50304) {
+        if (!isset($errors['php']) && version_compare(PHP_VERSION, '5.3.4', '<')) {
             $warnings['php'] = PHP_VERSION;
         }
 
         if (!extension_loaded('openssl')) {
             $errors['openssl'] = true;
-        }
-
-        if (extension_loaded('openssl') && OPENSSL_VERSION_NUMBER < 0x1000100f) {
-            $warnings['openssl_version'] = true;
         }
 
         if (!defined('HHVM_VERSION') && !extension_loaded('apcu') && ini_get('apc.enable_cli')) {
@@ -513,9 +431,9 @@ EOT
                         $text .= "Install it or recompile php without --disable-hash";
                         break;
 
-                    case 'iconv_mbstring':
-                        $text = PHP_EOL."The iconv OR mbstring extension is required and both are missing.".PHP_EOL;
-                        $text .= "Install either of them or recompile php without --disable-iconv";
+                    case 'ctype':
+                        $text = PHP_EOL."The ctype extension is missing.".PHP_EOL;
+                        $text .= "Install it or recompile php without --disable-ctype";
                         break;
 
                     case 'unicode':
@@ -585,15 +503,6 @@ EOT
                     case 'php':
                         $text  = "Your PHP ({$current}) is quite old, upgrading to PHP 5.3.4 or higher is recommended.".PHP_EOL;
                         $text .= " Composer works with 5.3.2+ for most people, but there might be edge case issues.";
-                        break;
-
-                    case 'openssl_version':
-                        // Attempt to parse version number out, fallback to whole string value.
-                        $opensslVersion = strstr(trim(strstr(OPENSSL_VERSION_TEXT, ' ')), ' ', true);
-                        $opensslVersion = $opensslVersion ?: OPENSSL_VERSION_TEXT;
-
-                        $text = "The OpenSSL library ({$opensslVersion}) used by PHP does not support TLSv1.2 or TLSv1.1.".PHP_EOL;
-                        $text .= "If possible you should upgrade OpenSSL to version 1.0.1 or above.";
                         break;
 
                     case 'xdebug_loaded':

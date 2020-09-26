@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Test\Unit\Component;
@@ -171,15 +171,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     public function testGetDataSourceDataWithoutId()
     {
         $requestFieldName = 'request_id';
-        $primaryFieldName = 'primary_id';
-        $fieldId = null;
-        $row = ['key' => 'value'];
-        $data = [
-            $fieldId => $row,
-        ];
-        $dataSource = [
-            'data' => $row,
-        ];
+        $dataSource = [];
 
         /** @var DataProviderInterface|\PHPUnit_Framework_MockObject_MockObject $dataProviderMock */
         $dataProviderMock =
@@ -188,9 +180,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $dataProviderMock->expects($this->once())
             ->method('getRequestFieldName')
             ->willReturn($requestFieldName);
-        $dataProviderMock->expects($this->once())
-            ->method('getPrimaryFieldName')
-            ->willReturn($primaryFieldName);
+        $dataProviderMock->expects($this->never())
+            ->method('getPrimaryFieldName');
 
         $this->contextMock->expects($this->any())
             ->method('getDataProvider')
@@ -198,31 +189,19 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->contextMock->expects($this->once())
             ->method('getRequestParam')
             ->with($requestFieldName)
-            ->willReturn($fieldId);
+            ->willReturn(null);
 
-        /** @var Filter|\PHPUnit_Framework_MockObject_MockObject $filterMock */
-        $filterMock = $this->getMockBuilder('Magento\Framework\Api\Filter')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->filterBuilderMock->expects($this->never())
+            ->method('setField');
+        $this->filterBuilderMock->expects($this->never())
+            ->method('setValue');
+        $this->filterBuilderMock->expects($this->never())
+            ->method('create');
 
-        $this->filterBuilderMock->expects($this->once())
-            ->method('setField')
-            ->with($primaryFieldName)
-            ->willReturnSelf();
-        $this->filterBuilderMock->expects($this->once())
-            ->method('setValue')
-            ->with($fieldId)
-            ->willReturnSelf();
-        $this->filterBuilderMock->expects($this->once())
-            ->method('create')
-            ->willReturn($filterMock);
-
-        $dataProviderMock->expects($this->once())
-            ->method('addFilter')
-            ->with($filterMock);
-        $dataProviderMock->expects($this->once())
-            ->method('getData')
-            ->willReturn($data);
+        $dataProviderMock->expects($this->never())
+            ->method('addFilter');
+        $dataProviderMock->expects($this->never())
+            ->method('getData');
 
         $this->assertEquals($dataSource, $this->model->getDataSourceData());
     }

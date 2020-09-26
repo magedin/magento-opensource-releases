@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order\Status;
@@ -27,12 +27,8 @@ class Save extends \Magento\Sales\Controller\Adminhtml\Order\Status
             $filterManager = $this->_objectManager->get('Magento\Framework\Filter\FilterManager');
             if ($isNew) {
                 $statusCode = $data['status'] = $filterManager->stripTags($data['status']);
-            }            
-            $data['label'] = $filterManager->stripTags($data['label']);            
-            if (!isset($data['store_labels'])) {
-                $data['store_labels'] = [];
             }
-
+            $data['label'] = $filterManager->stripTags($data['label']);
             foreach ($data['store_labels'] as &$label) {
                 $label = $filterManager->stripTags($label);
             }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Test\Unit\Console\Command;
@@ -12,13 +12,13 @@ use Symfony\Component\Console\Tester\CommandTester;
 class DiCompileCommandTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject */
-    private $deploymentConfigMock;
+    private $deploymentConfig;
 
     /** @var \Magento\Setup\Module\Di\App\Task\Manager|\PHPUnit_Framework_MockObject_MockObject */
-    private $managerMock;
+    private $manager;
 
     /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
-    private $objectManagerMock;
+    private $objectManager;
 
     /** @var DiCompileCommand|\PHPUnit_Framework_MockObject_MockObject */
     private $command;
@@ -27,28 +27,28 @@ class DiCompileCommandTest extends \PHPUnit_Framework_TestCase
     private $cacheMock;
 
     /** @var  \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject */
-    private $filesystemMock;
+    private $filesystem;
 
-    /** @var  \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject */
-    private $fileDriverMock;
+    /** @var  \Magento\Framework\Filesystem\Driver\File | \PHPUnit_Framework_MockObject_MockObject*/
+    private $fileDriver;
 
-    /** @var  \Magento\Framework\App\Filesystem\DirectoryList|\PHPUnit_Framework_MockObject_MockObject */
-    private $directoryListMock;
+    /** @var  \Magento\Framework\App\Filesystem\DirectoryList | \PHPUnit_Framework_MockObject_MockObject*/
+    private $directoryList;
 
     /** @var  \Magento\Framework\Component\ComponentRegistrar|\PHPUnit_Framework_MockObject_MockObject */
-    private $componentRegistrarMock;
+    private $componentRegistrar;
 
     public function setUp()
     {
-        $this->deploymentConfigMock = $this->getMock('Magento\Framework\App\DeploymentConfig', [], [], '', false);
-        $objectManagerProviderMock = $this->getMock(
+        $this->deploymentConfig = $this->getMock('Magento\Framework\App\DeploymentConfig', [], [], '', false);
+        $objectManagerProvider = $this->getMock(
             'Magento\Setup\Model\ObjectManagerProvider',
             [],
             [],
             '',
             false
         );
-        $this->objectManagerMock = $this->getMockForAbstractClass(
+        $this->objectManager = $this->getMockForAbstractClass(
             'Magento\Framework\ObjectManagerInterface',
             [],
             '',
@@ -58,86 +58,91 @@ class DiCompileCommandTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManagerProviderMock->expects($this->once())
+        $objectManagerProvider->expects($this->once())
             ->method('get')
-            ->willReturn($this->objectManagerMock);
-        $this->managerMock = $this->getMock('Magento\Setup\Module\Di\App\Task\Manager', [], [], '', false);
-        $this->directoryListMock = $this->getMock('Magento\Framework\App\Filesystem\DirectoryList', [], [], '', false);
-        $this->filesystemMock = $this->getMockBuilder('Magento\Framework\Filesystem')
+            ->willReturn($this->objectManager);
+        $this->manager = $this->getMock('Magento\Setup\Module\Di\App\Task\Manager', [], [], '', false);
+        $this->directoryList = $this->getMock('Magento\Framework\App\Filesystem\DirectoryList', [], [], '', false);
+        $this->filesystem = $this->getMockBuilder('Magento\Framework\Filesystem')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->fileDriverMock = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
+        $this->fileDriver = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->componentRegistrarMock = $this->getMock(
+        $this->componentRegistrar = $this->getMock(
             '\Magento\Framework\Component\ComponentRegistrar',
             [],
             [],
             '',
             false
         );
-        $this->componentRegistrarMock->expects($this->any())->method('getPaths')->willReturnMap([
+        $this->componentRegistrar->expects($this->any())->method('getPaths')->willReturnMap([
             [ComponentRegistrar::MODULE, ['/path/to/module/one', '/path/to/module/two']],
             [ComponentRegistrar::LIBRARY, ['/path/to/library/one', '/path/to/library/two']],
         ]);
 
         $this->command = new DiCompileCommand(
-            $this->deploymentConfigMock,
-            $this->directoryListMock,
-            $this->managerMock,
-            $objectManagerProviderMock,
-            $this->filesystemMock,
-            $this->fileDriverMock,
-            $this->componentRegistrarMock
+            $this->deploymentConfig,
+            $this->directoryList,
+            $this->manager,
+            $objectManagerProvider,
+            $this->filesystem,
+            $this->fileDriver,
+            $this->componentRegistrar
         );
     }
 
-    public function testExecuteModulesNotEnabled()
+    public function testExecuteDiExists()
     {
-        $this->deploymentConfigMock->expects($this->once())
-            ->method('get')
-            ->with(\Magento\Framework\Config\ConfigOptionsListConstants::KEY_MODULES)
-            ->willReturn(null);
+        $diPath = '/root/magento/var/di';
+        $this->deploymentConfig->expects($this->once())->method('isAvailable')->willReturn(true);
+        $this->fileDriver->expects($this->atLeastOnce())->method('isExists')->with($diPath)->willReturn(true);
+        $this->directoryList->expects($this->atLeastOnce())->method('getPath')->willReturn($diPath);
+        $tester = new CommandTester($this->command);
+        $tester->execute([]);
+        $this->assertContains("delete '/root/magento/var/di'", $tester->getDisplay());
+    }
+
+    public function testExecuteNotInstalled()
+    {
+        $this->directoryList->expects($this->atLeastOnce())->method('getPath')->willReturn(null);
+        $this->deploymentConfig->expects($this->once())->method('isAvailable')->willReturn(false);
         $tester = new CommandTester($this->command);
         $tester->execute([]);
         $this->assertEquals(
-            'You cannot run this command because modules are not enabled. You can enable modules by running the '
-            . "'module:enable --all' command." . PHP_EOL,
+            'You cannot run this command because the Magento application is not installed.' . PHP_EOL,
             $tester->getDisplay()
         );
     }
 
     public function testExecute()
     {
-        $this->directoryListMock->expects($this->atLeastOnce())->method('getPath')->willReturn(null);
-        $this->objectManagerMock->expects($this->once())
+        $this->directoryList->expects($this->atLeastOnce())->method('getPath')->willReturn(null);
+        $this->objectManager->expects($this->once())
             ->method('get')
             ->with('Magento\Framework\App\Cache')
             ->willReturn($this->cacheMock);
         $this->cacheMock->expects($this->once())->method('clean');
         $writeDirectory = $this->getMock('Magento\Framework\Filesystem\Directory\WriteInterface');
         $writeDirectory->expects($this->atLeastOnce())->method('delete');
-        $this->filesystemMock->expects($this->atLeastOnce())->method('getDirectoryWrite')->willReturn($writeDirectory);
+        $this->filesystem->expects($this->atLeastOnce())->method('getDirectoryWrite')->willReturn($writeDirectory);
 
-        $this->deploymentConfigMock->expects($this->once())
-            ->method('get')
-            ->with(\Magento\Framework\Config\ConfigOptionsListConstants::KEY_MODULES)
-            ->willReturn(['Magento_Catalog' => 1]);
+        $this->deploymentConfig->expects($this->once())->method('isAvailable')->willReturn(true);
         $progressBar = $this->getMockBuilder(
             'Symfony\Component\Console\Helper\ProgressBar'
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManagerMock->expects($this->once())->method('configure');
-        $this->objectManagerMock
+        $this->objectManager->expects($this->once())->method('configure');
+        $this->objectManager
             ->expects($this->once())
             ->method('create')
             ->with('Symfony\Component\Console\Helper\ProgressBar')
             ->willReturn($progressBar);
-        $this->managerMock->expects($this->exactly(7))->method('addOperation');
-        $this->managerMock->expects($this->once())->method('process');
+        $this->manager->expects($this->exactly(7))->method('addOperation');
+        $this->manager->expects($this->once())->method('process');
         $tester = new CommandTester($this->command);
         $tester->execute([]);
         $this->assertContains(

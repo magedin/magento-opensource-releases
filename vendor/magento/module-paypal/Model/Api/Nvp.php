@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -175,13 +175,14 @@ class Nvp extends \Magento\Paypal\Model\Api\AbstractApi
      * @var array
      */
     protected $_exportToRequestFilters = [
-        'AMT' => 'formatPrice',
-        'ITEMAMT' => 'formatPrice',
-        'TRIALAMT' => 'formatPrice',
-        'SHIPPINGAMT' => 'formatPrice',
-        'TAXAMT' => 'formatPrice',
-        'INITAMT' => 'formatPrice',
+        'AMT' => '_filterAmount',
+        'ITEMAMT' => '_filterAmount',
+        'TRIALAMT' => '_filterAmount',
+        'SHIPPINGAMT' => '_filterAmount',
+        'TAXAMT' => '_filterAmount',
+        'INITAMT' => '_filterAmount',
         'CREDITCARDTYPE' => '_filterCcType',
+        //        'PROFILESTARTDATE' => '_filterToPaypalDate',
         'AUTOBILLAMT' => '_filterBillFailedLater',
         'BILLINGPERIOD' => '_filterPeriodUnit',
         'TRIALBILLINGPERIOD' => '_filterPeriodUnit',
@@ -1217,16 +1218,14 @@ class Nvp extends \Magento\Paypal\Model\Api\AbstractApi
             );
             $http->close();
 
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('Payment Gateway is unreachable at the moment. Please use another payment option.')
-            );
+            throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t contact the PayPal gateway.'));
         }
 
         // cUrl resource must be closed after checking it for errors
         $http->close();
 
         if (!$this->_validateResponse($methodName, $response)) {
-            $this->_logger->critical(new \Exception(__('PayPal response hasn\'t required fields.')));
+            $this->_logger->critical(new \Exception(__("PayPal response hasn't required fields.")));
             throw new \Magento\Framework\Exception\LocalizedException(
                 __('Something went wrong while processing your order.')
             );
@@ -1288,10 +1287,9 @@ class Nvp extends \Magento\Paypal\Model\Api\AbstractApi
         $exceptionPhrase = __('PayPal gateway has rejected request. %1', $errorMessages);
 
         /** @var \Magento\Framework\Exception\LocalizedException $exception */
-        $firstError = $errors[0]['code'];
-        $exception = $this->_isProcessableError($firstError)
+        $exception = count($errors) == 1 && $this->_isProcessableError($errors[0]['code'])
             ? $this->_processableExceptionFactory->create(
-                ['phrase' => $exceptionPhrase, 'code' => $firstError]
+                ['phrase' => $exceptionPhrase, 'code' => $errors[0]['code']]
             )
             : $this->_frameworkExceptionFactory->create(
                 ['phrase' => $exceptionPhrase]

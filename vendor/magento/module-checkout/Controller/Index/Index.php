@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Controller\Index;
@@ -34,6 +34,8 @@ class Index extends \Magento\Checkout\Controller\Onepage
 
         $this->_customerSession->regenerateId();
         $this->_objectManager->get('Magento\Checkout\Model\Session')->setCartWasUpdated(false);
+        $currentUrl = $this->_url->getUrl('*/*/*', ['_secure' => true]);
+        $this->_objectManager->get('Magento\Customer\Model\Session')->setBeforeAuthUrl($currentUrl);
         $this->getOnepage()->initCheckout();
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->set(__('Checkout'));

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -28,7 +28,6 @@ class MinificationTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Framework\View\Asset\Minification|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $assetMinificationMock;
-
     /**
      * {@inheritDoc}
      */
@@ -70,20 +69,21 @@ class MinificationTest extends \PHPUnit_Framework_TestCase
         $this->assetMinificationMock
             ->expects($this->any())
             ->method('isEnabled')
-            ->willReturn($isEnabled);
+            ->willReturnMap([['css', $isEnabled]]);
         $this->assetMinificationMock
             ->expects($this->any())
-            ->method('addMinifiedSign')
+            ->method('removeMinifiedSign')
             ->with($requested)
             ->willReturn($alternative);
 
         $this->resolverMock
             ->expects($this->any())
             ->method('resolve')
-            ->willReturnMap([
-                ['', $requested, null, null, null, null, $resolvedOriginal],
-                ['', $alternative, null, null, null, null, $resolvedAlternative]
-            ]);
+            ->withConsecutive(
+                ['', $requested, null, null, null, null],
+                ['', $alternative, null, null, null, null]
+            )
+            ->willReturnOnConsecutiveCalls($resolvedOriginal, $resolvedAlternative);
 
         $this->assertEquals($expected, $this->minification->resolve('', $requested));
     }
@@ -94,10 +94,8 @@ class MinificationTest extends \PHPUnit_Framework_TestCase
     public function resolveDataProvider()
     {
         return [
-            [true, 'file.css', 'file.min.css', 'found.min.css', false, 'found.min.css'],
-            [false, 'file.min.css', 'file.min.css', false, false, 'found.css'],
-            [true, 'file.js', 'file.min.js', 'found.min.js', false, 'found.min.js'],
-            [false, 'file.min.js', 'file.min.js', false, false, 'found.js'],
+            [true, 'file.min.css', 'file.css', 'found.css', false, 'found.css'],
+            [false, 'file.min.css', 'file.min.css', false, false, 'found.css']
         ];
     }
 }

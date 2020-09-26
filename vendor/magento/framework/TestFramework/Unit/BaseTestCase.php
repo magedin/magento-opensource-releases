@@ -2,7 +2,7 @@
 /**
  * Framework for unit tests containing helper methods
  *
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  *
  * Number of fields is necessary because of the number of fields used by multiple layers
@@ -13,19 +13,14 @@ namespace Magento\Framework\TestFramework\Unit;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
+class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * ObjectManager available since setUp()
-     *
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
     }
@@ -43,13 +38,6 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    /**
-     * Boolean data-provider
-     *
-     * Providing true and false.
-     *
-     * @return array
-     */
     public function booleanDataProvider()
     {
         return [[true], [false]];

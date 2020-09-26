@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -56,15 +56,9 @@ class Status
     protected $varReaderWriter;
 
     /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Constructor
      *
      * @param Filesystem $filesystem
-     * @param SetupLoggerFactory $setupLoggerFactory
      * @param string $statusFilePath
      * @param string $logFilePath
      * @param string $updateInProgressFlagFilePath
@@ -72,7 +66,6 @@ class Status
      */
     public function __construct(
         Filesystem $filesystem,
-        SetupLoggerFactory $setupLoggerFactory,
         $statusFilePath = null,
         $logFilePath = null,
         $updateInProgressFlagFilePath = null,
@@ -80,14 +73,13 @@ class Status
     ) {
         $this->varReaderWriter = $filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->statusFilePath = $statusFilePath ? $statusFilePath : '.update_status.txt';
-        $this->logFilePath = $logFilePath ? $logFilePath : DirectoryList::LOG . '/update.log';
+        $this->logFilePath = $logFilePath ? $logFilePath : 'update_status.log';
         $this->updateInProgressFlagFilePath = $updateInProgressFlagFilePath
             ? $updateInProgressFlagFilePath
             : '.update_in_progress.flag';
         $this->updateErrorFlagFilePath = $updateErrorFlagFilePath
             ? $updateErrorFlagFilePath
             : '.update_error.flag';
-        $this->logger = $setupLoggerFactory->create('setup-cron');
     }
 
     /**
@@ -116,20 +108,15 @@ class Status
      * Add information to a temporary file which is used for status display on a web page and to a permanent status log.
      *
      * @param string $text
-     * @param int $severity
-     * @param bool $writeToStatusFile
-     *
      * @return $this
      * @throws \RuntimeException
      */
-    public function add($text, $severity = \Psr\Log\LogLevel::INFO, $writeToStatusFile = true)
+    public function add($text)
     {
-        $this->logger->log($severity, $text);
         $currentUtcTime = '[' . date('Y-m-d H:i:s T', time()) . '] ';
         $text = $currentUtcTime . $text;
-        if ($writeToStatusFile) {
-            $this->writeMessageToFile($text, $this->statusFilePath);
-        }
+        $this->writeMessageToFile($text, $this->logFilePath);
+        $this->writeMessageToFile($text, $this->statusFilePath);
         return $this;
     }
 

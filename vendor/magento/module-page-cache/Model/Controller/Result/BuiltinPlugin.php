@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Model\Controller\Result;
@@ -73,10 +73,8 @@ class BuiltinPlugin
         }
 
         if ($this->state->getMode() == \Magento\Framework\App\State::MODE_DEVELOPER) {
-            $cacheControlHeader = $response->getHeader('Cache-Control');
-            if ($cacheControlHeader instanceof \Zend\Http\Header\HeaderInterface) {
-                $response->setHeader('X-Magento-Cache-Control', $cacheControlHeader->getFieldValue());
-            }
+            $cacheControl = $response->getHeader('Cache-Control')->getFieldValue();
+            $response->setHeader('X-Magento-Cache-Control', $cacheControl);
             $response->setHeader('X-Magento-Cache-Debug', 'MISS', true);
         }
 

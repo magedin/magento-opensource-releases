@@ -15,9 +15,7 @@ namespace Composer\Downloader;
 use Composer\Config;
 use Composer\Cache;
 use Composer\EventDispatcher\EventDispatcher;
-use Composer\Util\Platform;
 use Composer\Util\ProcessExecutor;
-use Composer\Util\RemoteFilesystem;
 use Composer\IO\IOInterface;
 use RarArchive;
 
@@ -32,10 +30,10 @@ class RarDownloader extends ArchiveDownloader
 {
     protected $process;
 
-    public function __construct(IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null, Cache $cache = null, ProcessExecutor $process = null, RemoteFilesystem $rfs = null)
+    public function __construct(IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null, Cache $cache = null, ProcessExecutor $process = null)
     {
         $this->process = $process ?: new ProcessExecutor($io);
-        parent::__construct($io, $config, $eventDispatcher, $cache, $rfs);
+        parent::__construct($io, $config, $eventDispatcher, $cache);
     }
 
     protected function extract($file, $path)
@@ -43,7 +41,7 @@ class RarDownloader extends ArchiveDownloader
         $processError = null;
 
         // Try to use unrar on *nix
-        if (!Platform::isWindows()) {
+        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $command = 'unrar x ' . ProcessExecutor::escape($file) . ' ' . ProcessExecutor::escape($path) . ' && chmod -R u+w ' . ProcessExecutor::escape($path);
 
             if (0 === $this->process->execute($command, $ignoredOutput)) {
@@ -66,7 +64,7 @@ class RarDownloader extends ArchiveDownloader
             $error = "Could not decompress the archive, enable the PHP rar extension or install unrar.\n"
                 . $iniMessage . "\n" . $processError;
 
-            if (!Platform::isWindows()) {
+            if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
                 $error = "Could not decompress the archive, enable the PHP rar extension.\n" . $iniMessage;
             }
 

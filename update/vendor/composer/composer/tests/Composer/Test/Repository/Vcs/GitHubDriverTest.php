@@ -14,22 +14,19 @@ namespace Composer\Test\Repository\Vcs;
 
 use Composer\Downloader\TransportException;
 use Composer\Repository\Vcs\GitHubDriver;
-use Composer\TestCase;
 use Composer\Util\Filesystem;
 use Composer\Config;
 
-class GitHubDriverTest extends TestCase
+class GitHubDriverTest extends \PHPUnit_Framework_TestCase
 {
-    private $home;
     private $config;
 
     public function setUp()
     {
-        $this->home = $this->getUniqueTmpDirectory();
         $this->config = new Config();
         $this->config->merge(array(
             'config' => array(
-                'home' => $this->home,
+                'home' => sys_get_temp_dir() . '/composer-test',
             ),
         ));
     }
@@ -37,7 +34,7 @@ class GitHubDriverTest extends TestCase
     public function tearDown()
     {
         $fs = new Filesystem;
-        $fs->removeDirectory($this->home);
+        $fs->removeDirectory(sys_get_temp_dir() . '/composer-test');
     }
 
     public function testPrivateRepository()
@@ -68,18 +65,23 @@ class GitHubDriverTest extends TestCase
             ->will($this->throwException(new TransportException('HTTP/1.1 404 Not Found', 404)));
 
         $io->expects($this->once())
+            ->method('ask')
+            ->with($this->equalTo('Username: '))
+            ->will($this->returnValue('someuser'));
+
+        $io->expects($this->once())
             ->method('askAndHideAnswer')
-            ->with($this->equalTo('Token (hidden): '))
-            ->will($this->returnValue('sometoken'));
+            ->with($this->equalTo('Password: '))
+            ->will($this->returnValue('somepassword'));
 
         $io->expects($this->any())
             ->method('setAuthentication')
-            ->with($this->equalTo('github.com'), $this->matchesRegularExpression('{sometoken}'), $this->matchesRegularExpression('{x-oauth-basic}'));
+            ->with($this->equalTo('github.com'), $this->matchesRegularExpression('{someuser|abcdef}'), $this->matchesRegularExpression('{somepassword|x-oauth-basic}'));
 
         $remoteFilesystem->expects($this->at(1))
             ->method('getContents')
-            ->with($this->equalTo('github.com'), $this->equalTo('https://api.github.com/'), $this->equalTo(false))
-            ->will($this->returnValue('{}'));
+            ->with($this->equalTo('github.com'), $this->equalTo('https://api.github.com/authorizations'), $this->equalTo(false))
+            ->will($this->returnValue('{"token": "abcdef"}'));
 
         $remoteFilesystem->expects($this->at(2))
             ->method('getContents')

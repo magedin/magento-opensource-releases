@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -89,7 +89,8 @@ class InfoTest extends \PHPUnit_Framework_TestCase
             ['cc_cid', 'cc_cid_enc']
         ];
     }
-    
+
+
     public function testGetMethodInstanceWithRealMethod()
     {
         $method = 'real_method';
@@ -106,6 +107,7 @@ class InfoTest extends \PHPUnit_Framework_TestCase
 
         $this->info->getMethodInstance();
     }
+
 
     public function testGetMethodInstanceWithUnrealMethod()
     {
@@ -128,6 +130,7 @@ class InfoTest extends \PHPUnit_Framework_TestCase
 
         $this->info->getMethodInstance();
     }
+
 
     /**
      * @expectedException \Magento\Framework\Exception\LocalizedException
@@ -250,9 +253,9 @@ class InfoTest extends \PHPUnit_Framework_TestCase
 
     public function testInitAdditionalInformationWithUnserialize()
     {
-        $data = ['key1' => 'data1', 'key2' => 'data2'];
+        $data = serialize(['key1' => 'data1', 'key2' => 'data2']);
         $this->info->setData('additional_information', $data);
 
-        $this->assertEquals($data, $this->info->getAdditionalInformation());
+        $this->assertEquals(unserialize($data), $this->info->getAdditionalInformation());
     }
 }

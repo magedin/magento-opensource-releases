@@ -12,8 +12,6 @@
 
 namespace Composer\Util;
 
-use Composer\IO\IOInterface;
-
 /**
  * Convert PHP errors into exceptions
  *
@@ -21,8 +19,6 @@ use Composer\IO\IOInterface;
  */
 class ErrorHandler
 {
-    private static $io;
-
     /**
      * Error handler
      *
@@ -36,8 +32,8 @@ class ErrorHandler
      */
     public static function handle($level, $message, $file, $line)
     {
-        // error code is not included in error_reporting
-        if (!(error_reporting() & $level)) {
+        // respect error_reporting being disabled
+        if (!error_reporting()) {
             return;
         }
 
@@ -46,23 +42,7 @@ class ErrorHandler
             "\na legitimately suppressed error that you were not supposed to see.";
         }
 
-        if ($level !== E_DEPRECATED && $level !== E_USER_DEPRECATED) {
-            throw new \ErrorException($message, 0, $level, $file, $line);
-        }
-
-        if (self::$io) {
-            self::$io->writeError('<warning>Deprecation Notice: '.$message.' in '.$file.':'.$line.'</warning>');
-            if (self::$io->isVerbose()) {
-                self::$io->writeError('<warning>Stack trace:</warning>');
-                self::$io->writeError(array_filter(array_map(function ($a) {
-                    if (isset($a['line'], $a['file'])) {
-                        return '<warning> '.$a['file'].':'.$a['line'].'</warning>';
-                    }
-
-                    return null;
-                }, array_slice(debug_backtrace(), 2))));
-            }
-        }
+        throw new \ErrorException($message, 0, $level, $file, $line);
     }
 
     /**
@@ -70,10 +50,8 @@ class ErrorHandler
      *
      * @static
      */
-    public static function register(IOInterface $io = null)
+    public static function register()
     {
         set_error_handler(array(__CLASS__, 'handle'));
-        error_reporting(E_ALL | E_STRICT);
-        self::$io = $io;
     }
 }

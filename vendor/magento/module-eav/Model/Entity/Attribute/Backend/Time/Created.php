@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\Entity\Attribute\Backend\Time;
@@ -18,7 +18,6 @@ class Created extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBacken
     /**
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      * @codeCoverageIgnore
-     * @deprecated Remove unused dependency
      */
     public function __construct(\Magento\Framework\Stdlib\DateTime\DateTime $dateTime)
     {
@@ -35,10 +34,8 @@ class Created extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBacken
     {
         $attributeCode = $this->getAttribute()->getAttributeCode();
         if ($object->isObjectNew() && $object->getData($attributeCode) === null) {
-            $object->setData(
-                $attributeCode,
-                gmdate(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT)
-            );
+            //$object->setData($attributeCode, $this->dateTime->gmtDate());
+            $object->setData($attributeCode, gmdate('Y-m-d H:i:s'));
         }
 
         return $this;

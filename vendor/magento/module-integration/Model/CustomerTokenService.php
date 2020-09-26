@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,8 +12,6 @@ use Magento\Integration\Model\CredentialsValidator;
 use Magento\Integration\Model\Oauth\Token as Token;
 use Magento\Integration\Model\Oauth\TokenFactory as TokenModelFactory;
 use Magento\Integration\Model\ResourceModel\Oauth\Token\CollectionFactory as TokenCollectionFactory;
-use Magento\Integration\Model\Oauth\Token\RequestThrottler;
-use Magento\Framework\Exception\AuthenticationException;
 
 class CustomerTokenService implements \Magento\Integration\Api\CustomerTokenServiceInterface
 {
@@ -44,11 +42,6 @@ class CustomerTokenService implements \Magento\Integration\Api\CustomerTokenServ
     private $tokenModelCollectionFactory;
 
     /**
-     * @var RequestThrottler
-     */
-    private $requestThrottler;
-
-    /**
      * Initialize service
      *
      * @param TokenModelFactory $tokenModelFactory
@@ -74,16 +67,7 @@ class CustomerTokenService implements \Magento\Integration\Api\CustomerTokenServ
     public function createCustomerAccessToken($username, $password)
     {
         $this->validatorHelper->validate($username, $password);
-        $this->getRequestThrottler()->throttle($username, RequestThrottler::USER_TYPE_CUSTOMER);
-        try {
-            $customerDataObject = $this->accountManagement->authenticate($username, $password);
-        } catch (\Exception $e) {
-            $this->getRequestThrottler()->logAuthenticationFailure($username, RequestThrottler::USER_TYPE_CUSTOMER);
-            throw new AuthenticationException(
-                __('You did not sign in correctly or your account is temporarily disabled.')
-            );
-        }
-        $this->getRequestThrottler()->resetAuthenticationFailuresCount($username, RequestThrottler::USER_TYPE_CUSTOMER);
+        $customerDataObject = $this->accountManagement->authenticate($username, $password);
         return $this->tokenModelFactory->create()->createCustomerToken($customerDataObject->getId())->getToken();
     }
 
@@ -104,19 +88,5 @@ class CustomerTokenService implements \Magento\Integration\Api\CustomerTokenServ
             throw new LocalizedException(__('The tokens could not be revoked.'));
         }
         return true;
-    }
-
-    /**
-     * Get request throttler instance
-     *
-     * @return RequestThrottler
-     * @deprecated
-     */
-    private function getRequestThrottler()
-    {
-        if (!$this->requestThrottler instanceof RequestThrottler) {
-            return \Magento\Framework\App\ObjectManager::getInstance()->get(RequestThrottler::class);
-        }
-        return $this->requestThrottler;
     }
 }

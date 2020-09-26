@@ -1,28 +1,17 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
     'jquery',
     'Magento_Ui/js/modal/modal'
-], function ($) {
+], function($){
     'use strict';
 
-    return function (config, el) {
-        var widget,
-            content;
+    return function(config, el) {
+        var widget = $(config.content).modal(config);
 
-        if (config.contentSelector) {
-            content = $(config.contentSelector);
-        } else if (config.content) {
-            content = $('<div />').html(config.content);
-        } else {
-            content = $('<div />');
-        }
-
-        widget = content.modal(config);
-
-        $(el).on(config.toggleEvent, function () {
+        $(el).on(config.toggleEvent, function() {
             var state = widget.data('mage-modal').options.isOpen;
 
             if (state) {

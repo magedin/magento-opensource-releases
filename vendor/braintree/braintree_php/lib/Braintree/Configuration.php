@@ -1,16 +1,14 @@
 <?php
-namespace Braintree;
-
 /**
  *
  * Configuration registry
  *
  * @package    Braintree
  * @subpackage Utility
- * @copyright  2015 Braintree, a division of PayPal, Inc.
+ * @copyright  2014 Braintree, a division of PayPal, Inc.
  */
 
-class Configuration
+class Braintree_Configuration
 {
     public static $global;
 
@@ -18,12 +16,7 @@ class Configuration
     private $_merchantId = null;
     private $_publicKey = null;
     private $_privateKey = null;
-    private $_clientId = null;
-    private $_clientSecret = null;
     private $_accessToken = null;
-    private $_proxyHost = null;
-    private $_proxyPort = null;
-    private $_proxyType = null;
 
     /**
      * Braintree API version to use
@@ -31,11 +24,11 @@ class Configuration
      */
      const API_VERSION =  4;
 
-    public function __construct($attribs = [])
+    public function __construct($attribs = array())
     {
         foreach ($attribs as $kind => $value) {
             if ($kind == 'environment') {
-                CredentialsParser::assertValidEnvironment($value);
+                Braintree_CredentialsParser::assertValidEnvironment($value);
                 $this->_environment = $value;
             }
             if ($kind == 'merchantId') {
@@ -51,14 +44,14 @@ class Configuration
 
         if (isset($attribs['clientId']) || isset($attribs['accessToken'])) {
             if (isset($attribs['environment']) || isset($attribs['merchantId']) || isset($attribs['publicKey']) || isset($attribs['privateKey'])) {
-                throw new Exception\Configuration('Cannot mix OAuth credentials (clientId, clientSecret, accessToken) with key credentials (publicKey, privateKey, environment, merchantId).');
+                throw new Braintree_Exception_Configuration('Cannot mix OAuth credentials (clientId, clientSecret, accessToken) with key credentials (publicKey, privateKey, environment, merchantId).');
             }
-            $parsedCredentials = new CredentialsParser($attribs);
+            $parsedCredentials = new Braintree_CredentialsParser($attribs);
 
             $this->_environment = $parsedCredentials->getEnvironment();
             $this->_merchantId = $parsedCredentials->getMerchantId();
-            $this->_clientId = $parsedCredentials->getClientId();
-            $this->_clientSecret = $parsedCredentials->getClientSecret();
+            $this->_publicKey = $parsedCredentials->getClientId();
+            $this->_privateKey = $parsedCredentials->getClientSecret();
             $this->_accessToken = $parsedCredentials->getAccessToken();
         }
     }
@@ -69,12 +62,12 @@ class Configuration
      */
     public static function reset()
     {
-        self::$global = new Configuration();
+        self::$global = new Braintree_Configuration();
     }
 
     public static function gateway()
     {
-        return new Gateway(self::$global);
+        return new Braintree_Gateway(self::$global);
     }
 
     public static function environment($value=null)
@@ -82,7 +75,7 @@ class Configuration
         if (empty($value)) {
             return self::$global->getEnvironment();
         }
-        CredentialsParser::assertValidEnvironment($value);
+        Braintree_CredentialsParser::assertValidEnvironment($value);
         self::$global->setEnvironment($value);
     }
 
@@ -110,77 +103,17 @@ class Configuration
         self::$global->setPrivateKey($value);
     }
 
-    /**
-     * Sets or gets the proxy host to use for connecting to Braintree
-     *
-     * @param string $value If provided, sets the proxy host
-     * @return string The proxy host used for connecting to Braintree
-     */
-    public static function proxyHost($value = null)
-    {
-        if (empty($value)) {
-            return self::$global->getProxyHost();
-        }
-        self::$global->setProxyHost($value);
-    }
-
-    /**
-     * Sets or gets the port of the proxy to use for connecting to Braintree
-     *
-     * @param string $value If provided, sets the port of the proxy
-     * @return string The port of the proxy used for connecting to Braintree
-     */
-    public static function proxyPort($value = null)
-    {
-        if (empty($value)) {
-            return self::$global->getProxyPort();
-        }
-        self::$global->setProxyPort($value);
-    }
-
-    /**
-     * Sets or gets the proxy type to use for connecting to Braintree. This value
-     * can be any of the CURLOPT_PROXYTYPE options in PHP cURL.
-     *
-     * @param string $value If provided, sets the proxy type
-     * @return string The proxy type used for connecting to Braintree
-     */
-    public static function proxyType($value = null)
-    {
-        if (empty($value)) {
-            return self::$global->getProxyType();
-        }
-        self::$global->setProxyType($value);
-    }
-
-    /**
-     * Specifies whether or not a proxy is properly configured
-     *
-     * @return bool true if a proxy is configured properly, false if not
-     */
-    public static function isUsingProxy()
-    {
-        $proxyHost = self::$global->getProxyHost();
-        $proxyPort = self::$global->getProxyPort();
-        return !empty($proxyHost) && !empty($proxyPort);
-    }
-
-    public static function assertGlobalHasAccessTokenOrKeys()
-    {
-        self::$global->assertHasAccessTokenOrKeys();
-    }
-
     public function assertHasAccessTokenOrKeys()
     {
         if (empty($this->_accessToken)) {
-            if (empty($this->_merchantId)) {
-                throw new Exception\Configuration('Braintree\\Configuration::merchantId needs to be set (or accessToken needs to be passed to Braintree\\Gateway).');
-            } else if (empty($this->_environment)) {
-                throw new Exception\Configuration('Braintree\\Configuration::environment needs to be set.');
+            if (empty($this->_environment)) {
+                throw new Braintree_Exception_Configuration('environment needs to be set.');
+            } else if (empty($this->_merchantId)) {
+                throw new Braintree_Exception_Configuration('merchantId needs to be set.');
             } else if (empty($this->_publicKey)) {
-                throw new Exception\Configuration('Braintree\\Configuration::publicKey needs to be set.');
+                throw new Braintree_Exception_Configuration('publicKey needs to be set.');
             } else if (empty($this->_privateKey)) {
-                throw new Exception\Configuration('Braintree\\Configuration::privateKey needs to be set.');
+                throw new Braintree_Exception_Configuration('privateKey needs to be set.');
             }
         }
     }
@@ -193,15 +126,15 @@ class Configuration
 
     public function assertHasClientId()
     {
-        if (empty($this->_clientId)) {
-            throw new Exception\Configuration('clientId needs to be passed to Braintree\\Gateway.');
+        if (empty($this->_publicKey)) {
+            throw new Braintree_Exception_Configuration('clientId needs to be set.');
         }
     }
 
     public function assertHasClientSecret()
     {
-        if (empty($this->_clientSecret)) {
-            throw new Exception\Configuration('clientSecret needs to be passed to Braintree\\Gateway.');
+        if (empty($this->_privateKey)) {
+            throw new Braintree_Exception_Configuration('clientSecret needs to be set.');
         }
     }
 
@@ -238,7 +171,7 @@ class Configuration
 
     public function getClientId()
     {
-        return $this->_clientId;
+        return $this->_publicKey;
     }
 
     /**
@@ -256,7 +189,7 @@ class Configuration
 
     public function getClientSecret()
     {
-        return $this->_clientSecret;
+        return $this->_privateKey;
     }
 
     /**
@@ -265,36 +198,6 @@ class Configuration
     public function setPrivateKey($value)
     {
         $this->_privateKey = $value;
-    }
-
-    private function setProxyHost($value)
-    {
-        $this->_proxyHost = $value;
-    }
-
-    public function getProxyHost()
-    {
-        return $this->_proxyHost;
-    }
-
-    private function setProxyPort($value)
-    {
-        $this->_proxyPort = $value;
-    }
-
-    public function getProxyPort()
-    {
-        return $this->_proxyPort;
-    }
-
-    private function setProxyType($value)
-    {
-        $this->_proxyType = $value;
-    }
-
-    public function getProxyType()
-    {
-        return $this->_proxyType;
     }
 
     public function getAccessToken()
@@ -306,11 +209,6 @@ class Configuration
     {
         return !empty($this->_accessToken);
     }
-
-    public function isClientCredentials()
-    {
-        return !empty($this->_clientId);
-    }
     /**
      * returns the base braintree gateway URL based on config values
      *
@@ -320,7 +218,16 @@ class Configuration
      */
     public function baseUrl()
     {
-        return sprintf('%s://%s:%d', $this->protocol(), $this->serverName(), $this->portNumber());
+        static $defaultPorts = array(
+            'http' => 80,
+            'https' => 443,
+        );
+
+        if ($this->portNumber() === $defaultPorts[$this->protocol()]) {
+            return sprintf('%s://%s', $this->protocol(), $this->serverName());
+        } else {
+            return sprintf('%s://%s:%d', $this->protocol(), $this->serverName(), $this->portNumber());
+        }
     }
 
     /**
@@ -332,7 +239,7 @@ class Configuration
      */
     public function merchantPath()
     {
-        return '/merchants/' . $this->_merchantId;
+        return '/merchants/'.$this->_merchantId;
     }
 
     /**
@@ -346,11 +253,15 @@ class Configuration
     {
         $sslPath = $sslPath ? $sslPath : DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
                    'ssl' . DIRECTORY_SEPARATOR;
-        $caPath = __DIR__ . $sslPath . 'api_braintreegateway_com.ca.crt';
+
+        $caPath = realpath(
+            dirname(__FILE__) .
+            $sslPath .  'api_braintreegateway_com.ca.crt'
+        );
 
         if (!file_exists($caPath))
         {
-            throw new Exception\SSLCaFileNotFound();
+            throw new Braintree_Exception_SSLCaFileNotFound();
         }
 
         return $caPath;
@@ -471,5 +382,4 @@ class Configuration
         error_log('[Braintree] ' . $message);
     }
 }
-Configuration::reset();
-class_alias('Braintree\Configuration', 'Braintree_Configuration');
+Braintree_Configuration::reset();

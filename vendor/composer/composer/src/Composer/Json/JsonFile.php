@@ -16,7 +16,6 @@ use JsonSchema\Validator;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 use Composer\Util\RemoteFilesystem;
-use Composer\IO\IOInterface;
 use Composer\Downloader\TransportException;
 
 /**
@@ -36,7 +35,6 @@ class JsonFile
 
     private $path;
     private $rfs;
-    private $io;
 
     /**
      * Initializes json file reader/parser.
@@ -45,7 +43,7 @@ class JsonFile
      * @param  RemoteFilesystem          $rfs  required for loading http/https json files
      * @throws \InvalidArgumentException
      */
-    public function __construct($path, RemoteFilesystem $rfs = null, IOInterface $io = null)
+    public function __construct($path, RemoteFilesystem $rfs = null)
     {
         $this->path = $path;
 
@@ -53,7 +51,6 @@ class JsonFile
             throw new \InvalidArgumentException('http urls require a RemoteFilesystem instance to be passed');
         }
         $this->rfs = $rfs;
-        $this->io = $io;
     }
 
     /**
@@ -86,9 +83,6 @@ class JsonFile
             if ($this->rfs) {
                 $json = $this->rfs->getContents($this->path, $this->path, false);
             } else {
-                if ($this->io && $this->io->isDebug()) {
-                    $this->io->writeError('Reading ' . $this->path);
-                }
                 $json = file_get_contents($this->path);
             }
         } catch (TransportException $e) {
@@ -143,8 +137,8 @@ class JsonFile
      * Validates the schema of the current json file according to composer-schema.json rules
      *
      * @param  int                     $schema a JsonFile::*_SCHEMA constant
-     * @throws JsonValidationException
      * @return bool                    true on success
+     * @throws JsonValidationException
      */
     public function validateSchema($schema = self::STRICT_SCHEMA)
     {
@@ -188,7 +182,7 @@ class JsonFile
      */
     public static function encode($data, $options = 448)
     {
-        if (PHP_VERSION_ID >= 50400) {
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
             $json = json_encode($data, $options);
             if (false === $json) {
                 self::throwEncodeError(json_last_error());
@@ -224,7 +218,7 @@ class JsonFile
     /**
      * Throws an exception according to a given code with a customized message
      *
-     * @param  int               $code return code of json_last_error function
+     * @param int $code return code of json_last_error function
      * @throws \RuntimeException
      */
     private static function throwEncodeError($code)
@@ -275,10 +269,10 @@ class JsonFile
      *
      * @param  string                    $json
      * @param  string                    $file
+     * @return bool                      true on success
      * @throws \UnexpectedValueException
      * @throws JsonValidationException
      * @throws ParsingException
-     * @return bool                      true on success
      */
     protected static function validateSyntax($json, $file = null)
     {

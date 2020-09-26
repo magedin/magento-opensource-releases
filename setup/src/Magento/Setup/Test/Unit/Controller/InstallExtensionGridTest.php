@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,15 +18,15 @@ class InstallExtensionGridTest extends \PHPUnit_Framework_TestCase
     private $controller;
 
     /**
-     * @var \Magento\Setup\Model\PackagesData
+     * @var \Magento\Setup\Model\MarketplaceManager
      */
-    private $packagesData;
+    private $marketplaceManager;
 
     public function setUp()
     {
-        $this->packagesData =
-            $this->getMock('Magento\Setup\Model\PackagesData', ['getPackagesForInstall'], [], '', false);
-        $this->controller = new InstallExtensionGrid($this->packagesData);
+        $this->marketplaceManager =
+            $this->getMock('Magento\Setup\Model\MarketplaceManager', ['getPackagesForInstall'], [], '', false);
+        $this->controller = new InstallExtensionGrid($this->marketplaceManager);
     }
 
     /**
@@ -45,7 +45,7 @@ class InstallExtensionGridTest extends \PHPUnit_Framework_TestCase
      */
     public function testExtensionsAction($extensions)
     {
-        $this->packagesData
+        $this->marketplaceManager
             ->expects($this->once())
             ->method('getPackagesForInstall')
             ->will($this->returnValue($extensions));

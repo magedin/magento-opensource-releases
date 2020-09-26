@@ -33,7 +33,6 @@ class FilesystemRepository extends WritableArrayRepository
      */
     public function __construct(JsonFile $repositoryFile)
     {
-        parent::__construct();
         $this->file = $repositoryFile;
     }
 

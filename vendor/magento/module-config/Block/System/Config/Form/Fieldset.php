@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -54,35 +54,22 @@ class Fieldset extends \Magento\Backend\Block\AbstractBlock implements
      * @param AbstractElement $element
      * @return string
      */
-    public function render(AbstractElement $element)
+    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $this->setElement($element);
-        $header = $this->_getHeaderHtml($element);
+        $html = $this->_getHeaderHtml($element);
 
-        $elements = $this->_getChildrenElementsHtml($element);
-
-        $footer = $this->_getFooterHtml($element);
-
-        return $header . $elements . $footer;
-    }
-
-    /**
-     * @param AbstractElement $element
-     * @return string
-     */
-    protected function _getChildrenElementsHtml(AbstractElement $element)
-    {
-        $elements = '';
         foreach ($element->getElements() as $field) {
             if ($field instanceof \Magento\Framework\Data\Form\Element\Fieldset) {
-                $elements .= '<tr id="row_' . $field->getHtmlId() . '">'
-                    . '<td colspan="4">' . $field->toHtml() . '</td></tr>';
+                $html .= '<tr id="row_' . $field->getHtmlId() . '"><td colspan="4">' . $field->toHtml() . '</td></tr>';
             } else {
-                $elements .= $field->toHtml();
+                $html .= $field->toHtml();
             }
         }
 
-        return $elements;
+        $html .= $this->_getFooterHtml($element);
+
+        return $html;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,11 +13,11 @@ $registry = $objectManager->get('Magento\Framework\Registry');
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', true);
 
-$productSkuList = ['simple_product_1', 'simple_product_2'];
-foreach ($productSkuList as $sku) {
+$productIds = [1, 2];
+foreach ($productIds as $productId) {
     /** @var $product \Magento\Catalog\Model\Product */
     $product = $objectManager->create('Magento\Catalog\Model\Product');
-    $product->loadByAttribute('sku', $sku);
+    $product->load($productId);
     if ($product->getId()) {
         $product->delete();
     }
