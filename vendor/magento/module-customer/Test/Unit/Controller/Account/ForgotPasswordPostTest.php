@@ -13,7 +13,6 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Framework\Controller\Result\Redirect as ResultRedirect;
 use Magento\Framework\Controller\Result\RedirectFactory as ResultRedirectFactory;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Escaper;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
@@ -21,7 +20,7 @@ use Magento\Framework\Message\ManagerInterface;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
+class ForgotPasswordPostTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ForgotPasswordPost
@@ -68,14 +67,6 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
      */
     protected $messageManager;
 
-    /**
-     * @var Validator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $formKeyValidatorMock;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $this->prepareContext();
@@ -90,26 +81,17 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->formKeyValidatorMock = $this->getMockBuilder(Validator::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['validate'])
-            ->getMock();
 
         $this->controller = new ForgotPasswordPost(
             $this->context,
             $this->session,
             $this->accountManagement,
-            $this->escaper,
-            $this->formKeyValidatorMock
+            $this->escaper
         );
     }
 
-    /**
-     * @return void
-     */
     public function testExecuteEmptyEmail()
     {
-        $this->validateRequest();
         $this->request->expects($this->once())
             ->method('getPost')
             ->with('email')
@@ -128,14 +110,10 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->resultRedirect, $this->controller->execute());
     }
 
-    /**
-     * @return void
-     */
     public function testExecute()
     {
         $email = 'user1@example.com';
 
-        $this->validateRequest();
         $this->request->expects($this->once())
             ->method('getPost')
             ->with('email')
@@ -168,14 +146,10 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->controller->execute();
     }
 
-    /**
-     * @return void
-     */
     public function testExecuteNoSuchEntityException()
     {
         $email = 'user1@example.com';
 
-        $this->validateRequest();
         $this->request->expects($this->once())
             ->method('getPost')
             ->with('email')
@@ -208,15 +182,11 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->controller->execute();
     }
 
-    /**
-     * @return void
-     */
     public function testExecuteException()
     {
         $email = 'user1@example.com';
         $exception = new \Exception(__('Exception'));
 
-        $this->validateRequest();
         $this->request->expects($this->once())
             ->method('getPost')
             ->with('email')
@@ -240,38 +210,6 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->controller->execute();
     }
 
-    /**
-     * @return void
-     * @expectedException \Magento\Framework\Exception\NotFoundException
-     * @expectedExceptionMessage Page not found.
-     */
-    public function testExecuteWithNonPostRequest()
-    {
-        $this->request->expects($this->once())->method('isPost')->willReturn(false);
-
-        $this->controller->execute();
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteWithInvalidFormKey()
-    {
-        $this->request->expects($this->once())->method('isPost')->willReturn(true);
-        $this->formKeyValidatorMock->expects($this->once())
-            ->method('validate')
-            ->with($this->request)
-            ->willReturn(false);
-        $this->resultRedirect->expects($this->once())->method('setPath')->with('*/*/forgotpassword')->willReturnSelf();
-
-        $this->controller->execute();
-    }
-
-    /**
-     * Prepare action context.
-     *
-     * @return void
-     */
     protected function prepareContext()
     {
         $this->resultRedirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
@@ -290,7 +228,9 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
 
         $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getPost', 'isPost'])
+            ->setMethods([
+                'getPost',
+            ])
             ->getMock();
 
         $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
@@ -311,19 +251,5 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
         $this->context->expects($this->any())
             ->method('getMessageManager')
             ->willReturn($this->messageManager);
-    }
-
-    /**
-     * Validate request.
-     *
-     * @return void
-     */
-    private function validateRequest()
-    {
-        $this->request->expects($this->once())->method('isPost')->willReturn(true);
-        $this->formKeyValidatorMock->expects($this->once())
-            ->method('validate')
-            ->with($this->request)
-            ->willReturn(true);
     }
 }

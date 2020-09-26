@@ -6,10 +6,12 @@
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Creditmemo;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class UpdateQtyTest
  * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
-class UpdateQtyTest extends \PHPUnit_Framework_TestCase
+class UpdateQtyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Sales\Controller\Adminhtml\Order\Creditmemo\UpdateQty
@@ -107,14 +109,16 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getInvoice', 'getOrder', 'cancel', 'getId', '__wakeup'])
             ->getMock();
+        $titleMock = $this->getMockBuilder(\Magento\Framework\App\Action\Title::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->requestMock->expects($this->any())->method('isPost')->willReturn(true);
         $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\Manager::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -125,6 +129,19 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
+            ->setMethods(
+                [
+                    'getRequest',
+                    'getResponse',
+                    'getObjectManager',
+                    'getTitle',
+                    'getSession',
+                    'getHelper',
+                    'getActionFlag',
+                    'getMessageManager',
+                    'getResultRedirectFactory'
+                ]
+            )
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock->expects($this->any())
@@ -148,6 +165,9 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
         $this->contextMock->expects($this->any())
             ->method('getObjectManager')
             ->will($this->returnValue($this->objectManagerMock));
+        $this->contextMock->expects($this->any())
+            ->method('getTitle')
+            ->will($this->returnValue($titleMock));
         $this->contextMock->expects($this->any())
             ->method('getMessageManager')
             ->will($this->returnValue($this->messageManagerMock));
@@ -184,7 +204,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
                 'creditmemoLoader' => $this->loaderMock,
                 'resultPageFactory' => $this->resultPageFactoryMock,
                 'resultJsonFactory' => $this->resultJsonFactoryMock,
-                'resultRawFactory' => $this->resultRawFactoryMock,
+                'resultRawFactory' => $this->resultRawFactoryMock
             ]
         );
     }
@@ -215,7 +235,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
 
         $this->assertInstanceOf(
-            'Magento\Framework\Controller\Result\Json',
+            \Magento\Framework\Controller\Result\Json::class,
             $this->controller->execute()
         );
     }

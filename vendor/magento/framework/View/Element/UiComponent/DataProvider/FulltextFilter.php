@@ -63,16 +63,6 @@ class FulltextFilter implements FilterApplierInterface
     }
 
     /**
-     * Escape against value
-     * @param string $value
-     * @return string
-     */
-    private function escapeAgainstValue($value)
-    {
-        return preg_replace('/([+\-><\(\)~*\"@]+)/', ' ', $value);
-    }
-
-    /**
      * Apply fulltext filters
      *
      * @param Collection $collection
@@ -96,7 +86,7 @@ class FulltextFilter implements FilterApplierInterface
         $collection->getSelect()
             ->where(
                 'MATCH(' . implode(',', $columns) . ') AGAINST(?)',
-                $this->escapeAgainstValue($filter->getValue())
+                $filter->getValue()
             );
     }
 }

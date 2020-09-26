@@ -6,97 +6,79 @@
 
 namespace Magento\Quote\Test\Unit\Model\ResourceModel;
 
-use Magento\Framework\DB\Sequence\SequenceInterface;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
-use Magento\Quote\Model\Quote;
-use Magento\SalesSequence\Model\Manager;
-
-class QuoteTest extends \PHPUnit_Framework_TestCase
+class QuoteTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $quoteMock;
-
-    /**
-     * @var Manager|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $sequenceManagerMock;
-
-    /**
-     * @var SequenceInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $sequenceMock;
-
     /**
      * @var \Magento\Quote\Model\ResourceModel\Quote
      */
-    private $quote;
+    private $model;
 
     /**
-     * {@inheritdoc}
+     * @var \Magento\Framework\App\ResourceConnection
      */
+    private $resourceMock;
+
+    /**
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql
+     */
+    private $adapterMock;
+
+    /**
+     * @var \Magento\Framework\DB\Select
+     */
+    private $selectMock;
+
     protected function setUp()
     {
-        $context = $this->getMockBuilder(Context::class)
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $snapshot = $this->getMockBuilder(Snapshot::class)
+        $this->selectMock->expects($this->any())->method('from')->will($this->returnSelf());
+        $this->selectMock->expects($this->any())->method('where');
+
+        $this->adapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $relationComposite = $this->getMockBuilder(RelationComposite::class)
+        $this->adapterMock->expects($this->any())->method('select')->will($this->returnValue($this->selectMock));
+
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->quoteMock = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->sequenceManagerMock = $this->getMockBuilder(Manager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->sequenceMock = $this->getMockBuilder(SequenceInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->quote = new \Magento\Quote\Model\ResourceModel\Quote(
-            $context,
-            $snapshot,
-            $relationComposite,
-            $this->sequenceManagerMock,
-            null
+        $this->resourceMock->expects(
+            $this->any()
+        )->method(
+            'getConnection'
+        )->will(
+            $this->returnValue($this->adapterMock)
+        );
+
+        $this->model = $objectManagerHelper->getObject(
+            \Magento\Quote\Model\ResourceModel\Quote::class,
+            [
+                'resource' => $this->resourceMock
+            ]
         );
     }
 
     /**
-     * @param $entityType
-     * @param $storeId
-     * @param $reservedOrderId
-     * @dataProvider getReservedOrderIdDataProvider
+     * Unit test to verify if isOrderIncrementIdUsed method works with different types increment ids
+     *
+     * @param array $value
+     * @dataProvider isOrderIncrementIdUsedDataProvider
      */
-    public function testGetReservedOrderId($entityType, $storeId, $reservedOrderId)
+    public function testIsOrderIncrementIdUsed($value)
     {
-        $this->sequenceManagerMock->expects($this->once())
-            ->method('getSequence')
-            ->with($entityType, $storeId)
-            ->willReturn($this->sequenceMock);
-        $this->quoteMock->expects($this->once())
-            ->method('getStoreId')
-            ->willReturn($storeId);
-        $this->sequenceMock->expects($this->once())
-            ->method('getNextValue')
-            ->willReturn($reservedOrderId);
-        $this->assertEquals($reservedOrderId, $this->quote->getReservedOrderId($this->quoteMock));
+        $expectedBind = [':increment_id' => $value];
+        $this->adapterMock->expects($this->once())->method('fetchOne')->with($this->selectMock, $expectedBind);
+        $this->model->isOrderIncrementIdUsed($value);
     }
 
     /**
      * @return array
      */
-    public function getReservedOrderIdDataProvider()
+    public function isOrderIncrementIdUsedDataProvider()
     {
-        return [
-            [\Magento\Sales\Model\Order::ENTITY, 1, '1000000001'],
-            [\Magento\Sales\Model\Order::ENTITY, 2, '2000000001'],
-            [\Magento\Sales\Model\Order::ENTITY, 3, '3000000001']
-        ];
+        return [[100000001], ['10000000001'], ['M10000000001']];
     }
 }

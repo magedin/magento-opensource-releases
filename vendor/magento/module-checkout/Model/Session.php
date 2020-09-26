@@ -10,6 +10,7 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 
 /**
+ * @api
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Session extends \Magento\Framework\Session\SessionManager
@@ -216,14 +217,6 @@ class Session extends \Magento\Framework\Session\SessionManager
                         $quote = $this->quoteRepository->get($this->getQuoteId());
                     } else {
                         $quote = $this->quoteRepository->getActive($this->getQuoteId());
-                    }
-
-                    $customerId = $this->_customer
-                        ? $this->_customer->getId()
-                        : $this->_customerSession->getCustomerId();
-                    if ($quote->getData('customer_id') && (int)$quote->getData('customer_id') !== (int)$customerId) {
-                        $quote = $this->quoteFactory->create();
-                        throw new \Magento\Framework\Exception\NoSuchEntityException();
                     }
 
                     /**

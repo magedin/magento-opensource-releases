@@ -15,7 +15,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Test for @see Timezone
  */
-class TimezoneTest extends \PHPUnit_Framework_TestCase
+class TimezoneTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string|null
@@ -153,38 +153,6 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
                 'UTC',
                 '2016-10-10 10:00:00'
             ]
-        ];
-    }
-
-    /**
-     * @param string $locale
-     * @param string $expectedResult
-     * @dataProvider getDateFormatDataProvider
-     */
-    public function testGetDateFormat($locale, $expectedResult)
-    {
-        $this->localeResolver->expects($this->once())
-            ->method('getLocale')
-            ->willReturn($locale);
-
-        /** @var Timezone $timezone */
-        $timezone = $this->objectManager->getObject(
-            Timezone::class,
-            ['_localeResolver' => $this->localeResolver]
-        );
-
-        $this->assertSame($expectedResult, $timezone->getDateFormat());
-    }
-
-    /**
-     * Data provider for testGetDateFormat
-     * @return array
-     */
-    public function getDateFormatDataProvider()
-    {
-        return [
-            ['en_GB', 'dd/MM/y'],
-            ['en_US', 'M/d/yy'],
         ];
     }
 

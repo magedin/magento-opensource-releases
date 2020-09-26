@@ -16,7 +16,7 @@ class CreateOptions extends Action
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magento_Catalog::attributes_attributes';
+    const ADMIN_RESOURCE = 'Magento_Catalog::products';
 
     /**
      * @var \Magento\Framework\Json\Helper\Data
@@ -50,11 +50,7 @@ class CreateOptions extends Action
      */
     public function execute()
     {
-        $result = [];
-        if ($this->getRequest()->isPost()) {
-            $result = $this->saveAttributeOptions();
-        }
-        $this->getResponse()->representJson($this->jsonHelper->jsonEncode($result));
+        $this->getResponse()->representJson($this->jsonHelper->jsonEncode($this->saveAttributeOptions()));
     }
 
     /**

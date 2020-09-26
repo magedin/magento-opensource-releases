@@ -11,13 +11,8 @@
  */
 namespace Magento\OfflineShipping\Test\Unit\Block\Adminhtml\Form\Field;
 
-class ImportTest extends \PHPUnit_Framework_TestCase
+class ImportTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $escaperMock;
-
     /**
      * @var \Magento\OfflineShipping\Block\Adminhtml\Form\Field\Import
      */
@@ -30,26 +25,15 @@ class ImportTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->_formMock = $this->getMock(
+        $this->_formMock = $this->createPartialMock(
             \Magento\Framework\Data\Form::class,
-            ['getFieldNameSuffix', 'addSuffixToName'],
-            [],
-            '',
-            false,
-            false
+            ['getFieldNameSuffix', 'addSuffixToName', 'getHtmlIdPrefix', 'getHtmlIdSuffix']
         );
-        $this->escaperMock = $this->getMockBuilder(\Magento\Framework\Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->escaperMock->method('escapeHtml')->willReturnArgument(0);
         $testData = ['name' => 'test_name', 'html_id' => 'test_html_id'];
         $testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_object = $testHelper->getObject(
             \Magento\OfflineShipping\Block\Adminhtml\Form\Field\Import::class,
-            [
-                'escaper' => $this->escaperMock,
-                'data' => $testData,
-            ]
+            ['data' => $testData]
         );
         $this->_object->setForm($this->_formMock);
     }
@@ -92,8 +76,8 @@ class ImportTest extends \PHPUnit_Framework_TestCase
             $testString
         );
         $this->assertStringEndsWith(
-            '<input id="test_html_id" name="test_name"  data-ui-id="form-element-test_name"' .
-            ' value="" type="file"/>',
+            '<input id="test_name_prefixtest_html_idtest_name_suffix" ' .
+            'name="test_name"  data-ui-id="form-element-test_name" value="" type="file"/>',
             $testString
         );
     }

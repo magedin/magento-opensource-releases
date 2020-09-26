@@ -7,7 +7,6 @@ namespace Magento\Sales\Model;
 
 use Magento\Directory\Model\Currency;
 use Magento\Framework\Api\AttributeValueFactory;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
@@ -31,8 +30,7 @@ use Magento\Sales\Model\ResourceModel\Order\Status\History\Collection as History
  *  sales_order_delete_before
  *  sales_order_delete_after
  *
- * @method \Magento\Sales\Model\ResourceModel\Order _getResource()
- * @method \Magento\Sales\Model\ResourceModel\Order getResource()
+ * @api
  * @method int getGiftMessageId()
  * @method \Magento\Sales\Model\Order setGiftMessageId(int $value)
  * @method bool hasBillingAddressId()
@@ -49,6 +47,7 @@ use Magento\Sales\Model\ResourceModel\Order\Status\History\Collection as History
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Order extends AbstractModel implements EntityInterface, OrderInterface
 {
@@ -184,7 +183,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
 
     /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     * @deprecated Remove unused dependency.
+     * @deprecated 100.1.7 Remove unused dependency.
      */
     protected $productRepository;
 
@@ -365,7 +364,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     protected function _construct()
     {
-        $this->_init('Magento\Sales\Model\ResourceModel\Order');
+        $this->_init(\Magento\Sales\Model\ResourceModel\Order::class);
     }
 
     /**
@@ -618,7 +617,12 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
          * for this we have additional diapason for 0
          * TotalPaid - contains amount, that were not rounded.
          */
-        if (abs($this->priceCurrency->round($this->getTotalPaid()) - $this->getTotalRefunded()) < .0001) {
+        $totalRefunded = $this->priceCurrency->round($this->getTotalPaid()) - $this->getTotalRefunded();
+        if (abs($totalRefunded) < .0001) {
+            return false;
+        }
+        // Case when Adjustment Fee (adjustment_negative) has been used for first creditmemo
+        if (abs($totalRefunded - $this->getAdjustmentNegative()) < .0001) {
             return false;
         }
 
@@ -993,24 +997,8 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      * @param string $comment
      * @param bool|string $status
      * @return OrderStatusHistoryInterface
-     * @deprecated
-     * @see addCommentToStatusHistory
      */
     public function addStatusHistoryComment($comment, $status = false)
-    {
-        return $this->addCommentToStatusHistory($comment, $status, false);
-    }
-    
-    /**
-     * Add a comment to order status history
-     * Different or default status may be specified
-     *
-     * @param string $comment
-     * @param bool|string $status
-     * @param bool $isVisibleOnFront
-     * @return OrderStatusHistoryInterface
-     */
-    public function addCommentToStatusHistory($comment, $status = false, $isVisibleOnFront = false)
     {
         if (false === $status) {
             $status = $this->getStatus();
@@ -1025,8 +1013,6 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
             $comment
         )->setEntityName(
             $this->entityType
-        )->setIsVisibleOnFront(
-            $isVisibleOnFront
         );
         $this->addStatusHistory($history);
         return $history;
@@ -1145,7 +1131,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
             $state = self::STATE_CANCELED;
             foreach ($this->getAllItems() as $item) {
                 if ($state != self::STATE_PROCESSING && $item->getQtyToRefund()) {
-                    if ($item->getQtyToShip() > $item->getQtyToCancel()) {
+                    if ($item->isProcessingAvailable()) {
                         $state = self::STATE_PROCESSING;
                     } else {
                         $state = self::STATE_COMPLETE;
@@ -1447,10 +1433,12 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function setPayment(\Magento\Sales\Api\Data\OrderPaymentInterface $payment = null)
     {
-        $payment->setOrder($this)->setParentId($this->getId());
-        if (!$payment->getId()) {
-            $this->setData(OrderInterface::PAYMENT, $payment);
-            $this->setDataChanges(true);
+        $this->setData(OrderInterface::PAYMENT, $payment);
+        if ($payment !== null) {
+            $payment->setOrder($this)->setParentId($this->getId());
+            if (!$payment->getId()) {
+                $this->setDataChanges(true);
+            }
         }
         return $payment;
     }
@@ -1770,7 +1758,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function hasInvoices()
     {
-        return boolval($this->getInvoiceCollection()->count());
+        return $this->getInvoiceCollection()->count();
     }
 
     /**
@@ -1780,7 +1768,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function hasShipments()
     {
-        return boolval($this->getShipmentsCollection()->count());
+        return $this->getShipmentsCollection()->count();
     }
 
     /**
@@ -1790,7 +1778,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function hasCreditmemos()
     {
-        return boolval($this->getCreditmemosCollection()->count());
+        return $this->getCreditmemosCollection()->count();
     }
 
     /**

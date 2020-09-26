@@ -11,7 +11,7 @@ use Magento\Theme\Controller\Adminhtml\Design\Config\Save;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends \PHPUnit_Framework_TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Theme\Model\DesignConfigRepository|\PHPUnit_Framework_MockObject_MockObject */
     protected $designConfigRepository;
@@ -52,34 +52,27 @@ class SaveTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->designConfigRepository = $this->getMock('Magento\Theme\Model\DesignConfigRepository', [], [], '', false);
-        $this->redirectFactory = $this->getMock(
-            'Magento\Backend\Model\View\Result\RedirectFactory',
+        $this->designConfigRepository = $this->createMock(\Magento\Theme\Model\DesignConfigRepository::class);
+        $this->redirectFactory = $this->createMock(\Magento\Backend\Model\View\Result\RedirectFactory::class);
+        $this->redirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
+        $this->configFactory = $this->createMock(\Magento\Theme\Model\Data\Design\ConfigFactory::class);
+        $this->messageManager = $this->getMockForAbstractClass(
+            \Magento\Framework\Message\ManagerInterface::class,
             [],
+            '',
+            false
+        );
+        $this->request = $this->getMockForAbstractClass(
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
             false,
             true,
-            ['create']
+            ['getFiles', 'getParam', 'getParams']
         );
-        $this->redirect = $this->getMock('Magento\Backend\Model\View\Result\Redirect', [], [], '', false);
-        $this->configFactory = $this->getMock('Magento\Theme\Model\Data\Design\ConfigFactory', [], [], '', false);
-        $this->messageManager = $this->getMockForAbstractClass(
-            'Magento\Framework\Message\ManagerInterface',
-            [],
-            '',
-            false
-        );
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()->getMock();
-
-        $this->request->expects($this->atLeastOnce())
-            ->method('isPost')
-            ->willReturn(true);
-
         $this->context = $objectManager->getObject(
-            'Magento\Backend\App\Action\Context',
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->request,
                 'messageManager' => $this->messageManager,
@@ -87,13 +80,13 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $this->designConfig = $this->getMockForAbstractClass(
-            'Magento\Theme\Api\Data\DesignConfigInterface',
+            \Magento\Theme\Api\Data\DesignConfigInterface::class,
             [],
             '',
             false
         );
-        $this->fileParams = $this->getMock('Zend\Stdlib\Parameters', [], [], '', false);
-        $this->dataPersistor = $this->getMockBuilder('Magento\Framework\App\Request\DataPersistorInterface')
+        $this->fileParams = $this->createMock(\Zend\Stdlib\Parameters::class);
+        $this->dataPersistor = $this->getMockBuilder(\Magento\Framework\App\Request\DataPersistorInterface::class)
             ->getMockForAbstractClass();
         $this->controller = new Save(
             $this->context,
@@ -145,7 +138,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->method('save')
             ->with($this->designConfig);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('You saved the configuration.'));
         $this->dataPersistor->expects($this->once())
             ->method('clear')
@@ -201,7 +194,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->with($this->designConfig)
             ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('Exception message')));
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with(__('Exception message')->render());
 
         $this->dataPersistor->expects($this->once())
@@ -256,7 +249,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->with($this->designConfig)
             ->willThrowException($exception);
         $this->messageManager->expects($this->once())
-            ->method('addExceptionMessage')
+            ->method('addException')
             ->with($exception, 'Something went wrong while saving this configuration: Exception message');
 
         $this->dataPersistor->expects($this->once())

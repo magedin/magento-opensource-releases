@@ -62,10 +62,6 @@ class Quote extends AbstractDb
     protected function _getLoadSelect($field, $value, $object)
     {
         $select = parent::_getLoadSelect($field, $value, $object);
-        if ($this->getIdFieldName() === $field) {
-            return $select;
-        }
-
         $storeIds = $object->getSharedStoreIds();
         if ($storeIds) {
             if ($storeIds != ['*']) {
@@ -171,30 +167,32 @@ class Quote extends AbstractDb
     {
         return $this->sequenceManager->getSequence(
             \Magento\Sales\Model\Order::ENTITY,
-            $quote->getStoreId()
+            $quote->getStore()->getGroup()->getDefaultStoreId()
         )
         ->getNextValue();
     }
 
     /**
-     * Check is order increment id use in sales/order table
+     * Check if order increment ID is already used.
+     * Method can be used to avoid collisions of order IDs.
      *
      * @param int $orderIncrementId
      * @return bool
-     * @deprecated
-     * @see \Magento\Sales\Model\OrderIncrementIdChecker::isIncrementIdUsed()
      */
     public function isOrderIncrementIdUsed($orderIncrementId)
     {
-        /** @var \Magento\Framework\DB\Adapter\AdapterInterface $adapter */
+        /** @var  \Magento\Framework\DB\Adapter\AdapterInterface $adapter */
         $adapter = $this->getConnection();
         $bind = [':increment_id' => $orderIncrementId];
         /** @var \Magento\Framework\DB\Select $select */
-        $select = $adapter->select()
-            ->from($this->getTable('sales_order'), 'entity_id')
-            ->where('increment_id = :increment_id');
+        $select = $adapter->select();
+        $select->from($this->getTable('sales_order'), 'entity_id')->where('increment_id = :increment_id');
         $entity_id = $adapter->fetchOne($select, $bind);
-        return ($entity_id > 0);
+        if ($entity_id > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -231,23 +229,12 @@ class Quote extends AbstractDb
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $product
-     * @return Quote
-     * @deprecated
-     * @see subtractProductFromQuotes
-     */
-    public function substractProductFromQuotes($product)
-    {
-        return $this->subtractProductFromQuotes($product);
-    }
-
-    /**
      * Subtract product from all quotes quantities
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return $this
      */
-    public function subtractProductFromQuotes($product)
+    public function substractProductFromQuotes($product)
     {
         $productId = (int)$product->getId();
         if (!$productId) {
@@ -255,6 +242,9 @@ class Quote extends AbstractDb
         }
         $connection = $this->getConnection();
         $subSelect = $connection->select();
+        $conditionCheck = $connection->quoteIdentifier('q.items_count') . " > 0";
+        $conditionTrue = $connection->quoteIdentifier('q.items_count') . ' - 1';
+        $ifSql = "IF (" . $conditionCheck . "," . $conditionTrue . ", 0)";
 
         $subSelect->from(
             false,
@@ -262,7 +252,7 @@ class Quote extends AbstractDb
                 'items_qty' => new \Zend_Db_Expr(
                     $connection->quoteIdentifier('q.items_qty') . ' - ' . $connection->quoteIdentifier('qi.qty')
                 ),
-                'items_count' => new \Zend_Db_Expr($connection->quoteIdentifier('q.items_count') . ' - 1')
+                'items_count' => new \Zend_Db_Expr($ifSql)
             ]
         )->join(
             ['qi' => $this->getTable('quote_item')],

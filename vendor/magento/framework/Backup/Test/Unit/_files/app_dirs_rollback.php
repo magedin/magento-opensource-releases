@@ -15,7 +15,7 @@ foreach ($appDirs as $dir) {
     }
 }
 
-$files = glob(TESTS_TEMP_DIR . '/Magento/Backup/data/*', GLOB_NOSORT);
+$files = glob(TESTS_TEMP_DIR . '/Magento/Backup/data/*');
 foreach ($files as $file) {
     unlink($file);
 }

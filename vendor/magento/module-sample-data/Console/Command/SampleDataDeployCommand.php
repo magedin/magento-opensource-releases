@@ -6,14 +6,13 @@
 
 namespace Magento\SampleData\Console\Command;
 
+use Composer\Console\Application;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Setup\Model\PackagesAuth;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\Framework\App\State;
-use Symfony\Component\Console\Input\ArrayInput;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Composer\Console\Application;
-use Magento\Setup\Model\PackagesAuth;
 
 /**
  * Command for deployment of Sample Data
@@ -32,7 +31,7 @@ class SampleDataDeployCommand extends Command
 
     /**
      * @var \Symfony\Component\Console\Input\ArrayInputFactory
-     * @deprecated
+     * @deprecated 100.1.0
      */
     private $arrayInputFactory;
 
@@ -116,7 +115,7 @@ class SampleDataDeployCommand extends Command
     private function createAuthFile()
     {
         $directory = $this->filesystem->getDirectoryWrite(DirectoryList::COMPOSER_HOME);
-        
+
         if (!$directory->isExist(PackagesAuth::PATH_TO_AUTH_FILE)) {
             try {
                 $directory->writeFile(PackagesAuth::PATH_TO_AUTH_FILE, '{}');
@@ -137,8 +136,8 @@ class SampleDataDeployCommand extends Command
         if (function_exists('ini_set')) {
             @ini_set('display_errors', 1);
             $memoryLimit = trim(ini_get('memory_limit'));
-            if ($memoryLimit != -1 && $this->getMemoryInBytes($memoryLimit) < 756 * 1024 * 1024) {
-                @ini_set('memory_limit', '756M');
+            if ($memoryLimit != -1 && $this->getMemoryInBytes($memoryLimit) < 768 * 1024 * 1024) {
+                @ini_set('memory_limit', '768M');
             }
         }
     }
@@ -151,7 +150,7 @@ class SampleDataDeployCommand extends Command
     {
         $unit = strtolower(substr($value, -1, 1));
         $value = (int) $value;
-        switch($unit) {
+        switch ($unit) {
             case 'g':
                 $value *= 1024 * 1024 * 1024;
                 break;

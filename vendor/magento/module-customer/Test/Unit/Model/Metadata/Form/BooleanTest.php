@@ -28,9 +28,6 @@ class BooleanTest extends AbstractFormTestCase
         $this->assertSame($expected, (string)$boolean->outputValue());
     }
 
-    /**
-     * @return array
-     */
     public function getOptionTextDataProvider()
     {
         return [

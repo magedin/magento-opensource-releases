@@ -12,14 +12,14 @@ use Magento\Framework\Filesystem;
 class Create extends \Magento\Backup\Controller\Adminhtml\Index
 {
     /**
-     * Create backup action.
+     * Create backup action
      *
      * @return void|\Magento\Backend\App\Action
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
-        if (!$this->requestAllowed()) {
+        if (!$this->getRequest()->isAjax()) {
             return $this->_redirect('*/*/index');
         }
 
@@ -105,15 +105,5 @@ class Create extends \Magento\Backup\Controller\Adminhtml\Index
         }
 
         $this->getResponse()->representJson($response->toJson());
-    }
-
-    /**
-     * Check if request is allowed.
-     *
-     * @return bool
-     */
-    private function requestAllowed()
-    {
-        return $this->getRequest()->isAjax() && $this->getRequest()->isPost();
     }
 }

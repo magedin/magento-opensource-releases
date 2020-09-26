@@ -42,9 +42,6 @@ class MultilineTest extends TextTest
         parent::testValidateValueRequired($value, $expected);
     }
 
-    /**
-     * @return array
-     */
     public function validateValueRequiredDataProvider()
     {
         return array_merge(
@@ -69,9 +66,6 @@ class MultilineTest extends TextTest
         parent::testValidateValueLength($value, $expected);
     }
 
-    /**
-     * @return array
-     */
     public function validateValueLengthDataProvider()
     {
         return array_merge(

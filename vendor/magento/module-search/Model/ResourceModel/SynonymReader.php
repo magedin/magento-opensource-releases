@@ -6,8 +6,8 @@
 
 namespace Magento\Search\Model\ResourceModel;
 
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\DB\Helper\Mysql\Fulltext;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -88,7 +88,7 @@ class SynonymReader extends AbstractDb
         $matchQuery = $this->fullTextSelect->getMatchQuery(
             ['synonyms' => 'synonyms'],
             $phrase,
-            Fulltext::FULLTEXT_MODE_NATURAL
+            Fulltext::FULLTEXT_MODE_BOOLEAN
         );
         $query = $this->getConnection()->select()->from(
             $this->getMainTable()
@@ -116,10 +116,10 @@ class SynonymReader extends AbstractDb
             if ($this->isSynRowForStoreView($row)) {
                 // Check for current store view
                 $synRowsForStoreView[] = $row;
-            } else if (empty($synRowsForStoreView) && $this->isSynRowForWebsite($row)) {
+            } elseif (empty($synRowsForStoreView) && $this->isSynRowForWebsite($row)) {
                 // Check for current website
                 $synRowsForWebsite[] = $row;
-            } else if (empty($synRowsForStoreView)
+            } elseif (empty($synRowsForStoreView)
                 && empty($synRowsForWebsite)
                 && $this->isSynRowForDefaultScope($row)) {
                 // Check for all store views (i.e. global/default config)

@@ -6,7 +6,7 @@
 namespace Magento\Sales\Controller\Adminhtml\Order\Creditmemo;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\Exception\NotFoundException;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\CreditmemoSender;
 
 class Save extends \Magento\Backend\App\Action
@@ -56,17 +56,12 @@ class Save extends \Magento\Backend\App\Action
      * We can save only new creditmemo. Existing creditmemos are not editable
      *
      * @return \Magento\Backend\Model\View\Result\Redirect|\Magento\Backend\Model\View\Result\Forward
-     * @throws NotFoundException
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found'));
-        }
-
         $resultRedirect = $this->resultRedirectFactory->create();
         $data = $this->getRequest()->getPost('creditmemo');
         if (!empty($data['comment_text'])) {
@@ -107,13 +102,14 @@ class Save extends \Magento\Backend\App\Action
                 $creditmemoManagement = $this->_objectManager->create(
                     \Magento\Sales\Api\CreditmemoManagementInterface::class
                 );
+                $creditmemo->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
                 $creditmemoManagement->refund($creditmemo, (bool)$data['do_offline']);
 
                 if (!empty($data['send_email'])) {
                     $this->creditmemoSender->send($creditmemo);
                 }
 
-                $this->messageManager->addSuccessMessage(__('You created the credit memo.'));
+                $this->messageManager->addSuccess(__('You created the credit memo.'));
                 $this->_getSession()->getCommentText(true);
                 $resultRedirect->setPath('sales/order/view', ['order_id' => $creditmemo->getOrderId()]);
                 return $resultRedirect;
@@ -123,11 +119,11 @@ class Save extends \Magento\Backend\App\Action
                 return $resultForward;
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
+            $this->messageManager->addError($e->getMessage());
             $this->_getSession()->setFormData($data);
         } catch (\Exception $e) {
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
-            $this->messageManager->addErrorMessage(__('We can\'t save the credit memo right now.'));
+            $this->messageManager->addError(__('We can\'t save the credit memo right now.'));
         }
         $resultRedirect->setPath('sales/*/new', ['_current' => true]);
         return $resultRedirect;

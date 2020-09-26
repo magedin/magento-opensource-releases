@@ -14,12 +14,17 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 /**
  * Class DeviceDataBuilderTest
  */
-class DeviceDataBuilderTest extends \PHPUnit_Framework_TestCase
+class DeviceDataBuilderTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var SubjectReader|MockObject
+     */
+    private $subjectReader;
+
     /**
      * @var PaymentDataObjectInterface|MockObject
      */
-    private $paymentDO;
+    private $paymentDataObject;
 
     /**
      * @var InfoInterface|MockObject
@@ -33,10 +38,16 @@ class DeviceDataBuilderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->paymentDO = $this->getMockForAbstractClass(PaymentDataObjectInterface::class);
-        $this->paymentInfo = $this->getMockForAbstractClass(InfoInterface::class);
+        $this->subjectReader = $this->getMockBuilder(SubjectReader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['readPayment'])
+            ->getMock();
+
+        $this->paymentDataObject = $this->createMock(PaymentDataObjectInterface::class);
+
+        $this->paymentInfo = $this->createMock(InfoInterface::class);
         
-        $this->builder = new DeviceDataBuilder(new SubjectReader());
+        $this->builder = new DeviceDataBuilder($this->subjectReader);
     }
 
     /**
@@ -48,17 +59,24 @@ class DeviceDataBuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuild(array $paymentData, array $expected)
     {
         $subject = [
-            'payment' => $this->paymentDO
+            'payment' => $this->paymentDataObject
         ];
 
-        $this->paymentDO->method('getPayment')
+        $this->subjectReader->expects(static::once())
+            ->method('readPayment')
+            ->with($subject)
+            ->willReturn($this->paymentDataObject);
+
+        $this->paymentDataObject->expects(static::once())
+            ->method('getPayment')
             ->willReturn($this->paymentInfo);
 
-        $this->paymentInfo->method('getAdditionalInformation')
+        $this->paymentInfo->expects(static::once())
+            ->method('getAdditionalInformation')
             ->willReturn($paymentData);
 
         $actual = $this->builder->build($subject);
-        self::assertEquals($expected, $actual);
+        static::assertEquals($expected, $actual);
     }
 
     /**

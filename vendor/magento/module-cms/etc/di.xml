@@ -30,61 +30,29 @@
             </argument>
             <argument name="extensions" xsi:type="array">
                 <item name="allowed" xsi:type="array">
-                    <item name="jpg" xsi:type="string">image/jpg</item>
-                    <item name="jpeg" xsi:type="string">image/jpeg</item>
-                    <item name="png" xsi:type="string">image/png</item>
-                    <item name="gif" xsi:type="string">image/gif</item>
+                    <item name="jpg" xsi:type="number">1</item>
+                    <item name="jpeg" xsi:type="number">1</item>
+                    <item name="png" xsi:type="number">1</item>
+                    <item name="gif" xsi:type="number">1</item>
                 </item>
                 <item name="image_allowed" xsi:type="array">
-                    <item name="jpg" xsi:type="string">image/jpg</item>
-                    <item name="jpeg" xsi:type="string">image/jpeg</item>
-                    <item name="png" xsi:type="string">image/png</item>
-                    <item name="gif" xsi:type="string">image/gif</item>
+                    <item name="jpg" xsi:type="number">1</item>
+                    <item name="jpeg" xsi:type="number">1</item>
+                    <item name="png" xsi:type="number">1</item>
+                    <item name="gif" xsi:type="number">1</item>
                 </item>
                 <item name="media_allowed" xsi:type="array">
-                    <item name="flv" xsi:type="string">video/x-flv</item>
-                    <item name="avi" xsi:type="string">video/x-msvideo</item>
-                    <item name="mov" xsi:type="string">video/x-sgi-movie</item>
-                    <item name="rm" xsi:type="string">application/vnd.rn-realmedia</item>
-                    <item name="wmv" xsi:type="string">video/x-ms-wmv</item>
+                    <item name="flv" xsi:type="number">1</item>
+                    <item name="swf" xsi:type="number">1</item>
+                    <item name="avi" xsi:type="number">1</item>
+                    <item name="mov" xsi:type="number">1</item>
+                    <item name="rm" xsi:type="number">1</item>
+                    <item name="wmv" xsi:type="number">1</item>
                 </item>
             </argument>
             <argument name="dirs" xsi:type="array">
-                <item name="exclude" xsi:type="array">
-                    <item name="captcha" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+captcha[/\\]*$</item>
-                    </item>
-                    <item name="catalog/product" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+catalog[/\\]+product[/\\]*$</item>
-                    </item>
-                    <item name="customer" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+customer[/\\]*$</item>
-                    </item>
-                    <item name="downloadable" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+downloadable[/\\]*$</item>
-                    </item>
-                    <item name="import" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+import[/\\]*$</item>
-                    </item>
-                    <item name="theme" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+theme[/\\]*$</item>
-                    </item>
-                    <item name="theme_customization" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+theme_customization[/\\]*$</item>
-                    </item>
-                    <item name="tmp" xsi:type="array">
-                        <item name="regexp" xsi:type="boolean">true</item>
-                        <item name="name" xsi:type="string">pub[/\\]+media[/\\]+tmp[/\\]*$</item>
-                    </item>
-                </item>
-                <item name="include" xsi:type="array"/>
+                <item name="exclude" xsi:type="string"/>
+                <item name="include" xsi:type="string"/>
             </argument>
         </arguments>
     </type>
@@ -176,6 +144,48 @@
                 <item name="Magento\Cms\Api\Data\PageInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
                 <item name="Magento\Cms\Api\Data\BlockInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
             </argument>
+        </arguments>
+    </type>
+    <virtualType name="Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\PageFilterProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="store_id" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\PageStoreFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Magento\Cms\Model\Api\SearchCriteria\PageCollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\PageFilterProcessor</item>
+                <item name="sorting" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor</item>
+                <item name="pagination" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Cms\Model\PageRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\PageCollectionProcessor</argument>
+        </arguments>
+    </type>
+    <virtualType name="Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\BlockFilterProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="store_id" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\BlockStoreFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Magento\Cms\Model\Api\SearchCriteria\BlockCollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\CollectionProcessor\BlockFilterProcessor</item>
+                <item name="sorting" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor</item>
+                <item name="pagination" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Cms\Model\BlockRepository">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Magento\Cms\Model\Api\SearchCriteria\BlockCollectionProcessor</argument>
         </arguments>
     </type>
 </config>

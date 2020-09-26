@@ -13,7 +13,6 @@ use Magento\Sales\Model\Order\Email\Sender;
 use Magento\Sales\Model\ResourceModel\Order as OrderResource;
 use Magento\Sales\Model\Order\Address\Renderer;
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\DataObject;
 
 /**
  * Class OrderSender
@@ -105,6 +104,9 @@ class OrderSender extends Sender
                 $this->orderResource->saveAttribute($order, ['send_email', 'email_sent']);
                 return true;
             }
+        } else {
+            $order->setEmailSent(null);
+            $this->orderResource->saveAttribute($order, 'email_sent');
         }
 
         $this->orderResource->saveAttribute($order, 'send_email');
@@ -128,17 +130,14 @@ class OrderSender extends Sender
             'formattedShippingAddress' => $this->getFormattedShippingAddress($order),
             'formattedBillingAddress' => $this->getFormattedBillingAddress($order),
         ];
-        $transportObject = new DataObject($transport);
+        $transport = new \Magento\Framework\DataObject($transport);
 
-        /**
-         * Event argument `transport` is @deprecated. Use `transportObject` instead.
-         */
         $this->eventManager->dispatch(
             'email_order_set_template_vars_before',
-            ['sender' => $this, 'transport' => $transportObject, 'transportObject' => $transportObject]
+            ['sender' => $this, 'transport' => $transport]
         );
 
-        $this->templateContainer->setTemplateVars($transportObject->getData());
+        $this->templateContainer->setTemplateVars($transport->getData());
 
         parent::prepareTemplate($order);
     }

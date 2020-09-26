@@ -13,6 +13,8 @@ namespace Magento\Reports\Model\ResourceModel\Product;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @api
+ * @since 100.0.2
  */
 class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
 {
@@ -296,7 +298,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     }
 
     /**
-     * Add views count.
+     * Add views count
      *
      * @param string $from
      * @param string $to
@@ -320,7 +322,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
             ['views' => 'COUNT(report_table_views.event_id)']
         )->join(
             ['e' => $this->getProductEntityTableName()],
-            'e.entity_id = report_table_views.object_id'
+            $this->getConnection()->quoteInto(
+                'e.entity_id = report_table_views.object_id AND e.attribute_set_id = ?',
+                $this->getProductAttributeSetId()
+            )
         )->where(
             'report_table_views.event_type_id = ?',
             $productViewEvent
@@ -336,7 +341,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         if ($from != '' && $to != '') {
             $this->getSelect()->where('logged_at >= ?', $from)->where('logged_at <= ?', $to);
         }
-
         return $this;
     }
 

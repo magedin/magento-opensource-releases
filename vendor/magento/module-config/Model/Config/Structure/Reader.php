@@ -14,6 +14,8 @@ use Magento\Framework\View\TemplateEngine\Xhtml\CompilerInterface;
 
 /**
  * Class Reader
+ * @api
+ * @since 100.0.2
  */
 class Reader extends \Magento\Framework\Config\Reader\Filesystem
 {
@@ -57,7 +59,7 @@ class Reader extends \Magento\Framework\Config\Reader\Filesystem
         CompilerInterface $compiler,
         $fileName = 'system.xml',
         $idAttributes = [],
-        $domDocumentClass = 'Magento\Framework\Config\Dom',
+        $domDocumentClass = \Magento\Framework\Config\Dom::class,
         $defaultScope = 'global'
     ) {
         $this->compiler = $compiler;

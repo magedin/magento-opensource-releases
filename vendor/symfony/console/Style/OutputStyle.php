@@ -24,6 +24,9 @@ abstract class OutputStyle implements OutputInterface, StyleInterface
 {
     private $output;
 
+    /**
+     * @param OutputInterface $output
+     */
     public function __construct(OutputInterface $output)
     {
         $this->output = $output;

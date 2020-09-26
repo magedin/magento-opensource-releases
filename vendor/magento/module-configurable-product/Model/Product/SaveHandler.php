@@ -66,11 +66,8 @@ class SaveHandler implements ExtensionInterface
             $this->saveConfigurableProductAttributes($entity, $configurableOptions);
         }
 
-        $configurableLinks = $extensionAttributes->getConfigurableProductLinks();
-        if ($configurableLinks !== null) {
-            $configurableLinks = (array)$configurableLinks;
-            $this->resourceModel->saveProducts($entity, $configurableLinks);
-        }
+        $configurableLinks = (array) $extensionAttributes->getConfigurableProductLinks();
+        $this->resourceModel->saveProducts($entity, $configurableLinks);
 
         return $entity;
     }

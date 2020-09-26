@@ -6,10 +6,14 @@
 
 namespace Magento\Reports\Model\ResourceModel\Quote\Item;
 
+use Magento\Framework\App\ResourceConnection;
+
 /**
  * Collection of Magento\Quote\Model\Quote\Item
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @api
+ * @since 100.0.2
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
@@ -84,7 +88,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     protected function _construct()
     {
-        $this->_init('Magento\Quote\Model\Quote\Item', 'Magento\Quote\Model\ResourceModel\Quote\Item');
+        $this->_init(\Magento\Quote\Model\Quote\Item::class, \Magento\Quote\Model\ResourceModel\Quote\Item::class);
     }
 
     /**
@@ -216,10 +220,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $orderData = $this->getOrdersData($productIds);
         foreach ($items as $item) {
             $item->setId($item->getProductId());
-            if (isset($productData[$item->getProductId()])) {
-                $item->setPrice($productData[$item->getProductId()]['price'] * $item->getBaseToGlobalRate());
-                $item->setName($productData[$item->getProductId()]['name']);
-            }
+            $item->setPrice($productData[$item->getProductId()]['price'] * $item->getBaseToGlobalRate());
+            $item->setName($productData[$item->getProductId()]['name']);
             $item->setOrders(0);
             if (isset($orderData[$item->getProductId()])) {
                 $item->setOrders($orderData[$item->getProductId()]['orders']);

@@ -12,6 +12,10 @@ namespace Magento\Store\Block;
 use Magento\Directory\Helper\Data;
 use Magento\Store\Model\Group;
 
+/**
+ * @api
+ * @since 100.0.2
+ */
 class Switcher extends \Magento\Framework\View\Element\Template
 {
     /**

@@ -5,12 +5,12 @@
  */
 namespace Magento\ProductVideo\Test\Unit\Controller\Adminhtml\Product\Gallery;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 /**
- * Tests \Magento\ProductVideo\Controller\Adminhtml\Product\Gallery\RetrieveImage.
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RetrieveImageTest extends \PHPUnit_Framework_TestCase
+class RetrieveImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Backend\App\Action\Context
@@ -71,12 +71,12 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $validatorMock;
+    private $validatorMock;
 
     /**
      * @var \Magento\Framework\Filesystem\DriverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $fileDriverMock;
+    private $fileDriverMock;
 
     /**
      * Set up
@@ -84,48 +84,30 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->contextMock = $this->getMock(\Magento\Backend\App\Action\Context::class, [], [], '', false);
+        $this->contextMock = $this->createMock(\Magento\Backend\App\Action\Context::class);
         $this->validatorMock = $this
-            ->getMock(\Magento\MediaStorage\Model\File\Validator\NotProtectedExtension::class, [], [], '', false);
+            ->createMock(\Magento\MediaStorage\Model\File\Validator\NotProtectedExtension::class);
         $this->rawFactoryMock =
-            $this->getMock(\Magento\Framework\Controller\Result\RawFactory::class, ['create'], [], '', false);
-        $response = $this->getMock(
-            \Magento\Framework\Controller\Result\Raw::class,
-            [],
-            [],
-            '',
-            false
-        );
+            $this->createPartialMock(\Magento\Framework\Controller\Result\RawFactory::class, ['create']);
+        $response = new \Magento\Framework\DataObject();
         $this->rawFactoryMock->expects($this->once())->method('create')->willReturn($response);
-        $this->configMock = $this->getMock(\Magento\Catalog\Model\Product\Media\Config::class, [], [], '', false);
-        $this->filesystemMock = $this->getMock(\Magento\Framework\Filesystem::class, [], [], '', false);
-        $this->adapterMock = $this->getMock(\Magento\Framework\Image::class, [], [], '', false);
+        $this->configMock = $this->createMock(\Magento\Catalog\Model\Product\Media\Config::class);
+        $this->filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->adapterMock =
+            $this->createMock(\Magento\Framework\Image::class);
         $this->adapterFactoryMock =
-            $this->getMock(\Magento\Framework\Image\AdapterFactory::class, ['create'], [], '', false);
-        $this->abstractAdapter = $this->getMock(
-            \Magento\Framework\Image\Adapter\AbstractAdapter::class,
-            [],
-            [],
-            '',
-            false
-        );
+            $this->createPartialMock(\Magento\Framework\Image\AdapterFactory::class, ['create']);
+        $this->abstractAdapter = $this->createMock(\Magento\Framework\Image\Adapter\AbstractAdapter::class);
         $this->adapterFactoryMock->expects($this->once())->method('create')->willReturn($this->abstractAdapter);
-        $this->curlMock = $this->getMock(\Magento\Framework\HTTP\Adapter\Curl::class, [], [], '', false);
-        $this->storageFileMock =
-            $this->getMock(\Magento\MediaStorage\Model\ResourceModel\File\Storage\File::class, [], [], '', false);
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['isPost'])
-            ->getMockForAbstractClass();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
-        $this->fileDriverMock = $this->getMock(\Magento\Framework\Filesystem\DriverInterface::class);
-
+        $this->curlMock = $this->createMock(\Magento\Framework\HTTP\Adapter\Curl::class);
+        $this->storageFileMock = $this->createMock(\Magento\MediaStorage\Model\ResourceModel\File\Storage\File::class);
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->fileDriverMock = $this->createMock(\Magento\Framework\Filesystem\DriverInterface::class);
+        $this->contextMock->expects($this->any())->method('getRequest')->will($this->returnValue($this->request));
         $managerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMockForAbstractClass();
-        $managerMock->expects($this->once())
-            ->method('get')
-            ->willReturn(new \Magento\Framework\Validator\AllowedProtocols());
         $this->contextMock->expects($this->any())->method('getRequest')->will($this->returnValue($this->request));
         $this->contextMock->expects($this->any())->method('getObjectManager')->willReturn($managerMock);
 
@@ -139,6 +121,7 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
                 'imageAdapterFactory' => $this->adapterFactoryMock,
                 'curl' => $this->curlMock,
                 'fileUtility' => $this->storageFileMock,
+                'protocolValidator' => new \Magento\Framework\Validator\AllowedProtocols(),
                 'extensionValidator' => $this->validatorMock,
                 'fileDriver' => $this->fileDriverMock,
             ]
@@ -153,17 +136,17 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getParam')->willReturn(
             'https://example.com/test.jpg'
         );
-        $readInterface = $this->getMock(
-            \Magento\Framework\Filesystem\Directory\ReadInterface::class,
-            [],
-            [],
-            '',
-            false
+        $readInterface = $this->createMock(
+            \Magento\Framework\Filesystem\Directory\ReadInterface::class
+        );
+        $writeInterface = $this->createMock(
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class
         );
         $this->filesystemMock->expects($this->any())->method('getDirectoryRead')->willReturn($readInterface);
         $readInterface->expects($this->any())->method('getAbsolutePath')->willReturn('');
         $this->abstractAdapter->expects($this->any())->method('validateUploadFile')->willReturn('true');
         $this->validatorMock->expects($this->once())->method('isValid')->with('jpg')->willReturn('true');
+        $this->filesystemMock->expects($this->once())->method('getDirectoryWrite')->willReturn($writeInterface);
         $this->curlMock->expects($this->once())->method('read')->willReturn('testimage');
 
         $this->image->execute();
@@ -177,8 +160,15 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getParam')->willReturn(
             'https://example.com/test.jpg'
         );
-        $readInterface = $this->getMock(
+        $readInterface = $this->createMock(
             \Magento\Framework\Filesystem\Directory\ReadInterface::class,
+            [],
+            [],
+            '',
+            false
+        );
+        $writeInterface = $this->createMock(
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class,
             [],
             [],
             '',
@@ -191,8 +181,9 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
             ->willThrowException(new \Exception('Invalid File.'));
         $this->validatorMock->expects($this->once())->method('isValid')->with('jpg')->willReturn('true');
         $this->curlMock->expects($this->once())->method('read')->willReturn('testimage');
-        $this->fileDriverMock->expects($this->once())->method('isExists')->willReturn('true');
-        $this->fileDriverMock->expects($this->once())->method('deleteFile')->willReturn('false');
+        $this->filesystemMock->expects($this->once())->method('getDirectoryWrite')->willReturn($writeInterface);
+        $writeInterface->expects($this->once())->method('isExist')->willReturn('true');
+        $writeInterface->expects($this->once())->method('delete')->willReturn('false');
 
         $this->image->execute();
     }
@@ -205,8 +196,15 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getParam')->willReturn(
             'https://example.com/test.php'
         );
-        $readInterface = $this->getMock(
+        $readInterface = $this->createMock(
             \Magento\Framework\Filesystem\Directory\ReadInterface::class,
+            [],
+            [],
+            '',
+            false
+        );
+        $writeInterface = $this->createMock(
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class,
             [],
             [],
             '',
@@ -216,7 +214,8 @@ class RetrieveImageTest extends \PHPUnit_Framework_TestCase
         $readInterface->expects($this->any())->method('getAbsolutePath')->willReturn('');
         $this->abstractAdapter->expects($this->never())->method('validateUploadFile');
         $this->validatorMock->expects($this->once())->method('isValid')->with('php')->willReturn(false);
-        $this->fileDriverMock->expects($this->never())->method('isExists');
+        $this->filesystemMock->expects($this->once())->method('getDirectoryWrite')->willReturn($writeInterface);
+        $writeInterface->expects($this->never())->method('isExist');
 
         $this->image->execute();
     }

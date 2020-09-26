@@ -12,8 +12,11 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Sales Order PDF abstract model
+ *
+ * @api
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 abstract class AbstractPdf extends \Magento\Framework\DataObject
 {
@@ -395,7 +398,10 @@ abstract class AbstractPdf extends \Magento\Framework\DataObject
 
         if ($putOrderId) {
             $page->drawText(__('Order # ') . $order->getRealOrderId(), 35, $top -= 30, 'UTF-8');
+            $top +=15;
         }
+
+        $top -=30;
         $page->drawText(
             __('Order Date: ') .
             $this->_localeDate->formatDate(
@@ -408,7 +414,7 @@ abstract class AbstractPdf extends \Magento\Framework\DataObject
                 false
             ),
             35,
-            $top -= 15,
+            $top,
             'UTF-8'
         );
 
@@ -851,7 +857,7 @@ abstract class AbstractPdf extends \Magento\Framework\DataObject
     protected function _setFontRegular($object, $size = 7)
     {
         $font = \Zend_Pdf_Font::fontWithPath(
-            $this->_rootDirectory->getAbsolutePath('lib/internal/GnuFreeFont/FreeSerif.ttf')
+            $this->_rootDirectory->getAbsolutePath('lib/internal/LinLibertineFont/LinLibertine_Re-4.4.1.ttf')
         );
         $object->setFont($font, $size);
         return $font;
@@ -867,7 +873,7 @@ abstract class AbstractPdf extends \Magento\Framework\DataObject
     protected function _setFontBold($object, $size = 7)
     {
         $font = \Zend_Pdf_Font::fontWithPath(
-            $this->_rootDirectory->getAbsolutePath('lib/internal/GnuFreeFont/FreeSerifBold.ttf')
+            $this->_rootDirectory->getAbsolutePath('lib/internal/LinLibertineFont/LinLibertine_Bd-2.8.1.ttf')
         );
         $object->setFont($font, $size);
         return $font;
@@ -883,7 +889,7 @@ abstract class AbstractPdf extends \Magento\Framework\DataObject
     protected function _setFontItalic($object, $size = 7)
     {
         $font = \Zend_Pdf_Font::fontWithPath(
-            $this->_rootDirectory->getAbsolutePath('lib/internal/GnuFreeFont/FreeSerifItalic.ttf')
+            $this->_rootDirectory->getAbsolutePath('lib/internal/LinLibertineFont/LinLibertine_It-2.8.2.ttf')
         );
         $object->setFont($font, $size);
         return $font;

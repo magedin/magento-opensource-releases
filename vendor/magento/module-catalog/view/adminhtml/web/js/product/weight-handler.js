@@ -3,6 +3,9 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * @api
+ */
 define([
     'jquery'
 ], function ($) {
@@ -64,10 +67,10 @@ define([
         },
 
         /**
-         * Has weight switcher
+         * Has weight swither
          * @returns {*}
          */
-        hasWeightSwitcher: function () {
+        hasWeightSwither: function () {
             return this.$weightSwitcher().is(':visible');
         },
 
@@ -104,7 +107,7 @@ define([
         'Magento_Catalog/js/product/weight-handler': function () {
             this.bindAll();
 
-            if (this.hasWeightSwitcher()) {
+            if (this.hasWeightSwither()) {
                 this.switchWeight();
             }
         },

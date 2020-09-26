@@ -5,6 +5,10 @@
  */
 namespace Magento\User\Block;
 
+/**
+ * @api
+ * @since 100.0.2
+ */
 class Buttons extends \Magento\Backend\Block\Template
 {
     /**
@@ -30,7 +34,6 @@ class Buttons extends \Magento\Backend\Block\Template
 
     /**
      * @return $this
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
      */
     protected function _prepareLayout()
     {
@@ -50,7 +53,7 @@ class Buttons extends \Magento\Backend\Block\Template
             ['label' => __('Reset'), 'onclick' => 'window.location.reload()', 'class' => 'reset']
         );
 
-        if ((int)$this->getRequest()->getParam('rid')) {
+        if (intval($this->getRequest()->getParam('rid'))) {
             $this->getToolbar()->addChild(
                 'deleteButton',
                 \Magento\Backend\Block\Widget\Button::class,
@@ -61,7 +64,7 @@ class Buttons extends \Magento\Backend\Block\Template
                     ) . '\', \'' . $this->getUrl(
                         '*/*/delete',
                         ['rid' => $this->getRequest()->getParam('rid')]
-                    ) . '\', {data: {}})',
+                    ) . '\')',
                     'class' => 'delete'
                 ]
             );
@@ -107,14 +110,12 @@ class Buttons extends \Magento\Backend\Block\Template
 
     /**
      * @return string|void
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
      */
     public function getDeleteButtonHtml()
     {
-        if ((int)$this->getRequest()->getParam('rid') === 0) {
+        if (intval($this->getRequest()->getParam('rid')) == 0) {
             return;
         }
-
         return $this->getChildHtml('deleteButton');
     }
 

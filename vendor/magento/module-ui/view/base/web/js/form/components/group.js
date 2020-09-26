@@ -2,6 +2,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+/**
+ * @api
+ */
 define([
     'underscore',
     'uiCollection'
@@ -54,14 +58,14 @@ define([
          * @returns {Group} Chainable.
          */
         _setClasses: function () {
-            var additional = this.additionalClasses,
+            var addtional = this.additionalClasses,
                 classes;
 
-            if (_.isString(additional)) {
-                additional = this.additionalClasses.split(' ');
+            if (_.isString(addtional)) {
+                addtional = this.additionalClasses.split(' ');
                 classes = this.additionalClasses = {};
 
-                additional.forEach(function (name) {
+                addtional.forEach(function (name) {
                     classes[name] = true;
                 }, this);
             }

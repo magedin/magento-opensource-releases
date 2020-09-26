@@ -816,7 +816,7 @@ class InstallData implements InstallDataInterface
 
                 $connection->commit();
             } catch (\Exception $e) {
-                $connection->rollBack();
+                $connection->rollback();
                 throw $e;
             }
         }

@@ -36,7 +36,7 @@ class Category
     ) {
         /** @var \Magento\Catalog\Model\Category $result */
         $productIds = $result->getAffectedProductIds();
-        if ($productIds && !$this->productRuleProcessor->isIndexerScheduled()) {
+        if ($productIds) {
             $this->productRuleProcessor->reindexList($productIds);
         }
         return $result;

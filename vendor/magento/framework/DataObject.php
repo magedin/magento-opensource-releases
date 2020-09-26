@@ -8,7 +8,7 @@ namespace Magento\Framework;
 /**
  * Universal data container with array access implementation
  *
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @api
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class DataObject implements \ArrayAccess
@@ -115,7 +115,6 @@ class DataObject implements \ArrayAccess
      * @param string|int $index
      * @return mixed
      */
-
     public function getData($key = '', $index = null)
     {
         if ('' === $key) {

@@ -6,14 +6,13 @@
 namespace Magento\Sales\Test\Unit\Model\Rss;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Model\Rss\Signature;
 
 /**
  * Class OrderStatusTest
- *
+ * @package Magento\Sales\Model\Rss
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OrderStatusTest extends \PHPUnit_Framework_TestCase
+class OrderStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Sales\Model\Rss\OrderStatus
@@ -66,11 +65,6 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
     protected $order;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Signature
-     */
-    private $signature;
-
-    /**
      * @var array
      */
     protected $feedData = [
@@ -92,22 +86,19 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
         ],
     ];
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $this->objectManager = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
-        $this->urlInterface = $this->getMock(\Magento\Framework\UrlInterface::class);
-        $this->requestInterface = $this->getMock(\Magento\Framework\App\RequestInterface::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->urlInterface = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->requestInterface = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->orderStatusFactory =
             $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Rss\OrderStatusFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->timezoneInterface = $this->getMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
-        $this->orderFactory = $this->getMock(\Magento\Sales\Model\OrderFactory::class, ['create'], [], '', false);
-        $this->scopeConfigInterface = $this->getMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->timezoneInterface = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->orderFactory = $this->createPartialMock(\Magento\Sales\Model\OrderFactory::class, ['create']);
+        $this->scopeConfigInterface = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
         $this->order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->setMethods([
@@ -128,7 +119,7 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
         $this->order->expects($this->any())->method('formatPrice')->will($this->returnValue('15.00'));
         $this->order->expects($this->any())->method('getGrandTotal')->will($this->returnValue(15));
         $this->order->expects($this->any())->method('load')->with(1)->will($this->returnSelf());
-        $this->signature = $this->getMockBuilder(Signature::class)->disableOriginalConstructor()->getMock();
+
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
             \Magento\Sales\Model\Rss\OrderStatus::class,
@@ -139,33 +130,17 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
                 'orderResourceFactory' => $this->orderStatusFactory,
                 'localeDate' => $this->timezoneInterface,
                 'orderFactory' => $this->orderFactory,
-                'scopeConfig' => $this->scopeConfigInterface,
-                'signature' => $this->signature,
+                'scopeConfig' => $this->scopeConfigInterface
             ]
         );
     }
 
-    /**
-     * Positive scenario.
-     */
     public function testGetRssData()
     {
         $this->orderFactory->expects($this->once())->method('create')->willReturn($this->order);
         $requestData = base64_encode('{"order_id":1,"increment_id":"100000001","customer_id":1}');
-        $this->signature->expects($this->never())->method('signData');
-        $this->signature->expects($this->any())
-            ->method('isValid')
-            ->with($requestData, 'signature')
-            ->willReturn(true);
 
-        $this->requestInterface->expects($this->any())
-            ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['data', null, $requestData],
-                    ['signature', null, 'signature'],
-                ]
-            );
+        $this->requestInterface->expects($this->any())->method('getParam')->with('data')->willReturn($requestData);
 
         $resource = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Rss\OrderStatus::class)
             ->setMethods(['getAllCommentCollection'])
@@ -187,64 +162,24 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Case when invalid data is provided.
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Order not found.
      */
     public function testGetRssDataWithError()
     {
         $this->orderFactory->expects($this->once())->method('create')->willReturn($this->order);
+
         $requestData = base64_encode('{"order_id":"1","increment_id":true,"customer_id":true}');
-        $this->signature->expects($this->never())->method('signData');
-        $this->signature->expects($this->any())
-            ->method('isValid')
-            ->with($requestData, 'signature')
-            ->willReturn(true);
-        $this->requestInterface->expects($this->any())
-            ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['data', null, $requestData],
-                    ['signature', null, 'signature'],
-                ]
-            );
+
+        $this->requestInterface->expects($this->any())->method('getParam')->with('data')->willReturn($requestData);
+
         $this->orderStatusFactory->expects($this->never())->method('create');
+
         $this->urlInterface->expects($this->never())->method('getUrl');
+
         $this->assertEquals($this->feedData, $this->model->getRssData());
     }
 
-    /**
-     * Case when invalid signature is provided.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Order not found.
-     */
-    public function testGetRssDataWithWrongSignature()
-    {
-        $requestData = base64_encode('{"order_id":"1","increment_id":true,"customer_id":true}');
-        $this->signature->expects($this->never())
-            ->method('signData');
-        $this->signature->expects($this->any())
-            ->method('isValid')
-            ->with($requestData, 'signature')
-            ->willReturn(false);
-        $this->requestInterface->expects($this->any())
-            ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['data', null, $requestData],
-                    ['signature', null, 'signature'],
-                ]
-            );
-        $this->orderStatusFactory->expects($this->never())->method('create');
-        $this->urlInterface->expects($this->never())->method('getUrl');
-        $this->assertEquals($this->feedData, $this->model->getRssData());
-    }
-
-    /**
-     * Testing allowed getter.
-     */
     public function testIsAllowed()
     {
         $this->scopeConfigInterface->expects($this->once())->method('getValue')
@@ -254,8 +189,6 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test caching.
-     *
      * @param string $requestData
      * @param string $result
      * @dataProvider getCacheKeyDataProvider
@@ -263,22 +196,13 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
     public function testGetCacheKey($requestData, $result)
     {
         $this->requestInterface->expects($this->any())->method('getParam')
-            ->willReturnMap([
-                ['data', null, $requestData],
-                ['signature', null, 'signature'],
-            ]);
-        $this->signature->expects($this->never())->method('signData');
-        $this->signature->expects($this->any())
-            ->method('isValid')
-            ->with($requestData, 'signature')
-            ->willReturn(true);
+            ->with('data')
+            ->will($this->returnValue($requestData));
         $this->orderFactory->expects($this->once())->method('create')->will($this->returnValue($this->order));
         $this->assertEquals('rss_order_status_data_' . $result, $this->model->getCacheKey());
     }
 
     /**
-     * Test data for caching test.
-     *
      * @return array
      */
     public function getCacheKeyDataProvider()
@@ -289,9 +213,6 @@ class OrderStatusTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * Test for cache lifetime getter.
-     */
     public function testGetCacheLifetime()
     {
         $this->assertEquals(600, $this->model->getCacheLifetime());

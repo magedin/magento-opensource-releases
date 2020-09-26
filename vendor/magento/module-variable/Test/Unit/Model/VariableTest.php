@@ -7,15 +7,15 @@ namespace Magento\Variable\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class VariableTest extends \PHPUnit_Framework_TestCase
+class VariableTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  \Magento\Variable\Model\Variable */
     private $model;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $escaperMock;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $resourceMock;
 
     /** @var  \Magento\Framework\Phrase */
@@ -37,7 +37,7 @@ class VariableTest extends \PHPUnit_Framework_TestCase
             \Magento\Variable\Model\Variable::class,
             [
                 'escaper' => $this->escaperMock,
-                'resource' => $this->resourceMock,
+                'resource' => $this->resourceMock
             ]
         );
         $this->validationFailedPhrase = __('Validation has failed.');
@@ -81,7 +81,6 @@ class VariableTest extends \PHPUnit_Framework_TestCase
     {
         $this->model->setCode($code)->setName($name);
         $this->assertEquals($this->validationFailedPhrase, $this->model->validate());
-
     }
 
     /**
@@ -99,9 +98,61 @@ class VariableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->model->validate($variableArray));
     }
 
-    /**
-     * @return array
-     */
+    public function testGetVariablesOptionArrayNoGroup()
+    {
+        $origOptions = [
+            ['value' => 'VAL', 'label' => 'LBL']
+        ];
+
+        $transformedOptions = [
+            ['value' => '{{customVar code=VAL}}', 'label' => __('%1', 'LBL')]
+        ];
+
+        $collectionMock = $this->getMockBuilder(\Magento\Variable\Model\ResourceModel\Variable\Collection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collectionMock->expects($this->any())
+            ->method('toOptionArray')
+            ->willReturn($origOptions);
+        $mockVariable = $this->getMockBuilder(\Magento\Variable\Model\Variable::class)
+            ->setMethods(['getCollection'])
+            ->setConstructorArgs($this->objectManager->getConstructArguments(\Magento\Variable\Model\Variable::class))
+            ->getMock();
+        $mockVariable->expects($this->any())
+            ->method('getCollection')
+            ->willReturn($collectionMock);
+        $this->assertEquals($transformedOptions, $mockVariable->getVariablesOptionArray());
+    }
+
+    public function testGetVariablesOptionArrayWithGroup()
+    {
+        $origOptions = [
+            ['value' => 'VAL', 'label' => 'LBL']
+        ];
+
+        $transformedOptions = [
+            'label' => __('Custom Variables'),
+            'value' => [
+                ['value' => '{{customVar code=VAL}}', 'label' => __('%1', 'LBL')]
+            ]
+        ];
+
+        $collectionMock = $this->getMockBuilder(\Magento\Variable\Model\ResourceModel\Variable\Collection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collectionMock->expects($this->any())
+            ->method('toOptionArray')
+            ->willReturn($origOptions);
+        $mockVariable = $this->getMockBuilder(\Magento\Variable\Model\Variable::class)
+            ->setMethods(['getCollection'])
+            ->setConstructorArgs($this->objectManager->getConstructArguments(\Magento\Variable\Model\Variable::class))
+            ->getMock();
+        $mockVariable->expects($this->any())
+            ->method('getCollection')
+            ->willReturn($collectionMock);
+        $this->assertEquals($transformedOptions, $mockVariable->getVariablesOptionArray(true));
+    }
+
     public function validateDataProvider()
     {
         $variable = [
@@ -114,9 +165,6 @@ class VariableTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function validateMissingInfoDataProvider()
     {
         return [

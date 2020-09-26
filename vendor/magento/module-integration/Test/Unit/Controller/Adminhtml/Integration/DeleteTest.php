@@ -12,9 +12,6 @@ use Magento\Integration\Block\Adminhtml\Integration\Edit\Tab\Info;
 use Magento\Integration\Model\Integration as IntegrationModel;
 use Magento\Framework\Exception\IntegrationException;
 
-/**
- * Class DeleteTest.
- */
 class DeleteTest extends \Magento\Integration\Test\Unit\Controller\Adminhtml\IntegrationTest
 {
     /**
@@ -26,7 +23,6 @@ class DeleteTest extends \Magento\Integration\Test\Unit\Controller\Adminhtml\Int
     {
         parent::setUp();
 
-        $this->_requestMock->expects($this->any())->method('isPost')->willReturn(true);
         $this->integrationController = $this->_createIntegrationController('Delete');
 
         $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)

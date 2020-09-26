@@ -12,7 +12,10 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\ReadInterface as DirReadInterface;
 use Magento\Framework\Filesystem\File\ReadInterface as FileReadInterface;
 
-class DownloadTest extends \PHPUnit_Framework_TestCase
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
+class DownloadTest extends \PHPUnit\Framework\TestCase
 {
     /** @var DownloadHelper */
     protected $_helper;
@@ -56,27 +59,17 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         self::$functionExists = true;
         self::$mimeContentType = self::MIME_TYPE;
 
-        $this->_filesystemMock = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
-        $this->_handleMock = $this->getMock(
-            'Magento\Framework\Filesystem\File\ReadInterface',
-            [],
-            [],
-            '',
-            false
+        $this->_filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->_handleMock = $this->createMock(\Magento\Framework\Filesystem\File\ReadInterface::class);
+        $this->_workingDirectoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadInterface::class);
+        $this->_downloadableFileMock = $this->createMock(\Magento\Downloadable\Helper\File::class);
+        $this->sessionManager = $this->getMockForAbstractClass(
+            \Magento\Framework\Session\SessionManagerInterface::class
         );
-        $this->_workingDirectoryMock = $this->getMock(
-            'Magento\Framework\Filesystem\Directory\ReadInterface',
-            [],
-            [],
-            '',
-            false
-        );
-        $this->_downloadableFileMock = $this->getMock('Magento\Downloadable\Helper\File', [], [], '', false);
-        $this->sessionManager = $this->getMockForAbstractClass('Magento\Framework\Session\SessionManagerInterface');
-        $this->fileReadFactory = $this->getMock('Magento\Framework\Filesystem\File\ReadFactory', [], [], '', false);
+        $this->fileReadFactory = $this->createMock(\Magento\Framework\Filesystem\File\ReadFactory::class);
 
         $this->_helper = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
-            'Magento\Downloadable\Helper\Download',
+            \Magento\Downloadable\Helper\Download::class,
             [
                 'downloadableFile' => $this->_downloadableFileMock,
                 'filesystem'       => $this->_filesystemMock,
@@ -162,9 +155,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::MIME_TYPE, $this->_helper->getContentType());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestGetContentTypeThroughHelper()
     {
         return [[false, ''], [true, false]];
@@ -197,11 +187,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fileName, $this->_helper->getFilename());
     }
 
-    /**
-     * @param bool $doesExist
-     * @param int $size
-     * @param string $path
-     */
     protected function _setupFileMocks($doesExist = true, $size = self::FILE_SIZE, $path = self::FILE_PATH)
     {
         $this->_handleMock->expects($this->any())->method('stat')->will($this->returnValue(['size' => $size]));
@@ -214,11 +199,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->_helper->setResource($path, DownloadHelper::LINK_TYPE_FILE);
     }
 
-    /**
-     * @param int $size
-     * @param string $url
-     * @param array $additionalStatData
-     */
     protected function _setupUrlMocks($size = self::FILE_SIZE, $url = self::URL, $additionalStatData = [])
     {
         $this->_handleMock->expects(

@@ -127,8 +127,7 @@ class Dob extends AbstractWidget
     protected function applyOutputFilter($value)
     {
         $filter = $this->getFormFilter();
-        if ($filter && $value) {
-            $value = date('Y-m-d', $this->getTime());
+        if ($filter) {
             $value = $filter->outputFilter($value);
         }
         return $value;
@@ -176,7 +175,7 @@ class Dob extends AbstractWidget
     public function getFieldHtml()
     {
         $this->dateElement->setData([
-            'extra_params' => $this->isRequired() ? 'data-validate="{required:true}"' : '',
+            'extra_params' => $this->getHtmlExtraParams(),
             'name' => $this->getHtmlId(),
             'id' => $this->getHtmlId(),
             'class' => $this->getHtmlClass(),
@@ -203,17 +202,33 @@ class Dob extends AbstractWidget
     }
 
     /**
+     * Return data-validate rules
+     *
+     * @return string
+     */
+    public function getHtmlExtraParams()
+    {
+        $extraParams = [
+            "'validate-date-au':true"
+        ];
+
+        if ($this->isRequired()) {
+            $extraParams[] = 'required:true';
+        }
+
+        $extraParams = implode(', ', $extraParams);
+
+        return 'data-validate="{' . $extraParams . '}"';
+    }
+
+    /**
      * Returns format which will be applied for DOB in javascript
      *
      * @return string
      */
     public function getDateFormat()
     {
-        /** Escape invisible characters which are present in some locales and may corrupt formatting */
-        $dateFormat = $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
-        $escapedDateFormat = preg_replace('/[^MmDdYy\/\.\-]/', '', $dateFormat);
-
-        return $escapedDateFormat;
+        return $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
     }
 
     /**

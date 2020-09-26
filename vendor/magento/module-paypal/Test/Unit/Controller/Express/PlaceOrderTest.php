@@ -36,9 +36,6 @@ class PlaceOrderTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
             ->with($this->anything(), $path, []);
     }
 
-    /**
-     * @return array
-     */
     public function trueFalseDataProvider()
     {
         return [[true], [false]];
@@ -58,9 +55,9 @@ class PlaceOrderTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
         $oldCallback = &$this->objectManagerCallback;
         $this->objectManagerCallback = function ($className) use ($code, $oldCallback) {
             $instance = call_user_func($oldCallback, $className);
-            if ($className == '\Magento\CheckoutAgreements\Model\AgreementsValidator') {
+            if ($className == \Magento\CheckoutAgreements\Model\AgreementsValidator::class) {
                 $exception = $this->getMock(
-                    'Magento\Paypal\Model\Api\ProcessableException',
+                    \Magento\Paypal\Model\Api\ProcessableException::class,
                     ['getUserMessage'],
                     ['message', $code]
                 );
@@ -82,9 +79,6 @@ class PlaceOrderTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
         $this->model->execute();
     }
 
-    /**
-     * @return array
-     */
     public function executeProcessableExceptionDataProvider()
     {
         return [

@@ -18,44 +18,47 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $captchaHelper;
 
     /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    protected $serializer;
+
+    /**
      * @param Context $context
      * @param \Magento\Captcha\Helper\Data $captchaHelper
+     * @param \Magento\Framework\Serialize\Serializer\Json|null $serializer
+     * @throws \RuntimeException
      */
-    public function __construct(Context $context, \Magento\Captcha\Helper\Data $captchaHelper)
-    {
+    public function __construct(
+        Context $context,
+        \Magento\Captcha\Helper\Data $captchaHelper,
+        \Magento\Framework\Serialize\Serializer\Json $serializer = null
+    ) {
         $this->captchaHelper = $captchaHelper;
+        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Magento\Framework\Serialize\Serializer\Json::class);
         parent::__construct($context);
     }
 
     /**
-     * @inheritdoc
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * {@inheritdoc}
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         $formId = $this->_request->getPost('formId');
         if (null === $formId) {
-            try {
-                $params = [];
-                $content = $this->_request->getContent();
-                if ($content) {
-                    $params = \Zend_Json::decode($content);
-                }
-                $formId = isset($params['formId']) ? $params['formId'] : null;
-            } catch (\Zend_Json_Exception $exception) {
-                $formId = null;
+            $params = [];
+            $content = $this->_request->getContent();
+            if ($content) {
+                $params = $this->serializer->unserialize($content);
             }
+            $formId = isset($params['formId']) ? $params['formId'] : null;
         }
         $captchaModel = $this->captchaHelper->getCaptcha($formId);
         $captchaModel->generate();
 
         $block = $this->_view->getLayout()->createBlock($captchaModel->getBlockName());
         $block->setFormId($formId)->setIsAjax(true)->toHtml();
-        $this->_response->representJson(json_encode(['imgSrc' => $captchaModel->getImgSrc()]));
+        $this->_response->representJson($this->serializer->serialize(['imgSrc' => $captchaModel->getImgSrc()]));
         $this->_actionFlag->set('', self::FLAG_NO_POST_DISPATCH, true);
     }
 }

@@ -58,7 +58,7 @@ class RemoveItem extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost() || !$this->getFormKeyValidator()->validate($this->getRequest())) {
+        if (!$this->getFormKeyValidator()->validate($this->getRequest())) {
             return $this->resultRedirectFactory->create()->setPath('*/cart/');
         }
         $itemId = (int)$this->getRequest()->getParam('item_id');
@@ -91,7 +91,7 @@ class RemoveItem extends \Magento\Framework\App\Action\Action
 
     /**
      * @return \Magento\Framework\Data\Form\FormKey\Validator
-     * @deprecated
+     * @deprecated 100.0.9
      */
     private function getFormKeyValidator()
     {

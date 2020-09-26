@@ -86,7 +86,7 @@ class Head implements Layout\ReaderInterface
                     break;
 
                 case self::HEAD_TITLE:
-                    $pageConfigStructure->setTitle($node);
+                    $pageConfigStructure->setTitle(new \Magento\Framework\Phrase($node));
                     break;
 
                 case self::HEAD_META:
@@ -138,6 +138,6 @@ class Head implements Layout\ReaderInterface
             $metadataName = $node->getAttribute('name');
         }
 
-        $pageConfigStructure->setMetadata($metadataName, $node->getAttribute('content'));
+        $pageConfigStructure->setMetaData($metadataName, $node->getAttribute('content'));
     }
 }

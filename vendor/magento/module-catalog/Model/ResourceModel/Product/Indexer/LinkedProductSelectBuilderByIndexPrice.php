@@ -39,11 +39,12 @@ class LinkedProductSelectBuilderByIndexPrice implements LinkedProductSelectBuild
     private $baseSelectProcessor;
 
     /**
+     * LinkedProductSelectBuilderByIndexPrice constructor.
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param BaseSelectProcessorInterface $baseSelectProcessor
+     * @param BaseSelectProcessorInterface|null $baseSelectProcessor
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -86,7 +87,6 @@ class LinkedProductSelectBuilderByIndexPrice implements LinkedProductSelectBuild
             ->where('t.website_id = ?', $this->storeManager->getStore()->getWebsiteId())
             ->where('t.customer_group_id = ?', $this->customerSession->getCustomerGroupId())
             ->order('t.min_price ' . Select::SQL_ASC)
-            ->order(BaseSelectProcessorInterface::PRODUCT_TABLE_ALIAS . '.' . $linkField . ' ' . Select::SQL_ASC)
             ->limit(1);
         $priceSelect = $this->baseSelectProcessor->process($priceSelect);
 

@@ -33,7 +33,7 @@ class Inline extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_GiftMessage::inline.phtml';
+    protected $_template = 'inline.phtml';
 
     /**
      * Gift message message

@@ -12,16 +12,17 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Http\Context;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ScopeInterface as AppScopeInterface;
-use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Url\ScopeInterface as UrlScopeInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
 
 /**
  * Store model
  *
+ * @api
  * @method Store setGroupId($value)
  * @method int getSortOrder()
  * @method int getStoreId()
@@ -32,6 +33,7 @@ use Magento\Store\Api\Data\StoreInterface;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @since 100.0.2
  */
 class Store extends AbstractExtensibleModel implements
     AppScopeInterface,
@@ -418,8 +420,10 @@ class Store extends AbstractExtensibleModel implements
     {
         parent::__wakeup();
         $this->_coreFileStorageDatabase = ObjectManager::getInstance()
-            ->get('Magento\MediaStorage\Helper\File\Storage\Database');
-        $this->_config = ObjectManager::getInstance()->get('Magento\Framework\App\Config\ReinitableConfigInterface');
+            ->get(\Magento\MediaStorage\Helper\File\Storage\Database::class);
+        $this->_config = ObjectManager::getInstance()->get(
+            \Magento\Framework\App\Config\ReinitableConfigInterface::class
+        );
     }
 
     /**
@@ -429,7 +433,7 @@ class Store extends AbstractExtensibleModel implements
      */
     protected function _construct()
     {
-        $this->_init('Magento\Store\Model\ResourceModel\Store');
+        $this->_init(\Magento\Store\Model\ResourceModel\Store::class);
     }
 
     /**
@@ -459,7 +463,7 @@ class Store extends AbstractExtensibleModel implements
         $storeLabelRule->setMessage(__('Name is required'), \Zend_Validate_NotEmpty::IS_EMPTY);
         $validator->addRule($storeLabelRule, 'name');
 
-        $storeCodeRule = new \Zend_Validate_Regex('/^[a-z]+[a-z0-9_]*$/i');
+        $storeCodeRule = new \Zend_Validate_Regex('/^[a-z]+[a-z0-9_]*$/');
         $storeCodeRule->setMessage(
             __(
                 'The store code may contain only letters (a-z), numbers (0-9) or underscore (_),'
@@ -531,8 +535,8 @@ class Store extends AbstractExtensibleModel implements
     public function getConfig($path)
     {
         $data = $this->_config->getValue($path, ScopeInterface::SCOPE_STORE, $this->getCode());
-        if ($data === null) {
-            $data = $this->_config->getValue($path);
+        if (!$data) {
+            $data = $this->_config->getValue($path, ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
         }
         return $data === false ? null : $data;
     }
@@ -1037,8 +1041,9 @@ class Store extends AbstractExtensibleModel implements
     /**
      * Reinit Stores on after save
      *
-     * @deprecated
+     * @deprecated 100.1.3
      * @return $this
+     * @since 100.1.3
      */
     public function afterSave()
     {
@@ -1110,6 +1115,7 @@ class Store extends AbstractExtensibleModel implements
      * Check if store is default
      *
      * @return boolean
+     * @since 100.1.0
      */
     public function isDefault()
     {
@@ -1160,29 +1166,18 @@ class Store extends AbstractExtensibleModel implements
         if (!$this->isUseStoreInUrl()) {
             $storeParsedQuery['___store'] = $this->getCode();
         }
-
         if ($fromStore !== false) {
             $storeParsedQuery['___from_store'] = $fromStore ===
                 true ? $this->_storeManager->getStore()->getCode() : $fromStore;
         }
-
-        $requestStringParts = explode('?', $requestString, 2);
-        $requestStringPath = $requestStringParts[0];
-        if (isset($requestStringParts[1])) {
-            parse_str($requestStringParts[1], $requestString);
-        } else {
-            $requestString = [];
-        }
-
-        $currentUrlQueryParams = array_merge($requestString, $storeParsedQuery);
 
         $currentUrl = $storeParsedUrl['scheme']
             . '://'
             . $storeParsedUrl['host']
             . (isset($storeParsedUrl['port']) ? ':' . $storeParsedUrl['port'] : '')
             . $storeParsedUrl['path']
-            . $requestStringPath
-            . ($currentUrlQueryParams ? '?' . http_build_query($currentUrlQueryParams, '', '&amp;') : '');
+            . $requestString
+            . ($storeParsedQuery ? '?' . http_build_query($storeParsedQuery, '', '&amp;') : '');
 
         return $currentUrl;
     }
@@ -1307,6 +1302,7 @@ class Store extends AbstractExtensibleModel implements
 
     /**
      * {@inheritdoc}
+     * @since 100.1.0
      */
     public function getScopeType()
     {
@@ -1315,6 +1311,7 @@ class Store extends AbstractExtensibleModel implements
 
     /**
      * {@inheritdoc}
+     * @since 100.1.0
      */
     public function getScopeTypeName()
     {
@@ -1342,13 +1339,13 @@ class Store extends AbstractExtensibleModel implements
      * Gets URL modifier.
      *
      * @return \Magento\Framework\Url\ModifierInterface
-     * @deprecated
+     * @deprecated 100.1.0
      */
     private function getUrlModifier()
     {
         if ($this->urlModifier === null) {
             $this->urlModifier = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Framework\Url\ModifierInterface'
+                \Magento\Framework\Url\ModifierInterface::class
             );
         }
 

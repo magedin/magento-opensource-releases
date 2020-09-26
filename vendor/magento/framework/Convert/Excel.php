@@ -147,7 +147,6 @@ class Excel
             }
             if (isset($value[0]) && in_array($value[0], ['=', '+', '-'])) {
                 $value = ' ' . $value;
-                $dataType = 'String';
             }
 
             $value = str_replace("\r\n", '&#10;', $value);

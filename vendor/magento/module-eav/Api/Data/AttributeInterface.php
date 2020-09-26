@@ -9,10 +9,9 @@ namespace Magento\Eav\Api\Data;
 /**
  * Interface AttributeInterface
  * @api
+ * @since 100.0.2
  */
-interface AttributeInterface extends
-    \Magento\Framework\Api\CustomAttributesDataInterface,
-    \Magento\Framework\Api\MetadataObjectInterface
+interface AttributeInterface extends \Magento\Framework\Api\CustomAttributesDataInterface
 {
     const ATTRIBUTE_ID = 'attribute_id';
 
@@ -96,7 +95,7 @@ interface AttributeInterface extends
     /**
      * Retrieve entity type id
      *
-     * @return string|null
+     * @return string
      */
     public function getEntityTypeId();
 

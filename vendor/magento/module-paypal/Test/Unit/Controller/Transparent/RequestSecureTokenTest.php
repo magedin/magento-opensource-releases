@@ -6,10 +6,10 @@
 namespace Magento\Paypal\Test\Unit\Controller\Transparent;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Session\Generic;
 use Magento\Framework\Session\SessionManager;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Paypal\Controller\Transparent\RequestSecureToken;
 use Magento\Paypal\Model\Payflow\Service\Request\SecureToken;
 use Magento\Paypal\Model\Payflow\Transparent;
@@ -19,7 +19,7 @@ use Magento\Paypal\Model\Payflow\Transparent;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
+class RequestSecureTokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Transparent|\PHPUnit_Framework_MockObject_MockObject
@@ -67,11 +67,6 @@ class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
         $this->contextMock = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $requestMock = $this->getMockBuilder(Http::class)->disableOriginalConstructor()->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
-
         $this->resultJsonFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()

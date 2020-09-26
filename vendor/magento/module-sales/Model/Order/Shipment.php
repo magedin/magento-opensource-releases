@@ -13,8 +13,7 @@ use Magento\Sales\Model\EntityInterface;
 /**
  * Sales order shipment model
  *
- * @method \Magento\Sales\Model\ResourceModel\Order\Shipment _getResource()
- * @method \Magento\Sales\Model\ResourceModel\Order\Shipment getResource()
+ * @api
  * @method \Magento\Sales\Model\Order\Invoice setSendEmail(bool $value)
  * @method \Magento\Sales\Model\Order\Invoice setCustomerNote(string $value)
  * @method string getCustomerNote()
@@ -22,6 +21,7 @@ use Magento\Sales\Model\EntityInterface;
  * @method bool getCustomerNoteNotify()
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @since 100.0.2
  */
 class Shipment extends AbstractModel implements EntityInterface, ShipmentInterface
 {
@@ -145,7 +145,7 @@ class Shipment extends AbstractModel implements EntityInterface, ShipmentInterfa
      */
     protected function _construct()
     {
-        $this->_init('Magento\Sales\Model\ResourceModel\Order\Shipment');
+        $this->_init(\Magento\Sales\Model\ResourceModel\Order\Shipment::class);
     }
 
     /**
@@ -257,6 +257,8 @@ class Shipment extends AbstractModel implements EntityInterface, ShipmentInterfa
                 if (!$item->getOrderItem()->isDummy(true)) {
                     $totalQty += $item->getQty();
                 }
+            } else {
+                $item->isDeleted(true);
             }
         }
 
@@ -843,5 +845,6 @@ class Shipment extends AbstractModel implements EntityInterface, ShipmentInterfa
     {
         return $this->_setExtensionAttributes($extensionAttributes);
     }
+
     //@codeCoverageIgnoreEnd
 }

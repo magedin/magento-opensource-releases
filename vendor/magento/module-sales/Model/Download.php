@@ -78,8 +78,7 @@ class Download
         $this->_fileFactory->create(
             $info['title'],
             ['value' => $this->_rootDir->getRelativePath($relativePath), 'type' => 'filename'],
-            $this->rootDirBasePath,
-            $info['type']
+            $this->rootDirBasePath
         );
     }
 

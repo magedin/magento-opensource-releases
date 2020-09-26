@@ -8,7 +8,7 @@ namespace Magento\Framework\App;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\ObjectManager\ConfigLoaderInterface;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Debug;
+use Psr\Log\LoggerInterface;
 
 /**
  * Entry point for retrieving static resources like JS, CSS, images by requested public path
@@ -17,32 +17,55 @@ use Magento\Framework\Debug;
  */
 class StaticResource implements \Magento\Framework\AppInterface
 {
-    /** @var State */
+    /**
+     * @var \Magento\Framework\App\State
+     */
     private $state;
 
-    /** @var \Magento\Framework\App\Response\FileInterface */
+    /**
+     * @var \Magento\Framework\App\Response\FileInterface
+     */
     private $response;
 
-    /** @var Request\Http */
+    /**
+     * @var \Magento\Framework\App\Request\Http
+     */
     private $request;
 
-    /** @var View\Asset\Publisher */
+    /**
+     * @var \Magento\Framework\App\View\Asset\Publisher
+     */
     private $publisher;
 
-    /** @var \Magento\Framework\View\Asset\Repository */
+    /**
+     * @var \Magento\Framework\View\Asset\Repository
+     */
     private $assetRepo;
 
-    /** @var \Magento\Framework\Module\ModuleList */
+    /**
+     * @var \Magento\Framework\Module\ModuleList
+     */
     private $moduleList;
 
-    /** @var \Magento\Framework\ObjectManagerInterface */
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
     private $objectManager;
 
-    /** @var ConfigLoaderInterface */
+    /**
+     * @var \Magento\Framework\ObjectManager\ConfigLoaderInterface
+     */
     private $configLoader;
 
-    /** @var Filesystem */
+    /**
+     * @var \Magento\Framework\Filesystem
+     */
     private $filesystem;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
     /**
      * @param State $state
@@ -102,22 +125,15 @@ class StaticResource implements \Magento\Framework\AppInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function catchException(Bootstrap $bootstrap, \Exception $exception)
     {
+        $this->getLogger()->critical($exception->getMessage());
         if ($bootstrap->isDeveloperMode()) {
             $this->response->setHttpResponseCode(404);
             $this->response->setHeader('Content-Type', 'text/plain');
-            $this->response->setBody(
-                $exception->getMessage() . "\n" .
-                Debug::trace(
-                    $exception->getTrace(),
-                    true,
-                    true,
-                    (bool)getenv('MAGE_DEBUG_SHOW_ARGS')
-                )
-            );
+            $this->response->setBody($exception->getMessage() . "\n" . $exception->getTraceAsString());
             $this->response->sendResponse();
         } else {
             require $this->getFilesystem()->getDirectoryRead(DirectoryList::PUB)->getAbsolutePath('errors/404.php');
@@ -136,11 +152,9 @@ class StaticResource implements \Magento\Framework\AppInterface
     {
         $path = ltrim($path, '/');
         $parts = explode('/', $path, 6);
-        if (count($parts) < 5 || mb_strpos($path, '..') !== false) {
-            //Checking that path contains all required parts and is not above static folder.
+        if (count($parts) < 5) {
             throw new \InvalidArgumentException("Requested path '$path' is wrong.");
         }
-
         $result = [];
         $result['area'] = $parts[0];
         $result['theme'] = $parts[1] . '/' . $parts[2];
@@ -162,7 +176,7 @@ class StaticResource implements \Magento\Framework\AppInterface
     /**
      * Lazyload filesystem driver
      *
-     * @deprecated
+     * @deprecated 100.1.0
      * @return Filesystem
      */
     private function getFilesystem()
@@ -171,5 +185,20 @@ class StaticResource implements \Magento\Framework\AppInterface
             $this->filesystem = $this->objectManager->get(Filesystem::class);
         }
         return $this->filesystem;
+    }
+
+    /**
+     * Retrieves LoggerInterface instance
+     *
+     * @return LoggerInterface
+     * @deprecated 100.2.0
+     */
+    private function getLogger()
+    {
+        if (!$this->logger) {
+            $this->logger = $this->objectManager->get(LoggerInterface::class);
+        }
+
+        return $this->logger;
     }
 }

@@ -2,6 +2,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+/**
+ * @api
+ */
 define([
     'ko',
     'underscore',
@@ -42,7 +46,7 @@ define([
     }
 
     /**
-     * Creates observable property using 'track' method.
+     * Creates observable propery using 'track' method.
      *
      * @param {Object} obj - Object to whom property belongs.
      * @param {String} key - Key of the property.
@@ -62,7 +66,7 @@ define([
 
     Element = _.extend({
         defaults: {
-            _requested: {},
+            _requesetd: {},
             containers: [],
             exports: {},
             imports: {},
@@ -245,7 +249,7 @@ define([
          * @returns {Function} Async module wrapper.
          */
         requestModule: function (name) {
-            var requested = this._requested;
+            var requested = this._requesetd;
 
             if (!requested[name]) {
                 requested[name] = registry.async(name);

@@ -7,7 +7,7 @@ namespace Magento\UrlRewrite\Test\Unit\Helper;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class UrlRewriteTest extends \PHPUnit_Framework_TestCase
+class UrlRewriteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\UrlRewrite\Helper\UrlRewrite
@@ -17,7 +17,7 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_helper = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
-            'Magento\UrlRewrite\Helper\UrlRewrite'
+            \Magento\UrlRewrite\Helper\UrlRewrite::class
         );
     }
 
@@ -55,9 +55,6 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
         $this->_helper->validateSuffix($suffix);
     }
 
-    /**
-     * @return array
-     */
     public function requestPathDataProvider()
     {
         return [
@@ -66,9 +63,6 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function requestPathExceptionDataProvider()
     {
         return [

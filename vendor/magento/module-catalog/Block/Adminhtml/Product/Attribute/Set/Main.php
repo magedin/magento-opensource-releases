@@ -5,20 +5,24 @@
  */
 namespace Magento\Catalog\Block\Adminhtml\Product\Attribute\Set;
 
-use Magento\Catalog\Model\Entity\Product\Attribute\Group\AttributeMapperInterface;
-
 /**
  * Adminhtml Catalog Attribute Set Main Block
  *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @author      Magento Core Team <core@magentocommerce.com>
+ */
+use Magento\Catalog\Model\Entity\Product\Attribute\Group\AttributeMapperInterface;
+
+/**
+ * @api
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Main extends \Magento\Backend\Block\Template
 {
     /**
      * @var string
      */
-    protected $_template = 'Magento_Catalog::catalog/product/attribute/set/main.phtml';
+    protected $_template = 'catalog/product/attribute/set/main.phtml';
 
     /**
      * Core registry
@@ -128,7 +132,7 @@ class Main extends \Magento\Backend\Block\Template
                 \Magento\Backend\Block\Widget\Button::class,
                 [
                     'label' => __('Delete'),
-                    'onclick' => 'deleteConfirm(\'' . $this->escapeJsQuote(
+                    'onclick' => 'deleteConfirm(\'' . $this->escapeJs(
                         __(
                             'You are about to delete all products in this attribute set. '
                             . 'Are you sure you want to do that?'
@@ -136,7 +140,7 @@ class Main extends \Magento\Backend\Block\Template
                     ) . '\', \'' . $this->getUrl(
                         'catalog/*/delete',
                         ['id' => $setId]
-                    ) . '\', {data: {}})',
+                    ) . '\')',
                     'class' => 'delete'
                 ]
             );
@@ -229,7 +233,7 @@ class Main extends \Magento\Backend\Block\Template
         /* @var $node \Magento\Eav\Model\Entity\Attribute\Group */
         foreach ($groups as $node) {
             $item = [];
-            $item['text'] = $this->escapeHtml($node->getAttributeGroupName());
+            $item['text'] = $node->getAttributeGroupName();
             $item['id'] = $node->getAttributeGroupId();
             $item['cls'] = 'folder';
             $item['allowDrop'] = true;
@@ -276,7 +280,7 @@ class Main extends \Magento\Backend\Block\Template
 
         foreach ($attributes as $child) {
             $attr = [
-                'text' => $this->escapeHtml($child->getAttributeCode()),
+                'text' => $child->getAttributeCode(),
                 'id' => $child->getAttributeId(),
                 'cls' => 'leaf',
                 'allowDrop' => false,

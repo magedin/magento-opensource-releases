@@ -187,6 +187,12 @@
     </type>
     <!-- END command managers section for Vault -->
 
+    <type name="Magento\Braintree\Gateway\Request\ChannelDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Magento\Braintree\Gateway\Config\Config</argument>
+        </arguments>
+    </type>
+
     <!-- Braintree commands  -->
     <virtualType name="BraintreeAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
@@ -208,7 +214,6 @@
                 <item name="3dsecure" xsi:type="string">Magento\Braintree\Gateway\Request\ThreeDSecureDataBuilder</item>
                 <item name="device_data" xsi:type="string">Magento\Braintree\Gateway\Request\KountPaymentDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -240,7 +245,6 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="capture" xsi:type="string">Magento\Braintree\Gateway\Request\CaptureDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -264,7 +268,6 @@
                 <item name="3dsecure" xsi:type="string">Magento\Braintree\Gateway\Request\ThreeDSecureDataBuilder</item>
                 <item name="device_data" xsi:type="string">Magento\Braintree\Gateway\Request\KountPaymentDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -297,7 +300,6 @@
             <argument name="builders" xsi:type="array">
                 <item name="vault_capture" xsi:type="string">Magento\Braintree\Gateway\Request\VaultCaptureDataBuilder</item>
                 <item name="settlement" xsi:type="string">Magento\Braintree\Gateway\Request\SettlementDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -319,7 +321,6 @@
                 <item name="vault" xsi:type="string">Magento\Braintree\Gateway\Request\PayPal\VaultDataBuilder</item>
                 <item name="device_data" xsi:type="string">Magento\Braintree\Gateway\Request\PayPal\DeviceDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -352,7 +353,6 @@
                 <item name="channel" xsi:type="string">Magento\Braintree\Gateway\Request\ChannelDataBuilder</item>
                 <item name="address" xsi:type="string">Magento\Braintree\Gateway\Request\AddressDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -463,41 +463,23 @@
     <virtualType name="BraintreeVoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionVoid</argument>
-            <argument name="requestBuilder" xsi:type="object">BraintreeVoidRequestBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Magento\Braintree\Gateway\Request\VoidDataBuilder</argument>
             <argument name="handler" xsi:type="object">Magento\Braintree\Gateway\Response\VoidHandler</argument>
             <argument name="validator" xsi:type="object">Magento\Braintree\Gateway\Validator\GeneralResponseValidator</argument>
             <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
         </arguments>
     </virtualType>
-    <virtualType name="BraintreeVoidRequestBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="void" xsi:type="string">Magento\Braintree\Gateway\Request\VoidDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <!-- END Void Command -->
 
     <!-- Refund Command -->
     <virtualType name="BraintreeRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="client" xsi:type="object">Magento\Braintree\Gateway\Http\Client\TransactionRefund</argument>
-            <argument name="requestBuilder" xsi:type="object">BraintreeRefundBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Magento\Braintree\Gateway\Request\RefundDataBuilder</argument>
             <argument name="validator" xsi:type="object">Magento\Braintree\Gateway\Validator\GeneralResponseValidator</argument>
             <argument name="handler" xsi:type="object">Magento\Braintree\Gateway\Response\RefundHandler</argument>
             <argument name="transferFactory" xsi:type="object">Magento\Braintree\Gateway\Http\TransferFactory</argument>
         </arguments>
     </virtualType>
-    <virtualType name="BraintreeRefundBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="refund" xsi:type="string">Magento\Braintree\Gateway\Request\RefundDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <!-- END Refund Command -->
 
     <!-- Braintree validators infrastructure -->
     <virtualType name="BraintreeCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
@@ -512,7 +494,7 @@
             </argument>
         </arguments>
     </virtualType>
-    <!-- END Braintree validators infrastructure -->
+    <!-- Braintree validators infrastructure -->
 
     <!-- Braintree PayPal validators -->
     <virtualType name="BraintreePayPalCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
@@ -568,15 +550,19 @@
         </arguments>
     </type>
     <!-- END Settlement Report Section -->
-    <type name="Magento\Config\Model\Config\Export\ExcludeList">
+    <type name="Magento\Config\Model\Config\TypePool">
         <arguments>
-            <argument name="configs" xsi:type="array">
+            <argument name="sensitive" xsi:type="array">
                 <item name="payment/braintree/merchant_id" xsi:type="string">1</item>
-                <item name="payment/braintree/public_key" xsi:type="string">1</item>
                 <item name="payment/braintree/private_key" xsi:type="string">1</item>
                 <item name="payment/braintree/merchant_account_id" xsi:type="string">1</item>
                 <item name="payment/braintree/kount_id" xsi:type="string">1</item>
                 <item name="payment/braintree_paypal/merchant_name_override" xsi:type="string">1</item>
+                <item name="payment/braintree/descriptor_phone" xsi:type="string">1</item>
+                <item name="payment/braintree/descriptor_url" xsi:type="string">1</item>
+            </argument>
+            <argument name="environment" xsi:type="array">
+                <item name="payment/braintree/descriptor_url" xsi:type="string">1</item>
             </argument>
         </arguments>
     </type>

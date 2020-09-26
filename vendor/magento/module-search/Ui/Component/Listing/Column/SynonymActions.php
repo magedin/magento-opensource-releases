@@ -20,7 +20,9 @@ class SynonymActions extends Column
     const SYNONYM_URL_PATH_DELETE = 'search/synonyms/delete';
     const SYNONYM_URL_PATH_EDIT = 'search/synonyms/edit';
 
-    /** @var UrlInterface */
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
     protected $urlBuilder;
 
     /**
@@ -61,8 +63,7 @@ class SynonymActions extends Column
                     'confirm' => [
                         'title' => __('Delete'),
                         'message' => __('Are you sure you want to delete synonym group with id: %1?', $item['group_id'])
-                    ],
-                    'post' => true,
+                    ]
                 ];
                 $item[$name]['edit'] = [
                     'href' => $this->urlBuilder->getUrl(self::SYNONYM_URL_PATH_EDIT, ['group_id' => $item['group_id']]),

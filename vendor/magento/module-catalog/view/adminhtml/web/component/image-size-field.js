@@ -15,7 +15,7 @@ define([
     validator.addRule(
         'validate-image-size-range',
         function (value) {
-            var dataAttrRange = /^(\d+)[Xx](\d+)$/,
+            var dataAttrRange = /^(\d+)x(\d+)$/,
                 m;
 
             if (utils.isEmptyNoTrim(value)) {
@@ -26,7 +26,7 @@ define([
 
             return !!(m &&  m[1] > 0 && m[2] > 0);
         },
-        $.mage.__('This value does not follow the specified format (for example, 200x300).')
+        $.mage.__('This value does not follow the specified format (for example, 200X300).')
     );
 
     return Abstract.extend({

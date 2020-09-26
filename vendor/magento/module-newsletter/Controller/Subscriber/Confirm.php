@@ -32,8 +32,6 @@ class Confirm extends \Magento\Newsletter\Controller\Subscriber
             }
         }
 
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setUrl($this->_storeManager->getStore()->getBaseUrl());
-        return $resultRedirect;
+        $this->getResponse()->setRedirect($this->_storeManager->getStore()->getBaseUrl());
     }
 }

@@ -7,7 +7,6 @@
 namespace Magento\Downloadable\Controller\Adminhtml\Downloadable\Product\Edit;
 
 use Magento\Downloadable\Helper\Download as DownloadHelper;
-use Magento\Framework\App\Response\Http as HttpResponse;
 
 class Link extends \Magento\Catalog\Controller\Adminhtml\Product\Edit
 {
@@ -41,13 +40,9 @@ class Link extends \Magento\Catalog\Controller\Adminhtml\Product\Edit
         $helper->setResource($resource, $resourceType);
 
         $fileName = $helper->getFilename();
-        //For security reasons we're making browsers to download the file
-        //instead of opening it.
-        $contentType = 'application/octet-stream';
+        $contentType = $helper->getContentType();
 
-        /** @var HttpResponse $response */
-        $response = $this->getResponse();
-        $response->setHttpResponseCode(
+        $this->getResponse()->setHttpResponseCode(
             200
         )->setHeader(
             'Pragma',
@@ -62,16 +57,18 @@ class Link extends \Magento\Catalog\Controller\Adminhtml\Product\Edit
             $contentType,
             true
         );
+
         if ($fileSize = $helper->getFileSize()) {
-            $response->setHeader('Content-Length', $fileSize);
+            $this->getResponse()->setHeader('Content-Length', $fileSize);
         }
-        $response->setHeader(
-            'Content-Disposition',
-            'attachment; filename=' . $fileName
-        );
-        //Rendering
-        $response->clearBody();
-        $response->sendHeaders();
+
+        if ($contentDisposition = $helper->getContentDisposition()) {
+            $this->getResponse()
+                ->setHeader('Content-Disposition', $contentDisposition . '; filename=' . $fileName);
+        }
+
+        $this->getResponse()->clearBody();
+        $this->getResponse()->sendHeaders();
         $helper->output();
     }
 

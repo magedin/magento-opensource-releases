@@ -9,7 +9,7 @@ namespace Magento\Search\Test\Unit\Controller\Adminhtml\Term;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\Controller\ResultFactory;
 
-class MassDeleteTest extends \PHPUnit_Framework_TestCase
+class MassDeleteTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $messageManager;
@@ -46,7 +46,7 @@ class MassDeleteTest extends \PHPUnit_Framework_TestCase
     {
         $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isPost'])
+            ->setMethods([])
             ->getMockForAbstractClass();
         $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
@@ -54,7 +54,7 @@ class MassDeleteTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->setMethods(['addSuccessMessage', 'addErrorMessage'])
+            ->setMethods(['addSuccess', 'addError'])
             ->getMockForAbstractClass();
         $this->pageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->setMethods([])
@@ -85,7 +85,6 @@ class MassDeleteTest extends \PHPUnit_Framework_TestCase
         $this->context->expects($this->any())
             ->method('getResultFactory')
             ->willReturn($this->resultFactoryMock);
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->controller = $this->objectManagerHelper->getObject(
@@ -108,8 +107,8 @@ class MassDeleteTest extends \PHPUnit_Framework_TestCase
         $this->createQuery(0, 1);
         $this->createQuery(1, 2);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')
-            ->willReturnSelf();
+            ->method('addSuccess')
+            ->will($this->returnSelf());
         $this->resultRedirectMock->expects($this->once())
             ->method('setPath')
             ->with('search/*/')
@@ -131,16 +130,15 @@ class MassDeleteTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $query->expects($this->at(0))
             ->method('delete')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $query->expects($this->at(0))
             ->method('load')
             ->with($id)
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $this->objectManager->expects($this->at($index))
             ->method('create')
             ->with(\Magento\Search\Model\Query::class)
-            ->willReturn($query);
-
+            ->will($this->returnValue($query));
         return $query;
     }
 }

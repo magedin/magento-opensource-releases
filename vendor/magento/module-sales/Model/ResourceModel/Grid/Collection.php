@@ -6,7 +6,7 @@
 namespace Magento\Sales\Model\ResourceModel\Grid;
 
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Api\Search\AggregationInterface;
+use Magento\Framework\Search\AggregationInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 /**
@@ -15,6 +15,7 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
  */
 class Collection extends AbstractCollection implements SearchResultInterface
 {
+
     /**
      * @var AggregationInterface
      */
@@ -26,11 +27,11 @@ class Collection extends AbstractCollection implements SearchResultInterface
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param null|\Zend_Db_Adapter_Abstract $mainTable
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
+     * @param string $eventPrefix
      * @param string $eventObject
      * @param string $resourceModel
      * @param string $model
-     * @param string|null $connection
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface|string|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -44,7 +45,7 @@ class Collection extends AbstractCollection implements SearchResultInterface
         $eventPrefix,
         $eventObject,
         $resourceModel,
-        $model = 'Magento\Sales\Model\ResourceModel\Grid\Document',
+        $model = \Magento\Sales\Model\ResourceModel\Grid\Document::class,
         $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
@@ -77,7 +78,6 @@ class Collection extends AbstractCollection implements SearchResultInterface
     public function setAggregations($aggregations)
     {
         $this->aggregations = $aggregations;
-        return $this;
     }
 
     /**

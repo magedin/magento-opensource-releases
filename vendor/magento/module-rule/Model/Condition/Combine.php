@@ -5,6 +5,10 @@
  */
 namespace Magento\Rule\Model\Condition;
 
+/**
+ * @api
+ * @since 100.0.2
+ */
 class Combine extends AbstractCondition
 {
     /**
@@ -28,7 +32,7 @@ class Combine extends AbstractCondition
 
         parent::__construct($context, $data);
         $this->setType(
-            'Magento\Rule\Model\Condition\Combine'
+            \Magento\Rule\Model\Condition\Combine::class
         )->setAggregator(
             'all'
         )->setValue(
@@ -42,8 +46,10 @@ class Combine extends AbstractCondition
         $this->loadAggregatorOptions();
         $options = $this->getAggregatorOptions();
         if ($options) {
-            reset($options);
-            $this->setAggregator(key($options));
+            foreach (array_keys($options) as $aggregator) {
+                $this->setAggregator($aggregator);
+                break;
+            }
         }
     }
 
@@ -84,10 +90,9 @@ class Combine extends AbstractCondition
     public function getAggregatorElement()
     {
         if ($this->getAggregator() === null) {
-            $options = $this->getAggregatorOption();
-            if ($options) {
-                reset($options);
-                $this->setAggregator(key($options));
+            foreach (array_keys($this->getAggregatorOption()) as $key) {
+                $this->setAggregator($key);
+                break;
             }
         }
         return $this->getForm()->addField(
@@ -101,7 +106,7 @@ class Combine extends AbstractCondition
                 'data-form-part' => $this->getFormName()
             ]
         )->setRenderer(
-            $this->_layout->getBlockSingleton('Magento\Rule\Block\Editable')
+            $this->_layout->getBlockSingleton(\Magento\Rule\Block\Editable::class)
         );
     }
 
@@ -273,7 +278,7 @@ class Combine extends AbstractCondition
                 'data-form-part' => $this->getFormName()
             ]
         )->setRenderer(
-            $this->_layout->getBlockSingleton('Magento\Rule\Block\Newchild')
+            $this->_layout->getBlockSingleton(\Magento\Rule\Block\Newchild::class)
         );
     }
 

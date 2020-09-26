@@ -6,47 +6,46 @@
 namespace Magento\Braintree\Test\Unit\Gateway\Request;
 
 use Magento\Braintree\Gateway\Config\Config;
-use Magento\Braintree\Gateway\Helper\SubjectReader;
 use Magento\Braintree\Gateway\Request\ThreeDSecureDataBuilder;
-use Magento\Payment\Gateway\Data\Order\AddressAdapter;
-use Magento\Payment\Gateway\Data\Order\OrderAdapter;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Magento\Payment\Gateway\Data\Order\OrderAdapter;
+use Magento\Payment\Gateway\Data\Order\AddressAdapter;
+use Magento\Braintree\Gateway\Helper\SubjectReader;
 
 /**
  * Class ThreeDSecureDataBuilderTest
  */
-class ThreeDSecureDataBuilderTest extends \PHPUnit_Framework_TestCase
+class ThreeDSecureDataBuilderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var int
-     */
-    private static $storeId = 1;
-
     /**
      * @var ThreeDSecureDataBuilder
      */
     private $builder;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $config;
+    private $configMock;
 
     /**
-     * @var PaymentDataObjectInterface|MockObject
+     * @var PaymentDataObjectInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentDO;
 
     /**
-     * @var OrderAdapter|MockObject
+     * @var OrderAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $order;
 
     /**
-     * @var AddressAdapter|MockObject
+     * @var \Magento\Payment\Gateway\Data\Order\AddressAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAddress;
+
+    /**
+     * @var SubjectReader|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $subjectReaderMock;
 
     protected function setUp()
     {
@@ -54,15 +53,21 @@ class ThreeDSecureDataBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->paymentDO = $this->getMockBuilder(PaymentDataObjectInterface::class)
             ->disableOriginalConstructor()
+            ->setMethods(['getOrder', 'getPayment'])
             ->getMock();
-        $this->paymentDO->method('getOrder')
+        $this->paymentDO->expects(static::once())
+            ->method('getOrder')
             ->willReturn($this->order);
 
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(Config::class)
+            ->setMethods(['isVerify3DSecure', 'getThresholdAmount', 'get3DSecureSpecificCountries'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->subjectReaderMock = $this->getMockBuilder(SubjectReader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->builder = new ThreeDSecureDataBuilder($this->config, new SubjectReader());
+        $this->builder = new ThreeDSecureDataBuilder($this->configMock, $this->subjectReaderMock);
     }
 
     /**
@@ -71,6 +76,7 @@ class ThreeDSecureDataBuilderTest extends \PHPUnit_Framework_TestCase
      * @param string $countryId
      * @param array $countries
      * @param array $expected
+     * @covers \Magento\Braintree\Gateway\Request\ThreeDSecureDataBuilder::build
      * @dataProvider buildDataProvider
      */
     public function testBuild($verify, $thresholdAmount, $countryId, array $countries, array $expected)
@@ -80,28 +86,37 @@ class ThreeDSecureDataBuilderTest extends \PHPUnit_Framework_TestCase
             'amount' => 25
         ];
 
-        $this->config->method('isVerify3DSecure')
-            ->with(self::equalTo(self::$storeId))
+        $this->configMock->expects(static::once())
+            ->method('isVerify3DSecure')
             ->willReturn($verify);
 
-        $this->config->method('getThresholdAmount')
-            ->with(self::equalTo(self::$storeId))
+        $this->configMock->expects(static::any())
+            ->method('getThresholdAmount')
             ->willReturn($thresholdAmount);
 
-        $this->config->method('get3DSecureSpecificCountries')
-            ->with(self::equalTo(self::$storeId))
+        $this->configMock->expects(static::any())
+            ->method('get3DSecureSpecificCountries')
             ->willReturn($countries);
 
-        $this->billingAddress->method('getCountryId')
+        $this->billingAddress->expects(static::any())
+            ->method('getCountryId')
             ->willReturn($countryId);
 
+        $this->subjectReaderMock->expects(self::once())
+            ->method('readPayment')
+            ->with($buildSubject)
+            ->willReturn($this->paymentDO);
+        $this->subjectReaderMock->expects(self::once())
+            ->method('readAmount')
+            ->with($buildSubject)
+            ->willReturn(25);
+
         $result = $this->builder->build($buildSubject);
-        self::assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
-     * Gets list of variations to build request data.
-     *
+     * Get list of variations for build test
      * @return array
      */
     public function buildDataProvider()
@@ -129,21 +144,22 @@ class ThreeDSecureDataBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Creates mock object for order adapter.
+     * Create mock object for order adapter
      */
     private function initOrderMock()
     {
         $this->billingAddress = $this->getMockBuilder(AddressAdapter::class)
             ->disableOriginalConstructor()
+            ->setMethods(['getCountryId'])
             ->getMock();
 
         $this->order = $this->getMockBuilder(OrderAdapter::class)
             ->disableOriginalConstructor()
+            ->setMethods(['getBillingAddress'])
             ->getMock();
 
-        $this->order->method('getBillingAddress')
+        $this->order->expects(static::any())
+            ->method('getBillingAddress')
             ->willReturn($this->billingAddress);
-        $this->order->method('getStoreId')
-            ->willReturn(self::$storeId);
     }
 }

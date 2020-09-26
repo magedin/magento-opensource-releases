@@ -6,22 +6,15 @@
  */
 namespace Magento\Newsletter\Controller\Adminhtml\Subscriber;
 
-use Magento\Framework\Exception\NotFoundException;
-
 class MassUnsubscribe extends \Magento\Newsletter\Controller\Adminhtml\Subscriber
 {
     /**
      * Unsubscribe one or more subscribers action
      *
      * @return void
-     * @throws NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found.'));
-        }
-
         $subscribersIds = $this->getRequest()->getParam('subscriber');
         if (!is_array($subscribersIds)) {
             $this->messageManager->addError(__('Please select one or more subscribers.'));

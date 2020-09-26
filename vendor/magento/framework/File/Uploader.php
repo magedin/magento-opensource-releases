@@ -13,7 +13,7 @@ use Magento\Framework\Filesystem\DriverInterface;
  * ATTENTION! This class must be used like abstract class and must added
  * validation by protected file extension list to extended class
  *
- * @author     Magento Core Team <core@magentocommerce.com>
+ * @api
  */
 class Uploader
 {
@@ -118,11 +118,6 @@ class Uploader
      */
     protected $_validateCallbacks = [];
 
-    /**
-     * @var \Magento\Framework\File\Mime
-     */
-    private $fileMime;
-
     /**#@+
      * File upload type (multiple or single)
      */
@@ -159,13 +154,10 @@ class Uploader
      * Init upload
      *
      * @param string|array $fileId
-     * @param null|\Magento\Framework\File\Mime $fileMime
      * @throws \Exception
      */
-    public function __construct(
-        $fileId,
-        Mime $fileMime = null
-    ) {
+    public function __construct($fileId)
+    {
         $this->_setUploadFileId($fileId);
         if (!file_exists($this->_file['tmp_name'])) {
             $code = empty($this->_file['tmp_name']) ? self::TMP_NAME_EMPTY : 0;
@@ -173,7 +165,6 @@ class Uploader
         } else {
             $this->_fileExists = true;
         }
-        $this->fileMime = $fileMime ?: \Magento\Framework\App\ObjectManager::getInstance()->get(Mime::class);
     }
 
     /**
@@ -270,7 +261,7 @@ class Uploader
      * @param string $file
      * @return void
      *
-     * @deprecated
+     * @deprecated 100.0.8
      */
     protected function chmod($file)
     {
@@ -520,7 +511,7 @@ class Uploader
      */
     private function _getMimeType()
     {
-        return $this->fileMime->getMimeType($this->_file['tmp_name']);
+        return $this->_file['type'];
     }
 
     /**

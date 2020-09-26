@@ -10,6 +10,9 @@ namespace Magento\Store\Model\ResourceModel;
 
 /**
  * Website Resource Model
+ *
+ * @api
+ * @since 100.0.2
  */
 class Website extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -35,10 +38,13 @@ class Website extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     }
 
     /**
-     * Read all information about websites. Convert information to next format:
+     * Read all information about websites.
+     *
+     * Convert information to next format:
      * [website_code => [website_data (website_id, code, name, etc...)]]
      *
      * @return array
+     * @since 100.1.3
      */
     public function readAllWebsites()
     {
@@ -47,7 +53,7 @@ class Website extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ->select()
             ->from($this->getTable('store_website'));
 
-        foreach ($this->getConnection()->fetchAll($select) as $websiteData) {
+        foreach($this->getConnection()->fetchAll($select) as $websiteData) {
             $websites[$websiteData['code']] = $websiteData;
         }
 
@@ -63,7 +69,7 @@ class Website extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
-        if (!preg_match('/^[a-z]+[a-z0-9_]*$/i', $object->getCode())) {
+        if (!preg_match('/^[a-z]+[a-z0-9_]*$/', $object->getCode())) {
             throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'Website code may only contain letters (a-z), numbers (0-9) or underscore (_),'

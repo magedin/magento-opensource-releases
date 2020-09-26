@@ -9,11 +9,15 @@ use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 
 /**
  * Update handler for catalog product gallery.
+ *
+ * @api
+ * @since 101.0.0
  */
 class UpdateHandler extends \Magento\Catalog\Model\Product\Gallery\CreateHandler
 {
     /**
      * {@inheritdoc}
+     * @since 101.0.0
      */
     protected function processDeletedImages($product, array &$images)
     {
@@ -28,14 +32,9 @@ class UpdateHandler extends \Magento\Catalog\Model\Product\Gallery\CreateHandler
         foreach ($images as &$image) {
             if (!empty($image['removed'])) {
                 if (!empty($image['value_id']) && !isset($picturesInOtherStores[$image['file']])) {
-                    if (preg_match('/\.\.(\\\|\/)/', $image['file'])) {
-                        continue;
-                    }
                     $recordsToDelete[] = $image['value_id'];
-                    $catalogPath = $this->mediaConfig->getBaseMediaPath();
-                    $isFile = $this->mediaDirectory->isFile($catalogPath . $image['file']);
-                    // only delete physical files if they are not used by any other products and if this file exists
-                    if (!($this->resourceModel->countImageUses($image['file']) > 1) && $isFile) {
+                    // only delete physical files if they are not used by any other products
+                    if (!$this->resourceModel->countImageUses($image['file']) > 1) {
                         $filesToDelete[] = ltrim($image['file'], '/');
                     }
                 }
@@ -49,6 +48,7 @@ class UpdateHandler extends \Magento\Catalog\Model\Product\Gallery\CreateHandler
 
     /**
      * {@inheritdoc}
+     * @since 101.0.0
      */
     protected function processNewImage($product, array &$image)
     {
@@ -76,6 +76,7 @@ class UpdateHandler extends \Magento\Catalog\Model\Product\Gallery\CreateHandler
     /**
      * @param \Magento\Catalog\Model\Product $product
      * @return array
+     * @since 101.0.0
      */
     protected function extractStoreIds($product)
     {
@@ -93,6 +94,7 @@ class UpdateHandler extends \Magento\Catalog\Model\Product\Gallery\CreateHandler
     /**
      * @param array $files
      * @return null
+     * @since 101.0.0
      */
     protected function removeDeletedImages(array $files)
     {

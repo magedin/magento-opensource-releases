@@ -24,40 +24,23 @@ class MassEnableTest extends AbstractMassActionTest
      */
     protected $pageCollectionMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->collectionFactoryMock = $this->getMock(
+        $this->collectionFactoryMock = $this->createPartialMock(
             \Magento\Cms\Model\ResourceModel\Page\CollectionFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
 
-        $this->pageCollectionMock = $this->getMock(
-            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
+        $this->pageCollectionMock = $this->createMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class);
 
         $this->massEnableController = $this->objectManager->getObject(
             \Magento\Cms\Controller\Adminhtml\Page\MassEnable::class,
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
-                'collectionFactory' => $this->collectionFactoryMock,
+                'collectionFactory' => $this->collectionFactoryMock
             ]
         );
     }
@@ -84,7 +67,7 @@ class MassEnableTest extends AbstractMassActionTest
             ->willReturn(new \ArrayIterator($collection));
 
         $this->messageManagerMock->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('A total of %1 record(s) have been enabled.', $enabledPagesCount));
         $this->messageManagerMock->expects($this->never())->method('addError');
 
@@ -103,10 +86,10 @@ class MassEnableTest extends AbstractMassActionTest
      */
     protected function getPageMock()
     {
-        $pageMock = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Page\Collection::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setIsActive', 'save'])
-            ->getMock();
+        $pageMock = $this->createPartialMock(
+            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
+            ['setIsActive', 'save']
+        );
         $pageMock->expects($this->once())->method('setIsActive')->with(true)->willReturn(true);
         $pageMock->expects($this->once())->method('save')->willReturn(true);
 

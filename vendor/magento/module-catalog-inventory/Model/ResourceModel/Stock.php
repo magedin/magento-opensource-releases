@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2018 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -75,7 +75,7 @@ class Stock extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb impleme
 
     /**
      * @var StoreManagerInterface
-     * @deprecated
+     * @deprecated 100.1.0
      */
     protected $storeManager;
 
@@ -126,7 +126,7 @@ class Stock extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb impleme
         }
         $itemTable = $this->getTable('cataloginventory_stock_item');
         $select = $this->getConnection()->select()->from(['si' => $itemTable])
-            ->where('website_id = ?', $websiteId)
+            ->where('website_id=?', $websiteId)
             ->where('product_id IN(?)', $productIds)
             ->forUpdate(true);
 
@@ -139,15 +139,9 @@ class Stock extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb impleme
                     'type_id' => 'type_id'
                 ]
             );
-        $items = [];
+        $this->getConnection()->query($select);
 
-        foreach ($this->getConnection()->query($select)->fetchAll() as $si) {
-            $items[$si['product_id']] = $si;
-        }
-        foreach ($this->getConnection()->fetchAll($selectProducts) as $p) {
-            $items[$p['product_id']]['type_id'] = $p['type_id'];
-        }
-        return $items;
+        return $this->getConnection()->fetchAll($selectProducts);
     }
 
     /**
@@ -156,7 +150,7 @@ class Stock extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb impleme
     public function correctItemsQty(array $items, $websiteId, $operator)
     {
         if (empty($items)) {
-            return $this;
+            return;
         }
 
         $connection = $this->getConnection();

@@ -16,7 +16,11 @@
         <tab id="advanced" translate="label" sortOrder="999999">
             <label>Advanced</label>
         </tab>
-        <section id="advanced" translate="label" type="text" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="1">
+        <!--
+        @deprecated Magento does not support custom disabling/enabling modules output since 2.2.0 version.
+        Section 'Advanced' was disabled. This section will be removed from code in one release.
+        -->
+        <section id="advanced" translate="label" type="text" sortOrder="910" showInDefault="0" showInWebsite="0" showInStore="0">
             <label>Advanced</label>
             <tab>advanced</tab>
             <resource>Magento_Backend::advanced</resource>
@@ -29,7 +33,7 @@
             <class>separator-top</class>
             <label>Store Email Addresses</label>
             <tab>general</tab>
-            <resource>Magento_Backend::trans_email</resource>
+            <resource>Magento_Config::trans_email</resource>
             <group id="ident_custom1" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Custom Email 1</label>
                 <field id="email" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
@@ -104,7 +108,7 @@
         <section id="dev" translate="label" type="text" sortOrder="920" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Developer</label>
             <tab>advanced</tab>
-            <resource>Magento_Backend::dev</resource>
+            <resource>Magento_Config::dev</resource>
             <group id="debug" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Debug</label>
                 <field id="template_hints_storefront" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -116,7 +120,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="template_hints_blocks" translate="label" type="select" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Add Block Class Type to Hints</label>
+                    <label>Add Block Names to Hints</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
@@ -404,8 +408,8 @@
         <section id="web" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Web</label>
             <tab>general</tab>
-            <resource>Magento_Backend::web</resource>
-            <group id="url" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <resource>Magento_Config::web</resource>
+            <group id="url" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Url Options</label>
                 <field id="use_store" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Add Store Code to Urls</label>
@@ -415,7 +419,7 @@
                         <![CDATA[<strong style="color:red">Warning!</strong> When using Store Code in URLs, in some cases system may not work properly if URLs without Store Codes are specified in the third party services (e.g. PayPal etc.).]]>
                     </comment>
                 </field>
-                <field id="redirect_to_base" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="redirect_to_base" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Auto-redirect to Base URL</label>
                     <source_model>Magento\Config\Model\Config\Source\Web\Redirect</source_model>
                     <comment>I.e. redirect from http://example.com/store/ to http://www.example.com/store/</comment>

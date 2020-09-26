@@ -10,7 +10,9 @@ use Magento\Eav\Model\Entity\Type;
 /**
  * EAV attribute resource collection
  *
+ * @api
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @since 100.0.2
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
@@ -57,7 +59,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     protected function _construct()
     {
-        $this->_init('Magento\Eav\Model\Entity\Attribute', 'Magento\Eav\Model\ResourceModel\Entity\Attribute');
+        $this->_init(
+            \Magento\Eav\Model\Entity\Attribute::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute::class
+        );
     }
 
     /**
@@ -205,19 +210,17 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function setInAllAttributeSetsFilter(array $setIds)
     {
-        if (!empty($setIds)) {
-            $this->getSelect()
-                ->join(
-                    ['entity_attribute' => $this->getTable('eav_entity_attribute')],
-                    'entity_attribute.attribute_id = main_table.attribute_id',
-                    ['count' => new \Zend_Db_Expr('COUNT(*)')]
-                )
-                ->where(
-                    'entity_attribute.attribute_set_id IN (?)',
-                    $setIds
-                )
-                ->group('entity_attribute.attribute_id')
-                ->having('count = ' . count($setIds));
+        foreach ($setIds as $setId) {
+            $setId = (int)$setId;
+            if (!$setId) {
+                continue;
+            }
+            $alias = sprintf('entity_attribute_%d', $setId);
+            $joinCondition = $this->getConnection()->quoteInto(
+                "{$alias}.attribute_id = main_table.attribute_id AND {$alias}.attribute_set_id =?",
+                $setId
+            );
+            $this->join([$alias => 'eav_entity_attribute'], $joinCondition, 'attribute_id');
         }
 
         //$this->getSelect()->distinct(true);
@@ -487,6 +490,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @param string $cond
      * @param string $cols
      * @return $this
+     * @since 100.1.0
      */
     public function joinLeft($table, $cond, $cols = '*')
     {

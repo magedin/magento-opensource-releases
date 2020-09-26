@@ -7,12 +7,9 @@ namespace Magento\Sales\Model\Order\Invoice\Sender;
 
 use Magento\Sales\Model\Order\Email\Sender;
 use Magento\Sales\Model\Order\Invoice\SenderInterface;
-use Magento\Framework\DataObject;
 
 /**
  * Email notification sender for Invoice.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class EmailSender extends Sender implements SenderInterface
 {
@@ -109,17 +106,13 @@ class EmailSender extends Sender implements SenderInterface
                 'formattedShippingAddress' => $this->getFormattedShippingAddress($order),
                 'formattedBillingAddress' => $this->getFormattedBillingAddress($order),
             ];
-            $transportObject = new DataObject($transport);
 
-            /**
-             * Event argument `transport` is @deprecated. Use `transportObject` instead.
-             */
             $this->eventManager->dispatch(
                 'email_invoice_set_template_vars_before',
-                ['sender' => $this, 'transport' => $transportObject->getData(), 'transportObject' => $transportObject]
+                ['sender' => $this, 'transport' => $transport]
             );
 
-            $this->templateContainer->setTemplateVars($transportObject->getData());
+            $this->templateContainer->setTemplateVars($transport);
 
             if ($this->checkAndSend($order)) {
                 $invoice->setEmailSent(true);

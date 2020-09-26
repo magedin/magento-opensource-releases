@@ -8,14 +8,12 @@ namespace Magento\Webapi\Controller\Soap\Request;
 use Magento\Framework\Api\ExtensibleDataInterface;
 use Magento\Framework\Api\MetadataObjectInterface;
 use Magento\Framework\Api\SimpleDataObjectConverter;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Webapi\Authorization;
 use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Webapi\ServiceInputProcessor;
 use Magento\Framework\Webapi\Request as SoapRequest;
 use Magento\Framework\Webapi\Exception as WebapiException;
-use Magento\Webapi\Controller\Rest\ParamsOverrider;
 use Magento\Webapi\Model\Soap\Config as SoapConfig;
 use Magento\Framework\Reflection\MethodsMap;
 use Magento\Webapi\Model\ServiceMetadata;
@@ -31,34 +29,45 @@ class Handler
 {
     const RESULT_NODE_NAME = 'result';
 
-    /** @var SoapRequest */
+    /**
+     * @var \Magento\Framework\Webapi\Request
+     */
     protected $_request;
 
-    /** @var \Magento\Framework\ObjectManagerInterface */
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
     protected $_objectManager;
 
-    /** @var SoapConfig */
+    /**
+     * @var \Magento\Webapi\Model\Soap\Config
+     */
     protected $_apiConfig;
 
-    /** @var Authorization */
+    /**
+     * @var \Magento\Framework\Webapi\Authorization
+     */
     protected $authorization;
 
-    /** @var SimpleDataObjectConverter */
+    /**
+     * @var \Magento\Framework\Api\SimpleDataObjectConverter
+     */
     protected $_dataObjectConverter;
 
-    /** @var ServiceInputProcessor */
+    /**
+     * @var \Magento\Framework\Webapi\ServiceInputProcessor
+     */
     protected $serviceInputProcessor;
 
-    /** @var DataObjectProcessor */
+    /**
+     * @var \Magento\Framework\Reflection\DataObjectProcessor
+     */
     protected $_dataObjectProcessor;
 
-    /** @var MethodsMap */
-    protected $methodsMapProcessor;
-
     /**
-     * @var ParamsOverrider
+     * @var \Magento\Framework\Reflection\MethodsMap
      */
-    private $paramsOverrider;
+    protected $methodsMapProcessor;
 
     /**
      * Initialize dependencies.
@@ -71,7 +80,6 @@ class Handler
      * @param ServiceInputProcessor $serviceInputProcessor
      * @param DataObjectProcessor $dataObjectProcessor
      * @param MethodsMap $methodsMapProcessor
-     * @param ParamsOverrider|null $paramsOverrider
      */
     public function __construct(
         SoapRequest $request,
@@ -81,8 +89,7 @@ class Handler
         SimpleDataObjectConverter $dataObjectConverter,
         ServiceInputProcessor $serviceInputProcessor,
         DataObjectProcessor $dataObjectProcessor,
-        MethodsMap $methodsMapProcessor,
-        ParamsOverrider $paramsOverrider = null
+        MethodsMap $methodsMapProcessor
     ) {
         $this->_request = $request;
         $this->_objectManager = $objectManager;
@@ -92,7 +99,6 @@ class Handler
         $this->serviceInputProcessor = $serviceInputProcessor;
         $this->_dataObjectProcessor = $dataObjectProcessor;
         $this->methodsMapProcessor = $methodsMapProcessor;
-        $this->paramsOverrider = $paramsOverrider ?: ObjectManager::getInstance()->get(ParamsOverrider::class);
     }
 
     /**
@@ -126,33 +132,9 @@ class Handler
             );
         }
         $service = $this->_objectManager->get($serviceClass);
-        $inputData = $this->prepareOperationInput($serviceClass, $serviceMethodInfo, $arguments);
+        $inputData = $this->_prepareRequestData($serviceClass, $serviceMethod, $arguments);
         $outputData = call_user_func_array([$service, $serviceMethod], $inputData);
         return $this->_prepareResponseData($outputData, $serviceClass, $serviceMethod);
-    }
-
-    /**
-     * Convert arguments received from SOAP server to arguments to pass to a service.
-     *
-     * @param string $serviceClass
-     * @param array $methodMetadata
-     * @param array $arguments
-     * @return array
-     * @throws WebapiException
-     * @throws \Magento\Framework\Exception\InputException
-     */
-    private function prepareOperationInput($serviceClass, array $methodMetadata, array $arguments)
-    {
-        /** SoapServer wraps parameters into array. Thus this wrapping should be removed to get access to parameters. */
-        $arguments = reset($arguments);
-        $arguments = $this->_dataObjectConverter->convertStdObjectToArray($arguments, true);
-        $arguments = $this->paramsOverrider->override($arguments, $methodMetadata[ServiceMetadata::KEY_ROUTE_PARAMS]);
-
-        return $this->serviceInputProcessor->process(
-            $serviceClass,
-            $methodMetadata[ServiceMetadata::KEY_METHOD],
-            $arguments
-        );
     }
 
     /**
@@ -162,16 +144,13 @@ class Handler
      * @param string $serviceMethod
      * @param array $arguments
      * @return array
-     * @deprecated
-     * @see Handler::prepareOperationInput()
      */
     protected function _prepareRequestData($serviceClass, $serviceMethod, $arguments)
     {
-        return $this->prepareOperationInput(
-            $serviceClass,
-            [ServiceMetadata::KEY_METHOD => $serviceMethod, ServiceMetadata::KEY_ROUTE_PARAMS => []],
-            $arguments
-        );
+        /** SoapServer wraps parameters into array. Thus this wrapping should be removed to get access to parameters. */
+        $arguments = reset($arguments);
+        $arguments = $this->_dataObjectConverter->convertStdObjectToArray($arguments, true);
+        return $this->serviceInputProcessor->process($serviceClass, $serviceMethod, $arguments);
     }
 
     /**
@@ -194,7 +173,11 @@ class Handler
         } elseif (is_array($data)) {
             $dataType = substr($dataType, 0, -2);
             foreach ($data as $key => $value) {
-                if ($value instanceof ExtensibleDataInterface || $value instanceof MetadataObjectInterface) {
+                if ($value instanceof $dataType
+                    // the following two options are supported for backward compatibility
+                    || $value instanceof ExtensibleDataInterface
+                    || $value instanceof MetadataObjectInterface
+                ) {
                     $result[] = $this->_dataObjectConverter
                         ->convertKeysToCamelCase($this->_dataObjectProcessor->buildOutputDataArray($value, $dataType));
                 } else {

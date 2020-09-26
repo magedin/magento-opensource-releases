@@ -5,12 +5,12 @@
  */
 namespace Magento\Config\Model\ResourceModel;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-
 /**
  * Core Resource Resource Model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @api
+ * @since 100.0.2
  */
 class Config extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb implements
     \Magento\Framework\App\Config\ConfigResource\ConfigInterface
@@ -34,7 +34,7 @@ class Config extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb implem
      * @param int $scopeId
      * @return $this
      */
-    public function saveConfig($path, $value, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
+    public function saveConfig($path, $value, $scope, $scopeId)
     {
         $connection = $this->getConnection();
         $select = $connection->select()->from(
@@ -70,7 +70,7 @@ class Config extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb implem
      * @param int $scopeId
      * @return $this
      */
-    public function deleteConfig($path, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
+    public function deleteConfig($path, $scope, $scopeId)
     {
         $connection = $this->getConnection();
         $connection->delete(

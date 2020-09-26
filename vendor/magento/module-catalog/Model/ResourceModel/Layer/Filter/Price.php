@@ -7,6 +7,10 @@ namespace Magento\Catalog\Model\ResourceModel\Layer\Filter;
 
 /**
  * Catalog Layer Price Filter resource model
+ *
+ * @api
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Price extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
@@ -43,7 +47,7 @@ class Price extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
      * @param \Magento\Customer\Model\Session $session
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param string $connectionName
+     * @param null $connectionName
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,

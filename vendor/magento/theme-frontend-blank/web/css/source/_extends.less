@@ -1139,12 +1139,13 @@
         }
 
         .action {
-            &.continue {
-                float: left;
+            &.clear,
+            &.update {
+                margin-left: @indent__s;
             }
 
-            &.clear {
-                margin-right: @indent__s;
+            &.continue {
+                float: left;
             }
         }
     }
@@ -1232,7 +1233,7 @@
     }
 }
 
-.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = (@screen__m + 1)) {
     .abs-checkout-tooltip-content-position-top-mobile {
         @abs-checkout-tooltip-content-position-top();
     }
@@ -1401,7 +1402,7 @@
         &.active {
             > .title {
                 .lib-icon-font-symbol(
-                @_icon-font-content: @icon-up,
+                @_icon-font-content: @icon-prev,
                 @_icon-font-position: after
                 );
             }

@@ -5,18 +5,18 @@
  */
 namespace Magento\Sales\Block\Order\Info\Buttons;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Sales\Model\Rss\Signature;
-
 /**
  * Block of links in Order view page
+ *
+ * @api
+ * @since 100.0.2
  */
 class Rss extends \Magento\Framework\View\Element\Template
 {
     /**
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/info/buttons/rss.phtml';
+    protected $_template = 'order/info/buttons/rss.phtml';
 
     /**
      * @var \Magento\Sales\Model\OrderFactory
@@ -29,34 +29,23 @@ class Rss extends \Magento\Framework\View\Element\Template
     protected $rssUrlBuilder;
 
     /**
-     * @var Signature
-     */
-    private $signature;
-
-    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Sales\Model\OrderFactory $orderFactory
      * @param \Magento\Framework\App\Rss\UrlBuilderInterface $rssUrlBuilder
      * @param array $data
-     * @param Signature|null $signature
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Framework\App\Rss\UrlBuilderInterface $rssUrlBuilder,
-        array $data = [],
-        Signature $signature = null
+        array $data = []
     ) {
         $this->orderFactory = $orderFactory;
         $this->rssUrlBuilder = $rssUrlBuilder;
-        $this->signature = $signature ?: ObjectManager::getInstance()->get(Signature::class);
-
         parent::__construct($context, $data);
     }
 
     /**
-     * Get link url.
-     *
      * @return string
      */
     public function getLink()
@@ -65,8 +54,6 @@ class Rss extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get translatable label for url.
-     *
      * @return \Magento\Framework\Phrase
      */
     public function getLabel()
@@ -104,20 +91,15 @@ class Rss extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get type, secure and query params for link.
-     *
-     * @return array
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
+     * @return string
      */
     protected function getLinkParams()
     {
         $order = $this->orderFactory->create()->load($this->_request->getParam('order_id'));
-        $data = $this->getUrlKey($order);
-
         return [
             'type' => 'order_status',
             '_secure' => true,
-            '_query' => ['data' => $data, 'signature' => $this->signature->signData($data)],
+            '_query' => ['data' => $this->getUrlKey($order)]
         ];
     }
 }

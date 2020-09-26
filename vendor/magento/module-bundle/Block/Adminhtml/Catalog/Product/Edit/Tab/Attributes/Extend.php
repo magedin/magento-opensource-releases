@@ -115,7 +115,6 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
                 && $this->getAttribute()->getAttributeCode() === 'price'
             )
             || $this->getElement()->getReadonly();
-
     }
 
     /**
@@ -143,6 +142,7 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
             [
                 'name' => "product[{$switchAttributeCode}]",
                 'values' => $this->getOptions(),
+                'value' => $switchAttributeCode,
                 'class' => 'required-entry next-toinput',
                 'no_span' => true,
                 'disabled' => $this->isDisabledField(),

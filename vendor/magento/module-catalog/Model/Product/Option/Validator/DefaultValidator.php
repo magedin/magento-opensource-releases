@@ -106,9 +106,7 @@ class DefaultValidator extends \Magento\Framework\Validator\AbstractValidator
         if ($storeId > \Magento\Store\Model\Store::DEFAULT_STORE_ID && $title === null) {
             return true;
         }
-
-        // checking whether title is null and is empty string
-        if ($title === null || $title === '') {
+        if ($this->isEmpty($title)) {
             return false;
         }
 

@@ -13,41 +13,24 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
  */
 class RepositoryTest extends EntityChildTestAbstract
 {
-    const SOURCE_CLASS_NAME = '\Magento\Framework\ObjectManager\Code\Generator\Sample';
-    const RESULT_CLASS_NAME = '\Magento\Framework\ObjectManager\Code\Generator\Sample\Repository';
-    const GENERATOR_CLASS_NAME = 'Magento\Framework\ObjectManager\Code\Generator\Repository';
-    const OUTPUT_FILE_NAME = 'SampleConverter.php';
-
-    /**
-     * @return string
-     */
     protected function getSourceClassName()
     {
-        return self::SOURCE_CLASS_NAME;
+        return '\\' . \Magento\Framework\ObjectManager\Code\Generator\Sample::class;
     }
 
-    /**
-     * @return string
-     */
     protected function getResultClassName()
     {
-        return self::RESULT_CLASS_NAME;
+        return '\\' . \Magento\Framework\ObjectManager\Code\Generator\Sample\Repository::class;
     }
 
-    /**
-     * @return string
-     */
     protected function getGeneratorClassName()
     {
-        return self::GENERATOR_CLASS_NAME;
+        return '\\' . \Magento\Framework\ObjectManager\Code\Generator\Repository::class;
     }
 
-    /**
-     * @return string
-     */
     protected function getOutputFileName()
     {
-        return self::OUTPUT_FILE_NAME;
+        return 'SampleConverter.php';
     }
 
     protected function mockDefinedClassesCall()

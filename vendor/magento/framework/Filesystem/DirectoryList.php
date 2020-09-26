@@ -202,7 +202,6 @@ class DirectoryList
      *
      * @param string $code
      * @return string
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getPath($code)
     {

@@ -7,7 +7,7 @@ namespace Magento\Framework\Stdlib\Test\Unit;
 
 use \Magento\Framework\Stdlib\BooleanUtils;
 
-class BooleanUtilsTest extends \PHPUnit_Framework_TestCase
+class BooleanUtilsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BooleanUtils
@@ -38,9 +38,6 @@ class BooleanUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function toBooleanDataProvider()
     {
         return [
@@ -67,9 +64,6 @@ class BooleanUtilsTest extends \PHPUnit_Framework_TestCase
         $this->object->toBoolean($input);
     }
 
-    /**
-     * @return array
-     */
     public function toBooleanExceptionDataProvider()
     {
         return [

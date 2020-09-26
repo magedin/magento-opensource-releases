@@ -12,7 +12,6 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Webapi\Exception;
-use Magento\Theme;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -63,12 +62,8 @@ class GetNonce extends Action
         try {
             $publicHash = $this->getRequest()->getParam('public_hash');
             $customerId = $this->session->getCustomerId();
-            $result = $this->command->execute(
-                ['public_hash' => $publicHash, 'customer_id' => $customerId, 'store_id' => $this->session->getStoreId()]
-            )
-                ->get();
+            $result = $this->command->execute(['public_hash' => $publicHash, 'customer_id' => $customerId])->get();
             $response->setData(['paymentMethodNonce' => $result['paymentMethodNonce']]);
-
         } catch (\Exception $e) {
             $this->logger->critical($e);
             return $this->processBadRequest($response);

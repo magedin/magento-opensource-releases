@@ -5,7 +5,7 @@
  */
 namespace Magento\Framework\Cache\Test\Unit\Backend;
 
-class MongoDbTest extends \PHPUnit_Framework_TestCase
+class MongoDbTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\Cache\Backend\MongoDb|null
@@ -19,20 +19,10 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->_collection = $this->getMock(
-            'MongoCollection',
-            ['find', 'findOne', 'distinct', 'save', 'update', 'remove', 'drop'],
-            [],
-            '',
-            false
-        );
-        $this->_model = $this->getMock(
-            'Magento\Framework\Cache\Backend\MongoDb',
-            ['_getCollection'],
-            [],
-            '',
-            false
-        );
+        $this->_collection = $this->getMockBuilder('MongoCollection')
+            ->setMethods(['find', 'findOne', 'distinct', 'save', 'update', 'remove', 'drop'])
+            ->getMock();
+        $this->_model = $this->createPartialMock(\Magento\Framework\Cache\Backend\MongoDb::class, ['_getCollection']);
         $this->_model->expects($this->any())->method('_getCollection')->will($this->returnValue($this->_collection));
     }
 
@@ -55,9 +45,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getIdsDataProvider()
     {
         return [
@@ -77,9 +64,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tags, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getTagsDataProvider()
     {
         return ['no tags' => [[]], 'multiple tags' => [['tag1', 'tag2']]];
@@ -108,9 +92,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedIds, $actualIds);
     }
 
-    /**
-     * @return array
-     */
     public function getIdsMatchingTagsDataProvider()
     {
         return [
@@ -189,9 +170,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getMetadatasDataProvider()
     {
         $time = time();
@@ -259,9 +237,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function loadDataProvider()
     {
         return ['test validity' => [false], 'do not test validity' => [true]];
@@ -347,9 +322,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->_model->clean($mode, $tags);
     }
 
-    /**
-     * @return array
-     */
     public function cleanDataProvider()
     {
         return [

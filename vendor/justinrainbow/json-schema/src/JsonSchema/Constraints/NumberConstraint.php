@@ -69,13 +69,18 @@ class NumberConstraint extends Constraint
 
     private function fmod($number1, $number2)
     {
-        $modulus = ($number1 - round($number1 / $number2) * $number2);
-        $precision = 0.0000000001;
+        $number1 = abs($number1);
+        $modulus = fmod($number1, $number2);
+        $precision = abs(0.0000000001);
+        $diff = (float) ($modulus - $number2);
 
-        if (-$precision < $modulus && $modulus < $precision) {
+        if (-$precision < $diff && $diff < $precision) {
             return 0.0;
         }
 
-        return $modulus;
+        $decimals1 = mb_strpos($number1, '.') ? mb_strlen($number1) - mb_strpos($number1, '.') - 1 : 0;
+        $decimals2 = mb_strpos($number2, '.') ? mb_strlen($number2) - mb_strpos($number2, '.') - 1 : 0;
+
+        return (float) round($modulus, max($decimals1, $decimals2));
     }
 }

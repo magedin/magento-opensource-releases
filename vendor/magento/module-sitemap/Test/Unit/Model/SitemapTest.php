@@ -8,7 +8,7 @@ namespace Magento\Sitemap\Test\Unit\Model;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SitemapTest extends \PHPUnit_Framework_TestCase
+class SitemapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Sitemap\Helper\Data
@@ -69,9 +69,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
         $this->_sitemapCmsPageMock = $this->getMockBuilder(
             \Magento\Sitemap\Model\ResourceModel\Cms\Page::class
         )->disableOriginalConstructor()->getMock();
-        $this->_helperMockSitemap = $this->getMock(
-            \Magento\Sitemap\Helper\Data::class,
-            [
+        $this->_helperMockSitemap = $this->createPartialMock(\Magento\Sitemap\Helper\Data::class, [
                 'getCategoryChangefreq',
                 'getProductChangefreq',
                 'getPageChangefreq',
@@ -81,12 +79,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
                 'getMaximumLinesNumber',
                 'getMaximumFileSize',
                 'getEnableSubmissionRobots'
-            ],
-            [],
-            '',
-            false,
-            false
-        );
+            ]);
         $this->_helperMockSitemap->expects(
             $this->any()
         )->method(
@@ -127,11 +120,13 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
 
         $this->_fileMock = $this->getMockBuilder(
             \Magento\Framework\Filesystem\File\Write::class
-        )->disableOriginalConstructor()->getMock();
+        )->disableOriginalConstructor()->setMethods(['write', 'close'])->getMock();
 
         $this->_directoryMock = $this->getMockBuilder(
             \Magento\Framework\Filesystem\Directory\Write::class
-        )->disableOriginalConstructor()->getMock();
+        )->disableOriginalConstructor()->setMethods(
+            ['write', 'openFile', 'isExist', 'renameFile', 'readFile', 'isWritable']
+        )->getMock();
         $this->_directoryMock->expects($this->any())->method('openFile')->will($this->returnValue($this->_fileMock));
 
         $this->_filesystemMock = $this->getMockBuilder(
@@ -165,7 +160,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
      * Check not exists sitemap path validation
      *
      * @expectedException \Magento\Framework\Exception\LocalizedException
-     * @expectedExceptionMessage Please create the specified folder "/" before saving the sitemap.
+     * @expectedExceptionMessage Please create the specified folder "" before saving the sitemap.
      */
     public function testPathNotExists()
     {
@@ -377,7 +372,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
      * @param array $expectedFile
      * @param int $expectedWrites
      * @param array $robotsInfo
-     * @return \Magento\Sitemap\Model\Sitemap|PHPUnit_Framework_MockObject_MockObject
+     * @return \Magento\Sitemap\Model\Sitemap|\PHPUnit_Framework_MockObject_MockObject
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareSitemapModelMock(
@@ -423,8 +418,8 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
             $this->_directoryMock->expects($this->once())->method('renameFile')->will(
                 $this->returnCallback(
                     function ($from, $to) {
-                        \PHPUnit_Framework_Assert::assertEquals('/sitemap-1-1.xml', $from);
-                        \PHPUnit_Framework_Assert::assertEquals('/sitemap.xml', $to);
+                        \PHPUnit\Framework\Assert::assertEquals('/sitemap-1-1.xml', $from);
+                        \PHPUnit\Framework\Assert::assertEquals('/sitemap.xml', $to);
                     }
                 )
             );
@@ -535,6 +530,8 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
                 ]
             )
         );
+
+        $storeBaseMediaUrl = 'http://store.com/pub/media/catalog/product/cache/c9e0b0ef589f3508e5ba515cde53c5ff/';
         $this->_sitemapProductMock->expects(
             $this->any()
         )->method(
@@ -553,13 +550,16 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
                                 [
                                     'collection' => [
                                         new \Magento\Framework\DataObject(
-                                            ['url' => 'image1.png', 'caption' => 'caption & > title < "']
+                                            [
+                                                'url' => $storeBaseMediaUrl.'i/m/image1.png',
+                                                'caption' => 'caption & > title < "'
+                                            ]
                                         ),
                                         new \Magento\Framework\DataObject(
-                                            ['url' => 'image_no_caption.png', 'caption' => null]
+                                            ['url' => $storeBaseMediaUrl.'i/m/image_no_caption.png', 'caption' => null]
                                         ),
                                     ],
-                                    'thumbnail' => 'thumbnail.jpg',
+                                    'thumbnail' => $storeBaseMediaUrl.'t/h/thumbnail.jpg',
                                     'title' => 'Product & > title < "',
                                 ]
                             ),
@@ -632,17 +632,10 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getStore'])
             ->getMockForAbstractClass();
 
-        $escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
-            ->setMethods(['escapeHtml'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $escaper->expects($this->any())->method('escapeHtml')->willReturnArgument(0);
-
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $constructArguments = $objectManager->getConstructArguments(
             \Magento\Sitemap\Model\Sitemap::class,
             [
-                'escaper' => $escaper,
                 'categoryFactory' => $categoryFactory,
                 'productFactory' => $productFactory,
                 'cmsFactory' => $cmsFactory,

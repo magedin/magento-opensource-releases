@@ -13,6 +13,6 @@ class ValidateFactory
      */
     public function create()
     {
-        return new ExistingValidate();
+        return new \Zend_Validate();
     }
 }

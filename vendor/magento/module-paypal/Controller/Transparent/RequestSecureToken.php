@@ -82,7 +82,7 @@ class RequestSecureToken extends \Magento\Framework\App\Action\Action
         /** @var Quote $quote */
         $quote = $this->sessionManager->getQuote();
 
-        if (!$quote || !$quote instanceof Quote || !$this->getRequest()->isPost()) {
+        if (!$quote or !$quote instanceof Quote) {
             return $this->getErrorResponse();
         }
 

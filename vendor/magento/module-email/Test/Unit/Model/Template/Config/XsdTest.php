@@ -10,7 +10,7 @@
 
 namespace Magento\Email\Test\Unit\Model\Template\Config;
 
-class XsdTest extends \PHPUnit_Framework_TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test validation rules implemented by XSD schema for merged configs
@@ -29,9 +29,6 @@ class XsdTest extends \PHPUnit_Framework_TestCase
         $this->_testXmlAgainstXsd($fixtureXml, $schemaFile, $expectedErrors);
     }
 
-    /**
-     * @return array
-     */
     public function mergedXmlDataProvider()
     {
         return [
@@ -119,7 +116,7 @@ class XsdTest extends \PHPUnit_Framework_TestCase
      */
     protected function _testXmlAgainstXsd($fixtureXml, $schemaFile, array $expectedErrors)
     {
-        $validationStateMock = $this->getMock('\Magento\Framework\Config\ValidationStateInterface', [], [], '', false);
+        $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $validationStateMock->method('isValidationRequired')
             ->willReturn(true);
         $dom = new \Magento\Framework\Config\Dom($fixtureXml, $validationStateMock, [], null, null, '%message%');

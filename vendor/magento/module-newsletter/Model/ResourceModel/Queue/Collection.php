@@ -9,6 +9,9 @@ namespace Magento\Newsletter\Model\ResourceModel\Queue;
  * Newsletter queue collection.
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ *
+ * @api
+ * @since 100.0.2
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
@@ -63,7 +66,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     protected function _construct()
     {
         $this->_map['fields']['queue_id'] = 'main_table.queue_id';
-        $this->_init('Magento\Newsletter\Model\Queue', 'Magento\Newsletter\Model\ResourceModel\Queue');
+        $this->_init(\Magento\Newsletter\Model\Queue::class, \Magento\Newsletter\Model\ResourceModel\Queue::class);
     }
 
     /**
@@ -218,7 +221,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             [\Magento\Newsletter\Model\Queue::STATUS_SENDING, \Magento\Newsletter\Model\Queue::STATUS_NEVER]
         )->where(
             'main_table.queue_start_at < ?',
-            $this->_date->gmtDate()
+            $this->_date->gmtdate()
         )->where(
             'main_table.queue_start_at IS NOT NULL'
         );

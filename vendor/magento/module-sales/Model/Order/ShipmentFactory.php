@@ -8,6 +8,7 @@ namespace Magento\Sales\Model\Order;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order\Shipment\ShipmentValidatorInterface;
+use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Factory class for @see \Magento\Sales\Api\Data\ShipmentInterface
@@ -36,18 +37,29 @@ class ShipmentFactory
     protected $instanceName;
 
     /**
+     * Serializer
+     *
+     * @var Json
+     */
+    private $serializer;
+
+    /**
      * Factory constructor.
      *
      * @param \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory
      * @param \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory
+     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
      */
     public function __construct(
         \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory,
-        \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory
+        \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
+        Json $serializer = null
     ) {
         $this->converter = $convertOrderFactory->create();
         $this->trackFactory = $trackFactory;
-        $this->instanceName = '\Magento\Sales\Api\Data\ShipmentInterface';
+        $this->instanceName = \Magento\Sales\Api\Data\ShipmentInterface::class;
+        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(Json::class);
     }
 
     /**
@@ -92,6 +104,7 @@ class ShipmentFactory
 
             /** @var \Magento\Sales\Model\Order\Shipment\Item $item */
             $item = $this->converter->itemToShipmentItem($orderItem);
+
             if ($orderItem->isDummy(true)) {
                 $qty = 0;
 
@@ -99,7 +112,7 @@ class ShipmentFactory
                     $productOptions = $orderItem->getProductOptions();
 
                     if (isset($productOptions['bundle_selection_attributes'])) {
-                        $bundleSelectionAttributes = unserialize(
+                        $bundleSelectionAttributes = $this->serializer->unserialize(
                             $productOptions['bundle_selection_attributes']
                         );
 
@@ -126,9 +139,6 @@ class ShipmentFactory
                 } else {
                     continue;
                 }
-            }
-            if ($orderItem->getIsVirtual() || $orderItem->getParentItemId()) {
-                $item->isDeleted(true);
             }
 
             $totalQty += $qty;

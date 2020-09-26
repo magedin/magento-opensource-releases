@@ -10,11 +10,11 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
- * Tests \Magento\Sales\Controller\Adminhtml\Order\Cancel.
+ * Class CancelTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CancelTest extends \PHPUnit_Framework_TestCase
+class CancelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Sales\Controller\Adminhtml\Order\Cancel
@@ -61,42 +61,23 @@ class CancelTest extends \PHPUnit_Framework_TestCase
      */
     protected $objectManager;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->context = $this->getMock(
-            \Magento\Backend\App\Action\Context::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $resultRedirectFactory = $this->getMock(
+        $this->context = $this->createMock(\Magento\Backend\App\Action\Context::class);
+        $resultRedirectFactory = $this->createPartialMock(
             \Magento\Backend\Model\View\Result\RedirectFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
-        $this->response = $this->getMock(
+        $this->response = $this->createPartialMock(
             \Magento\Framework\App\ResponseInterface::class,
-            ['setRedirect', 'sendResponse'],
-            [],
-            '',
-            false
+            ['setRedirect', 'sendResponse']
         );
         $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()->getMock();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
-        $this->messageManager = $this->getMock(
+        $this->messageManager = $this->createPartialMock(
             \Magento\Framework\Message\Manager::class,
-            ['addSuccessMessage', 'addErrorMessage'],
-            [],
-            '',
-            false
+            ['addSuccess', 'addError']
         );
         $this->orderRepositoryMock = $this->getMockBuilder(\Magento\Sales\Api\OrderRepositoryInterface::class)
             ->disableOriginalConstructor()
@@ -106,15 +87,15 @@ class CancelTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultRedirect = $this->getMock(\Magento\Backend\Model\View\Result\Redirect::class, [], [], '', false);
+        $this->resultRedirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
         $resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
 
-        $this->context->expects($this->any())->method('getMessageManager')->willReturn($this->messageManager);
+        $this->context->expects($this->once())->method('getMessageManager')->willReturn($this->messageManager);
         $this->context->expects($this->any())->method('getRequest')->willReturn($this->request);
-        $this->context->expects($this->any())->method('getResponse')->willReturn($this->response);
-        $this->context->expects($this->any())->method('getObjectManager')->willReturn($this->objectManager);
-        $this->context->expects($this->any())->method('getResultRedirectFactory')->willReturn($resultRedirectFactory);
-        $this->context->expects($this->any())->method('getFormKeyValidator')->willReturn($this->validatorMock);
+        $this->context->expects($this->once())->method('getResponse')->willReturn($this->response);
+        $this->context->expects($this->once())->method('getObjectManager')->willReturn($this->objectManager);
+        $this->context->expects($this->once())->method('getResultRedirectFactory')->willReturn($resultRedirectFactory);
+        $this->context->expects($this->once())->method('getFormKeyValidator')->willReturn($this->validatorMock);
 
         $this->controller = $objectManagerHelper->getObject(
             \Magento\Sales\Controller\Adminhtml\Order\Cancel::class,
@@ -122,7 +103,7 @@ class CancelTest extends \PHPUnit_Framework_TestCase
                 'context' => $this->context,
                 'request' => $this->request,
                 'response' => $this->response,
-                'orderRepository' => $this->orderRepositoryMock,
+                'orderRepository' => $this->orderRepositoryMock
             ]
         );
     }
@@ -136,7 +117,7 @@ class CancelTest extends \PHPUnit_Framework_TestCase
             ->method('isPost')
             ->willReturn(false);
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with('You have not canceled the item.');
         $this->resultRedirect->expects($this->once())
             ->method('setPath')

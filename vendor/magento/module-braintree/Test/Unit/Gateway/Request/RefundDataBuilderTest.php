@@ -12,8 +12,13 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Model\Order\Payment;
 
-class RefundDataBuilderTest extends \PHPUnit_Framework_TestCase
+class RefundDataBuilderTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var SubjectReader | \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $subjectReader;
+
     /**
      * @var RefundDataBuilder
      */
@@ -21,25 +26,41 @@ class RefundDataBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->dataBuilder = new RefundDataBuilder(new SubjectReader());
+        $this->subjectReader = $this->getMockBuilder(
+            SubjectReader::class
+        )->disableOriginalConstructor()
+            ->getMock();
+
+        $this->dataBuilder = new RefundDataBuilder($this->subjectReader);
     }
 
     public function testBuild()
     {
-        $paymentDO = $this->getMockForAbstractClass(PaymentDataObjectInterface::class);
-        $paymentModel = $this->getMockBuilder(Payment::class)
-            ->disableOriginalConstructor()
+        $paymentDO = $this->createMock(PaymentDataObjectInterface::class);
+        $paymentModel = $this->getMockBuilder(
+            Payment::class
+        )->disableOriginalConstructor()
             ->getMock();
 
         $buildSubject = ['payment' => $paymentDO, 'amount' => 12.358];
         $transactionId = 'xsd7n';
 
-        $paymentDO->method('getPayment')
+        $this->subjectReader->expects(static::once())
+            ->method('readPayment')
+            ->with($buildSubject)
+            ->willReturn($paymentDO);
+        $paymentDO->expects(static::once())
+            ->method('getPayment')
             ->willReturn($paymentModel);
-        $paymentModel->method('getParentTransactionId')
+        $paymentModel->expects(static::once())
+            ->method('getParentTransactionId')
             ->willReturn($transactionId);
+        $this->subjectReader->expects(static::once())
+            ->method('readAmount')
+            ->with($buildSubject)
+            ->willReturn($buildSubject['amount']);
 
-        self::assertEquals(
+        static::assertEquals(
             [
                 'transaction_id' => $transactionId,
                 PaymentDataBuilder::AMOUNT => '12.36'
@@ -50,20 +71,31 @@ class RefundDataBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildNullAmount()
     {
-        $paymentDO = $this->getMockForAbstractClass(PaymentDataObjectInterface::class);
-        $paymentModel = $this->getMockBuilder(Payment::class)
-            ->disableOriginalConstructor()
+        $paymentDO = $this->createMock(PaymentDataObjectInterface::class);
+        $paymentModel = $this->getMockBuilder(
+            Payment::class
+        )->disableOriginalConstructor()
             ->getMock();
 
         $buildSubject = ['payment' => $paymentDO];
         $transactionId = 'xsd7n';
 
-        $paymentDO->method('getPayment')
+        $this->subjectReader->expects(static::once())
+            ->method('readPayment')
+            ->with($buildSubject)
+            ->willReturn($paymentDO);
+        $paymentDO->expects(static::once())
+            ->method('getPayment')
             ->willReturn($paymentModel);
-        $paymentModel->method('getParentTransactionId')
+        $paymentModel->expects(static::once())
+            ->method('getParentTransactionId')
             ->willReturn($transactionId);
+        $this->subjectReader->expects(static::once())
+            ->method('readAmount')
+            ->with($buildSubject)
+            ->willThrowException(new \InvalidArgumentException());
 
-        self::assertEquals(
+        static::assertEquals(
             [
                 'transaction_id' => $transactionId,
                 PaymentDataBuilder::AMOUNT => null
@@ -74,21 +106,32 @@ class RefundDataBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildCutOffLegacyTransactionIdPostfix()
     {
-        $paymentDO = $this->getMockForAbstractClass(PaymentDataObjectInterface::class);
-        $paymentModel = $this->getMockBuilder(Payment::class)
-            ->disableOriginalConstructor()
+        $paymentDO = $this->createMock(PaymentDataObjectInterface::class);
+        $paymentModel = $this->getMockBuilder(
+            Payment::class
+        )->disableOriginalConstructor()
             ->getMock();
 
         $buildSubject = ['payment' => $paymentDO];
         $legacyTxnId = 'xsd7n-' . TransactionInterface::TYPE_CAPTURE;
         $transactionId = 'xsd7n';
 
-        $paymentDO->method('getPayment')
+        $this->subjectReader->expects(static::once())
+            ->method('readPayment')
+            ->with($buildSubject)
+            ->willReturn($paymentDO);
+        $paymentDO->expects(static::once())
+            ->method('getPayment')
             ->willReturn($paymentModel);
-        $paymentModel->method('getParentTransactionId')
+        $paymentModel->expects(static::once())
+            ->method('getParentTransactionId')
             ->willReturn($legacyTxnId);
+        $this->subjectReader->expects(static::once())
+            ->method('readAmount')
+            ->with($buildSubject)
+            ->willThrowException(new \InvalidArgumentException());
 
-        self::assertEquals(
+        static::assertEquals(
             [
                 'transaction_id' => $transactionId,
                 PaymentDataBuilder::AMOUNT => null

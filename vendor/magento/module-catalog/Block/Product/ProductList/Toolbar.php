@@ -11,9 +11,11 @@ use Magento\Catalog\Model\Product\ProductList\Toolbar as ToolbarModel;
 /**
  * Product list toolbar
  *
+ * @api
  * @author      Magento Core Team <core@magentocommerce.com>
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Toolbar extends \Magento\Framework\View\Element\Template
 {
@@ -81,7 +83,7 @@ class Toolbar extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Catalog::product/list/toolbar.phtml';
+    protected $_template = 'product/list/toolbar.phtml';
 
     /**
      * Catalog config

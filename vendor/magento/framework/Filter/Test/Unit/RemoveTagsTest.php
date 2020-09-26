@@ -5,10 +5,7 @@
  */
 namespace Magento\Framework\Filter\Test\Unit;
 
-/**
- * Test for \Magento\Framework\Filter\RemoveTags
- */
-class RemoveTagsTest extends \PHPUnit_Framework_TestCase
+class RemoveTagsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \Magento\Framework\Filter\RemoveTags::filter
@@ -20,15 +17,6 @@ class RemoveTagsTest extends \PHPUnit_Framework_TestCase
         $removeTags = new \Magento\Framework\Filter\RemoveTags();
         $actual = $removeTags->filter($input);
         $expected = '10 < 11 > 10';
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testFilterEncodedValue()
-    {
-        $input = '&quot;&gt;&lt;script&gt;alert(&quot;website&quot;)&lt;/script&gt;&lt;br a=&quot;';
-        $removeTags = new \Magento\Framework\Filter\RemoveTags();
-        $actual = $removeTags->filter($input);
-        $expected = '">alert("website")';
         $this->assertSame($expected, $actual);
     }
 }

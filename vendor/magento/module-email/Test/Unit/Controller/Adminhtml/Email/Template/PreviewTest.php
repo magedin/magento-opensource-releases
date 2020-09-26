@@ -16,58 +16,57 @@ use Magento\Framework\View\Page\Title;
 use Magento\Framework\View\Result\Page;
 
 /**
- * Preview email template test.
+ * Preview Test
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PreviewTest extends \PHPUnit_Framework_TestCase
+class PreviewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Preview
      */
-    private $object;
+    protected $object;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var Registry|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $coreRegistryMock;
+    protected $coreRegistryMock;
 
     /**
      * @var View|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $viewMock;
+    protected $viewMock;
 
     /**
      * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $requestMock;
+    protected $requestMock;
 
     /**
      * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageMock;
+    protected $pageMock;
 
     /**
      * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageConfigMock;
+    protected $pageConfigMock;
 
     /**
      * @var Title|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageTitleMock;
+    protected $pageTitleMock;
 
     /**
      * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $responseMock;
+    protected $responseMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
@@ -102,7 +101,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
             [
                 'request' => $this->requestMock,
                 'view' => $this->viewMock,
-                'response' => $this->responseMock,
+                'response' => $this->responseMock
             ]
         );
         $this->object = $objectManager->getObject(
@@ -114,9 +113,6 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testExecute()
     {
         $this->viewMock->expects($this->once())
@@ -133,7 +129,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
         $this->responseMock->expects($this->once())
             ->method('setHeader')
-            ->with('Content-Security-Policy', "script-src 'self'");
+            ->with('Content-Security-Policy', "script-src 'none'");
 
         $this->assertNull($this->object->execute());
     }

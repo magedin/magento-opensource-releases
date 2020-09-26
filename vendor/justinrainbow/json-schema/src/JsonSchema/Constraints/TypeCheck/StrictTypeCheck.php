@@ -31,10 +31,6 @@ class StrictTypeCheck implements TypeCheckInterface
 
     public static function propertyCount($value)
     {
-        if (!is_object($value)) {
-            return 0;
-        }
-
         return count(get_object_vars($value));
     }
 }

@@ -7,6 +7,9 @@ namespace Magento\Catalog\Block\Adminhtml\Product\Attribute;
 
 /**
  * Product attribute edit page
+ *
+ * @api
+ * @since 100.0.2
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
@@ -88,23 +91,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         if (!$entityAttribute || !$entityAttribute->getIsUserDefined()) {
             $this->buttonList->remove('delete');
         } else {
-            $this->buttonList->update(
-                'delete',
-                'onclick',
-                sprintf(
-                    "deleteConfirm('%s','%s', %s)",
-                    __('Are you sure you want to do this?'),
-                    $this->getDeleteUrl(),
-                    json_encode(
-                        [
-                            'action' => '',
-                            'data' => [
-                                'form_key' => $this->getFormKey()
-                            ]
-                        ]
-                    )
-                )
-            );
+            $this->buttonList->update('delete', 'label', __('Delete Attribute'));
         }
     }
 

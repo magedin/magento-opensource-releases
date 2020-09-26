@@ -5,8 +5,9 @@
  */
 namespace Magento\Framework\Data\Form\FormKey;
 
-use Magento\Framework\Encryption\Helper\Security;
-
+/**
+ * @api
+ */
 class Validator
 {
     /**
@@ -31,7 +32,9 @@ class Validator
     public function validate(\Magento\Framework\App\RequestInterface $request)
     {
         $formKey = $request->getParam('form_key', null);
-        
-        return $formKey && Security::compareStrings($formKey, $this->_formKey->getFormKey());
+        if (!$formKey || $formKey !== $this->_formKey->getFormKey()) {
+            return false;
+        }
+        return true;
     }
 }

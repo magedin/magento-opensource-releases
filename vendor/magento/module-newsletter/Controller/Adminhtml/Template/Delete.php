@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -11,14 +12,9 @@ class Delete extends \Magento\Newsletter\Controller\Adminhtml\Template
      * Delete newsletter Template
      *
      * @return void
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         $template = $this->_objectManager->create(
             \Magento\Newsletter\Model\Template::class
         )->load(

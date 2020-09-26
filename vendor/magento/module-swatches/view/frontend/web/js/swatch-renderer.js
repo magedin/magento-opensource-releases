@@ -235,7 +235,7 @@ define([
             controlLabelId: '',
 
             // text for more button
-            moreButtonText: $t('More'),
+            moreButtonText: 'More',
 
             // Callback url for media
             mediaCallback: '',
@@ -268,11 +268,8 @@ define([
             // tier prise selectors start
             tierPriceTemplateSelector: '#tier-prices-template',
             tierPriceBlockSelector: '[data-role="tier-price-block"]',
-            tierPriceTemplate: '',
+            tierPriceTemplate: ''
             // tier prise selectors end
-
-            // A price label selector
-            normalPriceLabelSelector: '.normal-price .price-label'
         },
 
         /**
@@ -356,7 +353,7 @@ define([
                 isInProductView = false;
 
             productId = this.element.parents('.product-item-details')
-                .find('.price-box.price-final_price').attr('data-product-id');
+                    .find('.price-box.price-final_price').attr('data-product-id');
 
             if (!productId) {
                 // Check individual product.
@@ -390,10 +387,7 @@ define([
                     select = $widget._RenderSwatchSelect(item, chooseText),
                     input = $widget._RenderFormInput(item),
                     listLabel = '',
-                    firstSpan = '',
-                    div = '',
-                    subDiv = '',
-                    secondSpan = '';
+                    label = '';
 
                 // Show only swatch controls
                 if ($widget.options.onlySwatches && !$widget.options.jsonSwatchConfig.hasOwnProperty(item.id)) {
@@ -401,48 +395,37 @@ define([
                 }
 
                 if ($widget.options.enableControlLabel) {
-                    firstSpan = document.createElement('span');
-                    secondSpan = document.createElement('span');
-                    firstSpan.setAttribute('id', controlLabelId);
-                    firstSpan.setAttribute('class', classes.attributeLabelClass);
-                    firstSpan.textContent = item.label;
-                    secondSpan.setAttribute('class', classes.attributeSelectedOptionLabelClass);
+                    label +=
+                        '<span id="' + controlLabelId + '" class="' + classes.attributeLabelClass + '">' +
+                            item.label +
+                        '</span>' +
+                        '<span class="' + classes.attributeSelectedOptionLabelClass + '"></span>';
                 }
 
                 if ($widget.inProductList) {
                     $widget.productForm.append(input);
                     input = '';
-                    listLabel = document.createAttribute('aria-label');
-                    listLabel.value = item.label;
+                    listLabel = 'aria-label="' + item.label + '"';
                 } else {
-                    listLabel = document.createAttribute('aria-labelledby');
-                    listLabel.value = controlLabelId;
+                    listLabel = 'aria-labelledby="' + controlLabelId + '"';
                 }
-
-                div = document.createElement('div');
-                subDiv = document.createElement('div');
-                div.setAttribute('class', classes.attributeClass + ' ' + item.code);
-                div.setAttribute('attribute-code', item.code);
-                div.setAttribute('attribute-id', item.id);
-                div.innerHTML = input;
-                subDiv.setAttribute('aria-activedescendant', '');
-                subDiv.setAttribute('tabindex', 0);
-                subDiv.setAttribute('aria-invalid', false);
-                subDiv.setAttribute('aria-required', true);
-                subDiv.setAttribute('role', 'listbox');
-                subDiv.setAttributeNode(listLabel);
-                subDiv.setAttribute('class', classes.attributeOptionsWrapper + ' clearfix');
-                subDiv.innerHTML = options + select;
-
-                if ($widget.options.enableControlLabel) {
-                    div.appendChild(firstSpan);
-                    div.appendChild(secondSpan);
-                }
-
-                div.appendChild(subDiv);
 
                 // Create new control
-                container.append(div.outerHTML);
+                container.append(
+                    '<div class="' + classes.attributeClass + ' ' + item.code + '" ' +
+                         'attribute-code="' + item.code + '" ' +
+                         'attribute-id="' + item.id + '">' +
+                        label +
+                        '<div aria-activedescendant="" ' +
+                             'tabindex="0" ' +
+                             'aria-invalid="false" ' +
+                             'aria-required="true" ' +
+                             'role="listbox" ' + listLabel +
+                             'class="' + classes.attributeOptionsWrapper + ' clearfix">' +
+                            options + select +
+                        '</div>' + input +
+                    '</div>'
+                );
 
                 $widget.optionsMap[item.id] = {};
 
@@ -502,12 +485,11 @@ define([
 
             $.each(config.options, function () {
                 var id,
-                    div,
                     type,
                     value,
                     thumb,
                     label,
-                    link;
+                    attr;
 
                 if (!optionConfig.hasOwnProperty(this.id)) {
                     return '';
@@ -515,12 +497,7 @@ define([
 
                 // Add more button
                 if (moreLimit === countAttributes++) {
-                    link = document.createElement('a');
-                    link.setAttribute('class', moreClass);
-                    link.setAttribute('href', '#');
-                    link.textContent = moreText;
-
-                    html += link.outerHTML;
+                    html += '<a href="#" class="' + moreClass + '">' + moreText + '</a>';
                 }
 
                 id = this.id;
@@ -528,49 +505,45 @@ define([
                 value = optionConfig[id].hasOwnProperty('value') ? optionConfig[id].value : '';
                 thumb = optionConfig[id].hasOwnProperty('thumb') ? optionConfig[id].thumb : '';
                 label = this.label ? this.label : '';
-                div = document.createElement('div');
-
-                div.setAttribute('id', controlId + '-item-' + id);
-                div.setAttribute('aria-checked', false);
-                div.setAttribute('aria-describedby', controlId);
-                div.setAttribute('tabindex', 0);
-                div.setAttribute('option-type', type);
-                div.setAttribute('option-id', id);
-                div.setAttribute('option-label', label);
-                div.setAttribute('aria-label', label);
-                div.setAttribute('option-tooltip-thumb', thumb);
-                div.setAttribute('option-tooltip-value', value);
-                div.setAttribute('role', 'option');
+                attr =
+                    ' id="' + controlId + '-item-' + id + '"' +
+                    ' aria-checked="false"' +
+                    ' aria-describedby="' + controlId + '"' +
+                    ' tabindex="0"' +
+                    ' option-type="' + type + '"' +
+                    ' option-id="' + id + '"' +
+                    ' option-label="' + label + '"' +
+                    ' aria-label="' + label + '"' +
+                    ' option-tooltip-thumb="' + thumb + '"' +
+                    ' option-tooltip-value="' + value + '"' +
+                    ' role="option"';
 
                 if (!this.hasOwnProperty('products') || this.products.length <= 0) {
-                    div.setAttribute('option-empty', true);
+                    attr += ' option-empty="true"';
                 }
 
                 if (type === 0) {
                     // Text
-                    div.setAttribute('class', optionClass + ' text');
-                    div.textContent = value ? value : label;
+                    html += '<div class="' + optionClass + ' text" ' + attr + '>' + (value ? value : label) +
+                        '</div>';
                 } else if (type === 1) {
                     // Color
-                    div.setAttribute('class', optionClass + ' color');
-                    div.setAttribute('style', 'background: ' + value + ' no-repeat center; background-size: initial;');
-
+                    html += '<div class="' + optionClass + ' color" ' + attr +
+                        ' style="background: ' + value +
+                        ' no-repeat center; background-size: initial;">' + '' +
+                        '</div>';
                 } else if (type === 2) {
                     // Image
-                    div.setAttribute('class', optionClass + ' image');
-                    div.setAttribute(
-                        'style',
-                        'background: url(' + value + ') no-repeat center; background-size: initial;'
-                    );
+                    html += '<div class="' + optionClass + ' image" ' + attr +
+                        ' style="background: url(' + value + ') no-repeat center; background-size: initial;">' + '' +
+                        '</div>';
                 } else if (type === 3) {
                     // Clear
-                    div.setAttribute('class', optionClass + ' image');
+                    html += '<div class="' + optionClass + '" ' + attr + '></div>';
                 } else {
                     // Default
-                    div.setAttribute('class', optionClass + ' image');
-                    div.textContent = label;
+                    html += '<div class="' + optionClass + '" ' + attr + '>' + label + '</div>';
                 }
-                html += div.outerHTML;
             });
 
             return html;
@@ -585,37 +558,30 @@ define([
          * @private
          */
         _RenderSwatchSelect: function (config, chooseText) {
-            var select,
-            firstOption,
-            otherOption;
+            var html;
 
             if (this.options.jsonSwatchConfig.hasOwnProperty(config.id)) {
                 return '';
             }
 
-            select = document.createElement('select');
-            $(select).attr('class', this.options.classes.selectClass);
-            firstOption = document.createElement('option');
-            $(firstOption).attr('value', 0);
-            $(firstOption).attr('option-id', 0);
-            $(firstOption).text(chooseText);
-            select.appendChild(firstOption);
+            html =
+                '<select class="' + this.options.classes.selectClass + ' ' + config.code + '">' +
+                '<option value="0" option-id="0">' + chooseText + '</option>';
 
             $.each(config.options, function () {
-                otherOption = document.createElement('option');
-                $(otherOption).attr('value', this.id);
-                $(otherOption).attr('option-id', this.id);
-                $(otherOption).text(this.label);
+                var label = this.label,
+                    attr = ' value="' + this.id + '" option-id="' + this.id + '"';
 
                 if (!this.hasOwnProperty('products') || this.products.length <= 0) {
-                    otherOption.setAttribute('option-empty', true);
+                    attr += ' option-empty="true"';
                 }
 
-                // option.textContent = chooseText;
-                select.appendChild(otherOption);
+                html += '<option ' + attr + '>' + label + '</option>';
             });
 
-            return select.outerHTML;
+            html += '</select>';
+
+            return html;
         },
 
         /**
@@ -650,10 +616,6 @@ define([
                 return $widget._OnClick($(this), $widget);
             });
 
-            $widget.element.on('emulateClick', '.' + options.optionClass, function () {
-                return $widget._OnClick($(this), $widget, 'emulateClick');
-            });
-
             $widget.element.on('change', '.' + options.selectClass, function () {
                 return $widget._OnChange($(this), $widget);
             });
@@ -684,10 +646,9 @@ define([
         /**
          * Load media gallery using ajax or json config.
          *
-         * @param {String|undefined} eventName
          * @private
          */
-        _loadMedia: function (eventName) {
+        _loadMedia: function () {
             var $main = this.inProductList ?
                     this.element.parents('.product-item-info') :
                     this.element.parents('.column.main'),
@@ -702,7 +663,7 @@ define([
                     images = this.options.mediaGalleryInitial;
                 }
 
-                this.updateBaseImage(images, $main, !this.inProductList, eventName);
+                this.updateBaseImage(images, $main, !this.inProductList);
             }
         },
 
@@ -711,10 +672,9 @@ define([
          *
          * @param {Object} $this
          * @param {Object} $widget
-         * @param {String|undefined} eventName
          * @private
          */
-        _OnClick: function ($this, $widget, eventName) {
+        _OnClick: function ($this, $widget) {
             var $parent = $this.parents('.' + $widget.options.classes.attributeClass),
                 $wrapper = $this.parents('.' + $widget.options.classes.attributeOptionsWrapper),
                 $label = $parent.find('.' + $widget.options.classes.attributeSelectedOptionLabelClass),
@@ -753,7 +713,7 @@ define([
                 $widget._UpdatePrice();
             }
 
-            $widget._loadMedia(eventName);
+            $widget._loadMedia();
             $input.trigger('change');
         },
 
@@ -779,7 +739,7 @@ define([
          */
         _toggleCheckedAttributes: function ($this, $wrapper) {
             $wrapper.attr('aria-activedescendant', $this.attr('id'))
-                .find('.' + this.options.classes.optionClass).attr('aria-checked', false);
+                    .find('.' + this.options.classes.optionClass).attr('aria-checked', false);
             $this.attr('aria-checked', true);
         },
 
@@ -964,22 +924,6 @@ define([
             } else {
                 $(this.options.tierPriceBlockSelector).hide();
             }
-
-            $(this.options.normalPriceLabelSelector).hide();
-
-            _.each($('.' + this.options.classes.attributeOptionsWrapper), function (attribute) {
-                if ($(attribute).find('.' + this.options.classes.optionClass + '.selected').length === 0) {
-                    if ($(attribute).find('.' + this.options.classes.selectClass).length > 0) {
-                        _.each($(attribute).find('.' + this.options.classes.selectClass), function (dropdown) {
-                            if ($(dropdown).val() === '0') {
-                                $(this.options.normalPriceLabelSelector).show();
-                            }
-                        }.bind(this));
-                    } else {
-                        $(this.options.normalPriceLabelSelector).show();
-                    }
-                }
-            }.bind(this));
         },
 
         /**
@@ -1174,35 +1118,15 @@ define([
         },
 
         /**
-         * Start update base image process based on event name
-         * @param {Array} images
-         * @param {jQuery} context
-         * @param {Boolean} isInProductView
-         * @param {String|undefined} eventName
-         */
-        updateBaseImage: function (images, context, isInProductView, eventName) {
-            var gallery = context.find(this.options.mediaGallerySelector).data('gallery');
-
-            if (eventName === undefined) {
-                this.processUpdateBaseImage(images, context, isInProductView, gallery);
-            } else {
-                context.find(this.options.mediaGallerySelector).on('gallery:loaded', function (loadedGallery) {
-                    loadedGallery = context.find(this.options.mediaGallerySelector).data('gallery');
-                    this.processUpdateBaseImage(images, context, isInProductView, loadedGallery);
-                }.bind(this));
-            }
-        },
-
-        /**
          * Update [gallery-placeholder] or [product-image-photo]
          * @param {Array} images
          * @param {jQuery} context
          * @param {Boolean} isInProductView
-         * @param {Object} gallery
          */
-        processUpdateBaseImage: function (images, context, isInProductView, gallery) {
+        updateBaseImage: function (images, context, isInProductView) {
             var justAnImage = images[0],
                 initialImages = this.options.mediaGalleryInitial,
+                gallery = context.find(this.options.mediaGallerySelector).data('gallery'),
                 imagesToUpdate,
                 isInitial;
 
@@ -1279,18 +1203,13 @@ define([
         /**
          * Emulate mouse click or selection change on all swatches that should be selected
          * @param {Object} [selectedAttributes]
-         * @param {String} triggerClick
          * @private
          */
-        _EmulateSelectedByAttributeId: function (selectedAttributes, triggerClick) {
+        _EmulateSelectedByAttributeId: function (selectedAttributes) {
             $.each(selectedAttributes, $.proxy(function (attributeId, optionId) {
                 var elem = this.element.find('.' + this.options.classes.attributeClass +
                     '[attribute-id="' + attributeId + '"] [option-id="' + optionId + '"]'),
                     parentInput = elem.parent();
-
-                if (triggerClick === null || triggerClick === '') {
-                    triggerClick = 'click';
-                }
 
                 if (elem.hasClass('selected')) {
                     return;
@@ -1300,7 +1219,7 @@ define([
                     parentInput.val(optionId);
                     parentInput.trigger('change');
                 } else {
-                    elem.trigger(triggerClick);
+                    elem.trigger('click');
                 }
             }, this));
         },

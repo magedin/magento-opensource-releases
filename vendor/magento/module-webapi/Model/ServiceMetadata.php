@@ -5,8 +5,10 @@
  */
 namespace Magento\Webapi\Model;
 
-use Magento\Webapi\Model\Config\Converter;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Webapi\Model\Cache\Type\Webapi as WebApiCache;
+use Magento\Webapi\Model\Config\Converter;
 
 /**
  * Service Metadata Model
@@ -34,8 +36,6 @@ class ServiceMetadata
 
     const KEY_ROUTE_PARAMS = 'parameters';
 
-    const KEY_METHOD_ALIAS = 'methodAlias';
-
     const SERVICES_CONFIG_CACHE_ID = 'services-services-config';
 
     const ROUTES_CONFIG_CACHE_ID = 'routes-services-config';
@@ -44,11 +44,7 @@ class ServiceMetadata
 
     /**#@-*/
 
-    /**
-     * API services
-     *
-     * @var array
-     */
+    /**#@-*/
     protected $services;
 
     /**
@@ -63,7 +59,9 @@ class ServiceMetadata
      */
     protected $cache;
 
-    /** @var \Magento\Webapi\Model\Config */
+    /**
+     * @var \Magento\Webapi\Model\Config
+     */
     protected $config;
 
     /**
@@ -77,23 +75,31 @@ class ServiceMetadata
     protected $typeProcessor;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
      * Initialize dependencies.
      *
      * @param \Magento\Webapi\Model\Config $config
      * @param WebApiCache $cache
      * @param \Magento\Webapi\Model\Config\ClassReflector $classReflector
      * @param \Magento\Framework\Reflection\TypeProcessor $typeProcessor
+     * @param SerializerInterface|null $serializer
      */
     public function __construct(
         \Magento\Webapi\Model\Config $config,
         WebApiCache $cache,
         \Magento\Webapi\Model\Config\ClassReflector $classReflector,
-        \Magento\Framework\Reflection\TypeProcessor $typeProcessor
+        \Magento\Framework\Reflection\TypeProcessor $typeProcessor,
+        SerializerInterface $serializer = null
     ) {
         $this->config = $config;
         $this->cache = $cache;
         $this->classReflector = $classReflector;
         $this->typeProcessor = $typeProcessor;
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(SerializerInterface::class);
     }
 
     /**
@@ -107,31 +113,23 @@ class ServiceMetadata
         foreach ($this->config->getServices()[Converter::KEY_SERVICES] as $serviceClass => $serviceVersionData) {
             foreach ($serviceVersionData as $version => $serviceData) {
                 $serviceName = $this->getServiceName($serviceClass, $version);
-                $methods = [];
                 foreach ($serviceData[Converter::KEY_METHODS] as $methodName => $methodMetadata) {
                     $services[$serviceName][self::KEY_SERVICE_METHODS][$methodName] = [
-                        self::KEY_METHOD => $methodMetadata[Converter::KEY_REAL_SERVICE_METHOD],
+                        self::KEY_METHOD => $methodName,
                         self::KEY_IS_REQUIRED => (bool)$methodMetadata[Converter::KEY_SECURE],
                         self::KEY_IS_SECURE => $methodMetadata[Converter::KEY_SECURE],
                         self::KEY_ACL_RESOURCES => $methodMetadata[Converter::KEY_ACL_RESOURCES],
-                        self::KEY_METHOD_ALIAS => $methodName,
-                        self::KEY_ROUTE_PARAMS => $methodMetadata[Converter::KEY_DATA_PARAMETERS]
                     ];
                     $services[$serviceName][self::KEY_CLASS] = $serviceClass;
-                    $methods[] = $methodMetadata[Converter::KEY_REAL_SERVICE_METHOD];
                 }
-                unset($methodName, $methodMetadata);
                 $reflectedMethodsMetadata = $this->classReflector->reflectClassMethods(
                     $serviceClass,
-                    $methods
+                    $services[$serviceName][self::KEY_SERVICE_METHODS]
                 );
-                foreach ($services[$serviceName][self::KEY_SERVICE_METHODS] as $methodName => &$methodMetadata) {
-                    $methodMetadata = array_merge(
-                        $methodMetadata,
-                        $reflectedMethodsMetadata[$methodMetadata[self::KEY_METHOD]]
-                    );
-                }
-                unset($methodName, $methodMetadata);
+                $services[$serviceName][self::KEY_SERVICE_METHODS] = array_merge_recursive(
+                    $services[$serviceName][self::KEY_SERVICE_METHODS],
+                    $reflectedMethodsMetadata
+                );
                 $services[$serviceName][Converter::KEY_DESCRIPTION] = $this->classReflector->extractClassDescription(
                     $serviceClass
                 );
@@ -152,12 +150,18 @@ class ServiceMetadata
             $servicesConfig = $this->cache->load(self::SERVICES_CONFIG_CACHE_ID);
             $typesData = $this->cache->load(self::REFLECTED_TYPES_CACHE_ID);
             if ($servicesConfig && is_string($servicesConfig) && $typesData && is_string($typesData)) {
-                $this->services = unserialize($servicesConfig);
-                $this->typeProcessor->setTypesData(unserialize($typesData));
+                $this->services = $this->serializer->unserialize($servicesConfig);
+                $this->typeProcessor->setTypesData($this->serializer->unserialize($typesData));
             } else {
                 $this->services = $this->initServicesMetadata();
-                $this->cache->save(serialize($this->services), self::SERVICES_CONFIG_CACHE_ID);
-                $this->cache->save(serialize($this->typeProcessor->getTypesData()), self::REFLECTED_TYPES_CACHE_ID);
+                $this->cache->save(
+                    $this->serializer->serialize($this->services),
+                    self::SERVICES_CONFIG_CACHE_ID
+                );
+                $this->cache->save(
+                    $this->serializer->serialize($this->typeProcessor->getTypesData()),
+                    self::REFLECTED_TYPES_CACHE_ID
+                );
             }
         }
         return $this->services;
@@ -184,8 +188,8 @@ class ServiceMetadata
      *
      * Example:
      * <pre>
-     * - 'Magento\Customer\Api\CustomerAccountInterface', 'V1', false => customerCustomerAccount
-     * - 'Magento\Customer\Api\CustomerAddressInterface', 'V1', true  => customerCustomerAddressV1
+     * - \Magento\Customer\Api\CustomerAccountInterface::class, 'V1', false => customerCustomerAccount
+     * - \Magento\Customer\Api\CustomerAddressInterface::class, 'V1', true  => customerCustomerAddressV1
      * </pre>
      *
      * @param string $interfaceName
@@ -266,12 +270,18 @@ class ServiceMetadata
             $routesConfig = $this->cache->load(self::ROUTES_CONFIG_CACHE_ID);
             $typesData = $this->cache->load(self::REFLECTED_TYPES_CACHE_ID);
             if ($routesConfig && is_string($routesConfig) && $typesData && is_string($typesData)) {
-                $this->routes = unserialize($routesConfig);
-                $this->typeProcessor->setTypesData(unserialize($typesData));
+                $this->routes = $this->serializer->unserialize($routesConfig);
+                $this->typeProcessor->setTypesData($this->serializer->unserialize($typesData));
             } else {
                 $this->routes = $this->initRoutesMetadata();
-                $this->cache->save(serialize($this->routes), self::ROUTES_CONFIG_CACHE_ID);
-                $this->cache->save(serialize($this->typeProcessor->getTypesData()), self::REFLECTED_TYPES_CACHE_ID);
+                $this->cache->save(
+                    $this->serializer->serialize($this->routes),
+                    self::ROUTES_CONFIG_CACHE_ID
+                );
+                $this->cache->save(
+                    $this->serializer->serialize($this->typeProcessor->getTypesData()),
+                    self::REFLECTED_TYPES_CACHE_ID
+                );
             }
         }
         return $this->routes;
@@ -294,7 +304,6 @@ class ServiceMetadata
                 $routes[$serviceName][self::KEY_ROUTES][$url][$method][self::KEY_ROUTE_METHOD] = $methodName;
                 $routes[$serviceName][self::KEY_ROUTES][$url][$method][self::KEY_ROUTE_PARAMS]
                     = $data[Converter::KEY_DATA_PARAMETERS];
-
             }
         }
         return $routes;

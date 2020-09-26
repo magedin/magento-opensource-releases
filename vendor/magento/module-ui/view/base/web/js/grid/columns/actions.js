@@ -3,14 +3,16 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * @api
+ */
 define([
     'underscore',
     'mageUtils',
     'uiRegistry',
     './column',
-    'Magento_Ui/js/modal/confirm',
-    'mage/dataPost'
-], function (_, utils, registry, Column, confirm, dataPost) {
+    'Magento_Ui/js/modal/confirm'
+], function (_, utils, registry, Column, confirm) {
     'use strict';
 
     return Column.extend({
@@ -175,6 +177,20 @@ define([
         },
 
         /**
+         * Returns target of action if it's been set.
+         *
+         * @param {Object} action - Action object.
+         * @returns {String}
+         */
+        getTarget: function (action) {
+            if (action.target) {
+                return action.target;
+            }
+
+            return '_self';
+        },
+
+        /**
          * Checks if specified action requires a handler function.
          *
          * @param {String} actionIndex - Actions' identifier.
@@ -251,14 +267,7 @@ define([
          * @param {Object} action - Actions' data.
          */
         defaultCallback: function (actionIndex, recordId, action) {
-            if (action.post) {
-                dataPost().postData({
-                    action: action.href,
-                    data: {}
-                });
-            } else {
-                window.location.href = action.href;
-            }
+            window.location.href = action.href;
         },
 
         /**

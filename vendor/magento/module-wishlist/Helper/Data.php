@@ -13,6 +13,9 @@ use Magento\Wishlist\Controller\WishlistProviderInterface;
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ *
+ * @api
+ * @since 100.0.2
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -500,7 +503,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Retrieve customer name
      *
-     * @return string|null
+     * @return string|void
      */
     public function getCustomerName()
     {

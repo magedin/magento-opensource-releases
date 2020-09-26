@@ -18,8 +18,6 @@ use Magento\Quote\Model\ShippingFactory;
 use Magento\Framework\App\ObjectManager;
 
 /**
- * Class ShippingInformationManagement
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInformationManagementInterface
@@ -40,38 +38,36 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
     protected $cartTotalsRepository;
 
     /**
-     * Quote repository.
-     *
      * @var \Magento\Quote\Api\CartRepositoryInterface
      */
     protected $quoteRepository;
 
     /**
-     * Logger.
-     *
      * @var Logger
      */
     protected $logger;
 
     /**
-     * Validator.
-     *
      * @var QuoteAddressValidator
+     * @deprecated 100.2.0
      */
     protected $addressValidator;
 
     /**
      * @var \Magento\Customer\Api\AddressRepositoryInterface
+     * @deprecated 100.2.0
      */
     protected $addressRepository;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @deprecated 100.2.0
      */
     protected $scopeConfig;
 
     /**
      * @var \Magento\Quote\Model\Quote\TotalsCollector
+     * @deprecated 100.2.0
      */
     protected $totalsCollector;
 
@@ -91,6 +87,8 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
     private $shippingFactory;
 
     /**
+     * Constructor
+     *
      * @param \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Checkout\Model\PaymentDetailsFactory $paymentDetailsFactory
      * @param \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalsRepository
@@ -100,11 +98,9 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
      * @param \Magento\Customer\Api\AddressRepositoryInterface $addressRepository
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector
-     * @param CartExtensionFactory|null $cartExtensionFactory
-     * @param ShippingAssignmentFactory|null $shippingAssignmentFactory
+     * @param CartExtensionFactory|null $cartExtensionFactory,
+     * @param ShippingAssignmentFactory|null $shippingAssignmentFactory,
      * @param ShippingFactory|null $shippingFactory
-     * @codeCoverageIgnore
-     * @throws \RuntimeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -130,18 +126,12 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
         $this->addressRepository = $addressRepository;
         $this->scopeConfig = $scopeConfig;
         $this->totalsCollector = $totalsCollector;
-        if (!$cartExtensionFactory) {
-            $cartExtensionFactory = ObjectManager::getInstance()->get(CartExtensionFactory::class);
-        }
-        $this->cartExtensionFactory = $cartExtensionFactory;
-        if (!$shippingAssignmentFactory) {
-            $shippingAssignmentFactory = ObjectManager::getInstance()->get(ShippingAssignmentFactory::class);
-        }
-        $this->shippingAssignmentFactory = $shippingAssignmentFactory;
-        if (!$shippingFactory) {
-            $shippingFactory = ObjectManager::getInstance()->get(ShippingFactory::class);
-        }
-        $this->shippingFactory = $shippingFactory;
+        $this->cartExtensionFactory = $cartExtensionFactory ?: ObjectManager::getInstance()
+            ->get(CartExtensionFactory::class);
+        $this->shippingAssignmentFactory = $shippingAssignmentFactory ?: ObjectManager::getInstance()
+            ->get(ShippingAssignmentFactory::class);
+        $this->shippingFactory = $shippingFactory ?: ObjectManager::getInstance()
+            ->get(ShippingFactory::class);
     }
 
     /**
@@ -151,32 +141,31 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
         $cartId,
         \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
     ) {
-        /** @var \Magento\Quote\Model\Quote $quote */
-        $quote = $this->quoteRepository->getActive($cartId);
-        $this->validateQuote($quote);
-
         $address = $addressInformation->getShippingAddress();
-        if (!$address || !$address->getCountryId()) {
-            throw new StateException(__('Shipping address is not set'));
-        }
+        $billingAddress = $addressInformation->getBillingAddress();
+        $carrierCode = $addressInformation->getShippingCarrierCode();
+        $methodCode = $addressInformation->getShippingMethodCode();
+
         if (!$address->getCustomerAddressId()) {
             $address->setCustomerAddressId(null);
         }
 
+        if (!$address->getCountryId()) {
+            throw new StateException(__('Shipping address is not set'));
+        }
+
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $this->quoteRepository->getActive($cartId);
+        $address->setLimitCarrier($carrierCode);
+        $quote = $this->prepareShippingAssignment($quote, $address, $carrierCode . '_' . $methodCode);
+        $this->validateQuote($quote);
+        $quote->setIsMultiShipping(false);
+
+        if ($billingAddress) {
+            $quote->setBillingAddress($billingAddress);
+        }
+
         try {
-            $billingAddress = $addressInformation->getBillingAddress();
-            if ($billingAddress) {
-                $this->addressValidator->validateForCart($quote, $billingAddress);
-                $quote->setBillingAddress($billingAddress);
-            }
-
-            $this->addressValidator->validateForCart($quote, $address);
-            $carrierCode = $addressInformation->getShippingCarrierCode();
-            $address->setLimitCarrier($carrierCode);
-            $methodCode = $addressInformation->getShippingMethodCode();
-            $quote = $this->prepareShippingAssignment($quote, $address, $carrierCode . '_' . $methodCode);
-            $quote->setIsMultiShipping(false);
-
             $this->quoteRepository->save($quote);
         } catch (\Exception $e) {
             $this->logger->critical($e);
@@ -214,8 +203,6 @@ class ShippingInformationManagement implements \Magento\Checkout\Api\ShippingInf
     }
 
     /**
-     * Prepare shipping assignment.
-     *
      * @param CartInterface $quote
      * @param AddressInterface $address
      * @param string $method

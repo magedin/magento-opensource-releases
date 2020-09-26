@@ -7,6 +7,9 @@ namespace Magento\Payment\Block\Info;
 
 /**
  * Block for Bank Transfer payment generic info
+ *
+ * @api
+ * @since 100.0.2
  */
 class Instructions extends \Magento\Payment\Block\Info
 {
@@ -20,7 +23,7 @@ class Instructions extends \Magento\Payment\Block\Info
     /**
      * @var string
      */
-    protected $_template = 'Magento_Payment::info/instructions.phtml';
+    protected $_template = 'info/instructions.phtml';
 
     /**
      * Get instructions text from order payment

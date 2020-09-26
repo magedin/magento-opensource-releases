@@ -3,6 +3,9 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * @api
+ */
 define([
     'underscore',
     'uiRegistry',
@@ -42,6 +45,7 @@ define([
             });
 
             this.setOptions(result);
+            this.reset();
         }
     });
 });

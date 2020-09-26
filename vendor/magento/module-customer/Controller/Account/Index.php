@@ -35,6 +35,9 @@ class Index extends \Magento\Customer\Controller\AbstractAccount
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        /** @var \Magento\Framework\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->getConfig()->getTitle()->set(__('My Account'));
+        return $resultPage;
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Magento\Framework\Webapi\Test\Unit;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Framework\Webapi\Request */
     protected $request;
@@ -14,7 +14,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         /** Initialize SUT. */
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->request = $objectManager->getObject('Magento\Framework\Webapi\Request');
+        $this->request = $objectManager->getObject(\Magento\Framework\Webapi\Request::class);
     }
 
     protected function tearDown()
@@ -38,9 +38,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->request->getRequestedServices());
     }
 
-    /**
-     * @return array
-     */
     public function providerTestGetRequestedServicesSuccess()
     {
         $testModuleA = 'testModule1AllSoapAndRestV1';

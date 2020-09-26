@@ -11,7 +11,7 @@ namespace Zend\InputFilter;
 
 use Traversable;
 use Zend\Filter\FilterChain;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Validator\ValidatorChain;
 use Zend\Validator\ValidatorInterface;
@@ -117,15 +117,7 @@ class Factory
     public function setInputFilterManager(InputFilterPluginManager $inputFilterManager)
     {
         $this->inputFilterManager = $inputFilterManager;
-        $serviceLocator = $this->inputFilterManager->getServiceLocator();
-        if ($serviceLocator && $serviceLocator instanceof ServiceLocatorInterface) {
-            if ($serviceLocator->has('ValidatorManager')) {
-                $this->getDefaultValidatorChain()->setPluginManager($serviceLocator->get('ValidatorManager'));
-            }
-            if ($serviceLocator->has('FilterManager')) {
-                $this->getDefaultFilterChain()->setPluginManager($serviceLocator->get('FilterManager'));
-            }
-        }
+        $inputFilterManager->populateFactoryPluginManagers($this);
         return $this;
     }
 
@@ -135,7 +127,7 @@ class Factory
     public function getInputFilterManager()
     {
         if (null === $this->inputFilterManager) {
-            $this->inputFilterManager = new InputFilterPluginManager;
+            $this->inputFilterManager = new InputFilterPluginManager(new ServiceManager());
         }
 
         return $this->inputFilterManager;
@@ -155,7 +147,7 @@ class Factory
             $inputSpecification = $inputSpecification->getInputSpecification();
         }
 
-        if (!is_array($inputSpecification) && !$inputSpecification instanceof Traversable) {
+        if (! is_array($inputSpecification) && ! $inputSpecification instanceof Traversable) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an array or Traversable; received "%s"',
                 __METHOD__,
@@ -176,7 +168,7 @@ class Factory
         if ($this->getInputFilterManager()->has($class)) {
             $managerInstance = $this->getInputFilterManager()->get($class);
         }
-        if (!$managerInstance && !class_exists($class)) {
+        if (! $managerInstance && ! class_exists($class)) {
             throw new Exception\RuntimeException(sprintf(
                 'Input factory expects the "type" to be a valid class or a plugin name; received "%s"',
                 $class
@@ -189,7 +181,7 @@ class Factory
             return $this->createInputFilter($inputSpecification);
         }
 
-        if (!$input instanceof InputInterface) {
+        if (! $input instanceof InputInterface) {
             throw new Exception\RuntimeException(sprintf(
                 'Input factory expects the "type" to be a class implementing %s; received "%s"',
                 InputInterface::class,
@@ -214,12 +206,12 @@ class Factory
                     break;
                 case 'allow_empty':
                     $input->setAllowEmpty($value);
-                    if (!isset($inputSpecification['required'])) {
-                        $input->setRequired(!$value);
+                    if (! isset($inputSpecification['required'])) {
+                        $input->setRequired(! $value);
                     }
                     break;
                 case 'continue_if_empty':
-                    if (!$input instanceof Input) {
+                    if (! $input instanceof Input) {
                         throw new Exception\RuntimeException(sprintf(
                             '%s "continue_if_empty" can only set to inputs of type "%s"',
                             __METHOD__,
@@ -232,7 +224,7 @@ class Factory
                     $input->setErrorMessage($value);
                     break;
                 case 'fallback_value':
-                    if (!$input instanceof Input) {
+                    if (! $input instanceof Input) {
                         throw new Exception\RuntimeException(sprintf(
                             '%s "fallback_value" can only set to inputs of type "%s"',
                             __METHOD__,
@@ -249,9 +241,10 @@ class Factory
                         $input->setFilterChain($value);
                         break;
                     }
-                    if (!is_array($value) && !$value instanceof Traversable) {
+                    if (! is_array($value) && ! $value instanceof Traversable) {
                         throw new Exception\RuntimeException(sprintf(
-                            '%s expects the value associated with "filters" to be an array/Traversable of filters or filter specifications, or a FilterChain; received "%s"',
+                            '%s expects the value associated with "filters" to be an array/Traversable of filters'
+                            . ' or filter specifications, or a FilterChain; received "%s"',
                             __METHOD__,
                             (is_object($value) ? get_class($value) : gettype($value))
                         ));
@@ -263,9 +256,10 @@ class Factory
                         $input->setValidatorChain($value);
                         break;
                     }
-                    if (!is_array($value) && !$value instanceof Traversable) {
+                    if (! is_array($value) && ! $value instanceof Traversable) {
                         throw new Exception\RuntimeException(sprintf(
-                            '%s expects the value associated with "validators" to be an array/Traversable of validators or validator specifications, or a ValidatorChain; received "%s"',
+                            '%s expects the value associated with "validators" to be an array/Traversable of validators'
+                            . ' or validator specifications, or a ValidatorChain; received "%s"',
                             __METHOD__,
                             (is_object($value) ? get_class($value) : gettype($value))
                         ));
@@ -295,11 +289,13 @@ class Factory
             $inputFilterSpecification = $inputFilterSpecification->getInputFilterSpecification();
         }
 
-        if (!is_array($inputFilterSpecification) && !$inputFilterSpecification instanceof Traversable) {
+        if (! is_array($inputFilterSpecification) && ! $inputFilterSpecification instanceof Traversable) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an array or Traversable; received "%s"',
                 __METHOD__,
-                (is_object($inputFilterSpecification) ? get_class($inputFilterSpecification) : gettype($inputFilterSpecification))
+                is_object($inputFilterSpecification)
+                    ? get_class($inputFilterSpecification)
+                    : gettype($inputFilterSpecification)
             ));
         }
         if ($inputFilterSpecification instanceof Traversable) {
@@ -334,15 +330,31 @@ class Factory
                 continue;
             }
 
-            if (($value instanceof InputInterface)
-                || ($value instanceof InputFilterInterface)
+            if ($value instanceof InputInterface
+                || $value instanceof InputFilterInterface
             ) {
-                $input = $value;
-            } else {
-                $input = $this->createInput($value);
+                $inputFilter->add($value, $key);
+                continue;
             }
 
-            $inputFilter->add($input, $key);
+            // Patch to enable nested, integer indexed input_filter_specs.
+            // Check type and name are in spec, and that composed type is
+            // an input filter...
+            if ((isset($value['type']) && is_string($value['type']))
+                && (isset($value['name']) && is_string($value['name']))
+                && $this->getInputFilterManager()->get($value['type']) instanceof InputFilter
+            ) {
+                // If $key is an integer, reset it to the specified name.
+                if (is_integer($key)) {
+                    $key = $value['name'];
+                }
+
+                // Remove name from specification. InputFilter doesn't have a
+                // name property!
+                unset($value['name']);
+            }
+
+            $inputFilter->add($this->createInput($value), $key);
         }
 
         return $inputFilter;
@@ -363,7 +375,7 @@ class Factory
             }
 
             if (is_array($filter)) {
-                if (!isset($filter['name'])) {
+                if (! isset($filter['name'])) {
                     throw new Exception\RuntimeException(
                         'Invalid filter specification provided; does not include "name" key'
                     );
@@ -399,7 +411,7 @@ class Factory
             }
 
             if (is_array($validator)) {
-                if (!isset($validator['name'])) {
+                if (! isset($validator['name'])) {
                     throw new Exception\RuntimeException(
                         'Invalid validator specification provided; does not include "name" key'
                     );

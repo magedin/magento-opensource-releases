@@ -69,24 +69,22 @@ class Rows extends \Magento\Catalog\Model\Indexer\Category\Flat\AbstractAction
                 $categoriesIdsChunk = $this->filterIdsByStore($categoriesIdsChunk, $store);
 
                 $attributesData = $this->getAttributeValues($categoriesIdsChunk, $store->getId());
-                $linkField = $this->categoryMetadata->getLinkField();
                 $data = [];
                 foreach ($categoriesIdsChunk as $categoryId) {
+                    if (!isset($attributesData[$categoryId])) {
+                        continue;
+                    }
+
                     try {
                         $category = $this->categoryRepository->get($categoryId);
                     } catch (NoSuchEntityException $e) {
                         continue;
                     }
 
-                    $categoryData = $category->getData();
-                    if (!isset($attributesData[$categoryData[$linkField]])) {
-                        continue;
-                    }
-
                     $data[] = $this->prepareValuesToInsert(
                         array_merge(
-                            $categoryData,
-                            $attributesData[$categoryData[$linkField]],
+                            $category->getData(),
+                            $attributesData[$categoryId],
                             ['store_id' => $store->getId()]
                         )
                     );

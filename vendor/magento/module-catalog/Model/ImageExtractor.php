@@ -5,11 +5,10 @@
  */
 namespace Magento\Catalog\Model;
 
-use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\Product\Attribute\Backend\Media\ImageEntryConverter;
-use Magento\Framework\View\Xsd\Media\TypeDataExtractorInterface;
+use Magento\Catalog\Helper\Image;
 
-class ImageExtractor implements TypeDataExtractorInterface
+class ImageExtractor implements \Magento\Framework\View\Xsd\Media\TypeDataExtractorInterface
 {
     /**
      * Extract configuration data of images from the DOM structure
@@ -31,17 +30,10 @@ class ImageExtractor implements TypeDataExtractorInterface
                 if ($attribute->nodeType != XML_ELEMENT_NODE) {
                     continue;
                 }
-                $attributeTagName = $attribute->tagName;
-                if ((bool)$attribute->getAttribute('xsi:nil') !== true) {
-                    if ($attributeTagName === 'background') {
-                        $nodeValue = $this->processImageBackground($attribute->nodeValue);
-                    } elseif ($attributeTagName === 'width' || $attributeTagName === 'height') {
-                            $nodeValue = intval($attribute->nodeValue);
-                    } else {
-                        $nodeValue = $attribute->nodeValue;
-                    }
+                if ($attribute->tagName == 'background') {
+                    $nodeValue = $this->processImageBackground($attribute->nodeValue);
                 } else {
-                    $nodeValue = null;
+                    $nodeValue = $attribute->nodeValue;
                 }
                 $result[$mediaParentTag][$moduleNameImage][Image::MEDIA_TYPE_CONFIG_NODE][$imageId][$attribute->tagName]
                     = $nodeValue;
@@ -63,7 +55,6 @@ class ImageExtractor implements TypeDataExtractorInterface
         $backgroundArray = [];
         if (preg_match($pattern, $backgroundString, $backgroundArray)) {
             array_shift($backgroundArray);
-            $backgroundArray = array_map('intval', $backgroundArray);
         }
         return $backgroundArray;
     }

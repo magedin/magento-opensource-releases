@@ -3,6 +3,9 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * @api
+ */
 define([
     'jquery',
     'underscore',
@@ -27,9 +30,6 @@ define([
             listens: {
                 params: 'onParamsChange',
                 requestConfig: 'updateRequestConfig'
-            },
-            ignoreTmpls: {
-                data: true
             }
         },
 

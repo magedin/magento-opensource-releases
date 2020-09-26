@@ -6,9 +6,12 @@
 namespace Magento\Eav\Model\Entity\Attribute\Source;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Escaper;
 use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * @api
+ * @since 100.0.2
+ */
 class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
     /**
@@ -29,31 +32,21 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
     protected $_attrOptionFactory;
 
     /**
-     * Store manager interface.
-     *
      * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @var Escaper
-     */
-    private $escaper;
-
-    /**
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory
-     * @param Escaper|null $escaper
      * @codeCoverageIgnore
      */
     public function __construct(
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory,
-        \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory,
-        Escaper $escaper = null
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory
     ) {
         $this->_attrOptionCollectionFactory = $attrOptionCollectionFactory;
         $this->_attrOptionFactory = $attrOptionFactory;
-        $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
     }
 
     /**
@@ -75,7 +68,6 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
         if (!is_array($this->_optionsDefault)) {
             $this->_optionsDefault = [];
         }
-
         $attributeId = $this->getAttribute()->getId();
         if (!isset($this->_options[$storeId][$attributeId])) {
             $collection = $this->_attrOptionCollectionFactory->create()->setPositionOrder(
@@ -99,17 +91,16 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
     }
 
     /**
-     * Get StoreManager dependency.
+     * Get StoreManager dependency
      *
      * @return StoreManagerInterface
-     * @deprecated
+     * @deprecated 100.1.6
      */
     private function getStoreManager()
     {
         if ($this->storeManager === null) {
             $this->storeManager = ObjectManager::getInstance()->get(StoreManagerInterface::class);
         }
-
         return $this->storeManager;
     }
 
@@ -161,22 +152,21 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 
         $options = $this->getSpecificOptions($value, false);
 
-        if (!is_array($value)) {
-            $value = [$value];
+        if ($isMultiple) {
+            $values = [];
+            foreach ($options as $item) {
+                if (in_array($item['value'], $value)) {
+                    $values[] = $item['label'];
+                }
+            }
+            return $values;
         }
-        $optionsText = [];
+
         foreach ($options as $item) {
-            if (in_array($item['value'], $value)) {
-                $optionsText[] = $this->escaper->escapeHtml($item['label']);
+            if ($item['value'] == $value) {
+                return $item['label'];
             }
         }
-
-        if ($isMultiple) {
-            return $optionsText;
-        } elseif ($optionsText) {
-            return $optionsText[0];
-        }
-
         return false;
     }
 

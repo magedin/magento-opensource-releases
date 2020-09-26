@@ -8,13 +8,13 @@
 
 namespace Magento\Downloadable\Block\Catalog\Product;
 
-use Magento\Downloadable\Model\ResourceModel\Sample\Collection as SampleCollection;
-use Magento\Downloadable\Api\Data\SampleInterface;
+use Magento\Downloadable\Model\ResourceModel\Sample;
 
 /**
  * Downloadable Product Samples part block
  *
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @api
+ * @since 100.0.2
  */
 class Samples extends \Magento\Catalog\Block\Product\AbstractProduct
 {
@@ -31,7 +31,7 @@ class Samples extends \Magento\Catalog\Block\Product\AbstractProduct
     /**
      * Get downloadable product samples
      *
-     * @return SampleCollection
+     * @return array
      */
     public function getSamples()
     {
@@ -39,7 +39,7 @@ class Samples extends \Magento\Catalog\Block\Product\AbstractProduct
     }
 
     /**
-     * @param SampleInterface $sample
+     * @param Sample $sample
      * @return string
      */
     public function getSampleUrl($sample)

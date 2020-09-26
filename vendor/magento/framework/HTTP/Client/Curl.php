@@ -9,9 +9,16 @@ namespace Magento\Framework\HTTP\Client;
  * Class to work with HTTP protocol using curl library
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Curl implements \Magento\Framework\HTTP\ClientInterface
 {
+    /**
+     * Max supported protocol by curl CURL_SSLVERSION_TLSv1_2
+     * @var int
+     */
+    private $sslVersion;
+
     /**
      * Hostname
      * @var string
@@ -80,7 +87,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
 
     /**
      * Curl
-     * @var object
+     * @var resource
      */
     protected $_ch;
 
@@ -111,10 +118,11 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
     }
 
     /**
-     * Constructor
+     * @param int|null $sslVersion
      */
-    public function __construct()
+    public function __construct($sslVersion = null)
     {
+        $this->sslVersion = $sslVersion;
     }
 
     /**
@@ -344,7 +352,6 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
     protected function makeRequest($method, $uri, $params = [])
     {
         $this->_ch = curl_init();
-        $this->curlOption(CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS);
         $this->curlOption(CURLOPT_URL, $uri);
         if ($method == 'POST') {
             $this->curlOption(CURLOPT_POST, 1);
@@ -379,9 +386,11 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
             $this->curlOption(CURLOPT_PORT, $this->_port);
         }
 
-        //$this->curlOption(CURLOPT_HEADER, 1);
         $this->curlOption(CURLOPT_RETURNTRANSFER, 1);
         $this->curlOption(CURLOPT_HEADERFUNCTION, [$this, 'parseHeaders']);
+        if ($this->sslVersion !== null) {
+            $this->curlOption(CURLOPT_SSLVERSION, $this->sslVersion);
+        }
 
         if (count($this->_curlUserOptions)) {
             foreach ($this->_curlUserOptions as $k => $v) {
@@ -416,6 +425,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
      * @param resource $ch curl handle, not needed
      * @param string $data
      * @return int
+     * @throws \Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function parseHeaders($ch, $data)
@@ -423,7 +433,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
         if ($this->_headerCount == 0) {
             $line = explode(" ", trim($data), 3);
             if (count($line) != 3) {
-                return $this->doError("Invalid response line returned from server: " . $data);
+                $this->doError("Invalid response line returned from server: " . $data);
             }
             $this->_responseStatus = intval($line[1]);
         } else {

@@ -3,6 +3,9 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * @api
+ */
 define([
     'underscore',
     'mageUtils',
@@ -44,12 +47,12 @@ define([
         /**
          * Sets the prepared data to dataSource
          * by path, where key is component link to dataSource with
-         * suffix "-prepared-for-send".
+         * suffix "-prepared-for-send"
          *
          * @param {Array} data - current component value
          */
         setPrepareToSendData: function (data) {
-            if (_.isUndefined(data) || !data.length) {
+            if (!data.length) {
                 data = '';
             }
 

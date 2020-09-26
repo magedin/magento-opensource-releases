@@ -6,7 +6,10 @@
 namespace Magento\Directory\Model\ResourceModel;
 
 /**
- * Directory Country Resource Model
+ * Country Resource Model
+ *
+ * @api
+ * @since 100.0.2
  */
 class Country extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {

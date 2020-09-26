@@ -26,7 +26,7 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Magento\Framework\View\LayoutFactory $layoutFactory
+     * @param \Magento\Framework\View\LayoutFactory $layoutFactory,
      * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
@@ -45,17 +45,16 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
      * Move category action
      *
      * @return \Magento\Framework\Controller\Result\Raw
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
-        /** New parent category identifier */
+        /**
+         * New parent category identifier
+         */
         $parentNodeId = $this->getRequest()->getPost('pid', false);
-        /** Category id after which we have put our category */
+        /**
+         * Category id after which we have put our category
+         */
         $prevNodeId = $this->getRequest()->getPost('aid', false);
 
         /** @var $block \Magento\Framework\View\Element\Messages */
@@ -68,12 +67,9 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
                 throw new \Exception(__('Category is not available for requested store.'));
             }
             $category->move($parentNodeId, $prevNodeId);
-        } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
-            $error = true;
-            $this->messageManager->addErrorMessage(__('There was a category move error. %1', $e->getMessage()));
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $error = true;
-            $this->messageManager->addErrorMessage($e);
+            $this->messageManager->addExceptionMessage($e);
         } catch (\Exception $e) {
             $error = true;
             $this->messageManager->addErrorMessage(__('There was a category move error.'));

@@ -16,14 +16,13 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Webapi\Exception;
 use Magento\Payment\Gateway\Command\ResultInterface as CommandResultInterface;
 use Psr\Log\LoggerInterface;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Class GetNonceTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GetNonceTest extends \PHPUnit_Framework_TestCase
+class GetNonceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GetNonce
@@ -31,37 +30,37 @@ class GetNonceTest extends \PHPUnit_Framework_TestCase
     private $action;
 
     /**
-     * @var GetPaymentNonceCommand|MockObject
+     * @var GetPaymentNonceCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     private $command;
 
     /**
-     * @var Session|MockObject
+     * @var Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $session;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $logger;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactory;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $result;
 
     /**
-     * @var Http|MockObject
+     * @var Http|\PHPUnit_Framework_MockObject_MockObject
      */
     private $request;
 
     /**
-     * @var CommandResultInterface|MockObject
+     * @var CommandResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commandResult;
 
@@ -85,17 +84,19 @@ class GetNonceTest extends \PHPUnit_Framework_TestCase
 
         $this->session = $this->getMockBuilder(Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCustomerId', 'getStoreId'])
+            ->setMethods(['getCustomerId'])
             ->getMock();
 
-        $this->logger = $this->getMock(LoggerInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $context->method('getRequest')
+        $context->expects(static::any())
+            ->method('getRequest')
             ->willReturn($this->request);
-        $context->method('getResultFactory')
+        $context->expects(static::any())
+            ->method('getResultFactory')
             ->willReturn($this->resultFactory);
 
         $managerHelper = new ObjectManager($this);
@@ -107,68 +108,81 @@ class GetNonceTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    /**
+     * @covers \Magento\Braintree\Controller\Payment\GetNonce::execute
+     */
     public function testExecuteWithException()
     {
-        $this->request->method('getParam')
+        $this->request->expects(static::once())
+            ->method('getParam')
             ->with('public_hash')
             ->willReturn(null);
 
-        $this->session->method('getCustomerId')
-            ->willReturn(null);
-        $this->session->method('getStoreId')
+        $this->session->expects(static::once())
+            ->method('getCustomerId')
             ->willReturn(null);
 
         $exception = new \Exception('The "publicHash" field does not exists');
-        $this->command->method('execute')
+        $this->command->expects(static::once())
+            ->method('execute')
             ->willThrowException($exception);
 
-        $this->logger->method('critical')
+        $this->logger->expects(static::once())
+            ->method('critical')
             ->with($exception);
 
-        $this->result->method('setHttpResponseCode')
+        $this->result->expects(static::once())
+            ->method('setHttpResponseCode')
             ->with(Exception::HTTP_BAD_REQUEST);
-        $this->result->method('setData')
+        $this->result->expects(static::once())
+            ->method('setData')
             ->with(['message' => 'Sorry, but something went wrong']);
 
         $this->action->execute();
     }
 
+    /**
+     * @covers \Magento\Braintree\Controller\Payment\GetNonce::execute
+     */
     public function testExecute()
     {
         $customerId = 1;
         $publicHash = '65b7bae0dcb690d93';
         $nonce = 'f1hc45';
 
-        $this->request->method('getParam')
+        $this->request->expects(static::once())
+            ->method('getParam')
             ->with('public_hash')
             ->willReturn($publicHash);
 
-        $this->session->method('getCustomerId')
+        $this->session->expects(static::once())
+            ->method('getCustomerId')
             ->willReturn($customerId);
-        $this->session->method('getStoreId')
-            ->willReturn(null);
 
-        $this->commandResult->method('get')
+        $this->commandResult->expects(static::once())
+            ->method('get')
             ->willReturn([
                 'paymentMethodNonce' => $nonce
             ]);
-        $this->command->method('execute')
+        $this->command->expects(static::once())
+            ->method('execute')
             ->willReturn($this->commandResult);
 
-        $this->result->method('setData')
+        $this->result->expects(static::once())
+            ->method('setData')
             ->with(['paymentMethodNonce' => $nonce]);
 
-        $this->logger->expects(self::never())
+        $this->logger->expects(static::never())
             ->method('critical');
 
-        $this->result->expects(self::never())
+        $this->result->expects(static::never())
             ->method('setHttpResponseCode');
 
         $this->action->execute();
     }
 
     /**
-     * Creates mock for result factory object
+     * Create mock for result factory object
      */
     private function initResultFactoryMock()
     {
@@ -181,7 +195,8 @@ class GetNonceTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->resultFactory->method('create')
+        $this->resultFactory->expects(static::once())
+            ->method('create')
             ->willReturn($this->result);
     }
 }

@@ -2,6 +2,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+/**
+ * @api
+ */
 define([
     'Magento_Ui/js/lib/collapsible',
     'underscore'
@@ -18,6 +22,7 @@ define([
             opened: false,
             level: 0,
             visible: true,
+            initializeFieldsetDataByDefault: false,    /* Data in some fieldsets should be initialized before open */
             disabled: false,
             listens: {
                 'opened': 'onVisibilityChange'
@@ -100,6 +105,7 @@ define([
                 hasChanged = _.some(this.delegate('hasChanged'));
             }
 
+            this.bubble('update', hasChanged);
             this.changed(hasChanged);
         },
 
@@ -109,14 +115,14 @@ define([
          * @returns {Group} Chainable.
          */
         _setClasses: function () {
-            var additional = this.additionalClasses,
+            var addtional = this.additionalClasses,
                 classes;
 
-            if (_.isString(additional)) {
-                additional = this.additionalClasses.split(' ');
+            if (_.isString(addtional)) {
+                addtional = this.additionalClasses.split(' ');
                 classes = this.additionalClasses = {};
 
-                additional.forEach(function (name) {
+                addtional.forEach(function (name) {
                     classes[name] = true;
                 }, this);
             }

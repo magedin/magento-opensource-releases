@@ -2,6 +2,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+/**
+ * @api
+ */
 define([
     'moment',
     'mageUtils',
@@ -53,12 +57,12 @@ define([
             pickerDefaultDateFormat: 'MM/dd/y', // ICU Date Format
             pickerDefaultTimeFormat: 'h:mm a', // ICU Time Format
 
+            elementTmpl: 'ui/form/element/date',
+
             /**
-             * Format needed by moment timezone for conversion.
+             * Format needed by moment timezone for conversion
              */
             timezoneFormat: 'YYYY-MM-DD HH:mm',
-
-            elementTmpl: 'ui/form/element/date',
 
             listens: {
                 'value': 'onValueChange',

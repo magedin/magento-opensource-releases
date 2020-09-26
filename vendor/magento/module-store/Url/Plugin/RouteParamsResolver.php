@@ -49,13 +49,9 @@ class RouteParamsResolver
      * Process scope query parameters.
      *
      * @param \Magento\Framework\Url\RouteParamsResolver $subject
-     * @param callable $proceed
      * @param array $data
      * @param bool $unsetOldParams
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     *
-     * @return \Magento\Framework\Url\RouteParamsResolver
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return array
      */
     public function beforeSetRouteParams(
         \Magento\Framework\Url\RouteParamsResolver $subject,
@@ -67,19 +63,13 @@ class RouteParamsResolver
             unset($data['_scope']);
         }
         if (isset($data['_scope_to_url']) && (bool)$data['_scope_to_url'] === true) {
-            /** @var Store $currentScope */
-            $currentScope = $subject->getScope();
-            $storeCode = $currentScope && $currentScope instanceof Store ?
-                $currentScope->getCode() :
-                $this->storeManager->getStore()->getCode();
-
+            $storeCode = $subject->getScope() ?: $this->storeManager->getStore()->getCode();
             $useStoreInUrl = $this->scopeConfig->getValue(
                 Store::XML_PATH_STORE_IN_URL,
                 StoreScopeInterface::SCOPE_STORE,
                 $storeCode
             );
-
-            if ($useStoreInUrl && !$this->storeManager->hasSingleStore()) {
+            if (!$useStoreInUrl && !$this->storeManager->hasSingleStore()) {
                 $this->queryParamsResolver->setQueryParam('___store', $storeCode);
             }
         }

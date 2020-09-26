@@ -10,8 +10,6 @@ use Magento\Framework\Exception\LocalizedException as CoreException;
 /**
  * SendFriend Log
  *
- * @method \Magento\SendFriend\Model\ResourceModel\SendFriend _getResource()
- * @method \Magento\SendFriend\Model\ResourceModel\SendFriend getResource()
  * @method int getIp()
  * @method \Magento\SendFriend\Model\SendFriend setIp(int $value)
  * @method int getTime()
@@ -19,6 +17,9 @@ use Magento\Framework\Exception\LocalizedException as CoreException;
  *
  * @author      Magento Core Team <core@magentocommerce.com>
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ *
+ * @api
+ * @since 100.0.2
  */
 class SendFriend extends \Magento\Framework\Model\AbstractModel
 {
@@ -157,7 +158,7 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('Magento\SendFriend\Model\ResourceModel\SendFriend');
+        $this->_init(\Magento\SendFriend\Model\ResourceModel\SendFriend::class);
     }
 
     /**
@@ -235,8 +236,7 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
         }
 
         $email = $this->getSender()->getEmail();
-        $validator = new \Zend\Validator\EmailAddress();
-        if (empty($email) or !$validator->isValid($email)) {
+        if (empty($email) or !\Zend_Validate::is($email, \Magento\Framework\Validator\EmailAddress::class)) {
             $errors[] = __('Invalid Sender Email');
         }
 
@@ -251,7 +251,7 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
 
         // validate recipients email addresses
         foreach ($this->getRecipients()->getEmails() as $email) {
-            if (!$validator->isValid($email)) {
+            if (!\Zend_Validate::is($email, \Magento\Framework\Validator\EmailAddress::class)) {
                 $errors[] = __('Please enter a correct recipient email address.');
                 break;
             }

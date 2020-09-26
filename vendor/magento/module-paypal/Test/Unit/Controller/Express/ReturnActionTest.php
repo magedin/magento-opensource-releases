@@ -34,9 +34,6 @@ class ReturnActionTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
         $this->model->execute();
     }
 
-    /**
-     * @return array
-     */
     public function trueFalseDataProvider()
     {
         return [[true], [false]];

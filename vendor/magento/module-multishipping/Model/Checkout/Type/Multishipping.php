@@ -3,24 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-// @codingStandardsIgnoreFile
-
 namespace Magento\Multishipping\Model\Checkout\Type;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Quote\Api\Data\CartExtensionFactory;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\ObjectManager;
+use Magento\Directory\Model\AllowedCountries;
 
 /**
  * Multishipping checkout model
+ *
+ * @api
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @codingStandardsIgnoreFile
+ * @since 100.0.2
  */
 class Multishipping extends \Magento\Framework\DataObject
 {
@@ -143,16 +143,23 @@ class Multishipping extends \Magento\Framework\DataObject
     protected $totalsCollector;
 
     /**
-     * @var CartExtensionFactory
+     * @var \Magento\Quote\Api\Data\CartExtensionFactory
      */
     private $cartExtensionFactory;
 
     /**
-     * @var ShippingAssignmentProcessor
+     * @var AllowedCountries
+     */
+    private $allowedCountryReader;
+
+    /**
+     * @var \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor
      */
     private $shippingAssignmentProcessor;
 
     /**
+     * Constructor
+     *
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Sales\Model\OrderFactory $orderFactory
@@ -175,10 +182,9 @@ class Multishipping extends \Magento\Framework\DataObject
      * @param \Magento\Framework\Api\FilterBuilder $filterBuilder
      * @param \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector
      * @param array $data
-     * @param CartExtensionFactory|null $cartExtensionFactory
-     * @param ShippingAssignmentProcessor|null $shippingAssignmentProcessor
+     * @param \Magento\Quote\Api\Data\CartExtensionFactory|null $cartExtensionFactory
+     * @param AllowedCountries|null $allowedCountryReader
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @throws \RuntimeException
      */
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -203,8 +209,8 @@ class Multishipping extends \Magento\Framework\DataObject
         \Magento\Framework\Api\FilterBuilder $filterBuilder,
         \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector,
         array $data = [],
-        CartExtensionFactory $cartExtensionFactory = null,
-        ShippingAssignmentProcessor $shippingAssignmentProcessor = null
+        \Magento\Quote\Api\Data\CartExtensionFactory $cartExtensionFactory = null,
+        AllowedCountries $allowedCountryReader = null
     ) {
         $this->_eventManager = $eventManager;
         $this->_scopeConfig = $scopeConfig;
@@ -227,16 +233,12 @@ class Multishipping extends \Magento\Framework\DataObject
         $this->quotePaymentToOrderPayment = $quotePaymentToOrderPayment;
         $this->quoteAddressToOrderAddress = $quoteAddressToOrderAddress;
         $this->totalsCollector = $totalsCollector;
+        $this->cartExtensionFactory = $cartExtensionFactory ?: ObjectManager::getInstance()
+            ->get(\Magento\Quote\Api\Data\CartExtensionFactory::class);
+        $this->allowedCountryReader = $allowedCountryReader ?: ObjectManager::getInstance()
+            ->get(AllowedCountries::class);
         parent::__construct($data);
         $this->_init();
-        if (!$cartExtensionFactory) {
-            $cartExtensionFactory = ObjectManager::getInstance()->get(CartExtensionFactory::class);
-        }
-        $this->cartExtensionFactory = $cartExtensionFactory;
-        if (!$shippingAssignmentProcessor) {
-            $shippingAssignmentProcessor = ObjectManager::getInstance()->get(ShippingAssignmentProcessor::class);
-        }
-        $this->shippingAssignmentProcessor = $shippingAssignmentProcessor;
     }
 
     /**
@@ -710,6 +712,18 @@ class Multishipping extends \Magento\Framework\DataObject
                     __('Please specify shipping methods for all addresses.')
                 );
             }
+
+            // Checks if a country id present in the allowed countries list.
+            if (
+                !in_array(
+                    $address->getCountryId(),
+                    $this->allowedCountryReader->getAllowedCountries()
+                )
+            ) {
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('Some addresses cannot be used due to country-specific configurations.')
+                );
+            }
         }
         $addressValidation = $quote->getBillingAddress()->validate();
         if ($addressValidation !== true) {
@@ -997,12 +1011,24 @@ class Multishipping extends \Magento\Framework\DataObject
             $cartExtension = $this->cartExtensionFactory->create();
         }
         /** @var \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment */
-        $shippingAssignment = $this->shippingAssignmentProcessor->create($quote);
+        $shippingAssignment = $this->getShippingAssignmentProcessor()->create($quote);
         $shipping = $shippingAssignment->getShipping();
 
         $shipping->setMethod(null);
         $shippingAssignment->setShipping($shipping);
         $cartExtension->setShippingAssignments([$shippingAssignment]);
         return $quote->setExtensionAttributes($cartExtension);
+    }
+
+    /**
+     * @return \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor
+     */
+    private function getShippingAssignmentProcessor()
+    {
+        if (!$this->shippingAssignmentProcessor) {
+            $this->shippingAssignmentProcessor = ObjectManager::getInstance()
+                ->get(\Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor::class);
+        }
+        return $this->shippingAssignmentProcessor;
     }
 }

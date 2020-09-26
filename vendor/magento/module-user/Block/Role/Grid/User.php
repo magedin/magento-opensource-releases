@@ -9,6 +9,9 @@ use Magento\Backend\Block\Widget\Grid\Column;
 
 /**
  * Acl role user grid.
+ *
+ * @api
+ * @since 100.0.2
  */
 class User extends \Magento\Backend\Block\Widget\Grid\Extended
 {
@@ -38,6 +41,7 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
 
     /**
      * @var bool|array
+     * @since 100.1.0
      */
     protected $restoredUsersFormData;
 
@@ -81,8 +85,6 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Adds column filter to collection
-     *
      * @param Column $column
      * @return $this
      */
@@ -107,8 +109,6 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares collection
-     *
      * @return $this
      */
     protected function _prepareCollection()
@@ -121,8 +121,6 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares columns
-     *
      * @return $this
      */
     protected function _prepareColumns()
@@ -179,57 +177,59 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Gets grid url
-     *
      * @return string
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
      */
     public function getGridUrl()
     {
-        $roleId =  $this->escapeHtml($this->getRequest()->getParam('rid'));
+        $roleId = $this->getRequest()->getParam('rid');
         return $this->getUrl('*/*/editrolegrid', ['rid' => $roleId]);
     }
 
     /**
-     * Gets users
-     *
      * @param bool $json
      * @return string|array
      */
     public function getUsers($json = false)
     {
-        $inRoleUser = $this->getRequest()->getParam('in_role_user');
-        if ($inRoleUser) {
-            if ($json) {
-                return $this->getJSONString($inRoleUser);
-            }
-            return $this->_escaper->escapeJs($this->escapeHtml($inRoleUser));
+        if ($this->getRequest()->getParam('in_role_user') != "") {
+            return $this->getRequest()->getParam('in_role_user');
         }
-        $roleId = $this->getRoleId();
+        $roleId = $this->getRequest()->getParam(
+            'rid'
+        ) > 0 ? $this->getRequest()->getParam(
+            'rid'
+        ) : $this->_coreRegistry->registry(
+            'RID'
+        );
+
         $users = $this->getUsersFormData();
         if (false === $users) {
             $users = $this->_roleFactory->create()->setId($roleId)->getRoleUsers();
         }
-        if (!empty($users)) {
+        if (sizeof($users) > 0) {
             if ($json) {
                 $jsonUsers = [];
-                foreach ($users as $userid) {
-                    $jsonUsers[$userid] = 0;
+                foreach ($users as $usrid) {
+                    $jsonUsers[$usrid] = 0;
                 }
                 return $this->_jsonEncoder->encode((object)$jsonUsers);
+            } else {
+                return array_values($users);
             }
-            return array_values($users);
+        } else {
+            if ($json) {
+                return '{}';
+            } else {
+                return [];
+            }
         }
-        if ($json) {
-            return '{}';
-        }
-        return [];
     }
 
     /**
      * Get Form Data if exist
      *
      * @return array|bool
+     * @since 100.1.0
      */
     protected function getUsersFormData()
     {
@@ -244,7 +244,7 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
      * Restore Users Form Data from the registry
      *
      * @return array|bool
-     * @SuppressWarnings(PHPMD.DiscouragedFunctionsSniff)
+     * @since 100.1.0
      */
     protected function restoreUsersFormData()
     {
@@ -257,31 +257,5 @@ class User extends \Magento\Backend\Block\Widget\Grid\Extended
         }
 
         return false;
-    }
-
-    /**
-     * Gets role ID
-     *
-     * @return string
-     */
-    private function getRoleId()
-    {
-        $roleId = $this->getRequest()->getParam('rid');
-        if ($roleId <= 0) {
-            $roleId = $this->_coreRegistry->registry('RID');
-        }
-        return $roleId;
-    }
-
-    /**
-     * Gets JSON string
-     *
-     * @param string $input
-     * @return string
-     */
-    private function getJSONString($input)
-    {
-        $output = json_decode($input);
-        return $output ? $this->_jsonEncoder->encode($output) : '{}';
     }
 }

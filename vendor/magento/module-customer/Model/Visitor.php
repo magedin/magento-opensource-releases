@@ -114,7 +114,7 @@ class Visitor extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('Magento\Customer\Model\ResourceModel\Visitor');
+        $this->_init(\Magento\Customer\Model\ResourceModel\Visitor::class);
         $userAgent = $this->httpHeader->getHttpUserAgent();
         if ($this->ignoredUserAgents) {
             if (in_array($userAgent, $this->ignoredUserAgents)) {
@@ -151,9 +151,6 @@ class Visitor extends \Magento\Framework\Model\AbstractModel
 
         if ($this->session->getVisitorData()) {
             $this->setData($this->session->getVisitorData());
-            if ($this->getSessionId() != $this->session->getSessionId()) {
-                $this->setSessionId($this->session->getSessionId());
-            }
         }
 
         $this->setLastVisitAt((new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT));

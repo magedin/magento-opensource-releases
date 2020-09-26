@@ -18,9 +18,9 @@ use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Framework\EntityManager\HydratorInterface;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class ShipmentDocumentFactoryTest
  */
-class ShipmentDocumentFactoryTest extends \PHPUnit_Framework_TestCase
+class ShipmentDocumentFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|ShipmentFactory
@@ -92,7 +92,7 @@ class ShipmentDocumentFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->shipmentMock = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()
-            ->setMethods(['addComment', 'addTrack', 'setCustomerNote', 'setCustomerNoteNotify'])
+            ->setMethods(['addComment', 'addTrack'])
             ->getMockForAbstractClass();
 
         $this->hydratorPoolMock = $this->getMockBuilder(HydratorPool::class)
@@ -128,8 +128,14 @@ class ShipmentDocumentFactoryTest extends \PHPUnit_Framework_TestCase
         $packages = [];
         $items = [1 => 10];
 
-        $this->itemMock->expects($this->once())->method('getOrderItemId')->willReturn(1);
-        $this->itemMock->expects($this->once())->method('getQty')->willReturn(10);
+        $this->itemMock->expects($this->once())
+            ->method('getOrderItemId')
+            ->willReturn(1);
+
+        $this->itemMock->expects($this->once())
+            ->method('getQty')
+            ->willReturn(10);
+
         $this->shipmentFactoryMock->expects($this->once())
             ->method('create')
             ->with(
@@ -160,7 +166,7 @@ class ShipmentDocumentFactoryTest extends \PHPUnit_Framework_TestCase
         if ($appendComment) {
             $comment = "New comment!";
             $visibleOnFront = true;
-            $this->commentMock->expects($this->exactly(2))
+            $this->commentMock->expects($this->once())
                 ->method('getComment')
                 ->willReturn($comment);
 
@@ -172,10 +178,6 @@ class ShipmentDocumentFactoryTest extends \PHPUnit_Framework_TestCase
                 ->method('addComment')
                 ->with($comment, $appendComment, $visibleOnFront)
                 ->willReturnSelf();
-
-            $this->shipmentMock->expects($this->once())
-                ->method('setCustomerNoteNotify')
-                ->with(true);
         }
 
         $this->assertEquals(

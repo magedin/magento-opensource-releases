@@ -11,7 +11,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DeleteTest extends \PHPUnit_Framework_TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Delete */
     protected $model;
@@ -43,9 +43,6 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirect;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $this->sessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
@@ -81,16 +78,15 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['isPost'])
             ->getMockForAbstractClass();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
         $this->address = $this->getMockBuilder(\Magento\Customer\Api\Data\AddressInterface::class)
             ->getMockForAbstractClass();
         $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMockForAbstractClass();
-        $this->resultRedirectFactory = $this->getMockBuilder(
-            \Magento\Framework\Controller\Result\RedirectFactory::class
-        )->disableOriginalConstructor()->getMock();
+        $this->resultRedirectFactory =
+            $this->getMockBuilder(\Magento\Framework\Controller\Result\RedirectFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->resultRedirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -105,21 +101,18 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->model = $objectManager->getObject(
-            Delete::class,
-            [
-                'context' => $this->context,
-                'customerSession' => $this->sessionMock,
-                'formKeyValidator' => $this->validatorMock,
-                'formFactory' => $formFactoryMock,
-                'addressRepository' => $this->addressRepositoryMock,
-                'addressDataFactory' => $addressInterfaceFactoryMock,
-                'regionDataFactory' => $regionInterfaceFactoryMock,
-                'dataProcessor' => $dataObjectProcessorMock,
-                'dataObjectHelper' => $dataObjectHelperMock,
-                'resultForwardFactory' => $forwardFactoryMock,
-                'resultPageFactory' => $pageFactoryMock,
-            ]
+        $this->model = new Delete(
+            $this->context,
+            $this->sessionMock,
+            $this->validatorMock,
+            $formFactoryMock,
+            $this->addressRepositoryMock,
+            $addressInterfaceFactoryMock,
+            $regionInterfaceFactoryMock,
+            $dataObjectProcessorMock,
+            $dataObjectHelperMock,
+            $forwardFactoryMock,
+            $pageFactoryMock
         );
     }
 
@@ -153,7 +146,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ->method('deleteById')
             ->with($addressId);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('You deleted the address.'));
         $this->resultRedirect->expects($this->once())
             ->method('setPath')
@@ -190,11 +183,11 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ->willReturn(34);
         $exception = new \Exception('Exception');
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with(__('We can\'t delete the address right now.'))
             ->willThrowException($exception);
         $this->messageManager->expects($this->once())
-            ->method('addExceptionMessage')
+            ->method('addException')
             ->with($exception, __('We can\'t delete the address right now.'));
         $this->resultRedirect->expects($this->once())
             ->method('setPath')

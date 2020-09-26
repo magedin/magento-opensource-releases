@@ -31,7 +31,8 @@ class Radio extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Select
     {
         if ($this->getValue()) {
             return $this->getColumn()->getValue();
+        } else {
+            return [['neq' => $this->getColumn()->getValue()], ['is' => new \Zend_Db_Expr('NULL')]];
         }
-        return [['neq' => $this->getColumn()->getValue()], ['is' => new \Zend_Db_Expr('NULL')]];
     }
 }

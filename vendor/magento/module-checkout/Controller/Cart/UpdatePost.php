@@ -35,11 +35,9 @@ class UpdatePost extends \Magento\Checkout\Controller\Cart
             $cartData = $this->getRequest()->getParam('cart');
             if (is_array($cartData)) {
                 $filter = new \Zend_Filter_LocalizedToNormalized(
-                    [
-                        'locale' => $this->_objectManager->get(
-                            \Magento\Framework\Locale\ResolverInterface::class
-                        )->getLocale()
-                    ]
+                    ['locale' => $this->_objectManager->get(
+                        \Magento\Framework\Locale\ResolverInterface::class
+                    )->getLocale()]
                 );
                 foreach ($cartData as $index => $data) {
                     if (isset($data['qty'])) {

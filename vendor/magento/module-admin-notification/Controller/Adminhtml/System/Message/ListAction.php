@@ -9,9 +9,7 @@ namespace Magento\AdminNotification\Controller\Adminhtml\System\Message;
 class ListAction extends \Magento\Backend\App\AbstractAction
 {
     /**
-     * Authorization level of a basic admin session.
-     *
-     * @see _isAllowed()
+     * Authorization level of a basic admin session
      */
     const ADMIN_RESOURCE = 'Magento_AdminNotification::show_list';
 
@@ -61,10 +59,8 @@ class ListAction extends \Magento\Backend\App\AbstractAction
         if (empty($result)) {
             $result[] = [
                 'severity' => (string)\Magento\Framework\Notification\MessageInterface::SEVERITY_NOTICE,
-                'text' => __(
-                    'You have viewed and resolved all recent system notices. '
-                    . 'Please refresh the web page to clear the notice alert.'
-                )
+                'text' => 'You have viewed and resolved all recent system notices. '
+                    . 'Please refresh the web page to clear the notice alert.',
             ];
         }
         $this->getResponse()->representJson($this->jsonHelper->jsonEncode($result));

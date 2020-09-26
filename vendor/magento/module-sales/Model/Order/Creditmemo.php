@@ -17,8 +17,7 @@ use Magento\Sales\Model\EntityInterface;
 /**
  * Order creditmemo model
  *
- * @method \Magento\Sales\Model\ResourceModel\Order\Creditmemo _getResource()
- * @method \Magento\Sales\Model\ResourceModel\Order\Creditmemo getResource()
+ * @api
  * @method \Magento\Sales\Model\Order\Invoice setSendEmail(bool $value)
  * @method \Magento\Sales\Model\Order\Invoice setCustomerNote(string $value)
  * @method string getCustomerNote()
@@ -27,6 +26,7 @@ use Magento\Sales\Model\EntityInterface;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInterface
 {
@@ -40,7 +40,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
 
     const REPORT_DATE_TYPE_REFUND_CREATED = 'refund_created';
 
-    /*
+    /**
      * Identifier for order history item
      *
      * @var string
@@ -175,7 +175,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
      */
     protected function _construct()
     {
-        $this->_init('Magento\Sales\Model\ResourceModel\Order\Creditmemo');
+        $this->_init(\Magento\Sales\Model\ResourceModel\Order\Creditmemo::class);
     }
 
     /**
@@ -438,14 +438,14 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
      */
     public static function getStates()
     {
-        if (is_null(self::$_states)) {
-            self::$_states = [
+        if (is_null(static::$_states)) {
+            static::$_states = [
                 self::STATE_OPEN => __('Pending'),
                 self::STATE_REFUNDED => __('Refunded'),
                 self::STATE_CANCELED => __('Canceled'),
             ];
         }
-        return self::$_states;
+        return static::$_states;
     }
 
     /**
@@ -460,11 +460,11 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
             $stateId = $this->getState();
         }
 
-        if (is_null(self::$_states)) {
-            self::getStates();
+        if (is_null(static::$_states)) {
+            static::getStates();
         }
-        if (isset(self::$_states[$stateId])) {
-            return self::$_states[$stateId];
+        if (isset(static::$_states[$stateId])) {
+            return static::$_states[$stateId];
         }
         return __('Unknown State');
     }
@@ -475,6 +475,13 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
      */
     public function setShippingAmount($amount)
     {
+        // base shipping amount calculated in total model
+        //        $amount = $this->getStore()->round($amount);
+        //        $this->setData('base_shipping_amount', $amount);
+        //
+        //        $amount = $this->getStore()->round(
+        //            $amount*$this->getOrder()->getStoreToOrderRate()
+        //        );
         return $this->setData(CreditmemoInterface::SHIPPING_AMOUNT, $amount);
     }
 
@@ -581,6 +588,13 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     {
         $collection = $this->_commentCollectionFactory->create()->setCreditmemoFilter($this->getId())
             ->setCreatedAtOrder();
+//
+//            $this->setComments($comments);
+//            /**
+//             * When credit memo created with adding comment,
+//             * comments collection must be loaded before we added this comment.
+//             */
+//            $this->getComments()->load();
 
         if ($this->getId()) {
             foreach ($collection as $comment) {
@@ -652,6 +666,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     }
 
     //@codeCoverageIgnoreStart
+
     /**
      * Returns discount_description
      *
@@ -1509,5 +1524,6 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     {
         return $this->_setExtensionAttributes($extensionAttributes);
     }
+
     //@codeCoverageIgnoreEnd
 }

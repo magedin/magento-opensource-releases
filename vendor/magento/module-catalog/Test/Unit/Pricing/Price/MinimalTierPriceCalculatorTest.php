@@ -14,7 +14,7 @@ use Magento\Catalog\Pricing\Price\TierPrice;
 use Magento\Framework\Pricing\Amount\AmountInterface;
 use Magento\Framework\Pricing\Adjustment\CalculatorInterface;
 
-class MinimalTierPriceCalculatorTest extends \PHPUnit_Framework_TestCase
+class MinimalTierPriceCalculatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -48,7 +48,7 @@ class MinimalTierPriceCalculatorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->price = $this->getMock(TierPrice::class, [], [], '', false);
+        $this->price = $this->createMock(TierPrice::class);
         $this->priceInfo = $this->getMockForAbstractClass(PriceInfoInterface::class);
         $this->saleable = $this->getMockForAbstractClass(SaleableInterface::class);
 
@@ -61,9 +61,6 @@ class MinimalTierPriceCalculatorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return int
-     */
     private function getValueTierPricesExistShouldReturnMinTierPrice()
     {
         $minPrice = 5;
@@ -74,6 +71,7 @@ class MinimalTierPriceCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $notMinAmount = $this->getMockForAbstractClass(AmountInterface::class);
         $notMinAmount->expects($this->once())->method('getValue')->willReturn($notMinPrice);
+
         $tierPriceList = [
             [
                 'price' => $minAmount
@@ -89,7 +87,6 @@ class MinimalTierPriceCalculatorTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->price);
 
         $this->saleable->expects($this->once())->method('getPriceInfo')->willReturn($this->priceInfo);
-
         return $minPrice;
     }
 

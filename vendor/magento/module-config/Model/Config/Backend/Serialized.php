@@ -5,15 +5,19 @@
  */
 namespace Magento\Config\Model\Config\Backend;
 
-use Magento\Framework\Unserialize\SecureUnserializer;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Serialize\Serializer\Json;
 
+/**
+ * @api
+ * @since 100.0.2
+ */
 class Serialized extends \Magento\Framework\App\Config\Value
 {
     /**
-     * @var SecureUnserializer
+     * @var Json
      */
-    private $unserializer;
+    private $serializer;
 
     /**
      * Serialized constructor
@@ -25,7 +29,7 @@ class Serialized extends \Magento\Framework\App\Config\Value
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
-     * @param SecureUnserializer|null $unserializer
+     * @param Json|null $serializer
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -35,10 +39,10 @@ class Serialized extends \Magento\Framework\App\Config\Value
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = [],
-        SecureUnserializer $unserializer = null
+        Json $serializer = null
     ) {
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
-        $this->unserializer = $unserializer ?: ObjectManager::getInstance()->get(SecureUnserializer::class);
     }
 
     /**
@@ -48,12 +52,7 @@ class Serialized extends \Magento\Framework\App\Config\Value
     {
         $value = $this->getValue();
         if (!is_array($value)) {
-            try {
-                $this->setValue(empty($value) ? false : $this->unserializer->unserialize($value));
-            } catch (\Exception $e) {
-                $this->_logger->critical($e);
-                $this->setValue(false);
-            }
+            $this->setValue(empty($value) ? false : $this->serializer->unserialize($value));
         }
     }
 
@@ -62,9 +61,8 @@ class Serialized extends \Magento\Framework\App\Config\Value
      */
     public function beforeSave()
     {
-        $value = $this->getValue();
-        if (is_array($value)) {
-            $this->setValue(serialize($value));
+        if (is_array($this->getValue())) {
+            $this->setValue($this->serializer->serialize($this->getValue()));
         }
         parent::beforeSave();
         return $this;

@@ -5,8 +5,14 @@
  */
 namespace Magento\Quote\Model\ResourceModel\Quote\Item;
 
+use \Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+
 /**
  * Quote item resource collection
+ *
+ * @api
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionControl\Collection
 {
@@ -85,7 +91,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionContro
      */
     protected function _construct()
     {
-        $this->_init('Magento\Quote\Model\Quote\Item', 'Magento\Quote\Model\ResourceModel\Quote\Item');
+        $this->_init(\Magento\Quote\Model\Quote\Item::class, \Magento\Quote\Model\ResourceModel\Quote\Item::class);
     }
 
     /**
@@ -95,7 +101,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionContro
      */
     public function getStoreId()
     {
-        return (int)$this->_productCollectionFactory->create()->getStoreId();
+        return (int)$this->_quote->getStoreId();
     }
 
     /**
@@ -150,20 +156,18 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionContro
     {
         parent::_afterLoad();
 
-        $productIds = [];
+        /**
+         * Assign parent items
+         */
         foreach ($this as $item) {
-            // Assign parent items
             if ($item->getParentItemId()) {
                 $item->setParentItem($this->getItemById($item->getParentItemId()));
             }
             if ($this->_quote) {
                 $item->setQuote($this->_quote);
             }
-            // Collect quote products ids
-            $productIds[] = (int)$item->getProductId();
         }
-        $this->_productIds = array_merge($this->_productIds, $productIds);
-        $this->removeItemsWithAbsentProducts();
+
         /**
          * Assign options and products
          */
@@ -201,13 +205,22 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionContro
     protected function _assignProducts()
     {
         \Magento\Framework\Profiler::start('QUOTE:' . __METHOD__, ['group' => 'QUOTE', 'method' => __METHOD__]);
+        $productIds = [];
+        foreach ($this as $item) {
+            $productIds[] = (int)$item->getProductId();
+        }
+        $this->_productIds = array_merge($this->_productIds, $productIds);
+
         $productCollection = $this->_productCollectionFactory->create()->setStoreId(
             $this->getStoreId()
         )->addIdFilter(
             $this->_productIds
         )->addAttributeToSelect(
             $this->_quoteConfig->getProductAttributes()
-        )->addOptionsToResult()->addStoreFilter()->addUrlRewrite()->addTierPriceData();
+        );
+        $this->skipStockStatusFilter($productCollection);
+        $productCollection->addOptionsToResult()->addStoreFilter()->addUrlRewrite();
+        $this->addTierPriceData($productCollection);
 
         $this->_eventManager->dispatch(
             'prepare_catalog_product_collection_prices',
@@ -266,26 +279,30 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\VersionContro
     }
 
     /**
-     * Find and remove quote items with non existing products
+     * Prevents adding stock status filter to the collection of products.
      *
+     * @param ProductCollection $productCollection
+     * @return void
+     *
+     * @see \Magento\CatalogInventory\Helper\Stock::addIsInStockFilterToCollection
+     */
+    private function skipStockStatusFilter(ProductCollection $productCollection)
+    {
+        $productCollection->setFlag('has_stock_status_filter', true);
+    }
+
+    /**
+     * Add tier prices to product collection.
+     *
+     * @param ProductCollection $productCollection
      * @return void
      */
-    private function removeItemsWithAbsentProducts()
+    private function addTierPriceData(ProductCollection $productCollection)
     {
-        if (count($this->_productIds) === 0) {
-            return;
-        }
-
-        $productCollection = $this->_productCollectionFactory->create()->addIdFilter($this->_productIds);
-        $existingProductsIds = $productCollection->getAllIds();
-        $absentProductsIds = array_diff($this->_productIds, $existingProductsIds);
-        // Remove not existing products from items collection
-        if (!empty($absentProductsIds)) {
-            foreach ($absentProductsIds as $productIdToExclude) {
-                /** @var \Magento\Quote\Model\Quote\Item $quoteItem */
-                $quoteItem = $this->getItemByColumnValue('product_id', $productIdToExclude);
-                $this->removeItemByKey($quoteItem->getId());
-            }
+        if (empty($this->_quote)) {
+            $productCollection->addTierPriceData();
+        } else {
+            $productCollection->addTierPriceDataByGroupId($this->_quote->getCustomerGroupId());
         }
     }
 }

@@ -24,39 +24,24 @@ class MassDeleteTest extends AbstractMassActionTest
      */
     protected $pageCollectionMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->collectionFactoryMock = $this->getMock(
+        $this->collectionFactoryMock = $this->createPartialMock(
             \Magento\Cms\Model\ResourceModel\Page\CollectionFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
-        $this->pageCollectionMock = $this->getMock(
-            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
+
+        $this->pageCollectionMock =
+            $this->createMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class);
 
         $this->massDeleteController = $this->objectManager->getObject(
             \Magento\Cms\Controller\Adminhtml\Page\MassDelete::class,
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
-                'collectionFactory' => $this->collectionFactoryMock,
+                'collectionFactory' => $this->collectionFactoryMock
             ]
         );
     }
@@ -83,7 +68,7 @@ class MassDeleteTest extends AbstractMassActionTest
             ->willReturn(new \ArrayIterator($collection));
 
         $this->messageManagerMock->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('A total of %1 record(s) have been deleted.', $deletedPagesCount));
         $this->messageManagerMock->expects($this->never())->method('addError');
 
@@ -102,13 +87,7 @@ class MassDeleteTest extends AbstractMassActionTest
      */
     protected function getPageMock()
     {
-        $pageMock = $this->getMock(
-            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
-            ['delete'],
-            [],
-            '',
-            false
-        );
+        $pageMock = $this->createPartialMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class, ['delete']);
         $pageMock->expects($this->once())->method('delete')->willReturn(true);
 
         return $pageMock;

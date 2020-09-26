@@ -21,7 +21,7 @@ use Magento\Catalog\Model\ResourceModel\Product\Relation as ProductRelation;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConfigurableTest extends \PHPUnit_Framework_TestCase
+class ConfigurableTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Configurable

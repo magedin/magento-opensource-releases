@@ -10,7 +10,8 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Controller\RegistryConstants;
 
 /**
- * Customer edit block
+ * @deprecated 100.2.0 for UiComponent replacement
+ * @see app/code/Magento/Customer/view/base/ui_component/customer_form.xml
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
@@ -120,7 +121,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                 'invalidate_token',
                 [
                     'label' => __('Force Sign-In'),
-                    'onclick' => 'deleteConfirm(\'' . $deleteConfirmMsg . '\', \'' . $url . '\', {data: {}})',
+                    'onclick' => 'deleteConfirm(\'' . $this->escapeJs($this->escapeHtml($deleteConfirmMsg)) .
+                        '\', \'' . $url . '\')',
                     'class' => 'invalidate-token'
                 ],
                 10
@@ -174,7 +176,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     {
         $html = parent::getFormHtml();
         $html .= $this->getLayout()->createBlock(
-            'Magento\Catalog\Block\Adminhtml\Product\Composite\Configure'
+            \Magento\Catalog\Block\Adminhtml\Product\Composite\Configure::class
         )->toHtml();
         return $html;
     }

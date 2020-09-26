@@ -15,11 +15,6 @@
 <?php
 $_helper = $this->helper('Magento\Catalog\Helper\Output');
 $_product = $block->getProduct();
-
-if (!$_product instanceof \Magento\Catalog\Model\Product) {
-    return;
-}
-
 $_call = $block->getAtCall();
 $_code = $block->getAtCode();
 $_className = $block->getCssClass();
@@ -27,14 +22,8 @@ $_attributeLabel = $block->getAtLabel();
 $_attributeType = $block->getAtType();
 $_attributeAddAttribute = $block->getAddAttribute();
 
-$renderLabel = true;
-// if defined as 'none' in layout, do not render
-if ($_attributeLabel == 'none') {
-    $renderLabel = false;
-}
-
 if ($_attributeLabel && $_attributeLabel == 'default') {
-    $_attributeLabel = $_product->getResource()->getAttribute($_code)->getFrontendLabel();
+    $_attributeLabel = $_product->getResource()->getAttribute($_code)->getStoreLabel();
 }
 if ($_attributeType && $_attributeType == 'text') {
     $_attributeValue = ($_helper->productAttribute($_product, $_product->$_call(), $_code)) ? $_product->getAttributeText($_code) : '';
@@ -44,8 +33,8 @@ if ($_attributeType && $_attributeType == 'text') {
 ?>
 
 <?php if ($_attributeValue): ?>
-<div class="product attribute <?php /* @escapeNotVerified */ echo $_className?>">
-    <?php if ($renderLabel): ?><strong class="type"><?php /* @escapeNotVerified */ echo $_attributeLabel?></strong><?php endif; ?>
-    <div class="value" <?php /* @escapeNotVerified */ echo $_attributeAddAttribute;?>><?php /* @escapeNotVerified */ echo $_attributeValue; ?></div>
+<div class="product attribute <?= /* @escapeNotVerified */ $_className ?>">
+    <?php if ($_attributeLabel != 'none'): ?><strong class="type"><?= /* @escapeNotVerified */ $_attributeLabel ?></strong><?php endif; ?>
+    <div class="value" <?= /* @escapeNotVerified */ $_attributeAddAttribute ?>><?= /* @escapeNotVerified */ $_attributeValue ?></div>
 </div>
 <?php endif; ?>

@@ -26,7 +26,6 @@ class ConfigurableItem extends DefaultItem
      * @param \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\Escaper|null $escaper
      */
     public function __construct(
         \Magento\Catalog\Helper\Image $imageHelper,
@@ -34,16 +33,14 @@ class ConfigurableItem extends DefaultItem
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool,
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Escaper $escaper = null
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         parent::__construct(
             $imageHelper,
             $msrpHelper,
             $urlBuilder,
             $configurationPool,
-            $checkoutHelper,
-            $escaper
+            $checkoutHelper
         );
         $this->_scopeConfig = $scopeConfig;
     }
@@ -63,11 +60,7 @@ class ConfigurableItem extends DefaultItem
         );
 
         $product = $config == ThumbnailSource::OPTION_USE_PARENT_IMAGE
-            || (
-                !$this->getChildProduct() ||
-                !$this->getChildProduct()->getThumbnail() ||
-                $this->getChildProduct()->getThumbnail() == 'no_selection'
-            )
+            || (!$this->getChildProduct()->getThumbnail() || $this->getChildProduct()->getThumbnail() == 'no_selection')
             ? $this->getProduct()
             : $this->getChildProduct();
 

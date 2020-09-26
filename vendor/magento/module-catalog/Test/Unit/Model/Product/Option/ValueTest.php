@@ -12,7 +12,7 @@ use Magento\Catalog\Model\Product\Option;
 use Magento\Framework\Model\ActionValidator\RemoveAction;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class ValueTest extends \PHPUnit_Framework_TestCase
+class ValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Catalog\Model\Product\Option\Value
@@ -25,18 +25,12 @@ class ValueTest extends \PHPUnit_Framework_TestCase
             ->setData('option_type_id', -1)
             ->setDataChanges(false)
             ->isDeleted(false);
-
         $this->assertInstanceOf(\Magento\Catalog\Model\Product\Option\Value::class, $this->model->saveValues());
-        $this->assertArrayHasKey('option_type_id', $this->model->getData());
-        $this->assertEquals(-1, $this->model->getData('option_type_id'));
 
         $this->model->setData('is_delete', 1)
             ->setData('option_type_id', 1)
             ->setValues([100]);
-
         $this->assertInstanceOf(\Magento\Catalog\Model\Product\Option\Value::class, $this->model->saveValues());
-        $this->assertArrayHasKey('option_type_id', $this->model->getData());
-        $this->assertEquals(1, $this->model->getData('option_type_id'));
     }
 
     public function testGetPrice()
@@ -170,30 +164,13 @@ class ValueTest extends \PHPUnit_Framework_TestCase
     private function getMockedProduct()
     {
         $mockBuilder = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
-            ->setMethods(['getPriceInfo', '__wakeup'])
+            ->setMethods(['getFinalPrice', '__wakeup'])
             ->disableOriginalConstructor();
         $mock = $mockBuilder->getMock();
 
         $mock->expects($this->any())
             ->method('getFinalPrice')
             ->will($this->returnValue(10));
-        $priceInfoMock = $this->getMockForAbstractClass(
-            \Magento\Framework\Pricing\PriceInfoInterface::class,
-            [],
-            '',
-            false,
-            false,
-            true,
-            ['getPrice']
-        );
-
-        $priceMock = $this->getMockForAbstractClass(\Magento\Framework\Pricing\Price\PriceInterface::class);
-
-        $priceInfoMock->expects($this->any())->method('getPrice')->willReturn($priceMock);
-
-        $mock->expects($this->any())->method('getPriceInfo')->willReturn($priceInfoMock);
-
-        $priceMock->expects($this->any())->method('getValue')->willReturn(10);
 
         return $mock;
     }

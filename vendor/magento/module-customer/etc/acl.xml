@@ -12,7 +12,6 @@
                 <resource id="Magento_Customer::customer" title="Customers" translate="title" sortOrder="40">
                     <resource id="Magento_Customer::manage" title="All Customers" translate="title" sortOrder="10" />
                     <resource id="Magento_Customer::online" title="Now Online" translate="title" sortOrder="20" />
-                    <resource id="Magento_Customer::group" title="Customer Groups" translate="title" sortOrder="30" />
                 </resource>
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
@@ -20,7 +19,10 @@
                             <resource id="Magento_Customer::config_customer" title="Customers Section" translate="title" sortOrder="50" />
                         </resource>
                     </resource>
-                   </resource>
+                    <resource id="Magento_Backend::stores_other_settings">
+                        <resource id="Magento_Customer::group" title="Customer Groups" translate="title" sortOrder="10" />
+                    </resource>
+                </resource>
             </resource>
         </resources>
     </acl>

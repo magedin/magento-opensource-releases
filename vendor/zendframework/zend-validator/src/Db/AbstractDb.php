@@ -11,6 +11,8 @@ namespace Zend\Validator\Db;
 
 use Traversable;
 use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\TableIdentifier;
@@ -21,8 +23,10 @@ use Zend\Validator\Exception;
 /**
  * Class for Database record validation
  */
-abstract class AbstractDb extends AbstractValidator
+abstract class AbstractDb extends AbstractValidator implements AdapterAwareInterface
 {
+    use AdapterAwareTrait;
+
     /**
      * Error constants
      */
@@ -65,13 +69,6 @@ abstract class AbstractDb extends AbstractValidator
     protected $exclude = null;
 
     /**
-     * Database adapter to use. If null isValid() will throw an exception
-     *
-     * @var \Zend\Db\Adapter\Adapter
-     */
-    protected $adapter = null;
-
-    /**
      * Provides basic configuration for use with Zend\Validator\Db Validators
      * Setting $exclude allows a single record to be excluded from matching.
      * Exclude can either be a String containing a where clause, or an array with `field` and `value` keys
@@ -110,22 +107,22 @@ abstract class AbstractDb extends AbstractValidator
 
             $temp['field'] = array_shift($options);
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['exclude'] = array_shift($options);
             }
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['adapter'] = array_shift($options);
             }
 
             $options = $temp;
         }
 
-        if (!array_key_exists('table', $options) && !array_key_exists('schema', $options)) {
+        if (! array_key_exists('table', $options) && ! array_key_exists('schema', $options)) {
             throw new Exception\InvalidArgumentException('Table or Schema option missing!');
         }
 
-        if (!array_key_exists('field', $options)) {
+        if (! array_key_exists('field', $options)) {
             throw new Exception\InvalidArgumentException('Field option missing!');
         }
 
@@ -166,8 +163,7 @@ abstract class AbstractDb extends AbstractValidator
      */
     public function setAdapter(DbAdapter $adapter)
     {
-        $this->adapter = $adapter;
-        return $this;
+        return $this->setDbAdapter($adapter);
     }
 
     /**

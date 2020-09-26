@@ -9,15 +9,11 @@ use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Ups\Model\Carrier;
 use Magento\Directory\Model\Country;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
-use Magento\Framework\HTTP\ClientFactory;
-use Magento\Framework\HTTP\ClientInterface;
 
 /**
- * Tests \Magento\Ups\Model\Carrier
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CarrierTest extends \PHPUnit_Framework_TestCase
+class CarrierTest extends \PHPUnit\Framework\TestCase
 {
     const FREE_METHOD_NAME = 'free_method';
 
@@ -26,7 +22,7 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
     /**
      * Model under test
      *
-     * @var \Magento\Quote\Model\Quote\Address\RateResult\Error|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\Error|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $error;
 
@@ -38,22 +34,22 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
     /**
      * Model under test
      *
-     * @var Carrier|MockObject
+     * @var \Magento\Ups\Model\Carrier|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $errorFactory;
 
     /**
-     * @var Carrier|MockObject
+     * @var \Magento\Ups\Model\Carrier|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $carrier;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scope;
 
@@ -77,16 +73,6 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
      */
     protected $rate;
 
-    /**
-     * @var ClientInterface|MockObject
-     */
-    private $httpClientMock;
-
-    /**
-     * @var string
-     */
-    private $url = 'http://url';
-
     protected function setUp()
     {
         $this->helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
@@ -95,9 +81,13 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
             \Magento\Framework\App\Config\ScopeConfigInterface::class
         )->disableOriginalConstructor()->getMock();
 
-        $this->scope->expects($this->any())
-            ->method('getValue')
-            ->willReturnCallback([$this, 'scopeConfiggetValue']);
+        $this->scope->expects(
+            $this->any()
+        )->method(
+            'getValue'
+        )->will(
+            $this->returnCallback([$this, 'scopeConfiggetValue'])
+        );
 
         $this->error = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateResult\Error::class)
             ->setMethods(['setCarrier', 'setCarrierTitle', 'setErrorMessage'])
@@ -110,14 +100,14 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
 
         $this->errorFactory->expects($this->any())->method('create')->willReturn($this->error);
 
-        $this->rate = $this->getMock(\Magento\Shipping\Model\Rate\Result::class, ['getError'], [], '', false);
-        $rateFactory = $this->getMock(\Magento\Shipping\Model\Rate\ResultFactory::class, ['create'], [], '', false);
+        $this->rate = $this->createPartialMock(\Magento\Shipping\Model\Rate\Result::class, ['getError']);
+        $rateFactory = $this->createPartialMock(\Magento\Shipping\Model\Rate\ResultFactory::class, ['create']);
 
         $rateFactory->expects($this->any())->method('create')->willReturn($this->rate);
 
-        $this->country = $this->getMockBuilder(Country::class)
+        $this->country = $this->getMockBuilder(\Magento\Directory\Model\Country::class)
             ->disableOriginalConstructor()
-            ->setMethods(['load'])
+            ->setMethods(['load', 'getData'])
             ->getMock();
 
         $this->abstractModel = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
@@ -134,16 +124,13 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
 
         $this->countryFactory->expects($this->any())->method('create')->willReturn($this->country);
 
-        $httpClientFactory = $this->getHttpClientFactory();
-
         $this->model = $this->helper->getObject(
-            Carrier::class,
+            \Magento\Ups\Model\Carrier::class,
             [
                 'scopeConfig' => $this->scope,
                 'rateErrorFactory' => $this->errorFactory,
                 'countryFactory' => $this->countryFactory,
-                'rateFactory' => $rateFactory,
-                'httpClientFactory' => $httpClientFactory
+                'rateFactory' => $rateFactory
             ]
         );
     }
@@ -162,8 +149,7 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
             'carriers/ups/title' => 'ups Title',
             'carriers/ups/specificerrmsg' => 'ups error message',
             'carriers/ups/min_package_weight' => 2,
-            'carriers/ups/type' => 'UPS_XML',
-            'carriers/ups/gateway_xml_url' => $this->url,
+            'carriers/ups/type' => 'UPS',
         ];
 
         return isset($pathMap[$path]) ? $pathMap[$path] : null;
@@ -190,7 +176,7 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
             $this->returnValue($freeShippingEnabled)
         );
 
-        $request = new RateRequest();
+        $request = new \Magento\Quote\Model\Quote\Address\RateRequest();
         $request->setBaseSubtotalInclTax($requestSubtotal);
         $this->model->setRawRequest($request);
         $price = $this->model->getMethodPrice($cost, $shippingMethod);
@@ -246,23 +232,9 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->error, $this->model->collectRates($request));
     }
 
-    /**
-     * @return void
-     */
     public function testCollectRatesFail()
     {
-        $this->scope->expects($this->any())->method('isSetFlag')->willReturn(true);
-
-        $this->httpClientMock->expects($this->once())
-            ->method('setOptions')
-            ->with(
-                [
-                    CURLOPT_SSL_VERIFYPEER => true,
-                    CURLOPT_HEADER => 0,
-                ]
-            );
-        $this->httpClientMock->expects($this->once())->method('post');
-        $this->httpClientMock->expects($this->once())->method('getBody')->willReturn(false);
+        $this->scope->expects($this->once())->method('isSetFlag')->willReturn(true);
 
         $request = new RateRequest();
         $request->setPackageWeight(1);
@@ -341,7 +313,7 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Carrier::setRequest
+     * @covers \Magento\Ups\Model\Carrier::setRequest
      * @param string $countryCode
      * @param string $foundCountryCode
      * @dataProvider countryDataProvider
@@ -381,31 +353,5 @@ class CarrierTest extends \PHPUnit_Framework_TestCase
             ['countryCode' => 'PR', 'foundCountryCode' => null],
             ['countryCode' => 'US', 'foundCountryCode' => 'US'],
         ];
-    }
-
-    /**
-     * Creates mocks for http client factory and client.
-     *
-     * @return ClientFactory|MockObject
-     */
-    private function getHttpClientFactory()
-    {
-        $httpClientFactory = $this->getMockBuilder(ClientFactory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
-        $this->httpClientMock = $this->getMockForAbstractClass(
-            ClientInterface::class,
-            [],
-            '',
-            false,
-            false,
-            true,
-            ['setOptions', 'post', 'getBody']
-        );
-
-        $httpClientFactory->method('create')->willReturn($this->httpClientMock);
-
-        return $httpClientFactory;
     }
 }

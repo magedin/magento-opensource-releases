@@ -29,7 +29,8 @@ class PriceBackend
             && $object->getPriceType() == \Magento\Bundle\Model\Product\Price::PRICE_TYPE_DYNAMIC
         ) {
             return true;
+        } else {
+            return $proceed($object);
         }
-        return $proceed($object);
     }
 }

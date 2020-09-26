@@ -117,7 +117,6 @@ class Config
         'description' => null,
         'keywords' => null,
         'robots' => null,
-        'title' => null,
     ];
 
     /**
@@ -135,13 +134,13 @@ class Config
      *
      * @return \Magento\Framework\App\State
      *
-     * @deprecated
+     * @deprecated 100.0.7
      */
     private function getAreaResolver()
     {
         if ($this->areaResolver === null) {
             $this->areaResolver = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\App\State');
+                ->get(\Magento\Framework\App\State::class);
         }
         return $this->areaResolver;
     }
@@ -174,7 +173,7 @@ class Config
         $this->setElementAttribute(
             self::ELEMENT_TYPE_HTML,
             self::HTML_ATTRIBUTE_LANG,
-            strstr($this->localeResolver->getLocale(), '_', true)
+            str_replace('_', '-', $this->localeResolver->getLocale())
         );
     }
 
@@ -227,7 +226,7 @@ class Config
     public function setMetadata($name, $content)
     {
         $this->build();
-        $this->metadata[$name] = htmlspecialchars($content);
+        $this->metadata[$name] = htmlentities($content);
     }
 
     /**

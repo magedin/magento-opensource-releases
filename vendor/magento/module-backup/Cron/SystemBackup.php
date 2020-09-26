@@ -8,9 +8,6 @@ namespace Magento\Backup\Cron;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Store\Model\ScopeInterface;
 
-/**
- * Performs scheduled backup.
- */
 class SystemBackup
 {
     const XML_PATH_BACKUP_ENABLED = 'system/backup/enabled';
@@ -100,13 +97,10 @@ class SystemBackup
      * Create Backup
      *
      * @return $this
+     * @throws \Exception
      */
     public function execute()
     {
-        if (!$this->_backupData->isEnabled()) {
-            return $this;
-        }
-
         if (!$this->_scopeConfig->isSetFlag(self::XML_PATH_BACKUP_ENABLED, ScopeInterface::SCOPE_STORE)) {
             return $this;
         }
@@ -145,8 +139,7 @@ class SystemBackup
         } catch (\Exception $e) {
             $this->_errors[] = $e->getMessage();
             $this->_errors[] = $e->getTrace();
-            $this->_logger->info($e->getMessage());
-            $this->_logger->critical($e);
+            throw $e;
         }
 
         if ($this->_scopeConfig->isSetFlag(self::XML_PATH_BACKUP_MAINTENANCE_MODE, ScopeInterface::SCOPE_STORE)) {

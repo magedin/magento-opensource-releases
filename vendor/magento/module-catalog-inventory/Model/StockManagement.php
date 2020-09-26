@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2018 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Model;
@@ -49,18 +49,12 @@ class StockManagement implements StockManagementInterface
     private $qtyCounter;
 
     /**
-     * @var StockRegistryStorage
-     */
-    private $stockRegistryStorage;
-
-    /**
      * @param ResourceStock $stockResource
      * @param StockRegistryProviderInterface $stockRegistryProvider
      * @param StockState $stockState
      * @param StockConfigurationInterface $stockConfiguration
      * @param ProductRepositoryInterface $productRepository
      * @param QtyCounterInterface $qtyCounter
-     * @param StockRegistryStorage|null $stockRegistryStorage
      */
     public function __construct(
         ResourceStock $stockResource,
@@ -68,8 +62,7 @@ class StockManagement implements StockManagementInterface
         StockState $stockState,
         StockConfigurationInterface $stockConfiguration,
         ProductRepositoryInterface $productRepository,
-        QtyCounterInterface $qtyCounter,
-        StockRegistryStorage $stockRegistryStorage = null
+        QtyCounterInterface $qtyCounter
     ) {
         $this->stockRegistryProvider = $stockRegistryProvider;
         $this->stockState = $stockState;
@@ -77,8 +70,6 @@ class StockManagement implements StockManagementInterface
         $this->productRepository = $productRepository;
         $this->qtyCounter = $qtyCounter;
         $this->resource = $stockResource;
-        $this->stockRegistryStorage = $stockRegistryStorage ?: \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(StockRegistryStorage::class);
     }
 
     /**
@@ -101,12 +92,9 @@ class StockManagement implements StockManagementInterface
         $fullSaveItems = $registeredItems = [];
         foreach ($lockedItems as $lockedItemRecord) {
             $productId = $lockedItemRecord['product_id'];
-            $this->stockRegistryStorage->removeStockItem($productId, $websiteId);
-
             /** @var StockItemInterface $stockItem */
             $orderedQty = $items[$productId];
             $stockItem = $this->stockRegistryProvider->getStockItem($productId, $websiteId);
-            $stockItem->setQty($lockedItemRecord['qty']); // update data from locked item
             $canSubtractQty = $stockItem->getItemId() && $this->canSubtractQty($stockItem);
             if (!$canSubtractQty || !$this->stockConfiguration->isQty($lockedItemRecord['type_id'])) {
                 continue;
@@ -114,7 +102,7 @@ class StockManagement implements StockManagementInterface
             if (!$stockItem->hasAdminArea()
                 && !$this->stockState->checkQty($productId, $orderedQty, $stockItem->getWebsiteId())
             ) {
-                $this->getResource()->commit();
+                $this->getResource()->rollBack();
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Not all of your products are available in the requested quantity.')
                 );

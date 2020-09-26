@@ -64,22 +64,18 @@ class Full extends \Magento\Catalog\Model\Indexer\Category\Flat\AbstractAction
             }
             /** @TODO Do something with chunks */
             $categoriesIdsChunks = array_chunk($categoriesIds[$store->getRootCategoryId()], 500);
-
             foreach ($categoriesIdsChunks as $categoriesIdsChunk) {
                 $attributesData = $this->getAttributeValues($categoriesIdsChunk, $store->getId());
-                $linkField = $this->categoryMetadata->getLinkField();
-
                 $data = [];
                 foreach ($categories[$store->getRootCategoryId()] as $category) {
-                    if (!isset($attributesData[$category[$linkField]])) {
+                    if (!isset($attributesData[$category[$this->categoryMetadata->getLinkField()]])) {
                         continue;
                     }
                     $category['store_id'] = $store->getId();
                     $data[] = $this->prepareValuesToInsert(
-                        array_merge($category, $attributesData[$category[$linkField]])
+                        array_merge($category, $attributesData[$category[$this->categoryMetadata->getLinkField()]])
                     );
                 }
-
                 $this->connection->insertMultiple(
                     $this->addTemporaryTableSuffix($this->getMainStoreTable($store->getId())),
                     $data

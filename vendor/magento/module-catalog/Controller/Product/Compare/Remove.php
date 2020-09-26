@@ -8,30 +8,25 @@ namespace Magento\Catalog\Controller\Product\Compare;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 
-/**
- * Remove item from compare list action.
- */
 class Remove extends \Magento\Catalog\Controller\Product\Compare
 {
     /**
-     * Remove item from compare list.
+     * Remove item from compare list
      *
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
         $productId = (int)$this->getRequest()->getParam('product');
-        if ($this->isActionAllowed() && $productId) {
+        if ($productId) {
             $storeId = $this->_storeManager->getStore()->getId();
             try {
-                /** @var \Magento\Catalog\Model\Product $product */
                 $product = $this->productRepository->getById($productId, false, $storeId);
             } catch (NoSuchEntityException $e) {
                 $product = null;
             }
 
-            if ($product && $product->isSalable()) {
+            if ($product) {
                 /** @var $item \Magento\Catalog\Model\Product\Compare\Item */
                 $item = $this->_compareItemFactory->create();
                 if ($this->_customerSession->isLoggedIn()) {
@@ -49,7 +44,7 @@ class Remove extends \Magento\Catalog\Controller\Product\Compare
                     $item->delete();
                     $productName = $this->_objectManager->get(\Magento\Framework\Escaper::class)
                         ->escapeHtml($product->getName());
-                    $this->messageManager->addSuccessMessage(
+                    $this->messageManager->addSuccess(
                         __('You removed product %1 from the comparison list.', $productName)
                     );
                     $this->_eventManager->dispatch(
@@ -63,16 +58,7 @@ class Remove extends \Magento\Catalog\Controller\Product\Compare
 
         if (!$this->getRequest()->getParam('isAjax', false)) {
             $resultRedirect = $this->resultRedirectFactory->create();
-
             return $resultRedirect->setRefererOrBaseUrl();
         }
-    }
-
-    /**
-     * @return bool
-     */
-    private function isActionAllowed()
-    {
-        return $this->getRequest()->isPost() && $this->_formKeyValidator->validate($this->getRequest());
     }
 }

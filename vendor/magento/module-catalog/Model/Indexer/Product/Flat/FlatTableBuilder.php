@@ -179,11 +179,6 @@ class FlatTableBuilder
 
             $columnComment = isset($fieldProp['comment']) ? $fieldProp['comment'] : $fieldName;
 
-            if ($fieldName == 'created_at') {
-                $columnDefinition['nullable'] = true;
-                $columnDefinition['default'] = null;
-            }
-
             $table->addColumn($fieldName, $fieldProp['type'], $columnLength, $columnDefinition, $columnComment);
         }
 
@@ -272,7 +267,7 @@ class FlatTableBuilder
 
             $select->joinLeft(
                 $temporaryTableName,
-                "e.${linkField} = ${temporaryTableName}.${linkField}",
+                sprintf('e.%1$s = %2$s.%1$s', $linkField, $temporaryTableName),
                 $columnsNames
             );
             $allColumns = array_merge($allColumns, $columnsNames);
@@ -286,7 +281,7 @@ class FlatTableBuilder
             if (!empty($columnValueNames)) {
                 $select->joinLeft(
                     $temporaryValueTableName,
-                    "e.${linkField} = " . $temporaryValueTableName . ".${linkField}",
+                    sprintf('e.%1$s = %2$s.%1$s', $linkField, $temporaryValueTableName),
                     $columnValueNames
                 );
                 $allColumns = array_merge($allColumns, $columnValueNames);
@@ -380,7 +375,7 @@ class FlatTableBuilder
     {
         if (null === $this->metadataPool) {
             $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Framework\EntityManager\MetadataPool');
+                ->get(\Magento\Framework\EntityManager\MetadataPool::class);
         }
         return $this->metadataPool;
     }

@@ -8,7 +8,8 @@ namespace Magento\User\Block\User\Edit\Tab;
 use Magento\Backend\Block\Widget\Grid\Column;
 
 /**
- * Roles grid
+ * @api
+ * @since 100.0.2
  */
 class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
 {
@@ -67,8 +68,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Adds column filter to collection
-     *
      * @param Column $column
      * @return $this
      */
@@ -93,8 +92,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares collection
-     *
      * @return $this
      */
     protected function _prepareCollection()
@@ -106,8 +103,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares columns
-     *
      * @return $this
      */
     protected function _prepareColumns()
@@ -131,8 +126,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Gets grid url
-     *
      * @return string
      */
     public function getGridUrl()
@@ -142,39 +135,32 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Get selected roles
-     *
      * @param bool $json
      * @return array|string
      */
     public function getSelectedRoles($json = false)
     {
-        $userRoles = $this->getRequest()->getParam('user_roles');
-        if ($userRoles) {
-            if ($json) {
-                $result = json_decode($userRoles);
-                return $result ? $this->_jsonEncoder->encode($result) : '{}';
-            }
-            return $this->_escaper->escapeJs($this->escapeHtml($userRoles));
+        if ($this->getRequest()->getParam('user_roles') != "") {
+            return $this->getRequest()->getParam('user_roles');
         }
         /* @var $user \Magento\User\Model\User */
         $user = $this->_coreRegistry->registry('permissions_user');
         //checking if we have this data and we
         //don't need load it through resource model
         if ($user->hasData('roles')) {
-            $uRoles = $user->getData('roles');
+            $userRoles = $user->getData('roles');
         } else {
-            $uRoles = $user->getRoles();
+            $userRoles = $user->getRoles();
         }
 
         if ($json) {
             $jsonRoles = [];
-            foreach ($uRoles as $urid) {
-                $jsonRoles[$urid] = 0;
+            foreach ($userRoles as $roleId) {
+                $jsonRoles[$roleId] = 0;
             }
             return $this->_jsonEncoder->encode((object)$jsonRoles);
         } else {
-            return $uRoles;
+            return $userRoles;
         }
     }
 }

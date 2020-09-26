@@ -2,6 +2,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+/**
+ * @api
+ */
 define([
     'jquery',
     'underscore',
@@ -16,10 +20,7 @@ define([
             loading:        false,
             visible:        true,
             template:       'ui/content/content',
-            additionalClasses: {},
-            ignoreTmpls: {
-                content: true
-            }
+            additionalClasses: {}
         },
 
         /**
@@ -74,6 +75,7 @@ define([
             return this;
         },
 
+        /** @inheritdoc */
         initContainer: function (parent) {
             this._super();
 

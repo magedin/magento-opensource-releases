@@ -6,8 +6,7 @@
 namespace Magento\Framework\View;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Unserialize\SecureUnserializer;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Class DesignExceptions
@@ -36,35 +35,28 @@ class DesignExceptions
     protected $scopeType;
 
     /**
-     * @var SecureUnserializer
+     * @var Json
      */
-    private $secureUnserializer;
+    private $serializer;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
+     * DesignExceptions constructor
+     *
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param string $exceptionConfigPath
      * @param string $scopeType
-     * @param SecureUnserializer|null $secureUnserializer
-     * @param LoggerInterface|null $logger
+     * @param Json|null $serializer
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         $exceptionConfigPath,
         $scopeType,
-        SecureUnserializer $secureUnserializer = null,
-        LoggerInterface $logger = null
+        Json $serializer = null
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->exceptionConfigPath = $exceptionConfigPath;
         $this->scopeType = $scopeType;
-        $this->secureUnserializer = $secureUnserializer ?:
-            ObjectManager::getInstance()->create(SecureUnserializer::class);
-        $this->logger = $logger ?: ObjectManager::getInstance()->create(LoggerInterface::class);
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
     }
 
     /**
@@ -86,20 +78,12 @@ class DesignExceptions
         if (!$expressions) {
             return false;
         }
-
-        try {
-            $expressions = $this->secureUnserializer->unserialize($expressions);
-        } catch (\InvalidArgumentException $e) {
-            $this->logger->critical($e->getMessage());
-            return false;
-        }
-
+        $expressions = $this->serializer->unserialize($expressions);
         foreach ($expressions as $rule) {
             if (preg_match($rule['regexp'], $userAgent)) {
                 return $rule['value'];
             }
         }
-
         return false;
     }
 }

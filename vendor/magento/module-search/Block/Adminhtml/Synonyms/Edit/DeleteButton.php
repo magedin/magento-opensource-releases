@@ -24,7 +24,7 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
                 'class' => 'delete',
                 'on_click' => 'deleteConfirm(\''
                     . __('Are you sure you want to delete this synonym group?')
-                    . '\', \'' . $this->getDeleteUrl() . '\', {data: {}})',
+                    . '\', \'' . $this->getDeleteUrl() . '\')',
                 'sort_order' => 20,
             ];
         }

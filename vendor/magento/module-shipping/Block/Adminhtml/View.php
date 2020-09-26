@@ -8,7 +8,9 @@ namespace Magento\Shipping\Block\Adminhtml;
 /**
  * Adminhtml shipment create
  *
+ * @api
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @since 100.0.2
  */
 class View extends \Magento\Backend\Block\Widget\Form\Container
 {
@@ -56,7 +58,7 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
                 'onclick',
                 "deleteConfirm('" . __(
                     'Are you sure you want to send a Shipment email to customer?'
-                ) . "', '" . $this->getEmailUrl() . "', {data: {}})"
+                ) . "', '" . $this->getEmailUrl() . "')"
             );
         }
 

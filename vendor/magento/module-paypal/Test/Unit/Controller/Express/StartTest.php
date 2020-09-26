@@ -37,9 +37,6 @@ class StartTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
         $this->model->execute();
     }
 
-    /**
-     * @return array
-     */
     public function startActionDataProvider()
     {
         return [['1'], [null]];

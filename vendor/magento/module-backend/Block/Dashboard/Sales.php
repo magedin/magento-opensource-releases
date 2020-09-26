@@ -5,7 +5,6 @@
  */
 namespace Magento\Backend\Block\Dashboard;
 
-
 /**
  * Adminhtml dashboard sales statistics bar
  *
@@ -16,7 +15,7 @@ class Sales extends \Magento\Backend\Block\Dashboard\Bar
     /**
      * @var string
      */
-    protected $_template = 'Magento_Backend::dashboard/salebar.phtml';
+    protected $_template = 'dashboard/salebar.phtml';
 
     /**
      * @var \Magento\Framework\Module\Manager

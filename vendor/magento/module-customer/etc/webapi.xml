@@ -26,6 +26,12 @@
             <resource ref="Magento_Customer::group"/>
         </resources>
     </route>
+    <route url="/V1/customerGroups/default/:id" method="PUT">
+        <service class="Magento\Customer\Api\CustomerGroupConfigInterface" method="setDefaultCustomerGroup"/>
+        <resources>
+            <resource ref="Magento_Customer::group"/>
+        </resources>
+    </route>
     <route url="/V1/customerGroups/:id/permissions" method="GET">
         <service class="Magento\Customer\Api\GroupManagementInterface" method="isReadonly"/>
         <resources>
@@ -122,13 +128,13 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
-    <route url="/V1/customers/:customerId" method="PUT">
+    <route url="/V1/customers/:id" method="PUT">
         <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="save"/>
         <resources>
             <resource ref="Magento_Customer::manage"/>
         </resources>
     </route>
-    <route url="/V1/customers/me" method="PUT" soapOperation="saveSelf">
+    <route url="/V1/customers/me" method="PUT">
         <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="save"/>
         <resources>
             <resource ref="self"/>
@@ -137,7 +143,7 @@
             <parameter name="customer.id" force="true">%customer_id%</parameter>
         </data>
     </route>
-    <route url="/V1/customers/me" method="GET" soapOperation="getSelf">
+    <route url="/V1/customers/me" method="GET">
         <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="getById"/>
         <resources>
             <resource ref="self"/>
@@ -188,12 +194,6 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
-    <route url="/V1/customers/resetPassword" method="POST">
-        <service class="Magento\Customer\Api\AccountManagementInterface" method="resetPassword"/>
-        <resources>
-            <resource ref="anonymous"/>
-        </resources>
-    </route>
     <route url="/V1/customers/:customerId/confirm" method="GET">
         <service class="Magento\Customer\Api\AccountManagementInterface" method="getConfirmationStatus"/>
         <resources>
@@ -238,7 +238,7 @@
             <resource ref="Magento_Customer::manage"/>
         </resources>
     </route>
-    <route url="/V1/customers/me/billingAddress" method="GET" soapOperation="getMyDefaultBillingAddress">
+    <route url="/V1/customers/me/billingAddress" method="GET">
         <service class="Magento\Customer\Api\AccountManagementInterface" method="getDefaultBillingAddress"/>
         <resources>
             <resource ref="self"/>
@@ -253,7 +253,7 @@
             <resource ref="Magento_Customer::manage"/>
         </resources>
     </route>
-    <route url="/V1/customers/me/shippingAddress" method="GET" soapOperation="getMyDefaultShippingAddress">
+    <route url="/V1/customers/me/shippingAddress" method="GET">
         <service class="Magento\Customer\Api\AccountManagementInterface" method="getDefaultShippingAddress"/>
         <resources>
             <resource ref="self"/>

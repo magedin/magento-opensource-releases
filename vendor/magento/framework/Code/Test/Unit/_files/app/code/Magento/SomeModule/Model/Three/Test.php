@@ -20,11 +20,6 @@ class Test extends \Magento\SomeModule\Model\Two\Test
      */
     protected $_proxy;
 
-    /**
-     * Test constructor.
-     * @param \Magento\SomeModule\Model\Proxy $proxy
-     * @param \Magento\SomeModule\Model\ElementFactory $factory
-     */
     public function __construct(
         \Magento\SomeModule\Model\Proxy $proxy,
         \Magento\SomeModule\Model\ElementFactory $factory

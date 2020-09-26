@@ -28,7 +28,6 @@
                 <item name="address" xsi:type="string">Magento\Braintree\Gateway\Request\AddressDataBuilder</item>
                 <item name="vault" xsi:type="string">Magento\Braintree\Gateway\Request\VaultDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -40,7 +39,6 @@
                 <item name="channel" xsi:type="string">Magento\Braintree\Gateway\Request\ChannelDataBuilder</item>
                 <item name="address" xsi:type="string">Magento\Braintree\Gateway\Request\AddressDataBuilder</item>
                 <item name="dynamic_descriptor" xsi:type="string">Magento\Braintree\Gateway\Request\DescriptorDataBuilder</item>
-                <item name="store" xsi:type="string">Magento\Braintree\Gateway\Request\StoreConfigBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -55,11 +53,6 @@
     </type>
 
     <type name="Magento\Braintree\Controller\Adminhtml\Payment\GetNonce">
-        <arguments>
-            <argument name="session" xsi:type="object">Magento\Backend\Model\Session\Quote</argument>
-        </arguments>
-    </type>
-    <type name="Magento\Braintree\Model\Ui\ConfigProvider">
         <arguments>
             <argument name="session" xsi:type="object">Magento\Backend\Model\Session\Quote</argument>
         </arguments>

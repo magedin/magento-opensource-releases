@@ -13,8 +13,11 @@ use Magento\Customer\Model\ResourceModel\Customer as ResourceCustomer;
 
 /**
  * Customer session model
+ *
+ * @api
  * @method string getNoReferer()
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @since 100.0.2
  */
 class Session extends \Magento\Framework\Session\SessionManager
 {
@@ -552,7 +555,7 @@ class Session extends \Magento\Framework\Session\SessionManager
     }
 
     /**
-     * Reset core session hosts after resetting session ID
+     * Reset core session hosts after reseting session ID
      *
      * @return $this
      */

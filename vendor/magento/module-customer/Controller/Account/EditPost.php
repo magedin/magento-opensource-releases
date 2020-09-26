@@ -20,7 +20,6 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\Exception\State\UserLockedException;
-use Magento\Framework\Escaper;
 
 /**
  * Class EditPost
@@ -58,7 +57,9 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      */
     protected $session;
 
-    /** @var EmailNotificationInterface */
+    /**
+     * @var \Magento\Customer\Model\EmailNotificationInterface
+     */
     private $emailNotification;
 
     /**
@@ -71,9 +72,6 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      */
     private $customerMapper;
 
-    /** @var Escaper */
-    private $escaper;
-
     /**
      * @param Context $context
      * @param Session $customerSession
@@ -81,7 +79,6 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      * @param CustomerRepositoryInterface $customerRepository
      * @param Validator $formKeyValidator
      * @param CustomerExtractor $customerExtractor
-     * @param Escaper|null $escaper
      */
     public function __construct(
         Context $context,
@@ -89,8 +86,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         AccountManagementInterface $customerAccountManagement,
         CustomerRepositoryInterface $customerRepository,
         Validator $formKeyValidator,
-        CustomerExtractor $customerExtractor,
-        Escaper $escaper = null
+        CustomerExtractor $customerExtractor
     ) {
         parent::__construct($context);
         $this->session = $customerSession;
@@ -98,7 +94,6 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         $this->customerRepository = $customerRepository;
         $this->formKeyValidator = $formKeyValidator;
         $this->customerExtractor = $customerExtractor;
-        $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
     }
 
     /**
@@ -122,7 +117,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      * Get email notification
      *
      * @return EmailNotificationInterface
-     * @deprecated
+     * @deprecated 100.1.0
      */
     private function getEmailNotification()
     {
@@ -173,16 +168,16 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
                 $this->messageManager->addError($e->getMessage());
             } catch (UserLockedException $e) {
                 $message = __(
-                    'Invalid login or password.'
+                    'You did not sign in correctly or your account is temporarily disabled.'
                 );
                 $this->session->logout();
                 $this->session->start();
                 $this->messageManager->addError($message);
                 return $resultRedirect->setPath('customer/account/login');
             } catch (InputException $e) {
-                $this->messageManager->addErrorMessage($this->escaper->escapeHtml($e->getMessage()));
+                $this->messageManager->addError($e->getMessage());
                 foreach ($e->getErrors() as $error) {
-                    $this->messageManager->addErrorMessage($this->escaper->escapeHtml($error->getMessage()));
+                    $this->messageManager->addError($error->getMessage());
                 }
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
@@ -302,7 +297,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      *
      * @return Mapper
      *
-     * @deprecated
+     * @deprecated 100.1.3
      */
     private function getCustomerMapper()
     {

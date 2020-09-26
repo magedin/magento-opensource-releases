@@ -7,7 +7,7 @@ namespace Magento\Paypal\Test\Unit\Model;
 
 use Magento\Paypal\Model\Cart;
 
-class CartTest extends \PHPUnit_Framework_TestCase
+class CartTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cart
@@ -46,9 +46,9 @@ class CartTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_salesModel = $this->getMockForAbstractClass(
-            'Magento\Payment\Model\Cart\SalesModel\SalesModelInterface'
+            \Magento\Payment\Model\Cart\SalesModel\SalesModelInterface::class
         );
-        $factoryMock = $this->getMock('Magento\Payment\Model\Cart\SalesModel\Factory', ['create'], [], '', false);
+        $factoryMock = $this->createPartialMock(\Magento\Payment\Model\Cart\SalesModel\Factory::class, ['create']);
         $factoryMock->expects(
             $this->once()
         )->method(
@@ -58,7 +58,7 @@ class CartTest extends \PHPUnit_Framework_TestCase
         )->will(
             $this->returnValue($this->_salesModel)
         );
-        $eventManagerMock = $this->getMockForAbstractClass('Magento\Framework\Event\ManagerInterface');
+        $eventManagerMock = $this->getMockForAbstractClass(\Magento\Framework\Event\ManagerInterface::class);
 
         $this->_model = new \Magento\Paypal\Model\Cart($factoryMock, $eventManagerMock, 'sales model');
     }
@@ -85,9 +85,6 @@ class CartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0.3, $this->_model->getDiscount());
     }
 
-    /**
-     * @return array
-     */
     public function invalidGetAllItemsDataProvider()
     {
         return [
@@ -153,9 +150,6 @@ class CartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($transferDiscount ? 0.0 : $values['base_discount_amount'], $this->_model->getDiscount());
     }
 
-    /**
-     * @return array
-     */
     public function invalidTotalsGetAllItemsDataProvider()
     {
         return [
@@ -228,9 +222,6 @@ class CartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([Cart::AMOUNT_SUBTOTAL => $expectedSubtotal], $result);
     }
 
-    /**
-     * @return array
-     */
     public function invalidGetAmountsDataProvider()
     {
         $data = [];
