@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -138,15 +138,8 @@ class DataFixtureBeforeTransaction
                 require $fixture;
             }
         } catch (\Exception $e) {
-            throw new \PHPUnit_Framework_Exception(
-                sprintf(
-                    "Error in fixture: %s.\n %s\n %s",
-                    json_encode($fixture),
-                    $e->getMessage(),
-                    $e->getTraceAsString()
-                ),
-                500,
-                $e
+            throw new \Exception(
+                sprintf("Error in fixture: %s.\n %s", json_encode($fixture), (string)$e)
             );
         }
     }

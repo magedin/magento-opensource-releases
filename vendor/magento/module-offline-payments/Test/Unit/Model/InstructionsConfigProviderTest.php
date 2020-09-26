@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\OfflinePayments\Test\Unit\Model;
@@ -88,9 +88,6 @@ class InstructionsConfigProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->model->getConfig());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderGetConfig()
     {
         $oneCode = Banktransfer::PAYMENT_METHOD_BANKTRANSFER_CODE;

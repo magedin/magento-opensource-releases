@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -25,7 +25,7 @@ class Subscriber extends \Magento\Backend\Block\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Newsletter::subscriber/list.phtml';
+    protected $_template = 'subscriber/list.phtml';
 
     /**
      * @var \Magento\Newsletter\Model\ResourceModel\Queue\CollectionFactory

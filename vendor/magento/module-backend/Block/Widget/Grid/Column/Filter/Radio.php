@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\Widget\Grid\Column\Filter;
@@ -31,7 +31,8 @@ class Radio extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Select
     {
         if ($this->getValue()) {
             return $this->getColumn()->getValue();
+        } else {
+            return [['neq' => $this->getColumn()->getValue()], ['is' => new \Zend_Db_Expr('NULL')]];
         }
-        return [['neq' => $this->getColumn()->getValue()], ['is' => new \Zend_Db_Expr('NULL')]];
     }
 }

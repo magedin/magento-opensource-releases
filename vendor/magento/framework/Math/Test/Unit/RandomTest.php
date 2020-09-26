@@ -2,7 +2,7 @@
 /**
  * Test \Magento\Framework\Math\Random
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Math\Test\Unit;
@@ -26,9 +26,6 @@ class RandomTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public function getRandomStringDataProvider()
     {
         return [
@@ -80,9 +77,6 @@ class RandomTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThanOrEqual($min, $number);
     }
 
-    /**
-     * @return array
-     */
     public function testGetRandomNumberProvider()
     {
         return [

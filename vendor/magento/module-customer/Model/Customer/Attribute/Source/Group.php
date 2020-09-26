@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Model\Customer\Attribute\Source;
@@ -48,15 +48,7 @@ class Group extends \Magento\Eav\Model\Entity\Attribute\Source\Table
     {
         if (!$this->_options) {
             $groups = $this->_groupManagement->getLoggedInGroups();
-
             $this->_options = $this->_converter->toOptionArray($groups, 'id', 'code');
-
-            array_walk(
-                $this->_options,
-                function (&$item) {
-                    $item['__disableTmpl'] = true;
-                }
-            );
         }
         return $this->_options;
     }

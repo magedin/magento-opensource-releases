@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Authorizenet\Test\Unit\Controller\Directpost\Payment;
@@ -280,10 +280,7 @@ class PlaceTest extends \PHPUnit_Framework_TestCase
     {
         $objectFailed = new \Magento\Framework\DataObject();
         $objectFailed->setData('error', true);
-        $objectFailed->setData(
-            'error_messages',
-            __('An error occurred on the server. Please try to place the order again.')
-        );
+        $objectFailed->setData('error_messages', __('Unable to place order. Please try again later.'));
 
         return [
             [

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -30,17 +30,14 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = new File();
         $this->assertEquals($expected, $file->getAbsolutePath($basePath, $path));
     }
-
-    /**
-     * @return array
-     */
+    
     public function dataProviderForTestGetAbsolutePath()
     {
         return [
             ['/root/path/', 'sub', '/root/path/sub'],
             ['/root/path/', '/sub', '/root/path/sub'],
             ['/root/path/', '../sub', '/root/path/../sub'],
-            ['/root/path/', '/root/path/sub', '/root/path/sub'],
+            ['/root/path/', '/root/path/sub', '/root/path/root/path/sub'],
         ];
     }
 
@@ -53,9 +50,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $file->getRelativePath($basePath, $path));
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestGetRelativePath()
     {
         return [

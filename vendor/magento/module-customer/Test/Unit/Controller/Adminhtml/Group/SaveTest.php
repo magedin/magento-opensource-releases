@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Controller\Adminhtml\Group;
@@ -13,7 +13,6 @@ use Magento\Framework\Reflection\DataObjectProcessor;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class SaveTest extends \PHPUnit_Framework_TestCase
 {
@@ -88,9 +87,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['isPost'])
             ->getMockForAbstractClass();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
         $this->resultRedirectFactory = $this->getMockBuilder(RedirectFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -181,7 +178,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->with('Exception');
         $this->dataObjectProcessorMock->expects($this->once())
             ->method('buildOutputDataArray')
-            ->with($this->group, \Magento\Customer\Api\Data\GroupInterface::class)
+            ->with($this->group, '\Magento\Customer\Api\Data\GroupInterface')
             ->willReturn(['code' => $code]);
         $this->session->expects($this->once())
             ->method('setCustomerGroupData')

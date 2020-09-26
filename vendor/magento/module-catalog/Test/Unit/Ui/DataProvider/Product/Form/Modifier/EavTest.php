@@ -1,41 +1,37 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Api\ProductAttributeGroupRepositoryInterface;
-use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
-use Magento\Eav\Model\Entity\Attribute\Source\SourceInterface;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory as EavAttributeFactory;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav;
-use Magento\Eav\Api\Data\AttributeGroupInterface;
 use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\Group;
-use Magento\Eav\Model\Entity\Type as EntityType;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection as AttributeCollection;
+use Magento\Framework\App\RequestInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Ui\DataProvider\EavValidationRules;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\Collection as GroupCollection;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\CollectionFactory as GroupCollectionFactory;
-use Magento\Framework\Api\AttributeInterface;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchResultsInterface;
-use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Currency;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Locale\Currency as CurrencyLocale;
-use Magento\Framework\Stdlib\ArrayManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Ui\DataProvider\EavValidationRules;
+use Magento\Eav\Model\Entity\Attribute\Group;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
+use Magento\Eav\Model\Entity\Type as EntityType;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection as AttributeCollection;
 use Magento\Ui\DataProvider\Mapper\FormElement as FormElementMapper;
 use Magento\Ui\DataProvider\Mapper\MetaProperties as MetaPropertiesMapper;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Catalog\Api\ProductAttributeGroupRepositoryInterface;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
+use Magento\Eav\Api\Data\AttributeGroupInterface;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
+use Magento\Framework\Currency;
+use Magento\Framework\Locale\Currency as CurrencyLocale;
+Use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * Class EavTest
@@ -162,26 +158,6 @@ class EavTest extends AbstractModifierTest
     protected $currencyLocaleMock;
 
     /**
-     * @var ProductAttributeInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $productAttributeMock;
-
-    /**
-     * @var ArrayManager|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $arrayManagerMock;
-
-    /**
-     * @var EavAttributeFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $eavAttributeFactoryMock;
-
-    /**
-     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $eventManagerMock;
-
-    /**
      * @var ObjectManager
      */
     protected $objectManager;
@@ -191,9 +167,6 @@ class EavTest extends AbstractModifierTest
      */
     protected $eav;
 
-    /**
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     */
     protected function setUp()
     {
         parent::setUp();
@@ -255,32 +228,10 @@ class EavTest extends AbstractModifierTest
         $this->searchResultsMock = $this->getMockBuilder(SearchResultsInterface::class)
             ->getMockForAbstractClass();
         $this->eavAttributeMock = $this->getMockBuilder(Attribute::class)
-            ->setMethods([
-                'load',
-                'getAttributeGroupCode',
-                'getApplyTo',
-                'getFrontendInput',
-                'getAttributeCode',
-                'usesSource',
-                'getSource',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->productAttributeMock = $this->getMockBuilder(ProductAttributeInterface::class)
-            ->getMock();
-        $this->arrayManagerMock = $this->getMockBuilder(ArrayManager::class)
-            ->getMock();
-        $this->eavAttributeFactoryMock = $this->getMockBuilder(EavAttributeFactory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+            ->setMethods(['getAttributeGroupCode', 'getApplyTo', 'getFrontendInput', 'getAttributeCode'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->eavAttributeFactoryMock->expects($this->any())
-            ->method('create')
-            ->willReturn($this->eavAttributeMock);
         $this->groupCollectionFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($this->groupCollectionMock);
@@ -326,10 +277,7 @@ class EavTest extends AbstractModifierTest
             ->disableOriginalConstructor()
             ->setMethods(['getCurrency'])
             ->getMock();
-        $this->eavAttributeMock->expects($this->any())
-            ->method('load')
-            ->willReturnSelf();
-
+        
         $this->eav =$this->getModel();
         $this->objectManager->setBackwardCompatibleProperty(
             $this->eav,
@@ -356,9 +304,6 @@ class EavTest extends AbstractModifierTest
             'attributeGroupRepository' => $this->attributeGroupRepositoryMock,
             'sortOrderBuilder' => $this->sortOrderBuilderMock,
             'attributeRepository' => $this->attributeRepositoryMock,
-            'arrayManager' => $this->arrayManagerMock,
-            'eavAttributeFactory' => $this->eavAttributeFactoryMock,
-            '_eventManager' => $this->eventManagerMock,
         ]);
     }
 
@@ -453,213 +398,5 @@ class EavTest extends AbstractModifierTest
             ->willReturn($this->currencyMock);
 
         $this->assertEquals($sourceData, $this->eav->modifyData([]));
-    }
-
-    /**
-     * @param int $productId
-     * @param array $attributeData
-     * @param string $attrValue
-     * @param array $expected
-     * @covers \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::isProductExists
-     * @covers \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::setupAttributeMeta
-     * @dataProvider setupAttributeMetaDataProvider
-     */
-    public function testSetupAttributeMetaDefaultAttribute($productId, array $attributeData, $attrValue, $expected)
-    {
-        $configPath =  'arguments/data/config';
-        $groupCode = 'product-details';
-        $sortOrder = '0';
-        $attributeOptions = [
-            ['value' => 1, 'label' => 'Int label'],
-            ['value' => 1.5, 'label' => 'Float label'],
-            ['value' => true, 'label' => 'Boolean label'],
-            ['value' => 'string', 'label' => 'String label'],
-            ['value' => ['test1', 'test2'], 'label' => 'Array label'],
-        ];
-        $attributeOptionsExpected = [
-            ['value' => '1', 'label' => 'Int label', '__disableTmpl' => true],
-            ['value' => '1.5', 'label' => 'Float label', '__disableTmpl' => true],
-            ['value' => '1', 'label' => 'Boolean label', '__disableTmpl' => true],
-            ['value' => 'string', 'label' => 'String label', '__disableTmpl' => true],
-            ['value' => ['test1', 'test2'], 'label' => 'Array label', '__disableTmpl' => true],
-        ];
-
-        $this->productMock->expects($this->any())
-            ->method('getId')
-            ->willReturn($productId);
-
-        $this->initDataMock($this->productAttributeMock, $attributeData);
-
-        $this->productAttributeMock->expects($this->any())
-            ->method('getDefaultValue')
-            ->willReturn('required_value');
-
-        $this->productAttributeMock->expects($this->any())
-            ->method('getAttributeCode')
-            ->willReturn('code');
-
-        $this->productAttributeMock->expects($this->any())
-            ->method('getValue')
-            ->willReturn('value');
-
-        $attributeMock = $this->getMockBuilder(AttributeInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $attributeMock->expects($this->any())
-            ->method('getValue')
-            ->willReturn($attrValue);
-
-        $this->productMock->expects($this->any())
-            ->method('getCustomAttribute')
-            ->willReturn($attributeMock);
-
-        $this->eavAttributeMock->method('usesSource')->willReturn(true);
-        $attributeSource = $this->getMockBuilder(SourceInterface::class)->getMockForAbstractClass();
-        $attributeSource->method('getAllOptions')->willReturn($attributeOptions);
-        $this->eavAttributeMock->method('getSource')->willReturn($attributeSource);
-
-        $this->arrayManagerMock->expects($this->any())
-            ->method('set')
-            ->with(
-                $configPath,
-                [],
-                $expected
-            )
-            ->willReturn($expected);
-
-        $this->arrayManagerMock->expects($this->any())
-            ->method('merge')
-            ->with(
-                $this->anything(),
-                $this->anything(),
-                $this->callback(
-                    function ($value) use ($attributeOptionsExpected) {
-                        return isset($value['options']) ? $value['options'] === $attributeOptionsExpected : true;
-                    }
-                )
-            )
-            ->willReturn($expected);
-
-        $this->arrayManagerMock->expects($this->any())
-            ->method('get')
-            ->willReturn([]);
-
-        $this->arrayManagerMock->expects($this->any())
-            ->method('exists');
-
-        $this->assertEquals(
-            $expected,
-            $this->eav->setupAttributeMeta($this->productAttributeMock, $groupCode, $sortOrder)
-        );
-    }
-
-    /**
-     * Setup attribute meta data provider.
-     *
-     * @return array
-     */
-    public function setupAttributeMetaDataProvider()
-    {
-        return [
-            'default_null_prod_not_new_and_required' => [
-                'productId' => 1,
-                'attributeData' => [
-                    'is_required' => true,
-                    'default_frontend_label' => 'text',
-                ],
-                'attrValue' => 'val',
-                'expected' => [
-                    'dataType' => null,
-                    'formElement' => null,
-                    'visible' => null,
-                    'required' => true,
-                    'notice' => null,
-                    'default' => null,
-                    'label' => __('text'),
-                    'code' => 'code',
-                    'source' => 'product-details',
-                    'scopeLabel' => '',
-                    'globalScope' => false,
-                    'sortOrder' => 0,
-                ],
-            ],
-            'default_null_prod_not_new_and_not_required' => [
-                'productId' => 1,
-                'attributeData' => [
-                    'productRequired' => false,
-                    'default_frontend_label' => 'text',
-                ],
-                'attrValue' => 'val',
-                'expected' => [
-                    'dataType' => null,
-                    'formElement' => null,
-                    'visible' => null,
-                    'required' => false,
-                    'notice' => null,
-                    'default' => null,
-                    'label' => __('text'),
-                    'code' => 'code',
-                    'source' => 'product-details',
-                    'scopeLabel' => '',
-                    'globalScope' => false,
-                    'sortOrder' => 0,
-                ],
-            ],
-            'default_null_prod_new_and_not_required' => [
-                'productId' => null,
-                'attributeData' => [
-                    'productRequired' => false,
-                ],
-                'attrValue' => null,
-                'expected' => [
-                    'dataType' => null,
-                    'formElement' => null,
-                    'visible' => null,
-                    'required' => false,
-                    'notice' => null,
-                    'default' => 'required_value',
-                    'label' => __(null),
-                    'code' => 'code',
-                    'source' => 'product-details',
-                    'scopeLabel' => '',
-                    'globalScope' => false,
-                    'sortOrder' => 0,
-                ],
-            ],
-            'default_null_prod_new_and_required' => [
-                'productId' => null,
-                'attributeData' => [
-                    'productRequired' => false,
-                ],
-                'attrValue' => null,
-                'expected' => [
-                    'dataType' => null,
-                    'formElement' => null,
-                    'visible' => null,
-                    'required' => false,
-                    'notice' => null,
-                    'default' => 'required_value',
-                    'label' => __(null),
-                    'code' => 'code',
-                    'source' => 'product-details',
-                    'scopeLabel' => '',
-                    'globalScope' => false,
-                    'sortOrder' => 0,
-                ],
-            ]
-        ];
-    }
-
-    /**
-     * @param \PHPUnit_Framework_MockObject_MockObject $mock
-     * @param array $data
-     */
-    private function initDataMock(\PHPUnit_Framework_MockObject_MockObject $mock, array $data)
-    {
-        foreach ($data as $key => $value) {
-            $mock->method('get' . implode(explode('_', ucwords($key, "_"))))
-                ->willReturn($value);
-        }
     }
 }

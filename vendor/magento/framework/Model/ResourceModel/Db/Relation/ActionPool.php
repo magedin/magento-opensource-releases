@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -50,6 +50,9 @@ class ActionPool
         }
         foreach ($this->relationActions[$entityType][$actionName] as $actionClassName) {
             $action = $this->objectManager->get($actionClassName);
+            //if (!$action instanceof ProcessEntityRelationInterface) {
+            //    throw new \Exception('Not compliant with action interface');
+            //}
             $actions[] = $action;
         }
         return $actions;

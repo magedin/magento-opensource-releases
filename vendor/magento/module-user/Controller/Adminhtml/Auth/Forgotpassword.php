@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\User\Controller\Adminhtml\Auth;
@@ -44,8 +44,7 @@ class Forgotpassword extends \Magento\User\Controller\Adminhtml\Auth
         $resultRedirect = $this->resultRedirectFactory->create();
         if (!empty($email) && !empty($params)) {
             // Validate received data to be an email address
-            $validator = new \Zend\Validator\EmailAddress();
-            if ($validator->isValid($email)) {
+            if (\Zend_Validate::is($email, 'EmailAddress')) {
                 try {
                     $this->securityManager->performSecurityCheck(
                         \Magento\Security\Model\PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,

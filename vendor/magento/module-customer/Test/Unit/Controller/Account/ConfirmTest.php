@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,27 +10,7 @@ namespace Magento\Customer\Test\Unit\Controller\Account;
 
 use Magento\Customer\Helper\Address;
 use Magento\Customer\Model\Url;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Customer\Controller\Account\Confirm;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\UrlFactory;
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\Message\Manager;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\Store;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Action\Context;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -118,53 +98,51 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
      */
     protected $redirectResultMock;
 
-    /** @var PhpCookieManager | \PHPUnit_Framework_MockObject_MockObject */
-    private $cookieMetadataManager;
-
-    /** @var CookieMetadataFactory | \PHPUnit_Framework_MockObject_MockObject */
-    private $cookieMetadataFactory;
-
     protected function setUp()
     {
-        $this->customerSessionMock = $this->createDefaultMock(Session::class);
-        $this->requestMock = $this->createDefaultMock(RequestInterface::class);
-        $this->responseMock = $this->getMockBuilder(Http::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setRedirect', '__wakeup'])
-            ->getMock();
-        $viewMock = $this->createDefaultMock(ViewInterface::class);
-        $this->redirectMock = $this->createDefaultMock(RedirectInterface::class);
+        $this->customerSessionMock = $this->getMock('\Magento\Customer\Model\Session', [], [], '', false);
+        $this->requestMock = $this->getMock('Magento\Framework\App\RequestInterface', [], [], '', false);
+        $this->responseMock = $this->getMock(
+            'Magento\Framework\App\Response\Http', ['setRedirect', '__wakeup'], [], '', false
+        );
+        $viewMock = $this->getMock('Magento\Framework\App\ViewInterface');
+        $this->redirectMock = $this->getMock('Magento\Framework\App\Response\RedirectInterface');
 
-        $this->urlMock = $this->createDefaultMock(\Magento\Framework\Url::class);
-        $urlFactoryMock = $this->createDefaultMock(UrlFactory::class);
+        $this->urlMock = $this->getMock('Magento\Framework\Url', [], [], '', false);
+        $urlFactoryMock = $this->getMock('Magento\Framework\UrlFactory', [], [], '', false);
         $urlFactoryMock->expects($this->any())
             ->method('create')
             ->will($this->returnValue($this->urlMock));
 
-        $this->customerAccountManagementMock = $this->getMockBuilder(AccountManagementInterface::class)
-            ->getMockForAbstractClass();
-        $this->customerDataMock = $this->createDefaultMock(CustomerInterface::class);
+        $this->customerAccountManagementMock =
+            $this->getMockForAbstractClass('Magento\Customer\Api\AccountManagementInterface');
+        $this->customerDataMock = $this->getMock(
+            'Magento\Customer\Api\Data\CustomerInterface', [], [], '', false
+        );
 
-        $this->customerRepositoryMock = $this->getMockBuilder(CustomerRepositoryInterface::class)
-            ->getMockForAbstractClass();
+        $this->customerRepositoryMock =
+            $this->getMockForAbstractClass('Magento\Customer\Api\CustomerRepositoryInterface');
 
-        $this->messageManagerMock = $this->createDefaultMock(Manager::class);
-        $this->addressHelperMock = $this->createDefaultMock(Address::class);
-        $this->storeManagerMock = $this->createDefaultMock(StoreManager::class);
-        $this->storeMock = $this->createDefaultMock(Store::class);
-        $this->redirectResultMock = $this->createDefaultMock(Redirect::class);
+        $this->messageManagerMock = $this->getMock('Magento\Framework\Message\Manager', [], [], '', false);
+        $this->addressHelperMock = $this->getMock('Magento\Customer\Helper\Address', [], [], '', false);
+        $this->storeManagerMock = $this->getMock('Magento\Store\Model\StoreManager', [], [], '', false);
+        $this->storeMock = $this->getMock('Magento\Store\Model\Store', [], [], '', false);
+        $this->redirectResultMock = $this->getMock('Magento\Framework\Controller\Result\Redirect', [], [], '', false);
 
-        $resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
+        $resultFactoryMock = $this->getMock(
+            'Magento\Framework\Controller\ResultFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
         $resultFactoryMock->expects($this->once())
             ->method('create')
-            ->with(ResultFactory::TYPE_REDIRECT)
+            ->with(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT)
             ->willReturn($this->redirectResultMock);
 
-        $this->scopeConfigMock = $this->createDefaultMock(ScopeConfigInterface::class);
-        $this->contextMock = $this->createDefaultMock(Context::class);
+        $this->scopeConfigMock = $this->getMock('Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->contextMock = $this->getMock('Magento\Framework\App\Action\Context', [], [], '', false);
         $this->contextMock->expects($this->any())
             ->method('getRequest')
             ->willReturn($this->requestMock);
@@ -184,31 +162,10 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
             ->method('getResultFactory')
             ->willReturn($resultFactoryMock);
 
-        $this->cookieMetadataFactory = $this->getMockBuilder(CookieMetadataFactory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setPath', 'createCookieMetadata'])
-            ->getMock();
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $cookieMetaData = $this->getMockBuilder(\Magento\Framework\Stdlib\Cookie\CookieMetadata::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $cookieMetaData->expects($this->any())
-            ->method('setPath')
-            ->will($this->returnSelf());
-
-        $this->cookieMetadataFactory->expects($this->any())
-            ->method('createCookieMetadata')
-            ->will($this->returnValue($cookieMetaData));
-
-        /** @var PhpCookieManager | \PHPUnit_Framework_MockObject_MockObject $cookieMetadataManager */
-        $this->cookieMetadataManager = $this->getMockBuilder(PhpCookieManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $objectManagerHelper = new ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            Confirm::class,
+            'Magento\Customer\Controller\Account\Confirm',
             [
                 'context' => $this->contextMock,
                 'customerSession' => $this->customerSessionMock,
@@ -218,8 +175,6 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
                 'customerRepository' => $this->customerRepositoryMock,
                 'addressHelper' => $this->addressHelperMock,
                 'urlFactory' => $urlFactoryMock,
-                'cookieMetadataFactory' => $this->cookieMetadataFactory,
-                'cookieMetadataManager' => $this->cookieMetadataManager,
             ]
         );
     }
@@ -235,7 +190,7 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
             ->with('*/*/')
             ->willReturnSelf();
 
-        $this->assertInstanceOf(Redirect::class, $this->model->execute());
+        $this->assertInstanceOf('Magento\Framework\Controller\Result\Redirect', $this->model->execute());
     }
 
     /**
@@ -277,7 +232,7 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($testUrl))
             ->willReturnSelf();
 
-        $this->assertInstanceOf(Redirect::class, $this->model->execute());
+        $this->assertInstanceOf('Magento\Framework\Controller\Result\Redirect', $this->model->execute());
     }
 
     /**
@@ -484,86 +439,6 @@ class ConfirmTest extends \PHPUnit_Framework_TestCase
                 'http://example.com/success',
                 false,
                 __('Thank you for registering with'),
-            ],
-        ];
-    }
-
-    /**
-     * @param string $className
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function createDefaultMock($className)
-    {
-        return $this->getMockBuilder($className)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
-     * Tests cookie cleaning
-     *
-     * @dataProvider dataProviderClean
-     * @param mixed $cookieValue
-     * @param \PHPUnit_Framework_MockObject_Matcher_Invocation $deleteMatcher
-     */
-    public function testClean($cookieValue, \PHPUnit_Framework_MockObject_Matcher_Invocation $deleteMatcher)
-    {
-        $this->customerSessionMock->expects($this->once())
-            ->method('isLoggedIn')
-            ->will($this->returnValue(false));
-
-        $this->requestMock->expects($this->any())
-            ->method('getParam')
-            ->willReturnMap([
-                ['id', false, 'id'],
-                ['key', false, 'key'],
-            ]);
-
-        $this->customerDataMock->expects($this->once())
-            ->method('getEmail')
-            ->will($this->returnValue('email@exmple.com'));
-
-        $this->customerRepositoryMock->expects($this->any())
-            ->method('getById')
-            ->will($this->returnValue($this->customerDataMock));
-
-        $this->customerAccountManagementMock->expects($this->once())
-            ->method('activate');
-
-        $this->storeMock->expects($this->any())
-            ->method('getFrontendName')
-            ->will($this->returnValue('frontend'));
-        $this->storeManagerMock->expects($this->any())
-            ->method('getStore')
-            ->will($this->returnValue($this->storeMock));
-
-        $this->cookieMetadataManager->expects($this->once())
-            ->method('getCookie')
-            ->will($this->returnValue($cookieValue));
-
-        $this->cookieMetadataManager->expects($deleteMatcher)
-            ->method('deleteCookie')
-            ->will($this->returnValue(null));
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $this->model->execute();
-    }
-
-    /**
-     * Provides data for testing clean method
-     *
-     * @return array
-     */
-    public function dataProviderClean()
-    {
-        return [
-            'clean-cookie' => [
-                'testValue',
-                $this->once()
-            ],
-            'no-clean' => [
-                null,
-                $this->never()
             ],
         ];
     }

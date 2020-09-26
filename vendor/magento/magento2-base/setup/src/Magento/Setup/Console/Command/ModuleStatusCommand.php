@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Console\Command;
@@ -65,6 +65,5 @@ class ModuleStatusCommand extends AbstractSetupCommand
         } else {
             $output->writeln(join("\n", $disabledModules));
         }
-        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }

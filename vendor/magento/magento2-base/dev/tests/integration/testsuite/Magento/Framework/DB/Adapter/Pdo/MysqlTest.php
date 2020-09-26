@@ -1,28 +1,33 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * Test for an PDO MySQL adapter
  */
 namespace Magento\Framework\DB\Adapter\Pdo;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\TestFramework\Helper\Bootstrap;
 
 class MysqlTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ResourceConnection
+     * Database adapter instance
+     *
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql
      */
-    private $resourceConnection;
+    protected $_connection = null;
 
-    protected function setUp()
+    public function setUp()
     {
         set_error_handler(null);
-        $this->resourceConnection = Bootstrap::getObjectManager()
-            ->get(ResourceConnection::class);
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         restore_error_handler();
     }
@@ -34,20 +39,30 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testWaitTimeout()
     {
-        if (!$this->getDbAdapter() instanceof \Magento\Framework\DB\Adapter\Pdo\Mysql) {
+        if (!$this->_getConnection() instanceof \Magento\Framework\DB\Adapter\Pdo\Mysql) {
             $this->markTestSkipped('This test is for \Magento\Framework\DB\Adapter\Pdo\Mysql');
         }
         try {
+            $defaultWaitTimeout = $this->_getWaitTimeout();
             $minWaitTimeout = 1;
-            $this->setWaitTimeout($minWaitTimeout);
-            $this->assertEquals($minWaitTimeout, $this->getWaitTimeout(), 'Wait timeout was not changed');
+            $this->_setWaitTimeout($minWaitTimeout);
+            $this->assertEquals($minWaitTimeout, $this->_getWaitTimeout(), 'Wait timeout was not changed');
 
             // Sleep for time greater than wait_timeout and try to perform query
             sleep($minWaitTimeout + 1);
-            $result = $this->executeQuery('SELECT 1');
-            $this->assertInstanceOf(\Magento\Framework\DB\Statement\Pdo\Mysql::class, $result);
-        } finally {
-            $this->getDbAdapter()->closeConnection();
+            $result = $this->_executeQuery('SELECT 1');
+            $this->assertInstanceOf('Magento\Framework\DB\Statement\Pdo\Mysql', $result);
+            // Restore wait_timeout
+            $this->_setWaitTimeout($defaultWaitTimeout);
+            $this->assertEquals(
+                $defaultWaitTimeout,
+                $this->_getWaitTimeout(),
+                'Default wait timeout was not restored'
+            );
+        } catch (\Exception $e) {
+            // Reset connection on failure to restore global variables
+            $this->_getConnection()->closeConnection();
+            throw $e;
         }
     }
 
@@ -56,9 +71,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      *
      * @return int
      */
-    private function getWaitTimeout()
+    protected function _getWaitTimeout()
     {
-        $result = $this->executeQuery('SELECT @@session.wait_timeout');
+        $result = $this->_executeQuery('SELECT @@session.wait_timeout');
         return (int)$result->fetchColumn();
     }
 
@@ -67,22 +82,39 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      *
      * @param int $waitTimeout
      */
-    private function setWaitTimeout($waitTimeout)
+    protected function _setWaitTimeout($waitTimeout)
     {
-        $this->executeQuery("SET @@session.wait_timeout = {$waitTimeout}");
+        $this->_executeQuery("SET @@session.wait_timeout = {$waitTimeout}");
     }
 
     /**
      * Execute SQL query and return result statement instance
      *
-     * @param $sql
-     * @return void|\Zend_Db_Statement_Pdo
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Zend_Db_Adapter_Exception
+     * @param string $sql
+     * @return \Zend_Db_Statement_Interface
+     * @throws \Exception
      */
-    private function executeQuery($sql)
+    protected function _executeQuery($sql)
     {
-        return $this->getDbAdapter()->query($sql);
+        /**
+         * Suppress PDO warnings to work around the bug
+         * @link https://bugs.php.net/bug.php?id=63812
+         */
+        $phpErrorReporting = error_reporting();
+        /** @var $pdoConnection \PDO */
+        $pdoConnection = $this->_getConnection()->getConnection();
+        $pdoWarningsEnabled = $pdoConnection->getAttribute(\PDO::ATTR_ERRMODE) & \PDO::ERRMODE_WARNING;
+        if (!$pdoWarningsEnabled) {
+            error_reporting($phpErrorReporting & ~E_WARNING);
+        }
+        try {
+            $result = $this->_getConnection()->query($sql);
+            error_reporting($phpErrorReporting);
+        } catch (\Exception $e) {
+            error_reporting($phpErrorReporting);
+            throw $e;
+        }
+        return $result;
     }
 
     /**
@@ -90,44 +122,14 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      *
      * @return \Magento\Framework\DB\Adapter\Pdo\Mysql
      */
-    private function getDbAdapter()
+    protected function _getConnection()
     {
-        return $this->resourceConnection->getConnection();
-    }
-
-    public function testGetCreateTable()
-    {
-        $tableName = $this->resourceConnection->getTableName('core_config_data');
-        $this->assertEquals(
-            $this->getDbAdapter()->getCreateTable($tableName),
-            $this->getDbAdapter()->getCreateTable($tableName)
-        );
-    }
-
-    public function testGetForeignKeys()
-    {
-        $tableName = $this->resourceConnection->getTableName('core_config_data');
-        $this->assertEquals(
-            $this->getDbAdapter()->getForeignKeys($tableName),
-            $this->getDbAdapter()->getForeignKeys($tableName)
-        );
-    }
-
-    public function testGetIndexList()
-    {
-        $tableName = $this->resourceConnection->getTableName('core_config_data');
-        $this->assertEquals(
-            $this->getDbAdapter()->getIndexList($tableName),
-            $this->getDbAdapter()->getIndexList($tableName)
-        );
-    }
-
-    public function testDescribeTable()
-    {
-        $tableName = $this->resourceConnection->getTableName('core_config_data');
-        $this->assertEquals(
-            $this->getDbAdapter()->describeTable($tableName),
-            $this->getDbAdapter()->describeTable($tableName)
-        );
+        if (is_null($this->_connection)) {
+            /** @var $coreResource \Magento\Framework\App\ResourceConnection */
+            $coreResource = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+                ->get('Magento\Framework\App\ResourceConnection');
+            $this->_connection = $coreResource->getConnection();
+        }
+        return $this->_connection;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Module;
@@ -211,25 +211,6 @@ class PackageInfo
             $require = $this->convertToModuleNames($this->requireMap[$moduleName]);
         }
         return $require;
-    }
-
-    /**
-     * Get all module names a module required by
-     *
-     * @param string $requiredModuleName
-     * @return array
-     */
-    public function getRequiredBy($requiredModuleName)
-    {
-        $this->load();
-        $requiredBy = [];
-        foreach ($this->requireMap as $moduleName => $moduleRequireList) {
-            if (in_array($requiredModuleName, $moduleRequireList)) {
-                $requiredBy[] = $moduleName;
-            }
-        }
-       
-        return $requiredBy;
     }
 
     /**

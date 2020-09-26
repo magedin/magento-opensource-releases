@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Test\Unit\Model;
@@ -384,9 +384,6 @@ class OptionRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->model->validateNewOptionData($optionMock);
     }
 
-    /**
-     * @return array
-     */
     public function validateOptionDataProvider()
     {
         return [

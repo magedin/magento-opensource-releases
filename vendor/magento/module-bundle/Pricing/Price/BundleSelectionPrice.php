@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Bundle\Pricing\Price;
@@ -124,7 +124,7 @@ class BundleSelectionPrice extends AbstractPrice
                 $value = $product->getData('final_price') * ($selectionPriceValue / 100);
             } else {
                 // calculate price for selection type fixed
-                $value = $this->priceCurrency->convert($selectionPriceValue);
+                $value = $this->priceCurrency->convert($selectionPriceValue) * $this->quantity;
             }
         }
         if (!$this->useRegularPrice) {
@@ -163,7 +163,8 @@ class BundleSelectionPrice extends AbstractPrice
     {
         if ($this->bundleProduct->getPriceType() == Price::PRICE_TYPE_DYNAMIC) {
             return parent::getProduct();
+        } else {
+            return $this->bundleProduct;
         }
-        return $this->bundleProduct;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Developer\Test\Unit\Helper;
@@ -68,9 +68,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->helper->isDevAllowed($storeId));
     }
 
-    /**
-     * @return array
-     */
     public function isDevAllowedDataProvider()
     {
         return [

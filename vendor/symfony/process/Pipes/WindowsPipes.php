@@ -11,8 +11,8 @@
 
 namespace Symfony\Component\Process\Pipes;
 
-use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\RuntimeException;
 
 /**
  * WindowsPipes implementation uses temporary files as handles.
@@ -26,13 +26,16 @@ use Symfony\Component\Process\Process;
  */
 class WindowsPipes extends AbstractPipes
 {
+    /** @var array */
     private $files = array();
+    /** @var array */
     private $fileHandles = array();
-    private $lockHandles = array();
+    /** @var array */
     private $readBytes = array(
         Process::STDOUT => 0,
         Process::STDERR => 0,
     );
+    /** @var bool */
     private $disableOutput;
 
     public function __construct($disableOutput, $input)
@@ -44,42 +47,15 @@ class WindowsPipes extends AbstractPipes
             // Workaround for this problem is to use temporary files instead of pipes on Windows platform.
             //
             // @see https://bugs.php.net/bug.php?id=51800
-            $pipes = array(
-                Process::STDOUT => Process::OUT,
-                Process::STDERR => Process::ERR,
+            $this->files = array(
+                Process::STDOUT => tempnam(sys_get_temp_dir(), 'out_sf_proc'),
+                Process::STDERR => tempnam(sys_get_temp_dir(), 'err_sf_proc'),
             );
-            $tmpDir = sys_get_temp_dir();
-            $lastError = 'unknown reason';
-            set_error_handler(function ($type, $msg) use (&$lastError) { $lastError = $msg; });
-            for ($i = 0;; ++$i) {
-                foreach ($pipes as $pipe => $name) {
-                    $file = sprintf('%s\\sf_proc_%02X.%s', $tmpDir, $i, $name);
-
-                    if (!$h = fopen($file.'.lock', 'w')) {
-                        restore_error_handler();
-                        throw new RuntimeException(sprintf('A temporary file could not be opened to write the process output: %s', $lastError));
-                    }
-                    if (!flock($h, LOCK_EX | LOCK_NB)) {
-                        continue 2;
-                    }
-                    if (isset($this->lockHandles[$pipe])) {
-                        flock($this->lockHandles[$pipe], LOCK_UN);
-                        fclose($this->lockHandles[$pipe]);
-                    }
-                    $this->lockHandles[$pipe] = $h;
-
-                    if (!fclose(fopen($file, 'w')) || !$h = fopen($file, 'r')) {
-                        flock($this->lockHandles[$pipe], LOCK_UN);
-                        fclose($this->lockHandles[$pipe]);
-                        unset($this->lockHandles[$pipe]);
-                        continue 2;
-                    }
-                    $this->fileHandles[$pipe] = $h;
-                    $this->files[$pipe] = $file;
+            foreach ($this->files as $offset => $file) {
+                if (false === $file || false === $this->fileHandles[$offset] = @fopen($file, 'rb')) {
+                    throw new RuntimeException('A temporary file could not be opened to write the process output to, verify that your TEMP environment variable is writable');
                 }
-                break;
             }
-            restore_error_handler();
         }
 
         parent::__construct($input);
@@ -88,6 +64,7 @@ class WindowsPipes extends AbstractPipes
     public function __destruct()
     {
         $this->close();
+        $this->removeFiles();
     }
 
     /**
@@ -143,15 +120,12 @@ class WindowsPipes extends AbstractPipes
             $data = stream_get_contents($fileHandle, -1, $this->readBytes[$type]);
 
             if (isset($data[0])) {
-                $this->readBytes[$type] += \strlen($data);
+                $this->readBytes[$type] += strlen($data);
                 $read[$type] = $data;
             }
             if ($close) {
-                ftruncate($fileHandle, 0);
                 fclose($fileHandle);
-                flock($this->lockHandles[$type], LOCK_UN);
-                fclose($this->lockHandles[$type]);
-                unset($this->fileHandles[$type], $this->lockHandles[$type]);
+                unset($this->fileHandles[$type]);
             }
         }
 
@@ -172,13 +146,10 @@ class WindowsPipes extends AbstractPipes
     public function close()
     {
         parent::close();
-        foreach ($this->fileHandles as $type => $handle) {
-            ftruncate($handle, 0);
+        foreach ($this->fileHandles as $handle) {
             fclose($handle);
-            flock($this->lockHandles[$type], LOCK_UN);
-            fclose($this->lockHandles[$type]);
         }
-        $this->fileHandles = $this->lockHandles = array();
+        $this->fileHandles = array();
     }
 
     /**
@@ -187,10 +158,23 @@ class WindowsPipes extends AbstractPipes
      * @param Process $process The process
      * @param $input
      *
-     * @return static
+     * @return WindowsPipes
      */
     public static function create(Process $process, $input)
     {
         return new static($process->isOutputDisabled(), $input);
+    }
+
+    /**
+     * Removes temporary files.
+     */
+    private function removeFiles()
+    {
+        foreach ($this->files as $filename) {
+            if (file_exists($filename)) {
+                @unlink($filename);
+            }
+        }
+        $this->files = array();
     }
 }

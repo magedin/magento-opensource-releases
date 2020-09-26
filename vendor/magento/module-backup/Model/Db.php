@@ -1,19 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backup\Model;
-
-use Magento\Backup\Helper\Data as Helper;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Database backup model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
- * @deprecated Backup module is to be removed.
  */
 class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
 {
@@ -38,23 +33,15 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     protected $_resource = null;
 
     /**
-     * @var Helper
-     */
-    private $helper;
-
-    /**
      * @param \Magento\Backup\Model\ResourceModel\Db $resourceDb
      * @param \Magento\Framework\App\ResourceConnection $resource
-     * @param Helper|null $helper
      */
     public function __construct(
         \Magento\Backup\Model\ResourceModel\Db $resourceDb,
-        \Magento\Framework\App\ResourceConnection $resource,
-        Helper $helper = null
+        \Magento\Framework\App\ResourceConnection $resource
     ) {
         $this->_resourceDb = $resourceDb;
         $this->_resource = $resource;
-        $this->helper = $helper ?: ObjectManager::getInstance()->get(Helper::class);
     }
 
     /**
@@ -75,8 +62,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Tables list.
-     *
      * @return array
      */
     public function getTables()
@@ -85,8 +70,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Command to recreate given table.
-     *
      * @param string $tableName
      * @param bool $addDropIfExists
      * @return string
@@ -97,8 +80,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Generate table's data dump.
-     *
      * @param string $tableName
      * @return string
      */
@@ -108,8 +89,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Header for dumps.
-     *
      * @return string
      */
     public function getHeader()
@@ -118,8 +97,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Footer for dumps.
-     *
      * @return string
      */
     public function getFooter()
@@ -128,8 +105,6 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * Get backup SQL.
-     *
      * @return string
      */
     public function renderSql()
@@ -148,15 +123,13 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
     }
 
     /**
-     * @inheritDoc
-     * @throws LocalizedException
+     * Create backup and stream write to adapter
+     *
+     * @param \Magento\Framework\Backup\Db\BackupInterface $backup
+     * @return $this
      */
     public function createBackup(\Magento\Framework\Backup\Db\BackupInterface $backup)
     {
-        if (!$this->helper->isEnabled()) {
-            throw new LocalizedException(__('Backup functionality is disabled'));
-        }
-
         $backup->open(true);
 
         $this->getResource()->beginTransaction();
@@ -204,6 +177,8 @@ class Db implements \Magento\Framework\Backup\Db\BackupDbInterface
         $this->getResource()->commitTransaction();
 
         $backup->close();
+
+        return $this;
     }
 
     /**

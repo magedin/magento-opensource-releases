@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Order;
@@ -21,7 +21,7 @@ class Info extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/info.phtml';
+    protected $_template = 'order/info.phtml';
 
     /**
      * Core registry

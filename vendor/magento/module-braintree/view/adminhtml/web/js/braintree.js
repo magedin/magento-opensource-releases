@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true*/
@@ -116,7 +116,7 @@ define([
         },
 
         /**
-         * Retrieves client token and setup Braintree SDK
+         * Setup Braintree SDK
          */
         initBraintree: function () {
             var self = this;
@@ -124,57 +124,40 @@ define([
             try {
                 $('body').trigger('processStart');
 
-                $.getJSON(self.clientTokenUrl).done(function (response) {
-                    self.clientToken = response.clientToken;
-                    self._initBraintree();
-                }).fail(function (response) {
-                    var failed = JSON.parse(response.responseText);
+                self.braintree.setup(self.clientToken, 'custom', {
+                    id: self.selector,
+                    hostedFields: self.getHostedFields(),
 
-                    $('body').trigger('processStop');
-                    self.error(failed.message);
+                    /**
+                     * Triggered when sdk was loaded
+                     */
+                    onReady: function () {
+                        $('body').trigger('processStop');
+                    },
+
+                    /**
+                     * Callback for success response
+                     * @param {Object} response
+                     */
+                    onPaymentMethodReceived: function (response) {
+                        if (self.validateCardType()) {
+                            self.setPaymentDetails(response.nonce);
+                            self.placeOrder();
+                        }
+                    },
+
+                    /**
+                     * Error callback
+                     * @param {Object} response
+                     */
+                    onError: function (response) {
+                        self.error(response.message);
+                    }
                 });
             } catch (e) {
                 $('body').trigger('processStop');
                 self.error(e.message);
             }
-        },
-
-        /**
-         * Setup Braintree SDK
-         */
-        _initBraintree: function () {
-            var self = this;
-
-            self.braintree.setup(self.clientToken, 'custom', {
-                id: self.selector,
-                hostedFields: self.getHostedFields(),
-
-                /**
-                 * Triggered when sdk was loaded
-                 */
-                onReady: function () {
-                    $('body').trigger('processStop');
-                },
-
-                /**
-                 * Callback for success response
-                 * @param {Object} response
-                 */
-                onPaymentMethodReceived: function (response) {
-                    if (self.validateCardType()) {
-                        self.setPaymentDetails(response.nonce);
-                        self.placeOrder();
-                    }
-                },
-
-                /**
-                 * Error callback
-                 * @param {Object} response
-                 */
-                onError: function (response) {
-                    self.error(response.message);
-                }
-            });
         },
 
         /**

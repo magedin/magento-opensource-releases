@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data\Collection;
@@ -627,7 +627,7 @@ abstract class AbstractDb extends \Magento\Framework\Data\Collection
     /**
      * Overridden to use _idFieldName by default.
      *
-     * @param string|null $valueField
+     * @param null $valueField
      * @param string $labelField
      * @param array $additional
      * @return array

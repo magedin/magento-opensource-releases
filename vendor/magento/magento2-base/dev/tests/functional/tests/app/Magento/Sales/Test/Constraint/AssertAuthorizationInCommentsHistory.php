@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -38,7 +38,7 @@ class AssertAuthorizationInCommentsHistory extends AbstractConstraint
         $salesOrder->open();
         $salesOrder->getSalesOrderGrid()->searchAndOpen(['id' => $orderId]);
 
-        $actualAuthorizedAmount = $salesOrderView->getOrderHistoryBlock()->getAuthorizedAmount();
+        $actualAuthorizedAmount = $salesOrderView->getOrderHistoryBlock()->getCommentsHistory();
 
         \PHPUnit_Framework_Assert::assertContains(
             self::AUTHORIZED_AMOUNT . $prices['grandTotal'],

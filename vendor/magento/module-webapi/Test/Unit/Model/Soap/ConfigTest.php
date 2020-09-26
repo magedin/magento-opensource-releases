@@ -2,7 +2,7 @@
 /**
  * Config helper Unit tests.
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -40,9 +40,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             ['_typeProcessor' => $typeProcessor],
             ''
         );
-        $classReflection->expects($this->any())
-            ->method('reflectClassMethods')
-            ->willReturn(['activate' => [], 'getById' => []]);
+        $classReflection->expects($this->any())->method('reflectClassMethods')->will($this->returnValue([]));
 
         $servicesConfig = [
             'services' => [
@@ -56,8 +54,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                                     ],
                                 ],
                                 'secure' => false,
-                                'realMethod' => 'activate',
-                                'parameters' => [],
                             ],
                         ],
                     ],
@@ -65,15 +61,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                 'Magento\Customer\Api\CustomerRepositoryInterface' => [
                     'V1' => [
                         'methods' => [
-                            'getSelf' => [
+                            'getById' => [
                                 'resources' => [
                                     [
                                         'Magento_Customer::customer',
                                     ],
                                 ],
                                 'secure' => false,
-                                'realMethod' => 'getById',
-                                'parameters' => []
                             ],
                         ],
                     ],
@@ -130,11 +124,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                     'methods' => [
                         'activate' => [
                             'method' => 'activate',
-                            'inputRequired' => false,
-                            'isSecure' => false,
+                            'inputRequired' => '',
+                            'isSecure' => '',
                             'resources' => [['Magento_Customer::manage']],
-                            'methodAlias' => 'activate',
-                            'parameters' => []
                         ],
                     ],
                     'class' => 'Magento\Customer\Api\AccountManagementInterface',
@@ -156,10 +148,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'method' => 'getById',
             'isSecure' => false,
             'resources' => [['Magento_Customer::customer']],
-            'parameters' => []
         ];
         $methodInfo = $this->_soapConfig->getServiceMethodInfo(
-            'customerCustomerRepositoryV1GetSelf',
+            'customerCustomerRepositoryV1GetById',
             ['customerCustomerRepositoryV1', 'moduleBazV1']
         );
         $this->assertEquals($expectedResult, $methodInfo);

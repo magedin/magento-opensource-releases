@@ -1,42 +1,34 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogUrlRewrite\Model\Category\Plugin;
 
+use Magento\CatalogUrlRewrite\Model\Category\ProductFactory;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\UrlRewrite\Model\StorageInterface;
 use Magento\UrlRewrite\Model\UrlFinderInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\Product;
 
 class Storage
 {
-    /**
-     * Url Finder Interface.
-     *
-     * @var UrlFinderInterface
-     */
-    private $urlFinder;
+    /** @var UrlFinderInterface */
+    protected $urlFinder;
 
-    /**
-     * Product resource model.
-     *
-     * @var Product
-     */
-    private $productResource;
+    /** @var ProductFactory */
+    protected $productFactory;
 
     /**
      * @param UrlFinderInterface $urlFinder
-     * @param Product $productResource
+     * @param ProductFactory $productFactory
      */
     public function __construct(
         UrlFinderInterface $urlFinder,
-        Product $productResource
+        ProductFactory $productFactory
     ) {
         $this->urlFinder = $urlFinder;
-        $this->productResource = $productResource;
+        $this->productFactory = $productFactory;
     }
 
     /**
@@ -59,7 +51,7 @@ class Storage
             ];
         }
         if ($toSave) {
-            $this->productResource->saveMultiple($toSave);
+            $this->productFactory->create()->getResource()->saveMultiple($toSave);
         }
     }
 
@@ -71,7 +63,14 @@ class Storage
      */
     public function beforeDeleteByData(StorageInterface $object, array $data)
     {
-        $this->productResource->removeMultipleByProductCategory($data);
+        $toRemove = [];
+        $records = $this->urlFinder->findAllByData($data);
+        foreach ($records as $record) {
+            $toRemove[] = $record->getUrlRewriteId();
+        }
+        if ($toRemove) {
+            $this->productFactory->create()->getResource()->removeMultiple($toRemove);
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Vault\Test\TestStep;
@@ -11,12 +11,9 @@ use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\Fixture\InjectableFixture;
 use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestStep\TestStepInterface;
-use Magento\Vault\Test\Constraint\AssertStoredPaymentDeletedMessage;
-use Magento\Vault\Test\Page\StoredPaymentMethods;
+use Magento\Vault\Test\Constraint\AssertCreditCardDeletedMessage;
+use Magento\Vault\Test\Page\MyCreditCards;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class DeleteCreditCardFromMyAccountStep implements TestStepInterface
 {
     /**
@@ -45,43 +42,43 @@ class DeleteCreditCardFromMyAccountStep implements TestStepInterface
     private $creditCard;
 
     /**
-     * @var AssertStoredPaymentDeletedMessage
+     * @var AssertCreditCardDeletedMessage
      */
-    private $assertStoredPaymentDeletedMessage;
+    private $assertCreditCardDeletedMessage;
 
     /**
-     * @var StoredPaymentMethods
+     * @var $myCreditCardsPage
      */
-    private $storedPaymentMethodsPage;
+    private $myCreditCardsPage;
 
     /**
      * DeleteCreditCardFromMyAccountStep constructor.
      *
-     * @param StoredPaymentMethods $storedPaymentMethodsPage
+     * @param MyCreditCards $myCreditCardsPage
      * @param Customer $customer
      * @param ObjectManager $objectManager
      * @param CustomerAccountIndex $customerAccountIndex
      * @param FixtureFactory $fixtureFactory
-     * @param AssertStoredPaymentDeletedMessage $assertStoredPaymentDeletedMessage
+     * @param AssertCreditCardDeletedMessage $assertCreditCardDeletedMessage
      * @param array $creditCard
      * @param string $creditCardClass
      */
     public function __construct(
-        StoredPaymentMethods $storedPaymentMethodsPage,
+        MyCreditCards $myCreditCardsPage,
         Customer $customer,
         ObjectManager $objectManager,
         CustomerAccountIndex $customerAccountIndex,
         FixtureFactory $fixtureFactory,
-        AssertStoredPaymentDeletedMessage $assertStoredPaymentDeletedMessage,
+        AssertCreditCardDeletedMessage $assertCreditCardDeletedMessage,
         array $creditCard,
         $creditCardClass = 'credit_card'
     ) {
-        $this->storedPaymentMethodsPage = $storedPaymentMethodsPage;
+        $this->myCreditCardsPage = $myCreditCardsPage;
         $this->customer = $customer;
         $this->objectManager = $objectManager;
         $this->customerAccountIndex = $customerAccountIndex;
         $this->fixtureFactory = $fixtureFactory;
-        $this->assertStoredPaymentDeletedMessage = $assertStoredPaymentDeletedMessage;
+        $this->assertCreditCardDeletedMessage = $assertCreditCardDeletedMessage;
         $this->creditCard = $fixtureFactory->createByCode($creditCardClass, ['dataset' => $creditCard['dataset']]);
     }
 
@@ -96,18 +93,18 @@ class DeleteCreditCardFromMyAccountStep implements TestStepInterface
             \Magento\Customer\Test\TestStep\LoginCustomerOnFrontendStep::class,
             ['customer' => $this->customer]
         )->run();
-        $this->customerAccountIndex->getAccountMenuBlock()->openMenuItem('Stored Payment Methods');
-        $storedPaymentsBlock = $this->storedPaymentMethodsPage->getStoredPaymentsBlock();
+        $this->customerAccountIndex->getAccountMenuBlock()->openMenuItem('My Credit Cards');
+        $myCreditCardsBlock = $this->myCreditCardsPage->getCreditCardsBlock();
 
         $creditCardData = $this->creditCard->getData();
         $creditCardNumber = preg_grep('/([a-z]+)_number/', array_flip($creditCardData));
         $lastFourDigits = substr(key($creditCardNumber), -4, 4);
 
-        $availableCreditCards = $storedPaymentsBlock->getCreditCards();
+        $availableCreditCards = $myCreditCardsBlock->getCreditCards();
         if (key_exists($lastFourDigits, $availableCreditCards)) {
-            $storedPaymentsBlock->deleteCreditCard($availableCreditCards[$lastFourDigits]);
+            $myCreditCardsBlock->deleteCreditCard($availableCreditCards[$lastFourDigits]);
         }
-        $this->assertStoredPaymentDeletedMessage->processAssert($this->storedPaymentMethodsPage);
+        $this->assertCreditCardDeletedMessage->processAssert($this->myCreditCardsPage);
 
         return ['deletedCreditCard' => $lastFourDigits];
     }

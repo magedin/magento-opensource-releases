@@ -1,13 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Model\Design\Backend;
 
 use Magento\Config\Model\Config\Backend\Serialized\ArraySerialized;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Unserialize\SecureUnserializer;
 
 class Exceptions extends ArraySerialized
 {
@@ -17,11 +15,6 @@ class Exceptions extends ArraySerialized
      * @var \Magento\Framework\View\DesignInterface
      */
     protected $_design = null;
-
-    /**
-     * @var SecureUnserializer
-     */
-    private $secureUnserializer;
 
     /**
      * Initialize dependencies
@@ -34,7 +27,6 @@ class Exceptions extends ArraySerialized
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
-     * @param SecureUnserializer|null $secureUnserializer
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -44,12 +36,9 @@ class Exceptions extends ArraySerialized
         \Magento\Framework\View\DesignInterface $design,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = [],
-        SecureUnserializer $secureUnserializer = null
+        array $data = []
     ) {
         $this->_design = $design;
-        $this->secureUnserializer = $secureUnserializer ?:
-            ObjectManager::getInstance()->create(SecureUnserializer::class);
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
 
@@ -166,26 +155,6 @@ class Exceptions extends ArraySerialized
      */
     public function getValue()
     {
-        return $this->validateValue($this->getData('value')) ?: [];
-    }
-
-    /**
-     * Validate config on appropriate value
-     *
-     * @param string $value
-     * @return bool
-     */
-    private function validateValue($value)
-    {
-        try {
-            if (is_string($value)) {
-                $this->secureUnserializer->unserialize($value);
-            }
-        } catch (\InvalidArgumentException $e) {
-            $this->_logger->critical($e->getMessage());
-            $value = false;
-        }
-
-        return $value;
+        return $this->getData('value') ?: [];
     }
 }

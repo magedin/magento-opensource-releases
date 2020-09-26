@@ -1,12 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\System\Store\Delete;
-
-use Magento\Backup\Helper\Data as BackupHelper;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Adminhtml cms block edit form
@@ -15,29 +12,6 @@ use Magento\Framework\App\ObjectManager;
  */
 class Form extends \Magento\Backend\Block\Widget\Form\Generic
 {
-    /**
-     * @var BackupHelper
-     */
-    private $backup;
-
-    /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Data\FormFactory $formFactory
-     * @param array $data
-     * @param BackupHelper|null $backup
-     */
-    public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Data\FormFactory $formFactory,
-        array $data = [],
-        BackupHelper $backup = null
-    ) {
-        parent::__construct($context, $registry, $formFactory, $data);
-        $this->backup = $backup ?: ObjectManager::getInstance()->get(BackupHelper::class);
-    }
-
     /**
      * Init form
      *
@@ -51,7 +25,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function _prepareForm()
     {
@@ -71,12 +45,6 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
 
         $fieldset->addField('item_id', 'hidden', ['name' => 'item_id', 'value' => $dataObject->getId()]);
 
-        $backupOptions = ['0' => __('No')];
-        $backupSelected = '0';
-        if ($this->backup->isEnabled()) {
-            $backupOptions['1'] = __('Yes');
-            $backupSelected = '1';
-        }
         $fieldset->addField(
             'create_backup',
             'select',
@@ -84,8 +52,8 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'label' => __('Create DB Backup'),
                 'title' => __('Create DB Backup'),
                 'name' => 'create_backup',
-                'options' => $backupOptions,
-                'value' => $backupSelected
+                'options' => ['1' => __('Yes'), '0' => __('No')],
+                'value' => '1'
             ]
         );
 

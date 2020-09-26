@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Account;
@@ -35,6 +35,9 @@ class Index extends \Magento\Customer\Controller\AbstractAccount
      */
     public function execute()
     {
-        return $this->resultPageFactory->create();
+        /** @var \Magento\Framework\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->getConfig()->getTitle()->set(__('My Account'));
+        return $resultPage;
     }
 }

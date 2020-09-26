@@ -1,16 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model;
 
-use Magento\Authorization\Model\UserContextInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
 use Magento\Framework\Api\AttributeValueFactory;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Convert\ConvertArray;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Profiler;
@@ -30,8 +27,6 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
  * @method Category setUrlPath(string $urlPath)
  * @method Category getSkipDeleteChildren()
  * @method Category setSkipDeleteChildren(boolean $value)
- * @method Category setChangedProductIds(array $categoryIds) Set products ids that inserted or deleted for category
- * @method array getChangedProductIds() Get products ids that inserted or deleted for category
  *
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
@@ -116,11 +111,6 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
      * @var \Magento\Framework\UrlInterface
      */
     protected $_url;
-
-    /**
-     * @var ResourceModel\Category
-     */
-    protected $_resource;
 
     /**
      * URL rewrite model
@@ -236,16 +226,6 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
     protected $metadataService;
 
     /**
-     * @var UserContextInterface
-     */
-    private $userContext;
-
-    /**
-     * @var AuthorizationInterface
-     */
-    private $authorization;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -326,10 +306,10 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
     {
         // If Flat Index enabled then use it but only on frontend
         if ($this->flatState->isAvailable()) {
-            $this->_init(\Magento\Catalog\Model\ResourceModel\Category\Flat::class);
+            $this->_init('Magento\Catalog\Model\ResourceModel\Category\Flat');
             $this->_useFlatResource = true;
         } else {
-            $this->_init(\Magento\Catalog\Model\ResourceModel\Category::class);
+            $this->_init('Magento\Catalog\Model\ResourceModel\Category');
         }
     }
 
@@ -343,16 +323,6 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
             $this->customAttributesCodes = array_diff($this->customAttributesCodes, $this->interfaceAttributes);
         }
         return $this->customAttributesCodes;
-    }
-
-    /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @return \Magento\Catalog\Model\ResourceModel\Category
-     * @deprecated because resource models should be used directly
-     */
-    protected function _getResource()
-    {
-        return parent::_getResource();
     }
 
     /**
@@ -682,16 +652,14 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
     }
 
     /**
-     * Get image url by attribute code.
+     * Retrieve image URL
      *
-     * @param string $attributeCode
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getImageUrl($attributeCode = 'image')
+    public function getImageUrl()
     {
         $url = false;
-        $image = $this->getData($attributeCode);
+        $image = $this->getImage();
         if ($image) {
             if (is_string($image)) {
                 $url = $this->_storeManager->getStore()->getBaseUrl(
@@ -703,7 +671,6 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
                 );
             }
         }
-
         return $url;
     }
 
@@ -732,7 +699,7 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
             return $parentId;
         }
         $parentIds = $this->getParentIds();
-        return (int)array_pop($parentIds);
+        return intval(array_pop($parentIds));
     }
 
     /**
@@ -930,59 +897,6 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
     }
 
     /**
-     * Get user context.
-     *
-     * @return UserContextInterface
-     */
-    private function getUserContext()
-    {
-        if (!$this->userContext) {
-            $this->userContext = ObjectManager::getInstance()->get(UserContextInterface::class);
-        }
-
-        return $this->userContext;
-    }
-
-    /**
-     * Get authorization service.
-     *
-     * @return AuthorizationInterface
-     */
-    private function getAuthorization()
-    {
-        if (!$this->authorization) {
-            $this->authorization = ObjectManager::getInstance()->get(AuthorizationInterface::class);
-        }
-
-        return $this->authorization;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave()
-    {
-        //Validate changing of design.
-        $userType = $this->getUserContext()->getUserType();
-        if (($userType === UserContextInterface::USER_TYPE_ADMIN
-                || $userType === UserContextInterface::USER_TYPE_INTEGRATION)
-            && !$this->getAuthorization()->isAllowed('Magento_Catalog::edit_category_design')
-        ) {
-            foreach ($this->_designAttributes as $attributeCode) {
-                $this->setData($attributeCode, $value = $this->getOrigData($attributeCode));
-                if (!empty($this->_data[self::CUSTOM_ATTRIBUTES])
-                    && array_key_exists($attributeCode, $this->_data[self::CUSTOM_ATTRIBUTES])
-                ) {
-                    //In case custom attribute were used to update the entity.
-                    $this->_data[self::CUSTOM_ATTRIBUTES][$attributeCode]->setValue($value);
-                }
-            }
-        }
-
-        return parent::beforeSave();
-    }
-
-    /**
      * Retrieve anchors above
      *
      * @return array
@@ -1019,11 +933,8 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function getProductCount()
     {
-        if (!$this->hasData(self::KEY_PRODUCT_COUNT)) {
-            $count = $this->_getResource()->getProductCount($this);
-            $this->setData(self::KEY_PRODUCT_COUNT, $count);
-        }
-
+        $count = $this->_getResource()->getProductCount($this);
+        $this->setData(self::KEY_PRODUCT_COUNT, $count);
         return $this->getData(self::KEY_PRODUCT_COUNT);
     }
 
@@ -1178,11 +1089,7 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
         if ($this->flatState->isFlatEnabled()) {
             $flatIndexer = $this->indexerRegistry->get(Indexer\Category\Flat\State::INDEXER_ID);
             if (!$flatIndexer->isScheduled()) {
-                $idsList = [$this->getId()];
-                if ($this->dataHasChangedFor('url_key')) {
-                    $idsList = array_merge($idsList, explode(',', $this->getAllChildren()));
-                }
-                $flatIndexer->reindexList($idsList);
+                $flatIndexer->reindexRow($this->getId());
             }
         }
         $productIndexer = $this->indexerRegistry->get(Indexer\Category\Product::INDEXER_ID);
@@ -1211,25 +1118,15 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function getIdentities()
     {
-        $identities = [];
-        if ($this->getId()) {
-            if ($this->getAffectedCategoryIds()) {
-                foreach (array_unique($this->getAffectedCategoryIds()) as $affectedCategoryId) {
-                    $identities[] = self::CACHE_TAG . '_' . $affectedCategoryId;
-                }
-            } else {
-                $identities[] = self::CACHE_TAG . '_' . $this->getId();
-            }
-
-            if ($this->hasDataChanges() || $this->isDeleted() || $this->dataHasChangedFor(self::KEY_INCLUDE_IN_MENU)) {
-                $identities[] = Product::CACHE_PRODUCT_CATEGORY_TAG . '_' . $this->getId();
-            }
-
-            if ($this->isObjectNew()) {
-                $identities[] = self::CACHE_TAG;
-            }
+        $identities = [
+            self::CACHE_TAG . '_' . $this->getId(),
+        ];
+        if (!$this->getId() || $this->hasDataChanges()
+            || $this->isDeleted() || $this->dataHasChangedFor(self::KEY_INCLUDE_IN_MENU)
+        ) {
+            $identities[] = self::CACHE_TAG;
+            $identities[] = Product::CACHE_PRODUCT_CATEGORY_TAG . '_' . $this->getId();
         }
-
         return $identities;
     }
 

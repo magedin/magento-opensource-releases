@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Pricing\Price;
@@ -97,10 +97,6 @@ class CustomOptionPriceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @param array $optionsData
-     * @return array
-     */
     protected function setupOptions(array $optionsData)
     {
         $options = [];
@@ -129,10 +125,6 @@ class CustomOptionPriceTest extends \PHPUnit_Framework_TestCase
         return $options;
     }
 
-    /**
-     * @param $optionsData
-     * @return array
-     */
     protected function setupSingleValueOptions($optionsData)
     {
         $options = [];

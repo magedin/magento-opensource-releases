@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Test\Unit\Block\Adminhtml\Promo\Quote\Edit;
@@ -25,21 +25,19 @@ class DeleteButtonTest extends \PHPUnit_Framework_TestCase
      */
     protected $registryMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $this->urlBuilderMock = $this->getMock(\Magento\Framework\UrlInterface::class, [], [], '', false);
-        $this->registryMock = $this->getMock(\Magento\Framework\Registry::class, [], [], '', false);
-        $contextMock = $this->getMock(\Magento\Backend\Block\Widget\Context::class, [], [], '', false);
+        $this->urlBuilderMock = $this->getMock('\Magento\Framework\UrlInterface', [], [], '', false);
+        $this->registryMock = $this->getMock('\Magento\Framework\Registry', [], [], '', false);
+        $contextMock = $this->getMock('\Magento\Backend\Block\Widget\Context', [], [], '', false);
+
         $contextMock->expects($this->once())->method('getUrlBuilder')->willReturn($this->urlBuilderMock);
 
         $this->model = (new ObjectManager($this))->getObject(
-            \Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\DeleteButton::class,
+            'Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\DeleteButton',
             [
                 'context' => $contextMock,
-                'registry' => $this->registryMock,
+                'registry' => $this->registryMock
             ]
         );
     }
@@ -64,7 +62,7 @@ class DeleteButtonTest extends \PHPUnit_Framework_TestCase
             'class' => 'delete',
             'on_click' => 'deleteConfirm(\'' . __(
                 'Are you sure you want to delete this?'
-            ) . '\', \'' . $deleteUrl . '\', {data: {}})',
+            ) . '\', \'' . $deleteUrl . '\')',
             'sort_order' => 20,
         ];
 

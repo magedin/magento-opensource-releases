@@ -25,7 +25,7 @@ class Placeholder extends AbstractHelper
      *
      * @var array
      */
-    protected $items = [];
+    protected $items = array();
 
     /**
      * Default container class
@@ -59,7 +59,7 @@ class Placeholder extends AbstractHelper
      * @param  array $value
      * @return Container\AbstractContainer
      */
-    public function createContainer($key, array $value = [])
+    public function createContainer($key, array $value = array())
     {
         $key = (string) $key;
 

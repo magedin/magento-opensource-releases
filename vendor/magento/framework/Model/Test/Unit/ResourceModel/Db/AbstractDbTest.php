@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -165,9 +165,6 @@ class AbstractDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->_model->getMainTable());
     }
 
-    /**
-     * @return array
-     */
     public function getTableDataProvider()
     {
         return [
@@ -219,9 +216,6 @@ class AbstractDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->_model->getChecksum($checksum));
     }
 
-    /**
-     * @return array
-     */
     public function getChecksumProvider()
     {
         return [
@@ -407,9 +401,6 @@ class AbstractDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->_model->hasDataChanged($abstractModelMock));
     }
 
-    /**
-     * @return array
-     */
     public function hasDataChangedDataProvider()
     {
         return [
@@ -575,9 +566,6 @@ class AbstractDbTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod->invokeArgs($model, [$inputObject]);
     }
 
-    /**
-     * @return array
-     */
     public function saveNewObjectDataProvider()
     {
         return [[true], [false]];

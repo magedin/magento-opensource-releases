@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,7 +9,6 @@
 namespace Magento\Sitemap\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Robots\Model\Config\Value;
 
 /**
  * Sitemap model
@@ -29,7 +28,7 @@ use Magento\Robots\Model\Config\Value;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
+class Sitemap extends \Magento\Framework\Model\AbstractModel
 {
     const OPEN_TAG_KEY = 'start';
 
@@ -148,13 +147,6 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
     protected $dateTime;
 
     /**
-     * Model cache tag for clear cache in after save and after delete
-     *
-     * @var string
-     */
-    protected $_cacheTag = true;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Escaper $escaper
@@ -199,7 +191,6 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
         $this->_storeManager = $storeManager;
         $this->_request = $request;
         $this->dateTime = $dateTime;
-
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -210,7 +201,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
      */
     protected function _construct()
     {
-        $this->_init(\Magento\Sitemap\Model\ResourceModel\Sitemap::class);
+        $this->_init('Magento\Sitemap\Model\ResourceModel\Sitemap');
     }
 
     /**
@@ -387,6 +378,11 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
             $this->_createSitemapIndex();
         }
 
+        // Push sitemap to robots.txt
+        if ($this->_isEnabledSubmissionRobots()) {
+            $this->_addSitemapToRobotsTxt($this->getSitemapFilename());
+        }
+
         $this->setSitemapTime($this->_dateModel->gmtDate('Y-m-d H:i:s'));
         $this->save();
 
@@ -463,10 +459,10 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
             $row .= '<lastmod>' . $this->_getFormattedLastmodDate($lastmod) . '</lastmod>';
         }
         if ($changefreq) {
-            $row .= '<changefreq>' . $this->_escaper->escapeHtml($changefreq) . '</changefreq>';
+            $row .= '<changefreq>' . $changefreq . '</changefreq>';
         }
         if ($priority) {
-            $row .= sprintf('<priority>%.1f</priority>', $this->_escaper->escapeHtml($priority));
+            $row .= sprintf('<priority>%.1f</priority>', $priority);
         }
         if ($images) {
             // Add Images to sitemap
@@ -590,12 +586,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
      */
     protected function _getStoreBaseUrl($type = \Magento\Framework\UrlInterface::URL_TYPE_LINK)
     {
-        /** @var \Magento\Store\Model\Store $store */
-        $store = $this->_storeManager->getStore($this->getStoreId());
-
-        $isSecure = $store->isUrlSecure();
-
-        return rtrim($store->getBaseUrl($type, $isSecure), '/') . '/';
+        return rtrim($this->_storeManager->getStore($this->getStoreId())->getBaseUrl($type), '/') . '/';
     }
 
     /**
@@ -684,8 +675,6 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
      * Check is enabled submission to robots.txt
      *
      * @return bool
-     * @deprecated Because the robots.txt file is not generated anymore,
-     *             this method is not needed and will be removed in major release.
      */
     protected function _isEnabledSubmissionRobots()
     {
@@ -700,8 +689,6 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
      *
      * @param string $sitemapFileName
      * @return void
-     * @deprecated Because the robots.txt file is not generated anymore,
-     *             this method is not needed and will be removed in major release.
      */
     protected function _addSitemapToRobotsTxt($sitemapFileName)
     {
@@ -738,17 +725,5 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel implements \Magento
         }
 
         return PHP_EOL;
-    }
-
-    /**
-     * Get unique page cache identities
-     *
-     * @return array
-     */
-    public function getIdentities()
-    {
-        return [
-            Value::CACHE_TAG . '_' . $this->getStoreId(),
-        ];
     }
 }

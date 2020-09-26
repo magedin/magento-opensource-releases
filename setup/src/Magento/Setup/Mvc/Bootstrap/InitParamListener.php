@@ -1,8 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\Setup\Mvc\Bootstrap;
 
 use Magento\Framework\App\Bootstrap as AppBootstrap;
@@ -22,7 +23,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 
 /**
- * A listener that injects relevant Magento initialization parameters and initializes filesystem.
+ * A listener that injects relevant Magento initialization parameters and initializes Magento\Filesystem component.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -34,6 +35,8 @@ class InitParamListener implements ListenerAggregateInterface, FactoryInterface
     const BOOTSTRAP_PARAM = 'magento-init-params';
 
     /**
+     * List of ZF event listeners
+     *
      * @var \Zend\Stdlib\CallbackHandler[]
      */
     private $listeners = [];
@@ -99,7 +102,7 @@ class InitParamListener implements ListenerAggregateInterface, FactoryInterface
      * Check if user login
      *
      * @param \Zend\Mvc\MvcEvent $event
-     * @return false|\Zend\Http\Response
+     * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function authPreDispatch($event)
@@ -132,26 +135,17 @@ class InitParamListener implements ListenerAggregateInterface, FactoryInterface
                         'appState' => $adminAppState
                     ]
                 );
-
-                /** @var \Magento\Backend\Model\Auth $auth */
-                $authentication = $objectManager->get(\Magento\Backend\Model\Auth::class);
-
-                if (!$authentication->isLoggedIn() ||
-                    !$adminSession->isAllowed('Magento_Backend::setup_wizard')
-                ) {
+                if (!$objectManager->get(\Magento\Backend\Model\Auth::class)->isLoggedIn()) {
                     $adminSession->destroy();
-                    /** @var \Zend\Http\Response $response */
                     $response = $event->getResponse();
                     $baseUrl = Http::getDistroBaseUrlPath($_SERVER);
                     $response->getHeaders()->addHeaderLine('Location', $baseUrl . 'index.php/session/unlogin');
                     $response->setStatusCode(302);
                     $event->stopPropagation();
-
                     return $response;
                 }
             }
         }
-
         return false;
     }
 
@@ -166,9 +160,9 @@ class InitParamListener implements ListenerAggregateInterface, FactoryInterface
         /** @var \Magento\Backend\App\BackendAppList $backendAppList */
         $backendAppList = $objectManager->get(\Magento\Backend\App\BackendAppList::class);
         $backendApp = $backendAppList->getBackendApp('setup');
-        /** @var \Magento\Backend\Model\Url $url */
-        $url = $objectManager->create(\Magento\Backend\Model\Url::class);
-        $baseUrl = parse_url($url->getBaseUrl(), PHP_URL_PATH);
+        /** @var \Magento\Backend\Model\UrlFactory $backendUrlFactory */
+        $backendUrlFactory = $objectManager->get(\Magento\Backend\Model\UrlFactory::class);
+        $baseUrl = parse_url($backendUrlFactory->create()->getBaseUrl(), PHP_URL_PATH);
         $baseUrl = \Magento\Framework\App\Request\Http::getUrlNoScript($baseUrl);
         $cookiePath = $baseUrl . $backendApp->getCookiePath();
         return $cookiePath;

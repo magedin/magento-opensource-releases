@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Page;
@@ -24,15 +24,12 @@ class MassDisableTest extends AbstractMassActionTest
      */
     protected $pageCollectionMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         parent::setUp();
 
         $this->collectionFactoryMock = $this->getMock(
-            \Magento\Cms\Model\ResourceModel\Page\CollectionFactory::class,
+            'Magento\Cms\Model\ResourceModel\Page\CollectionFactory',
             ['create'],
             [],
             '',
@@ -40,21 +37,15 @@ class MassDisableTest extends AbstractMassActionTest
         );
 
         $this->pageCollectionMock = $this->getMock(
-            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
+            'Magento\Cms\Model\ResourceModel\Page\Collection',
             [],
             [],
             '',
             false
         );
 
-        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
-
         $this->massDisableController = $this->objectManager->getObject(
-            \Magento\Cms\Controller\Adminhtml\Page\MassDisable::class,
+            'Magento\Cms\Controller\Adminhtml\Page\MassDisable',
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
@@ -85,7 +76,7 @@ class MassDisableTest extends AbstractMassActionTest
             ->willReturn(new \ArrayIterator($collection));
 
         $this->messageManagerMock->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('A total of %1 record(s) have been disabled.', $disabledPagesCount));
         $this->messageManagerMock->expects($this->never())->method('addError');
 
@@ -104,10 +95,13 @@ class MassDisableTest extends AbstractMassActionTest
      */
     protected function getPageMock()
     {
-        $pageMock = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Page\Collection::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setIsActive', 'save'])
-            ->getMock();
+        $pageMock = $this->getMock(
+            'Magento\Cms\Model\ResourceModel\Page\Collection',
+            ['setIsActive', 'save'],
+            [],
+            '',
+            false
+        );
         $pageMock->expects($this->once())->method('setIsActive')->with(false)->willReturn(true);
         $pageMock->expects($this->once())->method('save')->willReturn(true);
 

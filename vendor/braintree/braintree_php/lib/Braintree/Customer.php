@@ -59,7 +59,7 @@ class Customer extends Base
     /**
      *
      * @param array $attribs
-     * @return Result\Successful|Result\Error
+     * @return Customer
      */
     public static function create($attribs = [])
     {
@@ -296,14 +296,6 @@ class Customer extends Base
         }
         $this->_set('venmoAccounts', $venmoAccountArray);
 
-        $usBankAccountArray = array();
-        if (isset($customerAttribs['usBankAccounts'])) {
-            foreach ($customerAttribs['usBankAccounts'] AS $usBankAccount) {
-                $usBankAccountArray[] = UsBankAccount::factory($usBankAccount);
-            }
-        }
-        $this->_set('usBankAccounts', $usBankAccountArray);
-
         $this->_set('paymentMethods', array_merge(
             $this->creditCards,
             $this->paypalAccounts,
@@ -311,8 +303,7 @@ class Customer extends Base
             $this->coinbaseAccounts,
             $this->androidPayCards,
             $this->amexExpressCheckoutCards,
-            $this->venmoAccounts,
-            $this->usBankAccounts
+            $this->venmoAccounts
         ));
     }
 

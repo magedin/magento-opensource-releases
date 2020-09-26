@@ -82,18 +82,18 @@ class Captcha extends Element implements InputProviderInterface
      */
     public function getInputSpecification()
     {
-        $spec = [
+        $spec = array(
             'name' => $this->getName(),
             'required' => true,
-            'filters' => [
-                ['name' => 'Zend\Filter\StringTrim'],
-            ],
-        ];
+            'filters' => array(
+                array('name' => 'Zend\Filter\StringTrim'),
+            ),
+        );
 
         // Test that we have a captcha before adding it to the spec
         $captcha = $this->getCaptcha();
         if ($captcha instanceof ZendCaptcha\AdapterInterface) {
-            $spec['validators'] = [$captcha];
+            $spec['validators'] = array($captcha);
         }
 
         return $spec;

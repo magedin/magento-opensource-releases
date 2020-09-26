@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -150,7 +150,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('read')
             ->with('path/to/bundle/dir/js/bundle')
-            ->willReturn(['bundle1.js', 'bundle2.js', 'some_file.not_js']);
+            ->willReturn(['bundle1.js', 'bundle2.js']);
         $dirRead
             ->expects($this->exactly(2))
             ->method('getRelativePath')

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filter\Test\Unit\Template\Tokenizer;
@@ -41,9 +41,6 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $this->_filter->getValue());
     }
 
-    /**
-     * @return array
-     */
     public function sampleTokenizeStringProvider()
     {
         return [
@@ -54,9 +51,6 @@ class ParameterTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function sampleGetValueStringProvider()
     {
         return [

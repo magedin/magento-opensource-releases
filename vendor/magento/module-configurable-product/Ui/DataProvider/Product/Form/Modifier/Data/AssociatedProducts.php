@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,8 +17,6 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Magento\Catalog\Helper\Image as ImageHelper;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Escaper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -86,11 +84,6 @@ class AssociatedProducts
     protected $imageHelper;
 
     /**
-     * @var Escaper
-     */
-    private $escaper;
-
-    /**
      * @param LocatorInterface $locator
      * @param UrlInterface $urlBuilder
      * @param ConfigurableType $configurableType
@@ -100,8 +93,6 @@ class AssociatedProducts
      * @param CurrencyInterface $localeCurrency
      * @param JsonHelper $jsonHelper
      * @param ImageHelper $imageHelper
-     * @param Escaper $escaper
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         LocatorInterface $locator,
@@ -112,8 +103,7 @@ class AssociatedProducts
         VariationMatrix $variationMatrix,
         CurrencyInterface $localeCurrency,
         JsonHelper $jsonHelper,
-        ImageHelper $imageHelper,
-        Escaper $escaper = null
+        ImageHelper $imageHelper
     ) {
         $this->locator = $locator;
         $this->urlBuilder = $urlBuilder;
@@ -124,7 +114,6 @@ class AssociatedProducts
         $this->localeCurrency = $localeCurrency;
         $this->jsonHelper = $jsonHelper;
         $this->imageHelper = $imageHelper;
-        $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
     }
 
     /**
@@ -291,9 +280,9 @@ class AssociatedProducts
                         'product_link' => '<a href="' . $this->urlBuilder->getUrl(
                             'catalog/product/edit',
                             ['id' => $product->getId()]
-                        ) . '" target="_blank">' . $this->escaper->escapeHtml($product->getName()) . '</a>',
-                        'sku' => $this->escaper->escapeHtml($product->getSku()),
-                        'name' => $this->escaper->escapeHtml($product->getName()),
+                        ) . '" target="_blank">' . $product->getName() . '</a>',
+                        'sku' => $product->getSku(),
+                        'name' => $product->getName(),
                         'qty' => $this->getProductStockQty($product),
                         'price' => $currency->toCurrency(sprintf("%f", $price), ['display' => false]),
                         'price_string' => $currency->toCurrency(sprintf("%f", $price)),

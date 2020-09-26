@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
@@ -8,10 +8,9 @@ define(
         'jquery',
         'mage/storage',
         'Magento_Ui/js/model/messageList',
-        'Magento_Customer/js/customer-data',
-        'mage/translate'
+        'Magento_Customer/js/customer-data'
     ],
-    function($, storage, globalMessageList, customerData, $t) {
+    function($, storage, globalMessageList, customerData) {
         'use strict';
         var callbacks = [],
             action = function(loginData, redirectUrl, isGlobal, messageContainer) {
@@ -40,9 +39,7 @@ define(
                         }
                     }
                 }).fail(function () {
-                    messageContainer.addErrorMessage({
-                        'message': $t('Could not authenticate. Please try again later')
-                    });
+                    messageContainer.addErrorMessage({'message': 'Could not authenticate. Please try again later'});
                     callbacks.forEach(function(callback) {
                         callback(loginData);
                     });

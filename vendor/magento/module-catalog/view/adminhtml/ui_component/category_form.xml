@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -167,7 +167,6 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="class" xsi:type="string">Magento\Catalog\Ui\Component\Category\Form\Element\Wysiwyg</item>
-                    <item name="label" xsi:type="string" translate="true">Description</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>
                     <item name="wysiwygConfigData" xsi:type="array">
                         <item name="settings" xsi:type="array">
@@ -183,7 +182,6 @@
                         <item name="add_variables" xsi:type="boolean">false</item>
                         <item name="add_widgets" xsi:type="boolean">false</item>
                         <item name="add_images" xsi:type="boolean">false</item>
-                        <item name="add_directives" xsi:type="boolean">true</item>
                     </item>
                     <item name="template" xsi:type="string">ui/form/field</item>
                     <item name="source" xsi:type="string">category</item>
@@ -219,7 +217,6 @@
                     <item name="sortOrder" xsi:type="number">70</item>
                     <item name="dataType" xsi:type="string">string</item>
                     <item name="formElement" xsi:type="string">select</item>
-                    <item name="label" xsi:type="string" translate="true">Display Mode</item>
                 </item>
             </argument>
         </field>
@@ -256,7 +253,6 @@
                         <item name="additionalClasses" xsi:type="string">admin__field-default</item>
                         <item name="formElement" xsi:type="string">multiselect</item>
                         <item name="source" xsi:type="string">category</item>
-                        <item name="label" xsi:type="string" translate="true">Available Product Listing Sort By</item>
                     </item>
                 </argument>
             </field>
@@ -294,7 +290,6 @@
                         <item name="additionalClasses" xsi:type="string">admin__field-default</item>
                         <item name="formElement" xsi:type="string">select</item>
                         <item name="source" xsi:type="string">category</item>
-                        <item name="label" xsi:type="string" translate="true">Default Product Listing Sort By</item>
                     </item>
                 </argument>
             </field>
@@ -330,7 +325,6 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="additionalClasses" xsi:type="string">admin__field-small</item>
-                        <item name="label" xsi:type="string" translate="true">Layered Navigation Price Step</item>
                         <item name="formElement" xsi:type="string">input</item>
                         <item name="source" xsi:type="string">category</item>
                         <item name="addbefore" xsi:type="string">$</item>
@@ -479,7 +473,7 @@
                     <item name="formElement" xsi:type="string">select</item>
                     <item name="label" xsi:type="string" translate="true">Theme</item>
                     <item name="imports" xsi:type="array">
-                        <item name="serviceDisabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked || $.data.serviceDisabled</item>
+                        <item name="disabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked</item>
                     </item>
                 </item>
             </argument>
@@ -492,7 +486,7 @@
                     <item name="formElement" xsi:type="string">select</item>
                     <item name="label" xsi:type="string" translate="true">Layout</item>
                     <item name="imports" xsi:type="array">
-                        <item name="serviceDisabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked || $.data.serviceDisabled</item>
+                        <item name="disabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked</item>
                     </item>
                 </item>
             </argument>
@@ -505,7 +499,7 @@
                     <item name="formElement" xsi:type="string">textarea</item>
                     <item name="label" xsi:type="string" translate="true">Layout Update XML</item>
                     <item name="imports" xsi:type="array">
-                        <item name="serviceDisabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked || $.data.serviceDisabled</item>
+                        <item name="disabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked</item>
                     </item>
                 </item>
             </argument>
@@ -520,7 +514,7 @@
                     <item name="dataType" xsi:type="string">boolean</item>
                     <item name="formElement" xsi:type="string">checkbox</item>
                     <item name="imports" xsi:type="array">
-                        <item name="serviceDisabled" xsi:type="string">${ $.parentName }.custom_use_parent_settings:checked</item>
+                        <item name="disabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked</item>
                     </item>
                     <item name="valueMap" xsi:type="array">
                         <item name="true" xsi:type="string">1</item>
@@ -564,7 +558,7 @@
                         <item name="dataType" xsi:type="string">string</item>
                         <item name="formElement" xsi:type="string">date</item>
                         <item name="imports" xsi:type="array">
-                            <item name="serviceDisabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked || $.data.serviceDisabled</item>
+                            <item name="disabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked</item>
                         </item>
                     </item>
                 </argument>
@@ -579,7 +573,7 @@
                         <item name="formElement" xsi:type="string">date</item>
                         <item name="scopeLabel" xsi:type="string"/>
                         <item name="imports" xsi:type="array">
-                            <item name="serviceDisabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked || $.data.serviceDisabled</item>
+                            <item name="disabled" xsi:type="string">ns = ${ $.ns }, index = custom_use_parent_settings :checked</item>
                         </item>
                     </item>
                 </argument>

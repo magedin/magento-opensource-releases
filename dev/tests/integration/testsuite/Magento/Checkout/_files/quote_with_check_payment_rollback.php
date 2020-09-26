@@ -2,7 +2,7 @@
 /**
  * Rollback for quote_with_check_payment.php fixture.
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 require __DIR__ . '/../../Sales/_files/default_rollback.php';

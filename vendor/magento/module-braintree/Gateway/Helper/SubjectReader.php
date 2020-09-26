@@ -1,14 +1,15 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Helper;
 
 use Braintree\Transaction;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use Magento\Quote\Model\Quote;
 use Magento\Payment\Gateway\Helper;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 
 /**
  * Class SubjectReader
@@ -82,7 +83,7 @@ class SubjectReader
      */
     public function readCustomerId(array $subject)
     {
-        if (!isset($subject['customer_id'])) {
+        if (empty($subject['customer_id'])) {
             throw new \InvalidArgumentException('The "customerId" field does not exists');
         }
 
@@ -117,16 +118,5 @@ class SubjectReader
         }
 
         return $transaction->paypal;
-    }
-
-    /**
-     * Reads store's ID, otherwise returns null.
-     *
-     * @param array $subject
-     * @return int|null
-     */
-    public function readStoreId(array $subject)
-    {
-        return !empty($subject['store_id']) ? $subject['store_id'] : null;
     }
 }

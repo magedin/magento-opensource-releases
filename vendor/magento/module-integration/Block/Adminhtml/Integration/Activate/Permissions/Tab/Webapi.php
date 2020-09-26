@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -148,11 +148,7 @@ class Webapi extends \Magento\Backend\Block\Widget\Form\Generic implements
     public function getResourcesTreeJson()
     {
         $resources = $this->_resourceProvider->getAclResources();
-        $configResource = array_filter($resources, function ($node) {
-            return isset($node['id']) && $node['id'] == 'Magento_Backend::admin';
-        });
-        $configResource = reset($configResource);
-        $aclResourcesTree = $this->_integrationData->mapResources($configResource['children']);
+        $aclResourcesTree = $this->_integrationData->mapResources($resources[1]['children']);
 
         return $this->encoder->encode($aclResourcesTree);
     }
@@ -171,11 +167,7 @@ class Webapi extends \Magento\Backend\Block\Widget\Form\Generic implements
         $selectedResources = $this->_selectedResources;
         if ($this->isEverythingAllowed()) {
             $resources = $this->_resourceProvider->getAclResources();
-            $configResource = array_filter($resources, function ($node) {
-                return isset($node['id']) && $node['id'] == 'Magento_Backend::admin';
-            });
-            $configResource = reset($configResource);
-            $selectedResources = $this->_getAllResourceIds($configResource['children']);
+            $selectedResources = $this->_getAllResourceIds($resources[1]['children']);
         }
         return $this->encoder->encode($selectedResources);
     }

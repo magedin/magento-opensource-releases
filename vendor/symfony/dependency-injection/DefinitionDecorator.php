@@ -25,7 +25,7 @@ class DefinitionDecorator extends Definition
     private $changes = array();
 
     /**
-     * @param string $parent The id of Definition instance to decorate
+     * @param string $parent The id of Definition instance to decorate.
      */
     public function __construct($parent)
     {
@@ -72,6 +72,36 @@ class DefinitionDecorator extends Definition
         $this->changes['factory'] = true;
 
         return parent::setFactory($callable);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFactoryClass($class)
+    {
+        $this->changes['factory_class'] = true;
+
+        return parent::setFactoryClass($class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFactoryMethod($method)
+    {
+        $this->changes['factory_method'] = true;
+
+        return parent::setFactoryMethod($method);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFactoryService($service, $triggerDeprecationError = true)
+    {
+        $this->changes['factory_service'] = true;
+
+        return parent::setFactoryService($service, $triggerDeprecationError);
     }
 
     /**
@@ -135,16 +165,6 @@ class DefinitionDecorator extends Definition
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setAutowired($autowired)
-    {
-        $this->changes['autowire'] = true;
-
-        return parent::setAutowired($autowired);
-    }
-
-    /**
      * Gets an argument to pass to the service constructor/factory method.
      *
      * If replaceArgument() has been used to replace an argument, this method
@@ -182,7 +202,7 @@ class DefinitionDecorator extends Definition
      * @param int   $index
      * @param mixed $value
      *
-     * @return $this
+     * @return DefinitionDecorator the current instance
      *
      * @throws InvalidArgumentException when $index isn't an integer
      */

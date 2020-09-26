@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Model;
@@ -65,13 +65,22 @@ abstract class AbstractSchemaGenerator
     }
 
     /**
-     * Retrieve a list of all services.
+     * Retrieve a list of services visible to current user.
      *
      * @return string[]
      */
     public function getListOfServices()
     {
-        return array_keys($this->serviceMetadata->getServicesConfig());
+        $listOfAllowedServices = [];
+        foreach ($this->serviceMetadata->getServicesConfig() as $serviceName => $service) {
+            foreach ($service[ServiceMetadata::KEY_SERVICE_METHODS] as $method) {
+                if ($this->authorization->isAllowed($method[ServiceMetadata::KEY_ACL_RESOURCES])) {
+                    $listOfAllowedServices[] = $serviceName;
+                    break;
+                }
+            }
+        }
+        return $listOfAllowedServices;
     }
 
     /**

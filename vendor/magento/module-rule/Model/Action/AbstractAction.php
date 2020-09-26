@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Rule\Model\Action;
@@ -46,16 +46,13 @@ abstract class AbstractAction extends \Magento\Framework\DataObject implements A
 
         $this->loadAttributeOptions()->loadOperatorOptions()->loadValueOptions();
 
-        $attributes = $this->getAttributeOption();
-        if ($attributes) {
-            reset($attributes);
-            $this->setAttribute(key($attributes));
+        foreach (array_keys($this->getAttributeOption()) as $attr) {
+            $this->setAttribute($attr);
+            break;
         }
-
-        $operators = $this->getOperatorOption();
-        if ($operators) {
-            reset($operators);
-            $this->setOperator(key($operators));
+        foreach (array_keys($this->getOperatorOption()) as $operator) {
+            $this->setOperator($operator);
+            break;
         }
     }
 

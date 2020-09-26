@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\TaxImportExport\Model\Rate;
@@ -234,7 +234,7 @@ class CsvImportHandler
         $countryCode = $rateData[1];
         $country = $this->_countryFactory->create()->loadByCode($countryCode, 'iso2_code');
         if (!$country->getId()) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Country code is invalid: %1', $countryCode));
+            throw new \Magento\Framework\Exception\LocalizedException(__('One of the countries has invalid code.'));
         }
         $regionsCache = $this->_addCountryRegionsToCache($countryCode, $regionsCache);
 

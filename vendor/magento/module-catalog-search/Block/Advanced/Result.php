@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Block\Advanced;
@@ -14,26 +14,26 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 
 /**
- * Advanced search result.
+ * Advanced search result
  */
 class Result extends Template
 {
     /**
-     * Url factory.
+     * Url factory
      *
      * @var UrlFactory
      */
     protected $_urlFactory;
 
     /**
-     * Catalog layer.
+     * Catalog layer
      *
      * @var \Magento\Catalog\Model\Layer
      */
     protected $_catalogLayer;
 
     /**
-     * Catalog search advanced.
+     * Catalog search advanced
      *
      * @var Advanced
      */
@@ -64,7 +64,6 @@ class Result extends Template
      */
     protected function _prepareLayout()
     {
-        $this->pageConfig->getTitle()->set($this->getPageTitle());
         $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs');
         if ($breadcrumbs) {
             $breadcrumbs->addCrumb(
@@ -82,22 +81,11 @@ class Result extends Template
                 ['label' => __('Results')]
             );
         }
-
         return parent::_prepareLayout();
     }
 
     /**
-     * Get page title.
-     *
-     * @return \Magento\Framework\Phrase
-     */
-    private function getPageTitle()
-    {
-        return __('Advanced Search Results');
-    }
-
-    /**
-     * Set order options.
+     * Set order options
      *
      * @return void
      */
@@ -113,7 +101,7 @@ class Result extends Template
     }
 
     /**
-     * Set view mode options.
+     * Set view mode options
      *
      * @return void
      */
@@ -123,8 +111,6 @@ class Result extends Template
     }
 
     /**
-     * Set search result collection.
-     *
      * @return void
      */
     public function setListCollection()
@@ -133,8 +119,6 @@ class Result extends Template
     }
 
     /**
-     * Return product collection.
-     *
      * @return Collection
      */
     protected function _getProductCollection()
@@ -143,8 +127,6 @@ class Result extends Template
     }
 
     /**
-     * Return search model.
-     *
      * @return Advanced
      */
     public function getSearchModel()
@@ -153,8 +135,6 @@ class Result extends Template
     }
 
     /**
-     * Return results count.
-     *
      * @return mixed
      */
     public function getResultCount()
@@ -163,13 +143,10 @@ class Result extends Template
             $size = $this->getSearchModel()->getProductCollection()->getSize();
             $this->setResultCount($size);
         }
-        
         return $this->getData('result_count');
     }
 
     /**
-     * Return search product listing html.
-     *
      * @return string
      */
     public function getProductListHtml()
@@ -178,8 +155,6 @@ class Result extends Template
     }
 
     /**
-     * Return form url.
-     *
      * @return string
      */
     public function getFormUrl()
@@ -193,8 +168,6 @@ class Result extends Template
     }
 
     /**
-     * Return search criteria.
-     *
      * @return array
      */
     public function getSearchCriterias()

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogUrlRewrite\Observer;
@@ -47,8 +47,7 @@ class CategoryUrlPathAutogeneratorObserver implements ObserverInterface
     {
         /** @var Category $category */
         $category = $observer->getEvent()->getCategory();
-        $useDefaultAttribute = !$category->isObjectNew() && !empty($category->getData('use_default')['url_key']);
-        if ($category->getUrlKey() !== false && !$useDefaultAttribute) {
+        if ($category->getUrlKey() !== false) {
             $category->setUrlKey($this->categoryUrlPathGenerator->getUrlKey($category))
                 ->setUrlPath($this->categoryUrlPathGenerator->getUrlPath($category));
             if (!$category->isObjectNew()) {

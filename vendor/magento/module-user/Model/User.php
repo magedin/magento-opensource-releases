@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\User\Model;
@@ -11,9 +11,6 @@ use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Store\Model\Store;
 use Magento\User\Api\Data\UserInterface;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Exception\MailException;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Admin user model
@@ -117,11 +114,6 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     protected $validationRules;
 
     /**
-     * @var DeploymentConfig
-     */
-    private $deploymentConfig;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\User\Helper\Data $userData
@@ -134,7 +126,6 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param UserValidationRules $validationRules
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
-     * @param DeploymentConfig|null $deploymentConfig
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -151,8 +142,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
         UserValidationRules $validationRules,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = [],
-        DeploymentConfig $deploymentConfig = null
+        array $data = []
     ) {
         $this->_encryptor = $encryptor;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
@@ -163,8 +153,6 @@ class User extends AbstractModel implements StorageInterface, UserInterface
         $this->_transportBuilder = $transportBuilder;
         $this->_storeManager = $storeManager;
         $this->validationRules = $validationRules;
-        $this->deploymentConfig = $deploymentConfig
-            ?: ObjectManager::getInstance()->get(DeploymentConfig::class);
     }
 
     /**
@@ -395,58 +383,22 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     }
 
     /**
-     * Send a notification to an admin.
-     *
-     * @param string $templateConfigId
-     * @param array $templateVars
-     * @param string|null $toEmail
-     * @param string|null $toName
-     * @throws MailException
-     *
-     * @return void
-     */
-    private function sendNotification(
-        $templateConfigId,
-        array $templateVars,
-        $toEmail = null,
-        $toName = null
-    ) {
-        $toEmail = $toEmail ?: $this->getEmail();
-        $toName = $toName ?: $this->getName();
-        $this->_transportBuilder
-            ->setTemplateIdentifier($this->_config->getValue($templateConfigId))
-            ->setTemplateModel(\Magento\Email\Model\BackendTemplate::class)
-            ->setTemplateOptions([
-                'area' => FrontNameResolver::AREA_CODE,
-                'store' => Store::DEFAULT_STORE_ID
-            ])
-            ->setTemplateVars($templateVars)
-            ->setFrom(
-                $this->_config->getValue(self::XML_PATH_FORGOT_EMAIL_IDENTITY)
-            )
-            ->addTo($toEmail, $toName)
-            ->getTransport()
-            ->sendMessage();
-    }
-
-    /**
      * Send email with reset password confirmation link
      *
-     * @throws MailException
      * @return $this
      */
     public function sendPasswordResetConfirmationEmail()
     {
-        $this->sendNotification(
-            self::XML_PATH_FORGOT_EMAIL_TEMPLATE,
-            [
-                'user' => $this,
-                'store' => $this->_storeManager->getStore(
-                    Store::DEFAULT_STORE_ID
-                )
-            ]
-        );
+        $templateId = $this->_config->getValue(self::XML_PATH_FORGOT_EMAIL_TEMPLATE);
+        $transport = $this->_transportBuilder->setTemplateIdentifier($templateId)
+            ->setTemplateModel('Magento\Email\Model\BackendTemplate')
+            ->setTemplateOptions(['area' => FrontNameResolver::AREA_CODE, 'store' => Store::DEFAULT_STORE_ID])
+            ->setTemplateVars(['user' => $this, 'store' => $this->_storeManager->getStore(Store::DEFAULT_STORE_ID)])
+            ->setFrom($this->_config->getValue(self::XML_PATH_FORGOT_EMAIL_IDENTITY))
+            ->addTo($this->getEmail(), $this->getName())
+            ->getTransport();
 
+        $transport->sendMessage();
         return $this;
     }
 
@@ -463,58 +415,19 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     }
 
     /**
-     * Send notification about a new user created.
-     *
-     * @throws MailException
-     * @return void
-     */
-    private function sendNewUserNotificationEmail()
-    {
-        $toEmails = [];
-        $generalEmail = $this->_config->getValue(
-            'trans_email/ident_general/email'
-        );
-        if ($generalEmail) {
-            $toEmails[] = $generalEmail;
-        }
-        if ($adminEmail = $this->deploymentConfig->get('user_admin_email')) {
-            $toEmails[] = $adminEmail;
-        }
-
-        foreach ($toEmails as $toEmail) {
-            $this->sendNotification(
-                'admin/emails/new_user_notification_template',
-                [
-                    'user'  => $this,
-                    'store' => $this->_storeManager->getStore(
-                        Store::DEFAULT_STORE_ID
-                    )
-                ],
-                $toEmail,
-                __('Administrator')->render()
-            );
-        }
-    }
-
-    /**
      * Check changes and send notification emails
      *
-     * @throws MailException
      * @return $this
      */
     public function sendNotificationEmailsIfRequired()
     {
-        if ($this->isObjectNew()) {
-            //Notification about a new user
-            $this->sendNewUserNotificationEmail();
-        } elseif ($changes = $this->createChangesDescriptionString()) {
-            $email = $this->getEmail();
-            if ($this->getEmail() != $this->getOrigData('email')
-                && $this->getOrigData('email')
-            ) {
-                $email = $this->getOrigData('email');
+        $changes = $this->createChangesDescriptionString();
+
+        if ($changes) {
+            if ($this->getEmail() != $this->getOrigData('email') && $this->getOrigData('email')) {
+                $this->sendUserNotificationEmail($changes, $this->getOrigData('email'));
             }
-            $this->sendUserNotificationEmail($changes, $email);
+            $this->sendUserNotificationEmail($changes);
         }
 
         return $this;
@@ -539,7 +452,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
             $changes[] = __('password');
         }
 
-        if ($this->getUserName() != $this->getOrigData('username') && $this->getOrigData('username')) {
+        if ($this->getUsername() != $this->getOrigData('username') && $this->getOrigData('username')) {
             $changes[] = __('username');
         }
 
@@ -551,23 +464,30 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      *
      * @param string $changes
      * @param string $email
-     * @throws MailException
      * @return $this
      */
     protected function sendUserNotificationEmail($changes, $email = null)
     {
-        $this->sendNotification(
-            self::XML_PATH_USER_NOTIFICATION_TEMPLATE,
-            [
-                'user' => $this,
-                'store' => $this->_storeManager->getStore(
-                    Store::DEFAULT_STORE_ID
-                ),
-                'changes' => $changes
-            ],
-            $email
-        );
+        if ($email === null) {
+            $email = $this->getEmail();
+        }
 
+        $transport = $this->_transportBuilder
+            ->setTemplateIdentifier($this->_config->getValue(self::XML_PATH_USER_NOTIFICATION_TEMPLATE))
+            ->setTemplateModel('Magento\Email\Model\BackendTemplate')
+            ->setTemplateOptions(['area' => FrontNameResolver::AREA_CODE, 'store' => Store::DEFAULT_STORE_ID])
+            ->setTemplateVars(
+                [
+                    'user' => $this,
+                    'store' => $this->_storeManager->getStore(Store::DEFAULT_STORE_ID),
+                    'changes' => $changes
+                ]
+            )
+            ->setFrom($this->_config->getValue(self::XML_PATH_FORGOT_EMAIL_IDENTITY))
+            ->addTo($email, $this->getName())
+            ->getTransport();
+
+        $transport->sendMessage();
         return $this;
     }
 
@@ -579,7 +499,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      */
     public function getName($separator = ' ')
     {
-        return $this->getFirstName() . $separator . $this->getLastName();
+        return $this->getFirstname() . $separator . $this->getLastname();
     }
 
     /**
@@ -611,7 +531,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
                 ['username' => $username, 'user' => $this]
             );
             $this->loadByUsername($username);
-            $sensitive = $config ? $username == $this->getUserName() : true;
+            $sensitive = $config ? $username == $this->getUsername() : true;
             if ($sensitive && $this->getId()) {
                 $result = $this->verifyIdentity($password);
             }

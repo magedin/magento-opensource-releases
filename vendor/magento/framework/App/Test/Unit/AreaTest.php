@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -276,9 +276,6 @@ class AreaTest extends \PHPUnit_Framework_TestCase
         $this->object->detectDesign($requestMock);
     }
 
-    /**
-     * @return array
-     */
     public function detectDesignByRequestDataProvider()
     {
         return [

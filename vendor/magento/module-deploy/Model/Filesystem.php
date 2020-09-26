@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Deploy\Model;
@@ -10,7 +10,6 @@ use Magento\Framework\App\State;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Validator\Locale;
 use Magento\User\Model\ResourceModel\User\Collection as UserCollection;
 
 /**
@@ -90,11 +89,6 @@ class Filesystem
     private $userCollection;
 
     /**
-     * @var Locale
-     */
-    private $locale;
-
-    /**
      * @param \Magento\Framework\App\DeploymentConfig\Writer $writer
      * @param \Magento\Framework\App\DeploymentConfig\Reader $reader
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
@@ -102,10 +96,7 @@ class Filesystem
      * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
      * @param \Magento\Framework\Filesystem\Driver\File $driverFile
      * @param \Magento\Store\Model\Config\StoreView $storeView
-     * @param \Magento\Framework\ShellInterface $shell
-     * @param UserCollection|null $userCollection
-     * @param Locale|null $locale
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param \Magento\Framework\Shell $shell
      */
     public function __construct(
         \Magento\Framework\App\DeploymentConfig\Writer $writer,
@@ -115,9 +106,7 @@ class Filesystem
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Driver\File $driverFile,
         \Magento\Store\Model\Config\StoreView $storeView,
-        \Magento\Framework\ShellInterface $shell,
-        UserCollection $userCollection = null,
-        Locale $locale = null
+        \Magento\Framework\ShellInterface $shell
     ) {
         $this->writer = $writer;
         $this->reader = $reader;
@@ -127,8 +116,6 @@ class Filesystem
         $this->driverFile = $driverFile;
         $this->storeView = $storeView;
         $this->shell = $shell;
-        $this->userCollection = $userCollection ?: $this->objectManager->get(UserCollection::class);
-        $this->locale = $locale ?: $this->objectManager->get(Locale::class);
         $this->functionCallPath =
             PHP_BINARY . ' -f ' . BP . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'magento ';
     }
@@ -193,17 +180,16 @@ class Filesystem
     private function getAdminUserInterfaceLocales()
     {
         $locales = [];
-        foreach ($this->userCollection as $user) {
+        foreach ($this->getUserCollection() as $user) {
             $locales[] = $user->getInterfaceLocale();
         }
         return $locales;
     }
 
     /**
-     * Get used store and admin user locales.
+     * Get used store and admin user locales
      *
-     * @return array
-     * @throws \InvalidArgumentException if unknown locale is provided by the store configuration
+     * @return []string
      */
     private function getUsedLocales()
     {
@@ -211,20 +197,23 @@ class Filesystem
             $this->storeView->retrieveLocales(),
             $this->getAdminUserInterfaceLocales()
         );
+        return array_unique($usedLocales);
+    }
 
-        return array_map(
-            function ($locale) {
-                if (!$this->locale->isValid($locale)) {
-                    throw new \InvalidArgumentException(
-                        $locale .
-                        ' argument has invalid value, run info:language:list for list of available locales'
-                    );
-                }
-
-                return $locale;
-            },
-            array_unique($usedLocales)
-        );
+    /**
+     * Get user collection
+     *
+     * @return UserCollection
+     * @deprecated
+     */
+    private function getUserCollection()
+    {
+        if (!($this->userCollection instanceof UserCollection)) {
+            return \Magento\Framework\App\ObjectManager::getInstance()->get(
+                UserCollection::class
+            );
+        }
+        return $this->userCollection;
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
@@ -12,9 +12,7 @@ define(
         '../action/select-shipping-address',
         './postcode-validator',
         'mage/translate',
-        'uiRegistry',
-        'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/model/shipping-address/form-popup-state'
+        'uiRegistry'
     ],
     function (
         $,
@@ -24,9 +22,7 @@ define(
         selectShippingAddress,
         postcodeValidator,
         $t,
-        uiRegistry,
-        quote,
-        formPopUpState
+        uiRegistry
     ) {
         'use strict';
 
@@ -45,7 +41,7 @@ define(
              * @param {Object} validator
              */
             registerValidator: function (carrier, validator) {
-                if (checkoutConfig.activeCarriers.indexOf(carrier) !== -1) {
+                if (checkoutConfig.activeCarriers.indexOf(carrier) != -1) {
                     validators.push(validator);
                 }
             },
@@ -129,14 +125,12 @@ define(
                     });
                 } else {
                     element.on('value', function () {
-                        if (!formPopUpState.isVisible()) {
-                            clearTimeout(self.validateAddressTimeout);
-                            self.validateAddressTimeout = setTimeout(function () {
-                                if (self.postcodeValidation()) {
-                                    self.validateFields();
-                                }
-                            }, delay);
-                        }
+                        clearTimeout(self.validateAddressTimeout);
+                        self.validateAddressTimeout = setTimeout(function () {
+                            if (self.postcodeValidation()) {
+                                self.validateFields();
+                            }
+                        }, delay);
                     });
                     observedElements.push(element);
                 }
@@ -181,7 +175,6 @@ define(
                     address;
 
                 if (this.validateAddressData(addressFlat)) {
-                    addressFlat = uiRegistry.get('checkoutProvider').shippingAddress;
                     address = addressConverter.formAddressDataToQuoteAddress(addressFlat);
                     selectShippingAddress(address);
                 }

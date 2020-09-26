@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -12,8 +12,9 @@ define(
     function ($) {
         'use strict';
         var checkoutConfig = window.checkoutConfig,
-            agreementsConfig = checkoutConfig ? checkoutConfig.checkoutAgreements : {},
-            agreementsInputPath = '.payment-method._active div.checkout-agreements input';
+            agreementsConfig = checkoutConfig ? checkoutConfig.checkoutAgreements : {};
+
+        var agreementsInputPath = '.payment-method._active div.checkout-agreements input';
 
         return {
             /**
@@ -22,11 +23,26 @@ define(
              * @returns {boolean}
              */
             validate: function() {
-                if (!agreementsConfig.isEnabled || $(agreementsInputPath).length == 0) {
+                if (!agreementsConfig.isEnabled) {
                     return true;
                 }
 
-                return $.validator.validateSingleElement(agreementsInputPath, {errorElement: 'div'});
+                if ($(agreementsInputPath).length == 0) {
+                    return true;
+                }
+
+                return $('#co-payment-form').validate({
+                    errorClass: 'mage-error',
+                    errorElement: 'div',
+                    meta: 'validate',
+                    errorPlacement: function (error, element) {
+                        var errorPlacement = element;
+                        if (element.is(':checkbox') || element.is(':radio')) {
+                            errorPlacement = element.siblings('label').last();
+                        }
+                        errorPlacement.after(error);
+                    }
+                }).element(agreementsInputPath);
             }
         }
     }

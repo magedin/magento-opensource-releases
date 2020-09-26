@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Indexer\Fulltext\Action;
@@ -300,40 +300,28 @@ class DataProvider
         foreach ($attributeTypes as $backendType => $attributeIds) {
             if ($attributeIds) {
                 $tableName = $this->getTable('catalog_product_entity_' . $backendType);
-
-                $select = $this->connection->select()->from(
-                    ['t' => $tableName],
-                    [
-                        $linkField => 't.' . $linkField,
-                        'attribute_id' => 't.attribute_id',
-                        'value' => $this->unifyField($ifStoreValue, $backendType),
-                    ]
+                $selects[] = $this->connection->select()->from(
+                    ['t_default' => $tableName],
+                    [$linkField, 'attribute_id']
                 )->joinLeft(
                     ['t_store' => $tableName],
                     $this->connection->quoteInto(
-                        't.' . $linkField . '=t_store.' . $linkField .
-                        ' AND t.attribute_id=t_store.attribute_id' .
+                        't_default.' . $linkField . '=t_store.' . $linkField .
+                        ' AND t_default.attribute_id=t_store.attribute_id' .
                         ' AND t_store.store_id = ?',
                         $storeId
                     ),
-                    []
-                )->joinLeft(
-                    ['t_default' => $tableName],
-                    $this->connection->quoteInto(
-                        't.' . $linkField . '=t_default.' . $linkField .
-                        ' AND t.attribute_id=t_default.attribute_id' .
-                        ' AND t_default.store_id = ?',
-                        0
-                    ),
-                    []
+                    ['value' => $this->unifyField($ifStoreValue, $backendType)]
                 )->where(
-                    't.attribute_id IN (?)',
+                    't_default.store_id = ?',
+                    0
+                )->where(
+                    't_default.attribute_id IN (?)',
                     $attributeIds
                 )->where(
-                    't.' . $linkField . ' IN (?)',
+                    't_default.' . $linkField . ' IN (?)',
                     array_keys($productLinkFieldsToEntityIdMap)
-                )->distinct();
-                $selects[] = $select;
+                );
             }
         }
 
@@ -375,9 +363,9 @@ class DataProvider
     public function getProductChildIds($productId, $typeId)
     {
         $typeInstance = $this->getProductTypeInstance($typeId);
-        $relation = $typeInstance->isComposite($this->getProductEmulator($typeId))
-            ? $typeInstance->getRelationInfo()
-            : false;
+        $relation = $typeInstance->isComposite(
+            $this->getProductEmulator($typeId)
+        ) ? $typeInstance->getRelationInfo() : false;
 
         if ($relation && $relation->getTable() && $relation->getParentFieldName() && $relation->getChildFieldName()) {
             $select = $this->connection->select()->from(

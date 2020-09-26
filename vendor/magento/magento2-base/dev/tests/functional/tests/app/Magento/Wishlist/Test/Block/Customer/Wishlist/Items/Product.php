@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -123,12 +123,14 @@ class Product extends Form
         $viewDetails = $this->_rootElement->find($this->viewDetails);
         if ($viewDetails->isVisible()) {
             $this->_rootElement->find($this->footer, Locator::SELECTOR_XPATH)->click();
-            $viewDetails->hover();
+            $viewDetails->click();
             $labels = $this->_rootElement->getElements($this->optionLabel);
             $values = $this->_rootElement->getElements($this->optionValue);
             $data = [];
             foreach ($labels as $key => $label) {
-                $viewDetails->hover();
+                if (!$label->isVisible()) {
+                    $viewDetails->click();
+                }
                 $data[] = [
                     'title' => $label->getText(),
                     'value' => str_replace('$', '', $values[$key]->getText()),
@@ -160,18 +162,6 @@ class Product extends Form
     public function hoverProductBlock()
     {
         $this->_rootElement->find($this->price)->hover();
-    }
-
-    /**
-     * Returns product price
-     *
-     * @param string $currency
-     * @return string
-     */
-    public function getPrice($currency = '$')
-    {
-        $price = $this->_rootElement->find($this->price)->getText();
-        return str_replace($currency, '', $price);
     }
 
     /**

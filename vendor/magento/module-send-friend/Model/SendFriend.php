@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SendFriend\Model;
@@ -235,8 +235,7 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
         }
 
         $email = $this->getSender()->getEmail();
-        $validator = new \Zend\Validator\EmailAddress();
-        if (empty($email) or !$validator->isValid($email)) {
+        if (empty($email) or !\Zend_Validate::is($email, 'EmailAddress')) {
             $errors[] = __('Invalid Sender Email');
         }
 
@@ -251,7 +250,7 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
 
         // validate recipients email addresses
         foreach ($this->getRecipients()->getEmails() as $email) {
-            if (!$validator->isValid($email)) {
+            if (!\Zend_Validate::is($email, 'EmailAddress')) {
                 $errors[] = __('Please enter a correct recipient email address.');
                 break;
             }

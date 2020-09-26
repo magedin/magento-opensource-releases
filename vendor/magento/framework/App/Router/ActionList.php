@@ -1,15 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ *
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Router;
 
 use Magento\Framework\Module\Dir\Reader as ModuleReader;
 
-/**
- * Class to retrieve action class.
- */
 class ActionList
 {
     /**
@@ -34,7 +32,7 @@ class ActionList
         'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'instanceof',
         'insteadof','interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected',
         'public', 'require', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var',
-        'while', 'xor', 'void',
+        'while', 'xor',
     ];
 
     /**
@@ -76,7 +74,6 @@ class ActionList
         if ($area) {
             $area = '\\' . $area;
         }
-        $namespace = strtolower($namespace);
         if (strpos($namespace, self::NOT_ALLOWED_IN_NAMESPACE_PATH) !== false) {
             return null;
         }

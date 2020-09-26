@@ -1,18 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CurrencySymbol\Model\System;
 
 use Magento\Framework\Locale\Bundle\CurrencyBundle;
-use Magento\Framework\Unserialize\SecureUnserializer;
-use Magento\Framework\App\ObjectManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * Custom currency symbol model
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Currencysymbol
 {
@@ -111,16 +107,6 @@ class Currencysymbol
     protected $_scopeConfig;
 
     /**
-     * @var SecureUnserializer
-     */
-    private $unserializer;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\App\Config\ReinitableConfigInterface $coreConfig
      * @param \Magento\Config\Model\Config\Factory $configFactory
@@ -129,10 +115,6 @@ class Currencysymbol
      * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      * @param \Magento\Store\Model\System\Store $systemStore
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param SecureUnserializer|null $unserializer
-     * @param LoggerInterface|null $logger
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -142,9 +124,7 @@ class Currencysymbol
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,
         \Magento\Store\Model\System\Store $systemStore,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        SecureUnserializer $unserializer = null,
-        LoggerInterface $logger = null
+        \Magento\Framework\Event\ManagerInterface $eventManager
     ) {
         $this->_coreConfig = $coreConfig;
         $this->_configFactory = $configFactory;
@@ -154,8 +134,6 @@ class Currencysymbol
         $this->_systemStore = $systemStore;
         $this->_eventManager = $eventManager;
         $this->_scopeConfig = $scopeConfig;
-        $this->unserializer = $unserializer ?: ObjectManager::getInstance()->get(SecureUnserializer::class);
-        $this->logger = $logger ?: ObjectManager::getInstance()->get(LoggerInterface::class);
     }
 
     /**
@@ -284,11 +262,7 @@ class Currencysymbol
             $storeId
         );
         if ($configData) {
-            try {
-                $result = $this->unserializer->unserialize($configData);
-            } catch (\InvalidArgumentException $e) {
-                $this->logger->critical($e);
-            }
+            $result = unserialize($configData);
         }
 
         return is_array($result) ? $result : [];

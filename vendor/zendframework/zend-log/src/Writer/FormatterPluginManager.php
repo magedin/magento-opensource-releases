@@ -20,14 +20,14 @@ class FormatterPluginManager extends AbstractPluginManager
      *
      * @var array
      */
-    protected $invokableClasses = [
+    protected $invokableClasses = array(
         'base'             => 'Zend\Log\Formatter\Base',
         'simple'           => 'Zend\Log\Formatter\Simple',
         'xml'              => 'Zend\Log\Formatter\Xml',
         'db'               => 'Zend\Log\Formatter\Db',
         'errorhandler'     => 'Zend\Log\Formatter\ErrorHandler',
         'exceptionhandler' => 'Zend\Log\Formatter\ExceptionHandler',
-    ];
+    );
 
     /**
      * Allow many filters of the same type

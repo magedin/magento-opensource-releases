@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\TaxImportExport\Block\Adminhtml\Rate;
@@ -10,7 +10,7 @@ class ImportExport extends \Magento\Backend\Block\Widget
     /**
      * @var string
      */
-    protected $_template = 'Magento_TaxImportExport::importExport.phtml';
+    protected $_template = 'importExport.phtml';
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context

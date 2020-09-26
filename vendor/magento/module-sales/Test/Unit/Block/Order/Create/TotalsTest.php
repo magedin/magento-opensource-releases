@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -70,10 +70,10 @@ class TotalsTest extends \PHPUnit_Framework_TestCase
 
         $this->quoteMock->expects($this->any())
             ->method('getBillingAddress')
-            ->willReturn($this->billingAddressMock);
+            ->willreturn($this->billingAddressMock);
         $this->quoteMock->expects($this->any())
             ->method('getShippingAddress')
-            ->willReturn($this->shippingAddressMock);
+            ->willreturn($this->shippingAddressMock);
         $this->sessionQuoteMock->expects($this->any())->method('getQuote')->willReturn($this->quoteMock);
         $this->totals = $this->helperManager->getObject(
             'Magento\Sales\Block\Adminhtml\Order\Create\Totals',
@@ -89,7 +89,7 @@ class TotalsTest extends \PHPUnit_Framework_TestCase
         $expected = 'expected';
         $this->quoteMock->expects($this->at(0))->method('setTotalsCollectedFlag')->with(false);
         $this->quoteMock->expects($this->at(1))->method('collectTotals');
-        $this->quoteMock->expects($this->once())->method('isVirtual')->willReturn($isVirtual);
+        $this->quoteMock->expects($this->once())->method('isVirtual')->willreturn($isVirtual);
         if ($isVirtual) {
             $this->billingAddressMock->expects($this->once())->method('getTotals')->willReturn($expected);
         } else {

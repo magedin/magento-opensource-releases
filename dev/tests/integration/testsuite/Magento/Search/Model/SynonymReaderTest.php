@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Search\Model;
@@ -32,9 +32,6 @@ class SynonymReaderTest extends \PHPUnit_Framework_TestCase
                 'ELIZABETH', []
             ],
             [
-                '-+<(ELIZABETH)>*~', []
-            ],
-            [
                 'ENGLISH', [['synonyms' => 'british,english', 'store_id' => 1, 'website_id' => 0]]
             ],
             [
@@ -45,9 +42,6 @@ class SynonymReaderTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'Monarch', [['synonyms' => 'queen,monarch', 'store_id' => 1, 'website_id' => 0]]
-            ],
-            [
-                '-+<(Monarch)>*~', [['synonyms' => 'queen,monarch', 'store_id' => 1, 'website_id' => 0]]
             ],
             [
                 'MONARCH English', [

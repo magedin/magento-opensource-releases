@@ -107,7 +107,7 @@ class HeadTitle extends Placeholder\Container\AbstractStandalone implements
      */
     public function renderTitle()
     {
-        $items = [];
+        $items = array();
 
         if (null !== ($translator = $this->getTranslator())) {
             foreach ($this as $item) {
@@ -148,11 +148,11 @@ class HeadTitle extends Placeholder\Container\AbstractStandalone implements
      */
     public function setDefaultAttachOrder($setType)
     {
-        if (!in_array($setType, [
+        if (!in_array($setType, array(
             Placeholder\Container\AbstractContainer::APPEND,
             Placeholder\Container\AbstractContainer::SET,
             Placeholder\Container\AbstractContainer::PREPEND
-        ])) {
+        ))) {
             throw new Exception\DomainException(
                 "You must use a valid attach order: 'PREPEND', 'APPEND' or 'SET'"
             );

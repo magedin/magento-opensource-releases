@@ -1,7 +1,7 @@
 /**
  * Handles additional ajax request for rendering user private content
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -24,18 +24,6 @@ define([
          * @param {jQuery} element - Comment holder
          */
         (function lookup(element) {
-            var iframeHostName;
-
-            // prevent cross origin iframe content reading
-            if ($(element).prop('tagName') === 'IFRAME') {
-                iframeHostName = $('<a>').prop('href', $(element).prop('src'))
-                                             .prop('hostname');
-
-                if (window.location.hostname !== iframeHostName) {
-                    return [];
-                }
-            }
-
             $(element).contents().each(function (index, el) {
                 switch (el.nodeType) {
                     case 1: // ELEMENT_NODE
@@ -47,7 +35,14 @@ define([
                         break;
 
                     case 9: // DOCUMENT_NODE
-                        lookup($(el).find('body'));
+                        var hostName = window.location.hostname,
+                            iFrameHostName = $('<a>')
+                                .prop('href', element.prop('src'))
+                                .prop('hostname');
+
+                        if (hostName === iFrameHostName) {
+                            lookup($(el).find('body'));
+                        }
                         break;
                 }
             });
@@ -164,16 +159,17 @@ define([
          * @protected
          */
         _replacePlaceholder: function (placeholder, html) {
-            var startReplacing = false,
-                prevSibling = null,
-                parent, contents, yy, len, element;
-
             if (!placeholder || !html) {
                 return;
             }
 
-            parent = $(placeholder.openElement).parent();
-            contents = parent.contents();
+            var parent = $(placeholder.openElement).parent(),
+                contents = parent.contents(),
+                startReplacing = false,
+                prevSibling = null,
+                yy,
+                len,
+                element;
 
             for (yy = 0, len = contents.length; yy < len; yy++) {
                 element = contents[yy];

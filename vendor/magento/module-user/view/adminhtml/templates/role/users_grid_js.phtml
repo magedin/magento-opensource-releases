@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -14,9 +14,10 @@ require([
     'mage/adminhtml/grid',
     'prototype'
 ], function(jQuery, confirm, _){
+<!--
 <?php $myBlock = $block->getLayout()->getBlock('roleUsersGrid'); ?>
 <?php if (is_object($myBlock) && $myBlock->getJsObjectName()): ?>
-    var checkBoxes = $H(<?= /* @escapeNotVerified */ $myBlock->getUsers(true) ?>);
+    var checkBoxes = $H(<?php /* @escapeNotVerified */ echo $myBlock->getUsers(true) ?>);
     var warning = false;
     if (checkBoxes.size() > 0) {
         warning = true;
@@ -134,6 +135,7 @@ require([
     }
     onLoad();
 <?php endif; ?>
+//-->
 
 });
 </script>

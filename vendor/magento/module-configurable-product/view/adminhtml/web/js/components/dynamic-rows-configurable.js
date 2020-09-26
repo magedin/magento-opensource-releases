@@ -1,14 +1,13 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 define([
     'underscore',
     'uiRegistry',
-    'Magento_Ui/js/dynamic-rows/dynamic-rows',
-    'jquery'
-], function (_, registry, dynamicRows, $) {
+    'Magento_Ui/js/dynamic-rows/dynamic-rows'
+], function (_, registry, dynamicRows) {
     'use strict';
 
     return dynamicRows.extend({
@@ -33,7 +32,6 @@ define([
             identificationProperty: 'id',
             'attribute_set_id': '',
             attributesTmp: [],
-            changedFlag: 'was_changed',
             listens: {
                 'insertDataFromGrid': 'processingInsertDataFromGrid',
                 'insertDataFromWizard': 'processingInsertDataFromWizard',
@@ -218,8 +216,6 @@ define([
 
             _.each(tmpData, function (row, index) {
                 path = this.dataScope + '.' + this.index + '.' + (this.startIndex + index);
-                row.attributes = $('<i></i>').text(row.attributes).html();
-                row.sku = $('<i></i>').text(row.sku).html();
                 this.source.set(path, row);
             }, this);
 
@@ -379,8 +375,8 @@ define([
                 product = {
                     'id': row.productId,
                     'product_link': row.productUrl,
-                    'name': $('<i></i>').text(row.name).html(),
-                    'sku': $('<i></i>').text(row.sku).html(),
+                    'name': row.name,
+                    'sku': row.sku,
                     'status': row.status,
                     'price': row.price,
                     'price_currency': row.priceCurrency,
@@ -397,9 +393,9 @@ define([
                     'thumbnail': row.thumbnail,
                     'attributes': attributesText
                 };
-                product[this.changedFlag] = true;
                 product[this.canEditField] = row.editable;
                 product[this.newProductField] = row.newProduct;
+
                 tmpArray.push(product);
             }, this);
 
@@ -519,7 +515,6 @@ define([
                 tmpArray[rowIndex].status = 1;
             }
 
-            tmpArray[rowIndex][this.changedFlag] = true;
             this.unionInsertData(tmpArray);
         }
     });

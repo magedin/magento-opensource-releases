@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Test\Unit\Model;
@@ -162,9 +162,6 @@ class TaxRuleRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->model->save($rule);
     }
 
-    /**
-     * @return array
-     */
     public function saveExceptionsDataProvider()
     {
         return [

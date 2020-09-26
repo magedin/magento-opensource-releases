@@ -8,7 +8,7 @@ namespace Braintree;
  *
  * @copyright  2015 Braintree, a division of PayPal, Inc.
  */
-class Xml
+final class Xml
 {
     /**
      * @ignore

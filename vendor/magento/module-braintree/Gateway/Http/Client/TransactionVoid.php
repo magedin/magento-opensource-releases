@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Http\Client;
@@ -14,11 +14,6 @@ class TransactionVoid extends AbstractTransaction
      */
     protected function process(array $data)
     {
-        $storeId = !empty($data['store_id']) ? $data['store_id'] : null;
-        // sending store id and other additional keys are restricted by Braintree API
-        unset($data['store_id']);
-
-        return $this->adapterFactory->create($storeId)
-            ->void($data['transaction_id']);
+        return $this->adapter->void($data['transaction_id']);
     }
 }

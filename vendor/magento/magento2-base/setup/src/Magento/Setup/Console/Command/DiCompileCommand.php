@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Console\Command;
@@ -21,7 +21,6 @@ use Magento\Setup\Module\Di\App\Task\OperationException;
 use Magento\Setup\Module\Di\App\Task\OperationInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Magento\Framework\Console\Cli;
 
 /**
  * Command to run compile in single-tenant mode
@@ -128,7 +127,7 @@ class DiCompileCommand extends Command
                 $output->writeln($line);
             }
             // we must have an exit code higher than zero to indicate something was wrong
-            return Cli::RETURN_FAILURE;
+            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
 
         $modulePaths = $this->componentRegistrar->getPaths(ComponentRegistrar::MODULE);
@@ -141,9 +140,17 @@ class DiCompileCommand extends Command
             'library' => $libraryPaths,
             'generated_helpers' => $generationPath
         ];
+        $excludedModulePaths = [];
+        foreach ($modulePaths as $appCodePath) {
+            $excludedModulePaths[] = '#^' . $appCodePath . '/Test#';
+        }
+        $excludedLibraryPaths = [];
+        foreach ($libraryPaths as $libraryPath) {
+            $excludedLibraryPaths[] = '#^' . $libraryPath . '/([\\w]+/)?Test#';
+        }
         $this->excludedPathsList = [
-            'application' => $this->getExcludedModulePaths($modulePaths),
-            'framework' => $this->getExcludedLibraryPaths($libraryPaths),
+            'application' => $excludedModulePaths,
+            'framework' => $excludedLibraryPaths
         ];
         $this->configureObjectManager($output);
 
@@ -194,63 +201,8 @@ class DiCompileCommand extends Command
         } catch (OperationException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             // we must have an exit code higher than zero to indicate something was wrong
-            return Cli::RETURN_FAILURE;
+            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
-        return Cli::RETURN_SUCCESS;
-    }
-
-    /**
-     * Build list of module path regexps which should be excluded from compilation
-     *
-     * @param string[] $modulePaths
-     * @return string[]
-     */
-    private function getExcludedModulePaths(array $modulePaths)
-    {
-        $modulesByBasePath = [];
-        foreach ($modulePaths as $modulePath) {
-            $moduleDir = basename($modulePath);
-            $vendorPath = dirname($modulePath);
-            $vendorDir = basename($vendorPath);
-            $basePath = dirname($vendorPath);
-            $modulesByBasePath[$basePath][$vendorDir][] = $moduleDir;
-        }
-
-        $basePathsRegExps = [];
-        foreach ($modulesByBasePath as $basePath => $vendorPaths) {
-            $vendorPathsRegExps = [];
-            foreach ($vendorPaths as $vendorDir => $vendorModules) {
-                $vendorPathsRegExps[] = $vendorDir
-                    . '/(?:' . join('|', $vendorModules) . ')';
-            }
-            $basePathsRegExps[] = preg_quote($basePath, '#')
-                . '/(?:' . join('|', $vendorPathsRegExps) . ')';
-        }
-
-        $excludedModulePaths = [
-            '#^(?:' . join('|', $basePathsRegExps) . ')/Test#',
-            '#^(?:' . join('|', $basePathsRegExps) . ')/tests#',
-        ];
-        return $excludedModulePaths;
-    }
-
-    /**
-     * Build list of library path regexps which should be excluded from compilation
-     *
-     * @param string[] $libraryPaths
-     * @return string[]
-     */
-    private function getExcludedLibraryPaths(array $libraryPaths)
-    {
-        $libraryPaths = array_map(function ($libraryPath) {
-            return preg_quote($libraryPath, '#');
-        }, $libraryPaths);
-
-        $excludedLibraryPaths = [
-            '#^(?:' . join('|', $libraryPaths) . ')/([\\w]+/)?Test#',
-            '#^(?:' . join('|', $libraryPaths) . ')/([\\w]+/)?tests#',
-        ];
-        return $excludedLibraryPaths;
     }
 
     /**

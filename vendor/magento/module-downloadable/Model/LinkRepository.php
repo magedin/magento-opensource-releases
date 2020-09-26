@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Model;
@@ -207,7 +207,7 @@ class LinkRepository implements \Magento\Downloadable\Api\LinkRepositoryInterfac
         $isGlobalScopeContent
     ) {
         $linkData = [
-            'link_id' => (int)$link->getId(),
+            'link_id' => (int)$link->getid(),
             'is_delete' => 0,
             'type' => $link->getLinkType(),
             'sort_order' => $link->getSortOrder(),

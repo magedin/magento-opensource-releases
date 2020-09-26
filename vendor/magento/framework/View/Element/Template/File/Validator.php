@@ -1,16 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Element\Template\File;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
+use \Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Filesystem\Driver\File as FileDriver;
 
 /**
- * Class Validator.
+ * Class Validator
+ * @package Magento\Framework\View\Element\Template\File
  */
 class Validator
 {
@@ -69,25 +69,18 @@ class Validator
     protected $_compiledDir;
 
     /**
-     * @var FileDriver
-     */
-    private $fileDriver;
-
-    /**
      * Class constructor
      *
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface
      * @param ComponentRegistrar $componentRegistrar
      * @param string|null $scope
-     * @param FileDriver|null $fileDriver
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         ComponentRegistrar $componentRegistrar,
-        $scope = null,
-        FileDriver $fileDriver = null
+        $scope = null
     ) {
         $this->_filesystem = $filesystem;
         $this->_isAllowSymlinks = $scopeConfigInterface->getValue(self::XML_PATH_TEMPLATE_ALLOW_SYMLINK, $scope);
@@ -95,7 +88,6 @@ class Validator
         $this->moduleDirs = $componentRegistrar->getPaths(ComponentRegistrar::MODULE);
         $this->_compiledDir = $this->_filesystem->getDirectoryRead(DirectoryList::TEMPLATE_MINIFICATION_DIR)
             ->getAbsolutePath();
-        $this->fileDriver = $fileDriver ?: \Magento\Framework\App\ObjectManager::getInstance()->get(FileDriver::class);
     }
 
     /**
@@ -136,7 +128,7 @@ class Validator
             $directories = (array)$directories;
         }
         foreach ($directories as $directory) {
-            if (0 === strpos($this->fileDriver->getRealPath($path), $directory)) {
+            if (0 === strpos($path, $directory)) {
                 return true;
             }
         }

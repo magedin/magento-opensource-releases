@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Theme;
@@ -70,22 +70,22 @@ class UploadJsTest extends \Magento\Theme\Test\Unit\Controller\Adminhtml\System\
             ->expects($this->at(0))
             ->method('get')
             ->with('Magento\Theme\Model\Uploader\Service')
-            ->willReturn($this->serviceModel);
+            ->WillReturn($this->serviceModel);
         $this->_objectManagerMock
             ->expects($this->at(1))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\FlyweightFactory')
-            ->willReturn($this->themeFactory);
+            ->WillReturn($this->themeFactory);
         $this->_objectManagerMock
             ->expects($this->at(2))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\Customization\File\Js')
-            ->willReturn($this->customizationJs);
+            ->WillReturn($this->customizationJs);
         $this->_objectManagerMock
             ->expects($this->at(3))
             ->method('get')
             ->with('Magento\Framework\Json\Helper\Data')
-            ->willReturn($this->jsonHelper);
+            ->WillReturn($this->jsonHelper);
 
         $this->themeFactory->expects($this->once())
             ->method('create')
@@ -114,21 +114,21 @@ class UploadJsTest extends \Magento\Theme\Test\Unit\Controller\Adminhtml\System\
         $this->_objectManagerMock->expects($this->at(0))
             ->method('get')
             ->with('Magento\Theme\Model\Uploader\Service')
-            ->willReturn($this->serviceModel);
+            ->WillReturn($this->serviceModel);
         $this->_objectManagerMock->expects($this->at(1))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\FlyweightFactory')
-            ->willReturn($this->themeFactory);
+            ->WillReturn($this->themeFactory);
         $this->_objectManagerMock
             ->expects($this->at(2))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\Customization\File\Js')
-            ->willReturn($this->customizationJs);
+            ->WillReturn($this->customizationJs);
         $this->_objectManagerMock
             ->expects($this->at(4))
             ->method('get')
             ->with('Magento\Framework\Json\Helper\Data')
-            ->willReturn($this->jsonHelper);
+            ->WillReturn($this->jsonHelper);
 
         $this->themeFactory->expects($this->once())
             ->method('create')
@@ -179,19 +179,19 @@ class UploadJsTest extends \Magento\Theme\Test\Unit\Controller\Adminhtml\System\
         $this->_objectManagerMock->expects($this->at(0))
             ->method('get')
             ->with('Magento\Theme\Model\Uploader\Service')
-            ->willReturn($this->serviceModel);
+            ->WillReturn($this->serviceModel);
         $this->_objectManagerMock->expects($this->at(1))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\FlyweightFactory')
-            ->willReturn($this->themeFactory);
+            ->WillReturn($this->themeFactory);
         $this->_objectManagerMock->expects($this->at(2))
             ->method('get')
             ->with('Magento\Framework\View\Design\Theme\Customization\File\Js')
-            ->willReturn($this->customizationJs);
+            ->WillReturn($this->customizationJs);
         $this->_objectManagerMock->expects($this->at(4))
             ->method('get')
             ->with('Magento\Framework\Json\Helper\Data')
-            ->willReturn($this->jsonHelper);
+            ->WillReturn($this->jsonHelper);
 
         $this->themeFactory->expects($this->once())
             ->method('create')

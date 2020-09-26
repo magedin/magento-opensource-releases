@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Test\Unit\Cache\Type;
@@ -89,9 +89,6 @@ class FrontendPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($accessProxy, $this->_model->get($inputCacheType));
     }
 
-    /**
-     * @return array
-     */
     public function getDataProvider()
     {
         $configData1 = [

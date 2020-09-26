@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -56,9 +56,6 @@ class AdjustmentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->adjustment->isIncludedInBasePrice());
     }
 
-    /**
-     * @return array
-     */
     public function isIncludedInBasePriceDataProvider()
     {
         return [[true], [false]];
@@ -116,9 +113,6 @@ class AdjustmentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->adjustment->extractAdjustment($amount, $object));
     }
 
-    /**
-     * @return array
-     */
     public function extractAdjustmentDataProvider()
     {
         return [
@@ -170,9 +164,6 @@ class AdjustmentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->adjustment->isExcludedWith($adjustmentCode));
     }
 
-    /**
-     * @return array
-     */
     public function isExcludedWithDataProvider()
     {
         return [

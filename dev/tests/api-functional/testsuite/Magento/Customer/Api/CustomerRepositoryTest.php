@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Api;
@@ -139,16 +139,19 @@ class CustomerRepositoryTest extends WebapiAbstract
                 $this->assertTrue($response);
             }
         }
-        $this->customerRepository = null;
+        unset($this->customerRepository);
     }
 
     /**
      * Validate update by invalid customer.
      *
      * @expectedException \Exception
+     * @expectedExceptionMessage Consumer is not authorized to access %resources
      */
     public function testInvalidCustomerUpdate()
     {
+        $this->_markTestAsRestOnly();
+
         //Create first customer and retrieve customer token.
         $firstCustomerData = $this->_createCustomer();
 
@@ -177,12 +180,6 @@ class CustomerRepositoryTest extends WebapiAbstract
                 'resourcePath' => self::RESOURCE_PATH . "/{$customerData[Customer::ID]}",
                 'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_PUT,
                 'token' => $token,
-            ],
-            'soap' => [
-                'service' => self::SERVICE_NAME,
-                'serviceVersion' => self::SERVICE_VERSION,
-                'operation' => self::SERVICE_NAME . 'Save',
-                'token' => $token
             ]
         ];
 

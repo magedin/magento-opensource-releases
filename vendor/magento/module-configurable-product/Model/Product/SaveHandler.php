@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Model\Product;
@@ -66,11 +66,8 @@ class SaveHandler implements ExtensionInterface
             $this->saveConfigurableProductAttributes($entity, $configurableOptions);
         }
 
-        $configurableLinks = $extensionAttributes->getConfigurableProductLinks();
-        if ($configurableLinks !== null) {
-            $configurableLinks = (array)$configurableLinks;
-            $this->resourceModel->saveProducts($entity, $configurableLinks);
-        }
+        $configurableLinks = (array) $extensionAttributes->getConfigurableProductLinks();
+        $this->resourceModel->saveProducts($entity, $configurableLinks);
 
         return $entity;
     }

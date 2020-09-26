@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,15 +8,13 @@
 
 namespace Magento\Catalog\Model\ResourceModel\Product;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\Customer\Api\GroupManagementInterface;
 use Magento\Framework\DB\Select;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Store\Model\Store;
-use Magento\Catalog\Model\Product\Gallery\ReadHandler as GalleryReadHandler;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\CategoryInterface;
 
 /**
  * Product collection
@@ -234,7 +232,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     protected $dateTime;
 
     /**
-     * @var \Magento\Customer\Api\GroupManagementInterface
+     * @var GroupManagementInterface
      */
     protected $_groupManagement;
 
@@ -244,21 +242,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
      * @var bool
      */
     protected $needToAddWebsiteNamesToResult;
-
-    /**
-     * @var Gallery
-     */
-    private $mediaGalleryResource;
-
-    /**
-     * @var GalleryReadHandler
-     */
-    private $productGalleryReadHandler;
-
-    /**
-     * @var MetadataPool
-     */
-    private $metadataPool;
 
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
@@ -1535,7 +1518,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     }
 
     /**
-     * Add require tax percent flag for product collection
+     * Add requere tax percent flag for product collection
      *
      * @return $this
      */
@@ -1875,9 +1858,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
             return $this;
         }
 
-        // Preventing overriding price loaded from EAV because we want to use the one from index
-        $this->removeAttributeToSelect('price');
-
         $connection = $this->getConnection();
         $select = $this->getSelect();
         $joinCond = join(
@@ -2090,13 +2070,12 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         if ($this->getFlag('tier_price_added')) {
             return $this;
         }
-        $linkField = $this->getConnection()->getAutoIncrementField($this->getTable('catalog_product_entity'));
 
         $tierPrices = [];
         $productIds = [];
         foreach ($this->getItems() as $item) {
-            $productIds[] = $item->getData($linkField);
-            $tierPrices[$item->getData($linkField)] = [];
+            $productIds[] = $item->getId();
+            $tierPrices[$item->getId()] = [];
         }
         if (!$productIds) {
             return $this;
@@ -2104,11 +2083,14 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
 
         /** @var $attribute \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
         $attribute = $this->getAttribute('tier_price');
-        $websiteId = 0;
-        if (!$attribute->isScopeGlobal() && null !== $this->getStoreId()) {
-            $websiteId = $this->_storeManager->getStore($this->getStoreId())->getWebsiteId();
+        if ($attribute->isScopeGlobal()) {
+            $websiteId = 0;
+        } else {
+            if ($this->getStoreId()) {
+                $websiteId = $this->_storeManager->getStore($this->getStoreId())->getWebsiteId();
+            }
         }
-
+        $linkField = $this->getConnection()->getAutoIncrementField($this->getTable('catalog_product_entity'));
         $connection = $this->getConnection();
         $columns = [
             'price_id' => 'value_id',
@@ -2129,10 +2111,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
             [$linkField, 'qty']
         );
 
-        if ($websiteId == 0) {
+        if ($websiteId == '0') {
             $select->where('website_id = ?', $websiteId);
         } else {
-            $select->where('website_id IN(?)', [0, $websiteId]);
+            $select->where('website_id IN(?)', ['0', $websiteId]);
         }
 
         foreach ($connection->fetchAll($select) as $row) {
@@ -2149,7 +2131,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
         $backend = $attribute->getBackend();
 
         foreach ($this->getItems() as $item) {
-            $data = $tierPrices[$item->getData($linkField)];
+            $data = $tierPrices[$item->getId()];
             if (!empty($data) && $websiteId) {
                 $data = $backend->preparePriceData($data, $item->getTypeId(), $websiteId);
             }
@@ -2183,97 +2165,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
 
         $this->_priceDataFieldFilters[] = array_merge([$comparisonFormat], $fields);
         return $this;
-    }
-
-    /**
-     * Add media gallery data to loaded items
-     *
-     * @return $this
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     */
-    public function addMediaGalleryData()
-    {
-        if ($this->getFlag('media_gallery_added')) {
-            return $this;
-        }
-
-        if (!$this->count()) {
-            return $this;
-        }
-
-        /** @var $attribute \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
-        $attribute = $this->getAttribute('media_gallery');
-        $select = $this->getMediaGalleryResource()->createBatchBaseSelect(
-            $this->getStoreId(),
-            $attribute->getAttributeId()
-        );
-
-        $mediaGalleries = [];
-        $linkField = $this->getMetadataPool()->getMetadata(ProductInterface::class)->getLinkField();
-        $items = $this->getItems();
-
-        $select->where(
-            'entity.' . $linkField . ' IN (?)',
-            array_map(
-                function ($item) use ($linkField) {
-                    return $item->getData($linkField);
-                },
-                $items
-            )
-        );
-
-        foreach ($this->getConnection()->fetchAll($select) as $row) {
-            $mediaGalleries[$row[$linkField]][] = $row;
-        }
-
-        foreach ($items as $item) {
-            $mediaEntries = isset($mediaGalleries[$item->getData($linkField)])
-                ? $mediaGalleries[$item->getData($linkField)]
-                : [];
-            $this->getGalleryReadHandler()->addMediaDataToProduct($item, $mediaEntries);
-        }
-
-        $this->setFlag('media_gallery_added', true);
-        return $this;
-    }
-
-    /**
-     * Get MetadataPool instance
-     * @return MetadataPool
-     */
-    private function getMetadataPool()
-    {
-        if (!$this->metadataPool) {
-            $this->metadataPool = ObjectManager::getInstance()->get(MetadataPool::class);
-        }
-        return $this->metadataPool;
-    }
-
-    /**
-     * Retrieve GalleryReadHandler
-     *
-     * @return GalleryReadHandler
-     * @deprecated
-     */
-    protected function getGalleryReadHandler()
-    {
-        if ($this->productGalleryReadHandler === null) {
-            $this->productGalleryReadHandler = ObjectManager::getInstance()->get(GalleryReadHandler::class);
-        }
-        return $this->productGalleryReadHandler;
-    }
-
-    /**
-     * @deprecated
-     * @return \Magento\Catalog\Model\ResourceModel\Product\Gallery
-     */
-    private function getMediaGalleryResource()
-    {
-        if (null === $this->mediaGalleryResource) {
-            $this->mediaGalleryResource = ObjectManager::getInstance()->get(Gallery::class);
-        }
-        return $this->mediaGalleryResource;
     }
 
     /**

@@ -18,54 +18,54 @@ interface LoggerInterface
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function emerg($message, $extra = []);
+    public function emerg($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function alert($message, $extra = []);
+    public function alert($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function crit($message, $extra = []);
+    public function crit($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function err($message, $extra = []);
+    public function err($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function warn($message, $extra = []);
+    public function warn($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function notice($message, $extra = []);
+    public function notice($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function info($message, $extra = []);
+    public function info($message, $extra = array());
 
     /**
      * @param string $message
      * @param array|Traversable $extra
      * @return LoggerInterface
      */
-    public function debug($message, $extra = []);
+    public function debug($message, $extra = array());
 }

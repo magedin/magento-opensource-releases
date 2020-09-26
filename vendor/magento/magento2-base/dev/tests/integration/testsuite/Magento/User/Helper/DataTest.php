@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\User\Helper;
@@ -40,7 +40,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         /** @var $configModel \Magento\Backend\App\ConfigInterface */
         $configModel = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            'Magento\Framework\App\Config\MutableScopeConfigInterface'
+            'Magento\Backend\App\ConfigInterface'
         );
         $this->assertEquals(
             2,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -75,9 +75,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedNumLines, $this->helper->getStreetLines());
     }
 
-    /**
-     * @return array
-     */
     public function providerGetStreetLines()
     {
         return [
@@ -177,9 +174,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getAttributeValidationClass($attrCode));
     }
 
-    /**
-     * @return array
-     */
     public function getAttributeValidationClassDataProvider()
     {
         return [
@@ -199,9 +193,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->convertStreetLines($origStreets, $toCount));
     }
 
-    /**
-     * @return array
-     */
     public function getConvertStreetLinesDataProvider()
     {
         return [
@@ -340,9 +331,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getFormatTypeRenderer($code));
     }
 
-    /**
-     * @return array
-     */
     public function getFormatTypeRendererDataProvider()
     {
         $renderer = $this->getMockBuilder('Magento\Customer\Block\Address\Renderer\RendererInterface')
@@ -377,9 +365,6 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getFormat($code));
     }
 
-    /**
-     * @return array
-     */
     public function getFormatDataProvider()
     {
         return [

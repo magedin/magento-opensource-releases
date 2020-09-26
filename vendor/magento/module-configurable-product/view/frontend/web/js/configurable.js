@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -7,12 +7,11 @@ define([
     'jquery',
     'underscore',
     'mage/template',
-    'mage/translate',
     'priceUtils',
     'priceBox',
     'jquery/ui',
     'jquery/jquery.parsequery'
-], function ($, _, mageTemplate, $t, priceUtils) {
+], function ($, _, mageTemplate) {
     'use strict';
 
     $.widget('mage.configurable', {
@@ -24,26 +23,12 @@ define([
             state: {},
             priceFormat: {},
             optionTemplate: '<%- data.label %>' +
-            '<% if (typeof data.finalPrice.value !== "undefined") { %>' +
+            "<% if (typeof data.finalPrice.value !== 'undefined') { %>" +
             ' <%- data.finalPrice.formatted %>' +
             '<% } %>',
             mediaGallerySelector: '[data-gallery-role=gallery-placeholder]',
             mediaGalleryInitial: null,
-            slyOldPriceSelector: '.sly-old-price',
-            normalPriceLabelSelector: '.normal-price .price-label',
-
-            /**
-             * Defines the mechanism of how images of a gallery should be
-             * updated when user switches between configurations of a product.
-             *
-             * As for now value of this option can be either 'replace' or 'prepend'.
-             *
-             * @type {String}
-             */
-            gallerySwitchStrategy: 'replace',
-            tierPriceTemplateSelector: '#tier-prices-template',
-            tierPriceBlockSelector: '[data-role="tier-price-block"]',
-            tierPriceTemplate: ''
+            onlyMainImg: false
         },
 
         /**
@@ -68,8 +53,6 @@ define([
 
             // Setup/configure values to inputs
             this._configureForValues();
-
-            $(this.element).trigger('configurable.initialized');
         },
 
         /**
@@ -89,7 +72,6 @@ define([
                 options.priceFormat = priceBoxOptions.priceFormat;
             }
             options.optionTemplate = mageTemplate(options.optionTemplate);
-            options.tierPriceTemplate = $(this.options.tierPriceTemplateSelector).html();
 
             options.settings = options.spConfig.containerId ?
                 $(options.spConfig.containerId).find(options.superSelector) :
@@ -100,10 +82,10 @@ define([
 
             this.inputSimpleProduct = this.element.find(options.selectSimpleProduct);
 
-            gallery.data('gallery') ?
-                this._onGalleryLoaded(gallery) :
-                gallery.on('gallery:loaded', this._onGalleryLoaded.bind(this, gallery));
-
+            gallery.on('gallery:loaded', function () {
+                var galleryObject = gallery.data('gallery');
+                options.mediaGalleryInitial = galleryObject.returnCurrentImages();
+            });
         },
 
         /**
@@ -222,7 +204,6 @@ define([
             if (this.options.values) {
                 this.options.settings.each($.proxy(function (index, element) {
                     var attributeId = element.attributeId;
-
                     element.value = this.options.values[attributeId] || '';
                     this._configureElement(element);
                 }, this));
@@ -255,7 +236,7 @@ define([
                     this._fillSelect(element.nextSetting);
                     this._resetChildren(element.nextSetting);
                 } else {
-                    if (!!document.documentMode) { //eslint-disable-line
+                    if (!!document.documentMode) {
                         this.inputSimpleProduct.val(element.options[element.selectedIndex].config.allowedProducts[0]);
                     } else {
                         this.inputSimpleProduct.val(element.selectedOptions[0].config.allowedProducts[0]);
@@ -264,67 +245,56 @@ define([
             } else {
                 this._resetChildren(element);
             }
-
             this._reloadPrice();
-            this._displayRegularPriceBlock(this.simpleProduct);
-            this._displayTierPriceBlock(this.simpleProduct);
-            this._displayNormalPriceLabel();
             this._changeProductImage();
         },
 
         /**
          * Change displayed product image according to chosen options of configurable product
-         *
          * @private
          */
         _changeProductImage: function () {
             var images,
-                initialImages = this.options.mediaGalleryInitial,
+                initialImages = $.extend(true, [], this.options.mediaGalleryInitial),
                 galleryObject = $(this.options.mediaGallerySelector).data('gallery');
 
-            if (!galleryObject) {
-                return;
+            if (this.options.spConfig.images[this.simpleProduct]) {
+                images = $.extend(true, [], this.options.spConfig.images[this.simpleProduct]);
             }
 
-            images = this.options.spConfig.images[this.simpleProduct];
+            function updateGallery(imagesArr) {
+                var imgToUpdate,
+                    mainImg;
 
-            if (images) {
-                if (this.options.gallerySwitchStrategy === 'prepend') {
-                    images = images.concat(initialImages);
-                }
-
-                images = $.extend(true, [], images);
-                images = this._setImageIndex(images);
-
-                galleryObject.updateData(images);
-
-                $(this.options.mediaGallerySelector).AddFotoramaVideoEvents({
-                    selectedOption: this.simpleProduct,
-                    dataMergeStrategy: this.options.gallerySwitchStrategy
+                mainImg = imagesArr.filter(function (img) {
+                    return img.isMain;
                 });
-            } else {
-                galleryObject.updateData(initialImages);
-                $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+
+                imgToUpdate = mainImg.length ? mainImg[0] : imagesArr[0];
+                galleryObject.updateDataByIndex(0, imgToUpdate);
+                galleryObject.seek(1);
             }
 
-            galleryObject.first();
-        },
+            if (galleryObject) {
+                if (images) {
+                    images.map(function (img) {
+                        img.type = 'image';
+                    });
 
-        /**
-         * Set correct indexes for image set.
-         *
-         * @param {Array} images
-         * @private
-         */
-        _setImageIndex: function (images) {
-            var length = images.length,
-                i;
-
-            for (i = 0; length > i; i++) {
-                images[i].i = i + 1;
+                    if (this.options.onlyMainImg) {
+                        updateGallery(images);
+                    } else {
+                        galleryObject.updateData(images)
+                    }
+                } else {
+                    if (this.options.onlyMainImg) {
+                        updateGallery(initialImages);
+                    } else {
+                        galleryObject.updateData(this.options.mediaGalleryInitial);
+                        $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+                    }
+                }
             }
-
-            return images;
         },
 
         /**
@@ -373,7 +343,6 @@ define([
                 for (i = 0; i < options.length; i++) {
                     allowedProducts = [];
 
-                    /* eslint-disable max-depth */
                     if (prevConfig) {
                         for (j = 0; j < options[i].products.length; j++) {
                             // prevConfig.config can be undefined
@@ -398,8 +367,6 @@ define([
                         element.options[index].config = options[i];
                         index++;
                     }
-
-                    /* eslint-enable max-depth */
                 }
             }
         },
@@ -475,7 +442,7 @@ define([
         },
 
         /**
-         * Returns prices for configured products
+         * Returns pracies for configured products
          *
          * @param {*} config - Products configuration
          * @returns {*}
@@ -518,92 +485,8 @@ define([
                 undefined :
                 _.first(config.allowedProducts);
 
-        },
-
-        /**
-         * Show or hide regular price block
-         *
-         * @param {*} optionId
-         * @private
-         */
-        _displayRegularPriceBlock: function (optionId) {
-            var shouldBeShown = true;
-
-            _.each(this.options.settings, function (element) {
-                if (element.value === '') {
-                    shouldBeShown = false;
-                }
-            });
-
-            if (shouldBeShown
-                && this.options.spConfig.optionPrices[optionId].oldPrice.amount
-                !== this.options.spConfig.optionPrices[optionId].finalPrice.amount
-            ) {
-                $(this.options.slyOldPriceSelector).show();
-            } else {
-                $(this.options.slyOldPriceSelector).hide();
-            }
-        },
-
-        /**
-         * Show or hide normal price label
-         *
-         * @private
-         */
-        _displayNormalPriceLabel: function () {
-            var shouldBeShown = false;
-
-            _.each(this.options.settings, function (element) {
-                if (element.value === '') {
-                    shouldBeShown = true;
-                }
-            });
-
-            if (shouldBeShown) {
-                $(this.options.normalPriceLabelSelector).show();
-            } else {
-                $(this.options.normalPriceLabelSelector).hide();
-            }
-        },
-
-        /**
-         * Callback which fired after gallery gets initialized.
-         *
-         * @param {HTMLElement} element - DOM element associated with gallery.
-         */
-        _onGalleryLoaded: function (element) {
-            var galleryObject = element.data('gallery');
-
-            this.options.mediaGalleryInitial = galleryObject.returnCurrentImages();
-        },
-
-        /**
-         * Show or hide tier price block
-         *
-         * @param {*} optionId
-         * @private
-         */
-        _displayTierPriceBlock: function (optionId) {
-            var options, tierPriceHtml;
-
-            if (typeof optionId != 'undefined' &&
-                this.options.spConfig.optionPrices[optionId].tierPrices != [] // eslint-disable-line eqeqeq
-            ) {
-                options = this.options.spConfig.optionPrices[optionId];
-
-                if (this.options.tierPriceTemplate) {
-                    tierPriceHtml = mageTemplate(this.options.tierPriceTemplate, {
-                        'tierPrices': options.tierPrices,
-                        '$t': $t,
-                        'currencyFormat': this.options.spConfig.currencyFormat,
-                        'priceUtils': priceUtils
-                    });
-                    $(this.options.tierPriceBlockSelector).html(tierPriceHtml).show();
-                }
-            } else {
-                $(this.options.tierPriceBlockSelector).hide();
-            }
         }
+
     });
 
     return $.mage.configurable;

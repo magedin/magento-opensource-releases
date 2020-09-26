@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,7 +11,6 @@ namespace Magento\Catalog\Test\Unit\Model;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Api\Data\ImageContentInterface;
 use Magento\Framework\Api\ExtensibleDataInterface;
-use Magento\Framework\App\CacheInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as Status;
 
@@ -174,11 +173,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     private $appStateMock;
 
     /**
-     * @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $cacheManagerMock;
-
-    /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function setUp()
@@ -240,8 +234,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             false
         );
         $actionValidatorMock->expects($this->any())->method('isAllowed')->will($this->returnValue(true));
-        $this->cacheManagerMock
-            = $this->getMock('Magento\Framework\App\CacheInterface');
+        $cacheInterfaceMock = $this->getMock('Magento\Framework\App\CacheInterface');
 
         $contextMock = $this->getMock(
             '\Magento\Framework\Model\Context',
@@ -253,7 +246,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->eventManagerMock));
         $contextMock->expects($this->any())
             ->method('getCacheManager')
-            ->will($this->returnValue($this->cacheManagerMock));
+            ->will($this->returnValue($cacheInterfaceMock));
         $contextMock->expects($this->any())
             ->method('getActionValidator')
             ->will($this->returnValue($actionValidatorMock));
@@ -500,9 +493,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($initCategoryCollection, $result);
     }
 
-    /**
-     * @return array
-     */
     public function getCategoryCollectionCollectionNullDataProvider()
     {
         return [
@@ -613,16 +603,13 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $this->model->reindex();
     }
 
-    /**
-     * @return array
-     */
     public function getProductReindexProvider()
     {
-        return [
+        return array(
             'set 1' => [true, false, 1, 1],
             'set 2' => [true, true, 1, 0],
             'set 3' => [false, false, 1, 0]
-        ];
+        );
     }
 
     public function testPriceReindexCallback()
@@ -657,21 +644,11 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $this->model->setIdFieldName('id');
         if (is_array($origData)) {
             foreach ($origData as $key => $value) {
-                //Because ID's not changing if you just use setOrigData
-                if ($key === 'id') {
-                    $this->model->setId($value);
-                } else {
-                    $this->model->setOrigData($key, $value);
-                }
+                $this->model->setOrigData($key, $value);
             }
         }
         foreach ($data as $key => $value) {
-            //Because ID's not changing if you just use setData
-            if ($key === 'id') {
-                $this->model->setId($value);
-            } else {
-                $this->model->setData($key, $value);
-            }
+            $this->model->setData($key, $value);
         }
         $this->model->isDeleted($isDeleted);
         $this->assertEquals($expected, $this->model->getIdentities());
@@ -679,7 +656,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @return array
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function getIdentitiesProvider()
     {
@@ -760,7 +736,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
                     ExtensibleDataInterface::EXTENSION_ATTRIBUTES_KEY => $extensionAttributesMock,
                 ],
             ],
-            'no stock status data 1'          => [
+            'no stock status data 1' => [
                 [0 => 'catalog_product_1'],
                 ['id' => 1, 'name' => 'value', 'category_ids' => [1], 'status' => 1],
                 [
@@ -771,7 +747,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
                     ExtensibleDataInterface::EXTENSION_ATTRIBUTES_KEY => $extensionAttributesMock,
                 ],
             ],
-            'no stock status data 2'          => [
+            'no stock status data 2' => [
                 [0 => 'catalog_product_1'],
                 ['id' => 1, 'name' => 'value', 'category_ids' => [1], 'status' => 1],
                 [
@@ -782,24 +758,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
                     'stock_data' => ['is_in_stock' => true],
                 ],
             ],
-            'new product with ID not set yet' => [
-                [0 => 'catalog_category_product_1'],
-                [
-                    'id'           => null,
-                    'name'         => 'value',
-                    'category_ids' => [1],
-                    'status'       => null,
-                ],
-                [
-                    'id'                    => null,
-                    'name'                  => 'value',
-                    'category_ids'          => [1],
-                    'status'                => 1,
-                    'affected_category_ids' => [1],
-                    'is_changed_categories' => true,
-                ],
-            ],
-            'stock status changes'            => [
+            'stock status changes' => [
                 [0 => 'catalog_product_1', 1 => 'catalog_category_product_1'],
                 ['id' => 1, 'name' => 'value', 'category_ids' => [1], 'status' => 1],
                 [
@@ -1253,7 +1212,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("red", $this->model->getCustomAttribute($colorAttributeCode)->getValue());
 
         //Change the attribute value, should reflect in getCustomAttribute
-        $this->model->setCustomAttribute($colorAttributeCode, "blue");
+        $this->model->setData($colorAttributeCode, "blue");
         $this->assertEquals(1, count($this->model->getCustomAttributes()));
         $this->assertNotNull($this->model->getCustomAttribute($colorAttributeCode));
         $this->assertEquals("blue", $this->model->getCustomAttribute($colorAttributeCode)->getValue());
@@ -1372,41 +1331,5 @@ class ProductTest extends \PHPUnit_Framework_TestCase
         $this->model->getTypeInstance();
         $this->model->setTypeId('typeId');
         $this->model->getTypeInstance();
-    }
-
-    public function testGetOptionById()
-    {
-        $optionId = 100;
-        $optionMock = $this->getMock(\Magento\Catalog\Model\Product\Option::class, [], [], '', false);
-        $this->model->setOptions([$optionMock]);
-        $optionMock->expects($this->once())->method('getId')->willReturn($optionId);
-        $this->assertEquals($optionMock, $this->model->getOptionById($optionId));
-    }
-
-    public function testGetOptionByIdWithWrongOptionId()
-    {
-        $optionId = 100;
-        $optionMock = $this->getMock(\Magento\Catalog\Model\Product\Option::class, [], [], '', false);
-        $this->model->setOptions([$optionMock]);
-        $optionMock->expects($this->once())->method('getId')->willReturn(200);
-        $this->assertNull($this->model->getOptionById($optionId));
-    }
-
-    public function testGetOptionByIdForProductWithoutOptions()
-    {
-        $this->assertNull($this->model->getOptionById(100));
-    }
-
-    public function testGetCacheTags()
-    {
-        //If entity is identified getCacheTags has to return the same values
-        //as getIdentities
-        $this->model->setId(null);
-        $this->assertEquals([Product::CACHE_TAG], $this->model->getCacheTags());
-        $this->model->setId(1);
-        $this->assertEquals(
-            $this->model->getIdentities(),
-            $this->model->getCacheTags()
-        );
     }
 }

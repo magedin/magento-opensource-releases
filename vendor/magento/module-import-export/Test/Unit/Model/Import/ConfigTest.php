@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Test\Unit\Model\Import;
@@ -64,9 +64,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->_model->getEntities('entities'));
     }
 
-    /**
-     * @return array
-     */
     public function getEntitiesDataProvider()
     {
         return [
@@ -101,9 +98,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->_model->getEntityTypes($entity));
     }
 
-    /**
-     * @return array
-     */
     public function getEntityTypesDataProvider()
     {
         return [

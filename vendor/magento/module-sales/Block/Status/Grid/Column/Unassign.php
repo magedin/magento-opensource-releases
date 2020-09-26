@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Status\Grid\Column;
@@ -32,16 +32,9 @@ class Unassign extends \Magento\Backend\Block\Widget\Grid\Column
         $cell = '';
         $state = $row->getState();
         if (!empty($state)) {
-            $url = $this->getUrl('*/*/unassign');
+            $url = $this->getUrl('*/*/unassign', ['status' => $row->getStatus(), 'state' => $row->getState()]);
             $label = __('Unassign');
-            $cell = '<a href="#" data-post="'
-                .$this->escapeHtml(
-                    \json_encode([
-                        'action' => $url,
-                        'data' => ['status' => $row->getStatus(), 'state' => $row->getState()]
-                    ])
-                )
-                .'">' . $label . '</a>';
+            $cell = '<a href="' . $url . '">' . $label . '</a>';
         }
         return $cell;
     }

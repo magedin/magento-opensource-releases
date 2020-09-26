@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -35,6 +35,13 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     protected $dateTime;
 
     /**
+     * Users table
+     *
+     * @var string
+     */
+    protected $_usersTable;
+
+    /**
      * Construct
      *
      * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
@@ -54,6 +61,7 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->_aclCache = $aclCache;
         $this->_roleFactory = $roleFactory;
         $this->dateTime = $dateTime;
+        $this->_usersTable = $this->getTable('admin_user');
     }
 
     /**
@@ -208,7 +216,7 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     'role_type' => RoleUser::ROLE_TYPE,
                     'user_id' => $user->getId(),
                     'user_type' => UserContextInterface::USER_TYPE_ADMIN,
-                    'role_name' => $user->getFirstName(),
+                    'role_name' => $user->getFirstname(),
                 ]
             );
 
@@ -465,7 +473,7 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         if (sizeof($users) > 0) {
             $bind = ['reload_acl_flag' => 1];
             $where = ['user_id IN(?)' => $users];
-            $rowsCount = $connection->update($this->getTable('admin_user'), $bind, $where);
+            $rowsCount = $connection->update($this->_usersTable, $bind, $where);
         }
 
         return $rowsCount > 0;

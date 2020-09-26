@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -22,7 +22,7 @@ define([
     function beforeSave(data, url, selectorPrefix, messagesClass) {
         var save = $.Deferred();
 
-        data = utils.serialize(utils.filterFormData(data));
+        data = utils.serialize(data);
 
         data['form_key'] = window.FORM_KEY;
 
@@ -104,7 +104,6 @@ define([
         _save: function (data, options) {
             var url = this.urls.save;
 
-            $('body').trigger('processStart');
             options = options || {};
 
             if (!options.redirect) {
@@ -116,8 +115,6 @@ define([
                     url: url,
                     data: data
                 }, options);
-
-                $('body').trigger('processStop');
 
                 return this;
             }

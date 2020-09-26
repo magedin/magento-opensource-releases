@@ -1,13 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\Order;
-
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order\Shipment\ShipmentValidatorInterface;
 
 /**
  * Factory class for @see \Magento\Sales\Api\Data\ShipmentInterface
@@ -76,8 +72,6 @@ class ShipmentFactory
      * @param \Magento\Sales\Model\Order $order
      * @param array $items
      * @return \Magento\Sales\Api\Data\ShipmentInterface
-     * @throws LocalizedException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function prepareItems(
         \Magento\Sales\Api\Data\ShipmentInterface $shipment,
@@ -85,6 +79,7 @@ class ShipmentFactory
         array $items = []
     ) {
         $totalQty = 0;
+
         foreach ($order->getAllItems() as $orderItem) {
             if (!$this->canShipItem($orderItem, $items)) {
                 continue;
@@ -92,6 +87,7 @@ class ShipmentFactory
 
             /** @var \Magento\Sales\Model\Order\Shipment\Item $item */
             $item = $this->converter->itemToShipmentItem($orderItem);
+
             if ($orderItem->isDummy(true)) {
                 $qty = 0;
 
@@ -107,7 +103,7 @@ class ShipmentFactory
                             $qty = $bundleSelectionAttributes['qty'] * $items[$orderItem->getParentItemId()];
                             $qty = min($qty, $orderItem->getSimpleQtyToShip());
 
-                            $item->setQty($this->castQty($orderItem, $qty));
+                            $item->setQty($qty);
                             $shipment->addItem($item);
 
                             continue;
@@ -127,15 +123,13 @@ class ShipmentFactory
                     continue;
                 }
             }
-            if ($orderItem->getIsVirtual() || $orderItem->getParentItemId()) {
-                $item->isDeleted(true);
-            }
 
             $totalQty += $qty;
 
-            $item->setQty($this->castQty($orderItem, $qty));
+            $item->setQty($qty);
             $shipment->addItem($item);
         }
+
         return $shipment->setTotalQty($totalQty);
     }
 
@@ -216,21 +210,5 @@ class ShipmentFactory
         } else {
             return $item->getQtyToShip() > 0;
         }
-    }
-
-    /**
-     * @param Item $item
-     * @param string|int|float $qty
-     * @return float|int
-     */
-    private function castQty(\Magento\Sales\Model\Order\Item $item, $qty)
-    {
-        if ($item->getIsQtyDecimal()) {
-            $qty = (double)$qty;
-        } else {
-            $qty = (int)$qty;
-        }
-
-        return $qty > 0 ? $qty : 0;
     }
 }

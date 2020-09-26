@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Model;
@@ -21,7 +21,7 @@ use Magento\Catalog\Model\Product;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Rule extends \Magento\Rule\Model\AbstractModel implements \Magento\CatalogRule\Api\Data\RuleInterface, \Magento\Framework\DataObject\IdentityInterface
+class Rule extends \Magento\Rule\Model\AbstractModel implements \Magento\CatalogRule\Api\Data\RuleInterface
 {
     /**
      * Prefix of model events names
@@ -780,12 +780,4 @@ class Rule extends \Magento\Rule\Model\AbstractModel implements \Magento\Catalog
         return $this->ruleConditionConverter;
     }
     //@codeCoverageIgnoreEnd
-
-    /**
-     * @inheritDoc
-     */
-    public function getIdentities()
-    {
-        return ['price'];
-    }
 }

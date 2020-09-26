@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,8 +10,6 @@ namespace Magento\Vault\Plugin;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Vault\Api\PaymentTokenManagementInterface;
-use Magento\Sales\Api\Data\OrderPaymentExtensionFactory;
-use Magento\Vault\Api\Data\PaymentTokenInterface;
 
 /**
  * Plugin for loading vault payment extension attribute to order/payment entity
@@ -19,7 +17,7 @@ use Magento\Vault\Api\Data\PaymentTokenInterface;
 class PaymentVaultAttributesLoad
 {
     /**
-     * @var OrderPaymentExtensionFactory
+     * @var \Magento\Sales\Api\Data\OrderPaymentExtensionFactory
      */
     protected $paymentExtensionFactory;
 
@@ -29,11 +27,11 @@ class PaymentVaultAttributesLoad
     protected $paymentTokenManagement;
 
     /**
-     * @param OrderPaymentExtensionFactory $paymentExtensionFactory
+     * @param \Magento\Sales\Api\Data\OrderPaymentExtensionFactory $paymentExtensionFactory
      * @param PaymentTokenManagement|PaymentTokenManagementInterface $paymentTokenManagement
      */
     public function __construct(
-        OrderPaymentExtensionFactory $paymentExtensionFactory,
+        \Magento\Sales\Api\Data\OrderPaymentExtensionFactory $paymentExtensionFactory,
         PaymentTokenManagementInterface $paymentTokenManagement
     ) {
         $this->paymentExtensionFactory = $paymentExtensionFactory;
@@ -44,13 +42,16 @@ class PaymentVaultAttributesLoad
      * Load vault payment extension attribute to order/payment entity
      *
      * @param OrderPaymentInterface $payment
-     * @param OrderPaymentExtensionInterface|null $paymentExtension
+     * @param \Closure $proceed
      * @return OrderPaymentExtensionInterface
      */
-    public function afterGetExtensionAttributes(
+    public function aroundGetExtensionAttributes(
         OrderPaymentInterface $payment,
-        OrderPaymentExtensionInterface $paymentExtension = null
+        \Closure $proceed
     ) {
+        /** @var OrderPaymentExtensionInterface $paymentExtension */
+        $paymentExtension = $proceed();
+
         if ($paymentExtension === null) {
             $paymentExtension = $this->paymentExtensionFactory->create();
         }
@@ -58,7 +59,7 @@ class PaymentVaultAttributesLoad
         $paymentToken = $paymentExtension->getVaultPaymentToken();
         if ($paymentToken === null) {
             $paymentToken = $this->paymentTokenManagement->getByPaymentId($payment->getEntityId());
-            if ($paymentToken instanceof PaymentTokenInterface) {
+            if ($paymentToken instanceof \Magento\Vault\Api\Data\PaymentTokenInterface) {
                 $paymentExtension->setVaultPaymentToken($paymentToken);
             }
             $payment->setExtensionAttributes($paymentExtension);

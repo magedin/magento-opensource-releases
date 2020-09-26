@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -66,7 +66,6 @@ class AdminUserCreateCommand extends AbstractSetupCommand
         $output->writeln(
             '<info>Created Magento administrator user named ' . $input->getOption(AdminAccount::KEY_USER) . '</info>'
         );
-        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 
     /**

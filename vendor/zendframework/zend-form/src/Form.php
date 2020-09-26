@@ -28,9 +28,9 @@ class Form extends Fieldset implements FormInterface
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributes = array(
         'method' => 'POST',
-    ];
+    );
 
     /**
      * How to bind values to the attached object
@@ -165,7 +165,7 @@ class Form extends Fieldset implements FormInterface
      * @param  array                              $flags
      * @return self
      */
-    public function add($elementOrFieldset, array $flags = [])
+    public function add($elementOrFieldset, array $flags = array())
     {
         // TODO: find a better solution than duplicating the factory code, the problem being that if $elementOrFieldset is an array,
         // it is passed by value, and we don't get back the concrete ElementInterface
@@ -283,7 +283,7 @@ class Form extends Fieldset implements FormInterface
      */
     public function bind($object, $flags = FormInterface::VALUES_NORMALIZED)
     {
-        if (!in_array($flags, [FormInterface::VALUES_NORMALIZED, FormInterface::VALUES_RAW])) {
+        if (!in_array($flags, array(FormInterface::VALUES_NORMALIZED, FormInterface::VALUES_RAW))) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects the $flags argument to be one of "%s" or "%s"; received "%s"',
                 __METHOD__,
@@ -328,7 +328,7 @@ class Form extends Fieldset implements FormInterface
      * @param array $values
      * @return mixed
      */
-    public function bindValues(array $values = [])
+    public function bindValues(array $values = array())
     {
         if (!is_object($this->object)) {
             if ($this->baseFieldset === null || $this->baseFieldset->allowValueBinding() == false) {
@@ -376,7 +376,7 @@ class Form extends Fieldset implements FormInterface
      */
     protected function prepareBindData(array $values, array $match)
     {
-        $data = [];
+        $data = array();
         foreach ($values as $name => $value) {
             if (!array_key_exists($name, $match)) {
                 continue;
@@ -400,7 +400,7 @@ class Form extends Fieldset implements FormInterface
      */
     public function setBindOnValidate($bindOnValidateFlag)
     {
-        if (!in_array($bindOnValidateFlag, [self::BIND_ON_VALIDATE, self::BIND_MANUAL])) {
+        if (!in_array($bindOnValidateFlag, array(self::BIND_ON_VALIDATE, self::BIND_MANUAL))) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects the flag to be one of %s::%s or %s::%s',
                 __METHOD__,
@@ -628,7 +628,7 @@ class Form extends Fieldset implements FormInterface
                     continue;
                 }
 
-                $values = [];
+                $values = array();
 
                 if (isset($data[$key])) {
                     foreach (array_keys($data[$key]) as $cKey) {
@@ -640,7 +640,7 @@ class Form extends Fieldset implements FormInterface
             }
 
             if (!isset($data[$key])) {
-                $data[$key] = [];
+                $data[$key] = array();
             }
             $this->prepareValidationGroup($fieldset, $data[$key], $validationGroup[$key]);
         }
@@ -774,7 +774,7 @@ class Form extends Fieldset implements FormInterface
                         continue;
                     }
                     // Create a new empty default input for this element
-                    $spec  = ['name' => $name, 'required' => false];
+                    $spec  = array('name' => $name, 'required' => false);
                     $input = $inputFactory->createInput($spec);
                 } else {
                     // Create an input based on the specification returned from the element

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Stdlib\Test\Unit;
@@ -38,9 +38,6 @@ class BooleanUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function toBooleanDataProvider()
     {
         return [
@@ -67,9 +64,6 @@ class BooleanUtilsTest extends \PHPUnit_Framework_TestCase
         $this->object->toBoolean($input);
     }
 
-    /**
-     * @return array
-     */
     public function toBooleanExceptionDataProvider()
     {
         return [

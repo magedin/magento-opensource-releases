@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -15,16 +15,6 @@ use Magento\Framework\Setup\SchemaSetupInterface;
  */
 class InstallSchema implements InstallSchemaInterface
 {
-    /**
-     * @var string
-     */
-    private static $quoteConnectionName = 'checkout';
-
-    /**
-     * @var string
-     */
-    private static $salesConnectionName = 'sales';
-
     /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -115,32 +105,32 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Simple Free Shipping'
         );
-        $installer->getConnection(self::$salesConnectionName)->addColumn(
-            $installer->getTable('sales_order_item', self::$salesConnectionName),
+        $installer->getConnection()->addColumn(
+            $installer->getTable('sales_order_item'),
             'free_shipping',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Free Shipping'
         );
-        $installer->getConnection(self::$quoteConnectionName)->addColumn(
-            $installer->getTable('quote_address', self::$quoteConnectionName),
+        $installer->getConnection()->addColumn(
+            $installer->getTable('quote_address'),
             'free_shipping',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Free Shipping'
         );
-        $installer->getConnection(self::$quoteConnectionName)->addColumn(
-            $installer->getTable('quote_item', self::$quoteConnectionName),
+        $installer->getConnection()->addColumn(
+            $installer->getTable('quote_item'),
             'free_shipping',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Free Shipping'
         );
-        $installer->getConnection(self::$quoteConnectionName)->addColumn(
-            $installer->getTable('quote_address_item', self::$quoteConnectionName),
+        $installer->getConnection()->addColumn(
+            $installer->getTable('quote_address_item'),
             'free_shipping',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\MediaStorage\Test\Unit\Helper\File;
@@ -77,9 +77,6 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->helper->isInternalStorage($storage));
     }
 
-    /**
-     * @return array
-     */
     public function isInternalStorageDataProvider()
     {
         return [
@@ -149,9 +146,6 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->helper->processStorageFile($filename));
     }
 
-    /**
-     * @return array
-     */
     public function processStorageFileDataProvider()
     {
         return [

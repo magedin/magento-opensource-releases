@@ -144,7 +144,7 @@ class FormMultiCheckbox extends FormInput
         $labelHelper      = $this->getLabelHelper();
         $labelClose       = $labelHelper->closeTag();
         $labelPosition    = $this->getLabelPosition();
-        $globalLabelAttributes = [];
+        $globalLabelAttributes = array();
         $closingBracket   = $this->getInlineClosingBracket();
 
         if ($element instanceof LabelAwareInterface) {
@@ -155,7 +155,7 @@ class FormMultiCheckbox extends FormInput
             $globalLabelAttributes = $this->labelAttributes;
         }
 
-        $combinedMarkup = [];
+        $combinedMarkup = array();
         $count          = 0;
 
         foreach ($options as $key => $optionSpec) {
@@ -172,10 +172,10 @@ class FormMultiCheckbox extends FormInput
             $disabled        = (isset($inputAttributes['disabled']) && $inputAttributes['disabled']);
 
             if (is_scalar($optionSpec)) {
-                $optionSpec = [
+                $optionSpec = array(
                     'label' => $optionSpec,
                     'value' => $key
-                ];
+                );
             }
 
             if (isset($optionSpec['value'])) {
@@ -257,10 +257,10 @@ class FormMultiCheckbox extends FormInput
             ? $element->getUncheckedValue()
             : $this->uncheckedValue;
 
-        $hiddenAttributes = [
+        $hiddenAttributes = array(
             'name'  => $element->getName(),
             'value' => $uncheckedValue,
-        ];
+        );
 
         return sprintf(
             '<input type="hidden" %s%s',
@@ -301,7 +301,7 @@ class FormMultiCheckbox extends FormInput
     public function setLabelPosition($labelPosition)
     {
         $labelPosition = strtolower($labelPosition);
-        if (!in_array($labelPosition, [self::LABEL_APPEND, self::LABEL_PREPEND])) {
+        if (!in_array($labelPosition, array(self::LABEL_APPEND, self::LABEL_PREPEND))) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects either %s::LABEL_APPEND or %s::LABEL_PREPEND; received "%s"',
                 __METHOD__,

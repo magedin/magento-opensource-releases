@@ -34,7 +34,7 @@ class Variables extends ArrayObject
      * @param  array $variables
      * @param  array $options
      */
-    public function __construct(array $variables = [], array $options = [])
+    public function __construct(array $variables = array(), array $options = array())
     {
         parent::__construct(
             $variables,
@@ -158,6 +158,6 @@ class Variables extends ArrayObject
      */
     public function clear()
     {
-        $this->exchangeArray([]);
+        $this->exchangeArray(array());
     }
 }

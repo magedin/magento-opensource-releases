@@ -1,9 +1,8 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Backup\Helper;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -283,15 +282,5 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $result->addData(['name' => $name, 'type' => $type, 'time' => $time]);
 
         return $result;
-    }
-
-    /**
-     * Is backup functionality enabled.
-     *
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->scopeConfig->isSetFlag('system/backup/functionality_enabled');
     }
 }

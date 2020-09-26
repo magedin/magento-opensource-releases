@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Product;
@@ -9,7 +9,6 @@ namespace Magento\Catalog\Controller\Adminhtml\Product;
 use Magento\Backend\App\Action;
 use Magento\Catalog\Controller\Adminhtml\Product;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 
@@ -23,12 +22,12 @@ class MassStatus extends \Magento\Catalog\Controller\Adminhtml\Product
     /**
      * MassActions filter
      *
-     * @var \Magento\Ui\Component\MassAction\Filter
+     * @var Filter
      */
     protected $filter;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
+     * @var CollectionFactory
      */
     protected $collectionFactory;
 
@@ -36,8 +35,8 @@ class MassStatus extends \Magento\Catalog\Controller\Adminhtml\Product
      * @param Action\Context $context
      * @param Builder $productBuilder
      * @param \Magento\Catalog\Model\Indexer\Product\Price\Processor $productPriceIndexerProcessor
-     * @param \Magento\Ui\Component\MassAction\Filter $filter
-     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
+     * @param Filter $filter
+     * @param CollectionFactory $collectionFactory
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
@@ -75,34 +74,22 @@ class MassStatus extends \Magento\Catalog\Controller\Adminhtml\Product
      * Update product(s) status action
      *
      * @return \Magento\Backend\Model\View\Result\Redirect
-     * @throws NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found'));
-        }
-
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $productIds = $collection->getAllIds();
         $storeId = (int) $this->getRequest()->getParam('store', 0);
         $status = (int) $this->getRequest()->getParam('status');
-        $filters = (array)$this->getRequest()->getParam('filters', []);
-
-        if (isset($filters['store_id'])) {
-            $storeId = (int)$filters['store_id'];
-        }
 
         try {
             $this->_validateMassStatus($productIds, $status);
-            $this->_objectManager->get(\Magento\Catalog\Model\Product\Action::class)
+            $this->_objectManager->get('Magento\Catalog\Model\Product\Action')
                 ->updateAttributes($productIds, ['status' => $status], $storeId);
-            $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been updated.', count($productIds))
-            );
+            $this->messageManager->addSuccess(__('A total of %1 record(s) have been updated.', count($productIds)));
             $this->_productPriceIndexerProcessor->reindexList($productIds);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
+            $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
             $this->_getSession()->addException($e, __('Something went wrong while updating the product(s) status.'));
         }

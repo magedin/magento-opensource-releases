@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Test\Unit\Model\Calculation;
@@ -345,9 +345,6 @@ class RateRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->model->save($rateMock);
     }
 
-    /**
-     * @return array
-     */
     public function saveThrowsExceptionIfCannotSaveTitlesDataProvider()
     {
         return [

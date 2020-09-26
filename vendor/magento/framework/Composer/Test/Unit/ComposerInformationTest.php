@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Composer\Test\Unit;
@@ -92,9 +92,6 @@ class ComposerInformationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->composerInformation->isMagentoRoot());
     }
 
-    /**
-     * @return array
-     */
     public function isMagentoRootDataProvider()
     {
         return [

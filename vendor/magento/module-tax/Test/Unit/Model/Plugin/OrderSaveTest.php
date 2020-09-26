@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -63,9 +63,6 @@ class OrderSaveTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     protected function setupOrderMock()
     {
         $orderMock = $this->getMockBuilder('\Magento\Sales\Model\Order')
@@ -83,9 +80,6 @@ class OrderSaveTest extends \PHPUnit_Framework_TestCase
         return $orderMock;
     }
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     protected function setupExtensionAttributeMock()
     {
         $orderExtensionAttributeMock = $this->getMockBuilder('\Magento\Sales\Api\Data\OrderExtensionInterface')
@@ -101,9 +95,6 @@ class OrderSaveTest extends \PHPUnit_Framework_TestCase
         return $orderExtensionAttributeMock;
     }
 
-    /**
-     * @param $expectedTaxes
-     */
     protected function verifyOrderTaxes($expectedTaxes)
     {
         $index = 0;
@@ -136,9 +127,6 @@ class OrderSaveTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @param $expectedItemTaxes
-     */
     public function verifyItemTaxes($expectedItemTaxes)
     {
         $index = 0;

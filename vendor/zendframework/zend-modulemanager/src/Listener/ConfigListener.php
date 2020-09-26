@@ -32,17 +32,17 @@ class ConfigListener extends AbstractListener implements
     /**
      * @var array
      */
-    protected $callbacks = [];
+    protected $callbacks = array();
 
     /**
      * @var array
      */
-    protected $configs = [];
+    protected $configs = array();
 
     /**
      * @var array
      */
-    protected $mergedConfig = [];
+    protected $mergedConfig = array();
 
     /**
      * @var Config
@@ -57,7 +57,7 @@ class ConfigListener extends AbstractListener implements
     /**
      * @var array
      */
-    protected $paths = [];
+    protected $paths = array();
 
     /**
      * __construct
@@ -81,16 +81,16 @@ class ConfigListener extends AbstractListener implements
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, [$this, 'onloadModulesPre'], 1000);
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onloadModulesPre'), 1000);
 
         if ($this->skipConfig) {
             // We already have the config from cache, no need to collect or merge.
             return $this;
         }
 
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, [$this, 'onLoadModule']);
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, [$this, 'onLoadModules'], -1000);
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_MERGE_CONFIG, [$this, 'onMergeConfig'], 1000);
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModules'), -1000);
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_MERGE_CONFIG, array($this, 'onMergeConfig'), 1000);
         return $this;
     }
 
@@ -118,7 +118,7 @@ class ConfigListener extends AbstractListener implements
         $module = $e->getModule();
 
         if (!$module instanceof ConfigProviderInterface
-            && !is_callable([$module, 'getConfig'])
+            && !is_callable(array($module, 'getConfig'))
         ) {
             return $this;
         }
@@ -145,7 +145,7 @@ class ConfigListener extends AbstractListener implements
         }
 
         // Merge all of the collected configs
-        $this->mergedConfig = $this->getOptions()->getExtraConfig() ?: [];
+        $this->mergedConfig = $this->getOptions()->getExtraConfig() ?: array();
         foreach ($this->configs as $config) {
             $this->mergedConfig = ArrayUtils::merge($this->mergedConfig, $config);
         }
@@ -165,7 +165,7 @@ class ConfigListener extends AbstractListener implements
     {
         // Trigger MERGE_CONFIG event. This is a hook to allow the merged application config to be
         // modified before it is cached (In particular, allows the removal of config keys)
-        $e->getTarget()->getEventManager()->trigger(ModuleEvent::EVENT_MERGE_CONFIG, $e);
+        $e->getTarget()->getEventManager()->trigger(ModuleEvent::EVENT_MERGE_CONFIG, $e->getTarget(), $e);
 
         // If enabled, update the config cache
         if (
@@ -322,7 +322,7 @@ class ConfigListener extends AbstractListener implements
                 )
             );
         }
-        $this->paths[] = ['type' => $type, 'path' => $path];
+        $this->paths[] = array('type' => $type, 'path' => $path);
         return $this;
     }
 

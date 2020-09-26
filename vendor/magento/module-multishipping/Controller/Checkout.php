@@ -1,12 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Multishipping\Controller;
 
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Exception\StateException;
 
 /**
  * Multishipping checkout controller
@@ -15,6 +16,28 @@ use Magento\Framework\Exception\StateException;
 abstract class Checkout extends \Magento\Checkout\Controller\Action implements
     \Magento\Checkout\Controller\Express\RedirectLoginInterface
 {
+    /**
+     * Constructor
+     *
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param AccountManagementInterface $accountManagement
+     */
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Customer\Model\Session $customerSession,
+        CustomerRepositoryInterface $customerRepository,
+        AccountManagementInterface $accountManagement
+    ) {
+        parent::__construct(
+            $context,
+            $customerSession,
+            $customerRepository,
+            $accountManagement
+        );
+    }
+
     /**
      * Retrieve checkout model
      *
@@ -60,7 +83,6 @@ abstract class Checkout extends \Magento\Checkout\Controller\Action implements
      *
      * @param RequestInterface $request
      * @return \Magento\Framework\App\ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -127,14 +149,7 @@ abstract class Checkout extends \Magento\Checkout\Controller\Action implements
             return parent::dispatch($request);
         }
 
-        try {
-            $checkout = $this->_getCheckout();
-        } catch (StateException $e) {
-            $this->getResponse()->setRedirect($this->_getHelper()->getMSNewShippingUrl());
-            $this->_actionFlag->set('', self::FLAG_NO_DISPATCH, true);
-            return parent::dispatch($request);
-        }
-        $quote = $checkout->getQuote();
+        $quote = $this->_getCheckout()->getQuote();
         if (!$quote->hasItems() || $quote->getHasError() || $quote->isVirtual()) {
             $this->getResponse()->setRedirect($this->_getHelper()->getCartUrl());
             $this->_actionFlag->set('', self::FLAG_NO_DISPATCH, true);

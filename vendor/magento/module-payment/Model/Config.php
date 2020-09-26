@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Model;
@@ -95,6 +95,7 @@ class Config
             if (isset($data['active'], $data['model']) && (bool)$data['active']) {
                 /** @var MethodInterface $methodModel Actually it's wrong interface */
                 $methodModel = $this->_paymentMethodFactory->create($data['model']);
+                $methodModel->setId($code);
                 $methodModel->setStore(null);
                 if ($methodModel->getConfigData('active', null)) {
                     $methods[$code] = $methodModel;

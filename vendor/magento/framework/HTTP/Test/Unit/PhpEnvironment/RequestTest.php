@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\HTTP\Test\Unit\PhpEnvironment;
@@ -50,10 +50,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $_SERVER = $this->serverArray;
     }
 
-    /**
-     * @param null $uri
-     * @return Request
-     */
     private function getModel($uri = null)
     {
         return new Request($this->cookieReader, $this->converter, $uri);
@@ -217,6 +213,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->model->getAlias(''));
     }
 
+
     public function testGetCookie()
     {
         $key = "cookieName";
@@ -229,6 +226,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->getModel()->getCookie($key, $default);
     }
+
 
     public function testGetCookieDefault()
     {

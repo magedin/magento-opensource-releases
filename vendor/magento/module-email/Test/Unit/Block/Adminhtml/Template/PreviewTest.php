@@ -1,13 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Email\Test\Unit\Block\Adminhtml\Template;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class PreviewTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -36,7 +36,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
     public function testToHtml($requestParamMap)
     {
         $storeId = 1;
-        $template = $this->getMockBuilder(\Magento\Email\Model\Template::class)
+        $template = $this->getMockBuilder('Magento\Email\Model\Template')
             ->setMethods([
                 'setDesignConfig',
                 'getDesignConfig',
@@ -57,19 +57,19 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new \Magento\Framework\DataObject(
                 $designConfigData
             ));
-        $emailFactory = $this->getMock(\Magento\Email\Model\TemplateFactory::class, ['create'], [], '', false);
+        $emailFactory = $this->getMock('Magento\Email\Model\TemplateFactory', ['create'], [], '', false);
         $emailFactory->expects($this->any())
             ->method('create')
             ->willReturn($template);
 
-        $request = $this->getMock(\Magento\Framework\App\RequestInterface::class);
+        $request = $this->getMock('Magento\Framework\App\RequestInterface');
         $request->expects($this->any())->method('getParam')->willReturnMap($requestParamMap);
-        $eventManage = $this->getMock(\Magento\Framework\Event\ManagerInterface::class);
-        $scopeConfig = $this->getMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
-        $design = $this->getMock(\Magento\Framework\View\DesignInterface::class);
-        $store = $this->getMock(\Magento\Store\Model\Store::class, ['getId', '__wakeup'], [], '', false);
+        $eventManage = $this->getMock('Magento\Framework\Event\ManagerInterface');
+        $scopeConfig = $this->getMock('Magento\Framework\App\Config\ScopeConfigInterface');
+        $design = $this->getMock('Magento\Framework\View\DesignInterface');
+        $store = $this->getMock('Magento\Store\Model\Store', ['getId', '__wakeup'], [], '', false);
         $store->expects($this->any())->method('getId')->willReturn($storeId);
-        $storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
+        $storeManager = $this->getMockBuilder('\Magento\Store\Model\StoreManagerInterface')
             ->disableOriginalConstructor()
             ->getMock();
         $storeManager->expects($this->atLeastOnce())
@@ -85,12 +85,9 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $context = $this->getMock(
-            \Magento\Backend\Block\Template\Context::class,
+        $context = $this->getMock('Magento\Backend\Block\Template\Context',
             ['getRequest', 'getEventManager', 'getScopeConfig', 'getDesignPackage', 'getStoreManager', 'getAppState'],
-            [],
-            '',
-            false
+            [], '', false
         );
         $context->expects($this->any())->method('getRequest')->willReturn($request);
         $context->expects($this->any())->method('getEventManager')->willReturn($eventManage);
@@ -100,7 +97,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
         $context->expects($this->once())->method('getAppState')->willReturn($appState);
 
         $maliciousCode = $this->getMock(
-            \Magento\Framework\Filter\Input\MaliciousCode::class,
+            'Magento\Framework\Filter\Input\MaliciousCode',
             ['filter'],
             [],
             '',
@@ -113,7 +110,7 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Magento\Email\Block\Adminhtml\Template\Preview $preview */
         $preview = $this->objectManagerHelper->getObject(
-            \Magento\Email\Block\Adminhtml\Template\Preview::class,
+            'Magento\Email\Block\Adminhtml\Template\Preview',
             [
                 'context' => $context,
                 'maliciousCode' => $maliciousCode,
@@ -132,6 +129,16 @@ class PreviewTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['data 1' => [
+                ['type', null, ''],
+                ['text', null, sprintf('<javascript>%s</javascript>', self::MALICIOUS_TEXT)],
+                ['styles', null, ''],
+            ]],
+            ['data 2' => [
+                ['type', null, ''],
+                ['text', null, sprintf('<iframe>%s</iframe>', self::MALICIOUS_TEXT)],
+                ['styles', null, ''],
+            ]],
+            ['data 3' => [
                 ['type', null, ''],
                 ['text', null, self::MALICIOUS_TEXT],
                 ['styles', null, ''],

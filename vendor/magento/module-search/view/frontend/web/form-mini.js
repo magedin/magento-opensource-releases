@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -51,7 +51,7 @@ define([
             this.autoComplete = $(this.options.destinationSelector);
             this.searchForm = $(this.options.formSelector);
             this.submitBtn = this.searchForm.find(this.options.submitBtn)[0];
-            this.searchLabel = this.searchForm.find(this.options.searchLabel);
+            this.searchLabel = $(this.options.searchLabel);
             this.isExpandable = this.options.isExpandable;
 
             _.bindAll(this, '_onKeyDown', '_onPropertyChange', '_onSubmit');
@@ -89,9 +89,7 @@ define([
                 }, this), 250);
             }, this));
 
-            if (this.element.get(0) === document.activeElement) {
-                this.setActiveState(true);
-            }
+            this.element.trigger('blur');
 
             this.element.on('focus', this.setActiveState.bind(this, true));
             this.element.on('keydown', this._onKeyDown);
@@ -209,7 +207,6 @@ define([
                     break;
                 case $.ui.keyCode.ENTER:
                     this.searchForm.trigger('submit');
-                    e.preventDefault();
                     break;
                 case $.ui.keyCode.DOWN:
                     if (this.responseList.indexList) {
@@ -270,7 +267,7 @@ define([
             this.submitBtn.disabled = isEmpty(value);
 
             if (value.length >= parseInt(this.options.minSearchLength, 10)) {
-                $.getJSON(this.options.url, {q: value}, $.proxy(function (data) {
+                $.get(this.options.url, {q: value}, $.proxy(function (data) {
                     $.each(data, function(index, element) {
                         element.index = index;
                         var html = template({

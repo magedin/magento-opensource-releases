@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Contact\Controller\Index;
@@ -43,8 +43,7 @@ class Post extends \Magento\Contact\Controller\Index
             if (!\Zend_Validate::is(trim($post['comment']), 'NotEmpty')) {
                 $error = true;
             }
-            $validator = new \Zend\Validator\EmailAddress();
-            if (!$validator->isValid(trim($post['email']))) {
+            if (!\Zend_Validate::is(trim($post['email']), 'EmailAddress')) {
                 $error = true;
             }
             if (\Zend_Validate::is(trim($post['hideit']), 'NotEmpty')) {

@@ -1,11 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogImportExport\Test\Unit\Model\Import;
 
+use Magento\CatalogImportExport\Model\Import\Product;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Stdlib\DateTime;
 use Magento\ImportExport\Model\Import;
 
 /**
@@ -396,7 +398,7 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
                 'data' => $this->data
             ]
         );
-        $reflection = new \ReflectionClass(\Magento\CatalogImportExport\Model\Import\Product::class);
+        $reflection = new \ReflectionClass('\Magento\CatalogImportExport\Model\Import\Product');
         $reflectionProperty = $reflection->getProperty('metadataPool');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->importProduct, $metadataPoolMock);
@@ -408,7 +410,7 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
     protected function _objectConstructor()
     {
         $this->optionFactory = $this->getMock(
-            \Magento\CatalogImportExport\Model\Import\Product\OptionFactory::class,
+            '\Magento\CatalogImportExport\Model\Import\Product\OptionFactory',
             ['create'],
             [],
             '',
@@ -831,9 +833,6 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $this->assertEquals($expectedResult, $actualResult);
     }
 
-    /**
-     * @return array
-     */
     public function getStoreIdByCodeDataProvider()
     {
         return [
@@ -1281,49 +1280,6 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $importProduct->validateRow($rowData, $rowNum);
     }
 
-    /**
-     * @dataProvider getImagesFromRowDataProvider
-     */
-    public function testGetImagesFromRow($rowData, $expectedResult)
-    {
-        $this->assertEquals(
-            $this->importProduct->getImagesFromRow($rowData),
-            $expectedResult
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getImagesFromRowDataProvider()
-    {
-        return [
-            [
-                [],
-                [[], []],
-            ],
-            [
-                [
-                    'image' => 'image3.jpg',
-                    '_media_image' => 'image1.jpg,image2.png',
-                    '_media_image_label' => 'label1,label2',
-                ],
-                [
-                    [
-                        'image' => ['image3.jpg'],
-                        '_media_image' => ['image1.jpg', 'image2.png'],
-                    ],
-                    [
-                        '_media_image' => ['label1', 'label2'],
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     */
     public function validateRowValidateNewProductTypeAddRowErrorCallDataProvider()
     {
         return [
@@ -1358,9 +1314,6 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         ];
     }
 
-    /**
-     * @return array
-     */
     public function validateRowCheckSpecifiedSkuDataProvider()
     {
         return [
@@ -1379,9 +1332,6 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         ];
     }
 
-    /**
-     * @return array
-     */
     public function validateRowDataProvider()
     {
         return [
@@ -1732,90 +1682,5 @@ class ProductTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractI
         $importProduct->method('getErrorAggregator')->willReturn($errorAggregator);
 
         return $importProduct;
-    }
-
-    /**
-     * Test indexer not run reindexList in update by schedule mode.
-     *
-     * @return void
-     */
-    public function testStockItemReindexListNotCall()
-    {
-        $indexer = $this->getMockBuilder(\Magento\Framework\Indexer\IndexerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $stockResource = $this->getMockBuilder(\Magento\CatalogInventory\Model\ResourceModel\Stock\Item::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $stock = $this->getMockBuilder(\Magento\CatalogInventory\Api\Data\StockInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $stockItem = $this->getMockBuilder(\Magento\CatalogInventory\Api\Data\StockItemInterface::class)
-            ->setMethods(['getData'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->indexerRegistry->expects($this->once())
-            ->method('get')
-            ->with('catalog_product_category')
-            ->willReturn($indexer);
-
-        $this->_stockResItemFac->expects($this->once())
-            ->method('create')
-            ->willReturn($stockResource);
-
-        $stockResource->expects($this->once())
-            ->method('getMainTable')
-            ->willReturn('mainTable');
-
-        $this->_dataSourceModel->expects($this->atLeastOnce())
-            ->method('getNextBunch')
-            ->willReturnOnConsecutiveCalls(
-                [
-                    0 => [
-                        'sku' => 'product_dynamic',
-                        'product_type' => 'simple',
-                        '_attribute_set' => 'attributeSet1'
-                    ]
-                ],
-                []
-            );
-
-        $this->validator->expects($this->once())
-            ->method('isValid')
-            ->willReturn(true);
-
-        $this->skuProcessor->expects($this->atLeastOnce())
-            ->method('getNewSku')
-            ->willReturn([
-                'sku' => 'product_dynamic_3326',
-                'type_id' => 'simple',
-                'attr_set_code' => 'attributeSet1',
-                'entity_id' => 1
-            ]);
-
-        $this->stockRegistry->expects($this->once())
-            ->method('getStock')
-            ->willReturn($stock);
-
-        $this->stockRegistry->expects($this->once())
-            ->method('getStockItem')
-            ->willReturn($stockItem);
-
-        $stockItem->expects($this->once())
-            ->method('getData')
-            ->willReturn([]);
-
-        $indexer->expects($this->once())
-            ->method('isScheduled')
-            ->willReturn(true);
-
-        $indexer->expects($this->never())
-            ->method('reindexList');
-
-        $this->invokeMethod($this->importProduct, '_saveStockItem');
     }
 }

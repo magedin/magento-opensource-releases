@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Content;
@@ -17,7 +17,7 @@ class Uploader extends \Magento\Backend\Block\Media\Uploader
      *
      * @var string
      */
-    protected $_template = 'Magento_Theme::browser/content/uploader.phtml';
+    protected $_template = 'browser/content/uploader.phtml';
 
     /**
      * @var \Magento\Theme\Helper\Storage

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -74,46 +74,46 @@ class SaveTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->_responseMock = $this->getMock(\Magento\Framework\App\Response\Http::class, [], [], '', false);
+        $this->_responseMock = $this->getMock('Magento\Framework\App\Response\Http', [], [], '', false);
         $this->_responseMock->headersSentThrowsException = false;
-        $this->_requestMock = $this->getMock(\Magento\Framework\App\Request\Http::class, [], [], '', false);
-        $this->_requestMock->expects($this->any())->method('isPost')->willReturn(true);
+        $this->_requestMock = $this->getMock('Magento\Framework\App\Request\Http', [], [], '', false);
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $constructArguments = $objectManager->getConstructArguments(
-            \Magento\Backend\Model\Session::class,
+            'Magento\Backend\Model\Session',
             ['storage' => new \Magento\Framework\Session\Storage()]
         );
         $this->_sessionMock = $this->getMock(
-            \Magento\Backend\Model\Session::class,
+            'Magento\Backend\Model\Session',
             ['setFormData'],
             $constructArguments
         );
-        $this->resultForwardFactoryMock = $this->getMockBuilder(
-            \Magento\Backend\Model\View\Result\ForwardFactory::class
-        )
+        $this->resultForwardFactoryMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\ForwardFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultForwardMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
+        $this->resultForwardMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\Forward')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            \Magento\Backend\Model\View\Result\RedirectFactory::class
-        )
+        $this->resultRedirectFactoryMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\RedirectFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\Redirect')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->_objectManager = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
-        $registryMock = $this->getMock(\Magento\Framework\Registry::class, [], [], '', false, false);
-        $this->_objectManager->expects($this->any())
-            ->method('get')
-            ->with(\Magento\Framework\Registry::class)
-            ->willReturn($registryMock);
+        $this->_objectManager = $this->getMock('Magento\Framework\ObjectManagerInterface');
+        $registryMock = $this->getMock('Magento\Framework\Registry', [], [], '', false, false);
+        $this->_objectManager->expects(
+            $this->any()
+        )->method(
+            'get'
+        )->with(
+            $this->equalTo('Magento\Framework\Registry')
+        )->will(
+            $this->returnValue($registryMock)
+        );
         $this->_messageManager = $this->getMock(
-            \Magento\Framework\Message\ManagerInterface::class,
+            '\Magento\Framework\Message\ManagerInterface',
             [],
             [],
             '',
@@ -126,16 +126,16 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             'session' => $this->_sessionMock,
             'objectManager' => $this->_objectManager,
             'messageManager' => $this->_messageManager,
-            'resultRedirectFactory' => $this->resultRedirectFactoryMock,
+            'resultRedirectFactory' => $this->resultRedirectFactoryMock
         ];
 
-        $context = $helper->getObject(\Magento\Backend\App\Action\Context::class, $arguments);
+        $context = $helper->getObject('Magento\Backend\App\Action\Context', $arguments);
 
         $this->memoLoaderMock = $this->getMock(
-            \Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader::class, [], [], '', false
+            '\Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader', [], [], '', false
         );
         $this->_controller = $helper->getObject(
-            \Magento\Sales\Controller\Adminhtml\Order\Creditmemo\Save::class,
+            'Magento\Sales\Controller\Adminhtml\Order\Creditmemo\Save',
             [
                 'context' => $context,
                 'creditmemoLoader' => $this->memoLoaderMock,
@@ -248,7 +248,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     protected function _setSaveActionExpectationForMageCoreException($data, $errorMessage)
     {
-        $this->_messageManager->expects($this->once())->method('addErrorMessage')->with($this->equalTo($errorMessage));
+        $this->_messageManager->expects($this->once())->method('addError')->with($this->equalTo($errorMessage));
         $this->_sessionMock->expects($this->once())->method('setFormData')->with($this->equalTo($data));
     }
 }

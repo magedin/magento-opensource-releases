@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,8 +10,6 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * Class CollectionTest
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,142 +29,98 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     protected $collection;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $galleryResourceMock;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $entityMock;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $metadataPoolMock;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $galleryReadHandlerMock;
-
-    /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function setUp()
     {
-        $entityFactory = $this->getMock(\Magento\Framework\Data\Collection\EntityFactory::class, [], [], '', false);
-        $logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
+        $entityFactory = $this->getMock('Magento\Framework\Data\Collection\EntityFactory', [], [], '', false);
+        $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $fetchStrategy = $this->getMockBuilder(\Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class)
+        $fetchStrategy = $this->getMockBuilder('Magento\Framework\Data\Collection\Db\FetchStrategyInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
+        $eventManager = $this->getMockBuilder('Magento\Framework\Event\ManagerInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $eavConfig = $this->getMockBuilder(\Magento\Eav\Model\Config::class)
+        $eavConfig = $this->getMockBuilder('Magento\Eav\Model\Config')
             ->disableOriginalConstructor()
             ->getMock();
-        $resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
+        $resource = $this->getMockBuilder('Magento\Framework\App\ResourceConnection')
             ->disableOriginalConstructor()
             ->getMock();
-        $eavEntityFactory = $this->getMockBuilder(\Magento\Eav\Model\EntityFactory::class)
+        $eavEntityFactory = $this->getMockBuilder('Magento\Eav\Model\EntityFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $resourceHelper = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Helper::class)
+        $resourceHelper = $this->getMockBuilder('Magento\Catalog\Model\ResourceModel\Helper')
             ->disableOriginalConstructor()
             ->getMock();
-        $universalFactory = $this->getMockBuilder(\Magento\Framework\Validator\UniversalFactory::class)
+        $universalFactory = $this->getMockBuilder('Magento\Framework\Validator\UniversalFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
+        $storeManager = $this->getMockBuilder('Magento\Store\Model\StoreManagerInterface')
             ->disableOriginalConstructor()
             ->setMethods(['getStore', 'getId'])
             ->getMockForAbstractClass();
-        $moduleManager = $this->getMockBuilder(\Magento\Framework\Module\Manager::class)
+        $moduleManager = $this->getMockBuilder('Magento\Framework\Module\Manager')
             ->disableOriginalConstructor()
             ->getMock();
-        $catalogProductFlatState = $this->getMockBuilder(\Magento\Catalog\Model\Indexer\Product\Flat\State::class)
+        $catalogProductFlatState = $this->getMockBuilder('Magento\Catalog\Model\Indexer\Product\Flat\State')
             ->disableOriginalConstructor()
             ->getMock();
-        $scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+        $scopeConfig = $this->getMockBuilder('Magento\Framework\App\Config\ScopeConfigInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $productOptionFactory = $this->getMockBuilder(\Magento\Catalog\Model\Product\OptionFactory::class)
+        $productOptionFactory = $this->getMockBuilder('Magento\Catalog\Model\Product\OptionFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $catalogUrl = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Url::class)
+        $catalogUrl = $this->getMockBuilder('Magento\Catalog\Model\ResourceModel\Url')
             ->disableOriginalConstructor()
             ->getMock();
-        $localeDate = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
+        $localeDate = $this->getMockBuilder('Magento\Framework\Stdlib\DateTime\TimezoneInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $customerSession = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
+        $customerSession = $this->getMockBuilder('Magento\Customer\Model\Session')
             ->disableOriginalConstructor()
             ->getMock();
-        $dateTime = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime::class)
+        $dateTime = $this->getMockBuilder('Magento\Framework\Stdlib\DateTime')
             ->disableOriginalConstructor()
             ->getMock();
-        $groupManagement = $this->getMockBuilder(\Magento\Customer\Api\GroupManagementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
+        $groupManagement = $this->getMockBuilder('Magento\Customer\Api\GroupManagementInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
+        $this->connectionMock = $this->getMockBuilder('Magento\Framework\DB\Adapter\AdapterInterface')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $this->selectMock = $this->getMockBuilder('Magento\Framework\DB\Select')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->entityMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\AbstractEntity::class)
+        $entityMock = $this->getMockBuilder('Magento\Eav\Model\Entity\AbstractEntity')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->galleryResourceMock = $this->getMockBuilder(
-            \Magento\Catalog\Model\ResourceModel\Product\Gallery::class
-        )->disableOriginalConstructor()->getMock();
-
-        $this->metadataPoolMock = $this->getMockBuilder(
-            \Magento\Framework\EntityManager\MetadataPool::class
-        )->disableOriginalConstructor()->getMock();
-
-        $this->galleryReadHandlerMock = $this->getMockBuilder(
-            \Magento\Catalog\Model\Product\Gallery\ReadHandler::class
-        )->disableOriginalConstructor()->getMock();
 
         $storeManager->expects($this->any())->method('getId')->willReturn(1);
         $storeManager->expects($this->any())->method('getStore')->willReturnSelf();
         $universalFactory->expects($this->exactly(1))->method('create')->willReturnOnConsecutiveCalls(
-            $this->entityMock
+            $entityMock
         );
-        $this->entityMock->expects($this->once())->method('getConnection')->willReturn($this->connectionMock);
-        $this->entityMock->expects($this->once())->method('getDefaultAttributes')->willReturn([]);
-        $this->entityMock->expects($this->any())->method('getTable')->willReturnArgument(0);
+        $entityMock->expects($this->once())->method('getConnection')->willReturn($this->connectionMock);
+        $entityMock->expects($this->once())->method('getDefaultAttributes')->willReturn([]);
+        $entityMock->expects($this->any())->method('getTable')->willReturnArgument(0);
         $this->connectionMock->expects($this->atLeastOnce())->method('select')->willReturn($this->selectMock);
         $helper = new ObjectManager($this);
 
         $this->prepareObjectManager([
             [
-                \Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation::class,
-                $this->getMock(\Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation::class)
-            ],
-            [
-                \Magento\Catalog\Model\ResourceModel\Product\Gallery::class,
-                $this->galleryResourceMock
-            ],
-            [
-                \Magento\Framework\EntityManager\MetadataPool::class,
-                $this->metadataPoolMock
-            ],
-            [
-                \Magento\Catalog\Model\Product\Gallery\ReadHandler::class,
-                $this->galleryReadHandlerMock
+                'Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation',
+                $this->getMock('Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation')
             ]
         ]);
         $this->collection = $helper->getObject(
-            \Magento\Catalog\Model\ResourceModel\Product\Collection::class,
+            'Magento\Catalog\Model\ResourceModel\Product\Collection',
             [
                 'entityFactory' => $entityFactory,
                 'logger' => $logger,
@@ -220,73 +174,16 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider addMediaGalleryDataDataProvider
-     * @param string $linkField
-     * @param int $linkFieldId
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function testAddMediaGalleryData($linkField, $linkFieldId)
-    {
-        $attributeId = 42;
-        $mediaGalleriesMock = [[$linkField => $linkFieldId]];
-        $itemMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getData'])
-            ->getMock();
-        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $metadataMock = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadataInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->collection->addItem($itemMock);
-        $reflection = new \ReflectionClass(get_class($this->collection));
-        $reflectionProperty = $reflection->getProperty('_isCollectionLoaded');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($this->collection, true);
-
-        $this->galleryResourceMock->expects($this->once())->method('createBatchBaseSelect')->willReturn($selectMock);
-        $attributeMock->expects($this->once())->method('getAttributeId')->willReturn($attributeId);
-        $this->entityMock->expects($this->once())->method('getAttribute')->willReturn($attributeMock);
-        $itemMock->expects($this->atLeastOnce())->method('getData')->willReturn($linkFieldId);
-        $selectMock->expects($this->once())->method('where')->with('entity.' . $linkField . ' IN (?)', [$linkFieldId]);
-        $this->metadataPoolMock->expects($this->once())->method('getMetadata')->willReturn($metadataMock);
-        $metadataMock->expects($this->once())->method('getLinkField')->willReturn($linkField);
-
-        $this->connectionMock->expects($this->once())->method('fetchAll')->with($selectMock)->willReturn(
-            [[$linkField => $linkFieldId]]
-        );
-        $this->galleryReadHandlerMock->expects($this->once())->method('addMediaDataToProduct')
-            ->with($itemMock, $mediaGalleriesMock);
-
-        $this->assertSame($this->collection, $this->collection->addMediaGalleryData());
-    }
-
-    /**
-     * @return array
-     */
-    public function addMediaGalleryDataDataProvider()
-    {
-        return [
-            ['entity_id', 4242],
-            ['row_id', 4]
-        ];
-    }
-
-    /**
      * @param $map
      */
     private function prepareObjectManager($map)
     {
-        $objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
+        $objectManagerMock = $this->getMock('Magento\Framework\ObjectManagerInterface');
         $objectManagerMock->expects($this->any())->method('getInstance')->willReturnSelf();
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->will($this->returnValueMap($map));
-        $reflectionClass = new \ReflectionClass(\Magento\Framework\App\ObjectManager::class);
+        $reflectionClass = new \ReflectionClass('Magento\Framework\App\ObjectManager');
         $reflectionProperty = $reflectionClass->getProperty('_instance');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($objectManagerMock);

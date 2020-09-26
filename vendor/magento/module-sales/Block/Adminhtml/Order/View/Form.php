@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Adminhtml\Order\View;
@@ -17,5 +17,5 @@ class Form extends \Magento\Backend\Block\Template
      *
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/view/form.phtml';
+    protected $_template = 'order/view/form.phtml';
 }

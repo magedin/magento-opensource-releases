@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Controller\Adminhtml\Promo\Catalog;
@@ -77,9 +77,6 @@ class Save extends \Magento\CatalogRule\Controller\Adminhtml\Promo\Catalog
                     $data['conditions'] = $data['rule']['conditions'];
                     unset($data['rule']);
                 }
-
-                unset($data['conditions_serialized']);
-                unset($data['actions_serialized']);
 
                 $model->loadPost($data);
 

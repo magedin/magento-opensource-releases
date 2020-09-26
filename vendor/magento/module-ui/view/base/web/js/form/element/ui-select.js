@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,8 +9,7 @@ define([
     'Magento_Ui/js/lib/key-codes',
     'mage/translate',
     'ko',
-    'jquery',
-    'Magento_Ui/js/lib/view/utils/async'
+    'jquery'
 ], function (_, Abstract, keyCodes, $t, ko, $) {
     'use strict';
 
@@ -149,18 +148,14 @@ define([
             showPath: true,
             labelsDecoration: false,
             disableLabel: false,
-            filterRateLimit: 500,
             closeBtnLabel: $t('Done'),
             optgroupTmpl: 'ui/grid/filters/elements/ui-select-optgroup',
             quantityPlaceholder: $t('options'),
-            hoverClass: '_hover',
-            rootListSelector: 'ul.admin__action-multiselect-menu-inner._root',
-            visibleOptionSelector: 'li.admin__action-multiselect-menu-inner-item:visible',
-            actionTargetSelector: '.action-menu-item',
             selectedPlaceholders: {
                 defaultPlaceholder: $t('Select...'),
                 lotPlaceholders: $t('Selected')
             },
+            hoverElIndex: null,
             separator: 'optgroup',
             listens: {
                 listVisible: 'cleanHoveredElement',
@@ -182,23 +177,6 @@ define([
                     showOpenLevelsActionIcon: false
                 }
             }
-        },
-
-        /**
-         * Initializes UISelect component.
-         *
-         * @returns {UISelect} Chainable.
-         */
-        initialize: function () {
-            this._super();
-
-            $.async(
-                this.rootListSelector,
-                this,
-                this.onRootListRender.bind(this)
-            );
-
-            return this;
         },
 
         /**
@@ -294,6 +272,7 @@ define([
             this._super();
             this.observe([
                 'listVisible',
+                'hoverElIndex',
                 'placeholder',
                 'multiselectFocus',
                 'options',
@@ -301,8 +280,6 @@ define([
                 'filterInputValue',
                 'filterOptionsFocus'
             ]);
-
-            this.filterInputValue.extend({rateLimit: this.filterRateLimit});
 
             return this;
         },
@@ -330,22 +307,17 @@ define([
          * @returns {Boolean} level visibility.
          */
         showLevels: function (data) {
-            var curLevel = ++data.level,
-                isVisible;
+            var curLevel = ++data.level;
 
-            if (data.visible) {
-                isVisible = data.visible();
-            } else {
-                isVisible = !!data.hasOwnProperty(this.separator) &&
+            if (!data.visible) {
+                data.visible = ko.observable(!!data.hasOwnProperty(this.separator) &&
                     _.isBoolean(this.levelsVisibility) &&
                     this.levelsVisibility ||
-                    data.hasOwnProperty(this.separator) && parseInt(this.levelsVisibility, 10) >= curLevel;
+                    data.hasOwnProperty(this.separator) && parseInt(this.levelsVisibility, 10) >= curLevel);
 
-                data.visible = ko.observable(isVisible);
-                data.isVisited = isVisible;
             }
 
-            return isVisible;
+            return data.visible();
         },
 
         /**
@@ -426,13 +398,7 @@ define([
             var value = this.filterInputValue().trim().toLowerCase(),
                 array = [];
 
-            if (value && value.length < 2) {
-                return false;
-            }
-
-            this.cleanHoveredElement();
-
-            if (!value) {
+            if (value === '') {
                 this.renderPath = false;
                 this.options(this.cacheOptions.tree);
                 this._setItemsQuantity(false);
@@ -455,6 +421,7 @@ define([
                     this.options(array);
                     this._setItemsQuantity(array.length);
                 }
+                this.cleanHoveredElement();
 
                 return false;
             }
@@ -537,17 +504,13 @@ define([
         },
 
         /**
-         * Clean hoveredElement variable
+         * Clean hoverElIndex variable
          *
          * @returns {Object} Chainable
          */
         cleanHoveredElement: function () {
-            if (this.hoveredElement) {
-                $(this.hoveredElement)
-                    .children(this.actionTargetSelector)
-                    .removeClass(this.hoverClass);
-
-                this.hoveredElement = null;
+            if (!_.isNull(this.hoverElIndex())) {
+                this.hoverElIndex(null);
             }
 
             return this;
@@ -580,16 +543,14 @@ define([
          * @return {Boolean}
          */
         isHovered: function (data) {
-            var element = this.hoveredElement,
-                elementData;
+            var index = this.getOptionIndex(data),
+                status = this.hoverElIndex() === index;
 
-            if (!element) {
+            if (this.selectType === 'optgroup' && data.hasOwnProperty(this.separator)) {
                 return false;
             }
 
-            elementData = ko.dataFor(this.hoveredElement);
-
-            return data.value === elementData.value;
+            return status;
         },
 
         /**
@@ -651,10 +612,10 @@ define([
          * Change visibility to child level
          *
          * @param {Object} data - element data
+         * @param {Object} elem - element
          */
-        openChildLevel: function (data) {
-            var contextElement = data,
-                isVisible;
+        openChildLevel: function (data, elem) {
+            var contextElement;
 
             if (
                 this.openLevelsAction &&
@@ -662,13 +623,8 @@ define([
                 this.openLevelsAction &&
                 data.hasOwnProperty(this.separator) && parseInt(this.levelsVisibility, 10) <= data.level
             ) {
-                isVisible = !contextElement.visible();
-
-                if (isVisible && !contextElement.isVisited) {
-                    contextElement.isVisited = true;
-                }
-
-                contextElement.visible(isVisible);
+                contextElement = ko.contextFor($(elem).parents('li').children('ul')[0]).$data.current;
+                contextElement.visible(!contextElement.visible());
             }
         },
 
@@ -686,23 +642,25 @@ define([
         },
 
         /**
-         * @deprecated
-         */
-        onMousemove: function () {},
-
-        /**
-         * Handles hover on list items.
+         * Add hover to some list element and clears element ID to variable
          *
+         * @param {Object} data - object with data about this element
+         * @param {Number} index - element index
          * @param {Object} event - mousemove event
          */
-        onDelegatedMouseMouve: function (event) {
-            var target = $(event.currentTarget).closest(this.visibleOptionSelector)[0];
+        onMousemove: function (data, index, event) {
+            var id,
+                context = ko.contextFor(event.target);
 
-            if (this.isCursorPositionChange(event) || this.hoveredElement === target) {
-                return;
+            if (this.isCursorPositionChange(event)) {
+                return false;
             }
 
-            this._hoverTo(target);
+            if (typeof context.$data === 'object') {
+                id = this.getOptionIndex(context.$data);
+            }
+
+            id !== this.hoverElIndex() ? this.hoverElIndex(id) : false;
             this.setCursorPosition(event);
         },
 
@@ -778,8 +736,8 @@ define([
             }
 
             if (this.listVisible()) {
-                if (this.hoveredElement) {
-                    this.toggleOptionSelected(ko.dataFor(this.hoveredElement));
+                if (!_.isNull(this.hoverElIndex())) {
+                    this.toggleOptionSelected(this.cacheOptions.plain[this.hoverElIndex()]);
                 }
             } else {
                 this.setListVisible(true);
@@ -798,7 +756,35 @@ define([
          * selected first option in list
          */
         pageDownKeyHandler: function () {
-            this._setHoverToElement(1);
+            var el,
+                nextEl,
+                nextData,
+                nextIndex;
+
+            if (!this.listVisible()) {
+                return false;
+            }
+
+            if (this.filterInputValue()) {
+                el = !_.isNull(this.hoverElIndex()) ?
+                    this._getElemByData(this.cacheOptions.plain[this.hoverElIndex()]) : false;
+                nextEl = el ? el.next() : $(this.cacheUiSelect).find('li:visible').eq(0);
+                nextIndex = nextEl.length ? nextEl.index() : 0;
+                nextData = this.options()[nextIndex];
+                this.hoverElIndex(this.getOptionIndex(nextData));
+
+                return false;
+            }
+
+            if (!_.isNull(this.hoverElIndex()) && this.hoverElIndex() !== this.cacheOptions.plain.length - 1) {
+                this._setHoverToElement(1);
+                this._scrollTo(this.hoverElIndex());
+
+                return false;
+            }
+
+            this._setHoverToElement(1, -1);
+            this._scrollTo(this.hoverElIndex());
         },
 
         /**
@@ -827,19 +813,28 @@ define([
          * Set hover to visible element
          *
          * @param {Number} direction - iterator
+         * @param {Number} index - current hovered element
+         * @param {Array} list - collection items
          */
-        _setHoverToElement: function (direction) {
-            var element;
+        _setHoverToElement: function (direction, index, list) {
+            var modifiedIndex,
+                curData,
+                canBeHovered = true;
 
-            if (direction ===  1) {
-                element = this._getNextElement();
-            } else if (direction === -1) {
-                element = this._getPreviousElement();
+            list = list || $(this.cacheUiSelect).find('li');
+            index = index || _.isNumber(index) ? index : this.hoverElIndex();
+            modifiedIndex = index + direction;
+            modifiedIndex < 0 ? modifiedIndex = this.cacheOptions.plain.length - 1 : false;
+            curData = this.cacheOptions.plain[modifiedIndex];
+
+            if (this.selectType === 'optgroup' && !_.findWhere(this.cacheOptions.lastOptions, {value: curData.value})) {
+                canBeHovered = false;
             }
 
-            if (element) {
-                this._hoverTo(element);
-                this._scrollTo(element);
+            if (list.eq(modifiedIndex).is(':visible') && canBeHovered) {
+                this.hoverElIndex(modifiedIndex);
+            } else {
+                this._setHoverToElement(direction, modifiedIndex, list);
             }
         },
 
@@ -849,15 +844,18 @@ define([
          *
          * @param {Number} index - element index
          */
-        _scrollTo: function (element) {
-            var curEl = $(element).children(this.actionTargetSelector),
-                wrapper = $(this.rootList),
+        _scrollTo: function (index) {
+            var curEl,
+                parents,
+                wrapper,
                 curElPos = {},
                 wrapperPos = {};
 
+            curEl = $(this.cacheUiSelect).find('li').eq(index);
+            parents = curEl.parents('ul');
+            wrapper = parents.eq(parents.length - 1);
             curElPos.start = curEl.offset().top;
-            curElPos.end = curElPos.start + curEl.outerHeight();
-
+            curElPos.end = curElPos.start + curEl.height();
             wrapperPos.start = wrapper.offset().top;
             wrapperPos.end = wrapperPos.start + wrapper.height();
 
@@ -873,7 +871,46 @@ define([
          * selected last option in list
          */
         pageUpKeyHandler: function () {
-            this._setHoverToElement(-1);
+            var el,
+                nextEl,
+                nextIndex,
+                nextData;
+
+            if (!this.listVisible()) {
+                return false;
+            }
+
+            if (this.filterInputValue()) {
+                el = !_.isNull(this.hoverElIndex()) ?
+                    this._getElemByData(this.cacheOptions.plain[this.hoverElIndex()]) : false;
+                nextEl = el ? el.prev() : $(this.cacheUiSelect).find('li:visible').eq(this.options().length-1);
+                nextIndex = nextEl.length ? nextEl.index() : this.options().length-1;
+                nextData = this.options()[nextIndex];
+                this.hoverElIndex(this.getOptionIndex(nextData));
+
+                return false;
+            }
+
+
+            if (this.filterInputValue()) {
+                el = !_.isNull(this.hoverElIndex()) ?
+                    this._getElemByData(this.cacheOptions.plain[this.hoverElIndex()]) : false;
+                nextEl = el ? el.next() : $(this.cacheUiSelect).find('li:visible').eq(0);
+                nextIndex = nextEl.length ? nextEl.index() : 0;
+                nextData = this.options()[nextIndex];
+                this.hoverElIndex(this.getOptionIndex(nextData));
+
+                return false;
+            }
+
+            if (this.hoverElIndex()) {
+                this._setHoverToElement(-1);
+                this._scrollTo(this.hoverElIndex());
+
+                return false;
+            }
+            this._setHoverToElement(-1, this.cacheOptions.plain.length);
+            this._scrollTo(this.hoverElIndex());
         },
 
         /**
@@ -953,129 +990,6 @@ define([
             return selected.map(function (option) {
                 return option.label;
             }).join(', ');
-        },
-
-        /**
-         * Defines previous option element to
-         * the one that is currently hovered.
-         *
-         * @returns {Element}
-         */
-        _getPreviousElement: function () {
-            var currentElement = this.hoveredElement,
-                lastElement    = this._getLastIn(this.rootList),
-                previousElement;
-
-            if (!currentElement) {
-                return lastElement;
-            }
-
-            previousElement = $(currentElement).prev()[0];
-
-            return (
-                this._getLastIn(previousElement) ||
-                previousElement ||
-                this._getFirstParentOf(currentElement) ||
-                lastElement
-            );
-        },
-
-        /**
-         * Defines next option element to
-         * the one that is currently hovered.
-         *
-         * @returns {Element}
-         */
-        _getNextElement: function () {
-            var currentElement = this.hoveredElement,
-                firstElement   = this._getFirstIn(this.rootList);
-
-            if (!currentElement) {
-                return firstElement;
-            }
-
-            return (
-                this._getFirstIn(currentElement) ||
-                $(currentElement).next()[0] ||
-                this._getParentsOf(currentElement).next()[0] ||
-                firstElement
-            );
-        },
-
-        /**
-         * Returns first option element in provided scope.
-         *
-         * @param {Element} scope
-         * @returns {Element}
-         */
-        _getFirstIn: function (scope) {
-            return $(scope).find(this.visibleOptionSelector)[0];
-        },
-
-        /**
-         * Returns last descendant option element in provided scope.
-         *
-         * @param {Element} scope
-         * @returns {Element}
-         */
-        _getLastIn: function (scope) {
-            return $(scope).find(this.visibleOptionSelector).last()[0];
-        },
-
-        /**
-         * Returns a collection of parent option elements.
-         *
-         * @param {Element} scope
-         * @returns {jQueryCollection}
-         */
-        _getParentsOf: function (scope) {
-            return $(scope).parents(this.visibleOptionSelector);
-        },
-
-        /**
-         * Returns first parent option element.
-         *
-         * @param {Element} scope
-         * @returns {Element}
-         */
-        _getFirstParentOf: function (scope) {
-            return this._getParentsOf(scope)[0];
-        },
-
-        /**
-         * Sets hover class to provided option element.
-         *
-         * @param {Element} element
-         */
-        _hoverTo: function(element) {
-            if (this.hoveredElement) {
-                $(this.hoveredElement)
-                    .children(this.actionTargetSelector)
-                    .removeClass(this.hoverClass);
-            }
-
-            $(element)
-                .children(this.actionTargetSelector)
-                .addClass(this.hoverClass);
-
-            this.hoveredElement = element;
-        },
-
-        /**
-         * Callback which fires when root list element is rendered.
-         *
-         * @param {Element} element
-         */
-        onRootListRender: function (element) {
-            var targetSelector = 'li > ' + this.actionTargetSelector;
-
-            this.rootList = element;
-
-            $(this.rootList).on(
-                'mousemove',
-                targetSelector,
-                this.onDelegatedMouseMouve.bind(this)
-            );
         }
     });
 });

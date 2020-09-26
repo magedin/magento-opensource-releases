@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Model\Quote\Item;
@@ -59,7 +59,7 @@ class CartItemProcessor implements CartItemProcessorInterface
             if (is_array($options)) {
                 $requestData = [];
                 foreach ($options as $option) {
-                    $requestData['super_attribute'][$option->getOptionId()] = (string) $option->getOptionValue();
+                    $requestData['super_attribute'][$option->getOptionId()] = $option->getOptionValue();
                 }
                 return $this->objectFactory->create($requestData);
             }

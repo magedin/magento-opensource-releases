@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Encryption;
@@ -26,9 +26,7 @@ interface EncryptorInterface
     public function getHash($password, $salt = false);
 
     /**
-     * Hash a string.
-     *
-     * Returns one-way encrypted string, always the same result for the same value. Suitable for signatures.
+     * Hash a string
      *
      * @param string $data
      * @return string
@@ -36,20 +34,17 @@ interface EncryptorInterface
     public function hash($data);
 
     /**
-     * Synonym to isValidHash.
+     * Validate hash against hashing method (with or without salt)
      *
      * @param string $password
      * @param string $hash
      * @return bool
      * @throws \Exception
-     * @see isValidHash
      */
     public function validateHash($password, $hash);
 
     /**
-     * Validate hash against hashing method.
-     *
-     * Works for both hashes returned by hash() and getHash().
+     * Validate hash against hashing method (with or without salt)
      *
      * @param string $password
      * @param string $hash

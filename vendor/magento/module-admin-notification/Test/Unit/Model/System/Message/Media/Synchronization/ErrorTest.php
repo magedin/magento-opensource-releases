@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\AdminNotification\Test\Unit\Model\System\Message\Media\Synchronization;
@@ -69,9 +69,6 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedFirstRun, $model->isDisplayed());
     }
 
-    /**
-     * @return array
-     */
     public function isDisplayedDataProvider()
     {
         return [

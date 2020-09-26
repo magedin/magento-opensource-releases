@@ -1,13 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Test\Unit\Model\Template;
 
 /**
- * Work with catalog(store, website) urls
- *
  * @covers \Magento\Cms\Model\Template\Filter
  */
 class FilterTest extends \PHPUnit_Framework_TestCase
@@ -27,20 +25,17 @@ class FilterTest extends \PHPUnit_Framework_TestCase
      */
     protected $filter;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder('Magento\Store\Model\StoreManagerInterface')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
+        $this->storeMock = $this->getMockBuilder('Magento\Store\Model\Store')
             ->disableOriginalConstructor()
             ->getMock();
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->filter = $objectManager->getObject(
-            \Magento\Cms\Model\Template\Filter::class,
+            'Magento\Cms\Model\Template\Filter',
             ['storeManager' => $this->storeManagerMock]
         );
         $this->storeManagerMock->expects($this->any())
@@ -49,8 +44,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test processing media directives.
-     *
      * @covers \Magento\Cms\Model\Template\Filter::mediaDirective
      */
     public function testMediaDirective()
@@ -66,28 +59,5 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             ->method('getBaseMediaDir')
             ->willReturn($baseMediaDir);
         $this->assertEquals($expectedResult, $this->filter->mediaDirective($construction));
-    }
-
-    /**
-     * Test using media directive with relative path to image.
-     *
-     * @covers \Magento\Cms\Model\Template\Filter::mediaDirective
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Image path must be absolute
-     *
-     * @return void
-     */
-    public function testMediaDirectiveRelativePath()
-    {
-        $baseMediaDir = 'pub/media';
-        $construction = [
-            '{{media url="wysiwyg/images/../image.jpg"}}',
-            'media',
-            ' url="wysiwyg/images/../image.jpg"'
-        ];
-        $this->storeMock->expects($this->any())
-            ->method('getBaseMediaDir')
-            ->willReturn($baseMediaDir);
-        $this->filter->mediaDirective($construction);
     }
 }

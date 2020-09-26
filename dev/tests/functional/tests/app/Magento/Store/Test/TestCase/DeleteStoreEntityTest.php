@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,7 +12,6 @@ use Magento\Backend\Test\Page\Adminhtml\StoreIndex;
 use Magento\Backup\Test\Page\Adminhtml\BackupIndex;
 use Magento\Store\Test\Fixture\Store;
 use Magento\Mtf\TestCase\Injectable;
-use Magento\Config\Test\TestStep\SetupConfigurationStep;
 
 /**
  * Test Creation for DeleteStoreEntity
@@ -100,15 +99,7 @@ class DeleteStoreEntityTest extends Injectable
     {
         // Preconditions:
         $store->persist();
-        /** @var SetupConfigurationStep $enableBackupsStep */
-        $enableBackupsStep = $this->objectManager->create(
-            SetupConfigurationStep::class,
-            ['configData' => 'enable_backups_functionality']
-        );
-        $enableBackupsStep->run();
-        $this->backupIndex->open()
-            ->getBackupGrid()
-            ->massaction([], 'Delete', true, 'Select All');
+        $this->backupIndex->open()->getBackupGrid()->massaction([], 'Delete', true, 'Select All');
 
         // Steps:
         $this->storeIndex->open();
@@ -116,20 +107,5 @@ class DeleteStoreEntityTest extends Injectable
         $this->editStore->getFormPageActions()->delete();
         $this->storeDelete->getStoreForm()->fillForm(['create_backup' => $createBackup]);
         $this->storeDelete->getFormPageActions()->delete();
-    }
-
-    /**
-     * Reset config settings to default.
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        /** @var SetupConfigurationStep $enableBackupsStep */
-        $enableBackupsStep = $this->objectManager->create(
-            SetupConfigurationStep::class,
-            ['configData' => 'enable_backups_functionality', 'rollback' => true]
-        );
-        $enableBackupsStep->run();
     }
 }

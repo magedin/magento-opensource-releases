@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Order;
@@ -17,7 +17,7 @@ class Creditmemo extends \Magento\Sales\Block\Order\Creditmemo\Items
     /**
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/creditmemo.phtml';
+    protected $_template = 'order/creditmemo.phtml';
 
     /**
      * @var \Magento\Framework\App\Http\Context

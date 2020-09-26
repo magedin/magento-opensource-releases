@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,7 +18,7 @@ class Template extends \Magento\Backend\Block\Template implements \Magento\Backe
      *
      * @var string
      */
-    protected $_template = 'Magento_Email::template/list.phtml';
+    protected $_template = 'template/list.phtml';
 
     /**
      * @var \Magento\Backend\Block\Widget\Button\ButtonList

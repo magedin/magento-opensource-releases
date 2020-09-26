@@ -1,16 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\Tab;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\SalesRule\Model\RuleFactory;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Ui\Component\Layout\Tabs\TabInterface
 {
@@ -52,8 +48,6 @@ class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
      * @param \Magento\Rule\Block\Actions $ruleActions
      * @param \Magento\Backend\Block\Widget\Form\Renderer\Fieldset $rendererFieldset
      * @param array $data
-     * @param RuleFactory|null $ruleFactory
-     * @throws \RuntimeException
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -62,17 +56,27 @@ class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
         \Magento\Config\Model\Config\Source\Yesno $sourceYesno,
         \Magento\Rule\Block\Actions $ruleActions,
         \Magento\Backend\Block\Widget\Form\Renderer\Fieldset $rendererFieldset,
-        array $data = [],
-        RuleFactory $ruleFactory = null
+        array $data = []
     ) {
         $this->_rendererFieldset = $rendererFieldset;
         $this->_ruleActions = $ruleActions;
         $this->_sourceYesno = $sourceYesno;
         parent::__construct($context, $registry, $formFactory, $data);
-        if ($ruleFactory === null) {
-            $ruleFactory = ObjectManager::getInstance()->get(RuleFactory::class);
+    }
+
+    /**
+     * The getter function to get the new RuleFactory dependency
+     *
+     * @return \Magento\SalesRule\Model\RuleFactory
+     *
+     * @deprecated
+     */
+    private function getRuleFactory()
+    {
+        if ($this->ruleFactory === null) {
+            $this->ruleFactory = ObjectManager::getInstance()->get('Magento\SalesRule\Model\RuleFactory');
         }
-        $this->ruleFactory = $ruleFactory;
+        return $this->ruleFactory;
     }
 
     /**
@@ -165,14 +169,14 @@ class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
     {
         if (!$model) {
             $id = $this->getRequest()->getParam('id');
-            $model = $this->ruleFactory->create();
+            $model = $this->getRuleFactory()->create();
             $model->load($id);
         }
 
         $actionsFieldSetId = $model->getActionsFieldSetId($formName);
 
         $newChildUrl = $this->getUrl(
-            'sales_rule/promo_quote/newActionHtml/form/' . $actionsFieldSetId,
+            'sales_rule/promo_quote/newActionHtml/form/rule_actions_fieldset_' . $actionsFieldSetId,
             ['form_namespace' => $formName]
         );
 

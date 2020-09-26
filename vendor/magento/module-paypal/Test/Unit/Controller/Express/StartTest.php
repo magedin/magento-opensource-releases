@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Test\Unit\Controller\Express;
@@ -37,9 +37,6 @@ class StartTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
         $this->model->execute();
     }
 
-    /**
-     * @return array
-     */
     public function startActionDataProvider()
     {
         return [['1'], [null]];

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product\Action\Attribute;
@@ -72,6 +72,9 @@ class SaveTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Framework\Data\Form\FormKey\Validator|\PHPUnit_Framework_MockObject_MockObject */
     protected $formKeyValidator;
 
+    /** @var \Magento\Framework\App\Action\Title|\PHPUnit_Framework_MockObject_MockObject */
+    protected $title;
+
     /** @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $localeResolver;
 
@@ -95,36 +98,33 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     protected $resultRedirectFactory;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $this->attributeHelper = $this->getMock(
-            \Magento\Catalog\Helper\Product\Edit\Action\Attribute::class,
+            'Magento\Catalog\Helper\Product\Edit\Action\Attribute',
             ['getProductIds', 'getSelectedStoreId', 'getStoreWebsiteId'],
             [],
             '',
             false
         );
 
-        $this->dataObjectHelperMock = $this->getMockBuilder(\Magento\Framework\Api\DataObjectHelper::class)
+        $this->dataObjectHelperMock = $this->getMockBuilder('\Magento\Framework\Api\DataObjectHelper')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->stockIndexerProcessor = $this->getMock(
-            \Magento\CatalogInventory\Model\Indexer\Stock\Processor::class,
+            'Magento\CatalogInventory\Model\Indexer\Stock\Processor',
             ['reindexList'],
             [],
             '',
             false
         );
 
-        $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
+        $resultRedirect = $this->getMockBuilder('Magento\Backend\Model\View\Result\Redirect')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultRedirectFactory = $this->getMockBuilder(\Magento\Backend\Model\View\Result\RedirectFactory::class)
+        $this->resultRedirectFactory = $this->getMockBuilder('Magento\Backend\Model\View\Result\RedirectFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -135,7 +135,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $this->prepareContext();
 
         $this->object = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
-            \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Save::class,
+            'Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Save',
             [
                 'context' => $this->context,
                 'attributeHelper' => $this->attributeHelper,
@@ -150,39 +150,31 @@ class SaveTest extends \PHPUnit_Framework_TestCase
      */
     protected function prepareContext()
     {
-        $this->stockItemRepository = $this->getMockBuilder(
-            \Magento\CatalogInventory\Api\StockItemRepositoryInterface::class
-        )
+        $this->stockItemRepository = $this->getMockBuilder('Magento\CatalogInventory\Api\StockItemRepositoryInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+        $this->request = $this->getMockBuilder('Magento\Framework\App\Request\Http')
             ->disableOriginalConstructor()->getMock();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
-        $this->response = $this->getMock(\Magento\Framework\App\Response\Http::class, [], [], '', false);
-        $this->objectManager = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
-        $this->eventManager = $this->getMock(\Magento\Framework\Event\ManagerInterface::class, [], [], '', false);
-        $this->url = $this->getMock(\Magento\Framework\UrlInterface::class, [], [], '', false);
-        $this->redirect = $this->getMock(\Magento\Framework\App\Response\RedirectInterface::class, [], [], '', false);
-        $this->actionFlag = $this->getMock(\Magento\Framework\App\ActionFlag::class, [], [], '', false);
-        $this->view = $this->getMock(\Magento\Framework\App\ViewInterface::class, [], [], '', false);
-        $this->messageManager = $this->getMock(\Magento\Framework\Message\ManagerInterface::class, [], [], '', false);
-        $this->session = $this->getMock(\Magento\Backend\Model\Session::class, [], [], '', false);
-        $this->authorization = $this->getMock(\Magento\Framework\AuthorizationInterface::class, [], [], '', false);
-        $this->auth = $this->getMock(\Magento\Backend\Model\Auth::class, [], [], '', false);
-        $this->helper = $this->getMock(\Magento\Backend\Helper\Data::class, [], [], '', false);
-        $this->backendUrl = $this->getMock(\Magento\Backend\Model\UrlInterface::class, [], [], '', false);
-        $this->formKeyValidator = $this->getMock(
-            \Magento\Framework\Data\Form\FormKey\Validator::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $this->localeResolver = $this->getMock(\Magento\Framework\Locale\ResolverInterface::class, [], [], '', false);
+        $this->response = $this->getMock('Magento\Framework\App\Response\Http', [], [], '', false);
+        $this->objectManager = $this->getMock('Magento\Framework\ObjectManagerInterface');
+        $this->eventManager = $this->getMock('Magento\Framework\Event\ManagerInterface', [], [], '', false);
+        $this->url = $this->getMock('Magento\Framework\UrlInterface', [], [], '', false);
+        $this->redirect = $this->getMock('Magento\Framework\App\Response\RedirectInterface', [], [], '', false);
+        $this->actionFlag = $this->getMock('Magento\Framework\App\ActionFlag', [], [], '', false);
+        $this->view = $this->getMock('Magento\Framework\App\ViewInterface', [], [], '', false);
+        $this->messageManager = $this->getMock('Magento\Framework\Message\ManagerInterface', [], [], '', false);
+        $this->session = $this->getMock('Magento\Backend\Model\Session', [], [], '', false);
+        $this->authorization = $this->getMock('Magento\Framework\AuthorizationInterface', [], [], '', false);
+        $this->auth = $this->getMock('Magento\Backend\Model\Auth', [], [], '', false);
+        $this->helper = $this->getMock('Magento\Backend\Helper\Data', [], [], '', false);
+        $this->backendUrl = $this->getMock('Magento\Backend\Model\UrlInterface', [], [], '', false);
+        $this->formKeyValidator = $this->getMock('Magento\Framework\Data\Form\FormKey\Validator', [], [], '', false);
+        $this->title = $this->getMock('Magento\Framework\App\Action\Title', [], [], '', false);
+        $this->localeResolver = $this->getMock('Magento\Framework\Locale\ResolverInterface', [], [], '', false);
 
         $this->context = $this->context = $this->getMock(
-            \Magento\Backend\App\Action\Context::class,
+            'Magento\Backend\App\Action\Context',
             [
                 'getRequest',
                 'getResponse',
@@ -201,7 +193,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
                 'getFormKeyValidator',
                 'getTitle',
                 'getLocaleResolver',
-                'getResultRedirectFactory',
+                'getResultRedirectFactory'
             ],
             [],
             '',
@@ -222,40 +214,41 @@ class SaveTest extends \PHPUnit_Framework_TestCase
         $this->context->expects($this->any())->method('getHelper')->willReturn($this->helper);
         $this->context->expects($this->any())->method('getBackendUrl')->willReturn($this->backendUrl);
         $this->context->expects($this->any())->method('getFormKeyValidator')->willReturn($this->formKeyValidator);
+        $this->context->expects($this->any())->method('getTitle')->willReturn($this->title);
         $this->context->expects($this->any())->method('getLocaleResolver')->willReturn($this->localeResolver);
         $this->context->expects($this->any())
             ->method('getResultRedirectFactory')
             ->willReturn($this->resultRedirectFactory);
 
         $this->product = $this->getMock(
-            \Magento\Catalog\Model\Product::class,
+            'Magento\Catalog\Model\Product',
             ['isProductsHasSku', '__wakeup'],
             [],
             '',
             false
         );
 
-        $this->stockItemService = $this->getMockBuilder(\Magento\CatalogInventory\Api\StockRegistryInterface::class)
+        $this->stockItemService = $this->getMockBuilder('Magento\CatalogInventory\Api\StockRegistryInterface')
             ->disableOriginalConstructor()
             ->setMethods(['getStockItem', 'saveStockItem'])
             ->getMockForAbstractClass();
-        $this->stockItem = $this->getMockBuilder(\Magento\CatalogInventory\Api\Data\StockItemInterface::class)
+        $this->stockItem = $this->getMockBuilder('Magento\CatalogInventory\Api\Data\StockItemInterface')
             ->setMethods(['getId', 'getProductId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->stockConfig = $this->getMockBuilder(\Magento\CatalogInventory\Api\StockConfigurationInterface::class)
+        $this->stockConfig = $this->getMockBuilder('Magento\CatalogInventory\Api\StockConfigurationInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->objectManager->expects($this->any())->method('create')->will($this->returnValueMap([
-            [\Magento\Catalog\Model\Product::class, [], $this->product],
-            [\Magento\CatalogInventory\Api\StockRegistryInterface::class, [], $this->stockItemService],
-            [\Magento\CatalogInventory\Api\StockItemRepositoryInterface::class, [], $this->stockItemRepository],
+            ['Magento\Catalog\Model\Product', [], $this->product],
+            ['Magento\CatalogInventory\Api\StockRegistryInterface', [], $this->stockItemService],
+            ['Magento\CatalogInventory\Api\StockItemRepositoryInterface', [], $this->stockItemRepository],
         ]));
 
         $this->objectManager->expects($this->any())->method('get')->will($this->returnValueMap([
-            [\Magento\CatalogInventory\Api\StockConfigurationInterface::class, $this->stockConfig],
+            ['Magento\CatalogInventory\Api\StockConfigurationInterface', $this->stockConfig],
         ]));
     }
 

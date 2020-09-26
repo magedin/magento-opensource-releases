@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,9 +12,6 @@ use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\App\ObjectManager;
 use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 
 /**
  * Login controller
@@ -61,16 +58,6 @@ class Login extends \Magento\Framework\App\Action\Action
     protected $scopeConfig;
 
     /**
-     * @var CookieManagerInterface
-     */
-    private $cookieManager;
-
-    /**
-     * @var CookieMetadataFactory
-     */
-    private $cookieMetadataFactory;
-
-    /**
      * Initialize Login controller
      *
      * @param \Magento\Framework\App\Action\Context $context
@@ -79,8 +66,6 @@ class Login extends \Magento\Framework\App\Action\Action
      * @param AccountManagementInterface $customerAccountManagement
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      * @param \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
-     * @param CookieManagerInterface $cookieManager
-     * @param CookieMetadataFactory $cookieMetadataFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -88,9 +73,7 @@ class Login extends \Magento\Framework\App\Action\Action
         \Magento\Framework\Json\Helper\Data $helper,
         AccountManagementInterface $customerAccountManagement,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
-        CookieManagerInterface $cookieManager = null,
-        CookieMetadataFactory $cookieMetadataFactory = null
+        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -98,10 +81,6 @@ class Login extends \Magento\Framework\App\Action\Action
         $this->customerAccountManagement = $customerAccountManagement;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resultRawFactory = $resultRawFactory;
-        $this->cookieManager = $cookieManager ?:
-            ObjectManager::getInstance()->get(CookieManagerInterface::class);
-        $this->cookieMetadataFactory = $cookieMetadataFactory ?:
-            ObjectManager::getInstance()->get(CookieMetadataFactory::class);
     }
 
     /**
@@ -189,11 +168,6 @@ class Login extends \Magento\Framework\App\Action\Action
             $this->customerSession->setCustomerDataAsLoggedIn($customer);
             $this->customerSession->regenerateId();
             $redirectRoute = $this->getAccountRedirect()->getRedirectCookie();
-            if ($this->cookieManager->getCookie('mage-cache-sessid')) {
-                $metadata = $this->cookieMetadataFactory->createCookieMetadata();
-                $metadata->setPath('/');
-                $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
-            }
             if (!$this->getScopeConfig()->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
                 $response['redirectUrl'] = $this->_redirect->success($redirectRoute);
                 $this->getAccountRedirect()->clearRedirectCookie();
@@ -204,11 +178,6 @@ class Login extends \Magento\Framework\App\Action\Action
                 'message' => $e->getMessage()
             ];
         } catch (InvalidEmailOrPasswordException $e) {
-            $response = [
-                'errors' => true,
-                'message' => $e->getMessage()
-            ];
-        } catch (LocalizedException $e) {
             $response = [
                 'errors' => true,
                 'message' => $e->getMessage()

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -123,7 +123,7 @@ class ImageProcessor implements ImageProcessorInterface
                 );
                 if ($previousImageAttribute) {
                     $previousImagePath = $previousImageAttribute->getValue();
-                    if (!empty($previousImagePath) && ($previousImagePath != $filename)) {
+                    if (!empty($previousImagePath)) {
                         @unlink($this->mediaDirectory->getAbsolutePath() . $entityType . $previousImagePath);
                     }
                 }

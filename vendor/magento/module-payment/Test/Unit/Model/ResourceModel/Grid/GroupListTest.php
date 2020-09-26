@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -20,7 +20,7 @@ class GroupListTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->helperMock = $this->getMock(\Magento\Payment\Helper\Data::class, [], [], '', false);
+        $this->helperMock = $this->getMock('Magento\Payment\Helper\Data', [], [], '', false);
         $this->groupArrayModel = new \Magento\Payment\Model\ResourceModel\Grid\GroupList($this->helperMock);
     }
 

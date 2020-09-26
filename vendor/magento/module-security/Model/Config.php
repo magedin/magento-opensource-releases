@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Security\Model;
@@ -25,16 +25,9 @@ class Config implements ConfigInterface
     const XML_PATH_ADMIN_AREA = 'admin/security/';
 
     /**
-     * Configuration path to frontend area
-     */
-    const XML_PATH_FRONTEND_AREA = 'customer/password/';
-
-    /**
      * Configuration path to fronted area
-     * @deprecated
-     * @see \Magento\Security\Model\Config::XML_PATH_FRONTEND_AREA
      */
-    const XML_PATH_FRONTED_AREA = self::XML_PATH_FRONTEND_AREA;
+    const XML_PATH_FRONTED_AREA = 'customer/password/';
 
     /**
      * Configuration path to admin account sharing
@@ -141,7 +134,7 @@ class Config implements ConfigInterface
         if ($this->scope->getCurrentScope() == \Magento\Framework\App\Area::AREA_ADMINHTML) {
             return self::XML_PATH_ADMIN_AREA;
         }
-        return self::XML_PATH_FRONTEND_AREA;
+        return self::XML_PATH_FRONTED_AREA;
     }
 
     /**

@@ -1,14 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Helper\Bootstrap;
-
 /** @var $product \Magento\Catalog\Model\Product */
-$product = Bootstrap::getObjectManager()
-    ->create(\Magento\Catalog\Model\Product::class);
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Catalog\Model\Product');
 $product
     ->setTypeId('simple')
     ->setId(1)
@@ -25,8 +23,8 @@ $product
     ->setStockData(['use_config_manage_stock' => 0])
     ->save();
 
-$customDesignProduct = Bootstrap::getObjectManager()
-    ->create(\Magento\Catalog\Model\Product::class, ['data' => $product->getData()]);
+$customDesignProduct = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->create('Magento\Catalog\Model\Product', ['data' => $product->getData()]);
 
 $customDesignProduct->setUrlKey('custom-design-simple-product')
     ->setId(2)

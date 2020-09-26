@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column\Status;
@@ -10,7 +10,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Ui\Component\Listing\Column\Status\Options;
 
 /**
- * Class OptionsTest for Magento\Sales\Ui\Component\Listing\Column\Status\Options.
+ * Class OptionsTest
  */
 class OptionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,54 +24,27 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
      */
     protected $collectionFactoryMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->collectionFactoryMock = $this->getMock(
-            \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory::class,
+            'Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory',
             ['create'],
             [],
             '',
             false
         );
         $this->model = $objectManager->getObject(
-            \Magento\Sales\Ui\Component\Listing\Column\Status\Options::class,
+            'Magento\Sales\Ui\Component\Listing\Column\Status\Options',
             ['collectionFactory' => $this->collectionFactoryMock]
         );
     }
 
-    /**
-     * Unit test for toOptionArray method.
-     *
-     * @return void
-     */
     public function testToOptionArray()
     {
-        $collectionMock = $this->getMock(
-            \Magento\Sales\Model\ResourceModel\Order\Status\Collection::class,
-            [],
-            [],
-            '',
-            false
-        );
-
-        $options = [
-            [
-                'value' => '1',
-                'label' => 'Label',
-            ],
-        ];
-
-        $expectedOptions = [
-            [
-                'value' => '1',
-                'label' => 'Label',
-                '__disableTmpl' => true,
-            ],
-        ];
+        $collectionMock =
+            $this->getMock('Magento\Sales\Model\ResourceModel\Order\Status\Collection', [], [], '', false);
+        $options = ['options'];
 
         $this->collectionFactoryMock->expects($this->once())
             ->method('create')
@@ -79,7 +52,7 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
         $collectionMock->expects($this->once())
             ->method('toOptionArray')
             ->willReturn($options);
-
-        $this->assertEquals($expectedOptions, $this->model->toOptionArray());
+        $this->assertEquals($options, $this->model->toOptionArray());
+        $this->assertEquals($options, $this->model->toOptionArray());
     }
 }

@@ -4,7 +4,7 @@
  *
  * Only one method is unit testable, other methods require integration testing.
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filesystem\Test\Unit;

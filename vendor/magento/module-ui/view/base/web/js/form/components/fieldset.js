@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -19,9 +19,6 @@ define([
             level: 0,
             visible: true,
             disabled: false,
-            listens: {
-                'opened': 'onVisibilityChange'
-            },
             additionalClasses: {}
         },
 
@@ -33,19 +30,7 @@ define([
             _.bindAll(this, 'onChildrenUpdate', 'onChildrenError', 'onContentLoading');
 
             return this._super()
-                ._setClasses();
-        },
-
-        /**
-         * Initializes components' configuration.
-         *
-         * @returns {Fieldset} Chainable.
-         */
-        initConfig: function () {
-            this._super();
-            this._wasOpened = this.opened || !this.collapsible;
-
-            return this;
+                       ._setClasses();
         },
 
         /**
@@ -109,14 +94,14 @@ define([
          * @returns {Group} Chainable.
          */
         _setClasses: function () {
-            var additional = this.additionalClasses,
+            var addtional = this.additionalClasses,
                 classes;
 
-            if (_.isString(additional)) {
-                additional = this.additionalClasses.split(' ');
+            if (_.isString(addtional)) {
+                addtional = this.additionalClasses.split(' ');
                 classes = this.additionalClasses = {};
 
-                additional.forEach(function (name) {
+                addtional.forEach(function (name) {
                     classes[name] = true;
                 }, this);
             }
@@ -129,17 +114,6 @@ define([
             });
 
             return this;
-        },
-
-        /**
-         * Handler of the "opened" property changes.
-         *
-         * @param {Boolean} isOpened
-         */
-        onVisibilityChange: function (isOpened) {
-            if (!this._wasOpened) {
-                this._wasOpened = isOpened;
-            }
         },
 
         /**

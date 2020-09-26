@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Rule\Model\Condition;
@@ -42,13 +42,14 @@ class Combine extends AbstractCondition
         $this->loadAggregatorOptions();
         $options = $this->getAggregatorOptions();
         if ($options) {
-            reset($options);
-            $this->setAggregator(key($options));
+            foreach (array_keys($options) as $aggregator) {
+                $this->setAggregator($aggregator);
+                break;
+            }
         }
     }
 
     /* start aggregator methods */
-
     /**
      * @return $this
      */
@@ -84,10 +85,9 @@ class Combine extends AbstractCondition
     public function getAggregatorElement()
     {
         if ($this->getAggregator() === null) {
-            $options = $this->getAggregatorOption();
-            if ($options) {
-                reset($options);
-                $this->setAggregator(key($options));
+            foreach (array_keys($this->getAggregatorOption()) as $key) {
+                $this->setAggregator($key);
+                break;
             }
         }
         return $this->getForm()->addField(

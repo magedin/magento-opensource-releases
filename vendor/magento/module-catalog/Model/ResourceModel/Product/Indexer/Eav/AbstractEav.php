@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav;
@@ -197,7 +197,7 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
         )->joinLeft(
             ['e' => $this->getTable('catalog_product_entity')],
             'e.' . $linkField .' = l.parent_id',
-            []
+            ['e.entity_id as parent_id']
         )->join(
             ['cs' => $this->getTable('store')],
             '',
@@ -205,17 +205,9 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
         )->join(
             ['i' => $idxTable],
             'l.child_id = i.entity_id AND cs.store_id = i.store_id',
-            []
+            ['attribute_id', 'store_id', 'value']
         )->group(
-            ['parent_id', 'i.attribute_id', 'i.store_id', 'i.value', 'l.child_id']
-        )->columns(
-            [
-                'parent_id' => 'e.entity_id',
-                'attribute_id' => 'i.attribute_id',
-                'store_id' => 'i.store_id',
-                'value' => 'i.value',
-                'source_id' => 'l.child_id'
-            ]
+            ['parent_id', 'i.attribute_id', 'i.store_id', 'i.value']
         );
         if ($parentIds !== null) {
             $select->where('e.entity_id IN(?)', $parentIds);
@@ -230,7 +222,7 @@ abstract class AbstractEav extends \Magento\Catalog\Model\ResourceModel\Product\
                 'select' => $select,
                 'entity_field' => new \Zend_Db_Expr('l.parent_id'),
                 'website_field' => new \Zend_Db_Expr('cs.website_id'),
-                'store_field' => new \Zend_Db_Expr('cs.store_id'),
+                'store_field' => new \Zend_Db_Expr('cs.store_id')
             ]
         );
 

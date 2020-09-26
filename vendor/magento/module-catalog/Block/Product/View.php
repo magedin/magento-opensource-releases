@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Product;
@@ -110,7 +110,6 @@ class View extends AbstractProduct implements \Magento\Framework\DataObject\Iden
      * Return wishlist widget options
      *
      * @return array
-     * @deprecated
      */
     public function getWishlistOptions()
     {
@@ -145,7 +144,7 @@ class View extends AbstractProduct implements \Magento\Framework\DataObject\Iden
         if ($description) {
             $this->pageConfig->setDescription($description);
         } else {
-            $this->pageConfig->setDescription($this->string->substr(strip_tags($product->getDescription()), 0, 255));
+            $this->pageConfig->setDescription($this->string->substr($product->getDescription(), 0, 255));
         }
         if ($this->_productHelper->canUseCanonicalTag()) {
             $this->pageConfig->addRemotePageAsset(

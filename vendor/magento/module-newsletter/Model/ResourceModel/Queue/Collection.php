@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Model\ResourceModel\Queue;
@@ -218,7 +218,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             [\Magento\Newsletter\Model\Queue::STATUS_SENDING, \Magento\Newsletter\Model\Queue::STATUS_NEVER]
         )->where(
             'main_table.queue_start_at < ?',
-            $this->_date->gmtDate()
+            $this->_date->gmtdate()
         )->where(
             'main_table.queue_start_at IS NOT NULL'
         );

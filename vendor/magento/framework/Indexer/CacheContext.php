@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Indexer;
@@ -29,14 +29,15 @@ class CacheContext implements \Magento\Framework\DataObject\IdentityInterface
      */
     public function registerEntities($cacheTag, $ids)
     {
-        $this->entities[$cacheTag] = array_merge($this->getRegisteredEntity($cacheTag), $ids);
+        $this->entities[$cacheTag] =
+            array_merge($this->getRegisteredEntity($cacheTag), $ids);
         return $this;
     }
 
     /**
      * Register entity tags
      *
-     * @param array $cacheTags
+     * @param string $cacheTag
      * @return $this
      */
     public function registerTags($cacheTags)

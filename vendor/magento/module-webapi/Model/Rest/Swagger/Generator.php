@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Model\Rest\Swagger;
@@ -13,18 +13,19 @@ use Magento\Webapi\Model\Rest\Swagger;
 use Magento\Webapi\Model\Rest\SwaggerFactory;
 use Magento\Framework\Webapi\Authorization;
 use Magento\Framework\Webapi\Exception as WebapiException;
+use Magento\Framework\Exception\AuthenticationException;
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Phrase;
 use Magento\Framework\App\ProductMetadataInterface;
 use \Magento\Framework\Api\SimpleDataObjectConverter;
-use Magento\Webapi\Model\ServiceMetadata;
 
 /**
  * REST Swagger schema generator.
  *
  * Generate REST API description in a format of JSON document,
  * compliant with {@link https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md Swagger specification}
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Generator extends AbstractSchemaGenerator
 {
@@ -39,7 +40,7 @@ class Generator extends AbstractSchemaGenerator
     const UNAUTHORIZED_DESCRIPTION = '401 Unauthorized';
 
     /** Array signifier */
-    const ARRAY_SIGNIFIER = '[0]';
+    const ARRAY_SIGNIFIER = '[]';
 
     /**
      * Swagger factory instance.
@@ -204,17 +205,14 @@ class Generator extends AbstractSchemaGenerator
     protected function generatePathInfo($methodName, $httpMethodData, $tagName)
     {
         $methodData = $httpMethodData[Converter::KEY_METHOD];
-
-        $operationId = $this->typeProcessor->getOperationName($tagName, $methodData[Converter::KEY_METHOD]);
-        $operationId .= ucfirst($methodName);
-
         $pathInfo = [
             'tags' => [$tagName],
             'description' => $methodData['documentation'],
-            'operationId' => $operationId,
+            'operationId' => $this->typeProcessor->getOperationName($tagName, $methodData[Converter::KEY_METHOD]) .
+                ucfirst($methodName)
         ];
 
-        $parameters = $this->generateMethodParameters($httpMethodData, $operationId);
+        $parameters = $this->generateMethodParameters($httpMethodData);
         if ($parameters) {
             $pathInfo['parameters'] = $parameters;
         }
@@ -268,12 +266,11 @@ class Generator extends AbstractSchemaGenerator
      * Generate parameters based on method data
      *
      * @param array $httpMethodData
-     * @param string $operationId
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function generateMethodParameters($httpMethodData, $operationId)
+    private function generateMethodParameters($httpMethodData)
     {
         $bodySchema = [];
         $parameters = [];
@@ -342,7 +339,7 @@ class Generator extends AbstractSchemaGenerator
 
         if ($bodySchema) {
             $bodyParam = [];
-            $bodyParam['name'] = $operationId . 'Body';
+            $bodyParam['name'] = '$body';
             $bodyParam['in'] = 'body';
             $bodyParam['schema'] = $bodySchema;
             $parameters[] = $bodyParam;
@@ -904,24 +901,5 @@ class Generator extends AbstractSchemaGenerator
         $responses[$httpCode]['schema']['$ref'] = self::ERROR_SCHEMA;
 
         return $responses;
-    }
-
-    /**
-     * Retrieve a list of services visible to current user.
-     *
-     * @return string[]
-     */
-    public function getListOfServices()
-    {
-        $listOfAllowedServices = [];
-        foreach ($this->serviceMetadata->getServicesConfig() as $serviceName => $service) {
-            foreach ($service[ServiceMetadata::KEY_SERVICE_METHODS] as $method) {
-                if ($this->authorization->isAllowed($method[ServiceMetadata::KEY_ACL_RESOURCES])) {
-                    $listOfAllowedServices[] = $serviceName;
-                    break;
-                }
-            }
-        }
-        return $listOfAllowedServices;
     }
 }

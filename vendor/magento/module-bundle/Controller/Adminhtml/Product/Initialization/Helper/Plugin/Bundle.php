@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Bundle\Controller\Adminhtml\Product\Initialization\Helper\Plugin;
@@ -105,13 +105,8 @@ class Bundle
             if ($result['bundle_options'] && !$compositeReadonly) {
                 $product->setBundleOptionsData($result['bundle_options']);
             }
-
             $this->processBundleOptionsData($product);
             $this->processDynamicOptionsData($product);
-        } elseif (!$compositeReadonly) {
-            $extension = $product->getExtensionAttributes();
-            $extension->setBundleProductOptions([]);
-            $product->setExtensionAttributes($extension);
         }
 
         $affectProductSelections = (bool)$this->request->getPost('affect_bundle_product_selections');
@@ -132,11 +127,13 @@ class Bundle
         }
         $options = [];
         foreach ($bundleOptionsData as $key => $optionData) {
+            if ((bool)$optionData['delete']) {
+                continue;
+            }
+
             $option = $this->optionFactory->create(['data' => $optionData]);
             $option->setSku($product->getSku());
-            if (!$option->getOptionId()) {
-                $option->setOptionId(null);
-            }
+            $option->setOptionId(null);
 
             $links = [];
             $bundleLinks = $product->getBundleSelectionsData();

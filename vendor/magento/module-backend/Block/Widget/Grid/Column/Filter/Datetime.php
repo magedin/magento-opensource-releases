@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -142,8 +142,8 @@ class Datetime extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Date
     /**
      * Return escaped value for calendar
      *
-     * @param string|null $index
-     * @return array|string|int|float|null
+     * @param string $index
+     * @return string
      */
     public function getEscapedValue($index = null)
     {
@@ -152,11 +152,6 @@ class Datetime extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Date
             if ($value instanceof \DateTime) {
                 return $this->_localeDate->formatDateTime($value);
             }
-
-            if (is_string($value)) {
-                return $this->escapeHtml($value);
-            }
-            
             return $value;
         }
 

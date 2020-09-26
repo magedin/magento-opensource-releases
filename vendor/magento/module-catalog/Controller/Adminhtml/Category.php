@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml;
@@ -31,16 +31,16 @@ abstract class Category extends \Magento\Backend\App\Action
      */
     protected function _initCategory($getRootInstead = false)
     {
-        $categoryId = $this->resolveCategoryId();
+        $categoryId = (int)$this->getRequest()->getParam('id', false);
         $storeId = (int)$this->getRequest()->getParam('store');
-        $category = $this->_objectManager->create(\Magento\Catalog\Model\Category::class);
+        $category = $this->_objectManager->create('Magento\Catalog\Model\Category');
         $category->setStoreId($storeId);
 
         if ($categoryId) {
             $category->load($categoryId);
             if ($storeId) {
                 $rootId = $this->_objectManager->get(
-                    \Magento\Store\Model\StoreManagerInterface::class
+                    'Magento\Store\Model\StoreManagerInterface'
                 )->getStore(
                     $storeId
                 )->getRootCategoryId();
@@ -55,23 +55,11 @@ abstract class Category extends \Magento\Backend\App\Action
             }
         }
 
-        $this->_objectManager->get(\Magento\Framework\Registry::class)->register('category', $category);
-        $this->_objectManager->get(\Magento\Framework\Registry::class)->register('current_category', $category);
-        $this->_objectManager->get(\Magento\Cms\Model\Wysiwyg\Config::class)
+        $this->_objectManager->get('Magento\Framework\Registry')->register('category', $category);
+        $this->_objectManager->get('Magento\Framework\Registry')->register('current_category', $category);
+        $this->_objectManager->get('Magento\Cms\Model\Wysiwyg\Config')
             ->setStoreId($this->getRequest()->getParam('store'));
         return $category;
-    }
-
-    /**
-     * Resolve Category Id (from get or from post).
-     *
-     * @return int
-     */
-    private function resolveCategoryId()
-    {
-        $categoryId = (int)$this->getRequest()->getParam('id', false);
-
-        return $categoryId ?: (int)$this->getRequest()->getParam('entity_id', false);
     }
 
     /**
@@ -91,7 +79,7 @@ abstract class Category extends \Magento\Backend\App\Action
         if (empty($breadcrumbsPath)) {
             // but if no category, and it is deleted - prepare breadcrumbs from path, saved in session
             $breadcrumbsPath = $this->_objectManager->get(
-                \Magento\Backend\Model\Auth\Session::class
+                'Magento\Backend\Model\Auth\Session'
             )->getDeletedPath(
                 true
             );
@@ -119,7 +107,7 @@ abstract class Category extends \Magento\Backend\App\Action
             ['response' => $eventResponse, 'controller' => $this]
         );
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
-        $resultJson = $this->_objectManager->get(\Magento\Framework\Controller\Result\Json::class);
+        $resultJson = $this->_objectManager->get('Magento\Framework\Controller\Result\Json');
         $resultJson->setHeader('Content-type', 'application/json', true);
         $resultJson->setData($eventResponse->getData());
         return $resultJson;

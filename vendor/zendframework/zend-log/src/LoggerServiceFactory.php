@@ -21,7 +21,7 @@ class LoggerServiceFactory implements FactoryInterface
     {
         // Configure the logger
         $config = $serviceLocator->get('Config');
-        $logConfig = isset($config['log']) ? $config['log'] : [];
+        $logConfig = isset($config['log']) ? $config['log'] : array();
         $logger = new Logger($logConfig);
         return $logger;
     }

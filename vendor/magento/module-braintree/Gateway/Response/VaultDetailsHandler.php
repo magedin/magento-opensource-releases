@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Response;
@@ -146,7 +146,7 @@ class VaultDetailsHandler implements HandlerInterface
     private function getCreditCardType($type)
     {
         $replaced = str_replace(' ', '-', strtolower($type));
-        $mapper = $this->config->getCcTypesMapper();
+        $mapper = $this->config->getCctypesMapper();
 
         return $mapper[$replaced];
     }

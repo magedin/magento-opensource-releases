@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav;
@@ -11,7 +11,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * Class SourceTest
- * @magentoAppIsolation enabled
  */
 class SourceTest extends \PHPUnit_Framework_TestCase
 {
@@ -59,7 +58,6 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         /** @var ProductRepositoryInterface $productRepository */
         $productRepository = Bootstrap::getObjectManager()
             ->create(ProductRepositoryInterface::class);
-        $product = $productRepository->get('configurable');
 
         /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attr **/
         $attr = Bootstrap::getObjectManager()->get('Magento\Eav\Model\Config')
@@ -77,7 +75,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
 
         $connection = $this->productResource->getConnection();
         $select = $connection->select()->from($this->productResource->getTable('catalog_product_index_eav'))
-            ->where('entity_id = ?', $product->getId())
+            ->where('entity_id = ?', 1)
             ->where('attribute_id = ?', $attr->getId())
             ->where('value IN (?)', $optionIds);
 

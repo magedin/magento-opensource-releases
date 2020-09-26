@@ -2,7 +2,7 @@
 /**
  * Product initialzation helper
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Controller\Adminhtml\Product\Initialization\Helper\Plugin;
@@ -32,7 +32,7 @@ class UpdateConfigurations
         'swatch_image',
         'small_image',
         'thumbnail',
-        'image',
+        'image'
     ];
 
     /**
@@ -63,58 +63,24 @@ class UpdateConfigurations
         \Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper $subject,
         \Magento\Catalog\Model\Product $configurableProduct
     ) {
-        $configurations = $this->getConfigurationsFromProduct($configurableProduct);
+        $configurations = $this->getConfigurations();
         $configurations = $this->variationHandler->duplicateImagesForVariations($configurations);
-        if (count($configurations)) {
-            foreach ($configurations as $productId => $productData) {
-                /** @var \Magento\Catalog\Model\Product $product */
-                $product = $this->productRepository->getById($productId, false, $this->request->getParam('store', 0));
-                $productData = $this->variationHandler->processMediaGallery($product, $productData);
-                $product->addData($productData);
-                if ($product->hasDataChanges()) {
-                    $product->save();
-                }
+        foreach ($configurations as $productId => $productData) {
+            /** @var \Magento\Catalog\Model\Product $product */
+            $product = $this->productRepository->getById($productId, false, $this->request->getParam('store', 0));
+            $productData = $this->variationHandler->processMediaGallery($product, $productData);
+            $product->addData($productData);
+            if ($product->hasDataChanges()) {
+                $product->save();
             }
         }
         return $configurableProduct;
     }
 
     /**
-     * Get configurations from product
-     *
-     * @param \Magento\Catalog\Model\Product $configurableProduct
-     * @return array
-     */
-    private function getConfigurationsFromProduct(\Magento\Catalog\Model\Product $configurableProduct)
-    {
-        $result = [];
-
-        $configurableMatrix = $configurableProduct->hasData('configurable-matrix') ?
-            $configurableProduct->getData('configurable-matrix') : [];
-        foreach ($configurableMatrix as $item) {
-            if (empty($item['was_changed'])) {
-                continue;
-            } else {
-                unset($item['was_changed']);
-            }
-
-            if (!$item['newProduct']) {
-                $result[$item['id']] = $this->mapData($item);
-
-                if (isset($item['qty'])) {
-                    $result[$item['id']]['quantity_and_stock_status']['qty'] = $item['qty'];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Get configurations from request
      *
      * @return array
-     * @deprecated
      */
     protected function getConfigurations()
     {

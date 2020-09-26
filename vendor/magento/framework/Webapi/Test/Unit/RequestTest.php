@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Webapi\Test\Unit;
@@ -38,9 +38,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->request->getRequestedServices());
     }
 
-    /**
-     * @return array
-     */
     public function providerTestGetRequestedServicesSuccess()
     {
         $testModuleA = 'testModule1AllSoapAndRestV1';

@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Message;
 
-use Magento\Framework\Debug;
 use Magento\Framework\Event;
 use Psr\Log\LoggerInterface;
 
@@ -80,7 +79,7 @@ class Manager implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDefaultGroup()
     {
@@ -101,8 +100,8 @@ class Manager implements ManagerInterface
     /**
      * @inheritdoc
      *
-     * @param bool $clear
      * @param string|null $group
+     * @param bool $clear
      * @return Collection
      */
     public function getMessages($clear = false, $group = null)
@@ -239,12 +238,7 @@ class Manager implements ManagerInterface
             'Exception message: %s%sTrace: %s',
             $exception->getMessage(),
             "\n",
-            Debug::trace(
-                $exception->getTrace(),
-                true,
-                true,
-                (bool)getenv('MAGE_DEBUG_SHOW_ARGS')
-            )
+            $exception->getTraceAsString()
         );
 
         $this->logger->critical($message);
@@ -276,12 +270,7 @@ class Manager implements ManagerInterface
             'Exception message: %s%sTrace: %s',
             $exception->getMessage(),
             "\n",
-            Debug::trace(
-                $exception->getTrace(),
-                true,
-                true,
-                (bool)getenv('MAGE_DEBUG_SHOW_ARGS')
-            )
+            $exception->getTraceAsString()
         );
 
         $this->logger->critical($message);

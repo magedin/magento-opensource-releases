@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Address;
@@ -9,14 +9,12 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterfaceFactory;
 use Magento\Customer\Api\Data\RegionInterface;
 use Magento\Customer\Api\Data\RegionInterfaceFactory;
-use Magento\Customer\Model\Address\Mapper;
 use Magento\Customer\Model\Metadata\FormFactory;
 use Magento\Customer\Model\Session;
 use Magento\Directory\Helper\Data as HelperData;
 use Magento\Directory\Model\RegionFactory;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\Data\Form\FormKey\Validator as FormKeyValidator;
 use Magento\Framework\Exception\InputException;
@@ -37,11 +35,6 @@ class FormPost extends \Magento\Customer\Controller\Address
      * @var HelperData
      */
     protected $helperData;
-
-    /**
-     * @var Mapper
-     */
-    private $customerAddressMapper;
 
     /**
      * @param Context $context
@@ -134,7 +127,12 @@ class FormPost extends \Magento\Customer\Controller\Address
             if ($existingAddress->getCustomerId() !== $this->_getSession()->getCustomerId()) {
                 throw new \Exception();
             }
-            $existingAddressData = $this->getCustomerAddressMapper()->toFlatArray($existingAddress);
+            $existingAddressData = $this->_dataProcessor->buildOutputDataArray(
+                $existingAddress,
+                '\Magento\Customer\Api\Data\AddressInterface'
+            );
+            $existingAddressData['region_code'] = $existingAddress->getRegion()->getRegionCode();
+            $existingAddressData['region'] = $existingAddress->getRegion()->getRegion();
         }
         return $existingAddressData;
     }
@@ -213,20 +211,5 @@ class FormPost extends \Magento\Customer\Controller\Address
         }
 
         return $this->resultRedirectFactory->create()->setUrl($this->_redirect->error($url));
-    }
-
-    /**
-     * Get Customer Address Mapper instance
-     *
-     * @return Mapper
-     *
-     * @deprecated
-     */
-    private function getCustomerAddressMapper()
-    {
-        if ($this->customerAddressMapper === null) {
-            $this->customerAddressMapper = ObjectManager::getInstance()->get('Magento\Customer\Model\Address\Mapper');
-        }
-        return $this->customerAddressMapper;
     }
 }

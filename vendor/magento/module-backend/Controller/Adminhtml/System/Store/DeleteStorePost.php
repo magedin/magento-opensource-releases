@@ -1,14 +1,12 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Controller\Adminhtml\System\Store;
 
-use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\NotFoundException;
 
 class DeleteStorePost extends \Magento\Backend\Controller\Adminhtml\System\Store
 {
@@ -16,21 +14,13 @@ class DeleteStorePost extends \Magento\Backend\Controller\Adminhtml\System\Store
      * Delete store view post action
      *
      * @return \Magento\Backend\Model\View\Result\Redirect
-     * @throws NotFoundException
      */
     public function execute()
     {
-        /** @var HttpRequest $request */
-        $request = $this->getRequest();
-        /** @var \Magento\Backend\Model\View\Result\Redirect $redirectResult */
-        $redirectResult = $this->resultFactory->create(
-            ResultFactory::TYPE_REDIRECT
-        );
-        if (!$request->isPost()) {
-            throw new NotFoundException(__('Page not found.'));
-        }
+        $itemId = $this->getRequest()->getParam('item_id');
 
-        $itemId = $request->getParam('item_id');
+        /** @var \Magento\Backend\Model\View\Result\Redirect $redirectResult */
+        $redirectResult = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (!($model = $this->_objectManager->create('Magento\Store\Model\Store')->load($itemId))) {
             $this->messageManager->addError(__('Something went wrong. Please try again.'));
             return $redirectResult->setPath('adminhtml/*/');

@@ -24,7 +24,7 @@ class Syslog extends AbstractWriter
      *
      * @var array
      */
-    protected $priorities = [
+    protected $priorities = array(
         Logger::EMERG  => LOG_EMERG,
         Logger::ALERT  => LOG_ALERT,
         Logger::CRIT   => LOG_CRIT,
@@ -33,7 +33,7 @@ class Syslog extends AbstractWriter
         Logger::NOTICE => LOG_NOTICE,
         Logger::INFO   => LOG_INFO,
         Logger::DEBUG  => LOG_DEBUG,
-    ];
+    );
 
     /**
      * The default log priority - for unmapped custom priorities
@@ -75,7 +75,7 @@ class Syslog extends AbstractWriter
      *
      * @var array
      */
-    protected $validFacilities = [];
+    protected $validFacilities = array();
 
     /**
      * Constructor
@@ -120,7 +120,7 @@ class Syslog extends AbstractWriter
      */
     protected function initializeValidFacilities()
     {
-        $constants = [
+        $constants = array(
             'LOG_AUTH',
             'LOG_AUTHPRIV',
             'LOG_CRON',
@@ -140,7 +140,7 @@ class Syslog extends AbstractWriter
             'LOG_SYSLOG',
             'LOG_USER',
             'LOG_UUCP'
-        ];
+        );
 
         foreach ($constants as $constant) {
             if (defined($constant)) {

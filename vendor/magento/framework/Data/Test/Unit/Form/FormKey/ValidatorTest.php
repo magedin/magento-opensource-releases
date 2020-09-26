@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data\Test\Unit\Form\FormKey;
@@ -56,9 +56,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->_model->validate($this->_requestMock));
     }
 
-    /**
-     * @return array
-     */
     public function validateDataProvider()
     {
         return [

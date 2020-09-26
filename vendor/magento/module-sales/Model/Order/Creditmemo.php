@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,6 +9,7 @@
 namespace Magento\Sales\Model\Order;
 
 use Magento\Framework\Api\AttributeValueFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Model\AbstractModel;
@@ -475,6 +476,13 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
      */
     public function setShippingAmount($amount)
     {
+        // base shipping amount calculated in total model
+        //        $amount = $this->getStore()->round($amount);
+        //        $this->setData('base_shipping_amount', $amount);
+        //
+        //        $amount = $this->getStore()->round(
+        //            $amount*$this->getOrder()->getStoreToOrderRate()
+        //        );
         return $this->setData(CreditmemoInterface::SHIPPING_AMOUNT, $amount);
     }
 
@@ -525,24 +533,11 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
      */
     public function isLast()
     {
-        $items = $this->getAllItems();
-        foreach ($items as $item) {
+        foreach ($this->getAllItems() as $item) {
             if (!$item->isLast()) {
                 return false;
             }
         }
-
-        if (empty($items)) {
-            $order = $this->getOrder();
-            if ($order) {
-                foreach ($order->getItems() as $orderItem) {
-                    if ($orderItem->canRefund()) {
-                        return false;
-                    }
-                }
-            }
-        }
-
         return true;
     }
 
@@ -581,6 +576,13 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     {
         $collection = $this->_commentCollectionFactory->create()->setCreditmemoFilter($this->getId())
             ->setCreatedAtOrder();
+//
+//            $this->setComments($comments);
+//            /**
+//             * When credit memo created with adding comment,
+//             * comments collection must be loaded before we added this comment.
+//             */
+//            $this->getComments()->load();
 
         if ($this->getId()) {
             foreach ($collection as $comment) {
@@ -785,7 +787,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     /**
      * Returns base_discount_tax_compensation_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getBaseDiscountTaxCompensationAmount()
     {
@@ -805,7 +807,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     /**
      * Returns base_shipping_discount_tax_compensation_amnt
      *
-     * @return float|null
+     * @return float
      */
     public function getBaseShippingDiscountTaxCompensationAmnt()
     {
@@ -963,7 +965,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     /**
      * Returns discount_tax_compensation_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getDiscountTaxCompensationAmount()
     {
@@ -1023,7 +1025,7 @@ class Creditmemo extends AbstractModel implements EntityInterface, CreditmemoInt
     /**
      * Returns shipping_discount_tax_compensation_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getShippingDiscountTaxCompensationAmount()
     {

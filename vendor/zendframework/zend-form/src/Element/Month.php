@@ -20,9 +20,9 @@ class Month extends DateTime
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributes = array(
         'type' => 'month',
-    ];
+    );
 
     /**
      * Retrieves a Date Validator configured for a Month Input type
@@ -47,10 +47,10 @@ class Month extends DateTime
         $baseValue = (isset($this->attributes['min']))
                      ? $this->attributes['min'] : '1970-01';
 
-        return new DateStepValidator([
+        return new DateStepValidator(array(
             'format'    => "Y-m",
             'baseValue' => $baseValue,
             'step'      => new \DateInterval("P{$stepValue}M"),
-        ]);
+        ));
     }
 }

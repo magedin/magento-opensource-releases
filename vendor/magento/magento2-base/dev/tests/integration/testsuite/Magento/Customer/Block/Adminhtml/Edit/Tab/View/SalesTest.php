@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Block\Adminhtml\Edit\Tab\View;
@@ -53,7 +53,7 @@ class SalesTest extends \PHPUnit_Framework_TestCase
             'Magento\Framework\View\LayoutInterface'
         )->createBlock(
             'Magento\Customer\Block\Adminhtml\Edit\Tab\View\Sales',
-            'sales_' . random_int(0, PHP_INT_MAX),
+            'sales_' . mt_rand(),
             ['coreRegistry' => $this->coreRegistry]
         )->setTemplate(
             'tab/view/sales.phtml'

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Test\Unit\Model\Autocomplete;
@@ -107,9 +107,6 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result[0]->toArray());
     }
 
-    /**
-     * @param array $data
-     */
     private function buildCollection(array $data)
     {
         $collectionData = [];

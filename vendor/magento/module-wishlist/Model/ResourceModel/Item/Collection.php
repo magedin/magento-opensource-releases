@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Wishlist\Model\ResourceModel\Item;
@@ -291,7 +291,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             'thumbnail',
             'links_purchased_separately',
             'links_title',
-            'price_type',
         ];
 
         $productCollection->addPriceData()

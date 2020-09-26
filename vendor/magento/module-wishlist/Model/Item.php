@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -472,7 +472,7 @@ class Item extends AbstractModel implements ItemInterface
     public function getBuyRequest()
     {
         $option = $this->getOptionByCode('info_buyRequest');
-        $initialData = $option ? unserialize($option->getValue()) : [];
+        $initialData = $option ? unserialize($option->getValue()) : null;
 
         if ($initialData instanceof \Magento\Framework\DataObject) {
             $initialData = $initialData->getData();

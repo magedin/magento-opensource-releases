@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Model\Config;
@@ -36,7 +36,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidateHasRecursiveReference()
     {
-        $this->markTestSkipped("MAGETWO-59802:BuildFailureforL2onbranch2.1-develop");
         $fieldConfig = [
             'path' => 'design/email/header_template',
             'fieldset' => 'other_settings/email',

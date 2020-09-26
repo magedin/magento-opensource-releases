@@ -2,7 +2,7 @@
 /**
  * Unit test for customer service layer \Magento\Customer\Model\Customer
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -60,42 +60,42 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->_website = $this->getMock(\Magento\Store\Model\Website::class, [], [], '', false);
-        $this->_config = $this->getMock(\Magento\Eav\Model\Config::class, [], [], '', false);
-        $this->_attribute = $this->getMock(\Magento\Eav\Model\Attribute::class, [], [], '', false);
-        $this->_storeManager = $this->getMock(\Magento\Store\Model\StoreManager::class, [], [], '', false);
-        $this->_storetMock = $this->getMock(\Magento\Store\Model\Store::class, [], [], '', false);
-        $this->_scopeConfigMock = $this->getMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_website = $this->getMock('Magento\Store\Model\Website', [], [], '', false);
+        $this->_config = $this->getMock('Magento\Eav\Model\Config', [], [], '', false);
+        $this->_attribute = $this->getMock('Magento\Eav\Model\Attribute', [], [], '', false);
+        $this->_storeManager = $this->getMock('Magento\Store\Model\StoreManager', [], [], '', false);
+        $this->_storetMock = $this->getMock('\Magento\Store\Model\Store', [], [], '', false);
+        $this->_scopeConfigMock = $this->getMock('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->_transportBuilderMock = $this->getMock(
-            \Magento\Framework\Mail\Template\TransportBuilder::class,
+            '\Magento\Framework\Mail\Template\TransportBuilder',
             [],
             [],
             '',
             false
         );
         $this->_transportMock = $this->getMock(
-            \Magento\Framework\Mail\TransportInterface::class,
+            'Magento\Framework\Mail\TransportInterface',
             [],
             [],
             '',
             false
         );
         $this->attributeFactoryMock = $this->getMock(
-            \Magento\Customer\Model\AttributeFactory::class,
+            'Magento\Customer\Model\AttributeFactory',
             ['create'],
             [],
             '',
             false
         );
         $this->attributeCustomerMock = $this->getMock(
-            \Magento\Customer\Model\Attribute::class,
+            'Magento\Customer\Model\Attribute',
             [],
             [],
             '',
             false
         );
         $this->resourceMock = $this->getMock(
-            \Magento\Customer\Model\ResourceModel\Customer::class,
+            '\Magento\Customer\Model\ResourceModel\Customer', //'\Magento\Framework\DataObject',
             ['getIdFieldName'],
             [],
             '',
@@ -105,11 +105,11 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
         $this->resourceMock->expects($this->any())
             ->method('getIdFieldName')
             ->will($this->returnValue('id'));
-        $this->registryMock = $this->getMock(\Magento\Framework\Registry::class, ['registry'], [], '', false);
-        $this->_encryptor = $this->getMock(\Magento\Framework\Encryption\EncryptorInterface::class);
+        $this->registryMock = $this->getMock('Magento\Framework\Registry', ['registry'], [], '', false);
+        $this->_encryptor = $this->getMock('Magento\Framework\Encryption\EncryptorInterface');
         $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $helper->getObject(
-            \Magento\Customer\Model\Customer::class,
+            'Magento\Customer\Model\Customer',
             [
                 'storeManager' => $this->_storeManager,
                 'config' => $this->_config,
@@ -149,8 +149,8 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
 
     public function testSendNewAccountEmailWithoutStoreId()
     {
-        $store = $this->getMock(\Magento\Store\Model\Store::class, [], [], '', false);
-        $website = $this->getMock(\Magento\Store\Model\Website::class, [], [], '', false);
+        $store = $this->getMock('Magento\Store\Model\Store', [], [], '', false);
+        $website = $this->getMock('Magento\Store\Model\Website', [], [], '', false);
         $website->expects($this->once())
             ->method('getStoreIds')
             ->will($this->returnValue([1, 2, 3, 4]));
@@ -175,7 +175,6 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
             'setTemplateIdentifier',
             'setTemplateOptions',
             'setTemplateVars',
-            'setScopeId',
             'setFrom',
             'addTo',
         ];
@@ -184,7 +183,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
                 ->method($method)
                 ->will($this->returnSelf());
         }
-        $transportMock = $this->getMock(\Magento\Framework\Mail\TransportInterface::class, [], [], '', false);
+        $transportMock = $this->getMock('Magento\Framework\Mail\TransportInterface', [], [], '', false);
         $transportMock->expects($this->once())
             ->method('sendMessage')
             ->will($this->returnSelf());
@@ -222,7 +221,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['lockExpirationDate' => date("F j, Y", strtotime('-1 days')), 'expectedResult' => false],
-            ['lockExpirationDate' => date("F j, Y", strtotime('+1 days')), 'expectedResult' => true],
+            ['lockExpirationDate' => date("F j, Y", strtotime('+1 days')), 'expectedResult' => true]
         ];
     }
 

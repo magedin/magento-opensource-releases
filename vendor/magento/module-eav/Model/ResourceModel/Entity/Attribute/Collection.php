@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\ResourceModel\Entity\Attribute;
@@ -205,19 +205,17 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function setInAllAttributeSetsFilter(array $setIds)
     {
-        if (!empty($setIds)) {
-            $this->getSelect()
-                ->join(
-                    ['entity_attribute' => $this->getTable('eav_entity_attribute')],
-                    'entity_attribute.attribute_id = main_table.attribute_id',
-                    ['count' => new \Zend_Db_Expr('COUNT(*)')]
-                )
-                ->where(
-                    'entity_attribute.attribute_set_id IN (?)',
-                    $setIds
-                )
-                ->group('entity_attribute.attribute_id')
-                ->having('count = ' . count($setIds));
+        foreach ($setIds as $setId) {
+            $setId = (int)$setId;
+            if (!$setId) {
+                continue;
+            }
+            $alias = sprintf('entity_attribute_%d', $setId);
+            $joinCondition = $this->getConnection()->quoteInto(
+                "{$alias}.attribute_id = main_table.attribute_id AND {$alias}.attribute_set_id =?",
+                $setId
+            );
+            $this->join([$alias => 'eav_entity_attribute'], $joinCondition, 'attribute_id');
         }
 
         //$this->getSelect()->distinct(true);

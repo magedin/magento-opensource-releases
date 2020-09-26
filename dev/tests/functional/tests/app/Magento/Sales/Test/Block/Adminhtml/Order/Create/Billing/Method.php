@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,7 +8,6 @@ namespace Magento\Sales\Test\Block\Adminhtml\Order\Create\Billing;
 
 use Magento\Mtf\Block\Block;
 use Magento\Mtf\Fixture\InjectableFixture;
-use Magento\Mtf\Client\Locator;
 
 /**
  * Adminhtml sales order create payment method block.
@@ -44,20 +43,6 @@ class Method extends Block
     protected $loader = '[data-role=loader]';
 
     /**
-     * Field with Mage error.
-     *
-     * @var string
-     */
-    protected $mageErrorField = '//fieldset/*[contains(@class,"field ")][.//*[contains(@class,"error")]]';
-
-    /**
-     * Mage error text.
-     *
-     * @var string
-     */
-    protected $mageErrorText = './/label[contains(@class,"error")]';
-
-    /**
      * Select payment method.
      *
      * @param array $paymentCode
@@ -83,24 +68,5 @@ class Method extends Block
             );
             $formBlock->fill($creditCard);
         }
-    }
-
-    /**
-     * @return array
-     */
-    public function getJsErrors()
-    {
-        $data = [];
-        $elements = $this->_rootElement->getElements($this->mageErrorField, Locator::SELECTOR_XPATH);
-        foreach ($elements as $element) {
-            $error = $element->find($this->mageErrorText, Locator::SELECTOR_XPATH);
-            if ($error->isVisible()) {
-                $label = $element->find('.//*[contains(@name,"payment")]', Locator::SELECTOR_XPATH);
-                $label = $label->getAttribute('name');
-                $label = preg_replace('/payment\[(.*)\]/u', '$1', $label);
-                $data[$label] = $error->getText();
-            }
-        }
-        return $data;
     }
 }

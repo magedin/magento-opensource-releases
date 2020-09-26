@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Test\Unit\Helper;
@@ -162,9 +162,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::MIME_TYPE, $this->_helper->getContentType());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestGetContentTypeThroughHelper()
     {
         return [[false, ''], [true, false]];
@@ -197,11 +194,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fileName, $this->_helper->getFilename());
     }
 
-    /**
-     * @param bool $doesExist
-     * @param int $size
-     * @param string $path
-     */
     protected function _setupFileMocks($doesExist = true, $size = self::FILE_SIZE, $path = self::FILE_PATH)
     {
         $this->_handleMock->expects($this->any())->method('stat')->will($this->returnValue(['size' => $size]));
@@ -214,11 +206,6 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
         $this->_helper->setResource($path, DownloadHelper::LINK_TYPE_FILE);
     }
 
-    /**
-     * @param int $size
-     * @param string $url
-     * @param array $additionalStatData
-     */
     protected function _setupUrlMocks($size = self::FILE_SIZE, $url = self::URL, $additionalStatData = [])
     {
         $this->_handleMock->expects(

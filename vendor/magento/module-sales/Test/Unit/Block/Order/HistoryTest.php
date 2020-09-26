@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Block\Order;
@@ -21,16 +21,6 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Sales\Model\ResourceModel\Order\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderCollectionFactory;
-
-    /**
-     * @var \Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $orderCollectionFactoryInterface;
-
-    /**
-     * @var \Magento\Framework\App\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
@@ -58,14 +48,6 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
         $this->orderCollectionFactory =
             $this->getMockBuilder('Magento\Sales\Model\ResourceModel\Order\CollectionFactory')
             ->disableOriginalConstructor()->setMethods(['create'])->getMock();
-        $this->orderCollectionFactoryInterface =
-            $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface::class)
-                ->disableOriginalConstructor()->setMethods(['create'])->getMock();
-        $this->objectManager = $this->getMock(\Magento\Framework\ObjectManagerInterface::class, [], [], '', false);
-        $this->objectManager->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($this->orderCollectionFactoryInterface));
-        \Magento\Framework\App\ObjectManager::setInstance($this->objectManager);
 
         $this->customerSession = $this->getMockBuilder('Magento\Customer\Model\Session')
             ->setMethods(['getCustomerId'])->disableOriginalConstructor()->getMock();
@@ -113,13 +95,17 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $orderCollection->expects($this->at(1))
             ->method('addFieldToFilter')
-            ->with('status', $this->equalTo(['in' => $statuses]))
+            ->with('customer_id', $this->equalTo($customerId))
             ->will($this->returnSelf());
         $orderCollection->expects($this->at(2))
+            ->method('addFieldToFilter')
+            ->with('status', $this->equalTo(['in' => $statuses]))
+            ->will($this->returnSelf());
+        $orderCollection->expects($this->at(3))
             ->method('setOrder')
             ->with('created_at', 'desc')
             ->will($this->returnSelf());
-        $this->orderCollectionFactoryInterface->expects($this->atLeastOnce())
+        $this->orderCollectionFactory->expects($this->atLeastOnce())
             ->method('create')
             ->will($this->returnValue($orderCollection));
         $this->pageConfig->expects($this->atLeastOnce())

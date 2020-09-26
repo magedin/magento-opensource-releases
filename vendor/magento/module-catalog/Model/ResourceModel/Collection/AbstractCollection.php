@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\ResourceModel\Collection;
@@ -137,7 +137,7 @@ class AbstractCollection extends \Magento\Eav\Model\Entity\Collection\AbstractCo
      *
      * @param string $table
      * @param array|int $attributeIds
-     * @return \Magento\Framework\DB\Select
+     * @return \Magento\Eav\Model\Entity\Collection\AbstractCollection
      */
     protected function _getLoadAttributesSelect($table, $attributeIds = [])
     {

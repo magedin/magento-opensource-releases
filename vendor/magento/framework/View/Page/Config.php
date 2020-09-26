@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -117,7 +117,6 @@ class Config
         'description' => null,
         'keywords' => null,
         'robots' => null,
-        'title' => null,
     ];
 
     /**
@@ -174,7 +173,7 @@ class Config
         $this->setElementAttribute(
             self::ELEMENT_TYPE_HTML,
             self::HTML_ATTRIBUTE_LANG,
-            strstr($this->localeResolver->getLocale(), '_', true)
+            str_replace('_', '-', $this->localeResolver->getLocale())
         );
     }
 
@@ -227,7 +226,7 @@ class Config
     public function setMetadata($name, $content)
     {
         $this->build();
-        $this->metadata[$name] = htmlspecialchars($content);
+        $this->metadata[$name] = htmlentities($content);
     }
 
     /**

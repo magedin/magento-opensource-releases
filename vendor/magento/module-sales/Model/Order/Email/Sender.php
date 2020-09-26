@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\Order\Email;
@@ -78,8 +78,6 @@ abstract class Sender
             $sender->sendCopyTo();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-
-            return false;
         }
 
         return true;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Mview\View;
@@ -95,7 +95,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         $model->create();
         $this->assertEquals(0, $model->getVersion());
         $changelogName = $this->resource->getTableName($model->getName());
-        $this->connection->insert($changelogName, [$model->getColumnName() => random_int(1, 200)]);
+        $this->connection->insert($changelogName, [$model->getColumnName() => mt_rand(1, 200)]);
         $this->assertEquals($this->connection->lastInsertId($changelogName, 'version_id'), $model->getVersion());
         $model->drop();
     }
@@ -126,14 +126,14 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->model->getVersion());
         //the same that a table is empty
         $changelogName = $this->resource->getTableName($this->model->getName());
-        $testChangelogData = [
+        $testChengelogData = [
             ['version_id' => 1, 'entity_id' => 1],
             ['version_id' => 2, 'entity_id' => 1],
             ['version_id' => 3, 'entity_id' => 2],
             ['version_id' => 4, 'entity_id' => 3],
             ['version_id' => 5, 'entity_id' => 1],
         ];
-        foreach ($testChangelogData as $data) {
+        foreach ($testChengelogData as $data) {
             $this->connection->insert($changelogName, $data);
         }
         $this->assertEquals(5, $this->model->getVersion());

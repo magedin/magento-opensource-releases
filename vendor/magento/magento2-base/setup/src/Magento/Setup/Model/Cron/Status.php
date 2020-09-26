@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -215,7 +215,7 @@ class Status
             } catch (FileSystemException $e) {
                 throw new \RuntimeException(sprintf('"%s" cannot be created.', $pathToFlagFile));
             }
-        } elseif ($this->varReaderWriter->isExist($pathToFlagFile)) {
+        } else if ($this->varReaderWriter->isExist($pathToFlagFile)) {
             $this->varReaderWriter->delete($pathToFlagFile);
         }
         return $this;

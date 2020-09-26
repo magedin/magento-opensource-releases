@@ -1,9 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Model\Service;
+
+use Magento\SalesRule\Model\Coupon;
 
 /**
  * Coupon management service class
@@ -88,7 +90,7 @@ class CouponManagementService implements \Magento\SalesRule\Api\CouponManagement
                     $couponSpec->getRuleId()
                 );
             }
-            if (!($rule->getUseAutoGeneration() || $rule->getCouponType() == $rule::COUPON_TYPE_AUTO)) {
+            if (!$rule->getUseAutoGeneration()) {
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Specified rule does not allow automatic coupon generation')
                 );

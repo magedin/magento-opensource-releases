@@ -10,7 +10,6 @@
 namespace Zend\InputFilter;
 
 use Zend\Filter\FilterChain;
-use Zend\ServiceManager\AbstractPluginManager;
 use Zend\Validator\NotEmpty;
 use Zend\Validator\ValidatorChain;
 
@@ -388,7 +387,7 @@ class Input implements
     {
         $value           = $this->getValue();
         $hasValue        = $this->hasValue();
-        $empty           = ($value === null || $value === '' || $value === []);
+        $empty           = ($value === null || $value === '' || $value === array());
         $required        = $this->isRequired();
         $allowEmpty      = $this->allowEmpty();
         $continueIfEmpty = $this->continueIfEmpty();
@@ -445,7 +444,7 @@ class Input implements
         }
 
         if ($this->hasFallback()) {
-            return [];
+            return array();
         }
 
         $validator = $this->getValidatorChain();
@@ -475,8 +474,8 @@ class Input implements
 
         $this->notEmptyValidator = true;
 
-        if (class_exists(AbstractPluginManager::class)) {
-            $chain->prependByName('NotEmpty', [], true);
+        if (class_exists('Zend\ServiceManager\AbstractPluginManager')) {
+            $chain->prependByName('NotEmpty', array(), true);
 
             return;
         }
@@ -493,8 +492,8 @@ class Input implements
     {
         $notEmpty = new NotEmpty();
         $templates = $notEmpty->getOption('messageTemplates');
-        return [
+        return array(
             NotEmpty::IS_EMPTY => $templates[NotEmpty::IS_EMPTY],
-        ];
+        );
     }
 }

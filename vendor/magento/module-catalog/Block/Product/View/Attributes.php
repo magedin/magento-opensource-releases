@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,12 +12,8 @@
 namespace Magento\Catalog\Block\Product\View;
 
 use Magento\Catalog\Model\Product;
-use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 
-/**
- * Product attributes block.
- */
 class Attributes extends \Magento\Framework\View\Element\Template
 {
     /**
@@ -62,7 +58,6 @@ class Attributes extends \Magento\Framework\View\Element\Template
         if (!$this->_product) {
             $this->_product = $this->_coreRegistry->registry('product');
         }
-
         return $this->_product;
     }
 
@@ -81,9 +76,8 @@ class Attributes extends \Magento\Framework\View\Element\Template
         $attributes = $product->getAttributes();
         foreach ($attributes as $attribute) {
             if ($attribute->getIsVisibleOnFront() && !in_array($attribute->getAttributeCode(), $excludeAttr)) {
-                if (is_array($value = $attribute->getFrontend()->getValue($product))) {
-                    continue;
-                }
+                $value = $attribute->getFrontend()->getValue($product);
+
                 if (!$product->hasData($attribute->getAttributeCode())) {
                     $value = __('N/A');
                 } elseif ((string)$value == '') {
@@ -92,7 +86,7 @@ class Attributes extends \Magento\Framework\View\Element\Template
                     $value = $this->priceCurrency->convertAndFormat($value);
                 }
 
-                if (($value instanceof Phrase || is_string($value)) && strlen($value)) {
+                if (is_string($value) && strlen($value)) {
                     $data[$attribute->getAttributeCode()] = [
                         'label' => __($attribute->getStoreLabel()),
                         'value' => $value,
@@ -101,7 +95,6 @@ class Attributes extends \Magento\Framework\View\Element\Template
                 }
             }
         }
-
         return $data;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App;
@@ -8,7 +8,6 @@ namespace Magento\Framework\App;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\ObjectManager\ConfigLoaderInterface;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Debug;
 
 /**
  * Entry point for retrieving static resources like JS, CSS, images by requested public path
@@ -102,22 +101,14 @@ class StaticResource implements \Magento\Framework\AppInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function catchException(Bootstrap $bootstrap, \Exception $exception)
     {
         if ($bootstrap->isDeveloperMode()) {
             $this->response->setHttpResponseCode(404);
             $this->response->setHeader('Content-Type', 'text/plain');
-            $this->response->setBody(
-                $exception->getMessage() . "\n" .
-                Debug::trace(
-                    $exception->getTrace(),
-                    true,
-                    true,
-                    (bool)getenv('MAGE_DEBUG_SHOW_ARGS')
-                )
-            );
+            $this->response->setBody($exception->getMessage() . "\n" . $exception->getTraceAsString());
             $this->response->sendResponse();
         } else {
             require $this->getFilesystem()->getDirectoryRead(DirectoryList::PUB)->getAbsolutePath('errors/404.php');
@@ -136,11 +127,9 @@ class StaticResource implements \Magento\Framework\AppInterface
     {
         $path = ltrim($path, '/');
         $parts = explode('/', $path, 6);
-        if (count($parts) < 5 || mb_strpos($path, '..') !== false) {
-            //Checking that path contains all required parts and is not above static folder.
+        if (count($parts) < 5) {
             throw new \InvalidArgumentException("Requested path '$path' is wrong.");
         }
-
         $result = [];
         $result['area'] = $parts[0];
         $result['theme'] = $parts[1] . '/' . $parts[2];

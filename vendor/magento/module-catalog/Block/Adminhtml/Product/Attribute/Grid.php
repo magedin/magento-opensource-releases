@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -101,7 +101,8 @@ class Grid extends AbstractGrid
                 'type' => 'options',
                 'options' => ['1' => __('Yes'), '0' => __('No')],
                 'align' => 'center'
-            ]
+            ],
+            'is_user_defined'
         );
 
         $this->_eventManager->dispatch('product_attribute_grid_build', ['grid' => $this]);

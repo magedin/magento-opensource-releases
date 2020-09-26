@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Product\ProductList;
@@ -81,7 +81,7 @@ class Toolbar extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Catalog::product/list/toolbar.phtml';
+    protected $_template = 'product/list/toolbar.phtml';
 
     /**
      * Catalog config

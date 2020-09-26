@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -38,15 +38,6 @@ class ParentClass
 
     protected $parentOptionalScalar;
 
-    /**
-     * ParentClass constructor.
-     * @param ContextObject $contextObject
-     * @param ParentRequiredObject $parentRequiredObject
-     * @param array $parentRequiredScalar
-     * @param ParentOptionalObject|null $parentOptionalObject
-     * @param array $data
-     * @param array $parentOptionalScalar
-     */
     public function __construct(
         ContextObject $contextObject,
         ParentRequiredObject $parentRequiredObject,

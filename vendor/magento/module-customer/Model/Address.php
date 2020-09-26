@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Model;
@@ -350,9 +350,7 @@ class Address extends \Magento\Customer\Model\Address\AbstractAddress
     {
         /** @var \Magento\Framework\Indexer\IndexerInterface $indexer */
         $indexer = $this->indexerRegistry->get(Customer::CUSTOMER_GRID_INDEXER_ID);
-        if (!$indexer->isScheduled()) {
-            $indexer->reindexRow($this->getCustomerId());
-        }
+        $indexer->reindexRow($this->getCustomerId());
     }
 
     /**

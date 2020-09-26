@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Message\Test\Unit;
@@ -247,9 +247,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->model->hasMessages());
     }
 
-    /**
-     * @return array
-     */
     public function addMessageDataProvider()
     {
         return [
@@ -280,9 +277,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->model->addUniqueMessages([$messages]);
     }
 
-    /**
-     * @return array
-     */
     public function addUniqueMessagesWhenMessagesImplementMessageInterfaceDataProvider()
     {
         return [
@@ -316,9 +310,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->model->addUniqueMessages($messages);
     }
 
-    /**
-     * @return array
-     */
     public function addUniqueMessagesDataProvider()
     {
         return [

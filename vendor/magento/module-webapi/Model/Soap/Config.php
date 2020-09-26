@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Webapi\Model\Soap;
@@ -69,14 +69,12 @@ class Config
                 foreach ($serviceData[ServiceMetadata::KEY_SERVICE_METHODS] as $methodData) {
                     $method = $methodData[ServiceMetadata::KEY_METHOD];
                     $class = $serviceData[ServiceMetadata::KEY_CLASS];
-                    $operation = $methodData[ServiceMetadata::KEY_METHOD_ALIAS];
-                    $operationName = $serviceName . ucfirst($operation);
+                    $operationName = $serviceName . ucfirst($method);
                     $this->soapOperations[$operationName] = [
                         ServiceMetadata::KEY_CLASS => $class,
                         ServiceMetadata::KEY_METHOD => $method,
                         ServiceMetadata::KEY_IS_SECURE => $methodData[ServiceMetadata::KEY_IS_SECURE],
                         ServiceMetadata::KEY_ACL_RESOURCES => $methodData[ServiceMetadata::KEY_ACL_RESOURCES],
-                        ServiceMetadata::KEY_ROUTE_PARAMS => $methodData[ServiceMetadata::KEY_ROUTE_PARAMS]
                     ];
                 }
             }
@@ -106,8 +104,7 @@ class Config
             ServiceMetadata::KEY_CLASS => $soapOperations[$soapOperation][ServiceMetadata::KEY_CLASS],
             ServiceMetadata::KEY_METHOD => $soapOperations[$soapOperation][ServiceMetadata::KEY_METHOD],
             ServiceMetadata::KEY_IS_SECURE => $soapOperations[$soapOperation][ServiceMetadata::KEY_IS_SECURE],
-            ServiceMetadata::KEY_ACL_RESOURCES => $soapOperations[$soapOperation][ServiceMetadata::KEY_ACL_RESOURCES],
-            ServiceMetadata::KEY_ROUTE_PARAMS => $soapOperations[$soapOperation][ServiceMetadata::KEY_ROUTE_PARAMS]
+            ServiceMetadata::KEY_ACL_RESOURCES => $soapOperations[$soapOperation][ServiceMetadata::KEY_ACL_RESOURCES]
         ];
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -58,7 +58,7 @@ define([
          */
         applyAction: function (action) {
             var targetName = action.targetName,
-                params = utils.copy(action.params) || [],
+                params = action.params || [],
                 actionName = action.actionName,
                 target;
 

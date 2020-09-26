@@ -1,13 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\Entity\Attribute\Source;
-
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Escaper;
-use Magento\Store\Model\StoreManagerInterface;
 
 class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
@@ -29,31 +25,16 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
     protected $_attrOptionFactory;
 
     /**
-     * Store manager interface.
-     *
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * @var Escaper
-     */
-    private $escaper;
-
-    /**
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory
-     * @param Escaper|null $escaper
      * @codeCoverageIgnore
      */
     public function __construct(
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory,
-        \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory,
-        Escaper $escaper = null
+        \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory $attrOptionFactory
     ) {
         $this->_attrOptionCollectionFactory = $attrOptionCollectionFactory;
         $this->_attrOptionFactory = $attrOptionFactory;
-        $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
     }
 
     /**
@@ -66,51 +47,29 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
     public function getAllOptions($withEmpty = true, $defaultValues = false)
     {
         $storeId = $this->getAttribute()->getStoreId();
-        if ($storeId === null) {
-            $storeId = $this->getStoreManager()->getStore()->getId();
-        }
         if (!is_array($this->_options)) {
             $this->_options = [];
         }
         if (!is_array($this->_optionsDefault)) {
             $this->_optionsDefault = [];
         }
-
-        $attributeId = $this->getAttribute()->getId();
-        if (!isset($this->_options[$storeId][$attributeId])) {
+        if (!isset($this->_options[$storeId])) {
             $collection = $this->_attrOptionCollectionFactory->create()->setPositionOrder(
                 'asc'
             )->setAttributeFilter(
-                $attributeId
+                $this->getAttribute()->getId()
             )->setStoreFilter(
-                $storeId
+                $this->getAttribute()->getStoreId()
             )->load();
-            $this->_options[$storeId][$attributeId] = $collection->toOptionArray();
-            $this->_optionsDefault[$storeId][$attributeId] = $collection->toOptionArray('default_value');
+            $this->_options[$storeId] = $collection->toOptionArray();
+            $this->_optionsDefault[$storeId] = $collection->toOptionArray('default_value');
         }
-        $options = $defaultValues
-            ? $this->_optionsDefault[$storeId][$attributeId]
-            : $this->_options[$storeId][$attributeId];
+        $options = $defaultValues ? $this->_optionsDefault[$storeId] : $this->_options[$storeId];
         if ($withEmpty) {
             $options = $this->addEmptyOption($options);
         }
 
         return $options;
-    }
-
-    /**
-     * Get StoreManager dependency.
-     *
-     * @return StoreManagerInterface
-     * @deprecated
-     */
-    private function getStoreManager()
-    {
-        if ($this->storeManager === null) {
-            $this->storeManager = ObjectManager::getInstance()->get(StoreManagerInterface::class);
-        }
-
-        return $this->storeManager;
     }
 
     /**
@@ -161,22 +120,21 @@ class Table extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 
         $options = $this->getSpecificOptions($value, false);
 
-        if (!is_array($value)) {
-            $value = [$value];
+        if ($isMultiple) {
+            $values = [];
+            foreach ($options as $item) {
+                if (in_array($item['value'], $value)) {
+                    $values[] = $item['label'];
+                }
+            }
+            return $values;
         }
-        $optionsText = [];
+
         foreach ($options as $item) {
-            if (in_array($item['value'], $value)) {
-                $optionsText[] = $this->escaper->escapeHtml($item['label']);
+            if ($item['value'] == $value) {
+                return $item['label'];
             }
         }
-
-        if ($isMultiple) {
-            return $optionsText;
-        } elseif ($optionsText) {
-            return $optionsText[0];
-        }
-
         return false;
     }
 

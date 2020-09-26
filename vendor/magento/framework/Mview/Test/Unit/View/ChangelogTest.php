@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Mview\Test\Unit\View;
@@ -235,7 +235,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Exception', "Table {$changelogTableName} does not exist");
         $this->model->setViewId('viewIdtest');
-        $this->model->getList(random_int(1, 200), random_int(201, 400));
+        $this->model->getList(mt_rand(1, 200), mt_rand(201, 400));
     }
 
     public function testClearWithException()
@@ -246,7 +246,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Exception', "Table {$changelogTableName} does not exist");
         $this->model->setViewId('viewIdtest');
-        $this->model->clear(random_int(1, 200));
+        $this->model->clear(mt_rand(1, 200));
     }
 
     /**
@@ -262,10 +262,6 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         $this->resourceMock->expects($this->once())->method('getTableName')->will($this->returnArgument(0));
     }
 
-    /**
-     * @param $changelogTableName
-     * @param $result
-     */
     protected function mockIsTableExists($changelogTableName, $result)
     {
         $this->connectionMock->expects(

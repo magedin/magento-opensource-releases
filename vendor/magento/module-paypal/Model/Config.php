@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -226,7 +226,6 @@ class Config extends AbstractConfig
         'TWD',
         'THB',
         'USD',
-        'INR',
     ];
 
     /**
@@ -1300,7 +1299,7 @@ class Config extends AbstractConfig
     public function getWppPeCcTypesAsOptionArray()
     {
         return $this->_cctypeFactory->create()->setAllowedTypes(
-            ['VI', 'MC', 'SM', 'SO', 'AE']
+            ['VI', 'MC', 'SM', 'SO', 'OT', 'AE']
         )->toOptionArray();
     }
 
@@ -1311,7 +1310,7 @@ class Config extends AbstractConfig
      */
     public function getPayflowproCcTypesAsOptionArray()
     {
-        return $this->_cctypeFactory->create()->setAllowedTypes(['AE', 'VI', 'MC', 'JCB', 'DI', 'DN'])->toOptionArray();
+        return $this->_cctypeFactory->create()->setAllowedTypes(['AE', 'VI', 'MC', 'JCB', 'DI'])->toOptionArray();
     }
 
     /**

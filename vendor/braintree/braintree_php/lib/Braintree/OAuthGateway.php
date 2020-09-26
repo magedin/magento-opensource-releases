@@ -37,13 +37,6 @@ class OAuthGateway
         return $this->_createToken($params);
     }
 
-    public function revokeAccessToken($accessToken)
-    {
-        $params = ['token' => $accessToken];
-        $response = $this->_http->post('/oauth/revoke_access_token', $params);
-        return $this->_verifyGatewayResponse($response);
-    }
-
     private function _createToken($params)
     {
         $params = ['credentials' => $params];
@@ -58,11 +51,6 @@ class OAuthGateway
                 OAuthCredentials::factory($response['credentials'])
             );
             return $this->_mapSuccess($result);
-        } else if (isset($response['result'])) {
-            $result =  new Result\Successful(
-                OAuthResult::factory($response['result'])
-            );
-            return $this->_mapAccessTokenRevokeSuccess($result);
         } else if (isset($response['apiErrorResponse'])) {
             $result = new Result\Error($response['apiErrorResponse']);
             return $this->_mapError($result);
@@ -85,12 +73,6 @@ class OAuthGateway
             $result->error = 'invalid_scope';
         }
         $result->errorDescription = explode(': ', $error->message)[1];
-        return $result;
-    }
-
-    public function _mapAccessTokenRevokeSuccess($result)
-    {
-        $result->revocationResult = $result->success;
         return $result;
     }
 

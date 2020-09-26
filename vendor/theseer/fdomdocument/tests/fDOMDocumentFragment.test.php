@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
+ * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -49,7 +49,7 @@ namespace TheSeer\fDOM\Tests {
      * @author     Arne Blankerts <arne@blankerts.de>
      * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
      */
-    class fDOMDocumentFragmentTest extends \PHPUnit\Framework\TestCase {
+    class fDOMDocumentFragmentTest extends \PHPUnit_Framework_TestCase {
 
         /**
          * @var fDOMDocument
@@ -104,14 +104,6 @@ namespace TheSeer\fDOM\Tests {
             $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
             $this->assertEquals(1, $this->frag->query('count(t:append)'));
             $this->assertEquals('text', $node->nodeValue);
-        }
-
-        public function testAppendingANewElementWithinANamespaceAsTextNodeByPrefix() {
-            $this->dom->registerNamespace('t', 'test:uri');
-            $node = $this->frag->appendElementPrefix('t', 'append', 'test & demo', true);
-            $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
-            $this->assertEquals(1, $this->frag->query('count(t:append)'));
-            $this->assertEquals('test & demo', $node->nodeValue);
         }
 
         public function testAppendingATextAsTextnode() {

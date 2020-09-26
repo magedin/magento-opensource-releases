@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GiftMessage\Test\Unit\Block\Cart\Item\Renderer\Actions;
@@ -39,9 +39,6 @@ class ItemIdProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->model->process($jsLayout, $itemMock));
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderProcess()
     {
         return [

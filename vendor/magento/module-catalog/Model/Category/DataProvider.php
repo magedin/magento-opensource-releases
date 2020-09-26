@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Category;
@@ -11,15 +11,12 @@ use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Model\Entity\Type;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Form\Field;
 use Magento\Ui\DataProvider\EavValidationRules;
 use Magento\Catalog\Model\CategoryFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Catalog\Model\Category\Attribute\Backend\Image as ImageBackendModel;
-use Magento\Framework\AuthorizationInterface;
 
 /**
  * Class DataProvider
@@ -115,11 +112,6 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
     private $categoryFactory;
 
     /**
-     * @var AuthorizationInterface
-     */
-    private $authorization;
-
-    /**
      * DataProvider constructor
      *
      * @param string $name
@@ -134,7 +126,6 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @param CategoryFactory $categoryFactory
      * @param array $meta
      * @param array $data
-     * @param AuthorizationInterface|null $authorization
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -149,8 +140,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         \Magento\Framework\App\RequestInterface $request,
         CategoryFactory $categoryFactory,
         array $meta = [],
-        array $data = [],
-        AuthorizationInterface $authorization = null
+        array $data = []
     ) {
         $this->eavValidationRules = $eavValidationRules;
         $this->collection = $categoryCollectionFactory->create();
@@ -160,8 +150,6 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $this->storeManager = $storeManager;
         $this->request = $request;
         $this->categoryFactory = $categoryFactory;
-        $this->authorization = $authorization ?: ObjectManager::getInstance()->get(AuthorizationInterface::class);
-
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->meta = $this->prepareMeta($this->meta);
     }
@@ -191,20 +179,11 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      */
     private function prepareFieldsMeta($fieldsMap, $fieldsMeta)
     {
-        $canEditDesign = $this->authorization->isAllowed('Magento_Catalog::edit_category_design');
-
         $result = [];
         foreach ($fieldsMap as $fieldSet => $fields) {
             foreach ($fields as $field) {
                 if (isset($fieldsMeta[$field])) {
-                    $config = $fieldsMeta[$field];
-                    if (($fieldSet === 'design' || $fieldSet === 'schedule_design_update') && !$canEditDesign) {
-                        $config['required'] = 1;
-                        $config['disabled'] = 1;
-                        $config['serviceDisabled'] = true;
-                    }
-
-                    $result[$fieldSet]['children'][$field]['arguments']['data']['config'] = $config;
+                    $result[$fieldSet]['children'][$field]['arguments']['data']['config'] = $fieldsMeta[$field];
                 }
             }
         }
@@ -227,53 +206,14 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
             $categoryData = $this->addUseDefaultSettings($category, $categoryData);
             $categoryData = $this->addUseConfigSettings($categoryData);
             $categoryData = $this->filterFields($categoryData);
-            $categoryData = $this->convertValues($category, $categoryData);
-
+            if (isset($categoryData['image'])) {
+                unset($categoryData['image']);
+                $categoryData['image'][0]['name'] = $category->getData('image');
+                $categoryData['image'][0]['url'] = $category->getImageUrl();
+            }
             $this->loadedData[$category->getId()] = $categoryData;
         }
         return $this->loadedData;
-    }
-
-    /**
-     * Converts category image data to acceptable format for rendering.
-     *
-     * @param \Magento\Catalog\Model\Category $category
-     * @param array $categoryData
-     * @return array
-     */
-    private function convertValues(Category $category, array $categoryData)
-    {
-        $imageAttributes = $this->getImageAttributes($category, $categoryData);
-        $attributeCodes = array_keys($imageAttributes);
-        foreach ($attributeCodes as $attributeCode) {
-            unset($categoryData[$attributeCode]);
-            $categoryData[$attributeCode][0]['name'] = $category->getData($attributeCode);
-            $categoryData[$attributeCode][0]['url'] = $category->getImageUrl($attributeCode);
-        }
-
-        return $categoryData;
-    }
-
-    /**
-     * Get all category image attributes.
-     *
-     * @param \Magento\Catalog\Model\Category $category
-     * @param array $categoryData
-     * @return array
-     */
-    private function getImageAttributes(Category $category, array $categoryData)
-    {
-        $imageAttributes = [];
-        foreach ($category->getAttributes() as $attributeCode => $attribute) {
-            if (!isset($categoryData[$attributeCode])) {
-                continue;
-            }
-            if ($attribute->getBackend() instanceof ImageBackendModel) {
-                $imageAttributes[$attributeCode] = $attribute;
-            }
-        }
-
-        return $imageAttributes;
     }
 
     /**

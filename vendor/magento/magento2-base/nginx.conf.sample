@@ -33,18 +33,11 @@ charset UTF-8;
 error_page 404 403 = /errors/404.php;
 #add_header "X-UA-Compatible" "IE=Edge";
 
-# Deny access to sensitive files
-location /.user.ini {
-    deny all;
-}
-
 # PHP entry point for setup application
 location ~* ^/setup($|/) {
     root $MAGE_ROOT;
     location ~ ^/setup/index.php {
         fastcgi_pass   fastcgi_backend;
-        fastcgi_read_timeout 600s;
-        fastcgi_connect_timeout 600s;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
@@ -66,8 +59,6 @@ location ~* ^/update($|/) {
     location ~ ^/update/index.php {
         fastcgi_split_path_info ^(/update/index.php)(/.+)$;
         fastcgi_pass   fastcgi_backend;
-        fastcgi_read_timeout 600s;
-        fastcgi_connect_timeout 600s;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         fastcgi_param  PATH_INFO        $fastcgi_path_info;
@@ -164,11 +155,13 @@ location /media/import/ {
 }
 
 # PHP entry point for main application
-location ~ ^/(index|get|static|errors/report|errors/404|errors/503|health_check)\.php$ {
+location ~ (index|get|static|report|404|503)\.php$ {
     try_files $uri =404;
     fastcgi_pass   fastcgi_backend;
     fastcgi_buffers 1024 4k;
 
+    fastcgi_param  PHP_FLAG  "session.auto_start=off \n suhosin.session.cryptua=off";
+    fastcgi_param  PHP_VALUE "memory_limit=768M \n max_execution_time=600";
     fastcgi_read_timeout 600s;
     fastcgi_connect_timeout 600s;
 

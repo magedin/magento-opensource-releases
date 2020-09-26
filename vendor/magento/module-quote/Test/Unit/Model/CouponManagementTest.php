@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -51,7 +51,6 @@ class CouponManagementTest extends \PHPUnit_Framework_TestCase
                 'save',
                 'getShippingAddress',
                 'getCouponCode',
-                'getStoreId',
                 '__wakeup'
             ],
             [],
@@ -113,9 +112,6 @@ class CouponManagementTest extends \PHPUnit_Framework_TestCase
         $cartId = 33;
         $couponCode = '153a-ABC';
 
-        $this->storeMock->expects($this->any())->method('getId')->will($this->returnValue(1));
-        $this->quoteMock->expects($this->once())->method('getStoreId')->willReturn($this->returnValue(1));
-
         $this->quoteRepositoryMock->expects($this->once())
             ->method('getActive')->with($cartId)->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())->method('getItemsCount')->will($this->returnValue(12));
@@ -143,9 +139,6 @@ class CouponManagementTest extends \PHPUnit_Framework_TestCase
         $cartId = 33;
         $couponCode = '153a-ABC';
 
-        $this->storeMock->expects($this->any())->method('getId')->will($this->returnValue(1));
-        $this->quoteMock->expects($this->once())->method('getStoreId')->willReturn($this->returnValue(1));
-
         $this->quoteRepositoryMock->expects($this->once())
             ->method('getActive')->with($cartId)->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())->method('getItemsCount')->will($this->returnValue(12));
@@ -164,9 +157,6 @@ class CouponManagementTest extends \PHPUnit_Framework_TestCase
     {
         $cartId = 33;
         $couponCode = '153a-ABC';
-
-        $this->storeMock->expects($this->any())->method('getId')->will($this->returnValue(1));
-        $this->quoteMock->expects($this->once())->method('getStoreId')->willReturn($this->returnValue(1));
 
         $this->quoteRepositoryMock->expects($this->once())
             ->method('getActive')->with($cartId)->will($this->returnValue($this->quoteMock));

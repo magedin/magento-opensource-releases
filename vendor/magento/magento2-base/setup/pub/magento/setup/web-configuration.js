@@ -1,13 +1,11 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 'use strict';
 angular.module('web-configuration', ['ngStorage'])
-    .controller(
-        'webConfigurationController',
-        ['$scope', '$state', '$localStorage', '$http', function ($scope, $state, $localStorage, $http) {
+    .controller('webConfigurationController', ['$scope', '$state', '$localStorage', function ($scope, $state, $localStorage) {
         $scope.config = {
             address: {
                 base_url: '',
@@ -121,30 +119,4 @@ angular.module('web-configuration', ['ngStorage'])
                 $scope.webconfig.submitted = false;
             }
         });
-
-        // Validate URL
-        $scope.validateUrl = function () {
-            if (!$scope.webconfig.submitted) {
-                $http.post('index.php/url-check', $scope.config)
-                    .then(function successCallback(resp) {
-                        $scope.validateUrl.result = resp.data;
-
-                        if ($scope.validateUrl.result.successUrl && $scope.validateUrl.result.successSecureUrl) {
-                            $scope.nextState();
-                        }
-
-                        if (!$scope.validateUrl.result.successUrl) {
-                            $scope.webconfig.submitted = true;
-                            $scope.webconfig.base_url.$setValidity('url', false);
-                        }
-
-                        if (!$scope.validateUrl.result.successSecureUrl) {
-                            $scope.webconfig.submitted = true;
-                            $scope.webconfig.https.$setValidity('url', false);
-                        }
-                    }, function errorCallback(resp) {
-                        $scope.validateUrl.failed = resp.data;
-                    });
-            }
-        };
     }]);

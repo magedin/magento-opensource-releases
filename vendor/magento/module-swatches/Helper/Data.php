@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Helper;
@@ -8,19 +8,16 @@ namespace Magento\Swatches\Helper;
 use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Framework\App\Helper\Context;
 use Magento\Catalog\Api\Data\ProductInterface as Product;
 use Magento\Catalog\Model\Product as ModelProduct;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Unserialize\SecureUnserializer;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Swatches\Model\ResourceModel\Swatch\CollectionFactory as SwatchCollectionFactory;
 use Magento\Swatches\Model\Swatch;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
+use Magento\Framework\Exception\InputException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\Framework\App\ObjectManager;
-use Magento\Swatches\Model\SwatchAttributesProvider;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Helper Data
@@ -67,23 +64,6 @@ class Data
     protected $imageHelper;
 
     /**
-     * @var SwatchAttributesProvider
-     */
-    private $swatchAttributesProvider;
-
-    /**
-     * @var SecureUnserializer
-     */
-    private $secureUnserializer;
-
-    /**
-     * Describes a logger instance.
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Data key which should populated to Attribute entity from "additional_data" field
      *
      * @var array
@@ -95,55 +75,36 @@ class Data
     ];
 
     /**
-     * Data constructor.
      * @param CollectionFactory $productCollectionFactory
      * @param ProductRepositoryInterface $productRepository
      * @param StoreManagerInterface $storeManager
      * @param SwatchCollectionFactory $swatchCollectionFactory
      * @param Image $imageHelper
-     * @param SwatchAttributesProvider|null $swatchAttributesProvider
-     * @param SecureUnserializer|null $secureUnserializer
-     * @param LoggerInterface $logger
      */
     public function __construct(
         CollectionFactory $productCollectionFactory,
         ProductRepositoryInterface $productRepository,
         StoreManagerInterface $storeManager,
         SwatchCollectionFactory $swatchCollectionFactory,
-        Image $imageHelper,
-        SwatchAttributesProvider $swatchAttributesProvider = null,
-        SecureUnserializer $secureUnserializer = null,
-        LoggerInterface $logger = null
+        Image $imageHelper
     ) {
         $this->productCollectionFactory   = $productCollectionFactory;
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
         $this->swatchCollectionFactory = $swatchCollectionFactory;
         $this->imageHelper = $imageHelper;
-        $this->swatchAttributesProvider = $swatchAttributesProvider
-            ?: ObjectManager::getInstance()->get(SwatchAttributesProvider::class);
-        $this->secureUnserializer = $secureUnserializer
-            ?: ObjectManager::getInstance()->get(SecureUnserializer::class);
-        $this->logger = $logger ?: ObjectManager::getInstance()->get(LoggerInterface::class);
     }
 
     /**
      * @param Attribute $attribute
      * @return $this
-     * @throws LocalizedException
      */
     public function assembleAdditionalDataEavAttribute(Attribute $attribute)
     {
         $initialAdditionalData = [];
         $additionalData = (string) $attribute->getData('additional_data');
         if (!empty($additionalData)) {
-            try {
-                $additionalData = $this->secureUnserializer->unserialize($additionalData);
-            } catch (\Exception $e) {
-                $this->logger->critical("Additional data for EAV attribute cannot be assembled\n" . $e->getMessage());
-                throw new LocalizedException(__('Swatch cannot be saved'));
-            }
-
+            $additionalData = unserialize($additionalData);
             if (is_array($additionalData)) {
                 $initialAdditionalData = $additionalData;
             }
@@ -164,51 +125,18 @@ class Data
     /**
      * @param Attribute $attribute
      * @return $this
-     * @throws LocalizedException
      */
     private function populateAdditionalDataEavAttribute(Attribute $attribute)
     {
-        $additionalData = (string) $attribute->getData('additional_data');
-        if (!empty($additionalData)) {
-            try {
-                $additionalData = $this->secureUnserializer->unserialize($additionalData);
-            } catch (\Exception $e) {
-                $this->logger->critical("Additional data for EAV attribute cannot be populated\n" . $e->getMessage());
-                throw new LocalizedException(__('Swatch cannot be saved'));
-            }
-
-            if (is_array($additionalData)) {
-                foreach ($this->eavAttributeAdditionalDataKeys as $key) {
-                    if (isset($additionalData[$key])) {
-                        $attribute->setData($key, $additionalData[$key]);
-                    }
+        $additionalData = unserialize($attribute->getData('additional_data'));
+        if (isset($additionalData) && is_array($additionalData)) {
+            foreach ($this->eavAttributeAdditionalDataKeys as $key) {
+                if (isset($additionalData[$key])) {
+                    $attribute->setData($key, $additionalData[$key]);
                 }
             }
         }
-        
         return $this;
-    }
-
-    /**
-     * Check is media attribute available
-     *
-     * @param ModelProduct $product
-     * @param string $attributeCode
-     * @return bool
-     */
-    private function isMediaAvailable(ModelProduct $product, $attributeCode)
-    {
-        $isAvailable = false;
-
-        $mediaGallery = $product->getMediaGalleryEntries();
-        foreach ($mediaGallery as $mediaEntry) {
-            if (in_array($attributeCode, $mediaEntry->getTypes(), true)) {
-                $isAvailable = !$mediaEntry->isDisabled();
-                break;
-            }
-        }
-
-        return $isAvailable;
     }
 
     /**
@@ -223,9 +151,8 @@ class Data
             $usedProducts = $configurableProduct->getTypeInstance()->getUsedProducts($configurableProduct);
 
             foreach ($usedProducts as $simpleProduct) {
-                if (
-                    !array_diff_assoc($requiredAttributes, $simpleProduct->getData())
-                    && $this->isMediaAvailable($simpleProduct, $attributeCode)
+                if (!in_array($simpleProduct->getData($attributeCode), [null, self::EMPTY_IMAGE_VALUE], true)
+                    && !array_diff_assoc($requiredAttributes, $simpleProduct->getData())
                 ) {
                     return $simpleProduct;
                 }
@@ -336,32 +263,48 @@ class Data
      */
     public function getProductMediaGallery(ModelProduct $product)
     {
-        $baseImage = null;
-        $gallery = [];
-
-        $mediaGallery = $product->getMediaGalleryEntries();
-        foreach ($mediaGallery as $mediaEntry) {
-            if ($mediaEntry->isDisabled()) {
-                continue;
+        if (!in_array($product->getData('image'), [null, self::EMPTY_IMAGE_VALUE], true)) {
+            $baseImage = $product->getData('image');
+        } else {
+            $productMediaAttributes = array_filter($product->getMediaAttributeValues(), function ($value) {
+                return $value !== self::EMPTY_IMAGE_VALUE && $value !== null;
+            });
+            foreach ($productMediaAttributes as $attributeCode => $value) {
+                if ($attributeCode !== 'swatch_image') {
+                    $baseImage = (string)$value;
+                    break;
+                }
             }
-
-            if (in_array('image', $mediaEntry->getTypes(), true)) {
-                $baseImage = $mediaEntry->getFile();
-            } elseif (!$baseImage) {
-                $baseImage = $mediaEntry->getFile();
-            }
-
-            $gallery[$mediaEntry->getId()] = $this->getAllSizeImages($product, $mediaEntry->getFile());
         }
 
-        if (!$baseImage) {
+        if (empty($baseImage)) {
             return [];
         }
 
         $resultGallery = $this->getAllSizeImages($product, $baseImage);
-        $resultGallery['gallery'] = $gallery;
+        $resultGallery['gallery'] = $this->getGalleryImages($product);
 
         return $resultGallery;
+    }
+
+    /**
+     * @param ModelProduct $product
+     * @return array
+     */
+    private function getGalleryImages(ModelProduct $product)
+    {
+        //TODO: remove after fix MAGETWO-48040
+        $product = $this->productRepository->getById($product->getId());
+
+        $result = [];
+        $mediaGallery = $product->getMediaGalleryImages();
+        foreach ($mediaGallery as $media) {
+            $result[$media->getData('value_id')] = $this->getAllSizeImages(
+                $product,
+                $media->getData('file')
+            );
+        }
+        return $result;
     }
 
     /**
@@ -391,18 +334,17 @@ class Data
      *
      * @param Product $product
      * @return \Magento\Catalog\Model\ResourceModel\Eav\Attribute[]
-     * @throws LocalizedException
      */
     private function getSwatchAttributes(Product $product)
     {
-        $attributes = $this->swatchAttributesProvider->provide($product) ?: [];
+        $attributes = $this->getAttributesFromConfigurable($product);
+        $result = [];
         foreach ($attributes as $attribute) {
-            if (!$attribute->hasData(Swatch::SWATCH_INPUT_TYPE_KEY)) {
-                $this->populateAdditionalDataEavAttribute($attribute);
+            if ($this->isSwatchAttribute($attribute)) {
+                $result[] = $attribute;
             }
         }
-
-        return $attributes;
+        return $result;
     }
 
     /**
@@ -507,8 +449,7 @@ class Data
      */
     public function isProductHasSwatch(Product $product)
     {
-        $swatchAttributes = $this->getSwatchAttributes($product);
-        return count($swatchAttributes) > 0;
+        return sizeof($this->getSwatchAttributes($product));
     }
 
     /**
@@ -516,7 +457,6 @@ class Data
      *
      * @param Attribute $attribute
      * @return bool
-     * @throws LocalizedException
      */
     public function isSwatchAttribute(Attribute $attribute)
     {
@@ -529,7 +469,6 @@ class Data
      *
      * @param Attribute $attribute
      * @return bool
-     * @throws LocalizedException
      */
     public function isVisualSwatch(Attribute $attribute)
     {
@@ -544,14 +483,12 @@ class Data
      *
      * @param Attribute $attribute
      * @return bool
-     * @throws LocalizedException
      */
     public function isTextSwatch(Attribute $attribute)
     {
         if (!$attribute->hasData(Swatch::SWATCH_INPUT_TYPE_KEY)) {
             $this->populateAdditionalDataEavAttribute($attribute);
         }
-        
         return $attribute->getData(Swatch::SWATCH_INPUT_TYPE_KEY) == Swatch::SWATCH_INPUT_TYPE_TEXT;
     }
 }

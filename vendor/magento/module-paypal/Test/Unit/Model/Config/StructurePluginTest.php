@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Paypal\Test\Unit\Model\Config;
 
-use Magento\Paypal\Model\Config\Structure\PaymentSectionModifier;
 use Magento\Paypal\Model\Config\StructurePlugin;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
@@ -21,26 +20,15 @@ class StructurePluginTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Paypal\Helper\Backend|\PHPUnit_Framework_MockObject_MockObject */
     protected $_helper;
 
-    /**
-     * @var PaymentSectionModifier
-     */
-    private $paymentSectionModifier;
-
     protected function setUp()
     {
         $this->_scopeDefiner = $this->getMock('Magento\Config\Model\Config\ScopeDefiner', [], [], '', false);
         $this->_helper = $this->getMock('Magento\Paypal\Helper\Backend', [], [], '', false);
 
-        $this->paymentSectionModifier = $this->getMockBuilder(PaymentSectionModifier::class)->getMock();
-
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->_model = $objectManagerHelper->getObject(
             'Magento\Paypal\Model\Config\StructurePlugin',
-            [
-                'scopeDefiner' => $this->_scopeDefiner,
-                'helper' => $this->_helper,
-                'paymentSectionModifier' => $this->paymentSectionModifier,
-            ]
+            ['scopeDefiner' => $this->_scopeDefiner, 'helper' => $this->_helper]
         );
     }
 
@@ -75,9 +63,6 @@ class StructurePluginTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function aroundGetElementByPathPartsNonPaymentDataProvider()
     {
         return [
@@ -121,9 +106,6 @@ class StructurePluginTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function aroundGetElementByPathPartsDataProvider()
     {
         return [
@@ -154,41 +136,21 @@ class StructurePluginTest extends \PHPUnit_Framework_TestCase
         $getElementByPathParts = function ($pathParts) use ($self, $expectedPathParts, $result) {
             $self->assertEquals($expectedPathParts, $pathParts);
             $scope = 'any scope';
-            $sectionMap = [
-                'account' => [],
-                'recommended_solutions' => [],
-                'other_paypal_payment_solutions' => [],
-                'other_payment_methods' => []
-            ];
-            $self->_scopeDefiner->expects($self->any())
+            $self->_scopeDefiner->expects($self->once())
                 ->method('getScope')
                 ->will($self->returnValue($scope));
-            $this->paymentSectionModifier->method('modify')->willReturn($sectionMap);
-            $result->expects($self->at(0))
+            $result->expects($self->once())
                 ->method('getData')
-                ->will($self->returnValue(['children' => []]));
-            $result->expects($self->at(2))
-                ->method('getData')
-                ->will($self->returnValue(['children' => $sectionMap]));
-            $result->expects($self->at(1))
+                ->will($self->returnValue([]));
+            $result->expects($self->once())
                 ->method('setData')
-                ->with(['children' => $sectionMap], $scope)
-                ->will($self->returnSelf());
-            $result->expects($self->at(3))
-                ->method('setData')
-                ->with(['children' => $sectionMap,
-                    'showInDefault' => true,
-                    'showInWebsite' => true,
-                    'showInStore' => true], $scope)
+                ->with(['showInDefault' => true, 'showInWebsite' => true, 'showInStore' => true], $scope)
                 ->will($self->returnSelf());
             return $result;
         };
         $this->_aroundGetElementByPathPartsAssertResult($result, $getElementByPathParts, $pathParts);
     }
 
-    /**
-     * @return array
-     */
     public function aroundGetSectionByPathPartsDataProvider()
     {
         return [

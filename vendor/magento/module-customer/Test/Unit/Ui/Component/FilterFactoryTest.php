@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Ui\Component;
@@ -72,7 +72,6 @@ class FilterFactoryTest extends \PHPUnit_Framework_TestCase
                 'config' => [
                     'dataScope' => $filterName,
                     'label' => __('Label'),
-                    '__disableTmpl' => 'true',
                     'options' => [['value' => 'Value', 'label' => 'Label']],
                     'caption' => __('Select...'),
                 ],

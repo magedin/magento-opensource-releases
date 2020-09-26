@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Email\Block\Adminhtml\Template;
@@ -41,7 +41,7 @@ class Edit extends Widget implements ContainerInterface
      *
      * @var string
      */
-    protected $_template = 'Magento_Email::template/edit.phtml';
+    protected $_template = 'template/edit.phtml';
 
     /**
      * @var \Magento\Framework\Json\EncoderInterface

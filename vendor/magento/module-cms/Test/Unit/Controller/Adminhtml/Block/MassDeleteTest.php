@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Block;
@@ -24,49 +24,38 @@ class MassDeleteTest extends AbstractMassActionTest
      */
     protected $blockCollectionMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->collectionFactoryMock = $this->getMockBuilder(
-            \Magento\Cms\Model\ResourceModel\Block\CollectionFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
+        $this->collectionFactoryMock = $this->getMock(
+            'Magento\Cms\Model\ResourceModel\Block\CollectionFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
 
-        $this->blockCollectionMock = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Block\Collection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
+        $this->blockCollectionMock =
+            $this->getMock('Magento\Cms\Model\ResourceModel\Block\Collection', [], [], '', false);
 
         $this->massDeleteController = $this->objectManager->getObject(
-            \Magento\Cms\Controller\Adminhtml\Block\MassDelete::class,
+            'Magento\Cms\Controller\Adminhtml\Block\MassDelete',
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
-                'collectionFactory' => $this->collectionFactoryMock,
+                'collectionFactory' => $this->collectionFactoryMock
             ]
         );
     }
 
-    /**
-     * @return void
-     */
     public function testMassDeleteAction()
     {
         $deletedBlocksCount = 2;
 
         $collection = [
             $this->getBlockMock(),
-            $this->getBlockMock(),
+            $this->getBlockMock()
         ];
 
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($this->blockCollectionMock);
@@ -82,7 +71,7 @@ class MassDeleteTest extends AbstractMassActionTest
             ->willReturn(new \ArrayIterator($collection));
 
         $this->messageManagerMock->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('A total of %1 record(s) have been deleted.', $deletedBlocksCount));
         $this->messageManagerMock->expects($this->never())->method('addError');
 
@@ -101,10 +90,7 @@ class MassDeleteTest extends AbstractMassActionTest
      */
     protected function getBlockMock()
     {
-        $blockMock = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Block\Collection::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['delete'])
-            ->getMock();
+        $blockMock = $this->getMock('Magento\Cms\Model\ResourceModel\Block\Collection', ['delete'], [], '', false);
         $blockMock->expects($this->once())->method('delete')->willReturn(true);
 
         return $blockMock;

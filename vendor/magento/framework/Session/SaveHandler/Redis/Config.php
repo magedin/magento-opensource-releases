@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Session\SaveHandler\Redis;
@@ -116,11 +116,6 @@ class Config implements \Cm\RedisSession\Handler\ConfigInterface
     const SESSION_MAX_LIFETIME = 31536000;
 
     /**
-     * Try to break lock for at most this many seconds
-     */
-    const DEFAULT_FAIL_AFTER = 15;
-
-    /**
      * Deployment config
      *
      * @var DeploymentConfig $deploymentConfig
@@ -131,11 +126,6 @@ class Config implements \Cm\RedisSession\Handler\ConfigInterface
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
-    /**
-     * @var State
-     */
-    private $appState;
 
     /**
      * @param DeploymentConfig $deploymentConfig
@@ -297,14 +287,5 @@ class Config implements \Cm\RedisSession\Handler\ConfigInterface
             return (int)$this->scopeConfig->getValue(self::XML_PATH_ADMIN_SESSION_LIFETIME);
         }
         return (int)$this->scopeConfig->getValue(self::XML_PATH_COOKIE_LIFETIME, StoreScopeInterface::SCOPE_STORE);
-    }
-
-    /**
-     * Get number of seconds to wait before completely failing to break the lock
-     * @return int
-     */
-    public function getFailAfter()
-    {
-        return self::DEFAULT_FAIL_AFTER;
     }
 }

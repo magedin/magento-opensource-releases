@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Cache\Test\Unit\Backend;
@@ -55,9 +55,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getIdsDataProvider()
     {
         return [
@@ -77,9 +74,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($tags, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getTagsDataProvider()
     {
         return ['no tags' => [[]], 'multiple tags' => [['tag1', 'tag2']]];
@@ -108,9 +102,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedIds, $actualIds);
     }
 
-    /**
-     * @return array
-     */
     public function getIdsMatchingTagsDataProvider()
     {
         return [
@@ -189,9 +180,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function getMetadatasDataProvider()
     {
         $time = time();
@@ -259,9 +247,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function loadDataProvider()
     {
         return ['test validity' => [false], 'do not test validity' => [true]];
@@ -347,9 +332,6 @@ class MongoDbTest extends \PHPUnit_Framework_TestCase
         $this->_model->clean($mode, $tags);
     }
 
-    /**
-     * @return array
-     */
     public function cleanDataProvider()
     {
         return [

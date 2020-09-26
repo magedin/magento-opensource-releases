@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -126,14 +126,6 @@
             <field name="cartItem" xsi:type="array">
                 <item name="price" xsi:type="string">9</item>
                 <item name="subtotal" xsi:type="string">9</item>
-            </field>
-        </dataset>
-
-        <dataset name="simple_order_tier_price_5">
-            <field name="qty" xsi:type="string">5</field>
-            <field name="cartItem" xsi:type="array">
-                <item name="price" xsi:type="string">40</item>
-                <item name="subtotal" xsi:type="string">40</item>
             </field>
         </dataset>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -44,13 +44,6 @@ class History extends Block
     protected $viewButton = '.action.view';
 
     /**
-     * 'Reorder' button css selector.
-     *
-     * @var string
-     */
-    protected $reorderButton = '.action.order';
-
-    /**
      * Order history form selector.
      *
      * @var string
@@ -66,7 +59,6 @@ class History extends Block
     public function isOrderVisible($order)
     {
         $this->waitFormToLoad();
-        
         return $this->_rootElement->find(
             sprintf($this->customerOrders, $order['id'], $order['status']),
             Locator::SELECTOR_XPATH
@@ -82,7 +74,6 @@ class History extends Block
     public function getOrderTotalById($id)
     {
         $this->waitFormToLoad();
-        
         return $this->escapeCurrency($this->searchOrderById($id)->find($this->total)->getText());
     }
 
@@ -110,19 +101,6 @@ class History extends Block
     }
 
     /**
-     * Check if 'Reorder' button is visible for customer on order page.
-     *
-     * @param string $id
-     * @return boolean
-     */
-    public function isReorderButtonPresentByOrderId($id)
-    {
-        $this->waitFormToLoad();
-        
-        return $this->searchOrderById($id)->find($this->reorderButton)->isVisible();
-    }
-
-    /**
      * Method that escapes currency symbols.
      *
      * @param string $price
@@ -131,7 +109,6 @@ class History extends Block
     protected function escapeCurrency($price)
     {
         preg_match("/^\\D*\\s*([\\d,\\.]+)\\s*\\D*$/", $price, $matches);
-        
         return (isset($matches[1])) ? $matches[1] : null;
     }
 

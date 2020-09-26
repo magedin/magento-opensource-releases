@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -37,7 +37,6 @@
     <preference for="Magento\Framework\Api\Search\SearchCriteriaInterface" type="Magento\Framework\Api\Search\SearchCriteria"/>
     <preference for="Magento\Framework\Api\Search\DocumentInterface" type="Magento\Framework\Api\Search\Document" />
     <preference for="Magento\Framework\Api\Search\AggregationInterface" type="Magento\Framework\Search\Response\Aggregation" />
-    <preference for="Magento\Framework\App\RequestSafetyInterface" type="Magento\Framework\App\Request\Http" />
     <type name="Magento\Store\Model\Store">
         <arguments>
             <argument name="currencyInstalled" xsi:type="string">system/currency/installed</argument>
@@ -1193,7 +1192,6 @@
         <arguments>
             <argument name="cacheList" xsi:type="array">
                 <item name="block_html" xsi:type="const">Magento\Framework\App\Cache\Type\Block::TYPE_IDENTIFIER</item>
-                <item name="collections" xsi:type="const">Magento\Framework\App\Cache\Type\Collection::TYPE_IDENTIFIER</item>
             </argument>
         </arguments>
     </type>
@@ -1205,26 +1203,6 @@
             <argument name="mappers" xsi:type="array">
                 <item name="mapper" xsi:type="object">Magento\Framework\EntityManager\Mapper</item>
                 <item name="customAttributesMapper" xsi:type="object">Magento\Framework\EntityManager\CustomAttributesMapper</item>
-            </argument>
-        </arguments>
-    </type>
-    <type name="Magento\Framework\DB\TemporaryTableService">
-        <arguments>
-            <argument name="allowedIndexMethods" xsi:type="array">
-                <item name="HASH" xsi:type="string">HASH</item>
-                <item name="BTREE" xsi:type="string">BTREE</item>
-            </argument>
-            <argument name="allowedEngines" xsi:type="array">
-                <item name="INNODB" xsi:type="string">INNODB</item>
-                <item name="MEMORY" xsi:type="string">MEMORY</item>
-                <item name="MYISAM" xsi:type="string">MYISAM</item>
-            </argument>
-        </arguments>
-    </type>
-    <type name="Magento\Framework\Mview\View\Subscription">
-        <arguments>
-            <argument name="ignoredUpdateColumns" xsi:type="array">
-                <item name="updated_at" xsi:type="string">updated_at</item>
             </argument>
         </arguments>
     </type>

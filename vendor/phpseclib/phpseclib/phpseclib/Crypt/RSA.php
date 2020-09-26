@@ -245,7 +245,7 @@ class RSA
     /**
      * Precomputed Zero
      *
-     * @var \phpseclib\Math\BigInteger
+     * @var array
      * @access private
      */
     var $zero;
@@ -253,7 +253,7 @@ class RSA
     /**
      * Precomputed One
      *
-     * @var \phpseclib\Math\BigInteger
+     * @var array
      * @access private
      */
     var $one;
@@ -468,27 +468,23 @@ class RSA
                     break;
                 case extension_loaded('openssl') && file_exists($this->configFile):
                     // some versions of XAMPP have mismatched versions of OpenSSL which causes it not to work
+                    ob_start();
+                    @phpinfo();
+                    $content = ob_get_contents();
+                    ob_end_clean();
+
+                    preg_match_all('#OpenSSL (Header|Library) Version(.*)#im', $content, $matches);
+
                     $versions = array();
+                    if (!empty($matches[1])) {
+                        for ($i = 0; $i < count($matches[1]); $i++) {
+                            $fullVersion = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
 
-                    // avoid generating errors (even with suppression) when phpinfo() is disabled (common in production systems)
-                    if (strpos(ini_get('disable_functions'), 'phpinfo') === false) {
-                        ob_start();
-                        @phpinfo();
-                        $content = ob_get_contents();
-                        ob_end_clean();
-
-                        preg_match_all('#OpenSSL (Header|Library) Version(.*)#im', $content, $matches);
-
-                        if (!empty($matches[1])) {
-                            for ($i = 0; $i < count($matches[1]); $i++) {
-                                $fullVersion = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
-
-                                // Remove letter part in OpenSSL version
-                                if (!preg_match('/(\d+\.\d+\.\d+)/i', $fullVersion, $m)) {
-                                    $versions[$matches[1][$i]] = $fullVersion;
-                                } else {
-                                    $versions[$matches[1][$i]] = $m[0];
-                                }
+                            // Remove letter part in OpenSSL version
+                            if (!preg_match('/(\d+\.\d+\.\d+)/i', $fullVersion, $m)) {
+                                $versions[$matches[1][$i]] = $fullVersion;
+                            } else {
+                                $versions[$matches[1][$i]] = $m[0];
                             }
                         }
                     }
@@ -498,7 +494,6 @@ class RSA
                         case !isset($versions['Header']):
                         case !isset($versions['Library']):
                         case $versions['Header'] == $versions['Library']:
-                        case version_compare($versions['Header'], '1.0.0') >= 0 && version_compare($versions['Library'], '1.0.0') >= 0:
                             define('CRYPT_RSA_MODE', self::MODE_OPENSSL);
                             break;
                         default:
@@ -1020,9 +1015,9 @@ class RSA
      * @access private
      * @see self::_convertPublicKey()
      * @see self::_convertPrivateKey()
-     * @param string|array $key
+     * @param string $key
      * @param int $type
-     * @return array|bool
+     * @return array
      */
     function _parseKey($key, $type)
     {
@@ -1333,13 +1328,8 @@ class RSA
                 xml_set_character_data_handler($xml, '_data_handler');
                 // add <xml></xml> to account for "dangling" tags like <BitStrength>...</BitStrength> that are sometimes added
                 if (!xml_parse($xml, '<xml>' . $key . '</xml>')) {
-                    xml_parser_free($xml);
-                    unset($xml);
                     return false;
                 }
-
-                xml_parser_free($xml);
-                unset($xml);
 
                 return isset($this->components['modulus']) && isset($this->components['publicExponent']) ? $this->components : false;
             // from PuTTY's SSHPUBK.C
@@ -1510,9 +1500,8 @@ class RSA
      * Returns true on success and false on failure (ie. an incorrect password was provided or the key was malformed)
      *
      * @access public
-     * @param string|RSA|array $key
-     * @param bool|int $type optional
-     * @return bool
+     * @param string $key
+     * @param int $type optional
      */
     function loadKey($key, $type = false)
     {
@@ -1582,15 +1571,6 @@ class RSA
         }
 
         if ($components === false) {
-            $this->comment = null;
-            $this->modulus = null;
-            $this->k = null;
-            $this->exponent = null;
-            $this->primes = null;
-            $this->exponents = null;
-            $this->coefficients = null;
-            $this->publicExponent = null;
-
             return false;
         }
 
@@ -2105,14 +2085,8 @@ class RSA
      */
     function _exponentiate($x)
     {
-        switch (true) {
-            case empty($this->primes):
-            case $this->primes[1]->equals($this->zero):
-            case empty($this->coefficients):
-            case $this->coefficients[2]->equals($this->zero):
-            case empty($this->exponents):
-            case $this->exponents[1]->equals($this->zero):
-                return $x->modPow($this->exponent, $this->modulus);
+        if (empty($this->primes) || empty($this->coefficients) || empty($this->exponents)) {
+            return $x->modPow($this->exponent, $this->modulus);
         }
 
         $num_primes = count($this->primes);
@@ -2217,21 +2191,16 @@ class RSA
      */
     function _equals($x, $y)
     {
-        if (function_exists('hash_equals')) {
-            return hash_equals($x, $y);
-        }
-
         if (strlen($x) != strlen($y)) {
             return false;
         }
 
-        $result = "\0";
-        $x^= $y;
+        $result = 0;
         for ($i = 0; $i < strlen($x); $i++) {
-            $result|= $x[$i];
+            $result |= ord($x[$i]) ^ ord($y[$i]);
         }
 
-        return $result === "\0";
+        return $result == 0;
     }
 
     /**
@@ -2438,26 +2407,19 @@ class RSA
         $db = $maskedDB ^ $dbMask;
         $lHash2 = substr($db, 0, $this->hLen);
         $m = substr($db, $this->hLen);
-        $hashesMatch = $this->_equals($lHash, $lHash2);
-        $leadingZeros = 1;
-        $patternMatch = 0;
-        $offset = 0;
-        for ($i = 0; $i < strlen($m); $i++) {
-            $patternMatch|= $leadingZeros & ($m[$i] === "\1");
-            $leadingZeros&= $m[$i] === "\0";
-            $offset+= $patternMatch ? 0 : 1;
+        if ($lHash != $lHash2) {
+            user_error('Decryption error');
+            return false;
         }
-
-        // we do & instead of && to avoid https://en.wikipedia.org/wiki/Short-circuit_evaluation
-        // to protect against timing attacks
-        if (!$hashesMatch & !$patternMatch) {
+        $m = ltrim($m, chr(0));
+        if (ord($m[0]) != 1) {
             user_error('Decryption error');
             return false;
         }
 
         // Output the message M
 
-        return substr($m, $offset + 1);
+        return substr($m, 1);
     }
 
     /**
@@ -2599,7 +2561,7 @@ class RSA
         // be output.
 
         $emLen = ($emBits + 1) >> 3; // ie. ceil($emBits / 8)
-        $sLen = $this->sLen !== null ? $this->sLen : $this->hLen;
+        $sLen = $this->sLen ? $this->sLen : $this->hLen;
 
         $mHash = $this->hash->hash($m);
         if ($emLen < $this->hLen + $sLen + 2) {
@@ -2637,7 +2599,7 @@ class RSA
         // be output.
 
         $emLen = ($emBits + 1) >> 3; // ie. ceil($emBits / 8);
-        $sLen = $this->sLen !== null ? $this->sLen : $this->hLen;
+        $sLen = $this->sLen ? $this->sLen : $this->hLen;
 
         $mHash = $this->hash->hash($m);
         if ($emLen < $this->hLen + $sLen + 2) {

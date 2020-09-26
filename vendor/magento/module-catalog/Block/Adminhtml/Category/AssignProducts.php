@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,7 +13,7 @@ class AssignProducts extends \Magento\Backend\Block\Template
      *
      * @var string
      */
-    protected $_template = 'Magento_Catalog::catalog/category/edit/assign_products.phtml';
+    protected $_template = 'catalog/category/edit/assign_products.phtml';
 
     /**
      * @var \Magento\Catalog\Block\Adminhtml\Category\Tab\Product
@@ -87,7 +87,6 @@ class AssignProducts extends \Magento\Backend\Block\Template
         }
         return '{}';
     }
-
     /**
      * Retrieve current category instance
      *

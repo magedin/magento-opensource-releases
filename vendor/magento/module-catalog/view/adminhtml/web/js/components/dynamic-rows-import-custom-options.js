@@ -1,82 +1,61 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 define([
-    'Magento_Ui/js/dynamic-rows/dynamic-rows-grid',
-    'underscore',
+    'Magento_Ui/js/dynamic-rows/dynamic-rows',
     'mageUtils'
-], function (DynamicRows, _, utils) {
+], function (DynamicRows, utils) {
     'use strict';
 
     return DynamicRows.extend({
         defaults: {
-            mappingSettings: {
-                enabled: false,
-                distinct: false
-            },
-            update: true,
-            map: {
-                'option_id': 'option_id'
-            },
-            identificationProperty: 'option_id',
-            identificationDRProperty: 'option_id'
+            dataProvider: '',
+            insertData: [],
+            listens: {
+                'insertData': 'processingInsertData'
+            }
         },
 
         /**
-         * Cleans options' values from IDs because otherwise wrong IDs will be assigned.
+         * Calls 'initObservable' of parent
          *
-         * @param {Array} values
-         * @private
+         * @returns {Object} Chainable.
          */
-        __cleanOptionValuesUp: function (values) {
-            values.each(function (value) {
-                delete value['option_id'];
-                delete value['option_type_id'];
-            });
+        initObservable: function () {
+            this._super()
+                .observe([
+                    'insertData'
+                ]);
+
+            return this;
         },
 
-        /** @inheritdoc */
+        /**
+         * Parsed data
+         *
+         * @param {Array} data - array with data
+         * about selected records
+         */
         processingInsertData: function (data) {
-            var options = [],
-                currentOption,
-                self = this;
-
-            if (!data) {
-                return;
+            if (!data.length) {
+                return false;
             }
-            data.each(function (item) {
-                if (!item.options) {
-                    return;
-                }
-                item.options.each(function (option) {
-                    currentOption = utils.copy(option);
 
-                    if (currentOption.hasOwnProperty('sort_order')) {
-                        delete currentOption['sort_order'];
+            data.each(function (options) {
+                options.options.each(function (option) {
+                    var path = this.dataScope + '.' + this.index + '.' + this.recordIterator,
+                        curOption = utils.copy(option);
+
+                    if (curOption.hasOwnProperty('sort_order')) {
+                        delete curOption['sort_order'];
                     }
 
-                    if (currentOption.hasOwnProperty('option_id')) {
-                        delete currentOption['option_id'];
-                    }
-
-                    if (currentOption.values.length > 0) {
-                        self.__cleanOptionValuesUp(currentOption.values);
-                    }
-                    options.push(currentOption);
-                });
-            });
-
-            if (!options.length) {
-                return;
-            }
-            this.cacheGridData = options;
-            options.each(function (opt) {
-                this.mappingValue(opt);
+                    this.source.set(path, curOption);
+                    this.addChild(curOption, false);
+                }, this);
             }, this);
-
-            this.insertData([]);
         },
 
         /**
@@ -84,25 +63,6 @@ define([
          */
         clearDataProvider: function () {
             this.source.set(this.dataProvider, []);
-        },
-
-        /** @inheritdoc */
-        processingAddChild: function (ctx, index, prop) {
-            if (!ctx) {
-                this.showSpinner(true);
-                this.addChild(ctx, index, prop);
-
-                return;
-            }
-
-            this._super(ctx, index, prop);
-        },
-
-        /**
-         * Mutes parent method
-         */
-        updateInsertData: function () {
-            return false;
         }
     });
 });

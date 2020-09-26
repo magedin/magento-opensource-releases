@@ -1,28 +1,13 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\Quote\Test\Unit\Model\QuoteRepository;
 
 use Magento\Quote\Model\QuoteRepository\SaveHandler;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResourceModel;
-use Magento\Quote\Model\Quote\Item\CartItemPersister;
-use Magento\Quote\Model\Quote\Address\BillingAddressPersister;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentPersister;
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address as QuoteAddress;
-use Magento\Quote\Api\Data\CartExtensionInterface;
-use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Magento\Framework\Exception\NoSuchEntityException;
 
-/**
- * SaveHandler test.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class SaveHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -31,201 +16,124 @@ class SaveHandlerTest extends \PHPUnit_Framework_TestCase
     private $saveHandler;
 
     /**
-     * @var ObjectManagerHelper
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $objectManagerHelper;
+    private $cartItemPersister;
 
     /**
-     * @var QuoteResourceModel|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $quoteResourceModelMock;
+    private $billingAddressPersister;
 
     /**
-     * @var CartItemPersister|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $cartItemPersisterMock;
+    private $quoteResourceModel;
 
     /**
-     * @var BillingAddressPersister|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $billingAddressPersisterMock;
+    private $shippingAssignmentPersister;
 
     /**
-     * @var ShippingAssignmentPersister|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $shippingAssignmentPersisterMock;
-
-    /**
-     * @var AddressRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $addressRepositoryMock;
-
-    /**
-     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var QuoteAddress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $itemMock;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAddressMock;
 
     /**
-     * @var CartExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $extensionAttributesMock;
+    private $extensionAttributeMock;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $shippingAssignmentMock;
 
     protected function setUp()
     {
-        $this->quoteResourceModelMock = $this->getMockBuilder(QuoteResourceModel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->cartItemPersisterMock = $this->getMockBuilder(CartItemPersister::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->billingAddressPersisterMock = $this->getMockBuilder(BillingAddressPersister::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->shippingAssignmentPersisterMock = $this->getMockBuilder(ShippingAssignmentPersister::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->addressRepositoryMock = $this->getMockBuilder(AddressRepositoryInterface::class)
-            ->getMockForAbstractClass();
-        $this->quoteMock = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'getItems', 'setLastAddedItem', 'getBillingAddress', 'getExtensionAttributes', 'isVirtual',
-                    'collectTotals'
-                ]
-            )
-            ->getMock();
-        $this->billingAddressMock = $this->getMockBuilder(QuoteAddress::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->extensionAttributesMock = $this->getMockBuilder(CartExtensionInterface::class)
-            ->getMockForAbstractClass();
-
-        $this->quoteMock->expects(static::any())
-            ->method('getBillingAddress')
-            ->willReturn($this->billingAddressMock);
-        $this->quoteMock->expects(static::any())
-            ->method('getExtensionAttributes')
-            ->willReturn($this->extensionAttributesMock);
-
-        $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->saveHandler = $this->objectManagerHelper->getObject(
-            SaveHandler::class,
-            [
-                'quoteResource' => $this->quoteResourceModelMock,
-                'cartItemPersister' => $this->cartItemPersisterMock,
-                'billingAddressPersister' => $this->billingAddressPersisterMock,
-                'shippingAssignmentPersister' => $this->shippingAssignmentPersisterMock,
-                'addressRepository' => $this->addressRepositoryMock
-            ]
+        $this->quoteResourceModel = $this->getMock(\Magento\Quote\Model\ResourceModel\Quote::class, [], [], '', false);
+        $this->cartItemPersister = $this->getMock(
+            \Magento\Quote\Model\Quote\Item\CartItemPersister::class,
+            [],
+            [],
+            '',
+            false
         );
+        $this->billingAddressPersister  = $this->getMock(
+            \Magento\Quote\Model\Quote\Address\BillingAddressPersister::class,
+            [],
+            [],
+            '',
+            false
+        );
+        $this->shippingAssignmentPersister = $this->getMock(
+            \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentPersister::class,
+            [],
+            [],
+            '',
+            false
+        );
+        $methods = [
+            'getItems', 'setLastAddedItem', 'getBillingAddress', 'getIsActive',
+            'getExtensionAttributes', 'isVirtual', 'collectTotals'
+        ];
+        $this->quoteMock = $this->getMock(\Magento\Quote\Model\Quote::class, $methods, [], '', false);
+        $this->itemMock = $this->getMock(\Magento\Quote\Model\Quote\Item::class, [], [], '', false);
+        $this->billingAddressMock = $this->getMock(\Magento\Quote\Model\Quote\Address::class, [], [], '', false);
+        $this->extensionAttributeMock = $this->getMock(\Magento\Quote\Api\Data\CartExtensionInterface::class);
+        $this->shippingAssignmentMock =
+            $this->getMock(
+                \Magento\Quote\Api\Data\CartExtension::class,
+                ['getShippingAssignments', 'setShippingAssignments'],
+                [],
+                '',
+                false
+            );
+        $this->saveHandler = new SaveHandler(
+            $this->quoteResourceModel,
+            $this->cartItemPersister,
+            $this->billingAddressPersister,
+            $this->shippingAssignmentPersister
+        );
+
     }
 
-    /**
-     * Tests save() method for virtual quote.
-     */
     public function testSaveForVirtualQuote()
     {
-        $quoteItemMock = $this->createQuoteItemMock(false);
-
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('getItems')
-            ->willReturn([$quoteItemMock]);
-        $this->cartItemPersisterMock->expects(static::once())
+        $this->quoteMock->expects($this->once())->method('getItems')->willReturn([$this->itemMock]);
+        $this->itemMock->expects($this->once())->method('isDeleted')->willReturn(false);
+        $this->cartItemPersister
+            ->expects($this->once())
             ->method('save')
-            ->with($this->quoteMock, $quoteItemMock)
-            ->willReturn($quoteItemMock);
-        $this->quoteMock->expects(static::once())
-            ->method('setLastAddedItem')
-            ->with($quoteItemMock)
-            ->willReturnSelf();
-        $this->billingAddressMock->expects(static::atLeastOnce())
-            ->method('getCustomerAddressId')
-            ->willReturn(null);
-        $this->billingAddressMock->expects(static::never())
-            ->method('getCustomerAddress');
-        $this->billingAddressPersisterMock->expects(static::once())
+            ->with($this->quoteMock, $this->itemMock)
+            ->willReturn($this->itemMock);
+        $this->quoteMock->expects($this->once())->method('setLastAddedItem')->with($this->itemMock);
+        $this->quoteMock->expects($this->once())->method('getBillingAddress')->willReturn($this->billingAddressMock);
+        $this->billingAddressPersister
+            ->expects($this->once())
             ->method('save')
             ->with($this->quoteMock, $this->billingAddressMock);
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('isVirtual')
-            ->willReturn(true);
-        $this->extensionAttributesMock->expects(static::never())
+        $this->quoteMock
+            ->expects($this->once())
+            ->method('getExtensionAttributes')
+            ->willReturn($this->extensionAttributeMock);
+        $this->extensionAttributeMock
+            ->expects($this->never())
             ->method('getShippingAssignments');
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('collectTotals')
-            ->willReturnSelf();
-        $this->quoteResourceModelMock->expects(static::once())
-            ->method('save')
-            ->with($this->quoteMock)
-            ->willReturnSelf();
-
-        $this->assertSame($this->quoteMock, $this->saveHandler->save($this->quoteMock));
-    }
-
-    /**
-     * Tests save() method with not existing customer address.
-     */
-    public function testSaveWithNotExistingCustomerAddress()
-    {
-        $customerAddressId = 5;
-
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('getItems')
-            ->willReturn([]);
-        $this->quoteMock->expects(static::never())
-            ->method('setLastAddedItem');
-        $this->billingAddressMock->expects(static::atLeastOnce())
-            ->method('getCustomerAddressId')
-            ->willReturn($customerAddressId);
-        $this->addressRepositoryMock->expects(static::once())
-            ->method('getById')
-            ->with($customerAddressId)
-            ->willThrowException(new NoSuchEntityException());
-        $this->billingAddressMock->expects(static::once())
-            ->method('setCustomerAddressId')
-            ->willReturn(null);
-        $this->billingAddressPersisterMock->expects(static::once())
-            ->method('save')
-            ->with($this->quoteMock, $this->billingAddressMock);
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('isVirtual')
-            ->willReturn(true);
-        $this->extensionAttributesMock->expects(static::never())
-            ->method('getShippingAssignments');
-        $this->quoteMock->expects(static::atLeastOnce())
-            ->method('collectTotals')
-            ->willReturnSelf();
-        $this->quoteResourceModelMock->expects(static::once())
-            ->method('save')
-            ->with($this->quoteMock)
-            ->willReturnSelf();
-
-        $this->assertSame($this->quoteMock, $this->saveHandler->save($this->quoteMock));
-    }
-
-    /**
-     * Create quote item mock.
-     *
-     * @param bool $isDeleted
-     *
-     * @return QuoteItem|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function createQuoteItemMock($isDeleted)
-    {
-        $quoteItemMock = $this->getMockBuilder(QuoteItem::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $quoteItemMock->expects(static::any())
-            ->method('isDeleted')
-            ->willReturn($isDeleted);
-
-        return $quoteItemMock;
+        $this->quoteMock->expects($this->once())->method('isVirtual')->willReturn(true);
+        $this->quoteMock->expects($this->once())->method('collectTotals')->willReturn($this->quoteMock);
+        $this->quoteResourceModel->expects($this->once())->method('save')->with($this->quoteMock);
+        $this->assertEquals($this->quoteMock, $this->saveHandler->save($this->quoteMock));
     }
 }

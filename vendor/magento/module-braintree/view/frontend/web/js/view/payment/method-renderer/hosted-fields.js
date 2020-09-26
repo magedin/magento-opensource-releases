@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true*/
@@ -61,7 +61,7 @@ define([
         },
 
         /**
-         * @returns {Boolean}
+         * @returns {Bool}
          */
         isVaultEnabled: function () {
             return this.vaultEnabler.isVaultEnabled();
@@ -144,19 +144,10 @@ define([
         },
 
         /**
-         * Returns state of place order button
-         * @returns {Boolean}
-         */
-        isButtonActive: function () {
-            return this.isActive() && this.isPlaceOrderActionAllowed();
-        },
-
-        /**
-         * Triggers order placing
+         * Trigger order placing
          */
         placeOrderClick: function () {
             if (this.validateCardType()) {
-                this.isPlaceOrderActionAllowed(false);
                 $(this.getSelector('submit')).trigger('click');
             }
         },

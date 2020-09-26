@@ -1,17 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field\Select;
 
 class AllowspecificTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $escaperMock;
-
     /**
      * @var \Magento\Config\Block\System\Config\Form\Field\Select\Allowspecific
      */
@@ -25,17 +20,10 @@ class AllowspecificTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->escaperMock = $this->getMockBuilder(\Magento\Framework\Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->escaperMock->method('escapeHtml')->willReturnArgument(0);
-        $this->_object = $testHelper->getObject(
-            \Magento\Config\Block\System\Config\Form\Field\Select\Allowspecific::class,
-            ['escaper' => $this->escaperMock]
-        );
+        $this->_object = $testHelper->getObject('Magento\Config\Block\System\Config\Form\Field\Select\Allowspecific');
         $this->_object->setData('html_id', 'spec_element');
         $this->_formMock = $this->getMock(
-            \Magento\Framework\Data\Form::class,
+            'Magento\Framework\Data\Form',
             ['getHtmlIdPrefix', 'getHtmlIdSuffix', 'getElement'],
             [],
             '',
@@ -81,7 +69,7 @@ class AllowspecificTest extends \PHPUnit_Framework_TestCase
         $this->_object->setForm($this->_formMock);
 
         $elementMock = $this->getMock(
-            \Magento\Framework\Data\Form\Element\Select::class,
+            'Magento\Framework\Data\Form\Element\Select',
             ['setDisabled'],
             [],
             '',
@@ -106,9 +94,6 @@ class AllowspecificTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($this->_object->getHtml());
     }
 
-    /**
-     * @return array
-     */
     public function getHtmlWhenValueIsEmptyDataProvider()
     {
         return [

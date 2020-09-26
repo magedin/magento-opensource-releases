@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Controller\Ajax;
@@ -73,11 +73,6 @@ class Media extends \Magento\Framework\App\Action\Action
         return $resultJson;
     }
 
-    /**
-     * @param Product $currentConfigurable
-     * @param array $attributes
-     * @return bool|\Magento\Catalog\Api\Data\ProductInterface|null
-     */
     protected function getProductVariationWithMedia(Product $currentConfigurable, array $attributes)
     {
         $product = null;

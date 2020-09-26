@@ -1,13 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Backup\Db;
 
-/**
- * @deprecated Backups should be done using other means.
- */
 interface BackupInterface
 {
     /**

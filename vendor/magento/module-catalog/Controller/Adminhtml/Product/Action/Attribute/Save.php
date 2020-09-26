@@ -1,13 +1,12 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\Exception\NotFoundException;
 
 /**
  * Class Save
@@ -82,17 +81,12 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribut
      * Update product attributes
      *
      * @return \Magento\Backend\Model\View\Result\Redirect
-     * @throws NotFoundException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found'));
-        }
-
         if (!$this->_validateProducts()) {
             return $this->resultRedirectFactory->create()->setPath('catalog/product/', ['_current' => true]);
         }
@@ -138,7 +132,7 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribut
                         $attributesData[$attributeCode] = $value;
                     } elseif ($attribute->getFrontendInput() == 'multiselect') {
                         // Check if 'Change' checkbox has been checked by admin for this attribute
-                        $isChanged = (bool)$this->getRequest()->getPost('toggle_' . $attributeCode);
+                        $isChanged = (bool)$this->getRequest()->getPost($attributeCode . '_checkbox');
                         if (!$isChanged) {
                             unset($attributesData[$attributeCode]);
                             continue;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Block;
@@ -21,6 +21,7 @@ use Magento\Vault\Model\VaultPaymentInterface;
  */
 class Form extends Cc
 {
+
     /**
      * @var Quote
      */
@@ -80,7 +81,7 @@ class Form extends Cc
      */
     public function useCvv()
     {
-        return $this->gatewayConfig->isCvvEnabled($this->sessionQuote->getStoreId());
+        return $this->gatewayConfig->isCvvEnabled();
     }
 
     /**
@@ -89,8 +90,9 @@ class Form extends Cc
      */
     public function isVaultEnabled()
     {
+        $storeId = $this->_storeManager->getStore()->getId();
         $vaultPayment = $this->getVaultPayment();
-        return $vaultPayment->isActive($this->sessionQuote->getStoreId());
+        return $vaultPayment->isActive($storeId);
     }
 
     /**
@@ -100,10 +102,7 @@ class Form extends Cc
     private function getConfiguredCardTypes()
     {
         $types = $this->ccType->getCcTypeLabelMap();
-        $configCardTypes = array_fill_keys(
-            $this->gatewayConfig->getAvailableCardTypes($this->sessionQuote->getStoreId()),
-            ''
-        );
+        $configCardTypes = array_fill_keys($this->gatewayConfig->getAvailableCardTypes(), '');
 
         return array_intersect_key($types, $configCardTypes);
     }
@@ -117,11 +116,7 @@ class Form extends Cc
     private function filterCardTypesForCountry(array $configCardTypes, $countryId)
     {
         $filtered = $configCardTypes;
-        $countryCardTypes = $this->gatewayConfig->getCountryAvailableCardTypes(
-            $countryId,
-            $this->sessionQuote->getStoreId()
-        );
-
+        $countryCardTypes = $this->gatewayConfig->getCountryAvailableCardTypes($countryId);
         // filter card types only if specific card types are set for country
         if (!empty($countryCardTypes)) {
             $availableTypes = array_fill_keys($countryCardTypes, '');

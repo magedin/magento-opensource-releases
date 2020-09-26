@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Test\Unit\Observer;
@@ -169,9 +169,6 @@ class AddBillingAgreementToSessionObserverTest extends \PHPUnit_Framework_TestCa
         $this->_model->execute($this->_observer);
     }
 
-    /**
-     * @return array
-     */
     public function addBillingAgreementToSessionDataProvider()
     {
         return [[true], [false]];

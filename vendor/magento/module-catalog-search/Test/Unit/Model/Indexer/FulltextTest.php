@@ -1,22 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Test\Unit\Model\Indexer;
 
-use Magento\CatalogSearch\Model\Indexer\ParentProductsResolver;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext as FulltextResource;
 use Magento\Framework\Search\Request\Config as SearchRequestConfig;
 use Magento\Framework\Search\Request\DimensionFactory;
 
 class FulltextTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Magento\CatalogSearch\Model\Indexer\ParentProductsResolver|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $parentProductResolver;
-
     /**
      * @var \Magento\CatalogSearch\Model\Indexer\Fulltext
      */
@@ -99,24 +93,14 @@ class FulltextTest extends \PHPUnit_Framework_TestCase
         $this->fulltextResource = $this->getClassMock('\Magento\CatalogSearch\Model\ResourceModel\Fulltext');
         $this->searchRequestConfig = $this->getClassMock('Magento\Framework\Search\Request\Config');
 
-        $this->parentProductResolver = $this->getMockBuilder(ParentProductsResolver::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getParentProductIds'])
-            ->getMock();
-
-        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->model = $objectManager->getObject(
-            \Magento\CatalogSearch\Model\Indexer\Fulltext::class,
-            [
-                'fullActionFactory' => $fullActionFactory,
-                'indexerHandlerFactory' => $indexerHandlerFactory,
-                'storeManager' => $this->storeManager,
-                'dimensionFactory' => $dimensionFactory,
-                'fulltextResource' => $this->fulltextResource,
-                'searchRequestConfig' => $this->searchRequestConfig,
-                'data' => [],
-                'parentProductsResolver' => $this->parentProductResolver,
-            ]
+        $this->model = new \Magento\CatalogSearch\Model\Indexer\Fulltext(
+            $fullActionFactory,
+            $indexerHandlerFactory,
+            $this->storeManager,
+            $dimensionFactory,
+            $this->fulltextResource,
+            $this->searchRequestConfig,
+            []
         );
     }
 
@@ -137,10 +121,6 @@ class FulltextTest extends \PHPUnit_Framework_TestCase
         $this->storeManager->expects($this->once())->method('getStores')->willReturn($stores);
         $this->saveHandler->expects($this->exactly(count($stores)))->method('deleteIndex');
         $this->saveHandler->expects($this->exactly(2))->method('saveIndex');
-        $this->parentProductResolver->expects($this->once())
-            ->method('getParentProductIds')
-            ->with($ids)
-            ->willReturn(['12']);
         $this->fullAction->expects($this->exactly(2))
             ->method('rebuildStoreIndex')
             ->willReturn(new \ArrayObject([$indexData, $indexData]));
@@ -172,10 +152,6 @@ class FulltextTest extends \PHPUnit_Framework_TestCase
         $this->storeManager->expects($this->once())->method('getStores')->willReturn($stores);
         $this->saveHandler->expects($this->exactly(count($stores)))->method('deleteIndex');
         $this->saveHandler->expects($this->exactly(2))->method('saveIndex');
-        $this->parentProductResolver->expects($this->once())
-            ->method('getParentProductIds')
-            ->with($ids)
-            ->willReturn([]);
         $this->fullAction->expects($this->exactly(2))
             ->method('rebuildStoreIndex')
             ->willReturn(new \ArrayObject([$indexData, $indexData]));
@@ -191,10 +167,6 @@ class FulltextTest extends \PHPUnit_Framework_TestCase
         $this->storeManager->expects($this->once())->method('getStores')->willReturn($stores);
         $this->saveHandler->expects($this->exactly(count($stores)))->method('deleteIndex');
         $this->saveHandler->expects($this->exactly(2))->method('saveIndex');
-        $this->parentProductResolver->expects($this->once())
-            ->method('getParentProductIds')
-            ->with([$id])
-            ->willReturn(['12']);
         $this->fullAction->expects($this->exactly(2))
             ->method('rebuildStoreIndex')
             ->willReturn(new \ArrayObject([$indexData, $indexData]));

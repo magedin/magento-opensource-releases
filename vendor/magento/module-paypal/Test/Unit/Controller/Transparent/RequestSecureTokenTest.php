@@ -1,23 +1,21 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Test\Unit\Controller\Transparent;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Session\Generic;
 use Magento\Framework\Session\SessionManager;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Paypal\Controller\Transparent\RequestSecureToken;
 use Magento\Paypal\Model\Payflow\Service\Request\SecureToken;
 use Magento\Paypal\Model\Payflow\Transparent;
 
 /**
  * Class RequestSecureTokenTest
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
 {
@@ -64,33 +62,28 @@ class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
 
-        $this->contextMock = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
+        $this->contextMock = $this->getMockBuilder('Magento\Framework\App\Action\Context')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $requestMock = $this->getMockBuilder(Http::class)->disableOriginalConstructor()->getMock();
-        $requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($requestMock);
-
-        $this->resultJsonFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
+        $this->resultJsonFactoryMock = $this->getMockBuilder('Magento\Framework\Controller\Result\JsonFactory')
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->sessionTransparentMock = $this->getMockBuilder(\Magento\Framework\Session\Generic::class)
+        $this->sessionTransparentMock = $this->getMockBuilder('Magento\Framework\Session\Generic')
             ->setMethods(['setQuoteId'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->secureTokenServiceMock = $this->getMockBuilder(
-            \Magento\Paypal\Model\Payflow\Service\Request\SecureToken::class
+            'Magento\Paypal\Model\Payflow\Service\Request\SecureToken'
         )
             ->setMethods(['requestToken'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->sessionManagerMock = $this->getMockBuilder(\Magento\Framework\Session\SessionManager::class)
+        $this->sessionManagerMock = $this->getMockBuilder('Magento\Framework\Session\SessionManager')
             ->setMethods(['getQuote'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transparentMock = $this->getMockBuilder(\Magento\Paypal\Model\Payflow\Transparent::class)
+        $this->transparentMock = $this->getMockBuilder('Magento\Paypal\Model\Payflow\Transparent')
             ->setMethods(['getCode'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -118,13 +111,13 @@ class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
             'error' => false
         ];
 
-        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
+        $quoteMock = $this->getMockBuilder('Magento\Quote\Model\Quote')
             ->disableOriginalConstructor()
             ->getMock();
-        $tokenMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
+        $tokenMock = $this->getMockBuilder('Magento\Framework\DataObject')
             ->disableOriginalConstructor()
             ->getMock();
-        $jsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
+        $jsonMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Json')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -172,10 +165,10 @@ class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
             'error_messages' => __('Your payment has been declined. Please try again.')
         ];
 
-        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
+        $quoteMock = $this->getMockBuilder('Magento\Quote\Model\Quote')
             ->disableOriginalConstructor()
             ->getMock();
-        $jsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
+        $jsonMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Json')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -212,7 +205,7 @@ class RequestSecureTokenTest extends \PHPUnit_Framework_TestCase
         ];
 
         $quoteMock = null;
-        $jsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
+        $jsonMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Json')
             ->disableOriginalConstructor()
             ->getMock();
 

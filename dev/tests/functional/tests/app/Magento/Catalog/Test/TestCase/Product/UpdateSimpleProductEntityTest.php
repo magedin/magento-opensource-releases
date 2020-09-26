@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,9 +9,8 @@ namespace Magento\Catalog\Test\TestCase\Product;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
+use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestCase\Injectable;
-use Magento\Mtf\TestStep\TestStepFactory;
-use Magento\Store\Test\Fixture\Store;
 
 /**
  * Precondition:
@@ -59,28 +58,18 @@ class UpdateSimpleProductEntityTest extends Injectable
     protected $configData;
 
     /**
-     * Test step factory.
-     *
-     * @var TestStepFactory
-     */
-    private $testStepFactory;
-
-    /**
      * Injection data.
      *
      * @param CatalogProductIndex $productGrid
      * @param CatalogProductEdit $editProductPage
-     * @param TestStepFactory $testStepFactory
      * @return void
      */
     public function __inject(
         CatalogProductIndex $productGrid,
-        CatalogProductEdit $editProductPage,
-        TestStepFactory $testStepFactory
+        CatalogProductEdit $editProductPage
     ) {
         $this->productGrid = $productGrid;
         $this->editProductPage = $editProductPage;
-        $this->testStepFactory = $testStepFactory;
     }
 
     /**
@@ -88,17 +77,11 @@ class UpdateSimpleProductEntityTest extends Injectable
      *
      * @param CatalogProductSimple $initialProduct
      * @param CatalogProductSimple $product
-     * @param Store|null $store
      * @param string $configData
      * @return array
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    public function test(
-        CatalogProductSimple $initialProduct,
-        CatalogProductSimple $product,
-        Store $store = null,
-        $configData = ''
-    ) {
+    public function test(CatalogProductSimple $initialProduct, CatalogProductSimple $product, $configData = '')
+    {
         $this->configData = $configData;
         // Preconditions
         $initialProduct->persist();
@@ -109,13 +92,8 @@ class UpdateSimpleProductEntityTest extends Injectable
             ? $product->getDataFieldConfig('category_ids')['source']->getCategories()[0]
             : $initialCategory;
 
-        if ($store) {
-            $store->persist();
-            $productName[$store->getStoreId()] = $product->getName();
-        }
-
-        $this->testStepFactory->create(
-            \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
+        $this->objectManager->create(
+            'Magento\Config\Test\TestStep\SetupConfigurationStep',
             ['configData' => $configData]
         )->run();
 
@@ -124,17 +102,10 @@ class UpdateSimpleProductEntityTest extends Injectable
 
         $this->productGrid->open();
         $this->productGrid->getProductGrid()->searchAndOpen($filter);
-        if ($store) {
-            $this->editProductPage->getFormPageActions()->changeStoreViewScope($store);
-        }
         $this->editProductPage->getProductForm()->fill($product);
         $this->editProductPage->getFormPageActions()->save();
 
-        return [
-            'category' => $category,
-            'stores' => isset($store) ? [$store] : [],
-            'productNames' => isset($productName) ? $productName : [],
-        ];
+        return ['category' => $category];
     }
 
     /**
@@ -145,8 +116,8 @@ class UpdateSimpleProductEntityTest extends Injectable
     public function tearDown()
     {
         if ($this->configData) {
-            $this->testStepFactory->create(
-                \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
+            $this->objectManager->create(
+                'Magento\Config\Test\TestStep\SetupConfigurationStep',
                 ['configData' => $this->configData, 'rollback' => true]
             )->run();
         }

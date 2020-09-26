@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Helper\Product;
@@ -25,6 +25,11 @@ class FlatTest extends \PHPUnit_Framework_TestCase
         $this->_state = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             'Magento\Catalog\Model\Indexer\Product\Flat\State'
         );
+    }
+
+    public function testIsEnabledDefault()
+    {
+        $this->assertFalse($this->_state->isFlatEnabled());
     }
 
     /**

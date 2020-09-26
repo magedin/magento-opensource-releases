@@ -79,7 +79,7 @@ class FormAbstractServiceFactory implements AbstractFactoryInterface
         }
 
         if (!$services->has('Config')) {
-            $this->config = [];
+            $this->config = array();
             return $this->config;
         }
 
@@ -87,7 +87,7 @@ class FormAbstractServiceFactory implements AbstractFactoryInterface
         if (!isset($config[$this->configKey])
             || !is_array($config[$this->configKey])
         ) {
-            $this->config = [];
+            $this->config = array();
             return $this->config;
         }
 

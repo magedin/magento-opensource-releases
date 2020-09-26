@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Product;
@@ -124,7 +124,7 @@ class AbstractProduct extends \Magento\Framework\View\Element\Template
      */
     public function getAddToCartUrl($product, $additional = [])
     {
-        if (!$product->getTypeInstance()->isPossibleBuyFromList($product)) {
+        if ($product->getTypeInstance()->hasRequiredOptions($product)) {
             if (!isset($additional['_escape'])) {
                 $additional['_escape'] = true;
             }
@@ -186,7 +186,7 @@ class AbstractProduct extends \Magento\Framework\View\Element\Template
      * Gets minimal sales quantity
      *
      * @param \Magento\Catalog\Model\Product $product
-     * @return float|null
+     * @return int|null
      */
     public function getMinimalQty($product)
     {

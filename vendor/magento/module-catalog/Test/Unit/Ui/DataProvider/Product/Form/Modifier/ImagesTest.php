@@ -1,14 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images;
+use Magento\Catalog\Model\Product\Type;
 
 /**
- * @method Images getModel
+ * @method \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images getModel
  */
 class ImagesTest extends AbstractModifierTest
 {
@@ -17,22 +17,20 @@ class ImagesTest extends AbstractModifierTest
      */
     protected function createModel()
     {
-        return $this->objectManager->getObject(Images::class, [
+        return $this->objectManager->getObject(\Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images::class, [
             'locator' => $this->locatorMock,
         ]);
     }
 
     public function testModifyData()
     {
-        $this->productMock->expects($this->once())->method('getId')->willReturn(2051);
-        $actualResult = $this->getModel()->modifyData($this->getSampleData());
-        $this->assertSame('', $actualResult[2051]['product']['media_gallery']['images'][0]['label']);
+        $this->assertSame($this->getSampleData(), $this->getModel()->modifyData($this->getSampleData()));
     }
 
     public function testModifyMeta()
     {
         $meta = [
-            Images::CODE_IMAGE_MANAGEMENT_GROUP => [
+            \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images::CODE_IMAGE_MANAGEMENT_GROUP => [
                 'children' => [],
                 'label' => __('Images'),
                 'sortOrder' => '20',
@@ -41,25 +39,5 @@ class ImagesTest extends AbstractModifierTest
         ];
 
         $this->assertSame([], $this->getModel()->modifyMeta($meta));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getSampleData()
-    {
-        return [
-            2051 => [
-                'product' => [
-                    'media_gallery' => [
-                        'images' => [
-                            [
-                                'label' => null
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
     }
 }

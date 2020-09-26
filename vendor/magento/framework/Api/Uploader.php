@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -21,7 +21,7 @@ class Uploader extends \Magento\Framework\File\Uploader
     }
 
     /**
-     * Explicitly set the file attributes instead of setting it via constructor
+     * Explicitly set the the file attributes instead of setting it via constructor
      *
      * @param array $fileAttributes
      * @return void

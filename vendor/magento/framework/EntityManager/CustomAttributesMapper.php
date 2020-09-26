@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\EntityManager;
@@ -55,9 +55,8 @@ class CustomAttributesMapper implements MapperInterface
      */
     public function entityToDatabase($entityType, $data)
     {
-        if (!$this->metadataPool->hasConfiguration($entityType)
-            || !$this->metadataPool->getMetadata($entityType)->getEavEntityType()
-        ) {
+        $metadata = $this->metadataPool->getMetadata($entityType);
+        if (!$metadata->getEavEntityType()) {
             return $data;
         }
         if (isset($data[CustomAttributesDataInterface::CUSTOM_ATTRIBUTES])) {

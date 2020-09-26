@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Setup\Test\Unit;
 
 use \Magento\Framework\Setup\FilePermissions;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\State;
 
 class FilePermissionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,11 +26,6 @@ class FilePermissionsTest extends \PHPUnit_Framework_TestCase
     private $directoryListMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|State
-     */
-    private $stateMock;
-
-    /**
      * @var FilePermissions
      */
     private $filePermissions;
@@ -40,7 +34,6 @@ class FilePermissionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->directoryWriteMock = $this->getMock('Magento\Framework\Filesystem\Directory\Write', [], [], '', false);
         $this->filesystemMock = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
-        $this->stateMock = $this->getMock(State::class, [], [], '', false);
 
         $this->filesystemMock
             ->expects($this->any())
@@ -50,8 +43,7 @@ class FilePermissionsTest extends \PHPUnit_Framework_TestCase
 
         $this->filePermissions = new FilePermissions(
             $this->filesystemMock,
-            $this->directoryListMock,
-            $this->stateMock
+            $this->directoryListMock
         );
     }
 
@@ -227,7 +219,6 @@ class FilePermissionsTest extends \PHPUnit_Framework_TestCase
             ->method('getPath')
             ->with(DirectoryList::STATIC_VIEW)
             ->will($this->returnValue(BP . '/pub/static'));
-
     }
 
     public function setUpDirectoryWriteInstallation()

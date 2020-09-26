@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,9 +8,6 @@ namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Category;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class DeleteTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Magento\Catalog\Controller\Adminhtml\Category\Delete */
@@ -28,40 +25,41 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Backend\Model\Auth\StorageInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $authStorage;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $context = $this->getMock(\Magento\Backend\App\Action\Context::class, [], [], '', false);
+        $context = $this->getMock('Magento\Backend\App\Action\Context', [], [], '', false);
         $resultRedirectFactory = $this->getMock(
-            \Magento\Backend\Model\View\Result\RedirectFactory::class,
+            'Magento\Backend\Model\View\Result\RedirectFactory',
             ['create'],
             [],
             '',
             false
         );
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getParam', 'isPost'])
-            ->getMock();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
+        $this->request = $this->getMockForAbstractClass(
+            'Magento\Framework\App\RequestInterface',
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['getParam', 'getPost']
+        );
         $auth = $this->getMock(
-            \Magento\Backend\Model\Auth::class,
+            'Magento\Backend\Model\Auth',
             ['getAuthStorage'],
             [],
             '',
             false
         );
         $this->authStorage = $this->getMock(
-            \Magento\Backend\Model\Auth\StorageInterface::class,
+            'Magento\Backend\Model\Auth\StorageInterface',
             ['processLogin', 'processLogout', 'isLoggedIn', 'prolong', 'setDeletedPath'],
             [],
             '',
             false
         );
         $eventManager = $this->getMockForAbstractClass(
-            \Magento\Framework\Event\ManagerInterface::class,
+            'Magento\Framework\Event\ManagerInterface',
             [],
             '',
             false,
@@ -70,46 +68,46 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ['dispatch']
         );
         $response = $this->getMockForAbstractClass(
-            \Magento\Framework\App\ResponseInterface::class,
+            'Magento\Framework\App\ResponseInterface',
             [],
             '',
             false
         );
         $messageManager = $this->getMockForAbstractClass(
-            \Magento\Framework\Message\ManagerInterface::class,
+            'Magento\Framework\Message\ManagerInterface',
             [],
             '',
             false,
             true,
             true,
-            ['addSuccessMessage']
+            ['addSuccess']
         );
-        $this->categoryRepository = $this->getMock(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
+        $this->categoryRepository = $this->getMock('Magento\Catalog\Api\CategoryRepositoryInterface');
         $context->expects($this->any())
             ->method('getRequest')
-            ->willReturn($this->request);
+            ->will($this->returnValue($this->request));
         $context->expects($this->any())
             ->method('getResponse')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
         $context->expects($this->any())
             ->method('getMessageManager')
-            ->willReturn($messageManager);
+            ->will($this->returnValue($messageManager));
         $context->expects($this->any())
             ->method('getEventManager')
-            ->willReturn($eventManager);
+            ->will($this->returnValue($eventManager));
         $context->expects($this->any())
             ->method('getAuth')
-            ->willReturn($auth);
+            ->will($this->returnValue($auth));
         $context->expects($this->once())->method('getResultRedirectFactory')->willReturn($resultRedirectFactory);
         $auth->expects($this->any())
             ->method('getAuthStorage')
-            ->willReturn($this->authStorage);
+            ->will($this->returnValue($this->authStorage));
 
-        $this->resultRedirect = $this->getMock(\Magento\Backend\Model\View\Result\Redirect::class, [], [], '', false);
+        $this->resultRedirect = $this->getMock('Magento\Backend\Model\View\Result\Redirect', [], [], '', false);
         $resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
 
         $this->unit = (new ObjectManagerHelper($this))->getObject(
-            \Magento\Catalog\Controller\Adminhtml\Category\Delete::class,
+            'Magento\Catalog\Controller\Adminhtml\Category\Delete',
             [
                 'context' => $context,
                 'categoryRepository' => $this->categoryRepository
@@ -132,7 +130,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $categoryId = 5;
         $parentId = 7;
         $this->request->expects($this->any())->method('getParam')->with('id')->willReturn($categoryId);
-        $category = $this->getMock(\Magento\Catalog\Model\Category::class, ['getParentId', 'getPath'], [], '', false);
+        $category = $this->getMock('Magento\Catalog\Model\Category', ['getParentId', 'getPath'], [], '', false);
         $category->expects($this->once())->method('getParentId')->willReturn($parentId);
         $category->expects($this->once())->method('getPath')->willReturn('category-path');
         $this->categoryRepository->expects($this->once())->method('get')->with($categoryId)->willReturn($category);

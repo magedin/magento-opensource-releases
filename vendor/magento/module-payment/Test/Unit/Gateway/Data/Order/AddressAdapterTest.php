@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Test\Unit\Gateway\Data\Order;
@@ -23,7 +23,7 @@ class AddressAdapterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->orderAddressMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderAddressInterface::class)
+        $this->orderAddressMock = $this->getMockBuilder('Magento\Sales\Api\Data\OrderAddressInterface')
             ->getMockForAbstractClass();
 
         $this->model = new AddressAdapter($this->orderAddressMock);
@@ -54,9 +54,6 @@ class AddressAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->model->getStreetLine1());
     }
 
-    /**
-     * @return array
-     */
     public function testStreetLine1DataProvider()
     {
         return [
@@ -76,9 +73,6 @@ class AddressAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->model->getStreetLine2());
     }
 
-    /**
-     * @return array
-     */
     public function testStreetLine2DataProvider()
     {
         return [

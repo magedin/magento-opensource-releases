@@ -1,12 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Controller\Guest;
 
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 class ViewTest extends \PHPUnit_Framework_TestCase
@@ -52,59 +50,39 @@ class ViewTest extends \PHPUnit_Framework_TestCase
     protected $resultPageMock;
 
     /**
-     * @var Validator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $formKeyValidatorMock;
-
-    /**
-     * @var RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $resultRedirectFactoryMock;
-
-    /**
-     * @inheritdoc
+     * @return void
      */
     protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['isPost'])
-            ->getMockForAbstractClass();
-        $this->guestHelperMock = $this->getMockBuilder(\Magento\Sales\Helper\Guest::class)
+        $this->requestMock = $this->getMockBuilder('Magento\Framework\App\RequestInterface')
+            ->getMock();
+        $this->guestHelperMock = $this->getMockBuilder('Magento\Sales\Helper\Guest')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Redirect')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultPageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
+        $this->resultPageFactoryMock = $this->getMockBuilder('Magento\Framework\View\Result\PageFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultPageMock = $this->getMockBuilder(\Magento\Framework\View\Result\Page::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->formKeyValidatorMock = $this->getMockBuilder(Validator::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['validate'])
-            ->getMock();
-        $this->resultRedirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+        $this->resultPageMock = $this->getMockBuilder('Magento\Framework\View\Result\Page')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->context = $this->objectManagerHelper->getObject(
-            \Magento\Framework\App\Action\Context::class,
+            'Magento\Framework\App\Action\Context',
             [
-                'request' => $this->requestMock,
-                'resultRedirectFactory' => $this->resultRedirectFactoryMock,
+                'request' => $this->requestMock
             ]
         );
         $this->viewController = $this->objectManagerHelper->getObject(
-            \Magento\Sales\Controller\Guest\View::class,
+            'Magento\Sales\Controller\Guest\View',
             [
                 'context' => $this->context,
                 'guestHelper' => $this->guestHelperMock,
-                'resultPageFactory' => $this->resultPageFactoryMock,
-                'formKeyValidator' => $this->formKeyValidatorMock,
+                'resultPageFactory' => $this->resultPageFactoryMock
             ]
         );
     }
@@ -114,7 +92,6 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteOrderLoaded()
     {
-        $this->validateRequest();
         $this->guestHelperMock->expects($this->once())
             ->method('loadValidOrder')
             ->with($this->requestMock)
@@ -134,61 +111,11 @@ class ViewTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteOrderNotFound()
     {
-        $this->validateRequest();
         $this->guestHelperMock->expects($this->once())
             ->method('loadValidOrder')
             ->with($this->requestMock)
             ->willReturn($this->resultRedirectMock);
 
         $this->assertSame($this->resultRedirectMock, $this->viewController->execute());
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteWithNonPostRequest()
-    {
-        $this->requestMock->expects($this->once())->method('isPost')->willReturn(false);
-
-        $this->resultPageFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($this->resultPageMock);
-
-        $this->viewController->execute();
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteWithInvalidFormKey()
-    {
-        $this->resultRedirectFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($this->resultRedirectMock);
-        $this->requestMock->expects($this->once())->method('isPost')->willReturn(true);
-        $this->formKeyValidatorMock->expects($this->once())
-            ->method('validate')
-            ->with($this->requestMock)
-            ->willReturn(false);
-        $this->resultRedirectMock->expects($this->once())
-            ->method('setPath')
-            ->with('*/*/form/')
-            ->willReturnSelf();
-
-        $this->viewController->execute();
-    }
-
-    /**
-     * Validate request.
-     *
-     * @return void
-     */
-    private function validateRequest()
-    {
-        $this->requestMock->expects($this->once())->method('isPost')->willReturn(true);
-        $this->formKeyValidatorMock->expects($this->once())
-            ->method('validate')
-            ->with($this->requestMock)
-            ->willReturn(true);
     }
 }

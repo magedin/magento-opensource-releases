@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -15,7 +15,7 @@ foreach ($appDirs as $dir) {
     }
 }
 
-$files = glob(TESTS_TEMP_DIR . '/Magento/Backup/data/*', GLOB_NOSORT);
+$files = glob(TESTS_TEMP_DIR . '/Magento/Backup/data/*');
 foreach ($files as $file) {
     unlink($file);
 }

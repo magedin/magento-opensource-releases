@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -62,15 +62,9 @@ class Quote extends AbstractDb
     protected function _getLoadSelect($field, $value, $object)
     {
         $select = parent::_getLoadSelect($field, $value, $object);
-        if ($this->getIdFieldName() === $field) {
-            return $select;
-        }
-
         $storeIds = $object->getSharedStoreIds();
         if ($storeIds) {
-            if ($storeIds != ['*']) {
-                $select->where('store_id IN (?)', $storeIds);
-            }
+            $select->where('store_id IN (?)', $storeIds);
         } else {
             /**
              * For empty result
@@ -171,30 +165,9 @@ class Quote extends AbstractDb
     {
         return $this->sequenceManager->getSequence(
             \Magento\Sales\Model\Order::ENTITY,
-            $quote->getStoreId()
+            $quote->getStore()->getGroup()->getDefaultStoreId()
         )
         ->getNextValue();
-    }
-
-    /**
-     * Check is order increment id use in sales/order table
-     *
-     * @param int $orderIncrementId
-     * @return bool
-     * @deprecated
-     * @see \Magento\Sales\Model\OrderIncrementIdChecker::isIncrementIdUsed()
-     */
-    public function isOrderIncrementIdUsed($orderIncrementId)
-    {
-        /** @var \Magento\Framework\DB\Adapter\AdapterInterface $adapter */
-        $adapter = $this->getConnection();
-        $bind = [':increment_id' => $orderIncrementId];
-        /** @var \Magento\Framework\DB\Select $select */
-        $select = $adapter->select()
-            ->from($this->getTable('sales_order'), 'entity_id')
-            ->where('increment_id = :increment_id');
-        $entity_id = $adapter->fetchOne($select, $bind);
-        return ($entity_id > 0);
     }
 
     /**
@@ -231,23 +204,12 @@ class Quote extends AbstractDb
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $product
-     * @return Quote
-     * @deprecated
-     * @see subtractProductFromQuotes
-     */
-    public function substractProductFromQuotes($product)
-    {
-        return $this->subtractProductFromQuotes($product);
-    }
-
-    /**
      * Subtract product from all quotes quantities
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return $this
      */
-    public function subtractProductFromQuotes($product)
+    public function substractProductFromQuotes($product)
     {
         $productId = (int)$product->getId();
         if (!$productId) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Block\Adminhtml;
@@ -115,12 +115,12 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
 
         if ($customerId) {
             $url = $this->getUrl('customer/customer/invalidateToken', ['customer_id' => $customerId]);
-            $deleteConfirmMsg = __("Are you sure you want to revoke the customer's tokens?");
+            $deleteConfirmMsg = __("Are you sure you want to revoke the customer\'s tokens?");
             $this->buttonList->add(
                 'invalidate_token',
                 [
                     'label' => __('Force Sign-In'),
-                    'onclick' => 'deleteConfirm(\'' . $deleteConfirmMsg . '\', \'' . $url . '\', {data: {}})',
+                    'onclick' => 'deleteConfirm(\'' . $deleteConfirmMsg . '\', \'' . $url . '\')',
                     'class' => 'invalidate-token'
                 ],
                 10

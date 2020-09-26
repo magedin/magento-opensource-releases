@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Test\Unit\Model\Cron;
@@ -57,8 +57,8 @@ class ReadinessCheckTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->dbValidator = $this->getMock(\Magento\Setup\Validator\DbValidator::class, [], [], '', false);
-        $this->deploymentConfig = $this->getMock(\Magento\Framework\App\DeploymentConfig::class, [], [], '', false);
+        $this->dbValidator = $this->getMock('Magento\Setup\Validator\DbValidator', [], [], '', false);
+        $this->deploymentConfig = $this->getMock('Magento\Framework\App\DeploymentConfig', [], [], '', false);
         $this->deploymentConfig->expects($this->once())
             ->method('get')
             ->willReturn(
@@ -69,13 +69,13 @@ class ReadinessCheckTest extends \PHPUnit_Framework_TestCase
                     ConfigOptionsListConstants::KEY_PASSWORD => 'password'
                 ]
             );
-        $this->filesystem = $this->getMock(\Magento\Framework\Filesystem::class, [], [], '', false);
-        $this->write = $this->getMock(\Magento\Framework\Filesystem\Directory\Write::class, [], [], '', false);
+        $this->filesystem = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
+        $this->write = $this->getMock('Magento\Framework\Filesystem\Directory\Write', [], [], '', false);
         $this->filesystem->expects($this->once())->method('getDirectoryWrite')->willReturn($this->write);
-        $this->phpReadinessCheck = $this->getMock(\Magento\Setup\Model\PhpReadinessCheck::class, [], [], '', false);
-        $this->basePackageInfo = $this->getMock(\Magento\Setup\Model\BasePackageInfo::class, [], [], '', false);
+        $this->phpReadinessCheck = $this->getMock('Magento\Setup\Model\PhpReadinessCheck', [], [], '', false);
+        $this->basePackageInfo = $this->getMock('Magento\Setup\Model\BasePackageInfo', [], [], '', false);
         $this->basePackageInfo->expects($this->once())->method('getPaths')->willReturn([__FILE__]);
-        $this->status = $this->getMock(\Magento\Setup\Model\Cron\Status::class, [], [], '', false);
+        $this->status = $this->getMock('Magento\Setup\Model\Cron\Status', [], [], '', false);
         $this->readinessCheck = new ReadinessCheck(
             $this->dbValidator,
             $this->deploymentConfig,
@@ -202,9 +202,6 @@ class ReadinessCheckTest extends \PHPUnit_Framework_TestCase
 
 namespace Magento\Setup\Model\Cron;
 
-/**
- * @return int
- */
 function time()
 {
     return 100;

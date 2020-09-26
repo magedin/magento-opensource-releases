@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Model;
@@ -147,7 +147,6 @@ class OptionRepository implements \Magento\ConfigurableProduct\Api\OptionReposit
 
         try {
             $this->configurableTypeResource->saveProducts($product, []);
-            $this->configurableType->resetConfigurableAttributes($product);
         } catch (\Exception $exception) {
             throw new StateException(
                 __('Cannot delete variations from product: %1', $entityId)
@@ -279,7 +278,7 @@ class OptionRepository implements \Magento\ConfigurableProduct\Api\OptionReposit
             $inputException->addError(__('Option values are not specified.'));
         } else {
             foreach ($option->getValues() as $optionValue) {
-                if (null === $optionValue->getValueIndex()) {
+                if (!$optionValue->getValueIndex()) {
                     $inputException->addError(__('Value index is not specified for an option.'));
                 }
             }

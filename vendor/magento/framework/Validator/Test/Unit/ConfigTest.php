@@ -2,7 +2,7 @@
 /**
  * Unit Test for \Magento\Framework\Validator\Config
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Validator\Test\Unit;
@@ -48,7 +48,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     protected function _initConfig(array $files = null)
     {
         if (null === $files) {
-            $files = glob(__DIR__ . '/_files/validation/positive/*/validation.xml', GLOB_NOSORT);
+            $files = glob(__DIR__ . '/_files/validation/positive/*/validation.xml');
         }
         $configFiles = [];
         foreach ($files as $path) {

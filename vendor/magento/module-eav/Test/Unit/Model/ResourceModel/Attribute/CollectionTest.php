@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -123,7 +123,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnArgument(0));
         $this->connectionMock->expects($this->any())
             ->method('describeTable')
-            ->will($this->returnValueMap(
+            ->will($this->returnvalueMap(
                 [
                     [
                         'some_main_table',
@@ -195,9 +195,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->model->getSelectCountSql()->assemble();
     }
 
-    /**
-     * @return array
-     */
     public function initSelectDataProvider()
     {
         return [

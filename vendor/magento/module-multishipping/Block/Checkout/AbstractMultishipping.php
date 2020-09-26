@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 /**
- * Multishipping checkout base abstract block
+ * Mustishipping checkout base abstract block
  *
  * @author      Magento Core Team <core@magentocommerce.com>
  */

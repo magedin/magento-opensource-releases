@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -86,20 +86,16 @@ class Shipping extends Form
      */
     public function selectShippingMethod(array $shipping)
     {
-        $this->waitForUpdatedShippingMethods();
         $selector = sprintf($this->shippingMethod, $shipping['shipping_service'], $shipping['shipping_method']);
         if (!$this->_rootElement->find($selector, Locator::SELECTOR_XPATH)->isVisible()) {
             $this->openEstimateShippingAndTax();
         }
 
         $element = $this->_rootElement->find($selector, Locator::SELECTOR_XPATH);
-
-        if (!$element->isSelected()) {
-            if (!$element->isDisabled()) {
-                $element->click();
-            } else {
-                throw new \Exception("Unable to set value to field '$selector' as it's disabled.");
-            }
+        if (!$element->isDisabled()) {
+            $element->click();
+        } else {
+            throw new \Exception("Unable to set value to field '$selector' as it's disabled.");
         }
     }
 

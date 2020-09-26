@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Ui\DataProvider\Product\Form\Modifier;
@@ -9,12 +9,11 @@ use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\Ui\Component\Form;
 use Magento\Framework\Stdlib\ArrayManager;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Locale\CurrencyInterface;
 
 /**
  * Data provider for main panel of product page
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class General extends AbstractModifier
 {
@@ -27,6 +26,11 @@ class General extends AbstractModifier
      * @var ArrayManager
      */
     protected $arrayManager;
+    
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
 
     /**
      * @var CurrencyInterface
@@ -78,7 +82,7 @@ class General extends AbstractModifier
             $data = $this->arrayManager->replace(
                 $path,
                 $data,
-                $this->formatWeight($this->arrayManager->get($path, $data))
+                $this->formatNumber($this->arrayManager->get($path, $data))
             );
         }
 
@@ -101,7 +105,7 @@ class General extends AbstractModifier
                 $value[ProductAttributeInterface::CODE_TIER_PRICE_FIELD_PRICE] =
                     $this->formatPrice($value[ProductAttributeInterface::CODE_TIER_PRICE_FIELD_PRICE]);
                 $value[ProductAttributeInterface::CODE_TIER_PRICE_FIELD_PRICE_QTY] =
-                    (int)$value[ProductAttributeInterface::CODE_TIER_PRICE_FIELD_PRICE_QTY];
+                    $this->formatNumber((int)$value[ProductAttributeInterface::CODE_TIER_PRICE_FIELD_PRICE_QTY]);
             }
         }
 
@@ -375,6 +379,23 @@ class General extends AbstractModifier
     }
 
     /**
+     * The getter function to get the store manager for real application code
+     *
+     * @return \Magento\Store\Model\StoreManagerInterface
+     *
+     * @deprecated
+     */
+    private function getStoreManager()
+    {
+        if ($this->storeManager === null) {
+            $this->storeManager =
+                \Magento\Framework\App\ObjectManager::getInstance()->get(StoreManagerInterface::class);
+        }
+        return $this->storeManager;
+    }
+
+
+    /**
      * Format price according to the locale of the currency
      *
      * @param mixed $value
@@ -386,7 +407,7 @@ class General extends AbstractModifier
             return null;
         }
 
-        $store = $this->locator->getStore();
+        $store = $this->getStoreManager()->getStore();
         $currency = $this->getLocaleCurrency()->getCurrency($store->getBaseCurrencyCode());
         $value = $currency->toCurrency($value, ['display' => \Magento\Framework\Currency::NO_SYMBOL]);
 
@@ -407,7 +428,7 @@ class General extends AbstractModifier
 
         $value = (float)$value;
         $precision = strlen(substr(strrchr($value, "."), 1));
-        $store = $this->locator->getStore();
+        $store = $this->getStoreManager()->getStore();
         $currency = $this->getLocaleCurrency()->getCurrency($store->getBaseCurrencyCode());
         $value = $currency->toCurrency($value, ['display' => \Magento\Framework\Currency::NO_SYMBOL,
                                                 'precision' => $precision]);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Ui\DataProvider\Product\Form\Modifier;
@@ -18,10 +18,8 @@ use Magento\Eav\Model\Config;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\CollectionFactory as GroupCollectionFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Filter\Translit;
 use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Store\Model\StoreManagerInterface;
@@ -170,26 +168,6 @@ class Eav extends AbstractModifier
     private $localeCurrency;
 
     /**
-     * @var AuthorizationInterface
-     */
-    private $authorization;
-
-    /**
-     * Product design attribute codes.
-     *
-     * @var array
-     */
-    private $designAttributeCodes = [
-        'custom_design',
-        'page_layout',
-        'options_container',
-        'custom_layout_update',
-        'custom_design_from',
-        'custom_design_to',
-        'custom_layout',
-    ];
-
-    /**
      * @param LocatorInterface $locator
      * @param CatalogEavValidationRules $catalogEavValidationRules
      * @param Config $eavConfig
@@ -209,8 +187,6 @@ class Eav extends AbstractModifier
      * @param DataPersistorInterface $dataPersistor
      * @param array $attributesToDisable
      * @param array $attributesToEliminate
-     * @param AuthorizationInterface|null $authorization
-     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -232,8 +208,7 @@ class Eav extends AbstractModifier
         ScopeOverriddenValue $scopeOverriddenValue,
         DataPersistorInterface $dataPersistor,
         $attributesToDisable = [],
-        $attributesToEliminate = [],
-        AuthorizationInterface $authorization = null
+        $attributesToEliminate = []
     ) {
         $this->locator = $locator;
         $this->catalogEavValidationRules = $catalogEavValidationRules;
@@ -254,7 +229,6 @@ class Eav extends AbstractModifier
         $this->dataPersistor = $dataPersistor;
         $this->attributesToDisable = $attributesToDisable;
         $this->attributesToEliminate = $attributesToEliminate;
-        $this->authorization = $authorization ?: ObjectManager::getInstance()->get(AuthorizationInterface::class);
     }
 
     /**
@@ -270,7 +244,7 @@ class Eav extends AbstractModifier
             if ($attributes) {
                 $meta[$groupCode]['children'] = $this->getAttributesMeta($attributes, $groupCode);
                 $meta[$groupCode]['arguments']['data']['config']['componentType'] = Fieldset::NAME;
-                $meta[$groupCode]['arguments']['data']['config']['label'] = __($group->getAttributeGroupName());
+                $meta[$groupCode]['arguments']['data']['config']['label'] = __('%1', $group->getAttributeGroupName());
                 $meta[$groupCode]['arguments']['data']['config']['collapsible'] = true;
                 $meta[$groupCode]['arguments']['data']['config']['dataScope'] = self::DATA_SCOPE_PRODUCT;
                 $meta[$groupCode]['arguments']['data']['config']['sortOrder'] =
@@ -551,16 +525,6 @@ class Eav extends AbstractModifier
     }
 
     /**
-     * Check is product already new or we trying to create one.
-     *
-     * @return bool
-     */
-    private function isProductExists()
-    {
-        return (bool) $this->locator->getProduct()->getId();
-    }
-
-    /**
      * Initial meta setup
      *
      * @param ProductAttributeInterface $attribute
@@ -569,13 +533,11 @@ class Eav extends AbstractModifier
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      * @api
      */
     public function setupAttributeMeta(ProductAttributeInterface $attribute, $groupCode, $sortOrder)
     {
         $configPath = ltrim(static::META_CONFIG_PATH, ArrayManager::DEFAULT_PATH_DELIMITER);
-        $attributeCode = $attribute->getAttributeCode();
 
         $meta = $this->arrayManager->set($configPath, [], [
             'dataType' => $attribute->getFrontendInput(),
@@ -583,9 +545,9 @@ class Eav extends AbstractModifier
             'visible' => $attribute->getIsVisible(),
             'required' => $attribute->getIsRequired(),
             'notice' => $attribute->getNote(),
-            'default' => (!$this->isProductExists()) ? $attribute->getDefaultValue() : null,
-            'label' => __($attribute->getDefaultFrontendLabel()),
-            'code' => $attributeCode,
+            'default' => $attribute->getDefaultValue(),
+            'label' => $attribute->getDefaultFrontendLabel(),
+            'code' => $attribute->getAttributeCode(),
             'source' => $groupCode,
             'scopeLabel' => $this->getScopeLabel($attribute),
             'globalScope' => $this->isScopeGlobal($attribute),
@@ -595,12 +557,8 @@ class Eav extends AbstractModifier
         // TODO: Refactor to $attribute->getOptions() when MAGETWO-48289 is done
         $attributeModel = $this->getAttributeModel($attribute);
         if ($attributeModel->usesSource()) {
-            $options = $attributeModel->getSource()->getAllOptions();
-            foreach ($options as &$option) {
-                $option['__disableTmpl'] = true;
-            }
             $meta = $this->arrayManager->merge($configPath, $meta, [
-                'options' => $this->convertOptionsValueToString($options),
+                'options' => $attributeModel->getSource()->getAllOptions(),
             ]);
         }
 
@@ -618,7 +576,7 @@ class Eav extends AbstractModifier
             ]);
         }
 
-        if (in_array($attributeCode, $this->attributesToDisable)) {
+        if (in_array($attribute->getAttributeCode(), $this->attributesToDisable)) {
             $meta = $this->arrayManager->merge($configPath, $meta, [
                 'disabled' => true,
             ]);
@@ -650,40 +608,7 @@ class Eav extends AbstractModifier
                 break;
         }
 
-        //Checking access to design config.
-        if (in_array($attributeCode, $this->designAttributeCodes, true)
-            && !$this->authorization->isAllowed('Magento_Catalog::edit_product_design')
-        ) {
-            $meta = $this->arrayManager->merge(
-                $configPath,
-                $meta,
-                [
-                    'disabled' => true,
-                    'validation' => ['required' => false],
-                    'required' => false,
-                    'serviceDisabled' => true,
-                ]
-            );
-        }
-
         return $meta;
-    }
-
-    /**
-     * Convert options value to string.
-     *
-     * @param array $options
-     * @return array
-     */
-    private function convertOptionsValueToString(array $options)
-    {
-        array_walk($options, function (&$value) {
-            if (isset($value['value']) && is_scalar($value['value'])) {
-                $value['value'] = (string)$value['value'];
-            }
-        });
-
-        return $options;
     }
 
     /**
@@ -725,7 +650,7 @@ class Eav extends AbstractModifier
                 'formElement' => 'container',
                 'componentType' => 'container',
                 'breakLine' => false,
-                'label' => __($attribute->getDefaultFrontendLabel()),
+                'label' => $attribute->getDefaultFrontendLabel(),
                 'required' => $attribute->getIsRequired(),
             ]
         );
@@ -820,10 +745,7 @@ class Eav extends AbstractModifier
         $meta['arguments']['data']['config']['wysiwyg'] = true;
         $meta['arguments']['data']['config']['wysiwygConfigData'] = [
             'add_variables' => false,
-            'add_widgets' => false,
-            'add_directives' => true,
-            'use_container' => true,
-            'container_class' => 'hor-scroll',
+            'add_widgets' => false
         ];
 
         return $meta;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Attribute;
@@ -108,10 +108,6 @@ class LockValidatorTest extends \PHPUnit_Framework_TestCase
         $this->validate(true);
     }
 
-    /**
-     * @param $exception
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function validate($exception)
     {
         $attrTable = 'someAttributeTable';

@@ -1,11 +1,8 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Api\OrderRepositoryInterface;
 
 // @codingStandardsIgnoreFile
 
@@ -23,15 +20,8 @@ $billingAddress->setAddressType('billing');
 $shippingAddress = clone $billingAddress;
 $shippingAddress->setId(null)->setAddressType('shipping');
 
-/** @var Payment $payment */
-$payment = $objectManager->create(Payment::class);
-$payment->setMethod('checkmo')
-    ->setAdditionalInformation([
-        'token_metadata' => [
-            'token' => 'f34vjw',
-            'customer_id' => 1
-        ]
-    ]);
+$payment = $objectManager->create('Magento\Sales\Model\Order\Payment');
+$payment->setMethod('checkmo');
 
 /** @var \Magento\Sales\Model\Order\Item $orderItem */
 $orderItem = $objectManager->create('Magento\Sales\Model\Order\Item');
@@ -72,7 +62,4 @@ $order->setIncrementId(
 )->setPayment(
     $payment
 );
-
-/** @var OrderRepositoryInterface $orderRepository */
-$orderRepository = $objectManager->create(OrderRepositoryInterface::class);
-$orderRepository->save($order);
+$order->save();

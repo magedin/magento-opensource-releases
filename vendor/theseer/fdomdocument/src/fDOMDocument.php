@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
+ * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -66,7 +66,7 @@ namespace TheSeer\fDOM {
 
         /**
          * List of registered prefixes and their namespace uri
-         * @var array
+         * @var Array
          */
         private $prefixes = array();
 
@@ -113,11 +113,11 @@ namespace TheSeer\fDOM {
         /**
          * Set Stream context options
          *
-         * @param array $options Stream context options
+         * @param Array $options Stream context options
          *
          * @return boolean true on success, false on failure
          */
-        public function setStreamContext(array $options) {
+        public function setStreamContext(Array $options) {
             if (!count($options)) {
                 return FALSE;
             }
@@ -138,9 +138,6 @@ namespace TheSeer\fDOM {
          * @return bool|mixed
          */
         public function load($fname, $options = LIBXML_NONET) {
-            if ($fname === '') {
-                throw new fDOMException('empty filename is not allowed', fDOMException::ParseError);
-            }
             $this->xp = NULL;
             $tmp = parent :: load($fname, $options);
             if (!$tmp || libxml_get_last_error()) {
@@ -162,9 +159,6 @@ namespace TheSeer\fDOM {
          * @return boolean
          */
         public function loadXML($source, $options = LIBXML_NONET) {
-            if ($source === '') {
-                throw new fDOMException('empty string not allowed', fDOMException::ParseError);
-            }
             $this->xp = NULL;
             $tmp = parent :: loadXML($source, $options);
             if (!$tmp || libxml_get_last_error()) {
@@ -186,12 +180,9 @@ namespace TheSeer\fDOM {
          * @return boolean
          */
         public function loadHTMLFile($fname, $options = NULL) {
-            if ($fname === '') {
-                throw new fDOMException('empty filename is not allowed', fDOMException::ParseError);
-            }
             $this->xp = NULL;
             if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-                if ($options !== NULL) {
+                if ($options != NULL) {
                     throw new fDOMException('Passing options requires PHP 5.4.0+', fDOMException::LoadError);
                 }
                 $tmp = parent :: loadHTMLFile($fname);
@@ -217,12 +208,9 @@ namespace TheSeer\fDOM {
          * @return boolean
          */
         public function loadHTML($source, $options = NULL) {
-            if ($source === '') {
-                throw new fDOMException('empty string not allowed', fDOMException::ParseError);
-            }
             $this->xp = NULL;
             if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-                if ($options !== NULL) {
+                if ($options != NULL) {
                     throw new fDOMException('Passing options requires PHP 5.4.0+', fDOMException::LoadError);
                 }
                 $tmp = parent :: loadHTML($source);
@@ -264,7 +252,7 @@ namespace TheSeer\fDOM {
          * @return string html content
          */
         public function saveHTML(\DOMNode $node = NULL) {
-            if (version_compare(PHP_VERSION, '5.3.6', '<') && $node !== NULL) {
+            if (version_compare(PHP_VERSION, '5.3.6', '<') && $node != NULL) {
                 throw new fDOMException('Passing a context node requires PHP 5.3.6+', fDOMException::SaveError);
             }
             $tmp = parent::saveHTML($node);
@@ -388,7 +376,7 @@ namespace TheSeer\fDOM {
          * placeholder replacement comparable to sql's prepared statements
          * .
          * @param string $xpath    String containing xpath with :placeholder markup
-         * @param array  $valueMap array containing keys (:placeholder) and value pairs to be quoted
+         * @param array  $valueMap Array containing keys (:placeholder) and value pairs to be quoted
          *
          * @return string
          */
@@ -411,7 +399,7 @@ namespace TheSeer\fDOM {
         public function select($selector, \DOMNode $ctx = NULL, $registerNodeNS = TRUE) {
             $translator = new Translator();
             $xpath = $translator->translate($selector);
-            if ($ctx !== NULL) {
+            if ($ctx != NULL) {
                 $xpath = '.' . $xpath;
             }
             return $this->query($xpath, $ctx, $registerNodeNS);
@@ -440,7 +428,7 @@ namespace TheSeer\fDOM {
         /**
          * Forward to DOMXPath->registerPHPFunctions()
          *
-         * @param mixed $restrict array of function names or string with functionname to restrict callabilty to
+         * @param mixed $restrict Array of function names or string with functionname to restrict callabilty to
          *
          * @throws fDOMException
          *

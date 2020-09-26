@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -127,15 +127,6 @@ class Parser implements \Magento\Framework\Translate\Inline\ParserInterface
     private $cacheManager;
 
     /**
-     * @var array
-     */
-    private $cacheTypes = [
-        \Magento\Framework\App\Cache\Type\Block::TYPE_IDENTIFIER,
-        \Magento\Framework\App\Cache\Type\Layout::TYPE_IDENTIFIER,
-        \Magento\Framework\App\Cache\Type\Translate::TYPE_IDENTIFIER
-    ];
-
-    /**
      * @return \Magento\Translation\Model\Inline\CacheManager
      *
      * @deprecated
@@ -187,10 +178,7 @@ class Parser implements \Magento\Framework\Translate\Inline\ParserInterface
         if (!$this->_translateInline->isAllowed()) {
             return ['inline' => 'not allowed'];
         }
-
-        foreach ($this->cacheTypes as $cacheType) {
-            $this->_appCache->invalidate($cacheType);
-        }
+        $this->_appCache->invalidate(\Magento\Framework\App\Cache\Type\Translate::TYPE_IDENTIFIER);
 
         $this->_validateTranslationParams($translateParams);
         $this->_filterTranslationParams($translateParams, ['custom']);

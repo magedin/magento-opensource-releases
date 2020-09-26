@@ -2,7 +2,7 @@
 /**
  * Google AdWords Conversion Abstract Backend model
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleAdwords\Model\Config\Backend;

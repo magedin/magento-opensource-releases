@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Controller\Adminhtml;
-
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * @magentoAppArea adminhtml
@@ -17,35 +15,30 @@ class NewsletterQueueTest extends \Magento\TestFramework\TestCase\AbstractBacken
      */
     protected $_model;
 
-    /**
-     * @inheritDoc
-     */
     protected function setUp()
     {
         parent::setUp();
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Newsletter\Model\Template::class
+            'Magento\Newsletter\Model\Template'
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function tearDown()
     {
         /**
          * Unset messages
          */
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            \Magento\Backend\Model\Session::class
+            'Magento\Backend\Model\Session'
         )->getMessages(
             true
         );
-        $this->_model = null;
+        unset($this->_model);
     }
 
     /**
      * @magentoDataFixture Magento/Newsletter/_files/newsletter_sample.php
+     * @magentoAppIsolation disabled
      */
     public function testSaveActionQueueTemplateAndVerifySuccessMessage()
     {
@@ -55,7 +48,6 @@ class NewsletterQueueTest extends \Magento\TestFramework\TestCase\AbstractBacken
             'subject' => 'test subject',
             'text' => 'newsletter text',
         ];
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue($postForQueue);
 
         // Loading by code, since ID will vary. template_code is not actually used to load anywhere else.

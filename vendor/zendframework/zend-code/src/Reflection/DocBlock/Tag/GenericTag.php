@@ -31,7 +31,7 @@ class GenericTag implements TagInterface, PrototypeGenericInterface
     /**
      * @var array
      */
-    protected $values = [];
+    protected $values = array();
 
     /**
      * @param  string $contentSplitCharacter

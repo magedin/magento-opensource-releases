@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,20 +17,6 @@ use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
  */
 class Curl extends AbstractCurl implements CatalogProductAttributeInterface
 {
-    /**
-     * Relative action path with parameters.
-     *
-     * @var string
-     */
-    protected $urlActionPath = 'catalog/product_attribute/save/back/edit';
-
-    /**
-     * Message for Exception when was received not successful response.
-     *
-     * @var string
-     */
-    protected $responseExceptionMessage = 'Product Attribute creating by curl handler was not successful!';
-
     /**
      * Mapping values for data.
      *
@@ -61,14 +47,6 @@ class Curl extends AbstractCurl implements CatalogProductAttributeInterface
             'No' => 0,
             'Yes' => 1,
         ],
-        'is_global' => [
-            'Store View' => '0',
-            'Global' => '1',
-        ],
-        'used_in_product_listing' => [
-            'No' => '0',
-            'Yes' => '1',
-        ],
     ];
 
     /**
@@ -98,16 +76,14 @@ class Curl extends AbstractCurl implements CatalogProductAttributeInterface
             unset($data['options']);
         }
 
-        $data = $this->changeStructureOfTheData($data);
-        $url = $_ENV['app_backend_url'] . $this->urlActionPath;
+        $url = $_ENV['app_backend_url'] . 'catalog/product_attribute/save/back/edit';
         $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         $curl->write($url, $data);
         $response = $curl->read();
         $curl->close();
 
         if (!strpos($response, 'data-ui-id="messages-message-success"')) {
-            $this->_eventManager->dispatchEvent(['curl_failed'], [$response]);
-            throw new \Exception($this->responseExceptionMessage);
+            throw new \Exception("Product Attribute creating by curl handler was not successful! \n" . $response);
         }
 
         $resultData = [];
@@ -127,14 +103,5 @@ class Curl extends AbstractCurl implements CatalogProductAttributeInterface
         }
 
         return $resultData;
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    protected function changeStructureOfTheData(array $data)
-    {
-        return $data;
     }
 }

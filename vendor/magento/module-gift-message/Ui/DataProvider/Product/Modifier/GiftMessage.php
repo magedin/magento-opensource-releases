@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GiftMessage\Ui\DataProvider\Product\Modifier;
@@ -13,7 +13,6 @@ use Magento\GiftMessage\Helper\Message;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Ui\Component\Form\Element\Checkbox;
 use Magento\Ui\Component\Form\Field;
-use Magento\Catalog\Model\Product\Attribute\Source\Boolean;
 
 /**
  * Class GiftMessageDataProvider
@@ -58,12 +57,13 @@ class GiftMessage extends AbstractModifier
     public function modifyData(array $data)
     {
         $modelId = $this->locator->getProduct()->getId();
-        $useConfigValue = Boolean::VALUE_USE_CONFIG;
+        $value = '';
 
-        $isConfigUsed = isset($data[$modelId][static::DATA_SOURCE_DEFAULT][static::FIELD_MESSAGE_AVAILABLE])
-            && $data[$modelId][static::DATA_SOURCE_DEFAULT][static::FIELD_MESSAGE_AVAILABLE] == $useConfigValue;
+        if (isset($data[$modelId][static::DATA_SOURCE_DEFAULT][static::FIELD_MESSAGE_AVAILABLE])) {
+            $value = $data[$modelId][static::DATA_SOURCE_DEFAULT][static::FIELD_MESSAGE_AVAILABLE];
+        }
 
-        if ($isConfigUsed || empty($modelId)) {
+        if ('' === $value) {
             $data[$modelId][static::DATA_SOURCE_DEFAULT][static::FIELD_MESSAGE_AVAILABLE] =
                 $this->getValueFromConfig();
             $data[$modelId][static::DATA_SOURCE_DEFAULT]['use_config_' . static::FIELD_MESSAGE_AVAILABLE] = '1';
@@ -129,8 +129,14 @@ class GiftMessage extends AbstractModifier
                             'data' => [
                                 'config' => [
                                     'dataScope' => static::FIELD_MESSAGE_AVAILABLE,
+                                    'imports' => [
+                                        'disabled' =>
+                                            '${$.parentName}.use_config_'
+                                            . static::FIELD_MESSAGE_AVAILABLE
+                                            . ':checked',
+                                    ],
                                     'additionalClasses' => 'admin__field-x-small',
-                                    'component' => 'Magento_Ui/js/form/element/single-checkbox-use-config',
+                                    'formElement' => Checkbox::NAME,
                                     'componentType' => Field::NAME,
                                     'prefer' => 'toggle',
                                     'valueMap' => [
@@ -154,14 +160,6 @@ class GiftMessage extends AbstractModifier
                                         'false' => '0',
                                         'true' => '1',
                                     ],
-                                    'exports' => [
-                                        'checked' => '${$.parentName}.' . static::FIELD_MESSAGE_AVAILABLE
-                                            . ':isUseConfig',
-                                    ],
-                                    'imports' => [
-                                        'disabled' => '${$.parentName}.' . static::FIELD_MESSAGE_AVAILABLE
-                                            . ':isUseDefault',
-                                    ]
                                 ],
                             ],
                         ],

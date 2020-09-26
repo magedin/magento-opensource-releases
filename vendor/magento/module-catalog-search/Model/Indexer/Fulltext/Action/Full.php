@@ -1,17 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Indexer\Fulltext\Action;
 
 use Magento\CatalogSearch\Model\Indexer\Fulltext;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResourceConnection;
 
 /**
- * Class provides iterator through number of products suitable for fulltext indexation
- *
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -33,8 +30,6 @@ class Full
      * Index values separator
      *
      * @var string
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::$separator
      */
     protected $separator = ' | ';
 
@@ -42,7 +37,6 @@ class Full
      * Array of \DateTime objects per store
      *
      * @var \DateTime[]
-     * @deprecated Not used anymore
      */
     protected $dates = [];
 
@@ -50,8 +44,6 @@ class Full
      * Product Type Instances cache
      *
      * @var array
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::$productTypes
      */
     protected $productTypes = [];
 
@@ -59,8 +51,6 @@ class Full
      * Product Emulators cache
      *
      * @var array
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::$productEmulators
      */
     protected $productEmulators = [];
 
@@ -87,8 +77,6 @@ class Full
      * Catalog product type
      *
      * @var \Magento\Catalog\Model\Product\Type
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::$catalogProductType
      */
     protected $catalogProductType;
 
@@ -103,7 +91,6 @@ class Full
      * Core store config
      *
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     * @deprecated Not used anymore
      */
     protected $scopeConfig;
 
@@ -111,8 +98,6 @@ class Full
      * Store manager
      *
      * @var \Magento\Store\Model\StoreManagerInterface
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::$storeManager
      */
     protected $storeManager;
 
@@ -123,25 +108,21 @@ class Full
 
     /**
      * @var \Magento\Framework\Indexer\SaveHandler\IndexerInterface
-     * @deprecated As part of self::cleanIndex()
      */
     protected $indexHandler;
 
     /**
      * @var \Magento\Framework\Stdlib\DateTime
-     * @deprecated Not used anymore
      */
     protected $dateTime;
 
     /**
      * @var \Magento\Framework\Locale\ResolverInterface
-     * @deprecated Not used anymore
      */
     protected $localeResolver;
 
     /**
      * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
-     * @deprecated Not used anymore
      */
     protected $localeDate;
 
@@ -152,19 +133,16 @@ class Full
 
     /**
      * @var \Magento\CatalogSearch\Model\ResourceModel\Fulltext
-     * @deprecated Not used anymore
      */
     protected $fulltextResource;
 
     /**
      * @var \Magento\Framework\Search\Request\Config
-     * @deprecated As part of self::reindexAll()
      */
     protected $searchRequestConfig;
 
     /**
      * @var \Magento\Framework\Search\Request\DimensionFactory
-     * @deprecated As part of self::cleanIndex()
      */
     private $dimensionFactory;
 
@@ -175,20 +153,8 @@ class Full
 
     /**
      * @var \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\IndexIteratorFactory
-     * @deprecated DataProvider used directly without IndexIterator
-     * @see self::$dataProvider
      */
     private $iteratorFactory;
-
-    /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    private $metadataPool;
-
-    /**
-     * @var DataProvider
-     */
-    private $dataProvider;
 
     /**
      * @param ResourceConnection $resource
@@ -209,8 +175,6 @@ class Full
      * @param \Magento\Framework\Search\Request\DimensionFactory $dimensionFactory
      * @param \Magento\Framework\Indexer\ConfigInterface $indexerConfig
      * @param \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\IndexIteratorFactory $indexIteratorFactory
-     * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param DataProvider $dataProvider
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -231,9 +195,7 @@ class Full
         \Magento\CatalogSearch\Model\ResourceModel\Fulltext $fulltextResource,
         \Magento\Framework\Search\Request\DimensionFactory $dimensionFactory,
         \Magento\Framework\Indexer\ConfigInterface $indexerConfig,
-        \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\IndexIteratorFactory $indexIteratorFactory,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool = null,
-        DataProvider $dataProvider = null
+        \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\IndexIteratorFactory $indexIteratorFactory
     ) {
         $this->resource = $resource;
         $this->connection = $resource->getConnection();
@@ -254,16 +216,11 @@ class Full
         $this->fulltextResource = $fulltextResource;
         $this->dimensionFactory = $dimensionFactory;
         $this->iteratorFactory = $indexIteratorFactory;
-        $this->metadataPool = $metadataPool ?: ObjectManager::getInstance()
-            ->get(\Magento\Framework\EntityManager\MetadataPool::class);
-        $this->dataProvider = $dataProvider ?: ObjectManager::getInstance()->get(DataProvider::class);
     }
 
     /**
      * Rebuild whole fulltext index for all stores
      *
-     * @deprecated Please use \Magento\CatalogSearch\Model\Indexer\Fulltext::executeFull instead
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext::executeFull
      * @return void
      */
     public function reindexAll()
@@ -290,47 +247,35 @@ class Full
     /**
      * Get parents IDs of product IDs to be re-indexed
      *
-     * @deprecated as separate service was introduced
-     * @see \Magento\CatalogSearch\Model\Indexer\ParentProductsResolver::getParentProductIds()
-     *
      * @param int[] $entityIds
      * @return int[]
      */
     protected function getProductIdsFromParents(array $entityIds)
     {
-        /** @var \Magento\Framework\EntityManager\EntityMetadataInterface $metadata */
-        $metadata = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class);
-        $fieldForParent = $metadata->getLinkField();
-
-        $select = $this->connection
+        return $this->connection
             ->select()
-            ->from(['relation' => $this->getTable('catalog_product_relation')], [])
+            ->from($this->getTable('catalog_product_relation'), 'parent_id')
             ->distinct(true)
             ->where('child_id IN (?)', $entityIds)
-            ->join(
-                ['cpe' => $this->getTable('catalog_product_entity')],
-                'relation.parent_id = cpe.' . $fieldForParent,
-                ['cpe.entity_id']
-            );
-        return $this->connection->fetchCol($select);
+            ->where('parent_id NOT IN (?)', $entityIds)
+            ->query()
+            ->fetchAll(\Zend_Db::FETCH_COLUMN);
     }
 
     /**
      * Regenerate search index for specific store
      *
-     * To be suitable for indexation product must meet set of requirements:
-     * - to be visible on frontend
-     * - to be enabled
-     * - in case product is composite at least one sub product must be enabled
-     *
      * @param int $storeId Store View Id
-     * @param int[] $productIds Product Entity Id
+     * @param int|array $productIds Product Entity Id
      * @return \Generator
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function rebuildStoreIndex($storeId, $productIds = null)
     {
         if ($productIds !== null) {
-            $productIds = array_unique($productIds);
+            $productIds = array_unique(array_merge($productIds, $this->getProductIdsFromParents($productIds)));
         }
         // prepare searchable attributes
         $staticFields = [];
@@ -345,129 +290,27 @@ class Full
             'datetime' => array_keys($this->getSearchableAttributes('datetime')),
         ];
 
-        $lastProductId = 0;
-        do {
-            $products = $this->dataProvider
-                ->getSearchableProducts($storeId, $staticFields, $productIds, $lastProductId);
-
-            $productsIds = array_column($products, 'entity_id');
-            $relatedProducts = $this->getRelatedProducts($products);
-            $productsIds = array_merge($productsIds, array_values($relatedProducts));
-
-            $productsAttributes = $this->dataProvider->getProductAttributes($storeId, $productsIds, $dynamicFields);
-
-            foreach ($products as $productData) {
-                $lastProductId = $productData['entity_id'];
-
-                if (!$this->isProductVisible($productData['entity_id'], $productsAttributes) ||
-                    !$this->isProductEnabled($productData['entity_id'], $productsAttributes)
-                ) {
-                    continue;
-                }
-
-                $productIndex = [$productData['entity_id'] => $productsAttributes[$productData['entity_id']]];
-                if (isset($relatedProducts[$productData['entity_id']])) {
-                    $childProductsIndex = $this->getChildProductsIndex(
-                        $productData['entity_id'],
-                        $relatedProducts,
-                        $productsAttributes
-                    );
-                    if (empty($childProductsIndex)) {
-                        continue;
-                    }
-                    $productIndex = $productIndex + $childProductsIndex;
-                }
-
-                $index = $this->dataProvider->prepareProductIndex($productIndex, $productData, $storeId);
-                yield $productData['entity_id'] => $index;
-            }
-        } while (count($products) > 0);
-    }
-
-    /**
-     * Get related (child) products ids
-     *
-     * Load related (child) products ids for composite product type
-     *
-     * @param array $products
-     * @return array
-     */
-    private function getRelatedProducts($products)
-    {
-        $relatedProducts = [];
-        foreach ($products as $productData) {
-            $relatedProducts[$productData['entity_id']] = $this->dataProvider->getProductChildIds(
-                $productData['entity_id'],
-                $productData['type_id']
-            );
-        }
-        return array_filter($relatedProducts);
-    }
-
-    /**
-     * Performs check that product is visible on Store Front
-     *
-     * Check that product is visible on Store Front using visibility attribute
-     * and allowed visibility values.
-     *
-     * @param int $productId
-     * @param array $productsAttributes
-     * @return bool
-     */
-    private function isProductVisible($productId, array $productsAttributes)
-    {
+        // status and visibility filter
         $visibility = $this->getSearchableAttribute('visibility');
-        $allowedVisibility = $this->engine->getAllowedVisibility();
-        return isset($productsAttributes[$productId]) &&
-            isset($productsAttributes[$productId][$visibility->getId()]) &&
-            in_array($productsAttributes[$productId][$visibility->getId()], $allowedVisibility);
-    }
-
-    /**
-     * Performs check that product is enabled on Store Front
-     *
-     * Check that product is enabled on Store Front using status attribute
-     * and statuses allowed to be visible on Store Front.
-     *
-     * @param int $productId
-     * @param array $productsAttributes
-     * @return bool
-     */
-    private function isProductEnabled($productId, array $productsAttributes)
-    {
         $status = $this->getSearchableAttribute('status');
-        $allowedStatuses = $this->catalogProductStatus->getVisibleStatusIds();
-        return isset($productsAttributes[$productId]) &&
-            isset($productsAttributes[$productId][$status->getId()]) &&
-            in_array($productsAttributes[$productId][$status->getId()], $allowedStatuses);
-    }
+        $statusIds = $this->catalogProductStatus->getVisibleStatusIds();
+        $allowedVisibility = $this->engine->getAllowedVisibility();
 
-    /**
-     * Get data for index using related(child) products data
-     *
-     * Build data for index using child products(if any).
-     * Use only enabled child products {@see isProductEnabled}.
-     *
-     * @param int $parentId
-     * @param array $relatedProducts
-     * @param array $productsAttributes
-     * @return array
-     */
-    private function getChildProductsIndex($parentId, array $relatedProducts, array $productsAttributes)
-    {
-        $productIndex = [];
-        foreach ($relatedProducts[$parentId] as $productChildId) {
-            if ($this->isProductEnabled($productChildId, $productsAttributes)) {
-                $productIndex[$productChildId] = $productsAttributes[$productChildId];
-            }
-        }
-        return $productIndex;
+        return $this->iteratorFactory->create([
+            'storeId' => $storeId,
+            'productIds' => $productIds,
+            'staticFields' => $staticFields,
+            'dynamicFields' => $dynamicFields,
+            'visibility' => $visibility,
+            'allowedVisibility' => $allowedVisibility,
+            'status' => $status,
+            'statusIds' => $statusIds
+        ]);
     }
 
     /**
      * Clean search index data for store
      *
-     * @deprecated As part of self::reindexAll()
      * @param int $storeId
      * @return void
      */
@@ -481,7 +324,6 @@ class Full
      * Retrieve EAV Config Singleton
      *
      * @return \Magento\Eav\Model\Config
-     * @deprecated Use $self::$eavConfig directly
      */
     protected function getEavConfig()
     {
@@ -510,7 +352,7 @@ class Full
                 ['engine' => $this->engine, 'attributes' => $attributes]
             );
 
-            $entity = $this->eavConfig->getEntityType(\Magento\Catalog\Model\Product::ENTITY)->getEntity();
+            $entity = $this->getEavConfig()->getEntityType(\Magento\Catalog\Model\Product::ENTITY)->getEntity();
 
             foreach ($attributes as $attribute) {
                 $attribute->setEntity($entity);
@@ -554,14 +396,12 @@ class Full
             }
         }
 
-        return $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $attribute);
+        return $this->getEavConfig()->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $attribute);
     }
 
     /**
      * Returns expression for field unification
      *
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::unifyField()
      * @param string $field
      * @param string $backendType
      * @return \Zend_Db_Expr
@@ -579,8 +419,6 @@ class Full
     /**
      * Retrieve Product Type Instance
      *
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::getProductTypeInstance()
      * @param string $typeId
      * @return \Magento\Catalog\Model\Product\Type\AbstractType
      */
@@ -597,8 +435,6 @@ class Full
     /**
      * Retrieve Product Emulator (Magento Object)
      *
-     * @deprecated Moved to \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider
-     * @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider::getProductEmulator()
      * @param string $typeId
      * @return \Magento\Framework\DataObject
      */

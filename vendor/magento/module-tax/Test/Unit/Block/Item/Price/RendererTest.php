@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Test\Unit\Block\Item\Price;
@@ -94,9 +94,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($flag, $this->renderer->displayPriceInclTax());
     }
 
-    /**
-     * @return array
-     */
     public function testDisplayPriceInclTaxDataProvider()
     {
         $data = [
@@ -144,9 +141,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($flag, $this->renderer->displayPriceExclTax());
     }
 
-    /**
-     * @return array
-     */
     public function testDisplayPriceExclTaxDataProvider()
     {
         $data = [
@@ -194,9 +188,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($flag, $this->renderer->displayBothPrices());
     }
 
-    /**
-     * @return array
-     */
     public function testDisplayBothPricesDataProvider()
     {
         $data = [

@@ -16,7 +16,7 @@ class Mock implements FilterInterface
      *
      * @var array
      */
-    public $events = [];
+    public $events = array();
 
     /**
      * Returns TRUE to accept the message

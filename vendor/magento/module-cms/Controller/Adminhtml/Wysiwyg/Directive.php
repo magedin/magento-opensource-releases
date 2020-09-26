@@ -1,27 +1,15 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Controller\Adminhtml\Wysiwyg;
 
 use Magento\Backend\App\Action;
-use Magento\Cms\Model\Template\Filter;
-use Magento\Cms\Model\Wysiwyg\Config;
 
-/**
- * Process template text for wysiwyg editor.
- */
-class Directive extends Action
+class Directive extends \Magento\Backend\App\Action
 {
-    /**
-     * Authorization level of a basic admin session.
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Cms::media_gallery';
-
     /**
      * @var \Magento\Framework\Url\DecoderInterface
      */
@@ -56,28 +44,22 @@ class Directive extends Action
     {
         $directive = $this->getRequest()->getParam('___directive');
         $directive = $this->urlDecoder->decode($directive);
-
+        $imagePath = $this->_objectManager->create('Magento\Cms\Model\Template\Filter')->filter($directive);
+        /** @var \Magento\Framework\Image\Adapter\AdapterInterface $image */
+        $image = $this->_objectManager->get('Magento\Framework\Image\AdapterFactory')->create();
+        /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
+        $resultRaw = $this->resultRawFactory->create();
         try {
-            /** @var Filter $filter */
-            $filter = $this->_objectManager->create(Filter::class);
-            $imagePath = $filter->filter($directive);
-            /** @var \Magento\Framework\Image\Adapter\AdapterInterface $image */
-            $image = $this->_objectManager->get(\Magento\Framework\Image\AdapterFactory::class)->create();
-            /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
-            $resultRaw = $this->resultRawFactory->create();
             $image->open($imagePath);
             $resultRaw->setHeader('Content-Type', $image->getMimeType());
             $resultRaw->setContents($image->getImage());
         } catch (\Exception $e) {
-            /** @var Config $config */
-            $config = $this->_objectManager->get(Config::class);
-            $imagePath = $config->getSkinImagePlaceholderPath();
+            $imagePath = $this->_objectManager->get('Magento\Cms\Model\Wysiwyg\Config')->getSkinImagePlaceholderPath();
             $image->open($imagePath);
             $resultRaw->setHeader('Content-Type', $image->getMimeType());
             $resultRaw->setContents($image->getImage());
-            $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
+            $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
         }
-
         return $resultRaw;
     }
 }

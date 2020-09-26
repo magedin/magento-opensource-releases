@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true*/
@@ -36,8 +36,6 @@ define(
                 braintreeDeviceData: null,
                 paymentMethodNonce: null,
                 lastBillingAddress: null,
-                ccCode: null,
-                ccMessageContainer: null,
                 validatorManager: validatorManager,
                 code: 'braintree',
 
@@ -64,22 +62,10 @@ define(
                     },
 
                     /**
-                     * Device data initialization
-                     *
-                     * @param {Object} checkout
-                     */
-                    onReady: function (checkout) {
-                        braintree.checkout = checkout;
-                        braintree.onReady();
-                    },
-
-                    /**
                      * Triggers on any Braintree error
-                     * @param {Object} response
                      */
-                    onError: function (response) {
-                        braintree.showError($t('Payment ' + this.getTitle() + ' can\'t be initialized'));
-                        throw response.message;
+                    onError: function () {
+                        this.paymentMethodNonce = null;
                     },
 
                     /**
@@ -104,7 +90,7 @@ define(
                 this._super()
                     .observe(['active']);
                 this.validatorManager.initialize();
-                this.initClientConfig();
+                this.initBraintree();
 
                 return this;
             },
@@ -136,41 +122,11 @@ define(
              * @param {Boolean} isActive
              */
             onActiveChange: function (isActive) {
-                if (!isActive) {
+                if (!isActive || this.isSingleUse()) {
                     return;
                 }
 
-                this.restoreMessageContainer();
-                this.restoreCode();
-
-                /**
-                 * Define onReady callback
-                 */
-                braintree.onReady = function () {};
-                this.initBraintree();
-            },
-
-            /**
-             * Restore original message container for cc-form component
-             */
-            restoreMessageContainer: function () {
-                this.messageContainer = this.ccMessageContainer;
-            },
-
-            /**
-             * Restore original code for cc-form component
-             */
-            restoreCode: function () {
-                this.code = this.ccCode;
-            },
-
-            /** @inheritdoc */
-            initChildren: function () {
-                this._super();
-                this.ccMessageContainer = this.messageContainer;
-                this.ccCode = this.code;
-
-                return this;
+                this.reInitBraintree();
             },
 
             /**
@@ -190,9 +146,17 @@ define(
             },
 
             /**
-             * Init Braintree configuration
+             * Create Braintree configuration
              */
             initBraintree: function () {
+                this.initClientConfig();
+                braintree.config = _.extend(braintree.config, this.clientConfig);
+            },
+
+            /**
+             * Re-init Braintree configuration
+             */
+            reInitBraintree: function () {
                 var intervalId = setInterval(function () {
                     // stop loader when frame will be loaded
                     if ($('#braintree-hosted-field-number').length) {
@@ -200,12 +164,6 @@ define(
                         fullScreenLoader.stopLoader();
                     }
                 }, 500);
-
-                if (braintree.checkout) {
-                    braintree.checkout.teardown(function () {
-                        braintree.checkout = null;
-                    });
-                }
 
                 fullScreenLoader.startLoader();
                 braintree.setConfig(this.clientConfig);
@@ -231,7 +189,6 @@ define(
                     onReady: function (checkout) {
                         braintree.checkout = checkout;
                         this.additionalData['device_data'] = checkout.deviceData;
-                        braintree.onReady();
                     }
                 };
 
@@ -352,6 +309,14 @@ define(
                 });
 
                 return false;
+            },
+
+            /**
+             * Check if Braintree configured without PayPal
+             * @returns {Boolean}
+             */
+            isSingleUse: function () {
+                return window.checkoutConfig.payment[this.getCode()].isSingleUse;
             }
         });
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -77,9 +77,6 @@ class ColumnsRendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->model->render($this->selectMock, $sql));
     }
 
-    /**
-     * @return array
-     */
     public function renderDataProvider()
     {
         return [

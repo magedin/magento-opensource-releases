@@ -66,9 +66,6 @@ class Util
         case 426:
             throw new Exception\UpgradeRequired();
             break;
-        case 429:
-            throw new Exception\TooManyRequests();
-            break;
         case 500:
             throw new Exception\ServerError();
             break;
@@ -157,8 +154,6 @@ class Util
             'Braintree_MerchantAccountGateway' => 'merchantAccount',
             'Braintree\OAuthCredentials' => 'credentials',
             'Braintree_OAuthCredentials' => 'credentials',
-            'Braintree\OAuthResult' => 'result',
-            'Braintree_OAuthResult' => 'result',
             'Braintree\PayPalAccount' => 'paypalAccount',
             'Braintree_PayPalAccount' => 'paypalAccount',
             'Braintree\PayPalAccountGateway' => 'paypalAccount',

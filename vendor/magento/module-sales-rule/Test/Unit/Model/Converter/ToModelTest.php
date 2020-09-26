@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Test\Unit\Model\Converter;
@@ -273,9 +273,6 @@ class ToModelTest extends \PHPUnit_Framework_TestCase
         $this->model->toModel($dataModel);
     }
 
-    /**
-     * @return array
-     */
     public function expectedDatesProvider()
     {
         return [

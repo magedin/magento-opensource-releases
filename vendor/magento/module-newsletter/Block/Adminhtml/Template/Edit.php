@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -65,6 +65,12 @@ class Edit extends Widget
      */
     protected function _prepareLayout()
     {
+        // Load Wysiwyg on demand and Prepare layout
+//        $block = $this->getLayout()->getBlock('head');
+//        if ($this->_wysiwygConfig->isEnabled() && $block) {
+//            $block->setCanLoadTinyMce(true);
+//        }
+
         $this->getToolbar()->addChild(
             'back_button',
             'Magento\Backend\Block\Widget\Button',
@@ -206,7 +212,7 @@ class Edit extends Widget
     }
 
     /**
-     * Return template name for JS
+     * Return return template name for JS
      *
      * @return string
      */

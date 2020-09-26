@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Model\ResourceModel\Stock;
@@ -230,8 +230,8 @@ class Status extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ' AND stock_status_index.stock_id = ?',
             Stock::DEFAULT_STOCK_ID
         );
-        $method = $isFilterInStock ? 'join' : 'joinLeft';
-        $collection->getSelect()->$method(
+
+        $collection->getSelect()->join(
             ['stock_status_index' => $this->getMainTable()],
             $joinCondition,
             ['is_salable' => 'stock_status']

@@ -18,9 +18,9 @@ class Radio extends MultiCheckbox
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributes = array(
         'type' => 'radio'
-    ];
+    );
 
     /**
      * Get validator
@@ -30,10 +30,10 @@ class Radio extends MultiCheckbox
     protected function getValidator()
     {
         if (null === $this->validator && !$this->disableInArrayValidator()) {
-            $this->validator = new InArrayValidator([
+            $this->validator = new InArrayValidator(array(
                 'haystack'  => $this->getValueOptionsValues(),
                 'strict'    => false,
-            ]);
+            ));
         }
         return $this->validator;
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -166,9 +166,6 @@ class TierPriceManagementTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public function getListDataProvider()
     {
         return [
@@ -403,9 +400,6 @@ class TierPriceManagementTest extends \PHPUnit_Framework_TestCase
         $this->service->add('product_sku', 1, $price, $qty);
     }
 
-    /**
-     * @return array
-     */
     public function addDataProvider()
     {
         return [

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -18,12 +18,6 @@ window.Variables = {
     overlayShowEffectOptions: null,
     overlayHideEffectOptions: null,
     insertFunction: 'Variables.insertVariable',
-    variablesValue: [],
-
-    /**
-     * @param {*} textareaElementId
-     * @param {Function} insertFunction
-     */
     init: function(textareaElementId, insertFunction) {
         if ($(textareaElementId)) {
             this.textareaElementId = textareaElementId;
@@ -33,28 +27,21 @@ window.Variables = {
         }
     },
 
-    /**
-     * reset data.
-     */
     resetData: function() {
         this.variablesContent = null;
         this.dialogWindow = null;
     },
 
-    /**
-     * @param {Object} variables
-     */
     openVariableChooser: function(variables) {
         if (this.variablesContent == null && variables) {
             this.variablesContent = '<ul class="insert-variable">';
             variables.each(function(variableGroup) {
                 if (variableGroup.label && variableGroup.value) {
-                    this.variablesContent += '<li><b>' + variableGroup.label.escapeHTML() + '</b></li>';
+                    this.variablesContent += '<li><b>' + variableGroup.label + '</b></li>';
                     (variableGroup.value).each(function(variable){
                         if (variable.value && variable.label) {
-                            this.variablesValue.push(variable.value);
                             this.variablesContent += '<li>' +
-                                this.prepareVariableRow(this.variablesValue.length, variable.label) + '</li>';
+                                this.prepareVariableRow(variable.value, variable.label) + '</li>';
                         }
                     }.bind(this));
                 }
@@ -65,13 +52,9 @@ window.Variables = {
             this.openDialogWindow(this.variablesContent);
         }
     },
-
-    /**
-     * @param {*} variablesContent
-     */
     openDialogWindow: function (variablesContent) {
         var windowId = this.dialogWindowId;
-        jQuery('<div id="' + windowId + '">' + variablesContent + '</div>').modal({
+        jQuery('<div id="' + windowId + '">' + Variables.variablesContent + '</div>').modal({
             title: $t('Insert Variable...'),
             type: 'slide',
             buttons: [],
@@ -81,51 +64,30 @@ window.Variables = {
         });
 
         jQuery('#' + windowId).modal('openModal');
-    },
 
-    /**
-     * Close dialog window.
-     */
+        variablesContent.evalScripts.bind(variablesContent).defer();
+    },
     closeDialogWindow: function() {
         jQuery('#' + this.dialogWindowId).modal('closeModal');
     },
-
-    /**
-     * @param {Number} index
-     * @param {*} varLabel
-     * @return {String}
-     */
-    prepareVariableRow: function (index, varLabel) {
-        return '<a href="#" onclick="' +
-            this.insertFunction +
-            '(' +
-            index +
-            ');return false;">' +
-            varLabel.escapeHTML() +
-            '</a>';
+    prepareVariableRow: function(varValue, varLabel) {
+        var value = (varValue).replace(/"/g, '&quot;').replace(/'/g, '\\&#39;');
+        var content = '<a href="#" onclick="'+this.insertFunction+'(\''+ value +'\');return false;">' + varLabel + '</a>';
+        return content;
     },
-
-    /**
-     * @param {*} variable
-     */
-    insertVariable: function(variable) {
+    insertVariable: function(value) {
         var windowId = this.dialogWindowId;
         jQuery('#' + windowId).modal('closeModal');
         var textareaElm = $(this.textareaElementId);
-        
         if (textareaElm) {
             var scrollPos = textareaElm.scrollTop;
-
-            if (!isNaN(variable)) {
-                updateElementAtCursor(textareaElm, Variables.variablesValue[variable - 1]);
-            } else {
-                updateElementAtCursor(textareaElm, variable);
-            }
+            updateElementAtCursor(textareaElm, value);
             textareaElm.focus();
             textareaElm.scrollTop = scrollPos;
             jQuery(textareaElm).change();
             textareaElm = null;
         }
+        return;
     }
 };
 
@@ -133,18 +95,9 @@ window.MagentovariablePlugin = {
     editor: null,
     variables: null,
     textareaId: null,
-
-    /**
-     * @param {*} editor
-     */
     setEditor: function(editor) {
         this.editor = editor;
     },
-
-    /**
-     * @param {String} url
-     * @param {*} textareaId
-     */
     loadChooser: function(url, textareaId) {
         this.textareaId = textareaId;
         if (this.variables == null) {
@@ -161,18 +114,11 @@ window.MagentovariablePlugin = {
         } else {
             this.openChooser(this.variables);
         }
+        return;
     },
-
-    /**
-     * @param {*} variables
-     */
     openChooser: function(variables) {
         Variables.openVariableChooser(variables);
     },
-
-    /**
-     * @param {*} value
-     */
     insertVariable : function (value) {
         if (this.textareaId) {
             Variables.init(this.textareaId);
@@ -181,6 +127,7 @@ window.MagentovariablePlugin = {
             Variables.closeDialogWindow();
             this.editor.execCommand('mceInsertContent', false, value);
         }
+        return;
     }
 };
 

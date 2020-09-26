@@ -194,15 +194,5 @@ class Gateway
     {
         return new TransparentRedirectGateway($this);
     }
-
-    /**
-     *
-     * @return UsBankAccountGateway
-     */
-    public function usBankAccount()
-    {
-        return new UsBankAccountGateway($this);
-    }
-
 }
 class_alias('Braintree\Gateway', 'Braintree_Gateway');

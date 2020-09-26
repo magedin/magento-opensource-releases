@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true*/
@@ -33,8 +33,8 @@ define([
                 .observe(['active']);
 
             // re-init payment method events
-            self.$selector.off('changePaymentMethod.' + this.getCode())
-                .on('changePaymentMethod.' + this.getCode(), this.changePaymentMethod.bind(this));
+            self.$selector.off('changePaymentMethod.' + this.code)
+                .on('changePaymentMethod.' + this.code, this.changePaymentMethod.bind(this));
 
             if (this.active()) {
                 $('#' + this.fieldset + ' input:radio:first').trigger('click');
@@ -50,7 +50,7 @@ define([
          * @returns {exports.changePaymentMethod}
          */
         changePaymentMethod: function (event, method) {
-            this.active(method === this.getCode());
+            this.active(method === this.code);
 
             return this;
         },
@@ -61,21 +61,13 @@ define([
          */
         onActiveChange: function (isActive) {
             if (!isActive) {
-                this.$selector.trigger('setVaultNotActive.' + this.getCode());
+                this.$selector.trigger('setVaultNotActive');
 
                 return;
             }
 
             $('#' + this.fieldset + ' input:radio:first').trigger('click');
-            window.order.addExcludedPaymentMethod(this.getCode());
-        },
-
-        /**
-         * Get Vault Payment method code
-         * @returns {String}
-         */
-        getCode: function () {
-            return this.code;
+            window.order.addExcludedPaymentMethod(this.code);
         }
     });
 });

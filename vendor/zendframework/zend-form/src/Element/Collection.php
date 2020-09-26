@@ -209,7 +209,7 @@ class Collection extends Fieldset
         }
 
         // Check to see if elements have been replaced or removed
-        $toRemove = [];
+        $toRemove = array();
         foreach ($this as $name => $elementOrFieldset) {
             if (isset($data[$name])) {
                 continue;
@@ -268,9 +268,9 @@ class Collection extends Fieldset
      * @param array $values
      * @return array|mixed|void
      */
-    public function bindValues(array $values = [])
+    public function bindValues(array $values = array())
     {
-        $collection = [];
+        $collection = array();
         foreach ($values as $name => $value) {
             $element = $this->get($name);
 
@@ -512,10 +512,10 @@ class Collection extends Fieldset
         }
 
         if (!is_array($this->object)) {
-            return [];
+            return array();
         }
 
-        $values = [];
+        $values = array();
 
         foreach ($this->object as $key => $value) {
             // If a hydrator is provided, our work here is done

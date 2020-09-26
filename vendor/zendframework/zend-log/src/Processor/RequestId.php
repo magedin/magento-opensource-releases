@@ -35,7 +35,7 @@ class RequestId implements ProcessorInterface
         }
 
         if (!isset($event['extra'])) {
-            $event['extra'] = [];
+            $event['extra'] = array();
         }
 
         $event['extra']['requestId'] = $this->getIdentifier();
@@ -53,7 +53,9 @@ class RequestId implements ProcessorInterface
             return $this->identifier;
         }
 
-        $requestTime = $_SERVER['REQUEST_TIME_FLOAT'];
+        $requestTime = (PHP_VERSION_ID >= 50400)
+                     ? $_SERVER['REQUEST_TIME_FLOAT']
+                     : $_SERVER['REQUEST_TIME'];
 
         if (Console::isConsole()) {
             $this->identifier = md5($requestTime);

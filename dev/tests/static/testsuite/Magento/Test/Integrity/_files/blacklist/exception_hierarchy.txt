@@ -3,4 +3,3 @@
 \Magento\Framework\Config\Dom\ValidationException
 \Magento\Framework\Search\Request\EmptyRequestDataException
 \Magento\Framework\Search\Request\NonExistingRequestNameException
-\Magento\Catalog\Model\Product\Image\NotLoadInfoImageException

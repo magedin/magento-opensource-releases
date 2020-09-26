@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Test\Unit\Observer;
@@ -75,9 +75,6 @@ class AddSwatchAttributeTypeObserverTest extends \PHPUnit_Framework_TestCase
         $this->observerMock->execute($this->eventObserverMock);
     }
 
-    /**
-     * @return array
-     */
     public function dataAddSwatch()
     {
         return [

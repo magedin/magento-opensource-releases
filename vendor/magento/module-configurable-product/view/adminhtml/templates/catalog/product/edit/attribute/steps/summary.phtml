@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,7 +17,6 @@
         <!-- ko if: gridNew().length -->
         <!-- ko template: {name: getGridTemplate(), data: {
             grid: gridNew,
-            paging: pagingNew,
             id: getGridId(),
             title: $t('New Product Review'),
             note: $t('Here are the products you\'re about to create.')
@@ -26,7 +25,6 @@
 
         <!-- ko if: gridExisting().length -->
         <!-- ko template: {name: getGridTemplate(), data: {
-            paging: pagingExisting,
             grid: gridExisting,
             id: getGridId(),
             title: $t('Associated Products'),
@@ -36,7 +34,6 @@
 
         <!-- ko if: gridDeleted().length -->
         <!-- ko template: {name: getGridTemplate(), data: {
-            paging: pagingDeleted,
             grid: gridDeleted,
             id: getGridId(),
             title: $t('Disassociated Products'),

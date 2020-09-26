@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -105,9 +105,7 @@ class Totals extends Block
      */
     public function getGrandTotal()
     {
-        $this->waitForUpdatedTotals();
         $grandTotal = $this->_rootElement->find($this->grandTotal, Locator::SELECTOR_CSS)->getText();
-
         return $this->escapeCurrency($grandTotal);
     }
 
@@ -119,7 +117,6 @@ class Totals extends Block
     public function getGrandTotalIncludingTax()
     {
         $priceElement = $this->_rootElement->find($this->grandTotalInclTax, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -131,7 +128,6 @@ class Totals extends Block
     public function getGrandTotalExcludingTax()
     {
         $priceElement = $this->_rootElement->find($this->grandTotalExclTax, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -143,7 +139,6 @@ class Totals extends Block
     public function getTax()
     {
         $priceElement = $this->_rootElement->find($this->tax, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -165,7 +160,6 @@ class Totals extends Block
     public function getSubtotal()
     {
         $subTotal = $this->_rootElement->find($this->subtotal, Locator::SELECTOR_CSS)->getText();
-        
         return $this->escapeCurrency($subTotal);
     }
 
@@ -177,7 +171,6 @@ class Totals extends Block
     public function getSubtotalIncludingTax()
     {
         $priceElement = $this->_rootElement->find($this->subtotalInclTax, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -189,7 +182,6 @@ class Totals extends Block
     public function getSubtotalExcludingTax()
     {
         $priceElement = $this->_rootElement->find($this->subtotalExclTax, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -202,7 +194,6 @@ class Totals extends Block
     protected function escapeCurrency($price)
     {
         preg_match("/^\\D*\\s*([\\d,\\.]+)\\s*\\D*$/", $price, $matches);
-        
         return (isset($matches[1])) ? $matches[1] : null;
     }
 
@@ -214,7 +205,6 @@ class Totals extends Block
     public function getDiscount()
     {
         $priceElement = $this->_rootElement->find($this->discount, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -226,7 +216,6 @@ class Totals extends Block
     public function getShippingPrice()
     {
         $priceElement = $this->_rootElement->find($this->shippingPriceSelector, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 
@@ -238,7 +227,6 @@ class Totals extends Block
     public function getShippingPriceInclTax()
     {
         $priceElement = $this->_rootElement->find($this->shippingPriceInclTaxSelector, Locator::SELECTOR_CSS);
-        
         return $priceElement->isVisible() ? $this->escapeCurrency($priceElement->getText()) : null;
     }
 

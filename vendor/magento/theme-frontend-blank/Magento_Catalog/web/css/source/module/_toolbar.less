@@ -1,5 +1,5 @@
 // /**
-//  * Copyright © Magento, Inc. All rights reserved.
+//  * Copyright © 2016 Magento. All rights reserved.
 //  * See COPYING.txt for license details.
 //  */
 
@@ -188,10 +188,11 @@
         .lib-icon-font-symbol(@icon-list);
     }
 
-    .toolbar {
-        .products.wrapper ~ & .limiter {
+    .limiter {
+        float: right;
+
+        .products.wrapper ~ .toolbar & {
             display: block;
-            float: right;
         }
     }
 }

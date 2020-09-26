@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -23,10 +23,6 @@ define([
             listens: {
                 'insertData': 'processingInsertData',
                 'recordData': 'initElements setToInsertData'
-            },
-            mappingSettings: {
-                enabled: true,
-                distinct: true
             }
         },
 
@@ -104,19 +100,10 @@ define([
          * @param {String|Number} recordId
          */
         deleteRecord: function (index, recordId) {
-            this.updateInsertData(recordId);
-            this._super();
-        },
-
-        /**
-         * Updates insertData when record is deleted
-         *
-         * @param {String|Number} recordId
-         */
-        updateInsertData: function (recordId) {
             var data = this.getElementData(this.insertData(), recordId),
                 prop = this.map[this.identificationDRProperty];
 
+            this._super();
             this.insertData(_.reject(this.source.get(this.dataProvider), function (recordData) {
                 return ~~recordData[prop] === ~~data[prop];
             }, this));
@@ -176,7 +163,7 @@ define([
             var changes = [],
                 tmpObj = {};
 
-            if (data.length !== this.relatedData.length) {
+            if (data.length !== this.relatedData) {
                 data.forEach(function (obj) {
                     tmpObj[this.identificationDRProperty] = obj[this.identificationDRProperty];
 
@@ -223,25 +210,19 @@ define([
             var obj = {},
                 tmpObj = {};
 
-            if (this.mappingSettings.enabled) {
-                _.each(this.map, function (prop, index) {
-                    obj[index] = !_.isUndefined(data[prop]) ? data[prop] : '';
-                }, this);
-            } else {
-                obj = data;
-            }
+            _.each(this.map, function (prop, index) {
+                obj[index] = !_.isUndefined(data[prop]) ? data[prop] : '';
+            }, this);
 
-            if (this.mappingSettings.distinct) {
-                tmpObj[this.identificationDRProperty] = obj[this.identificationDRProperty];
-
-                if (_.findWhere(this.recordData(), tmpObj)) {
-                    return false;
-                }
-            }
+            tmpObj[this.identificationDRProperty] = obj[this.identificationDRProperty];
 
             if (!obj.hasOwnProperty(this.positionProvider)) {
                 this.setMaxPosition();
                 obj[this.positionProvider] = this.maxPosition;
+            }
+
+            if (_.findWhere(this.recordData(), tmpObj)) {
+                return false;
             }
 
             this.source.set(this.dataScope + '.' + this.index + '.' + this.recordData().length, obj);

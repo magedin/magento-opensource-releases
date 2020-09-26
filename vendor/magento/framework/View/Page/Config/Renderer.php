@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Page\Config;
@@ -136,12 +136,6 @@ class Renderer implements RendererInterface
     protected function processMetadataContent($name, $content)
     {
         $method = 'get' . $this->string->upperCaseWords($name, '_', '');
-        if ($name === 'title') {
-            if (!$content) {
-                $content = $this->escaper->escapeHtml($this->pageConfig->$method()->get());
-            }
-            return $content;
-        }
         if (method_exists($this->pageConfig, $method)) {
             $content = $this->pageConfig->$method();
         }

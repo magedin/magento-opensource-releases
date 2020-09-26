@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,10 +13,7 @@ define([
     return Select.extend({
         defaults: {
             size: 5,
-            elementTmpl: 'ui/form/element/multiselect',
-            listens: {
-                value: 'setDifferedFromDefault setPrepareToSendData'
-            }
+            elementTmpl: 'ui/form/element/multiselect'
         },
 
         /**
@@ -39,21 +36,6 @@ define([
             }
 
             return _.isString(value) ? value.split(',') : value;
-        },
-
-        /**
-         * Sets the prepared data to dataSource
-         * by path, where key is component link to dataSource with
-         * suffix "-prepared-for-send".
-         *
-         * @param {Array} data - current component value
-         */
-        setPrepareToSendData: function (data) {
-            if (_.isUndefined(data) || !data.length) {
-                data = '';
-            }
-
-            this.source.set(this.dataScope + '-prepared-for-send', data);
         },
 
         /**

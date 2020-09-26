@@ -2,7 +2,7 @@
 /**
  * test Magento\Customer\Model\Metadata\Form\Date
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
@@ -113,9 +113,6 @@ class DateTest extends AbstractFormTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function validateValueDataProvider()
     {
         return [
@@ -167,9 +164,6 @@ class DateTest extends AbstractFormTestCase
         $this->assertSame($expected, $this->date->compactValue($value));
     }
 
-    /**
-     * @return array
-     */
     public function compactAndRestoreValueDataProvider()
     {
         return [

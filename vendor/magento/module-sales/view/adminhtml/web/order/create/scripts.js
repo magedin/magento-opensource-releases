@@ -1,6 +1,6 @@
 // jscs:disable
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -434,7 +434,7 @@ define([
         },
 
         applyCoupon : function(code){
-            this.loadArea(['items', 'shipping_method', 'totals', 'billing_method'], true, {'order[coupon][code]':code, reset_shipping: 0});
+            this.loadArea(['items', 'shipping_method', 'totals', 'billing_method'], true, {'order[coupon][code]':code, reset_shipping: true});
             this.orderItemChanged = false;
         },
 

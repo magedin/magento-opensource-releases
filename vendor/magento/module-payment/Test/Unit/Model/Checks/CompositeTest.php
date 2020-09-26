@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,15 +16,15 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsApplicable($expectation)
     {
-        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->disableOriginalConstructor()->setMethods(
+        $quote = $this->getMockBuilder('Magento\Quote\Model\Quote')->disableOriginalConstructor()->setMethods(
             []
         )->getMock();
         $paymentMethod = $this->getMockBuilder(
-            \Magento\Payment\Model\MethodInterface::class
+            '\Magento\Payment\Model\MethodInterface'
         )->disableOriginalConstructor()->setMethods([])->getMock();
 
         $specification = $this->getMockBuilder(
-            \Magento\Payment\Model\Checks\SpecificationInterface::class
+            'Magento\Payment\Model\Checks\SpecificationInterface'
         )->disableOriginalConstructor()->setMethods([])->getMock();
         $specification->expects($this->once())->method('isApplicable')->with($paymentMethod, $quote)->will(
             $this->returnValue($expectation)

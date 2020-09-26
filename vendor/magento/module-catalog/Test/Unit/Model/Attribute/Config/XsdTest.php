@@ -2,7 +2,7 @@
 /**
  * Test for validation rules implemented by XSD schema for catalog attributes configuration
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\Attribute\Config;
@@ -39,9 +39,6 @@ class XsdTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedErrors, $actualErrors);
     }
 
-    /**
-     * @return array
-     */
     public function exemplarXmlDataProvider()
     {
         return [

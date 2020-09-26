@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -98,9 +98,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
     }
 
-    /**
-     * @return object
-     */
     protected function getUut()
     {
         return $this->objectManagerHelper->getObject(
@@ -176,7 +173,7 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->selectMock
             ->expects($this->atLeastOnce())
             ->method('getPart')
-            ->will($this->returnValue(['main_table' => []]));
+            ->will($this->returnValue(['main_table' => '']));
 
         $this->selectMock->expects($this->atLeastOnce())->method('setPart');
 
@@ -222,9 +219,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->uut->getSelect() instanceof Select);
     }
 
-    /**
-     * @return array
-     */
     public function getSelectDataProvider()
     {
         $columnMock = $this->getMock('Zend_Db_Expr', ['__toString'], [], '', false);
@@ -251,9 +245,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->uut->wereFieldsToSelectChanged());
     }
 
-    /**
-     * @return array
-     */
     public function addFieldToSelectDataProvider()
     {
         return [
@@ -273,9 +264,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->uut->addExpressionFieldToSelect($alias, $expression, $fields) instanceof Uut);
     }
 
-    /**
-     * @return array
-     */
     public function addExpressionFieldToSelectDataProvider()
     {
         return [
@@ -300,9 +288,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedWereFieldsToSelectChanged, $this->uut->wereFieldsToSelectChanged());
     }
 
-    /**
-     * @return array
-     */
     public function removeFieldFromSelectDataProvider()
     {
         return [
@@ -390,9 +375,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->uut->getJoinedTables());
     }
 
-    /**
-     * @return array
-     */
     public function joinDataProvider()
     {
         return [
@@ -434,41 +416,26 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
  */
 class Uut extends AbstractCollection
 {
-    /**
-     * @return bool
-     */
     public function wereFieldsToSelectChanged()
     {
         return $this->_fieldsToSelectChanged;
     }
 
-    /**
-     * @return array|null
-     */
     public function getFieldsToSelect()
     {
         return $this->_fieldsToSelect;
     }
 
-    /**
-     * @param array $fields
-     */
     public function setFieldsToSelect(array $fields)
     {
         $this->_fieldsToSelect = $fields;
     }
 
-    /**
-     * @param $resource
-     */
     public function setResource($resource)
     {
         $this->_resource = $resource;
     }
 
-    /**
-     * @return array
-     */
     public function getJoinedTables()
     {
         return $this->_joinedTables;

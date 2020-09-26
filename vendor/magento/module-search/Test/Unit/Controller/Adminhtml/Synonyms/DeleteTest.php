@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -42,72 +42,70 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
      */
     protected $repository;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->messageManagerMock = $this->getMock(
-            \Magento\Framework\Message\ManagerInterface::class,
-            [],
+
+        $this->messageManagerMock = $this->getMock('Magento\Framework\Message\ManagerInterface', [], [], '', false);
+
+        $this->requestMock = $this->getMockForAbstractClass(
+            'Magento\Framework\App\RequestInterface',
             [],
             '',
-            false
+            false,
+            true,
+            true,
+            ['getParam']
         );
-        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['getParam', 'isPost'])
-            ->getMockForAbstractClass();
-        $this->requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManager\ObjectManager::class)
+
+        $this->objectManagerMock = $this->getMockBuilder('Magento\Framework\ObjectManager\ObjectManager')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
+
+        $this->resultRedirectMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\Redirect')
             ->setMethods(['setPath'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            \Magento\Backend\Model\View\Result\RedirectFactory::class
-        )
+
+        $this->resultRedirectFactoryMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\RedirectFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->resultRedirectFactoryMock->expects($this->atLeastOnce())
             ->method('create')
             ->willReturn($this->resultRedirectMock);
+
         $this->contextMock = $this->getMock(
-            \Magento\Backend\App\Action\Context::class,
+            '\Magento\Backend\App\Action\Context',
             [],
             [],
             '',
             false
         );
+
         $this->synonymGroupMock = $this->getMock(
-            \Magento\Search\Model\SynonymGroup::class,
+            'Magento\Search\Model\SynonymGroup',
             [],
             [],
             '',
             false
         );
-        $this->repository = $this->getMock(
-            \Magento\Search\Api\SynonymGroupRepositoryInterface::class,
-            [],
-            [],
-            '',
-            false
-        );
+
+        $this->repository = $this->getMock('Magento\Search\Api\SynonymGroupRepositoryInterface', [], [], '', false);
+
         $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->requestMock);
         $this->contextMock->expects($this->any())->method('getMessageManager')->willReturn($this->messageManagerMock);
         $this->contextMock->expects($this->any())->method('getObjectManager')->willReturn($this->objectManagerMock);
         $this->contextMock->expects($this->any())
             ->method('getResultRedirectFactory')
             ->willReturn($this->resultRedirectFactoryMock);
+
         $this->deleteController = $this->objectManager->getObject(
-            \Magento\Search\Controller\Adminhtml\Synonyms\Delete::class,
+            'Magento\Search\Controller\Adminhtml\Synonyms\Delete',
             [
                 'context' => $this->contextMock,
-                'synGroupRepository' => $this->repository,
+                'synGroupRepository' => $this->repository
             ]
         );
     }
@@ -115,12 +113,16 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     public function testDeleteAction()
     {
         $this->requestMock->expects($this->once())->method('getParam')->with('group_id')->willReturn(10);
+
         $this->repository->expects($this->once())->method('delete')->with($this->synonymGroupMock);
         $this->repository->expects($this->once())->method('get')->with(10)->willReturn($this->synonymGroupMock);
+
         $this->messageManagerMock->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('The synonym group has been deleted.'));
-        $this->messageManagerMock->expects($this->never())->method('addErrorMessage');
+
+        $this->messageManagerMock->expects($this->never())->method('addError');
+
         $this->resultRedirectMock->expects($this->once())->method('setPath')->with('*/*/')->willReturnSelf();
 
         $this->assertSame($this->resultRedirectMock, $this->deleteController->execute());
@@ -131,11 +133,13 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->willReturn(null);
+
         $this->messageManagerMock->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with(__('We can\'t find a synonym group to delete.'));
         $this->messageManagerMock->expects($this->never())
-            ->method('addSuccessMessage');
+            ->method('addSuccess');
+
         $this->resultRedirectMock->expects($this->once())
             ->method('setPath')
             ->with('*/*/')

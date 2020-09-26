@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -61,8 +61,7 @@ class SynonymActions extends Column
                     'confirm' => [
                         'title' => __('Delete'),
                         'message' => __('Are you sure you want to delete synonym group with id: %1?', $item['group_id'])
-                    ],
-                    'post' => true,
+                    ]
                 ];
                 $item[$name]['edit'] = [
                     'href' => $this->urlBuilder->getUrl(self::SYNONYM_URL_PATH_EDIT, ['group_id' => $item['group_id']]),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CmsUrlRewrite\Model;
@@ -12,10 +12,6 @@ class CmsPageUrlPathGenerator
     /** @var \Magento\Framework\Filter\FilterManager */
     protected $filterManager;
 
-    /**
-     * CmsPageUrlPathGenerator constructor.
-     * @param \Magento\Framework\Filter\FilterManager $filterManager
-     */
     public function __construct(
         \Magento\Framework\Filter\FilterManager $filterManager
     ) {

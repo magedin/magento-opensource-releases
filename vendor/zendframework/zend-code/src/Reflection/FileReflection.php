@@ -36,27 +36,27 @@ class FileReflection implements ReflectionInterface
     /**
      * @var string[]
      */
-    protected $namespaces = [];
+    protected $namespaces = array();
 
     /**
      * @var string[]
      */
-    protected $uses = [];
+    protected $uses = array();
 
     /**
      * @var string[]
      */
-    protected $requiredFiles = [];
+    protected $requiredFiles = array();
 
     /**
      * @var ClassReflection[]
      */
-    protected $classes = [];
+    protected $classes = array();
 
     /**
      * @var FunctionReflection[]
      */
-    protected $functions = [];
+    protected $functions = array();
 
     /**
      * @var string
@@ -195,7 +195,7 @@ class FileReflection implements ReflectionInterface
      */
     public function getClasses()
     {
-        $classes = [];
+        $classes = array();
         foreach ($this->classes as $class) {
             $classes[] = new ClassReflection($class);
         }
@@ -210,7 +210,7 @@ class FileReflection implements ReflectionInterface
      */
     public function getFunctions()
     {
-        $functions = [];
+        $functions = array();
         foreach ($this->functions as $function) {
             $functions[] = new FunctionReflection($function);
         }

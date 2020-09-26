@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -47,7 +47,7 @@ class CustomerManagement
     }
 
     /**
-     * Populate customer model.
+     * Populate customer model
      *
      * @param Quote $quote
      * @return void
@@ -62,6 +62,8 @@ class CustomerManagement
                 $quote->getPasswordHash()
             );
             $quote->setCustomer($customer);
+        } else {
+            $this->customerRepository->save($customer);
         }
         if (!$quote->getBillingAddress()->getId() && $customer->getDefaultBilling()) {
             $quote->getBillingAddress()->importCustomerAddressData(

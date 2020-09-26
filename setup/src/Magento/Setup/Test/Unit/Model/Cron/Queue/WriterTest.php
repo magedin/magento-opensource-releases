@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Test\Unit\Model\Cron\Queue;
@@ -26,15 +26,15 @@ class WriterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filesystem = $this->getMock(\Magento\Framework\Filesystem::class, [], [], '', false);
+        $this->filesystem = $this->getMock('Magento\Framework\Filesystem', [], [], '', false);
         $directoryRead = $this->getMockForAbstractClass(
-            \Magento\Framework\Filesystem\Directory\ReadInterface::class,
+            'Magento\Framework\Filesystem\Directory\ReadInterface',
             [],
             '',
             false
         );
         $this->directoryWrite = $this->getMockForAbstractClass(
-            \Magento\Framework\Filesystem\Directory\WriteInterface::class,
+            'Magento\Framework\Filesystem\Directory\WriteInterface',
             [],
             '',
             false

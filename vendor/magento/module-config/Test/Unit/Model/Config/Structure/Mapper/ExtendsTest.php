@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Mapper;
@@ -44,9 +44,6 @@ class ExtendsTest extends \PHPUnit_Framework_TestCase
         $this->_sut->map($sourceData);
     }
 
-    /**
-     * @return array
-     */
     public function testMapDataProvider()
     {
         return [
@@ -58,9 +55,6 @@ class ExtendsTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function _emptySectionsNodeData()
     {
         $data = ['config' => ['system' => ['sections' => 'some_non_array']]];
@@ -68,9 +62,6 @@ class ExtendsTest extends \PHPUnit_Framework_TestCase
         return [$data, $data];
     }
 
-    /**
-     * @return array
-     */
     protected function _extendFromASiblingData()
     {
         $source = $result = [
@@ -90,9 +81,6 @@ class ExtendsTest extends \PHPUnit_Framework_TestCase
         return [$source, $result];
     }
 
-    /**
-     * @return array
-     */
     protected function _extendFromNodeOnHigherLevelData()
     {
         $source = $result = [
@@ -126,9 +114,6 @@ class ExtendsTest extends \PHPUnit_Framework_TestCase
         return [$source, $result];
     }
 
-    /**
-     * @return array
-     */
     protected function _extendWithMerge()
     {
         $source = $result = [

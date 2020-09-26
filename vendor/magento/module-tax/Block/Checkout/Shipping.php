@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Block\Checkout;
@@ -15,7 +15,7 @@ class Shipping extends \Magento\Checkout\Block\Total\DefaultTotal
      *
      * @var string
      */
-    protected $_template = 'Magento_Tax::checkout/shipping.phtml';
+    protected $_template = 'checkout/shipping.phtml';
 
     /**
      * @var \Magento\Tax\Model\Config

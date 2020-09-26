@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Observer;
@@ -31,13 +31,6 @@ class FlushCacheByTags implements ObserverInterface
     private $fullPageCache;
 
     /**
-     * Invalidation tags resolver
-     *
-     * @var \Magento\Framework\App\Cache\Tag\Resolver
-     */
-    private $tagResolver;
-
-    /**
      * @param \Magento\PageCache\Model\Config $config
      * @param \Magento\Framework\App\PageCache\Cache $cache
      */
@@ -58,20 +51,17 @@ class FlushCacheByTags implements ObserverInterface
     {
         if ($this->_config->getType() == \Magento\PageCache\Model\Config::BUILT_IN && $this->_config->isEnabled()) {
             $object = $observer->getEvent()->getObject();
-            if (!is_object($object)) {
-                return;
-            }
-            $tags = $this->getTagResolver()->getTags($object);
-
-            if (!empty($tags)) {
-                $this->getCache()->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array_unique($tags));
+            if ($object instanceof \Magento\Framework\DataObject\IdentityInterface) {
+                $tags = $object->getIdentities();
+                if (!empty($tags)) {
+                    $this->getCache()->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array_unique($tags));
+                }
             }
         }
     }
 
     /**
      * TODO: Workaround to support backwards compatibility, will rework to use Dependency Injection in MAGETWO-49547
-     *
      *
      * @return \Magento\PageCache\Model\Cache\Type
      */
@@ -81,18 +71,5 @@ class FlushCacheByTags implements ObserverInterface
             $this->fullPageCache = ObjectManager::getInstance()->get('\Magento\PageCache\Model\Cache\Type');
         }
         return $this->fullPageCache;
-    }
-
-    /**
-     * @deprecated
-     * @return \Magento\Framework\App\Cache\Tag\Resolver
-     */
-    private function getTagResolver()
-    {
-        if ($this->tagResolver === null) {
-            $this->tagResolver = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\App\Cache\Tag\Resolver::class);
-        }
-        return $this->tagResolver;
     }
 }

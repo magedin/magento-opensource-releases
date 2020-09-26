@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,14 +16,13 @@ namespace Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery;
 use Magento\Backend\Block\Media\Uploader;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\FileSystemException;
 
 class Content extends \Magento\Backend\Block\Widget
 {
     /**
      * @var string
      */
-    protected $_template = 'Magento_Catalog::catalog/product/helper/gallery.phtml';
+    protected $_template = 'catalog/product/helper/gallery.phtml';
 
     /**
      * @var \Magento\Catalog\Model\Product\Media\Config
@@ -34,11 +33,6 @@ class Content extends \Magento\Backend\Block\Widget
      * @var \Magento\Framework\Json\EncoderInterface
      */
     protected $_jsonEncoder;
-
-    /**
-     * @var \Magento\Catalog\Helper\Image
-     */
-    private $imageHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -134,18 +128,12 @@ class Content extends \Magento\Backend\Block\Widget
             is_array($value['images']) &&
             count($value['images'])
         ) {
-            $mediaDir = $this->_filesystem->getDirectoryRead(DirectoryList::MEDIA);
+            $directory = $this->_filesystem->getDirectoryRead(DirectoryList::MEDIA);
             $images = $this->sortImagesByPosition($value['images']);
             foreach ($images as &$image) {
                 $image['url'] = $this->_mediaConfig->getMediaUrl($image['file']);
-                try {
-                    $fileHandler = $mediaDir->stat($this->_mediaConfig->getMediaPath($image['file']));
-                    $image['size'] = $fileHandler['size'];
-                } catch (FileSystemException $e) {
-                    $image['url'] = $this->getImageHelper()->getDefaultPlaceholderUrl('small_image');
-                    $image['size'] = 0;
-                    $this->_logger->warning($e);
-                }
+                $fileHandler = $directory->stat($this->_mediaConfig->getMediaPath($image['file']));
+                $image['size'] = $fileHandler['size'];
             }
             return $this->_jsonEncoder->encode($images);
         }
@@ -238,18 +226,5 @@ class Content extends \Magento\Backend\Block\Widget
     public function getImageTypesJson()
     {
         return $this->_jsonEncoder->encode($this->getImageTypes());
-    }
-
-    /**
-     * @return \Magento\Catalog\Helper\Image
-     * @deprecated
-     */
-    private function getImageHelper()
-    {
-        if ($this->imageHelper === null) {
-            $this->imageHelper = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get('Magento\Catalog\Helper\Image');
-        }
-        return $this->imageHelper;
     }
 }

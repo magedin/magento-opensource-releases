@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Component\Filters\Type;
@@ -22,13 +22,6 @@ class Date extends AbstractFilter
      * @var DataTypeDate
      */
     protected $wrappedComponent;
-
-    /**
-     * Date format
-     *
-     * @var string
-     */
-    protected static $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * Prepare component configuration
@@ -103,7 +96,7 @@ class Date extends AbstractFilter
         if (!empty($value)) {
             $filter = $this->filterBuilder->setConditionType($type)
                 ->setField($this->getName())
-                ->setValue($value->format(static::$dateFormat))
+                ->setValue($value->format('Y-m-d H:i:s'))
                 ->create();
 
             $this->getContext()->getDataProvider()->addFilter($filter);

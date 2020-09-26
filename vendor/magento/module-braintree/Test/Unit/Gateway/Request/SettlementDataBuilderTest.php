@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Test\Unit\Gateway\Request;
@@ -11,7 +11,7 @@ class SettlementDataBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testBuild()
     {
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'options' => [
                     SettlementDataBuilder::SUBMIT_FOR_SETTLEMENT => true

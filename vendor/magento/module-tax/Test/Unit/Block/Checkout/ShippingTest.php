@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Test\Unit\Block\Checkout;
@@ -44,9 +44,6 @@ class ShippingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->model->displayShipping());
     }
 
-    /**
-     * @return array
-     */
     public function displayShippingDataProvider()
     {
         return [

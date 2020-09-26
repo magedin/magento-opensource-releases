@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Code\Test\Unit\Generator;
@@ -111,9 +111,6 @@ class IoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($success, $this->_object->writeResultFile($resultFileName, self::FILE_CONTENT));
     }
 
-    /**
-     * @return array
-     */
     public function testWriteResultFileAlreadyExistsDataProvider()
     {
         return [
@@ -205,9 +202,6 @@ class IoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($exists, $this->_object->fileExists($fileName));
     }
 
-    /**
-     * @return array
-     */
     public function fileExistsDataProvider()
     {
         return [

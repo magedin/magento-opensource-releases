@@ -1,16 +1,14 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Account;
 
 use Magento\Customer\Model\AuthenticationInterface;
-use Magento\Customer\Model\Customer\Mapper;
 use Magento\Customer\Model\EmailNotificationInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -20,7 +18,6 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\Exception\State\UserLockedException;
-use Magento\Framework\Escaper;
 
 /**
  * Class EditPost
@@ -62,17 +59,14 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
     private $emailNotification;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @var AuthenticationInterface
      */
     private $authentication;
-
-    /**
-     * @var Mapper
-     */
-    private $customerMapper;
-
-    /** @var Escaper */
-    private $escaper;
 
     /**
      * @param Context $context
@@ -81,7 +75,6 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
      * @param CustomerRepositoryInterface $customerRepository
      * @param Validator $formKeyValidator
      * @param CustomerExtractor $customerExtractor
-     * @param Escaper|null $escaper
      */
     public function __construct(
         Context $context,
@@ -89,8 +82,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         AccountManagementInterface $customerAccountManagement,
         CustomerRepositoryInterface $customerRepository,
         Validator $formKeyValidator,
-        CustomerExtractor $customerExtractor,
-        Escaper $escaper = null
+        CustomerExtractor $customerExtractor
     ) {
         parent::__construct($context);
         $this->session = $customerSession;
@@ -98,7 +90,6 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         $this->customerRepository = $customerRepository;
         $this->formKeyValidator = $formKeyValidator;
         $this->customerExtractor = $customerExtractor;
-        $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
     }
 
     /**
@@ -110,7 +101,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
     {
 
         if (!($this->authentication instanceof AuthenticationInterface)) {
-            return ObjectManager::getInstance()->get(
+            return \Magento\Framework\App\ObjectManager::getInstance()->get(
                 \Magento\Customer\Model\AuthenticationInterface::class
             );
         } else {
@@ -127,7 +118,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
     private function getEmailNotification()
     {
         if (!($this->emailNotification instanceof EmailNotificationInterface)) {
-            return ObjectManager::getInstance()->get(
+            return \Magento\Framework\App\ObjectManager::getInstance()->get(
                 EmailNotificationInterface::class
             );
         } else {
@@ -173,16 +164,17 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
                 $this->messageManager->addError($e->getMessage());
             } catch (UserLockedException $e) {
                 $message = __(
-                    'Invalid login or password.'
+                    'The account is locked. Please wait and try again or contact %1.',
+                    $this->getScopeConfig()->getValue('contact/email/recipient_email')
                 );
                 $this->session->logout();
                 $this->session->start();
                 $this->messageManager->addError($message);
                 return $resultRedirect->setPath('customer/account/login');
             } catch (InputException $e) {
-                $this->messageManager->addErrorMessage($this->escaper->escapeHtml($e->getMessage()));
+                $this->messageManager->addError($e->getMessage());
                 foreach ($e->getErrors() as $error) {
-                    $this->messageManager->addErrorMessage($this->escaper->escapeHtml($error->getMessage()));
+                    $this->messageManager->addError($error->getMessage());
                 }
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
@@ -194,6 +186,22 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         }
 
         return $resultRedirect->setPath('*/*/edit');
+    }
+
+    /**
+     * Get scope config
+     *
+     * @return ScopeConfigInterface
+     */
+    private function getScopeConfig()
+    {
+        if (!($this->scopeConfig instanceof \Magento\Framework\App\Config\ScopeConfigInterface)) {
+            return \Magento\Framework\App\ObjectManager::getInstance()->get(
+                \Magento\Framework\App\Config\ScopeConfigInterface::class
+            );
+        } else {
+            return $this->scopeConfig;
+        }
     }
 
     /**
@@ -233,12 +241,7 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
         \Magento\Framework\App\RequestInterface $inputData,
         \Magento\Customer\Api\Data\CustomerInterface $currentCustomerData
     ) {
-        $attributeValues = $this->getCustomerMapper()->toFlatArray($currentCustomerData);
-        $customerDto = $this->customerExtractor->extract(
-            self::FORM_DATA_EXTRACTOR_CODE,
-            $inputData,
-            $attributeValues
-        );
+        $customerDto = $this->customerExtractor->extract(self::FORM_DATA_EXTRACTOR_CODE, $inputData);
         $customerDto->setId($currentCustomerData->getId());
         if (!$customerDto->getAddresses()) {
             $customerDto->setAddresses($currentCustomerData->getAddresses());
@@ -295,20 +298,5 @@ class EditPost extends \Magento\Customer\Controller\AbstractAccount
                 throw new InvalidEmailOrPasswordException(__('The password doesn\'t match this account.'));
             }
         }
-    }
-
-    /**
-     * Get Customer Mapper instance
-     *
-     * @return Mapper
-     *
-     * @deprecated
-     */
-    private function getCustomerMapper()
-    {
-        if ($this->customerMapper === null) {
-            $this->customerMapper = ObjectManager::getInstance()->get(\Magento\Customer\Model\Customer\Mapper::class);
-        }
-        return $this->customerMapper;
     }
 }

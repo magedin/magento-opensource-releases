@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -68,10 +68,6 @@ class StateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->model->getAreaCode(), $areaCode);
     }
 
-    /**
-     * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function emulateAreaCodeCallback()
     {
         return $this->model->getAreaCode();

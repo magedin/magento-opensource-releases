@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -127,7 +127,7 @@ define([
 
         /**
          * Retrieves from the list file which matches
-         * search criteria implemented in iterator function.
+         * search criteria implemented in itertor function.
          *
          * @param {Function} fn - Function that will be invoked
          *      for each file in the list.
@@ -185,7 +185,7 @@ define([
         },
 
         /**
-         * Returns path to the file's preview image.
+         * Returns path to the files' preview image.
          *
          * @param {Object} file
          * @returns {String}
@@ -284,7 +284,7 @@ define([
 
         /**
          * Abstract handler which is invoked when files are choosed for upload.
-         * May be used for implementation of additional validation rules,
+         * May be used for implementation of aditional validation rules,
          * e.g. total files and a total size rules.
          *
          * @abstract
@@ -299,16 +299,10 @@ define([
          */
         onBeforeFileUpload: function (e, data) {
             var file     = data.files[0],
-                allowed  = this.isFileAllowed(file),
-                target   = $(e.target);
+                allowed  = this.isFileAllowed(file);
 
             if (allowed.passed) {
-                target.on('fileuploadsend', function (event, postData) {
-                    postData.data.append('param_name', this.paramName);
-                    $(event.currentTarget).off('fileuploadsend');
-                }.bind(data));
-
-                target.fileupload('process', data).done(function () {
+                $(e.target).fileupload('process', data).done(function () {
                     data.submit();
                 });
             } else {

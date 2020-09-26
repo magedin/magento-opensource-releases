@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -280,9 +280,6 @@ class GridTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $this->block->getQuote()->getIsSuperMode());
     }
 
-    /**
-     * @return \Magento\Sales\Block\Adminhtml\Order\Create\Items\Grid
-     */
     protected function getGrid()
     {
         /** @var \Magento\Sales\Block\Adminhtml\Order\Create\Items\Grid  $grid */

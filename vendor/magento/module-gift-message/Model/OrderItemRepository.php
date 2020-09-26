@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -22,13 +22,6 @@ class OrderItemRepository implements \Magento\GiftMessage\Api\OrderItemRepositor
      * @var \Magento\Sales\Model\OrderFactory
      */
     protected $orderFactory;
-
-    /**
-     * Cached orders data.
-     *
-     * @var \Magento\Sales\Api\Data\OrderInterface[]
-     */
-    private $orders;
 
     /**
      * Store manager interface.
@@ -134,7 +127,6 @@ class OrderItemRepository implements \Magento\GiftMessage\Api\OrderItemRepositor
         $this->giftMessageSaveModel->setGiftmessages($message);
         try {
             $this->giftMessageSaveModel->saveAllInOrder();
-            unset($this->orders[$orderId]);
         } catch (\Exception $e) {
             throw new CouldNotSaveException(__('Could not add gift message to order: "%1"', $e->getMessage()), $e);
         }
@@ -150,19 +142,14 @@ class OrderItemRepository implements \Magento\GiftMessage\Api\OrderItemRepositor
      */
     protected function getItemById($orderId, $orderItemId)
     {
-        if (!isset($this->orders[$orderId])) {
-            $this->orders[$orderId] = $this->orderFactory->create()->load($orderId);
-        }
-
         /** @var \Magento\Sales\Api\Data\OrderInterface $order */
-        $order = $this->orders[$orderId];
+        $order = $this->orderFactory->create()->load($orderId);
         /** @var \Magento\Sales\Api\Data\OrderItemInterface $item */
-        $item = $order->getItemById($orderItemId);
-        
-        if ($item !== null) {
-            return $item;
+        foreach ($order->getItems() as $item) {
+            if ($item->getItemId() === $orderItemId) {
+                return $item;
+            }
         }
-
         return false;
     }
 }

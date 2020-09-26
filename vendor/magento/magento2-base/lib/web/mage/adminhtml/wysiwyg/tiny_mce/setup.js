@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -51,10 +51,6 @@ define([
                 this.config.plugins.each(function(plugin) {
                     tinyMCE.PluginManager.load(plugin.name, plugin.src);
                 });
-            }
-
-            if (jQuery.isReady) {
-                tinyMCE.dom.Event.domLoaded = true;
             }
 
             tinyMCE.init(this.getSettings(mode));
@@ -347,7 +343,6 @@ define([
             // escape special chars in directives url to use it in regular expression
             var url = this.makeDirectiveUrl('%directive%').replace(/([$^.?*!+:=()\[\]{}|\\])/g, '\\$1');
             var reg = new RegExp(url.replace('%directive%', '([a-zA-Z0-9,_-]+)'));
-
             return content.gsub(reg, function(match) {
                 return Base64.mageDecode(match[1]);
             }.bind(this));

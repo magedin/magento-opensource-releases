@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\Design\Config;
@@ -71,13 +71,15 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()->getMock();
-
-        $this->request->expects($this->atLeastOnce())
-            ->method('isPost')
-            ->willReturn(true);
-
+        $this->request = $this->getMockForAbstractClass(
+            'Magento\Framework\App\RequestInterface',
+            [],
+            '',
+            false,
+            false,
+            true,
+            ['getFiles', 'getParam', 'getParams']
+        );
         $this->context = $objectManager->getObject(
             'Magento\Backend\App\Action\Context',
             [
@@ -145,7 +147,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->method('save')
             ->with($this->designConfig);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('You saved the configuration.'));
         $this->dataPersistor->expects($this->once())
             ->method('clear')
@@ -201,7 +203,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->with($this->designConfig)
             ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('Exception message')));
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with(__('Exception message')->render());
 
         $this->dataPersistor->expects($this->once())
@@ -256,7 +258,7 @@ class SaveTest extends \PHPUnit_Framework_TestCase
             ->with($this->designConfig)
             ->willThrowException($exception);
         $this->messageManager->expects($this->once())
-            ->method('addExceptionMessage')
+            ->method('addException')
             ->with($exception, 'Something went wrong while saving this configuration: Exception message');
 
         $this->dataPersistor->expects($this->once())

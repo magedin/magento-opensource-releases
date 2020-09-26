@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Block\Cart;
@@ -8,22 +8,22 @@ namespace Magento\Checkout\Block\Cart;
 use Magento\Store\Model\ScopeInterface;
 
 /**
- * Cart sidebar block.
+ * Cart sidebar block
  */
 class Sidebar extends AbstractCart
 {
     /**
-     * Xml pah to checkout sidebar display value.
+     * Xml pah to checkout sidebar display value
      */
     const XML_PATH_CHECKOUT_SIDEBAR_DISPLAY = 'checkout/sidebar/display';
 
     /**
-     * Xml pah to checkout sidebar count value.
+     * Xml pah to checkout sidebar count value
      */
     const XML_PATH_CHECKOUT_SIDEBAR_COUNT = 'checkout/sidebar/count';
 
     /**
-     * @var \Magento\Catalog\Helper\Image.
+     * @var \Magento\Catalog\Helper\Image
      */
     protected $imageHelper;
 
@@ -56,7 +56,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Returns minicart config.
+     * Returns minicart config
      *
      * @return array
      */
@@ -69,9 +69,7 @@ class Sidebar extends AbstractCart
             'removeItemUrl' => $this->getRemoveItemUrl(),
             'imageTemplate' => $this->getImageHtmlTemplate(),
             'baseUrl' => $this->getBaseUrl(),
-            'minicartMaxItemsVisible' => $this->getMiniCartMaxItemsCount(),
-            'websiteId' => $this->_storeManager->getStore()->getWebsiteId(),
-            'maxItemsToDisplay' => $this->getMaxItemsToDisplay(),
+            'minicartMaxItemsVisible' => $this->getMiniCartMaxItemsCount()
         ];
     }
 
@@ -86,7 +84,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Get one page checkout page url.
+     * Get one page checkout page url
      *
      * @codeCoverageIgnore
      * @return string
@@ -97,7 +95,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Get shopping cart page url.
+     * Get shopping cart page url
      *
      * @return string
      * @codeCoverageIgnore
@@ -108,7 +106,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Get update cart item url.
+     * Get update cart item url
      *
      * @return string
      * @codeCoverageIgnore
@@ -119,7 +117,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Get remove cart item url.
+     * Get remove cart item url
      *
      * @return string
      * @codeCoverageIgnore
@@ -130,7 +128,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Define if Mini Shopping Cart Pop-Up Menu enabled.
+     * Define if Mini Shopping Cart Pop-Up Menu enabled
      *
      * @return bool
      * @codeCoverageIgnore
@@ -145,7 +143,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Return totals from custom quote if needed.
+     * Return totals from custom quote if needed
      *
      * @return array
      */
@@ -159,7 +157,7 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Retrieve subtotal block html.
+     * Retrieve subtotal block html
      *
      * @codeCoverageIgnore
      * @return string
@@ -181,26 +179,12 @@ class Sidebar extends AbstractCart
     }
 
     /**
-     * Return max visible item count for minicart.
+     * Return max visible item count for minicart
      *
      * @return int
      */
     private function getMiniCartMaxItemsCount()
     {
         return (int)$this->_scopeConfig->getValue('checkout/sidebar/count', ScopeInterface::SCOPE_STORE);
-    }
-
-    /**
-     * Returns maximum cart items to display.
-     * This setting regulates how many items will be displayed in minicart.
-     *
-     * @return int
-     */
-    private function getMaxItemsToDisplay()
-    {
-        return (int)$this->_scopeConfig->getValue(
-            'checkout/sidebar/max_items_display_count',
-            ScopeInterface::SCOPE_STORE
-        );
     }
 }

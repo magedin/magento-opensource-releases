@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model;
@@ -83,7 +83,7 @@ class ShippingAddressManagement implements \Magento\Quote\Model\ShippingAddressM
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function assign($cartId, \Magento\Quote\Api\Data\AddressInterface $address)
@@ -99,7 +99,7 @@ class ShippingAddressManagement implements \Magento\Quote\Model\ShippingAddressM
         $saveInAddressBook = $address->getSaveInAddressBook() ? 1 : 0;
         $sameAsBilling = $address->getSameAsBilling() ? 1 : 0;
         $customerAddressId = $address->getCustomerAddressId();
-        $this->addressValidator->validateForCart($quote, $address);
+        $this->addressValidator->validate($address);
         $quote->setShippingAddress($address);
         $address = $quote->getShippingAddress();
 
@@ -131,7 +131,7 @@ class ShippingAddressManagement implements \Magento\Quote\Model\ShippingAddressM
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function get($cartId)
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Ui\Component\Report\Listing\Column;
@@ -44,8 +44,8 @@ class TransactionType implements OptionSourceInterface
     private function getAvailableTransactionTypes()
     {
         return [
-            Transaction::SALE => __(Transaction::SALE),
-            Transaction::CREDIT => __(Transaction::CREDIT)
+            Transaction::SALE => __('Sale'),
+            Transaction::CREDIT => __('Credit')
         ];
     }
 }

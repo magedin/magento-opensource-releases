@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -52,15 +52,12 @@
         <observer name="persistent" instance="Magento\Persistent\Observer\SetLoadPersistentQuoteObserver" />
     </event>
     <event name="customer_register_success">
-        <observer name="persistent" instance="Magento\Persistent\Observer\RemovePersistentCookieOnRegisterObserver" />
+        <observer name="persistent" instance="Magento\Persistent\Observer\RemovePersistentCookieObserver" />
     </event>
     <event name="render_block">
         <observer name="persistent" instance="Magento\Persistent\Observer\ApplyBlockPersistentDataObserver" />
     </event>
     <event name="update_customer_cookies">
         <observer name="persistent" instance="Magento\Persistent\Observer\UpdateCustomerCookiesObserver" />
-    </event>
-    <event name="checkout_cart_save_after">
-        <observer name="persistent" instance="Magento\Persistent\Observer\RemoveGuestPersistenceOnEmptyCartObserver" />
     </event>
 </config>

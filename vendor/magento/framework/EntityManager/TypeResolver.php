@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\EntityManager;
@@ -20,8 +20,7 @@ class TypeResolver
      */
     private $typeMapping = [
         \Magento\SalesRule\Model\Rule::class => \Magento\SalesRule\Api\Data\RuleInterface::class,
-        \Magento\SalesRule\Model\Rule\Interceptor::class => \Magento\SalesRule\Api\Data\RuleInterface::class,
-        \Magento\SalesRule\Model\Rule\Proxy::class => \Magento\SalesRule\Api\Data\RuleInterface::class
+        \Magento\SalesRule\Model\Rule\Interceptor::class => \Magento\SalesRule\Api\Data\RuleInterface::class
     ];
 
     /**
@@ -51,7 +50,8 @@ class TypeResolver
         $dataInterfaces = [];
         foreach ($interfaceNames as $interfaceName) {
             if (strpos($interfaceName, '\Api\Data\\')) {
-                $dataInterfaces[] = $interfaceName;
+                $dataInterfaces[] = isset($this->config[$interfaceName])
+                    ? $this->config[$interfaceName] : $interfaceName;
             }
         }
 
@@ -64,9 +64,7 @@ class TypeResolver
                 $this->typeMapping[$className] = $dataInterface;
             }
         }
-        if (empty($this->typeMapping[$className])) {
-            $this->typeMapping[$className] = reset($dataInterfaces);
-        }
+
         return $this->typeMapping[$className];
     }
 }

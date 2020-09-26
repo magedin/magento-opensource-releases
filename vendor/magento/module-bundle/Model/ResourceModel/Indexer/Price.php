@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Bundle\Model\ResourceModel\Indexer;
@@ -491,7 +491,7 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\D
             null
         )->join(
             ['e' => $this->getTable('catalog_product_entity')],
-            "i.entity_id=e.entity_id",
+            "i.entity_id=e.$linkField",
             []
         )->where(
             'e.type_id=?',
@@ -502,7 +502,7 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\D
 
         $select = $connection->select()->from(
             ['tp' => $this->getTable('catalog_product_entity_tier_price')],
-            ['e.entity_id']
+            [$linkField]
         )->join(
             ['e' => $this->getTable('catalog_product_entity')],
             "tp.{$linkField} = e.{$linkField}",
@@ -523,11 +523,11 @@ class Price extends \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\D
         )->columns(
             new \Zend_Db_Expr('MIN(tp.value)')
         )->group(
-            ['e.entity_id', 'cg.customer_group_id', 'cw.website_id']
+            ["tp.{$linkField}", 'cg.customer_group_id', 'cw.website_id']
         );
 
         if (!empty($entityIds)) {
-            $select->where('e.entity_id IN(?)', $entityIds);
+            $select->where("tp.{$linkField} IN(?)", $entityIds);
         }
 
         $query = $select->insertFromSelect($this->_getTierPriceIndexTable());

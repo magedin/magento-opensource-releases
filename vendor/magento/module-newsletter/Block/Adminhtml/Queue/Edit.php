@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Block\Adminhtml\Queue;
@@ -16,7 +16,7 @@ class Edit extends \Magento\Backend\Block\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Newsletter::queue/edit.phtml';
+    protected $_template = 'queue/edit.phtml';
 
     /**
      * Core registry

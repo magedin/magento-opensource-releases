@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Test\Unit\Observer;
@@ -26,6 +26,7 @@ class SalesOrderAfterPlaceObserverTest extends \PHPUnit_Framework_TestCase
      * @var
      */
     protected $ruleCustomerFactory;
+
 
     /**
      * @var \Magento\SalesRule\Model\ResourceModel\Coupon\Usage|\PHPUnit_Framework_MockObject_MockObject
@@ -192,9 +193,6 @@ class SalesOrderAfterPlaceObserverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->model, $this->model->execute($observer));
     }
 
-    /**
-     * @return array
-     */
     public function salesOrderAfterPlaceDataProvider()
     {
         return [

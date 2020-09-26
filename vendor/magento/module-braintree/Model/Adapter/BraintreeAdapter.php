@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Model\Adapter;
@@ -15,43 +15,23 @@ use Magento\Braintree\Model\Adminhtml\Source\Environment;
 
 /**
  * Class BraintreeAdapter
- * Use \Magento\Braintree\Model\Adapter\BraintreeAdapterFactory to create new instance of adapter.
  * @codeCoverageIgnore
  */
 class BraintreeAdapter
 {
+
     /**
      * @var Config
      */
     private $config;
 
     /**
-     * All arguments have `null` values to provide backward compatibility. This class MUST be initialized only
-     * via BraintreeAdapterFactory.
-     *
-     * @param Config|null $config
-     * @param string|null $merchantId
-     * @param string|null $publicKey
-     * @param string|null $privateKey
-     * @param string|null $environment
+     * @param Config $config
      */
-    public function __construct(
-        Config $config = null,
-        $merchantId = null,
-        $publicKey = null,
-        $privateKey = null,
-        $environment = null
-    ) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
-        $this->merchantId($merchantId);
-        $this->publicKey($publicKey);
-        $this->privateKey($privateKey);
-
-        if ($environment == Environment::ENVIRONMENT_PRODUCTION) {
-            $this->environment(Environment::ENVIRONMENT_PRODUCTION);
-        } else {
-            $this->environment(Environment::ENVIRONMENT_SANDBOX);
-        }
+        $this->initCredentials();
     }
 
     /**

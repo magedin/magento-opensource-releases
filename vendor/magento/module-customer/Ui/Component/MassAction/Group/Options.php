@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Ui\Component\MassAction\Group;
@@ -87,8 +87,7 @@ class Options implements JsonSerializable
             foreach ($options as $optionCode) {
                 $this->options[$optionCode['value']] = [
                     'type' => 'customer_group_' . $optionCode['value'],
-                    'label' => __($optionCode['label']),
-                    '__disableTmpl' => true,
+                    'label' => $optionCode['label'],
                 ];
 
                 if ($this->urlPath && $this->paramName) {

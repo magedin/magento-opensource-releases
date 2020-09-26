@@ -23,7 +23,7 @@ class DefaultListenerAggregate extends AbstractListener implements
     /**
      * @var array
      */
-    protected $listeners = [];
+    protected $listeners = array();
 
     /**
      * @var ConfigMergerInterface

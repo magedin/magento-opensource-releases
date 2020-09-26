@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -45,7 +45,7 @@ class CustomOptions extends DataSource
 
         if (isset($data['dataset']) && isset($this->params['repository'])) {
             $this->data = $repositoryFactory->get($this->params['repository'])->get($data['dataset']);
-            $this->data = $this->replaceData($this->data, random_int(0, PHP_INT_MAX));
+            $this->data = $this->replaceData($this->data, mt_rand());
             $this->customOptions = $this->data;
         }
         if (isset($data['import_products'])) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -69,22 +69,17 @@ var catalogWysiwygEditor = {
         $(elementId + '_editor').value = $(elementId).value;
     },
     okDialogWindow : function(dialogWindow) {
-        var $firedElement = jQuery('#' + dialogWindow.options.firedElementId),
-            $editorElement = jQuery('#' + dialogWindow.options.firedElementId + '_editor'),
-            firedElementId = $firedElement.attr('id'),
-            wysiwygObj = window['wysiwyg' + firedElementId + '_editor'];
-
-        if ($firedElement.length) {
+        if (dialogWindow.options.firedElementId) {
+            wysiwygObj = eval('wysiwyg'+dialogWindow.options.firedElementId+'_editor');
             wysiwygObj.turnOff();
             if (tinyMCE.get(wysiwygObj.id)) {
-                $firedElement.val(tinyMCE.get(wysiwygObj.id).getContent()).change();
+                $(dialogWindow.options.firedElementId).value = tinyMCE.get(wysiwygObj.id).getContent();
             } else {
-                $firedElement.val($editorElement.val()).change();
+                if ($(dialogWindow.options.firedElementId+'_editor')) {
+                    $(dialogWindow.options.firedElementId).value = $(dialogWindow.options.firedElementId+'_editor').value;
+                }
             }
-
-            if (tinyMCE.get(firedElementId)) {
-                tinyMCE.get(firedElementId).load();
-            }
+            tinyMCE.editors[dialogWindow.options.firedElementId].load();
             if (typeof varienGlobalEvents != undefined) {
                 varienGlobalEvents.fireEvent('tinymceChange');
             }

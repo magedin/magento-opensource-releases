@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -508,7 +508,7 @@ class Validator extends \Magento\Framework\Model\AbstractModel
             foreach ($items as $itemKey => $itemValue) {
                 if ($rule->getActions()->validate($itemValue)) {
                     unset($items[$itemKey]);
-                    $itemsSorted[] = $itemValue;
+                    array_push($itemsSorted, $itemValue);
                 }
             }
         }

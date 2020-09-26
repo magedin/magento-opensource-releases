@@ -265,8 +265,6 @@ class VersionParser
             // them into one constraint
             && $orGroups[0] instanceof MultiConstraint
             && $orGroups[1] instanceof MultiConstraint
-            && 2 === count($orGroups[0]->getConstraints())
-            && 2 === count($orGroups[1]->getConstraints())
             && ($a = (string) $orGroups[0])
             && substr($a, 0, 3) === '[>=' && (false !== ($posA = strpos($a, '<', 4)))
             && ($b = (string) $orGroups[1])
@@ -322,11 +320,11 @@ class VersionParser
             }
 
             // Work out which position in the version we are operating at
-            if (isset($matches[4]) && '' !== $matches[4] && null !== $matches[4]) {
+            if (isset($matches[4]) && '' !== $matches[4]) {
                 $position = 4;
-            } elseif (isset($matches[3]) && '' !== $matches[3] && null !== $matches[3]) {
+            } elseif (isset($matches[3]) && '' !== $matches[3]) {
                 $position = 3;
-            } elseif (isset($matches[2]) && '' !== $matches[2] && null !== $matches[2]) {
+            } elseif (isset($matches[2]) && '' !== $matches[2]) {
                 $position = 2;
             } else {
                 $position = 1;
@@ -334,11 +332,19 @@ class VersionParser
 
             // Calculate the stability suffix
             $stabilitySuffix = '';
-            if (empty($matches[5]) && empty($matches[7])) {
+            if (!empty($matches[5])) {
+                $stabilitySuffix .= '-' . $this->expandStability($matches[5]) . (!empty($matches[6]) ? $matches[6] : '');
+            }
+
+            if (!empty($matches[7])) {
                 $stabilitySuffix .= '-dev';
             }
 
-            $lowVersion = $this->normalize(substr($constraint . $stabilitySuffix, 1));
+            if (!$stabilitySuffix) {
+                $stabilitySuffix = '-dev';
+            }
+
+            $lowVersion = $this->manipulateVersionString($matches, $position, 0) . $stabilitySuffix;
             $lowerBound = new Constraint('>=', $lowVersion);
 
             // For upper bound, we increment the position of one more significance,
@@ -360,9 +366,9 @@ class VersionParser
         // versions 0.X >=0.1.0, and no updates for versions 0.0.X
         if (preg_match('{^\^' . $versionRegex . '($)}i', $constraint, $matches)) {
             // Work out which position in the version we are operating at
-            if ('0' !== $matches[1] || '' === $matches[2] || null === $matches[2]) {
+            if ('0' !== $matches[1] || '' === $matches[2]) {
                 $position = 1;
-            } elseif ('0' !== $matches[2] || '' === $matches[3] || null === $matches[3]) {
+            } elseif ('0' !== $matches[2] || '' === $matches[3]) {
                 $position = 2;
             } else {
                 $position = 3;
@@ -393,9 +399,9 @@ class VersionParser
         // Any of X, x, or * may be used to "stand in" for one of the numeric values in the [major, minor, patch] tuple.
         // A partial version range is treated as an X-Range, so the special character is in fact optional.
         if (preg_match('{^v?(\d++)(?:\.(\d++))?(?:\.(\d++))?(?:\.[xX*])++$}', $constraint, $matches)) {
-            if (isset($matches[3]) && '' !== $matches[3] && null !== $matches[3]) {
+            if (isset($matches[3]) && '' !== $matches[3]) {
                 $position = 3;
-            } elseif (isset($matches[2]) && '' !== $matches[2] && null !== $matches[2]) {
+            } elseif (isset($matches[2]) && '' !== $matches[2]) {
                 $position = 2;
             } else {
                 $position = 1;

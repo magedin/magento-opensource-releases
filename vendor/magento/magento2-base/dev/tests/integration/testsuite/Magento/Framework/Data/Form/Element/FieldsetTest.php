@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -246,7 +246,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $fieldsetField = $textField;
         $fieldsetField[1] = 'fieldset';
         $advancedFieldsetFld = $fieldsetField;
-        // set isAdvanced flag
+        // set isAdvenced flag
         $advancedFieldsetFld[4] = true;
         $result = [[[$fieldsetField, $textField, $advancedFieldsetFld], 1]];
         return $result;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -47,13 +47,11 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $code = 'test_attr';
         $set = 10;
-        $storeId = 100;
 
         $object = $this->getMock('Magento\Catalog\Model\Product', ['__wakeup'], [], '', false);
 
         $object->setData('test_attr', 'test_attr');
         $object->setData('attribute_set_id', $set);
-        $object->setData('store_id', $storeId);
 
         $entityType = new \Magento\Framework\DataObject();
         $entityType->setEntityTypeCode('test');

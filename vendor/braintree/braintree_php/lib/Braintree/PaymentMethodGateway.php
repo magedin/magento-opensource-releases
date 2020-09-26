@@ -70,8 +70,6 @@ class PaymentMethodGateway
                 return AmexExpressCheckoutCard::factory($response['amexExpressCheckoutCard']);
             } else if (isset($response['europeBankAccount'])) {
                 return EuropeBankAccount::factory($response['europeBankAccount']);
-            } else if (isset($response['usBankAccount'])) {
-                return UsBankAccount::factory($response['usBankAccount']);
             } else if (isset($response['venmoAccount'])) {
                 return VenmoAccount::factory($response['venmoAccount']);
             } else if (is_array($response)) {
@@ -90,42 +88,28 @@ class PaymentMethodGateway
         return $this->_doUpdate('/payment_methods/any/' . $token, ['payment_method' => $attribs]);
     }
 
-    public function delete($token, $options=[])
+    public function delete($token)
     {
-        Util::verifyKeys(self::deleteSignature(), $options);
         $this->_validateId($token);
-        $queryString = "";
-        if (!empty($options)) {
-            $queryString = "?" . http_build_query(Util::camelCaseToDelimiterArray($options, '_'));
-        }
-        return $this->_doDelete('/payment_methods/any/' . $token  . $queryString);
+        $path = $this->_config->merchantPath() . '/payment_methods/any/' . $token;
+        $this->_http->delete($path);
+        return new Result\Successful();
     }
 
-    public function grant($sharedPaymentMethodToken, $attribs=[])
+    public function grant($sharedPaymentMethodToken, $allowVaulting)
     {
-        if (is_bool($attribs) === true) {
-            $attribs = ['allow_vaulting' => $attribs];
-        }
-        $options = [ 'shared_payment_method_token' => $sharedPaymentMethodToken ];
-
-        return $this->_doCreate(
-            '/payment_methods/grant',
-            [
-                'payment_method' => array_merge($attribs, $options)
-            ]
-        );
-    }
-
-    public function revoke($sharedPaymentMethodToken)
-    {
-        return $this->_doCreate(
-            '/payment_methods/revoke',
+        $fullPath = $this->_config->merchantPath() . '/payment_methods/grant';
+        $response = $this->_http->post(
+            $fullPath,
             [
                 'payment_method' => [
-                    'shared_payment_method_token' => $sharedPaymentMethodToken
+                    'shared_payment_method_token' => $sharedPaymentMethodToken,
+                    'allow_vaulting' => $allowVaulting
                 ]
             ]
         );
+
+        return PaymentMethodNonce::factory($response['paymentMethodNonce']);
     }
 
     private static function baseSignature()
@@ -135,8 +119,7 @@ class PaymentMethodGateway
             'failOnDuplicatePaymentMethod',
             'makeDefault',
             'verificationMerchantAccountId',
-            'verifyCard',
-            'verificationAmount'
+            'verifyCard'
         ];
         return [
             'billingAddressId',
@@ -177,11 +160,6 @@ class PaymentMethodGateway
         return $signature;
     }
 
-    private static function deleteSignature()
-    {
-        return ['revokeAllGrants'];
-    }
-
     /**
      * sends the create request to the gateway
      *
@@ -212,21 +190,6 @@ class PaymentMethodGateway
         $response = $this->_http->put($fullPath, $params);
 
         return $this->_verifyGatewayResponse($response);
-    }
-
-
-    /**
-     * sends the delete request to the gateway
-     *
-     * @ignore
-     * @param string $subPath
-     * @return mixed
-     */
-    public function _doDelete($subPath)
-    {
-        $fullPath = $this->_config->merchantPath() . $subPath;
-        $this->_http->delete($fullPath);
-        return new Result\Successful();
     }
 
     /**
@@ -279,20 +242,10 @@ class PaymentMethodGateway
                 EuropeBankAccount::factory($response['europeBankAccount']),
                 "paymentMethod"
             );
-        } else if (isset($response['usBankAccount'])) {
-            return new Result\Successful(
-                UsBankAccount::factory($response['usBankAccount']),
-                "paymentMethod"
-            );
         } else if (isset($response['venmoAccount'])) {
             return new Result\Successful(
                 VenmoAccount::factory($response['venmoAccount']),
                 "paymentMethod"
-            );
-        } else if (isset($response['paymentMethodNonce'])) {
-            return new Result\Successful(
-                PaymentMethodNonce::factory($response['paymentMethodNonce']),
-                "paymentMethodNonce"
             );
         } else if (isset($response['apiErrorResponse'])) {
             return new Result\Error($response['apiErrorResponse']);

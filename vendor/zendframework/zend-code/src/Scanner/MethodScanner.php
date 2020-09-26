@@ -88,7 +88,7 @@ class MethodScanner implements ScannerInterface
     /**
      * @var array
      */
-    protected $tokens = [];
+    protected $tokens = array();
 
     /**
      * @var NameInformation
@@ -98,7 +98,7 @@ class MethodScanner implements ScannerInterface
     /**
      * @var array
      */
-    protected $infos = [];
+    protected $infos = array();
 
     /**
      * @param  array $methodTokens
@@ -316,7 +316,7 @@ class MethodScanner implements ScannerInterface
     {
         $this->scan();
 
-        $return = [];
+        $return = array();
 
         foreach ($this->infos as $info) {
             if ($info['type'] != 'parameter') {
@@ -454,7 +454,7 @@ class MethodScanner implements ScannerInterface
             return $tokenIndex;
         };
         $MACRO_INFO_START    = function () use (&$infoIndex, &$infos, &$tokenIndex, &$tokenLine) {
-            $infos[$infoIndex] = [
+            $infos[$infoIndex] = array(
                 'type'        => 'parameter',
                 'tokenStart'  => $tokenIndex,
                 'tokenEnd'    => null,
@@ -462,7 +462,7 @@ class MethodScanner implements ScannerInterface
                 'lineEnd'     => $tokenLine,
                 'name'        => null,
                 'position'    => $infoIndex + 1, // position is +1 of infoIndex
-            ];
+            );
         };
         $MACRO_INFO_ADVANCE  = function () use (&$infoIndex, &$infos, &$tokenIndex, &$tokenLine) {
             $infos[$infoIndex]['tokenEnd'] = $tokenIndex;

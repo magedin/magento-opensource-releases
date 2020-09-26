@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -963,6 +963,12 @@ class InstallSchema implements InstallSchemaInterface
             'parent_item_id',
             $installer->getTable('quote_item'),
             'item_id',
+            \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName('quote_item', 'product_id', 'catalog_product_entity', 'entity_id'),
+            'product_id',
+            $installer->getTable('catalog_product_entity'),
+            'entity_id',
             \Magento\Framework\DB\Ddl\Table::ACTION_CASCADE
         )->addForeignKey(
             $installer->getFkName('quote_item', 'quote_id', 'quote', 'entity_id'),

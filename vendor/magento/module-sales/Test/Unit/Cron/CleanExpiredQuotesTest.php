@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Cron;
@@ -68,9 +68,6 @@ class CleanExpiredQuotesTest extends \PHPUnit_Framework_TestCase
         $this->observer->execute();
     }
 
-    /**
-     * @return array
-     */
     public function cleanExpiredQuotesDataProvider()
     {
         return [

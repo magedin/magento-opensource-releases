@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -35,7 +35,7 @@ define([
         getLabel: function (value, format) {
             var date = moment(this._super());
 
-            date = date.isValid() && value[this.index] ?
+            date = date.isValid() ?
                 date.format(format || this.dateFormat) :
                 '';
 

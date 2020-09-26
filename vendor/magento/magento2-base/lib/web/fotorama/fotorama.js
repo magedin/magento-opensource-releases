@@ -831,7 +831,7 @@ fotoramaVersion = '4.6.4';
                 }
                 type = 'youtube';
             }
-        } else if (href.host.match(/youtube\.com|youtu\.be|youtube-nocookie.com/)) {
+        } else if (href.host.match(/youtube\.com|youtu\.be/)) {
             id = href.pathname.replace(/^\/(embed\/|v\/)?/, '').replace(/\/.*/, '');
             type = 'youtube';
         } else if (href.host.match(/vimeo\.com/)) {
@@ -1433,14 +1433,8 @@ fotoramaVersion = '4.6.4';
                 xWin = (tail.go || tail.x || xyDiff >= 0) && !tail.noSwipe,
                 yWin = xyDiff < 0;
 
-            if (touchFLAG && !tail.checked) {
-                if (touchEnabledFLAG = xWin) {
-                    stopEvent(e);
-                }
-            } else {
-                stopEvent(e);
-                (options.onMove || noop).call(el, e, {touch: touchFLAG});
-            }
+            stopEvent(e);
+            (options.onMove || noop).call(el, e, {touch: touchFLAG});
 
             if (!moved && Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)) > tolerance) {
                 moved = true;

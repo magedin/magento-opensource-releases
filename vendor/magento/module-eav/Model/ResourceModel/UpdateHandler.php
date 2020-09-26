@@ -1,16 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\ResourceModel;
 
-use Magento\Eav\Api\AttributeRepositoryInterface as AttributeRepository;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\EntityManager\Operation\AttributeInterface;
+use Magento\Eav\Api\AttributeRepositoryInterface as AttributeRepository;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Model\Entity\ScopeResolver;
+use Magento\Framework\EntityManager\Operation\AttributeInterface;
 
 /**
  * Class UpdateHandler
@@ -55,11 +55,6 @@ class UpdateHandler implements AttributeInterface
     private $readHandler;
 
     /**
-     * @var AttributeLoader
-     */
-    private $attributeLoader;
-
-    /**
      * UpdateHandler constructor.
      * @param AttributeRepository $attributeRepository
      * @param MetadataPool $metadataPool
@@ -67,7 +62,6 @@ class UpdateHandler implements AttributeInterface
      * @param AttributePersistor $attributePersistor
      * @param ReadSnapshot $readSnapshot
      * @param ScopeResolver $scopeResolver
-     * @param AttributeLoader $attributeLoader
      */
     public function __construct(
         AttributeRepository $attributeRepository,
@@ -75,8 +69,7 @@ class UpdateHandler implements AttributeInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AttributePersistor $attributePersistor,
         ReadSnapshot $readSnapshot,
-        ScopeResolver $scopeResolver,
-        AttributeLoader $attributeLoader = null
+        ScopeResolver $scopeResolver
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->metadataPool = $metadataPool;
@@ -84,17 +77,22 @@ class UpdateHandler implements AttributeInterface
         $this->attributePersistor = $attributePersistor;
         $this->readSnapshot = $readSnapshot;
         $this->scopeResolver = $scopeResolver;
-        $this->attributeLoader = $attributeLoader ?: ObjectManager::getInstance()->get(AttributeLoader::class);
     }
 
     /**
      * @param string $entityType
-     * @param int $attributeSetId
      * @return \Magento\Eav\Api\Data\AttributeInterface[]
+     * @throws \Exception
      */
-    protected function getAttributes($entityType, $attributeSetId = null)
+    protected function getAttributes($entityType)
     {
-        return $this->attributeLoader->getAttributes($entityType, $attributeSetId);
+        $metadata = $this->metadataPool->getMetadata($entityType);
+
+        $searchResult = $this->attributeRepository->getList(
+            $metadata->getEavEntityType(),
+            $this->searchCriteriaBuilder->addFilter('attribute_set_id', null, 'neq')->create()
+        );
+        return $searchResult->getItems();
     }
 
     /**
@@ -120,59 +118,53 @@ class UpdateHandler implements AttributeInterface
                     $entityDataForSnapshot[$scope->getIdentifier()] = $entityData[$scope->getIdentifier()];
                 }
             }
-            $attributeSetId = isset($entityData[AttributeLoader::ATTRIBUTE_SET_ID])
-                ? $entityData[AttributeLoader::ATTRIBUTE_SET_ID]
-                : null; // @todo verify is it normal to not have attributer_set_id
             $snapshot = $this->readSnapshot->execute($entityType, $entityDataForSnapshot);
-            foreach ($this->getAttributes($entityType, $attributeSetId) as $attribute) {
-                $code = $attribute->getAttributeCode();
-                $isAllowedValueType = array_key_exists($code, $entityData)
-                    && (is_scalar($entityData[$code]) || $entityData[$code] === null);
-
-                if ($attribute->isStatic() || !$isAllowedValueType) {
+            foreach ($this->getAttributes($entityType) as $attribute) {
+                if ($attribute->isStatic()) {
                     continue;
                 }
-
-                $newValue = $entityData[$code];
-                $isValueEmpty = $attribute->isValueEmpty($newValue);
-                $isAllowedEmptyStringValue = $attribute->isAllowedEmptyTextValue($newValue);
-
-                if (array_key_exists($code, $snapshot)) {
-                    $snapshotValue = $snapshot[$code];
-                    /** 'FALSE' value for attributes can't be update or delete */
-                    if ($snapshotValue === false) {
-                        continue;
-                    }
-
-                    if (!$isValueEmpty || $isAllowedEmptyStringValue) {
-                        /** NOT Updated value for attributes not need to update */
-                        if ($snapshotValue === $newValue) {
-                            continue;
-                        }
-
-                        $this->attributePersistor->registerUpdate(
-                            $entityType,
-                            $entityData[$metadata->getLinkField()],
-                            $code,
-                            $newValue
-                        );
-                    } else {
-                        $this->attributePersistor->registerDelete(
-                            $entityType,
-                            $entityData[$metadata->getLinkField()],
-                            $code
-                        );
-                    }
-                } else {
-                    /** Only not empty value of attribute is insertable */
-                    if (!$isValueEmpty || $isAllowedEmptyStringValue) {
-                        $this->attributePersistor->registerInsert(
-                            $entityType,
-                            $entityData[$metadata->getLinkField()],
-                            $code,
-                            $newValue
-                        );
-                    }
+                /**
+                 * Only scalar values can be stored in generic tables
+                 */
+                if (isset($entityData[$attribute->getAttributeCode()])
+                    && !is_scalar($entityData[$attribute->getAttributeCode()])) {
+                    continue;
+                }
+                if (isset($snapshot[$attribute->getAttributeCode()])
+                    && $snapshot[$attribute->getAttributeCode()] !== false
+                    && (array_key_exists($attribute->getAttributeCode(), $entityData)
+                        && $attribute->isValueEmpty($entityData[$attribute->getAttributeCode()]))
+                ) {
+                    $this->attributePersistor->registerDelete(
+                        $entityType,
+                        $entityData[$metadata->getLinkField()],
+                        $attribute->getAttributeCode()
+                    );
+                }
+                if ((!array_key_exists($attribute->getAttributeCode(), $snapshot)
+                        || $snapshot[$attribute->getAttributeCode()] === false)
+                    && array_key_exists($attribute->getAttributeCode(), $entityData)
+                    && !$attribute->isValueEmpty($entityData[$attribute->getAttributeCode()])
+                ) {
+                    $this->attributePersistor->registerInsert(
+                        $entityType,
+                        $entityData[$metadata->getLinkField()],
+                        $attribute->getAttributeCode(),
+                        $entityData[$attribute->getAttributeCode()]
+                    );
+                }
+                if (array_key_exists($attribute->getAttributeCode(), $snapshot)
+                    && $snapshot[$attribute->getAttributeCode()] !== false
+                    && array_key_exists($attribute->getAttributeCode(), $entityData)
+                    && $snapshot[$attribute->getAttributeCode()] != $entityData[$attribute->getAttributeCode()]
+                    && !$attribute->isValueEmpty($entityData[$attribute->getAttributeCode()])
+                ) {
+                    $this->attributePersistor->registerUpdate(
+                        $entityType,
+                        $entityData[$metadata->getLinkField()],
+                        $attribute->getAttributeCode(),
+                        $entityData[$attribute->getAttributeCode()]
+                    );
                 }
             }
             $this->attributePersistor->flush($entityType, $context);

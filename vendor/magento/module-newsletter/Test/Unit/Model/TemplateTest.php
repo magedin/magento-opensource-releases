@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -336,8 +336,6 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get processed template data provider.
-     *
      * @return array
      */
     public function getProcessedTemplateDataProvider()
@@ -378,61 +376,6 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
                     'template_styles' => null,
                 ],
                 'expectedResult' => 'expected result',
-            ],
-        ];
-    }
-
-    /**
-     * @param $senderName string
-     * @param $senderEmail string
-     * @param $templateSubject string
-     * @param $expectedValue
-     * @dataProvider isValidForSendDataProvider
-     */
-    public function testIsValidForSend($senderName, $senderEmail, $templateSubject, $expectedValue)
-    {
-        $model = $this->getModelMock(['getTemplateSenderName', 'getTemplateSenderEmail', 'getTemplateSubject']);
-        $model->expects($this->any())
-            ->method('getTemplateSenderName')
-            ->will($this->returnValue($senderName));
-        $model->expects($this->any())
-            ->method('getTemplateSenderEmail')
-            ->will($this->returnValue($senderEmail));
-        $model->expects($this->any())
-            ->method('getTemplateSubject')
-            ->will($this->returnValue($templateSubject));
-        $this->assertEquals($expectedValue, $model->isValidForSend());
-    }
-
-    /**
-     * @return array
-     */
-    public function isValidForSendDataProvider()
-    {
-        return [
-            'should be valid' => [
-                'senderName' => 'sender name',
-                'senderEmail' => 'email@example.com',
-                'templateSubject' => 'template subject',
-                'expectedValue' => true
-            ],
-            'no sender name so not valid' => [
-                'senderName' => '',
-                'senderEmail' => 'email@example.com',
-                'templateSubject' => 'template subject',
-                'expectedValue' => false
-            ],
-            'no sender email so not valid' => [
-                'senderName' => 'sender name',
-                'senderEmail' => '',
-                'templateSubject' => 'template subject',
-                'expectedValue' => false
-            ],
-            'no subject so not valid' => [
-                'senderName' => 'sender name',
-                'senderEmail' => 'email@example.com',
-                'templateSubject' => '',
-                'expectedValue' => false
             ],
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -76,7 +76,7 @@ abstract class AbstractApplyVatIdTest extends Injectable
     }
 
     /**
-     * Prepare VAT ID configuration.
+     * Prepare VAT ID confguration.
      *
      * @param ConfigData $vatConfig
      * @param string $customerGroup

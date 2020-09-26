@@ -15,7 +15,7 @@ use Zend\Form\ElementInterface;
 use Zend\Form\Element\Collection as CollectionElement;
 use Zend\Form\FieldsetInterface;
 use Zend\Form\LabelAwareInterface;
-use Zend\View\Helper\HelperInterface;
+use Zend\View\Helper\AbstractHelper as BaseAbstractHelper;
 
 class FormCollection extends AbstractHelper
 {
@@ -57,14 +57,14 @@ class FormCollection extends AbstractHelper
     /**
      * The view helper used to render sub elements.
      *
-     * @var HelperInterface
+     * @var AbstractHelper
      */
     protected $elementHelper;
 
     /**
      * The view helper used to render sub fieldsets.
      *
-     * @var HelperInterface
+     * @var AbstractHelper
      */
     protected $fieldsetHelper;
 
@@ -236,10 +236,10 @@ class FormCollection extends AbstractHelper
     /**
      * Sets the element helper that should be used by this collection.
      *
-     * @param  HelperInterface $elementHelper The element helper to use.
+     * @param  AbstractHelper $elementHelper The element helper to use.
      * @return FormCollection
      */
-    public function setElementHelper(HelperInterface $elementHelper)
+    public function setElementHelper(AbstractHelper $elementHelper)
     {
         $this->elementHelper = $elementHelper;
         return $this;
@@ -248,7 +248,7 @@ class FormCollection extends AbstractHelper
     /**
      * Retrieve the element helper.
      *
-     * @return HelperInterface
+     * @return AbstractHelper
      * @throws RuntimeException
      */
     protected function getElementHelper()
@@ -261,8 +261,9 @@ class FormCollection extends AbstractHelper
             $this->elementHelper = $this->view->plugin($this->getDefaultElementHelper());
         }
 
-        if (!$this->elementHelper instanceof HelperInterface) {
-            throw new RuntimeException('Invalid element helper set in FormCollection. The helper must be an instance of Zend\View\Helper\HelperInterface.');
+        if (!$this->elementHelper instanceof BaseAbstractHelper) {
+            // @todo Ideally the helper should implement an interface.
+            throw new RuntimeException('Invalid element helper set in FormCollection. The helper must be an instance of AbstractHelper.');
         }
 
         return $this->elementHelper;
@@ -271,10 +272,10 @@ class FormCollection extends AbstractHelper
     /**
      * Sets the fieldset helper that should be used by this collection.
      *
-     * @param  HelperInterface $fieldsetHelper The fieldset helper to use.
+     * @param  AbstractHelper $fieldsetHelper The fieldset helper to use.
      * @return FormCollection
      */
-    public function setFieldsetHelper(HelperInterface $fieldsetHelper)
+    public function setFieldsetHelper(AbstractHelper $fieldsetHelper)
     {
         $this->fieldsetHelper = $fieldsetHelper;
         return $this;

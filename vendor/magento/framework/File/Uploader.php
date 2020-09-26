@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\File;
@@ -118,11 +118,6 @@ class Uploader
      */
     protected $_validateCallbacks = [];
 
-    /**
-     * @var \Magento\Framework\File\Mime
-     */
-    private $fileMime;
-
     /**#@+
      * File upload type (multiple or single)
      */
@@ -159,13 +154,10 @@ class Uploader
      * Init upload
      *
      * @param string|array $fileId
-     * @param null|\Magento\Framework\File\Mime $fileMime
      * @throws \Exception
      */
-    public function __construct(
-        $fileId,
-        Mime $fileMime = null
-    ) {
+    public function __construct($fileId)
+    {
         $this->_setUploadFileId($fileId);
         if (!file_exists($this->_file['tmp_name'])) {
             $code = empty($this->_file['tmp_name']) ? self::TMP_NAME_EMPTY : 0;
@@ -173,7 +165,6 @@ class Uploader
         } else {
             $this->_fileExists = true;
         }
-        $this->fileMime = $fileMime ?: \Magento\Framework\App\ObjectManager::getInstance()->get(Mime::class);
     }
 
     /**
@@ -520,7 +511,7 @@ class Uploader
      */
     private function _getMimeType()
     {
-        return $this->fileMime->getMimeType($this->_file['tmp_name']);
+        return $this->_file['type'];
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\Store\Switcher\Form\Renderer\Fieldset;
@@ -21,7 +21,7 @@ class Element extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Eleme
     /**
      * @var string
      */
-    protected $_template = 'Magento_Backend::store/switcher/form/renderer/fieldset/element.phtml';
+    protected $_template = 'store/switcher/form/renderer/fieldset/element.phtml';
 
     /**
      * Retrieve an element

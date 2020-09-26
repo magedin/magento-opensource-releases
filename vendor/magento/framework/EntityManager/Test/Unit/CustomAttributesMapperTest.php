@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\EntityManager\Test\Unit;
@@ -48,18 +48,12 @@ class CustomAttributesMapperTest extends \PHPUnit_Framework_TestCase
 
         $metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getMetadata', 'hasConfiguration'])
+            ->setMethods(['getMetadata'])
             ->getMock();
-        $metadataPool->expects($this->any())
-            ->method('hasConfiguration')
-            ->willReturn(true);
         $metadataPool->expects($this->any())
             ->method('getMetadata')
             ->with($this->equalTo(\Magento\Customer\Api\Data\AddressInterface::class))
             ->will($this->returnValue($metadata));
-        $metadataPool->expects($this->once())
-            ->method('hasConfiguration')
-            ->willReturn(true);
 
         $searchCriteriaBuilder = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaBuilder::class)
             ->disableOriginalConstructor()
@@ -82,7 +76,6 @@ class CustomAttributesMapperTest extends \PHPUnit_Framework_TestCase
                 'metadataPool' => $metadataPool,
                 'searchCriteriaBuilder' => $searchCriteriaBuilder
             ]);
-
         $actual = $customAttributesMapper->entityToDatabase(
             \Magento\Customer\Api\Data\AddressInterface::class,
             [
@@ -197,9 +190,6 @@ class CustomAttributesMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     private function getAttributes()
     {
         /* Attribute with the code we want to copy */

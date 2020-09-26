@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Controller\Result;
@@ -10,12 +10,12 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Message\MessageInterface;
 
 /**
- * Plugin for putting messages to cookies.
+ * Plugin for putting messages to cookies
  */
 class MessagePlugin
 {
     /**
-     * Cookies name for messages.
+     * Cookies name for messages
      */
     const MESSAGES_COOKIES_NAME = 'mage-messages';
 
@@ -66,11 +66,6 @@ class MessagePlugin
     }
 
     /**
-     * Set 'mage-messages' cookie.
-     *
-     * Checks the result that controller actions must return. If result is not JSON type, then
-     * sets 'mage-messages' cookie.
-     *
      * @param ResultInterface $subject
      * @param ResultInterface $result
      * @return ResultInterface
@@ -80,52 +75,22 @@ class MessagePlugin
         ResultInterface $result
     ) {
         if (!($subject instanceof Json)) {
-            $this->setCookie($this->getMessages());
-        }
-        
-        return $result;
-    }
-
-    /**
-     * Set 'mage-messages' cookie with 'messages' array.
-     *
-     * Checks the $messages argument. If $messages is not an empty array, then
-     * sets 'mage-messages' public cookie:
-     *
-     *   Cookie Name: 'mage-messages';
-     *   Cookie Duration: 1 year;
-     *   Cookie Path: /;
-     *   Cookie HTTP Only flag: FALSE. Cookie can be accessed by client-side APIs.
-     *
-     * The 'messages' list has format:
-     * [
-     *   [
-     *     'type' => 'type_value',
-     *     'text' => 'cookie_value',
-     *   ],
-     * ]
-     *
-     * @param array $messages List of Magento messages that must be set as 'mage-messages' cookie.
-     * @return void
-     */
-    private function setCookie(array $messages)
-    {
-        if (!empty($messages)) {
             $publicCookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata();
             $publicCookieMetadata->setDurationOneYear();
             $publicCookieMetadata->setPath('/');
             $publicCookieMetadata->setHttpOnly(false);
-
             $this->cookieManager->setPublicCookie(
                 self::MESSAGES_COOKIES_NAME,
-                $this->jsonHelper->jsonEncode($messages),
+                $this->jsonHelper->jsonEncode($this->getMessages()),
                 $publicCookieMetadata
             );
         }
+
+        return $result;
     }
 
     /**
-     * Return messages array and clean message manager messages.
+     * Return messages array and clean message manager messages
      *
      * @return array
      */
@@ -139,12 +104,11 @@ class MessagePlugin
                 'text' => $this->interpretationStrategy->interpret($message),
             ];
         }
-        
         return $messages;
     }
 
     /**
-     * Return messages stored in cookies.
+     * Return messages stored in cookies
      *
      * @return array
      */
@@ -160,7 +124,6 @@ class MessagePlugin
         } catch (\Zend_Json_Exception $e) {
             $messages = [];
         }
-        
         return $messages;
     }
 }

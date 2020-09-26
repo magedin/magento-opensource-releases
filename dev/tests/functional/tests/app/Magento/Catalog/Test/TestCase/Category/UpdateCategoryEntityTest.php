@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -61,12 +61,14 @@ class UpdateCategoryEntityTest extends Injectable
     /**
      * Inject page end prepare default category
      *
+     * @param Category $initialCategory
      * @param CatalogCategoryIndex $catalogCategoryIndex
      * @param CatalogCategoryEdit $catalogCategoryEdit
      * @param FixtureFactory $fixtureFactory
-     * @return void
+     * @return array
      */
     public function __inject(
+        Category $initialCategory,
         CatalogCategoryIndex $catalogCategoryIndex,
         CatalogCategoryEdit $catalogCategoryEdit,
         FixtureFactory $fixtureFactory
@@ -74,6 +76,8 @@ class UpdateCategoryEntityTest extends Injectable
         $this->fixtureFactory = $fixtureFactory;
         $this->catalogCategoryIndex = $catalogCategoryIndex;
         $this->catalogCategoryEdit = $catalogCategoryEdit;
+        $initialCategory->persist();
+        return ['initialCategory' => $initialCategory];
     }
 
     /**
@@ -85,7 +89,6 @@ class UpdateCategoryEntityTest extends Injectable
      */
     public function test(Category $category, Category $initialCategory)
     {
-        $initialCategory->persist();
         $this->catalogCategoryIndex->open();
         $this->catalogCategoryIndex->getTreeCategories()->selectCategory($initialCategory);
         $this->catalogCategoryEdit->getEditForm()->fill($category);
@@ -107,16 +110,11 @@ class UpdateCategoryEntityTest extends Injectable
             ? $category->getDataFieldConfig('parent_id')['source']->getParentCategory()
             : $initialCategory->getDataFieldConfig('parent_id')['source']->getParentCategory();
 
-        $rewriteData = ['parent_id' => ['source' => $parentCategory]];
-        if ($category->hasData('store_id')) {
-            $rewriteData['store_id'] = ['source' => $category->getDataFieldConfig('store_id')['source']->getStore()];
-        }
-
         $data = [
             'data' => array_merge(
                 $initialCategory->getData(),
                 $category->getData(),
-                $rewriteData
+                ['parent_id' => ['source' => $parentCategory]]
             )
         ];
 

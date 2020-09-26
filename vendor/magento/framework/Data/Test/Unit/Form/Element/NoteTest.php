@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -23,16 +23,15 @@ class NoteTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $factoryMock = $this->getMock(\Magento\Framework\Data\Form\Element\Factory::class, [], [], '', false);
+        $factoryMock = $this->getMock('\Magento\Framework\Data\Form\Element\Factory', [], [], '', false);
         $collectionFactoryMock = $this->getMock(
-            \Magento\Framework\Data\Form\Element\CollectionFactory::class,
+            '\Magento\Framework\Data\Form\Element\CollectionFactory',
             [],
             [],
             '',
             false
         );
-        $escaperMock = $this->getMock(\Magento\Framework\Escaper::class, [], [], '', false);
-        $escaperMock->method('escapeHtml')->willReturnArgument(0);
+        $escaperMock = $this->getMock('\Magento\Framework\Escaper', [], [], '', false);
         $this->_model = new \Magento\Framework\Data\Form\Element\Note(
             $factoryMock,
             $collectionFactoryMock,

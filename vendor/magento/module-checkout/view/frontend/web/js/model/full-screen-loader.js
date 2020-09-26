@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -24,7 +24,7 @@ define([
             /**
              * Stop full page loader action
              *
-             * @param {Boolean} [forceStop]
+             * @param {Boolean} forceStop
              */
             stopLoader: function (forceStop) {
                 var $elem = $(containerId),

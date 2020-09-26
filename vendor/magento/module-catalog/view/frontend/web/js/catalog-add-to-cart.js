@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -33,10 +33,6 @@ define([
 
         _bindSubmit: function() {
             var self = this;
-            if (this.element.data('catalog-addtocart-initialized')) {
-                return;
-            }
-            this.element.data('catalog-addtocart-initialized', 1);
             this.element.on('submit', function(e) {
                 e.preventDefault();
                 self.submitForm($(this));
@@ -83,24 +79,11 @@ define([
                     }
                 },
                 success: function(res) {
-                    $(document).trigger('ajax:addToCart', form.data().productSku);
-
                     if (self.isLoaderEnabled()) {
                         $('body').trigger(self.options.processStop);
                     }
 
                     if (res.backUrl) {
-                        var eventData = {
-                            'form': form,
-                            'redirectParameters': []
-                        }
-                        // trigger global event, so other modules will be able add parameters to redirect url
-                        $('body').trigger('catalogCategoryAddToCartRedirect', eventData);
-                        if (eventData.redirectParameters.length > 0) {
-                            var parameters = res.backUrl.split('#');
-                            parameters.push(eventData.redirectParameters.join('&'));
-                            res.backUrl = parameters.join('#');
-                        }
                         window.location = res.backUrl;
                         return;
                     }

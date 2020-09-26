@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -149,9 +149,6 @@ class RulesApplierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($appliedRuleIds, $result);
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderChildren()
     {
         return [
@@ -203,10 +200,6 @@ class RulesApplierTest extends \PHPUnit_Framework_TestCase
         return $item;
     }
 
-    /**
-     * @param $item
-     * @param $rule
-     */
     protected function applyRule($item, $rule)
     {
         $qty = 2;

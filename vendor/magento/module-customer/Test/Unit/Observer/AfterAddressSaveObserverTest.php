@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Observer;
@@ -389,9 +389,6 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
         $this->model->execute($observer);
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderAfterAddressSaveDefaultGroup()
     {
         return [
@@ -581,9 +578,6 @@ class AfterAddressSaveObserverTest extends \PHPUnit_Framework_TestCase
         $this->model->execute($observer);
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderAfterAddressSaveNewGroup()
     {
         return [

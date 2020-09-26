@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Indexer\Product\Flat;
@@ -179,11 +179,6 @@ class FlatTableBuilder
 
             $columnComment = isset($fieldProp['comment']) ? $fieldProp['comment'] : $fieldName;
 
-            if ($fieldName == 'created_at') {
-                $columnDefinition['nullable'] = true;
-                $columnDefinition['default'] = null;
-            }
-
             $table->addColumn($fieldName, $fieldProp['type'], $columnLength, $columnDefinition, $columnComment);
         }
 
@@ -226,11 +221,7 @@ class FlatTableBuilder
 
         unset($tables[$entityTableName]);
 
-        $allColumns = array_values(
-            array_unique(
-                array_merge(['entity_id', $linkField, 'type_id', 'attribute_set_id'], $columnsList)
-            )
-        );
+        $allColumns = array_merge(['entity_id', 'type_id', 'attribute_set_id'], $columnsList);
 
         /* @var $status \Magento\Eav\Model\Entity\Attribute */
         $status = $this->_productIndexerHelper->getAttribute('status');
@@ -272,7 +263,7 @@ class FlatTableBuilder
 
             $select->joinLeft(
                 $temporaryTableName,
-                "e.${linkField} = ${temporaryTableName}.${linkField}",
+                "e.entity_id = " . $temporaryTableName . ".entity_id",
                 $columnsNames
             );
             $allColumns = array_merge($allColumns, $columnsNames);
@@ -286,7 +277,7 @@ class FlatTableBuilder
             if (!empty($columnValueNames)) {
                 $select->joinLeft(
                     $temporaryValueTableName,
-                    "e.${linkField} = " . $temporaryValueTableName . ".${linkField}",
+                    "e.${linkField} = " . $temporaryValueTableName . ".entity_id",
                     $columnValueNames
                 );
                 $allColumns = array_merge($allColumns, $columnValueNames);

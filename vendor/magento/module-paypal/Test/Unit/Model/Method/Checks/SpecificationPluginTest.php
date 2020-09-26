@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -89,9 +89,6 @@ class SpecificationPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($count > 0, $this->callAroundIsApplicable($proceed, $paymentMethod, $quote));
     }
 
-    /**
-     * @return array
-     */
     public function aroundIsApplicableDataProvider()
     {
         return [[0], [1], [2]];

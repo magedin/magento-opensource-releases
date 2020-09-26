@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Test\Unit\Component\Form\Element;
@@ -54,9 +54,6 @@ abstract class AbstractElementTest extends \PHPUnit_Framework_TestCase
      */
     abstract protected function getModelName();
 
-    /**
-     * @return mixed
-     */
     abstract public function testGetComponentName();
 
     /**

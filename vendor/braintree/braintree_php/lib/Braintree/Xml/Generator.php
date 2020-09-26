@@ -130,10 +130,8 @@ class Generator
      */
     private static function _dateTimeToXmlTimestamp($dateTime)
     {
-        $dateTimeForUTC = clone $dateTime;
-
-        $dateTimeForUTC->setTimeZone(new DateTimeZone('UTC'));
-        return ($dateTimeForUTC->format('Y-m-d\TH:i:s') . 'Z');
+        $dateTime->setTimeZone(new DateTimeZone('UTC'));
+        return ($dateTime->format('Y-m-d\TH:i:s') . 'Z');
     }
 
     private static function _castDateTime($string)

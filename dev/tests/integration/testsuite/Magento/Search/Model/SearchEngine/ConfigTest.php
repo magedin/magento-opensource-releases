@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Search\Model\SearchEngine;
@@ -17,7 +17,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $xmlPath = __DIR__ . '/../../_files/search_engine.xml';
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
-        // Clear out the cache
+        // Clear out the clache
         $cacheManager = $objectManager->create('Magento\Framework\App\Cache\Manager');
         /** @var \Magento\Framework\App\Cache\Manager $cacheManager */
         $cacheManager->clean($cacheManager->getAvailableTypes());

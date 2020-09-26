@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,7 +17,7 @@ class Edit extends \Magento\Backend\Block\Widget
     /**
      * @var string
      */
-    protected $_template = 'Magento_Catalog::catalog/product/edit.phtml';
+    protected $_template = 'catalog/product/edit.phtml';
 
     /**
      * Core registry

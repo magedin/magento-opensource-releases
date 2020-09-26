@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Adminhtml\Order;
@@ -79,7 +79,7 @@ class Create extends \Magento\Backend\Block\Widget\Form\Container
         $this->buttonList->update(
             'reset',
             'onclick',
-            'deleteConfirm(\'' . $confirm . '\', \'' . $this->getCancelUrl() . '\', {data: {}})'
+            'deleteConfirm(\'' . $confirm . '\', \'' . $this->getCancelUrl() . '\')'
         );
     }
 

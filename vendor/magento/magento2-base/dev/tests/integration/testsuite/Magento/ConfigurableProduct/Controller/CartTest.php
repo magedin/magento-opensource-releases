@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,10 +8,6 @@
  * Test class for \Magento\Checkout\Controller\Cart
  */
 namespace Magento\ConfigurableProduct\Controller;
-
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 class CartTest extends \Magento\TestFramework\TestCase\AbstractController
 {
@@ -23,12 +19,9 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
     public function testConfigureActionWithConfigurableProduct()
     {
         /** @var $session \Magento\Checkout\Model\Session  */
-        $session = $this->_objectManager->create(\Magento\Checkout\Model\Session::class);
+        $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        $productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
-        $product = $productRepository->get('configurable');
-
-        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), $product->getId());
+        $quoteItem = $this->_getQuoteItemIdByProductId($session->getQuote(), 1);
         $this->assertNotNull($quoteItem, 'Cannot get quote item for configurable product');
 
         $this->dispatch(
@@ -70,32 +63,5 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
             }
         }
         return null;
-    }
-
-    /**
-     * Test for \Magento\Checkout\Controller\Cart\CouponPost::execute() with configurable product with last option.
-     *
-     * @magentoDataFixture Magento/ConfigurableProduct/_files/quote_with_configurable_product_last_variation.php
-     */
-    public function testExecuteForConfigurableLastOption()
-    {
-        /** @var $session \Magento\Checkout\Model\Session */
-        $session = $this->_objectManager->create(\Magento\Checkout\Model\Session::class);
-        $quote = $session->getQuote();
-        $quote->setData('trigger_recollect', 1)->setTotalsCollectedFlag(true);
-        $inputData = [
-            'remove' => 0,
-            'coupon_code' => 'test',
-        ];
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
-        $this->getRequest()->setPostValue($inputData);
-        $this->dispatch(
-            'checkout/cart/couponPost/'
-        );
-
-        $this->assertSessionMessages(
-            $this->equalTo(['The coupon code &quot;test&quot; is not valid.']),
-            \Magento\Framework\Message\MessageInterface::TYPE_ERROR
-        );
     }
 }

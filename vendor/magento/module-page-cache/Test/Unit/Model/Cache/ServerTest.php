@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\PageCache\Test\Unit\Model\Cache;
@@ -90,9 +90,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($uris, $this->model->getUris());
     }
 
-    /**
-     * @return array
-     */
     public function getUrisDataProvider()
     {
         return [

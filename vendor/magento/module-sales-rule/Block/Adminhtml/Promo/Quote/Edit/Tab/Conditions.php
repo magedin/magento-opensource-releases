@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\Tab;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\SalesRule\Model\RuleFactory;
 
 class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Ui\Component\Layout\Tabs\TabInterface
@@ -29,7 +28,7 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
     protected $_nameInLayout = 'conditions_apply_to';
 
     /**
-     * @var RuleFactory
+     * @var \Magento\SalesRule\Model\RuleFactory
      */
     private $ruleFactory;
 
@@ -42,8 +41,6 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
      * @param \Magento\Rule\Block\Conditions $conditions
      * @param \Magento\Backend\Block\Widget\Form\Renderer\Fieldset $rendererFieldset
      * @param array $data
-     * @param RuleFactory|null $ruleFactory
-     * @throws \RuntimeException
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -51,16 +48,26 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Rule\Block\Conditions $conditions,
         \Magento\Backend\Block\Widget\Form\Renderer\Fieldset $rendererFieldset,
-        array $data = [],
-        RuleFactory $ruleFactory = null
+        array $data = []
     ) {
         $this->_rendererFieldset = $rendererFieldset;
         $this->_conditions = $conditions;
         parent::__construct($context, $registry, $formFactory, $data);
-        if ($ruleFactory === null) {
-            $ruleFactory = ObjectManager::getInstance()->get(RuleFactory::class);
+    }
+
+    /**
+     * The getter function to get the new RuleFactory dependency
+     *
+     * @return \Magento\SalesRule\Model\RuleFactory
+     *
+     * @deprecated
+     */
+    private function getRuleFactory()
+    {
+        if ($this->ruleFactory === null) {
+            $this->ruleFactory = ObjectManager::getInstance()->get('Magento\SalesRule\Model\RuleFactory');
         }
-        $this->ruleFactory = $ruleFactory;
+        return $this->ruleFactory;
     }
 
     /**
@@ -153,7 +160,7 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements
     {
         if (!$model) {
             $id = $this->getRequest()->getParam('id');
-            $model = $this->ruleFactory->create();
+            $model = $this->getRuleFactory()->create();
             $model->load($id);
         }
         $conditionsFieldSetId = $model->getConditionsFieldSetId($formName);

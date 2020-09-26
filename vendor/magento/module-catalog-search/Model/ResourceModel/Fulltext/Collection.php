@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\ResourceModel\Fulltext;
@@ -56,7 +56,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     /**
      * @var string|null
      */
-    private $relevanceOrderDirection = null;
+    private $order = null;
 
     /**
      * @var string
@@ -254,7 +254,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      * Apply attribute filter to facet collection
      *
      * @param string $field
-     * @param null|string|array $condition
+     * @param null $condition
      * @return $this
      */
     public function addFieldToFilter($field, $condition = null)
@@ -265,21 +265,22 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
 
         $this->getSearchCriteriaBuilder();
         $this->getFilterBuilder();
-        if (is_array($condition)
-            && in_array(key($condition), ['from', 'to'], true)
-        ) {
-            if (!empty($condition['from'])) {
-                $this->addFieldToFilter("{$field}.from", $condition['from']);
-            }
-            if (!empty($condition['to'])) {
-                $this->addFieldToFilter("{$field}.to", $condition['to']);
-            }
-        } else {
+        if (!is_array($condition) || !in_array(key($condition), ['from', 'to'])) {
             $this->filterBuilder->setField($field);
             $this->filterBuilder->setValue($condition);
             $this->searchCriteriaBuilder->addFilter($this->filterBuilder->create());
+        } else {
+            if (!empty($condition['from'])) {
+                $this->filterBuilder->setField("{$field}.from");
+                $this->filterBuilder->setValue($condition['from']);
+                $this->searchCriteriaBuilder->addFilter($this->filterBuilder->create());
+            }
+            if (!empty($condition['to'])) {
+                $this->filterBuilder->setField("{$field}.to");
+                $this->filterBuilder->setValue($condition['to']);
+                $this->searchCriteriaBuilder->addFilter($this->filterBuilder->create());
+            }
         }
-
         return $this;
     }
 
@@ -345,26 +346,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
 
         $this->_totalRecords = $this->searchResult->getTotalCount();
 
-        if ($this->relevanceOrderDirection) {
-            $this->getSelect()->order(
-                'search_result.'. TemporaryStorage::FIELD_SCORE . ' ' . $this->relevanceOrderDirection
-            );
+        if ($this->order && 'relevance' === $this->order['field']) {
+            $this->getSelect()->order('search_result.'. TemporaryStorage::FIELD_SCORE . ' ' . $this->order['dir']);
         }
         return parent::_renderFiltersBefore();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function _beforeLoad()
-    {
-        /*
-         * This order is required to force search results be the same
-         * for the same requests and products with the same relevance
-         * NOTE: this does not replace existing orders but ADDs one more
-         */
-        $this->setOrder('entity_id');
-        return parent::_beforeLoad();
     }
 
     /**
@@ -385,12 +370,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     public function setOrder($attribute, $dir = Select::SQL_DESC)
     {
-        if ($attribute === 'relevance') {
-            $this->relevanceOrderDirection = $dir;
-        } else {
+        $this->order = ['field' => $attribute, 'dir' => $dir];
+        if ($attribute != 'relevance') {
             parent::setOrder($attribute, $dir);
         }
-
         return $this;
     }
 

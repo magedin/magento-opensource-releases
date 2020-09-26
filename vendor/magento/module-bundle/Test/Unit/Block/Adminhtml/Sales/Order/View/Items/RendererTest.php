@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Bundle\Test\Unit\Block\Adminhtml\Sales\Order\View\Items;
@@ -38,9 +38,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->isShipmentSeparately());
     }
 
-    /**
-     * @return array
-     */
     public function isShipmentSeparatelyWithoutItemDataProvider()
     {
         return [
@@ -69,9 +66,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->isShipmentSeparately($this->orderItem));
     }
 
-    /**
-     * @return array
-     */
     public function isShipmentSeparatelyWithItemDataProvider()
     {
         return [
@@ -93,9 +87,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->isChildCalculated());
     }
 
-    /**
-     * @return array
-     */
     public function isChildCalculatedWithoutItemDataProvider()
     {
         return [
@@ -124,9 +115,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->isChildCalculated($this->orderItem));
     }
 
-    /**
-     * @return array
-     */
     public function isChildCalculatedWithItemDataProvider()
     {
         return [
@@ -146,9 +134,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->getSelectionAttributes($this->orderItem));
     }
 
-    /**
-     * @return array
-     */
     public function getSelectionAttributesDataProvider()
     {
         return [
@@ -182,9 +167,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $this->model->canShowPriceInfo($this->orderItem));
     }
 
-    /**
-     * @return array
-     */
     public function canShowPriceInfoDataProvider()
     {
         return [

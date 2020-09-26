@@ -1,12 +1,11 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 define([
-    'underscore',
     'Magento_Ui/js/form/element/textarea'
-], function (_, Textarea) {
+], function (Textarea) {
     'use strict';
 
     return Textarea.extend({
@@ -124,24 +123,26 @@ define([
          * Update field value, if it's allowed
          */
         updateValue: function () {
-            var str = this.mask || '',
+            var str = this.mask,
                 nonEmptyValueFlag = false,
+                placeholder,
+                property,
                 tmpElement;
 
             if (!this.allowImport) {
                 return;
             }
 
-            if (str) {
-                _.each(this.values, function (propertyValue, propertyName) {
-                    str = str.replace('{{' + propertyName + '}}', propertyValue);
-                    nonEmptyValueFlag = nonEmptyValueFlag || !!propertyValue;
-                });
+            for (property in this.values) {
+                if (this.values.hasOwnProperty(property)) {
+                    placeholder = '';
+                    placeholder = placeholder.concat('{{', property, '}}');
+                    str = str.replace(placeholder, this.values[property]);
+                    nonEmptyValueFlag = nonEmptyValueFlag || !!this.values[property];
+                }
             }
-
             // strip tags
             tmpElement = document.createElement('div');
-            str = str.replace(/(<([^>]+)>)/ig, '');
             tmpElement.innerHTML = str;
             str =  tmpElement.textContent || tmpElement.innerText || '';
 

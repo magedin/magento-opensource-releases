@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Option\Type\File;
-
-use Magento\Framework\Math\Random;
 
 /**
  * @magentoDataFixture Magento/Catalog/_files/validate_image.php
@@ -41,17 +39,11 @@ class ValidatorFileTest extends \PHPUnit_Framework_TestCase
         $fileSize = $this->objectManager->create('Magento\Framework\File\Size');
         $this->maxFileSize = $fileSize->getMaxFileSize();
         $this->maxFileSizeInMb = $fileSize->getMaxFileSizeInMb();
-        /** @var \PHPUnit_Framework_MockObject_MockObject $random */
-        $random = $this->getMock(Random::class);
-        $random->expects($this->any())
-            ->method('getRandomString')
-            ->willReturn('RandomString');
 
         $this->model = $this->objectManager->create(
             'Magento\Catalog\Model\Product\Option\Type\File\ValidatorFile',
             [
-                'httpFactory' => $this->httpFactoryMock,
-                'random' => $random
+                'httpFactory' => $this->httpFactoryMock
             ]
         );
     }
@@ -289,8 +281,8 @@ class ValidatorFileTest extends \PHPUnit_Framework_TestCase
         return [
             'type' => 'image/jpeg',
             'title' => 'test.jpg',
-            'quote_path' => 'custom_options/quote/t/e/RandomString',
-            'order_path' => 'custom_options/order/t/e/RandomString',
+            'quote_path' => 'custom_options/quote/t/e/e1d601731b4b1a84163cd0e9370a4fcb.jpg',
+            'order_path' => 'custom_options/order/t/e/e1d601731b4b1a84163cd0e9370a4fcb.jpg',
             'size' => '3300',
             'width' => 136,
             'height' => 131,

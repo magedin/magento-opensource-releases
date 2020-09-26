@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Controller\Account;
@@ -90,7 +90,7 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
     {
         $this->prepareContext();
 
-        $this->session = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
+        $this->session = $this->getMockBuilder('Magento\Customer\Model\Session')
             ->disableOriginalConstructor()
             ->setMethods([
                 'isLoggedIn',
@@ -100,22 +100,22 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
             ])
             ->getMock();
 
-        $this->accountManagement = $this->getMockBuilder(\Magento\Customer\Api\AccountManagementInterface::class)
+        $this->accountManagement = $this->getMockBuilder('Magento\Customer\Api\AccountManagementInterface')
             ->getMockForAbstractClass();
 
-        $this->url = $this->getMockBuilder(\Magento\Customer\Model\Url::class)
+        $this->url = $this->getMockBuilder('Magento\Customer\Model\Url')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->formkeyValidator = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey\Validator::class)
+        $this->formkeyValidator = $this->getMockBuilder('Magento\Framework\Data\Form\FormKey\Validator')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->accountRedirect = $this->getMockBuilder(\Magento\Customer\Model\Account\Redirect::class)
+        $this->accountRedirect = $this->getMockBuilder('Magento\Customer\Model\Account\Redirect')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder('Magento\Framework\App\Config\ScopeConfigInterface')
             ->getMockForAbstractClass();
 
         $this->controller = new LoginPost(
@@ -339,7 +339,7 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
                 'password' => $password,
             ]);
 
-        $customerMock = $this->getMockBuilder(\Magento\Customer\Api\Data\CustomerInterface::class)
+        $customerMock = $this->getMockBuilder('Magento\Customer\Api\Data\CustomerInterface')
             ->getMockForAbstractClass();
 
         $this->scopeConfig->expects($this->once())
@@ -455,25 +455,25 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
             [
                 [
                     'message' => 'EmailNotConfirmedException',
-                    'exception' => \Magento\Framework\Exception\EmailNotConfirmedException::class,
+                    'exception' => '\Magento\Framework\Exception\EmailNotConfirmedException',
                 ],
             ],
             [
                 [
                     'message' => 'AuthenticationException',
-                    'exception' => \Magento\Framework\Exception\AuthenticationException::class,
+                    'exception' => '\Magento\Framework\Exception\AuthenticationException',
                 ],
             ],
             [
                 [
                     'message' => 'Exception',
-                    'exception' => \Exception::class,
+                    'exception' => '\Exception',
                 ],
             ],
             [
                 [
                     'message' => 'UserLockedException',
-                    'exception' => \Magento\Framework\Exception\State\UserLockedException::class,
+                    'exception' => '\Magento\Framework\Exception\State\UserLockedException',
                 ],
             ],
         ];
@@ -481,11 +481,11 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
 
     protected function prepareContext()
     {
-        $this->context = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
+        $this->context = $this->getMockBuilder('Magento\Framework\App\Action\Context')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+        $this->request = $this->getMockBuilder('Magento\Framework\App\Request\Http')
             ->disableOriginalConstructor()
             ->setMethods([
                 'isPost',
@@ -497,7 +497,7 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder('Magento\Framework\Message\ManagerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -536,9 +536,10 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
     protected function mockExceptions($exception, $username)
     {
         $url = 'url1';
+        $email = 'hello@example.com';
 
         switch ($exception) {
-            case \Magento\Framework\Exception\EmailNotConfirmedException::class:
+            case '\Magento\Framework\Exception\EmailNotConfirmedException':
                 $this->url->expects($this->once())
                     ->method('getEmailConfirmationUrl')
                     ->with($username)
@@ -560,7 +561,7 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
                     ->willReturnSelf();
                 break;
 
-            case \Magento\Framework\Exception\AuthenticationException::class:
+            case '\Magento\Framework\Exception\AuthenticationException':
                 $this->messageManager->expects($this->once())
                     ->method('addError')
                     ->with(__('Invalid login or password.'))
@@ -572,16 +573,18 @@ class LoginPostTest extends \PHPUnit_Framework_TestCase
                     ->willReturnSelf();
                 break;
 
-            case \Exception::class:
+            case '\Exception':
                 $this->messageManager->expects($this->once())
                     ->method('addError')
                     ->with(__('An unspecified error occurred. Please contact us for assistance.'))
                     ->willReturnSelf();
                 break;
 
-            case \Magento\Framework\Exception\State\UserLockedException::class:
+            case '\Magento\Framework\Exception\State\UserLockedException':
+                $this->scopeConfig->expects($this->once())->method('getValue')->willReturn($email);
                 $message = __(
-                    'Invalid login or password.'
+                    'The account is locked. Please wait and try again or contact %1.',
+                    $email
                 );
                 $this->messageManager->expects($this->once())
                     ->method('addError')

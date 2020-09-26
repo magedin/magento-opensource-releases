@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -40,7 +40,6 @@
         <arguments>
             <argument name="secureUrlList" xsi:type="array">
                 <item name="paypal_billing" xsi:type="string">/paypal/billing/</item>
-                <item name="paypal_billing_agreement" xsi:type="string">/paypal/billing_agreement/</item>
                 <item name="paypal_bml" xsi:type="string">/paypal/bml/</item>
                 <item name="paypal_hostedpro" xsi:type="string">/paypal/hostedpro/</item>
                 <item name="paypal_ipn" xsi:type="string">/paypal/ipn/</item>
@@ -112,8 +111,5 @@
                 <item name="paypal-billing-agreement" xsi:type="string">Magento\Paypal\CustomerData\BillingAgreement</item>
             </argument>
         </arguments>
-    </type>
-    <type name="Magento\Quote\Model\QuoteRepository\SaveHandler">
-        <plugin name="paypal-cartitem" type="Magento\Paypal\Model\Express\QuotePlugin"/>
     </type>
 </config>

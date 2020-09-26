@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Wishlist\Controller\Index;
@@ -80,8 +80,7 @@ class DownloadCustomOption extends \Magento\Wishlist\Controller\AbstractIndex
                 $this->_fileResponseFactory->create(
                     $info['title'],
                     ['value' => $info['quote_path'], 'type' => 'filename'],
-                    DirectoryList::ROOT,
-                    $info['type']
+                    DirectoryList::ROOT
                 );
             }
         } catch (\Exception $e) {

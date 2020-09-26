@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Test\Unit;
@@ -104,60 +104,27 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
      * @param string $area
      * @param bool $forceReload
      * @param array $cachedData
-     * @dataProvider dataProviderLoadDataCachedTranslation
-     */
-    public function testLoadDataCachedTranslation($area, $forceReload, $cachedData)
-    {
-        $this->expectsSetConfig('Magento/luma');
-        $this->cache->expects($this->once())
-            ->method('load')
-            ->will($this->returnValue(serialize($cachedData)));
-
-        $this->appState->expects($this->exactly($area ? 0 : 1))
-            ->method('getAreaCode')
-            ->will($this->returnValue('frontend'));
-
-        $this->translate->loadData($area, $forceReload);
-        $this->assertEquals($cachedData, $this->translate->getData());
-    }
-
-    /**
-     * @return array
-     */
-    public function dataProviderLoadDataCachedTranslation()
-    {
-        $cachedData = ['cached 1' => 'translated 1', 'cached 2' => 'translated 2'];
-        return [
-            ['adminhtml', false, $cachedData],
-            ['frontend', false, $cachedData],
-            [null, false, $cachedData],
-        ];
-    }
-
-    /**
-     * @param string $area
-     * @param bool $forceReload
      * @dataProvider dataProviderForTestLoadData
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    public function testLoadData($area, $forceReload)
+    public function testLoadData($area, $forceReload, $cachedData)
     {
-        $this->expectsSetConfig('Magento/luma');
-        $this->appState->expects($this->exactly($area ? 0 : 1))
-            ->method('getAreaCode')
-            ->will($this->returnValue('frontend'));
+        $this->expectsSetConfig('themeId');
+
         $this->cache->expects($this->exactly($forceReload ? 0 : 1))
             ->method('load')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(serialize($cachedData)));
+
+        if (!$forceReload && $cachedData !== false) {
+            $this->translate->loadData($area, $forceReload);
+            $this->assertEquals($cachedData, $this->translate->getData());
+            return;
+        }
 
         $this->directory->expects($this->any())->method('isExist')->will($this->returnValue(true));
 
         // _loadModuleTranslation()
-        $modules = ['some_module', 'other_module', 'another_module', 'current_module'];
-        $this->request->expects($this->any())
-            ->method('getControllerModule')
-            ->willReturn('current_module');
-        $this->moduleList->expects($this->once())->method('getNames')->will($this->returnValue($modules));
+        $this->moduleList->expects($this->once())->method('getNames')->will($this->returnValue(['name']));
         $moduleData = [
             'module original' => 'module translated',
             'module theme' => 'module-theme original translated',
@@ -203,31 +170,39 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         ];
         $this->resource->expects($this->any())->method('getTranslationArray')->will($this->returnValue($dbData));
 
-        $this->cache->expects($this->exactly($forceReload ? 0 : 1))->method('save');
+        $this->cache->expects($this->exactly(1))
+            ->method('save');
 
         $this->translate->loadData($area, $forceReload);
 
         $expected = [
+            'module original' => 'module translated',
+            'module theme' => 'theme translated overwrite',
             'module pack' => 'pack translated overwrite',
             'module db' => 'db translated overwrite',
+            'theme original' => 'theme translated',
             'pack original' => 'pack translated',
             'db original' => 'db translated',
         ];
         $this->assertEquals($expected, $this->translate->getData());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestLoadData()
     {
+        $cachedData = ['cached 1' => 'translated 1', 'cached 2' => 'translated 2'];
         return [
-            ['adminhtml', true],
-            ['adminhtml', false],
-            ['frontend', true],
-            ['frontend', false],
-            [null, true],
-            [null, false]
+            ['adminhtml', true, false],
+            ['adminhtml', true, $cachedData],
+            ['adminhtml', false, $cachedData],
+            ['adminhtml', false, false],
+            ['frontend', true, false],
+            ['frontend', true, $cachedData],
+            ['frontend', false, $cachedData],
+            ['frontend', false, false],
+            [null, true, false],
+            [null, true, $cachedData],
+            [null, false, $cachedData],
+            [null, false, false]
         ];
     }
 
@@ -246,9 +221,6 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->translate->getData());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestGetData()
     {
         $data = ['original 1' => 'translated 1', 'original 2' => 'translated 2'];
@@ -319,14 +291,7 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
                     ]
                 )
             );
-        $designTheme = $this->getMockBuilder(\Magento\Theme\Model\Theme::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $designTheme->expects($this->once())
-            ->method('getThemePath')
-            ->willReturn($themeId);
-
+        $designTheme = new \Magento\Framework\DataObject(['id' => $themeId]);
         $this->viewDesign->expects($this->any())->method('getDesignTheme')->will($this->returnValue($designTheme));
     }
 }

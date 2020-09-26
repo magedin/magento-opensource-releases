@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,10 +10,9 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
 use Magento\CatalogRule\Model\ResourceModel\Rule\CollectionFactory as RuleCollectionFactory;
 use Magento\CatalogRule\Model\Rule;
-use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\CatalogRule\Model\Indexer\IndexBuilder\ProductLoader;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -97,11 +96,6 @@ class IndexBuilder
     protected $connection;
 
     /**
-     * @var ProductLoader
-     */
-    private $productLoader;
-
-    /**
      * @param RuleCollectionFactory $ruleCollectionFactory
      * @param PriceCurrencyInterface $priceCurrency
      * @param \Magento\Framework\App\ResourceConnection $resource
@@ -112,7 +106,6 @@ class IndexBuilder
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      * @param \Magento\Catalog\Model\ProductFactory $productFactory
      * @param int $batchCount
-     * @param ProductLoader|null $productLoader
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -125,8 +118,7 @@ class IndexBuilder
         \Magento\Framework\Stdlib\DateTime $dateFormat,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
         \Magento\Catalog\Model\ProductFactory $productFactory,
-        $batchCount = 1000,
-        ProductLoader $productLoader = null
+        $batchCount = 1000
     ) {
         $this->resource = $resource;
         $this->connection = $resource->getConnection();
@@ -139,8 +131,6 @@ class IndexBuilder
         $this->dateTime = $dateTime;
         $this->productFactory = $productFactory;
         $this->batchCount = $batchCount;
-        $this->productLoader = $productLoader ?:
-            ObjectManager::getInstance()->get(ProductLoader::class);
     }
 
     /**
@@ -169,9 +159,7 @@ class IndexBuilder
             $this->doReindexByIds($ids);
         } catch (\Exception $e) {
             $this->critical($e);
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __("Catalog rule indexing failed. See details in exception log.")
-            );
+            throw new \Magento\Framework\Exception\LocalizedException(__($e->getMessage()), $e);
         }
     }
 
@@ -185,10 +173,9 @@ class IndexBuilder
     {
         $this->cleanByIds($ids);
 
-        $products = $this->productLoader->getProducts($ids);
         foreach ($this->getActiveRules() as $rule) {
-            foreach ($products as $product) {
-                $this->applyRule($rule, $product);
+            foreach ($ids as $productId) {
+                $this->applyRule($rule, $this->getProduct($productId));
             }
         }
     }

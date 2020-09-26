@@ -27,7 +27,7 @@ class FormElementManager extends AbstractPluginManager
      *
      * @var array
      */
-    protected $invokableClasses = [
+    protected $invokableClasses = array(
         'button'        => 'Zend\Form\Element\Button',
         'captcha'       => 'Zend\Form\Element\Captcha',
         'checkbox'      => 'Zend\Form\Element\Checkbox',
@@ -60,7 +60,7 @@ class FormElementManager extends AbstractPluginManager
         'time'          => 'Zend\Form\Element\Time',
         'url'           => 'Zend\Form\Element\Url',
         'week'          => 'Zend\Form\Element\Week',
-    ];
+    );
 
     /**
      * Don't share form elements by default
@@ -76,8 +76,8 @@ class FormElementManager extends AbstractPluginManager
     {
         parent::__construct($configuration);
 
-        $this->addInitializer([$this, 'injectFactory']);
-        $this->addInitializer([$this, 'callElementInit'], false);
+        $this->addInitializer(array($this, 'injectFactory'));
+        $this->addInitializer(array($this, 'callElementInit'), false);
     }
 
     /**
@@ -145,10 +145,10 @@ class FormElementManager extends AbstractPluginManager
      * @param  bool $usePeeringServiceManagers
      * @return object
      */
-    public function get($name, $options = [], $usePeeringServiceManagers = true)
+    public function get($name, $options = array(), $usePeeringServiceManagers = true)
     {
         if (is_string($options)) {
-            $options = ['name' => $options];
+            $options = array('name' => $options);
         }
         return parent::get($name, $options, $usePeeringServiceManagers);
     }

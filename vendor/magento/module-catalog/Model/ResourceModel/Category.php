@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -32,13 +32,6 @@ class Category extends AbstractResource
      * @var string
      */
     protected $_categoryProductTable;
-
-    /**
-     * Entities where attribute is filled.
-     *
-     * @var array[]
-     */
-    private $entitiesWhereAttributesIs;
 
     /**
      * Id of 'is_active' category attribute
@@ -240,9 +233,7 @@ class Category extends AbstractResource
         if (!$object->getChildrenCount()) {
             $object->setChildrenCount(0);
         }
-        $object->setAttributeSetId(
-            $object->getAttributeSetId() ?: $this->getEntityType()->getDefaultAttributeSetId()
-        );
+
         if ($object->isObjectNew()) {
             if ($object->getPosition() === null) {
                 $object->setPosition($this->_getMaxPosition($object->getPath()) + 1);
@@ -409,18 +400,9 @@ class Category extends AbstractResource
          * Update product positions in category
          */
         if (!empty($update)) {
-            $newPositions = [];
             foreach ($update as $productId => $position) {
-                $delta = $position - $oldProducts[$productId];
-                if (!isset($newPositions[$delta])) {
-                    $newPositions[$delta] = [];
-                }
-                $newPositions[$delta][] = $productId;
-            }
-
-            foreach ($newPositions as $delta => $productIds) {
-                $bind = ['position' => new \Zend_Db_Expr("position + ({$delta})")];
-                $where = ['category_id = ?' => (int)$id, 'product_id IN (?)' => $productIds];
+                $where = ['category_id = ?' => (int)$id, 'product_id = ?' => (int)$productId];
+                $bind = ['position' => (int)$position];
                 $connection->update($this->getCategoryProductTable(), $bind, $where);
             }
         }
@@ -431,8 +413,6 @@ class Category extends AbstractResource
                 'catalog_category_change_products',
                 ['category' => $category, 'product_ids' => $productIds]
             );
-
-            $category->setChangedProductIds($productIds);
         }
 
         if (!empty($insert) || !empty($update) || !empty($delete)) {
@@ -593,29 +573,22 @@ class Category extends AbstractResource
      */
     public function findWhereAttributeIs($entityIdsFilter, $attribute, $expectedValue)
     {
-        $entityIdsFilterHash = md5(serialize($entityIdsFilter));
-
-        if (!isset($this->entitiesWhereAttributesIs[$entityIdsFilterHash][$attribute->getId()][$expectedValue])) {
-            $linkField = $this->getLinkField();
-            $bind = ['attribute_id' => $attribute->getId(), 'value' => $expectedValue];
-            $selectEntities = $this->getConnection()->select()->from(
-                ['ce' => $this->getTable('catalog_category_entity')],
-                ['entity_id']
-            )->joinLeft(
-                ['ci' => $attribute->getBackend()->getTable()],
-                "ci.{$linkField} = ce.{$linkField} AND attribute_id = :attribute_id",
-                ['value']
-            )->where(
-                'ci.value = :value'
-            )->where(
-                'ce.entity_id IN (?)',
-                $entityIdsFilter
-            );
-            $this->entitiesWhereAttributesIs[$entityIdsFilterHash][$attribute->getId()][$expectedValue] =
-                $this->getConnection()->fetchCol($selectEntities, $bind);
-        }
-
-        return $this->entitiesWhereAttributesIs[$entityIdsFilterHash][$attribute->getId()][$expectedValue];
+        $linkField = $this->getLinkField();
+        $bind = ['attribute_id' => $attribute->getId(), 'value' => $expectedValue];
+        $selectEntities = $this->getConnection()->select()->from(
+            ['ce' => $this->getTable('catalog_category_entity')],
+            ['entity_id']
+        )->joinLeft(
+            ['ci' => $attribute->getBackend()->getTable()],
+            "ci.{$linkField} = ce.{$linkField} AND attribute_id = :attribute_id",
+            ['value']
+        )->where(
+            'ci.value = :value'
+        )->where(
+            'ce.entity_id IN (?)',
+            $entityIdsFilter
+        );
+        return $this->getConnection()->fetchCol($selectEntities, $bind);
     }
 
     /**
@@ -983,7 +956,7 @@ class Category extends AbstractResource
         if ($afterCategoryId) {
             $select = $connection->select()->from($table, 'position')->where('entity_id = :entity_id');
             $position = $connection->fetchOne($select, ['entity_id' => $afterCategoryId]);
-            $position++;
+            $position += 1;
         } else {
             $position = 1;
         }
@@ -1060,7 +1033,7 @@ class Category extends AbstractResource
     {
         if (null === $this->entityManager) {
             $this->entityManager = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\EntityManager\EntityManager::class);
+                ->get('Magento\Framework\EntityManager\EntityManager');
         }
         return $this->entityManager;
     }
@@ -1072,7 +1045,7 @@ class Category extends AbstractResource
     {
         if (null === $this->aggregateCount) {
             $this->aggregateCount = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Catalog\Model\ResourceModel\Category\AggregateCount::class);
+                ->get('Magento\Catalog\Model\ResourceModel\Category\AggregateCount');
         }
         return $this->aggregateCount;
     }

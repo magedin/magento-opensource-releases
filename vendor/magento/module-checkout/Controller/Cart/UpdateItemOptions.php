@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Controller\Cart;
@@ -12,16 +12,11 @@ class UpdateItemOptions extends \Magento\Checkout\Controller\Cart
      * Update product configuration for a cart item
      *
      * @return \Magento\Framework\Controller\Result\Redirect
-     * @throws \Magento\Framework\Exception\NotFoundException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         $id = (int)$this->getRequest()->getParam('id');
         $params = $this->getRequest()->getParams();
 
@@ -31,9 +26,7 @@ class UpdateItemOptions extends \Magento\Checkout\Controller\Cart
         try {
             if (isset($params['qty'])) {
                 $filter = new \Zend_Filter_LocalizedToNormalized(
-                    ['locale' => $this->_objectManager->get(
-                        \Magento\Framework\Locale\ResolverInterface::class
-                    )->getLocale()]
+                    ['locale' => $this->_objectManager->get('Magento\Framework\Locale\ResolverInterface')->getLocale()]
                 );
                 $params['qty'] = $filter->filter($params['qty']);
             }
@@ -66,7 +59,7 @@ class UpdateItemOptions extends \Magento\Checkout\Controller\Cart
                 if (!$this->cart->getQuote()->getHasError()) {
                     $message = __(
                         '%1 was updated in your shopping cart.',
-                        $this->_objectManager->get(\Magento\Framework\Escaper::class)
+                        $this->_objectManager->get('Magento\Framework\Escaper')
                             ->escapeHtml($item->getProduct()->getName())
                     );
                     $this->messageManager->addSuccess($message);
@@ -87,12 +80,12 @@ class UpdateItemOptions extends \Magento\Checkout\Controller\Cart
             if ($url) {
                 return $this->resultRedirectFactory->create()->setUrl($url);
             } else {
-                $cartUrl = $this->_objectManager->get(\Magento\Checkout\Helper\Cart::class)->getCartUrl();
+                $cartUrl = $this->_objectManager->get('Magento\Checkout\Helper\Cart')->getCartUrl();
                 return $this->resultRedirectFactory->create()->setUrl($this->_redirect->getRedirectUrl($cartUrl));
             }
         } catch (\Exception $e) {
             $this->messageManager->addException($e, __('We can\'t update the item right now.'));
-            $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
+            $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
             return $this->_goBack();
         }
         return $this->resultRedirectFactory->create()->setPath('*/*');

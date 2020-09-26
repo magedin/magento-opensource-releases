@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\ResourceModel;
@@ -102,7 +102,7 @@ class Engine implements EngineInterface
      *
      * @param array $index
      * @param string $separator
-     * @return array
+     * @return string
      */
     public function prepareEntityIndex($index, $separator = ' ')
     {

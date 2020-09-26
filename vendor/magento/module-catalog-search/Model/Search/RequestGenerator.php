@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Search;
@@ -8,14 +8,10 @@ namespace Magento\CatalogSearch\Model\Search;
 use Magento\Catalog\Api\Data\EavAttributeInterface;
 use Magento\Catalog\Model\Entity\Attribute;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
-use Magento\CatalogSearch\Model\Search\RequestGenerator\GeneratorResolver;
-use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Search\Request\BucketInterface;
 use Magento\Framework\Search\Request\FilterInterface;
 use Magento\Framework\Search\Request\QueryInterface;
 
-/**
- * Search request generator.
- */
 class RequestGenerator
 {
     /** Filter name suffix */
@@ -25,34 +21,20 @@ class RequestGenerator
     const BUCKET_SUFFIX = '_bucket';
 
     /**
-     * Product attribute collection factory.
-     *
      * @var CollectionFactory
      */
     private $productAttributeCollectionFactory;
 
     /**
-     * Search generator resolver.
-     *
-     * @var GeneratorResolver
-     */
-    private $generatorResolver;
-
-    /**
      * @param CollectionFactory $productAttributeCollectionFactory
-     * @param GeneratorResolver $generatorResolver
      */
-    public function __construct(
-        CollectionFactory $productAttributeCollectionFactory,
-        GeneratorResolver $generatorResolver = null
-    ) {
+    public function __construct(CollectionFactory $productAttributeCollectionFactory)
+    {
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
-        $this->generatorResolver = $generatorResolver
-            ?: ObjectManager::getInstance()->get(GeneratorResolver::class);
     }
 
     /**
-     * Generate dynamic fields requests.
+     * Generate dynamic fields requests
      *
      * @return array
      */
@@ -64,12 +46,11 @@ class RequestGenerator
         $requests['quick_search_container'] =
             $this->generateRequest(EavAttributeInterface::IS_FILTERABLE_IN_SEARCH, 'quick_search_container', true);
         $requests['advanced_search_container'] = $this->generateAdvancedSearchRequest();
-        
         return $requests;
     }
 
     /**
-     * Generate search request.
+     * Generate search request
      *
      * @param string $attributeType
      * @param string $container
@@ -81,7 +62,7 @@ class RequestGenerator
         $request = [];
         foreach ($this->getSearchableAttributes() as $attribute) {
             if ($attribute->getData($attributeType)) {
-                if (!in_array($attribute->getAttributeCode(), ['price', 'category_ids'], true)) {
+                if (!in_array($attribute->getAttributeCode(), ['price', 'category_ids'])) {
                     $queryName = $attribute->getAttributeCode() . '_query';
 
                     $request['queries'][$container]['queryReference'][] = [
@@ -95,33 +76,58 @@ class RequestGenerator
                         'filterReference' => [['ref' => $filterName]],
                     ];
                     $bucketName = $attribute->getAttributeCode() . self::BUCKET_SUFFIX;
-                    $generator = $this->generatorResolver->getGeneratorForType($attribute->getBackendType());
-                    $request['filters'][$filterName] = $generator->getFilterData($attribute, $filterName);
-                    $request['aggregations'][$bucketName] = $generator->getAggregationData($attribute, $bucketName);
+                    if ($attribute->getBackendType() == 'decimal') {
+                        $request['filters'][$filterName] = [
+                            'type' => FilterInterface::TYPE_RANGE,
+                            'name' => $filterName,
+                            'field' => $attribute->getAttributeCode(),
+                            'from' => '$' . $attribute->getAttributeCode() . '.from$',
+                            'to' => '$' . $attribute->getAttributeCode() . '.to$',
+                        ];
+                        $request['aggregations'][$bucketName] = [
+                            'type' => BucketInterface::TYPE_DYNAMIC,
+                            'name' => $bucketName,
+                            'field' => $attribute->getAttributeCode(),
+                            'method' => 'manual',
+                            'metric' => [["type" => "count"]],
+                        ];
+                    } else {
+                        $request['filters'][$filterName] = [
+                            'type' => FilterInterface::TYPE_TERM,
+                            'name' => $filterName,
+                            'field' => $attribute->getAttributeCode(),
+                            'value' => '$' . $attribute->getAttributeCode() . '$',
+                        ];
+                        $request['aggregations'][$bucketName] = [
+                            'type' => BucketInterface::TYPE_TERM,
+                            'name' => $bucketName,
+                            'field' => $attribute->getAttributeCode(),
+                            'metric' => [["type" => "count"]],
+                        ];
+                    }
                 }
             }
             /** @var $attribute Attribute */
-            if (!$attribute->getIsSearchable() || in_array($attribute->getAttributeCode(), ['price', 'sku'], true)) {
-                // Some fields have their own specific handlers
+            if (in_array($attribute->getAttributeCode(), ['price', 'sku'])
+                || !$attribute->getIsSearchable()
+            ) {
+                //same fields have special semantics
                 continue;
             }
-
-            // Match search by custom price attribute isn't supported
-            if ($useFulltext && $attribute->getFrontendInput() !== 'price') {
+            if ($useFulltext) {
                 $request['queries']['search']['match'][] = [
                     'field' => $attribute->getAttributeCode(),
                     'boost' => $attribute->getSearchWeight() ?: 1,
                 ];
             }
         }
-
         return $request;
     }
 
     /**
-     * Retrieve searchable attributes.
+     * Retrieve searchable attributes
      *
-     * @return \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection
+     * @return \Magento\Catalog\Model\Entity\Attribute[]
      */
     protected function getSearchableAttributes()
     {
@@ -136,7 +142,7 @@ class RequestGenerator
     }
 
     /**
-     * Generate advanced search request.
+     * Generate advanced search request
      *
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -225,7 +231,6 @@ class RequestGenerator
                     ];
             }
         }
-
         return $request;
     }
 }

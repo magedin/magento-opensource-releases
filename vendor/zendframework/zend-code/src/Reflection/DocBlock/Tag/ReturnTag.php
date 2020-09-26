@@ -14,7 +14,7 @@ class ReturnTag implements TagInterface, PhpDocTypedTagInterface
     /**
      * @var array
      */
-    protected $types = [];
+    protected $types = array();
 
     /**
      * @var string
@@ -35,7 +35,7 @@ class ReturnTag implements TagInterface, PhpDocTypedTagInterface
      */
     public function initialize($tagDocBlockLine)
     {
-        $matches = [];
+        $matches = array();
         if (!preg_match('#((?:[\w|\\\]+(?:\[\])*\|?)+)(?:\s+(.*))?#s', $tagDocBlockLine, $matches)) {
             return;
         }

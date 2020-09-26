@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -67,26 +67,26 @@ define([
                 expect(type).toEqual('object');
             });
         });
-        describe('"initConfig" method', function () {
+        describe('"initProperties" method', function () {
             it('Check for defined ', function () {
-                expect(obj.hasOwnProperty('initConfig')).toBeDefined();
+                expect(obj.hasOwnProperty('initProperties')).toBeDefined();
             });
             it('Check method type', function () {
-                var type = typeof obj.initConfig;
+                var type = typeof obj.initProperties;
 
                 expect(type).toEqual('function');
             });
             it('Check returned value if method called without arguments', function () {
-                expect(obj.initConfig()).toBeDefined();
+                expect(obj.initProperties()).toBeDefined();
             });
             it('Check returned value type if method called without arguments', function () {
-                var type = typeof obj.initConfig();
+                var type = typeof obj.initProperties();
 
                 expect(type).toEqual('object');
             });
-            it('Check this.selector property (is modify in initConfig method)', function () {
+            it('Check this.selector property (is modify in initProperties method)', function () {
                 obj.selector = null;
-                obj.initConfig();
+                obj.initProperties();
                 expect(typeof obj.selector).toEqual('string');
             });
         });
@@ -116,6 +116,33 @@ define([
                 var type = typeof obj.save;
 
                 expect(type).toEqual('function');
+            });
+            it('Check call method "this.validate" inner save method', function () {
+                obj.validate = jasmine.createSpy();
+                obj.source.get = jasmine.createSpy().and.callFake(function () {
+                    return true;
+                });
+                obj.save();
+                expect(obj.validate).toHaveBeenCalled();
+            });
+            it('Check call method "this.source.get" inner save method', function () {
+                obj.validate = jasmine.createSpy();
+                obj.source.get = jasmine.createSpy().and.callFake(function () {
+                    return true;
+                });
+                obj.save();
+                expect(obj.source.get).toHaveBeenCalled();
+            });
+            it('Check call method "this.submit" inner save method', function () {
+                obj.validate = jasmine.createSpy();
+                obj.source.get = jasmine.createSpy().and.callFake(function () {
+                    return false;
+                });
+                obj.submit = jasmine.createSpy().and.callFake(function () {
+                    return true;
+                });
+                obj.save();
+                expect(obj.source.get).toHaveBeenCalled();
             });
         });
         describe('"submit" method', function () {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Model\ResourceModel\Problem;
@@ -103,7 +103,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         }
         return parent::_setIsLoaded($flag);
     }
-
     /**
      * Adds subscribers info
      *
@@ -161,8 +160,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
                     $customerName = $this->_customerView->getCustomerName($customer);
                     foreach ($problems as $problem) {
                         $problem->setCustomerName($customerName)
-                            ->setCustomerFirstName($customer->getFirstname())
-                            ->setCustomerLastName($customer->getLastname());
+                            ->setCustomerFirstName($customer->getFirstName())
+                            ->setCustomerLastName($customer->getLastName());
                     }
                 } catch (NoSuchEntityException $e) {
                     // do nothing if customer is not found by id

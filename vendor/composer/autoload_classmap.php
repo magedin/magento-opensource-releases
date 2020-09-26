@@ -6,12 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'CSSmin' => $vendorDir . '/tubalmartin/cssmin/cssmin.php',
     'Cm_Cache_Backend_File' => $vendorDir . '/colinmollenhour/cache-backend-file/File.php',
     'Cm_Cache_Backend_Redis' => $vendorDir . '/colinmollenhour/cache-backend-redis/Cm/Cache/Backend/Redis.php',
     'CredisException' => $vendorDir . '/colinmollenhour/credis/Client.php',
     'Credis_Client' => $vendorDir . '/colinmollenhour/credis/Client.php',
     'Credis_Cluster' => $vendorDir . '/colinmollenhour/credis/Cluster.php',
-    'Credis_Module' => $vendorDir . '/colinmollenhour/credis/Module.php',
     'Credis_Sentinel' => $vendorDir . '/colinmollenhour/credis/Sentinel.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator/Facade.php',
@@ -469,7 +469,6 @@ return array(
     'PHP_Token_NEW' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_NS_C' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_NS_SEPARATOR' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
-    'PHP_Token_NULLSAFE_OBJECT_OPERATOR' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_NUM_STRING' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_OBJECT_CAST' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_OBJECT_OPERATOR' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
@@ -507,7 +506,6 @@ return array(
     'PHP_Token_STRING' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_STRING_CAST' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_STRING_VARNAME' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
-    'PHP_Token_SUPER' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_SWITCH' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_Stream' => $vendorDir . '/phpunit/php-token-stream/src/Token/Stream.php',
     'PHP_Token_Stream_CachingFactory' => $vendorDir . '/phpunit/php-token-stream/src/Token/Stream/CachingFactory.php',
@@ -522,7 +520,6 @@ return array(
     'PHP_Token_UNSET' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_UNSET_CAST' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_USE' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
-    'PHP_Token_USE_FUNCTION' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_VAR' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_VARIABLE' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_WHERE' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',

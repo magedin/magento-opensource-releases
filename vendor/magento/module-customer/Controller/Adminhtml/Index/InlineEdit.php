@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Adminhtml\Index;
@@ -95,7 +95,7 @@ class InlineEdit extends \Magento\Backend\App\Action
         $resultJson = $this->resultJsonFactory->create();
 
         $postItems = $this->getRequest()->getParam('items', []);
-        if (!($this->getRequest()->getParam('isAjax') && $this->getRequest()->isPost() && count($postItems))) {
+        if (!($this->getRequest()->getParam('isAjax') && count($postItems))) {
             return $resultJson->setData([
                 'messages' => [__('Please correct the data sent.')],
                 'error' => true,

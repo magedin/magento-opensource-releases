@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Test\Unit\Model\Entity;
@@ -33,9 +33,6 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedBackendType, $this->_model->getBackendTypeByInput($givenFrontendInput));
     }
 
-    /**
-     * @return array
-     */
     public static function dataGetBackendTypeByInput()
     {
         return [
@@ -64,9 +61,6 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDefaultValue, $this->_model->getDefaultValueByInput($givenFrontendInput));
     }
 
-    /**
-     * @return array
-     */
     public static function dataGetDefaultValueByInput()
     {
         return [

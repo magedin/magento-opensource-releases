@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Indexer\Test\Unit\App;
@@ -39,12 +39,7 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $this->entryPoint = new \Magento\Indexer\App\Indexer(
-            'reportDir',
-            $this->filesystem,
-            $this->processor,
-            $this->_response
-        );
+        $this->entryPoint = new \Magento\Indexer\App\Indexer('reportDir', $this->filesystem, $this->processor, $this->_response);
     }
 
     /**
@@ -65,11 +60,7 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->entryPoint->launch()->getCode());
     }
 
-    /**
-     * @return array
-     */
-    public function executeProvider()
-    {
+    public function executeProvider(){
         return [
             'set1' => ['isExist' => true, 'expectsValue' => 1],
             'set1' => ['delete' => false, 'expectsValue' => 0]

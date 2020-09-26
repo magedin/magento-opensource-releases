@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Account;
@@ -10,8 +10,6 @@ use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Model\AccountManagement;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Escaper;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\SecurityViolationException;
@@ -34,28 +32,20 @@ class ForgotPasswordPost extends \Magento\Customer\Controller\AbstractAccount
     protected $session;
 
     /**
-     * @var Validator
-     */
-    private $formKeyValidator;
-
-    /**
      * @param Context $context
      * @param Session $customerSession
      * @param AccountManagementInterface $customerAccountManagement
      * @param Escaper $escaper
-     * @param Validator|null $formKeyValidator
      */
     public function __construct(
         Context $context,
         Session $customerSession,
         AccountManagementInterface $customerAccountManagement,
-        Escaper $escaper,
-        Validator $formKeyValidator = null
+        Escaper $escaper
     ) {
         $this->session = $customerSession;
         $this->customerAccountManagement = $customerAccountManagement;
         $this->escaper = $escaper;
-        $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
         parent::__construct($context);
     }
 
@@ -63,24 +53,14 @@ class ForgotPasswordPost extends \Magento\Customer\Controller\AbstractAccount
      * Forgot customer password action
      *
      * @return \Magento\Framework\Controller\Result\Redirect
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
-
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-        if (!$this->formKeyValidator->validate($this->getRequest())) {
-            return $resultRedirect->setPath('*/*/forgotpassword');
-        }
-
         $email = (string)$this->getRequest()->getPost('email');
         if ($email) {
-            $validator = new \Zend\Validator\EmailAddress();
-            if (!$validator->isValid($email)) {
+            if (!\Zend_Validate::is($email, 'EmailAddress')) {
                 $this->session->setForgottenEmail($email);
                 $this->messageManager->addErrorMessage(__('Please correct the email address.'));
                 return $resultRedirect->setPath('*/*/forgotpassword');

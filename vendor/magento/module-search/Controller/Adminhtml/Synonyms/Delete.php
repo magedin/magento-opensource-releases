@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -49,14 +49,9 @@ class Delete extends \Magento\Backend\App\Action
      * Delete action
      *
      * @return \Magento\Backend\Model\View\Result\Redirect
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         $id = $this->getRequest()->getParam('group_id');
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
@@ -65,18 +60,16 @@ class Delete extends \Magento\Backend\App\Action
                 /** @var \Magento\Search\Model\SynonymGroup $synGroupModel */
                 $synGroupModel = $this->synGroupRepository->get($id);
                 $this->synGroupRepository->delete($synGroupModel);
-                $this->messageManager->addSuccessMessage(__('The synonym group has been deleted.'));
+                $this->messageManager->addSuccess(__('The synonym group has been deleted.'));
             } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
+                $this->messageManager->addError($e->getMessage());
                 $this->logger->error($e);
             } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(
-                    __('An error was encountered while performing delete operation.')
-                );
+                $this->messageManager->addError(__('An error was encountered while performing delete operation.'));
                 $this->logger->error($e);
             }
         } else {
-            $this->messageManager->addErrorMessage(__('We can\'t find a synonym group to delete.'));
+            $this->messageManager->addError(__('We can\'t find a synonym group to delete.'));
         }
 
         return $resultRedirect->setPath('*/*/');

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Code\Test\Unit\Reader;
@@ -83,20 +83,6 @@ class ArgumentsReaderTest extends \PHPUnit_Framework_TestCase
         $class = new \ReflectionClass('classWithoutOwnConstruct');
         $actualResult = $this->_model->getConstructorArguments($class);
 
-        $this->assertEquals([], $actualResult);
-    }
-
-    public function testGetConstructorArgumentsWhenInputTypeIsInterfaceWithParam()
-    {
-        $class = new \ReflectionClass('InterfaceTypeWithConstructorMethodAndParams');
-        $actualResult = $this->_model->getConstructorArguments($class);
-        $this->assertEquals([], $actualResult);
-    }
-
-    public function testGetConstructorArgumentsWhenInputTypeIsInterfaceWithoutParam()
-    {
-        $class = new \ReflectionClass('InterfaceTypeWithConstructorMethodWithoutParams');
-        $actualResult = $this->_model->getConstructorArguments($class);
         $this->assertEquals([], $actualResult);
     }
 
@@ -277,9 +263,6 @@ class ArgumentsReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $actualResult);
     }
 
-    /**
-     * @return array
-     */
     public function testIsCompatibleTypeDataProvider()
     {
         return [

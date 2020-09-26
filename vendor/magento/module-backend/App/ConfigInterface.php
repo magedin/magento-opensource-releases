@@ -2,7 +2,7 @@
 /**
  * Default application path for backend area
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\App;
@@ -15,8 +15,6 @@ interface ConfigInterface
     /**
      * Retrieve config value by path
      *
-     * Path should looks like keys imploded by "/". For example scopes/stores/admin
-     *
      * @param string $path
      * @return mixed
      * @api
@@ -26,7 +24,6 @@ interface ConfigInterface
     /**
      * Set config value
      *
-     * @deprecated
      * @param string $path
      * @param mixed $value
      * @return void
@@ -36,8 +33,6 @@ interface ConfigInterface
 
     /**
      * Retrieve config flag
-     *
-     * Path should looks like keys imploded by "/". For example scopes/stores/admin
      *
      * @param string $path
      * @return bool

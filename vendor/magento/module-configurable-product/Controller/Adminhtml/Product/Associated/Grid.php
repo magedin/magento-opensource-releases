@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Controller\Adminhtml\Product\Associated;
@@ -12,13 +12,6 @@ use Magento\Framework\View\Result\LayoutFactory;
 
 class Grid extends Action
 {
-    /**
-     * Authorization level of a basic admin session.
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Catalog::products';
-
     /**
      * @var LayoutFactory
      */
@@ -35,7 +28,6 @@ class Grid extends Action
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
     }
-
     /**
      * Index action
      *

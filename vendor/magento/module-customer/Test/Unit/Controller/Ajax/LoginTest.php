@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -73,21 +73,6 @@ class LoginTest extends \PHPUnit_Framework_TestCase
      */
     protected $redirectMock;
 
-    /**
-     * @var \Magento\Framework\Stdlib\CookieManagerInterface| \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $cookieManager;
-
-    /**
-     * @var \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory| \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $cookieMetadataFactory;
-
-    /**
-     * @var \Magento\Framework\Stdlib\Cookie\CookieMetadata| \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $cookieMetadata;
-
     protected function setUp()
     {
         $this->request = $this->getMockBuilder('Magento\Framework\App\Request\Http')
@@ -120,13 +105,14 @@ class LoginTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->customerAccountManagementMock = $this->getMock(
-            '\Magento\Customer\Model\AccountManagement',
-            ['authenticate'],
-            [],
-            '',
-            false
-        );
+        $this->customerAccountManagementMock =
+            $this->getMock(
+                '\Magento\Customer\Model\AccountManagement',
+                ['authenticate'],
+                [],
+                '',
+                false
+            );
 
         $this->jsonHelperMock = $this->getMock(
             '\Magento\Framework\Json\Helper\Data',
@@ -142,16 +128,6 @@ class LoginTest extends \PHPUnit_Framework_TestCase
         $this->resultJsonFactory = $this->getMockBuilder('Magento\Framework\Controller\Result\JsonFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
-            ->getMock();
-
-        $this->cookieManager = $this->getMockBuilder(\Magento\Framework\Stdlib\CookieManagerInterface::class)
-            ->setMethods(['getCookie', 'deleteCookie'])
-            ->getMockForAbstractClass();
-        $this->cookieMetadataFactory = $this->getMockBuilder(\Magento\Framework\Stdlib\Cookie\CookieMetadataFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->cookieMetadata = $this->getMockBuilder(\Magento\Framework\Stdlib\Cookie\CookieMetadata::class)
-            ->disableOriginalConstructor()
             ->getMock();
 
         $this->resultRaw = $this->getMockBuilder('Magento\Framework\Controller\Result\Raw')
@@ -182,8 +158,6 @@ class LoginTest extends \PHPUnit_Framework_TestCase
                 'resultJsonFactory' => $this->resultJsonFactory,
                 'objectManager' => $this->objectManager,
                 'customerAccountManagement' => $this->customerAccountManagementMock,
-                'cookieManager' => $this->cookieManager,
-                'cookieMetadataFactory' => $this->cookieMetadataFactory
             ]
         );
     }
@@ -234,22 +208,6 @@ class LoginTest extends \PHPUnit_Framework_TestCase
         $redirectMock = $this->getMock(\Magento\Customer\Model\Account\Redirect::class, [], [], '', false);
         $this->object->setAccountRedirect($redirectMock);
         $redirectMock->expects($this->once())->method('getRedirectCookie')->willReturn('some_url1');
-
-        $this->cookieManager->expects($this->once())
-            ->method('getCookie')
-            ->with('mage-cache-sessid')
-            ->willReturn(true);
-        $this->cookieMetadataFactory->expects($this->once())
-            ->method('createCookieMetadata')
-            ->willReturn($this->cookieMetadata);
-        $this->cookieMetadata->expects($this->once())
-            ->method('setPath')
-            ->with('/')
-            ->willReturnSelf();
-        $this->cookieManager->expects($this->once())
-            ->method('deleteCookie')
-            ->with('mage-cache-sessid', $this->cookieMetadata)
-            ->willReturnSelf();
 
         $scopeConfigMock = $this->getMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $this->object->setScopeConfig($scopeConfigMock);

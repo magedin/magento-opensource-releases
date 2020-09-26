@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -97,7 +97,7 @@ class ExtensionAttributesFactory
         }
         $modelReflection = new \ReflectionClass($extensibleClassName);
         if ($modelReflection->isInterface()
-            && $modelReflection->isSubclassOf(self::EXTENSIBLE_INTERFACE_NAME)
+            && $modelReflection->isSubClassOf(self::EXTENSIBLE_INTERFACE_NAME)
             && $modelReflection->hasMethod('getExtensionAttributes')
         ) {
             $this->classInterfaceMap[$extensibleClassName] = $extensibleClassName;

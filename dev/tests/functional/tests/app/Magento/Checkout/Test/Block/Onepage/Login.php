@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Test\Block\Onepage;
@@ -50,13 +50,6 @@ class Login extends Form
     protected $loadingMask = '.loading-mask';
 
     /**
-     * Selector for checkout email input.
-     *
-     * @var string
-     */
-    private $emailSelector = '[name="username"]';
-
-    /**
      * Select how to perform checkout whether guest or registered customer.
      *
      * @param FixtureInterface $fixture
@@ -95,18 +88,6 @@ class Login extends Form
         $this->fill($customer);
         $this->_rootElement->find($this->login)->click();
         $this->waitForElementNotVisible($this->loadingMask);
-    }
-
-    /**
-     * Fill required fields for guest checkout.
-     *
-     * @param FixtureInterface $customer
-     * @return void
-     */
-    public function fillGuestFields(FixtureInterface $customer)
-    {
-        $this->_rootElement->find($this->emailSelector)
-            ->setValue($customer->getEmail());
     }
 
     /**

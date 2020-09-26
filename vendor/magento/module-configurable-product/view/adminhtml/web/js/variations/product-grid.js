@@ -1,6 +1,6 @@
 // jscs:disable requireDotNotation
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -8,8 +8,7 @@ define([
     'jquery',
     'Magento_Ui/js/core/app',
     'underscore',
-    'notification',
-    'mage/translate'
+    'notification'
 ], function (Component, $, bootstrap, _) {
     'use strict';
 
@@ -222,7 +221,9 @@ define([
 
             if (data.items.length) {
                 this.productsModal.notification('add', {
-                    message: $.mage.__('Choose a new product to delete and replace the current product configuration.'),
+                    message: $.mage.__(
+                        'Choose a new product to delete and replace the current product configuration.'
+                    ),
                     messageContainer: this.gridSelector
                 });
             } else {

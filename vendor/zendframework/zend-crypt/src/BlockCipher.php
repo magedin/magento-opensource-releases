@@ -91,7 +91,7 @@ class BlockCipher
      * @param  array       $options
      * @return BlockCipher
      */
-    public static function factory($adapter, $options = [])
+    public static function factory($adapter, $options = array())
     {
         $plugins = static::getSymmetricPluginManager();
         $adapter = $plugins->get($adapter, (array) $options);
@@ -320,7 +320,7 @@ class BlockCipher
             return $this->cipher->getSupportedAlgorithms();
         }
 
-        return [];
+        return array();
     }
 
     /**

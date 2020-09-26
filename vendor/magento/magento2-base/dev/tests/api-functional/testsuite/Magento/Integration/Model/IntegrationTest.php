@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Integration\Model;
@@ -12,6 +12,7 @@ class IntegrationTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 {
     /** @var  \Magento\Integration\Model\Integration */
     protected $integration;
+
 
     protected function setUp()
     {
@@ -31,7 +32,7 @@ class IntegrationTest extends \Magento\TestFramework\TestCase\WebapiAbstract
 
     protected function tearDown()
     {
-        $this->integration = null;
+        unset($this->integration);
         OauthHelper::clearApiAccessCredentials();
         parent::tearDown();
     }

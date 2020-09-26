@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -32,11 +32,6 @@ class AssertProductPage extends AbstractAssertForm
     protected $product;
 
     /**
-     * @var CatalogProductView
-     */
-    protected $pageView;
-
-    /**
      * Assert that displayed product data on product page(front-end) equals passed from fixture:
      * 1. Product Name
      * 2. Price
@@ -58,8 +53,7 @@ class AssertProductPage extends AbstractAssertForm
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
 
         $this->product = $product;
-        $this->pageView = $catalogProductView;
-        $this->productView = $this->pageView->getViewBlock();
+        $this->productView = $catalogProductView->getViewBlock();
 
         $errors = $this->verify();
         \PHPUnit_Framework_Assert::assertEmpty(
@@ -138,7 +132,7 @@ class AssertProductPage extends AbstractAssertForm
         }
         $fixtureProductSpecialPrice = $this->product->getSpecialPrice();
         $fixtureProductSpecialPrice = number_format($fixtureProductSpecialPrice, 2);
-        $formProductSpecialPrice = $this->productView->getPriceBlock($this->product)->getSpecialPrice();
+        $formProductSpecialPrice = $this->productView->getPriceBlock()->getSpecialPrice();
         if ($fixtureProductSpecialPrice == $formProductSpecialPrice) {
             return null;
         }

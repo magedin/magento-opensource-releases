@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Encryption;
@@ -10,7 +10,7 @@ use Magento\Framework\Encryption\Helper\Security;
 use Magento\Framework\Math\Random;
 
 /**
- * Class Encryptor provides basic logic for hashing strings and encrypting/decrypting misc data.
+ * Class Encryptor provides basic logic for hashing strings and encrypting/decrypting misc data
  */
 class Encryptor implements EncryptorInterface
 {
@@ -103,11 +103,6 @@ class Encryptor implements EncryptorInterface
     protected $keys = [];
 
     /**
-     * @var Random
-     */
-    private $random;
-
-    /**
      * @param Random $random
      * @param DeploymentConfig $deploymentConfig
      */
@@ -143,24 +138,12 @@ class Encryptor implements EncryptorInterface
     }
 
     /**
-     * Generate simple hash for given string.
-     *
-     * @param string $data
-     * @param int $version
-     * @return string
-     */
-    private function generateSimpleHash($data, $version)
-    {
-        return hash($this->hashVersionMap[$version], $data);
-    }
-
-    /**
      * @inheritdoc
      */
     public function getHash($password, $salt = false, $version = self::HASH_VERSION_LATEST)
     {
         if ($salt === false) {
-            return $this->hash($password, $version);
+            return $this->hash($password);
         }
         if ($salt === true) {
             $salt = self::DEFAULT_SALT_LENGTH;
@@ -172,7 +155,7 @@ class Encryptor implements EncryptorInterface
         return implode(
             self::DELIMITER,
             [
-                $this->generateSimpleHash($salt . $password, $version),
+                $this->hash($salt . $password),
                 $salt,
                 $version
             ]
@@ -184,11 +167,7 @@ class Encryptor implements EncryptorInterface
      */
     public function hash($data, $version = self::HASH_VERSION_LATEST)
     {
-        if (empty($this->keys[$this->keyVersion])) {
-            throw new \RuntimeException('No key available');
-        }
-
-        return hash_hmac($this->hashVersionMap[$version], $data, $this->keys[$this->keyVersion], false);
+        return hash($this->hashVersionMap[$version], $data);
     }
 
     /**
@@ -204,24 +183,15 @@ class Encryptor implements EncryptorInterface
      */
     public function isValidHash($password, $hash)
     {
-        try {
-            $this->explodePasswordHash($hash);
-            $recreated = $password;
-            foreach ($this->getPasswordVersion() as $hashVersion) {
-                $recreated = $this->generateSimpleHash(
-                    (string)$this->getPasswordSalt() . (string)$password,
-                    (int)$hashVersion
-                );
-                $hash = $this->getPasswordHash();
-            }
-        } catch (\RuntimeException $exception) {
-            //Hash is not a password hash.
-            $recreated = $this->hash($password);
+        $this->explodePasswordHash($hash);
+
+        foreach ($this->getPasswordVersion() as $hashVersion) {
+            $password = $this->hash($this->getPasswordSalt() . $password, $hashVersion);
         }
 
         return Security::compareStrings(
-            $recreated,
-            $hash
+            $password,
+            $this->getPasswordHash()
         );
     }
 
@@ -230,12 +200,7 @@ class Encryptor implements EncryptorInterface
      */
     public function validateHashVersion($hash, $validateCount = false)
     {
-        try {
-            $this->explodePasswordHash($hash);
-        } catch (\RuntimeException $exception) {
-            //Not a password hash.
-            return true;
-        }
+        $this->explodePasswordHash($hash);
         $hashVersions = $this->getPasswordVersion();
 
         return $validateCount
@@ -244,18 +209,12 @@ class Encryptor implements EncryptorInterface
     }
 
     /**
-     * Separate password hash parts.
-     *
      * @param string $hash
-     * @throws \RuntimeException When given hash cannot be processed.
      * @return array
      */
     private function explodePasswordHash($hash)
     {
         $explodedPassword = explode(self::DELIMITER, $hash, 3);
-        if (count($explodedPassword) !== 3) {
-            throw new \RuntimeException('Hash is not a password hash');
-        }
 
         foreach ($this->passwordHashMap as $key => $defaultValue) {
             $this->passwordHashMap[$key] = (isset($explodedPassword[$key])) ? $explodedPassword[$key] : $defaultValue;

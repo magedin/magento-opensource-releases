@@ -1,26 +1,17 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order;
 
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 class MassUnhold extends AbstractMassAction
 {
-    /**
-     * Authorization level of a basic admin session.
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Sales::unhold';
-
     /**
      * @param Context $context
      * @param Filter $filter
@@ -30,20 +21,6 @@ class MassUnhold extends AbstractMassAction
     {
         parent::__construct($context, $filter);
         $this->collectionFactory = $collectionFactory;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function execute()
-    {
-        /** @var HttpRequest $request */
-        $request = $this->getRequest();
-        if (!$request->isPost()) {
-            throw new NotFoundException(__('Page not found.'));
-        }
-
-        return parent::execute();
     }
 
     /**

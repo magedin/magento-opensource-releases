@@ -1,13 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View;
-
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Unserialize\SecureUnserializer;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class DesignExceptions
@@ -36,35 +32,18 @@ class DesignExceptions
     protected $scopeType;
 
     /**
-     * @var SecureUnserializer
-     */
-    private $secureUnserializer;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param string $exceptionConfigPath
      * @param string $scopeType
-     * @param SecureUnserializer|null $secureUnserializer
-     * @param LoggerInterface|null $logger
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         $exceptionConfigPath,
-        $scopeType,
-        SecureUnserializer $secureUnserializer = null,
-        LoggerInterface $logger = null
+        $scopeType
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->exceptionConfigPath = $exceptionConfigPath;
         $this->scopeType = $scopeType;
-        $this->secureUnserializer = $secureUnserializer ?:
-            ObjectManager::getInstance()->create(SecureUnserializer::class);
-        $this->logger = $logger ?: ObjectManager::getInstance()->create(LoggerInterface::class);
     }
 
     /**
@@ -86,20 +65,12 @@ class DesignExceptions
         if (!$expressions) {
             return false;
         }
-
-        try {
-            $expressions = $this->secureUnserializer->unserialize($expressions);
-        } catch (\InvalidArgumentException $e) {
-            $this->logger->critical($e->getMessage());
-            return false;
-        }
-
+        $expressions = unserialize($expressions);
         foreach ($expressions as $rule) {
             if (preg_match($rule['regexp'], $userAgent)) {
                 return $rule['value'];
             }
         }
-
         return false;
     }
 }

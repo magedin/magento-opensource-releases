@@ -28,7 +28,7 @@ class BaseInputFilter implements
     /**
      * @var InputInterface[]|InputFilterInterface[]
      */
-    protected $inputs = [];
+    protected $inputs = array();
 
     /**
      * @var InputInterface[]|InputFilterInterface[]
@@ -81,8 +81,8 @@ class BaseInputFilter implements
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of %s or %s as its first argument; received "%s"',
                 __METHOD__,
-                InputInterface::class,
-                InputFilterInterface::class,
+                'Zend\InputFilter\InputInterface',
+                'Zend\InputFilter\InputFilterInterface',
                 (is_object($input) ? get_class($input) : gettype($input))
             ));
         }
@@ -221,12 +221,12 @@ class BaseInputFilter implements
      * @param  mixed|null $context
      * @return bool
      */
-    protected function validateInputs(array $inputs, $data = [], $context = null)
+    protected function validateInputs(array $inputs, $data = array(), $context = null)
     {
         $inputContext = $context ?: (array_merge($this->getRawValues(), (array) $data));
 
-        $this->validInputs   = [];
-        $this->invalidInputs = [];
+        $this->validInputs   = array();
+        $this->invalidInputs = array();
         $valid               = true;
 
         foreach ($inputs as $name) {
@@ -300,7 +300,7 @@ class BaseInputFilter implements
         }
 
         if (is_array($name)) {
-            $inputs = [];
+            $inputs = array();
             foreach ($name as $key => $value) {
                 if (! $this->has($key)) {
                     $inputs[] = $value;
@@ -343,7 +343,7 @@ class BaseInputFilter implements
      */
     public function getInvalidInput()
     {
-        return (is_array($this->invalidInputs) ? $this->invalidInputs : []);
+        return (is_array($this->invalidInputs) ? $this->invalidInputs : array());
     }
 
     /**
@@ -356,7 +356,7 @@ class BaseInputFilter implements
      */
     public function getValidInput()
     {
-        return (is_array($this->validInputs) ? $this->validInputs : []);
+        return (is_array($this->validInputs) ? $this->validInputs : array());
     }
 
     /**
@@ -395,7 +395,7 @@ class BaseInputFilter implements
     public function getValues()
     {
         $inputs = $this->validationGroup ?: array_keys($this->inputs);
-        $values = [];
+        $values = array();
         foreach ($inputs as $name) {
             $input = $this->inputs[$name];
 
@@ -441,7 +441,7 @@ class BaseInputFilter implements
      */
     public function getRawValues()
     {
-        $values = [];
+        $values = array();
         foreach ($this->inputs as $name => $input) {
             if ($input instanceof InputFilterInterface) {
                 $values[$name] = $input->getRawValues();
@@ -463,7 +463,7 @@ class BaseInputFilter implements
      */
     public function getMessages()
     {
-        $messages = [];
+        $messages = array();
         foreach ($this->getInvalidInput() as $name => $input) {
             $messages[$name] = $input->getMessages();
         }
@@ -508,12 +508,12 @@ class BaseInputFilter implements
             if (!array_key_exists($name, $this->data)) {
                 // No value; clear value in this input
                 if ($input instanceof InputFilterInterface) {
-                    $input->setData([]);
+                    $input->setData(array());
                     continue;
                 }
 
                 if ($input instanceof ArrayInput) {
-                    $input->setValue([]);
+                    $input->setValue(array());
                     continue;
                 }
 
@@ -581,7 +581,7 @@ class BaseInputFilter implements
         $inputs = array_keys($this->inputs);
         $diff   = array_diff($data, $inputs);
 
-        $unknownInputs = [];
+        $unknownInputs = array();
         $intersect     = array_intersect($diff, $data);
         if (!empty($intersect)) {
             foreach ($intersect as $key) {

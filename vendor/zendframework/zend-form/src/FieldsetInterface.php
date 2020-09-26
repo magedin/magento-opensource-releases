@@ -32,7 +32,7 @@ interface FieldsetInterface extends
      * @param  array $flags
      * @return FieldsetInterface
      */
-    public function add($elementOrFieldset, array $flags = []);
+    public function add($elementOrFieldset, array $flags = array());
 
     /**
      * Does the fieldset have an element/fieldset by the given name?
@@ -137,7 +137,7 @@ interface FieldsetInterface extends
      * @param  array $values
      * @return mixed
      */
-    public function bindValues(array $values = []);
+    public function bindValues(array $values = array());
 
     /**
      * Checks if this fieldset can bind data

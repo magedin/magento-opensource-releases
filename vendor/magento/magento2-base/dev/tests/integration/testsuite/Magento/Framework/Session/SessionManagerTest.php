@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 // @codingStandardsIgnoreStart
@@ -9,8 +9,6 @@ namespace {
 }
 
 namespace Magento\Framework\Session {
-
-    use Magento\Framework\App\State;
     // @codingStandardsIgnoreEnd
 
     /**
@@ -36,11 +34,6 @@ namespace Magento\Framework\Session {
         return call_user_func_array('\headers_sent', func_get_args());
     }
 
-    /**
-     * Class to test session manager.
-     *
-     * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
-     */
     class SessionManagerTest extends \PHPUnit_Framework_TestCase
     {
         /**
@@ -63,16 +56,6 @@ namespace Magento\Framework\Session {
          */
         protected $objectManager;
 
-        /**
-         * @var \Magento\Framework\App\RequestInterface
-         */
-        private $request;
-
-        /**
-         * @var State|\PHPUnit_Framework_MockObject_MockObject
-         */
-        private $appState;
-
         protected function setUp()
         {
             $this->sessionName = 'frontEndSession';
@@ -82,31 +65,21 @@ namespace Magento\Framework\Session {
 
             $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
-            $this->appState = $this->getMockBuilder(State::class)
-                ->setMethods(['getAreaCode'])
-                ->disableOriginalConstructor()
-                ->getMock();
+            /** @var \Magento\Framework\Session\SidResolverInterface $sidResolver */
+            $this->_sidResolver = $this->objectManager->get('Magento\Framework\Session\SidResolverInterface');
 
-            /** @var \Magento\Framework\Session\SidResolver $sidResolver */
-            $this->_sidResolver = $this->objectManager->create(
-                \Magento\Framework\Session\SidResolver::class,
-                [
-                    'appState' => $this->appState
-                ]
-            );
-
-            $this->request = $this->objectManager->get(\Magento\Framework\App\RequestInterface::class);
+            $this->request = $this->objectManager->get('Magento\Framework\App\RequestInterface');
 
             /** @var \Magento\Framework\Session\SessionManager _model */
             $this->_model = $this->objectManager->create(
-                \Magento\Framework\Session\SessionManager::class,
+                'Magento\Framework\Session\SessionManager',
                 [
-                    $this->objectManager->get(\Magento\Framework\App\Request\Http::class),
+                    $this->objectManager->get('Magento\Framework\App\Request\Http'),
                     $this->_sidResolver,
-                    $this->objectManager->get(\Magento\Framework\Session\Config\ConfigInterface::class),
-                    $this->objectManager->get(\Magento\Framework\Session\SaveHandlerInterface::class),
-                    $this->objectManager->get(\Magento\Framework\Session\ValidatorInterface::class),
-                    $this->objectManager->get(\Magento\Framework\Session\StorageInterface::class)
+                    $this->objectManager->get('Magento\Framework\Session\Config\ConfigInterface'),
+                    $this->objectManager->get('Magento\Framework\Session\SaveHandlerInterface'),
+                    $this->objectManager->get('Magento\Framework\Session\ValidatorInterface'),
+                    $this->objectManager->get('Magento\Framework\Session\StorageInterface')
                 ]
             );
         }
@@ -162,9 +135,6 @@ namespace Magento\Framework\Session {
         public function testSetSessionId()
         {
             $sessionId = $this->_model->getSessionId();
-            $this->appState->expects($this->atLeastOnce())
-                ->method('getAreaCode')
-                ->willReturn(\Magento\Framework\App\Area::AREA_FRONTEND);
             $this->_model->setSessionId($this->_sidResolver->getSid($this->_model));
             $this->assertEquals($sessionId, $this->_model->getSessionId());
 
@@ -177,9 +147,6 @@ namespace Magento\Framework\Session {
          */
         public function testSetSessionIdFromParam()
         {
-            $this->appState->expects($this->atLeastOnce())
-                ->method('getAreaCode')
-                ->willReturn(\Magento\Framework\App\Area::AREA_FRONTEND);
             $this->assertNotEquals('test_id', $this->_model->getSessionId());
             $this->request->getQuery()->set($this->_sidResolver->getSessionIdQueryParam($this->_model), 'test-id');
             $this->_model->setSessionId($this->_sidResolver->getSid($this->_model));
@@ -213,6 +180,7 @@ namespace Magento\Framework\Session {
             $this->_model->destroy();
         }
 
+
         /**
          * @expectedException \Magento\Framework\Exception\SessionException
          * @expectedExceptionMessage Area code not set: Area code must be set before starting a session.
@@ -229,14 +197,14 @@ namespace Magento\Framework\Session {
              * @var \Magento\Framework\Session\SessionManager _model
              */
             $this->_model = new \Magento\Framework\Session\SessionManager(
-                $this->objectManager->get(\Magento\Framework\App\Request\Http::class),
+                $this->objectManager->get('Magento\Framework\App\Request\Http'),
                 $this->_sidResolver,
-                $this->objectManager->get(\Magento\Framework\Session\Config\ConfigInterface::class),
-                $this->objectManager->get(\Magento\Framework\Session\SaveHandlerInterface::class),
-                $this->objectManager->get(\Magento\Framework\Session\ValidatorInterface::class),
-                $this->objectManager->get(\Magento\Framework\Session\StorageInterface::class),
-                $this->objectManager->get(\Magento\Framework\Stdlib\CookieManagerInterface::class),
-                $this->objectManager->get(\Magento\Framework\Stdlib\Cookie\CookieMetadataFactory::class),
+                $this->objectManager->get('Magento\Framework\Session\Config\ConfigInterface'),
+                $this->objectManager->get('Magento\Framework\Session\SaveHandlerInterface'),
+                $this->objectManager->get('Magento\Framework\Session\ValidatorInterface'),
+                $this->objectManager->get('Magento\Framework\Session\StorageInterface'),
+                $this->objectManager->get('Magento\Framework\Stdlib\CookieManagerInterface'),
+                $this->objectManager->get('Magento\Framework\Stdlib\Cookie\CookieMetadataFactory'),
                 $appState
             );
 

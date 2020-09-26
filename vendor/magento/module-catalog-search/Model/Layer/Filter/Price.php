@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Layer\Filter;
@@ -156,7 +156,8 @@ class Price extends AbstractFilter
     {
         $rate = $this->_getData('currency_rate');
         if ($rate === null) {
-            $rate = $this->_storeManager->getStore()->getCurrentCurrencyRate();
+            $rate = $this->_storeManager->getStore($this->getStoreId())
+                ->getCurrentCurrencyRate();
         }
         if (!$rate) {
             $rate = 1;
@@ -174,11 +175,6 @@ class Price extends AbstractFilter
      */
     protected function _renderRangeLabel($fromPrice, $toPrice)
     {
-        $fromPrice *= $this->getCurrencyRate();
-        if ($toPrice) {
-            $toPrice *= $this->getCurrencyRate();
-        }
-
         $formattedFromPrice = $this->priceCurrency->format($fromPrice);
         if ($toPrice === '') {
             return __('%1 and above', $formattedFromPrice);
@@ -216,7 +212,7 @@ class Price extends AbstractFilter
                 if (strpos($key, '_') === false) {
                     continue;
                 }
-                $data[] = $this->prepareData($key, $count);
+                $data[] = $this->prepareData($key, $count, $data);
             }
         }
 
@@ -266,8 +262,8 @@ class Price extends AbstractFilter
             $to = $this->getTo($to);
         }
         $label = $this->_renderRangeLabel(
-            empty($from) ? 0 : $from,
-            $to
+            empty($from) ? 0 : $from * $this->getCurrencyRate(),
+            empty($to) ? $to : $to * $this->getCurrencyRate()
         );
         $value = $from . '-' . $to . $this->dataProvider->getAdditionalRequestData();
 

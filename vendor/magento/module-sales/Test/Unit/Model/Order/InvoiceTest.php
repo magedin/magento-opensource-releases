@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -160,9 +160,6 @@ class InvoiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($canVoid, $this->model->canVoid());
     }
 
-    /**
-     * @return array
-     */
     public function canVoidDataProvider()
     {
         return [[true], [false]];
@@ -389,9 +386,6 @@ class InvoiceTest extends \PHPUnit_Framework_TestCase
         $this->model->pay();
     }
 
-    /**
-     * @return array
-     */
     public function payDataProvider()
     {
         //ToDo: fill data provider and uncomment assertings totals in testPay

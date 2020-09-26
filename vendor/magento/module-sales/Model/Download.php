@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model;
@@ -78,8 +78,7 @@ class Download
         $this->_fileFactory->create(
             $info['title'],
             ['value' => $this->_rootDir->getRelativePath($relativePath), 'type' => 'filename'],
-            $this->rootDirBasePath,
-            $info['type']
+            $this->rootDirBasePath
         );
     }
 

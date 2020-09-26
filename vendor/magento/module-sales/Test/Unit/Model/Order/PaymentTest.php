@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Model\Order;
@@ -8,8 +8,6 @@ namespace Magento\Sales\Test\Unit\Model\Order;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Api\CreditmemoManagementInterface;
-use Magento\Sales\Model\Order\Creditmemo;
 
 /**
  * Class PaymentTest
@@ -103,11 +101,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Sales\Model\OrderRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderRepository;
-
-    /**
-     * @var CreditmemoManagementInterface
-     */
-    private $creditmemoManagerMock;
 
     /**
      * @return void
@@ -259,31 +252,25 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-
-        $this->creditMemoMock = $this->getMockBuilder(Creditmemo::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'setPaymentRefundDisallowed',
-                    'getItemsCollection',
-                    'getItems',
-                    'setAutomaticallyCreated',
-                    'register',
-                    'addComment',
-                    'save',
-                    'getGrandTotal',
-                    'getBaseGrandTotal',
-                    'getDoTransaction',
-                    'getInvoice',
-                    'getOrder',
-                    'getPaymentRefundDisallowed'
-                ]
-            )
-            ->getMock();
-
-        $this->creditmemoManagerMock = $this->getMockBuilder(CreditmemoManagementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->creditMemoMock = $this->getMock(
+            'Magento\Sales\Model\Order\Creditmemo',
+            [
+                'setPaymentRefundDisallowed',
+                'getItemsCollection',
+                'getItems',
+                'setAutomaticallyCreated',
+                'register',
+                'addComment',
+                'save',
+                'getGrandTotal',
+                'getBaseGrandTotal',
+                'getDoTransaction',
+                'getInvoice'
+            ],
+            [],
+            '',
+            false
+        );
 
         $this->payment = $this->initPayment();
         $this->payment->setMethod('any');
@@ -591,9 +578,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($baseGrandTotal, $this->payment->getBaseAmountPaidOnline());
     }
 
-    /**
-     * @return array
-     */
     public function acceptPaymentFalseProvider()
     {
         return [
@@ -1356,12 +1340,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $this->creditMemoMock->expects($this->once())->method('setPaymentRefundDisallowed')->willReturnSelf();
         $this->creditMemoMock->expects($this->once())->method('setAutomaticallyCreated')->willReturnSelf();
         $this->creditMemoMock->expects($this->once())->method('addComment')->willReturnSelf();
-
-        $this->creditmemoManagerMock->expects($this->once())
-            ->method('refund')
-            ->with($this->creditMemoMock, false)
-            ->willReturn($this->creditMemoMock);
-
+        $this->creditMemoMock->expects($this->once())->method('save')->willReturnSelf();
         $this->orderMock->expects($this->once())->method('getBaseCurrency')->willReturn($this->currencyMock);
 
         $parentTransaction = $this->getMock(
@@ -1523,9 +1502,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         static::assertEquals($amount, $this->payment->getData('base_amount_refunded'));
     }
 
-    /**
-     * @return array
-     */
     public function boolProvider()
     {
         return [
@@ -1544,7 +1520,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $partialAmount = 12.00;
 
         $this->orderMock->expects(static::exactly(2))
-            ->method('getBaseTotalDue')
+            ->method('getTotalDue')
             ->willReturn($amount);
 
         static::assertFalse($this->payment->isCaptureFinal($partialAmount));
@@ -1564,9 +1540,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         static::assertFalse($this->payment->getShouldCloseParentTransaction());
     }
 
-    /**
-     * @return object
-     */
     protected function initPayment()
     {
         return (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
@@ -1580,18 +1553,11 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
                 'transactionManager' => $this->transactionManagerMock,
                 'transactionBuilder' => $this->transactionBuilderMock,
                 'paymentProcessor' => $this->paymentProcessor,
-                'orderRepository' => $this->orderRepository,
-                'creditmemoManager' => $this->creditmemoManagerMock
+                'orderRepository' => $this->orderRepository
             ]
         );
     }
 
-    /**
-     * @param $state
-     * @param null $status
-     * @param null $message
-     * @param null $isCustomerNotified
-     */
     protected function assertOrderUpdated(
         $state,
         $status = null,
@@ -1620,11 +1586,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             ->willReturn($statusHistory);
     }
 
-    /**
-     * @param $state
-     * @param $status
-     * @param array $allStatuses
-     */
     protected function mockGetDefaultStatus($state, $status, $allStatuses = [])
     {
         /** @var \Magento\Sales\Model\Order\Config | \PHPUnit_Framework_MockObject_MockObject $orderConfigMock */
@@ -1650,10 +1611,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($orderConfigMock));
     }
 
-    /**
-     * @param $transactionId
-     * @return mixed
-     */
     protected function getTransactionMock($transactionId)
     {
         $transaction = $this->getMock(

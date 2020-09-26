@@ -61,6 +61,11 @@ class Handler implements \SessionHandlerInterface
     const SLEEP_TIME         = 500000;
 
     /**
+     * Try to break lock for at most this many seconds
+     */
+    const FAIL_AFTER         = 15;
+
+    /**
      * Try to detect zombies every this many tries
      */
     const DETECT_ZOMBIES     = 20;
@@ -73,7 +78,7 @@ class Handler implements \SessionHandlerInterface
     /**
      * Bots get shorter session lifetimes
      */
-    const BOT_REGEX          = '/^alexa|^blitz\.io|bot|^browsermob|crawl|^curl|^facebookexternalhit|feed|google web preview|^ia_archiver|indexer|^java|jakarta|^libwww-perl|^load impact|^magespeedtest|monitor|^Mozilla$|nagios |^\.net|^pinterest|postrank|slurp|spider|uptime|^wget|yandex|^elb-healthchecker/i';
+    const BOT_REGEX          = '/^alexa|^blitz\.io|bot|^browsermob|crawl|^curl|^facebookexternalhit|feed|google web preview|^ia_archiver|indexer|^java|jakarta|^libwww-perl|^load impact|^magespeedtest|monitor|^Mozilla$|nagios |^\.net|^pinterest|postrank|slurp|spider|uptime|^wget|yandex/i';
 
     /**
      * Default connection timeout
@@ -106,11 +111,6 @@ class Handler implements \SessionHandlerInterface
     const DEFAULT_BREAK_AFTER           = 30;
 
     /**
-     * Try to break lock for at most this many seconds
-     */
-    const DEFAULT_FAIL_AFTER            = 15;
-
-    /**
      * The session lifetime for non-bots on the first write
      */
     const DEFAULT_FIRST_LIFETIME        = 600;
@@ -124,6 +124,11 @@ class Handler implements \SessionHandlerInterface
      * The session lifetime for bots - shorter to prevent bots from wasting backend storage
      */
     const DEFAULT_BOT_LIFETIME          = 7200;
+
+    /**
+     * Disable locking flag
+     */
+    const DEFAULT_DISABLE_LOCKING       = false;
 
     /**
      * Redis backend limit
@@ -184,11 +189,6 @@ class Handler implements \SessionHandlerInterface
      * @var int
      */
     private $_breakAfter;
-
-    /**
-     * @var int
-     */
-    private $_failAfter;
 
     /**
      * @var boolean
@@ -271,13 +271,12 @@ class Handler implements \SessionHandlerInterface
         $this->_compressionThreshold =  $this->config->getCompressionThreshold() ?: self::DEFAULT_COMPRESSION_THRESHOLD;
         $this->_compressionLibrary =    $this->config->getCompressionLibrary() ?: self::DEFAULT_COMPRESSION_LIBRARY;
         $this->_maxConcurrency =        $this->config->getMaxConcurrency() ?: self::DEFAULT_MAX_CONCURRENCY;
-        $this->_failAfter =             $this->config->getFailAfter() ?: self::DEFAULT_FAIL_AFTER;
         $this->_maxLifetime =           $this->config->getMaxLifetime() ?: self::DEFAULT_MAX_LIFETIME;
         $this->_minLifetime =           $this->config->getMinLifetime() ?: self::DEFAULT_MIN_LIFETIME;
-        $this->_useLocking =            ! $this->config->getDisableLocking();
+        $this->_useLocking =            $this->config->getDisableLocking() ?: self::DEFAULT_DISABLE_LOCKING;
 
-        // Use sleep time multiplier so fail after time is in seconds
-        $this->_failAfter = (int) round((1000000 / self::SLEEP_TIME) * $this->_failAfter);
+        // Use sleep time multiplier so break time is in seconds
+        $this->_failAfter = (int) round((1000000 / self::SLEEP_TIME) * self::FAIL_AFTER);
 
         // Connect and authenticate
         $this->_redis = new \Credis_Client($host, $port, $timeout, $persistent, 0, $pass);
@@ -534,7 +533,7 @@ class Handler implements \SessionHandlerInterface
         if ( ! empty($setData)) {
             $this->_redis->hMSet($sessionId, $setData);
         }
-        $this->_redis->expire($sessionId, 3600*6); // Expiration will be set to correct value when session is written
+        $this->_redis->expire($sessionId, min($this->getLifeTime(), $this->_maxLifetime));
         $this->_redis->exec();
 
         // Reset flag in case of multiple session read/write operations

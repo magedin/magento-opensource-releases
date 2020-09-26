@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -160,12 +160,11 @@ class Layout extends AbstractResult
         \Magento\Framework\Profiler::start('LAYOUT');
         \Magento\Framework\Profiler::start('layout_render');
 
-        $this->eventManager->dispatch('layout_render_before');
-        $this->eventManager->dispatch('layout_render_before_' . $this->request->getFullActionName());
-
         $this->applyHttpHeaders($response);
         $this->render($response);
 
+        $this->eventManager->dispatch('layout_render_before');
+        $this->eventManager->dispatch('layout_render_before_' . $this->request->getFullActionName());
         \Magento\Framework\Profiler::stop('layout_render');
         \Magento\Framework\Profiler::stop('LAYOUT');
         return $this;

@@ -1,6 +1,6 @@
 <?php
     /**
-     * Copyright (c) 2010-2017 Arne Blankerts <arne@blankerts.de>
+     * Copyright (c) 2010-2013 Arne Blankerts <arne@blankerts.de>
      * All rights reserved.
      *
      * Redistribution and use in source and binary forms, with or without modification,
@@ -49,7 +49,7 @@ namespace TheSeer\fDOM\Tests {
      * @author     Arne Blankerts <arne@blankerts.de>
      * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
      */
-    class fDOMElementTest extends \PHPUnit\Framework\TestCase {
+    class fDOMElementTest extends \PHPUnit_Framework_TestCase {
 
         /**
          * @var fDOMDocument
@@ -97,13 +97,6 @@ namespace TheSeer\fDOM\Tests {
             $this->assertEquals('text', $node->nodeValue);
         }
 
-        public function testAppendingANewElementAsTextNode() {
-            $node = $this->node->appendElement('append', 'test & demo', true);
-            $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
-            $this->assertEquals(1, $this->node->query('count(append)'));
-            $this->assertEquals('test & demo', $node->nodeValue);
-        }
-
         public function testAppendingANewElementWithinANamespace() {
             $node = $this->node->appendElementNS('test:uri', 'append', 'text');
             $this->dom->registerNamespace('t','test:uri');
@@ -112,28 +105,12 @@ namespace TheSeer\fDOM\Tests {
             $this->assertEquals('text', $node->nodeValue);
         }
 
-        public function testAppendingANewElementWithinANamespaceAsTextNode() {
-            $node = $this->node->appendElementNS('test:uri', 'append', 'test & demo', true);
-            $this->dom->registerNamespace('t','test:uri');
-            $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
-            $this->assertEquals(1, $this->node->query('count(t:append)'));
-            $this->assertEquals('test & demo', $node->nodeValue);
-        }
-
         public function testAppendingANewElementWithinANamespaceByPrefix() {
             $this->dom->registerNamespace('t','test:uri');
             $node = $this->node->appendElementPrefix('t', 'append', 'text');
             $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
             $this->assertEquals(1, $this->node->query('count(t:append)'));
             $this->assertEquals('text', $node->nodeValue);
-        }
-
-        public function testAppendingANewElementWithinANamespaceAsTextNodeByPrefix() {
-            $this->dom->registerNamespace('t','test:uri');
-            $node = $this->node->appendElementPrefix('t', 'append', 'test & demo', true);
-            $this->assertInstanceOf('TheSeer\fDOM\fDOMElement', $node);
-            $this->assertEquals(1, $this->node->query('count(t:append)'));
-            $this->assertEquals('test & demo', $node->nodeValue);
         }
 
         public function testAppendingATextAsTextnode() {

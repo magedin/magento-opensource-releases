@@ -1,15 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Vault\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Payment\Helper\Data;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Vault\Api\PaymentMethodListInterface;
 use Magento\Vault\Model\CustomerTokenManagement;
+use Magento\Vault\Model\VaultPaymentInterface;
 
 /**
  * Class ConfigProvider
@@ -38,9 +39,9 @@ final class TokensConfigProvider implements ConfigProviderInterface
     private $customerTokenManagement;
 
     /**
-     * @var PaymentMethodListInterface
+     * @var Data
      */
-    private $vaultPaymentList;
+    private $paymentDataHelper;
 
     /**
      * Constructor
@@ -83,10 +84,8 @@ final class TokensConfigProvider implements ConfigProviderInterface
 
             $componentProvider = $providers[$paymentCode];
             $component = $componentProvider->getComponentForToken($token);
-            $config = $component->getConfig();
-            $vaultPaymentCode = !empty($config['code']) ? $config['code'] : $paymentCode;
-            $vaultPayments[$vaultPaymentCode . '_' . $i] = [
-                'config' => $config,
+            $vaultPayments[$paymentCode . '_item_' . $i] = [
+                'config' => $component->getConfig(),
                 'component' => $component->getName()
             ];
         }
@@ -99,17 +98,21 @@ final class TokensConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * Get list of available vault ui token providers.
-     *
+     * Get list of available vault ui token providers
      * @return TokenUiComponentProviderInterface[]
      */
     private function getComponentProviders()
     {
         $providers = [];
         $storeId = $this->storeManager->getStore()->getId();
-        $vaultPaymentMethods = $this->getVaultPaymentList()->getActiveList($storeId);
+        $paymentMethods = $this->getPaymentDataHelper()->getStoreMethods($storeId);
 
-        foreach ($vaultPaymentMethods as $method) {
+        foreach ($paymentMethods as $method) {
+            /** VaultPaymentInterface $method */
+            if (!$method instanceof VaultPaymentInterface || !$method->isActive($storeId)) {
+                continue;
+            }
+            
             $providerCode = $method->getProviderCode();
             $componentProvider = $this->getComponentProvider($providerCode);
             if ($componentProvider === null) {
@@ -136,15 +139,15 @@ final class TokensConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * Get instance of vault payment list instance
-     * @return PaymentMethodListInterface
+     * Get payment data helper instance
+     * @return Data
      * @deprecated
      */
-    private function getVaultPaymentList()
+    private function getPaymentDataHelper()
     {
-        if ($this->vaultPaymentList === null) {
-            $this->vaultPaymentList = ObjectManager::getInstance()->get(PaymentMethodListInterface::class);
+        if ($this->paymentDataHelper === null) {
+            $this->paymentDataHelper = ObjectManager::getInstance()->get(Data::class);
         }
-        return $this->vaultPaymentList;
+        return $this->paymentDataHelper;
     }
 }

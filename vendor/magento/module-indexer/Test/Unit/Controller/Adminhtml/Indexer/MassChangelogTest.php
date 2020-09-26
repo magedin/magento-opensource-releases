@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Indexer\Test\Unit\Controller\Adminhtml\Indexer;
@@ -88,7 +88,7 @@ class MassChangelogTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->contextMock = $this->getMock(
-            \Magento\Backend\App\Action\Context::class,
+            'Magento\Backend\App\Action\Context',
             [
                 'getAuthorization',
                 'getSession',
@@ -111,7 +111,7 @@ class MassChangelogTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->response = $this->getMock(
-            \Magento\Framework\App\ResponseInterface::class,
+            'Magento\Framework\App\ResponseInterface',
             ['setRedirect', 'sendResponse'],
             [],
             '',
@@ -119,7 +119,7 @@ class MassChangelogTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->view = $this->getMock(
-            \Magento\Framework\App\ViewInterface::class,
+            '\Magento\Framework\App\ViewInterface',
             [
                 'loadLayout',
                 'getPage',
@@ -141,47 +141,50 @@ class MassChangelogTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $this->session = $this->getMock(\Magento\Backend\Model\Session::class, ['setIsUrlNotice'], [], '', false);
+        $this->session = $this->getMock('\Magento\Backend\Model\Session', ['setIsUrlNotice'], [], '', false);
         $this->session->expects($this->any())->method('setIsUrlNotice')->willReturn($this->objectManager);
-        $this->actionFlag = $this->getMock(\Magento\Framework\App\ActionFlag::class, ['get'], [], '', false);
+        $this->actionFlag = $this->getMock('\Magento\Framework\App\ActionFlag', ['get'], [], '', false);
         $this->actionFlag->expects($this->any())->method("get")->willReturn($this->objectManager);
         $this->objectManager = $this->getMock(
-            \Magento\Framework\TestFramework\Unit\Helper\ObjectManager::class,
+            'Magento\Framework\TestFramework\Unit\Helper\ObjectManager',
             ['get'],
             [],
             '',
             false
         );
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['getParam', 'getRequest', 'isPost'])
-            ->getMockForAbstractClass();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
-        $this->response->expects($this->any())->method('setRedirect')->willReturn(1);
-        $this->page = $this->getMock(\Magento\Framework\View\Result\Page::class, [], [], '', false);
-        $this->config = $this->getMock(\Magento\Framework\View\Result\Page::class, [], [], '', false);
-        $this->title = $this->getMock(\Magento\Framework\View\Page\Title::class, [], [], '', false);
+        $this->request = $this->getMockForAbstractClass(
+            '\Magento\Framework\App\RequestInterface',
+            ['getParam', 'getRequest'],
+            '',
+            false
+        );
+
+        $this->response->expects($this->any())->method("setRedirect")->willReturn(1);
+        $this->page = $this->getMock('\Magento\Framework\View\Result\Page', [], [], '', false);
+        $this->config = $this->getMock('\Magento\Framework\View\Result\Page', [], [], '', false);
+        $this->title = $this->getMock('\Magento\Framework\View\Page\Title', [], [], '', false);
         $this->messageManager = $this->getMockForAbstractClass(
-            \Magento\Framework\Message\ManagerInterface::class,
-            ['addErrorMessage', 'addSuccessMessage'],
+            '\Magento\Framework\Message\ManagerInterface',
+            ['addError', 'addSuccess'],
             '',
             false
         );
 
         $this->indexReg = $this->getMock(
-            \Magento\Framework\Indexer\IndexerRegistry::class,
+            'Magento\Framework\Indexer\IndexerRegistry',
             ['get', 'setScheduled'],
             [],
             '',
             false
         );
-        $this->helper = $this->getMock(\Magento\Backend\Helper\Data::class, ['getUrl'], [], '', false);
-        $this->contextMock->expects($this->any())->method('getObjectManager')->willReturn($this->objectManager);
-        $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->request);
-        $this->contextMock->expects($this->any())->method('getResponse')->willReturn($this->response);
-        $this->contextMock->expects($this->any())->method('getMessageManager')->willReturn($this->messageManager);
-        $this->contextMock->expects($this->any())->method('getSession')->willReturn($this->session);
-        $this->contextMock->expects($this->any())->method('getActionFlag')->willReturn($this->actionFlag);
-        $this->contextMock->expects($this->any())->method('getHelper')->willReturn($this->helper);
+        $this->helper = $this->getMock('\Magento\Backend\Helper\Data', ['getUrl'], [], '', false);
+        $this->contextMock->expects($this->any())->method("getObjectManager")->willReturn($this->objectManager);
+        $this->contextMock->expects($this->any())->method("getRequest")->willReturn($this->request);
+        $this->contextMock->expects($this->any())->method("getResponse")->willReturn($this->response);
+        $this->contextMock->expects($this->any())->method("getMessageManager")->willReturn($this->messageManager);
+        $this->contextMock->expects($this->any())->method("getSession")->willReturn($this->session);
+        $this->contextMock->expects($this->any())->method("getActionFlag")->willReturn($this->actionFlag);
+        $this->contextMock->expects($this->any())->method("getHelper")->willReturn($this->helper);
     }
 
     /**
@@ -195,44 +198,44 @@ class MassChangelogTest extends \PHPUnit_Framework_TestCase
         $this->model = new \Magento\Indexer\Controller\Adminhtml\Indexer\MassChangelog($this->contextMock);
         $this->request->expects($this->any())
             ->method('getParam')->with('indexer_ids')
-            ->willReturn($indexerIds);
+            ->will($this->returnValue($indexerIds));
 
         if (!is_array($indexerIds)) {
             $this->messageManager->expects($this->once())
-                ->method('addErrorMessage')->with(__('Please select indexers.'))
-                ->willReturn(1);
+                ->method('addError')->with(__('Please select indexers.'))
+                ->will($this->returnValue(1));
         } else {
 
             $this->objectManager->expects($this->any())
-                ->method('get')->with(\Magento\Framework\Indexer\IndexerRegistry::class)
-                ->willReturn($this->indexReg);
+                ->method('get')->with('Magento\Framework\Indexer\IndexerRegistry')
+                ->will($this->returnValue($this->indexReg));
             $indexerInterface = $this->getMockForAbstractClass(
-                \Magento\Framework\Indexer\IndexerInterface::class,
+                'Magento\Framework\Indexer\IndexerInterface',
                 ['setScheduled'],
                 '',
                 false
             );
             $this->indexReg->expects($this->any())
                 ->method('get')->with(1)
-                ->willReturn($indexerInterface);
+                ->will($this->returnValue($indexerInterface));
 
             if ($exception !== null) {
                 $indexerInterface->expects($this->any())
-                    ->method('setScheduled')->with(true)->willThrowException($exception);
+                    ->method('setScheduled')->with(true)->will($this->throwException($exception));
             } else {
                 $indexerInterface->expects($this->any())
-                    ->method('setScheduled')->with(true)->willReturn(1);
+                    ->method('setScheduled')->with(true)->will($this->returnValue(1));
             }
 
-            $this->messageManager->expects($this->any())->method('addSuccessMessage')->willReturn(1);
+            $this->messageManager->expects($this->any())->method('addSuccess')->will($this->returnValue(1));
 
             if ($exception !== null) {
                 $this->messageManager
                     ->expects($this->exactly($expectsExceptionValues[2]))
-                    ->method('addErrorMessage')
+                    ->method('addError')
                     ->with($exception->getMessage());
                 $this->messageManager->expects($this->exactly($expectsExceptionValues[1]))
-                    ->method('addExceptionMessage')
+                    ->method('addException')
                     ->with($exception, "We couldn't change indexer(s)' mode because of an error.");
             }
         }

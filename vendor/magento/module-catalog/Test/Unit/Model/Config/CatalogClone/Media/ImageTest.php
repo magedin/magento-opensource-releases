@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\Config\CatalogClone\Media;
@@ -9,9 +9,6 @@ use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-/**
- * Test for \Magento\Catalog\Model\Config\CatalogClone\Media\Image
- */
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -39,28 +36,20 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     private $attribute;
 
-    /**
-     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $escaperMock;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $this->eavConfig = $this->getMockBuilder(\Magento\Eav\Model\Config::class)
+        $this->eavConfig = $this->getMockBuilder('Magento\Eav\Model\Config')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->attributeCollection = $this->getMockBuilder(
-            \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class
+            '\Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection'
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->attributeCollectionFactory = $this->getMockBuilder(
-            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class
+            'Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory'
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -69,82 +58,58 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             $this->returnValue($this->attributeCollection)
         );
 
-        $this->attribute = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
+        $this->attribute = $this->getMockBuilder('Magento\Eav\Model\Entity\Attribute')
             ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->escaperMock = $this->getMockBuilder(
-            \Magento\Framework\Escaper::class
-        )
-            ->disableOriginalConstructor()
-            ->setMethods(['escapeHtml'])
             ->getMock();
 
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            \Magento\Catalog\Model\Config\CatalogClone\Media\Image::class,
+            'Magento\Catalog\Model\Config\CatalogClone\Media\Image',
             [
                 'eavConfig' => $this->eavConfig,
-                'attributeCollectionFactory' => $this->attributeCollectionFactory,
-                'escaper' => $this->escaperMock,
+                'attributeCollectionFactory' => $this->attributeCollectionFactory
             ]
         );
     }
 
-    /**
-     * @param string $actualLabel
-     * @param string $expectedLabel
-     * @return void
-     * @dataProvider getPrefixesDataProvider
-     */
-    public function testGetPrefixes($actualLabel, $expectedLabel)
+    public function testGetPrefixes()
     {
         $entityTypeId = 3;
         /** @var \Magento\Eav\Model\Entity\Type|\PHPUnit_Framework_MockObject_MockObject $entityType */
-        $entityType = $this->getMockBuilder(\Magento\Eav\Model\Entity\Type::class)
+        $entityType = $this->getMockBuilder('Magento\Eav\Model\Entity\Type')
             ->disableOriginalConstructor()
             ->getMock();
-        $entityType->expects($this->once())->method('getId')->willReturn($entityTypeId);
+        $entityType->expects($this->once())->method('getId')->will($this->returnValue($entityTypeId));
 
         /** @var AbstractFrontend|\PHPUnit_Framework_MockObject_MockObject $frontend */
-        $frontend = $this->getMockBuilder(AbstractFrontend::class)
+        $frontend = $this->getMockBuilder('Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend')
             ->setMethods(['getLabel'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $frontend->expects($this->once())->method('getLabel')->willReturn($actualLabel);
+        $frontend->expects($this->once())->method('getLabel')->will($this->returnValue('testLabel'));
 
-        $this->attributeCollection->expects($this->once())->method('setEntityTypeFilter')->with($entityTypeId);
-        $this->attributeCollection->expects($this->once())->method('setFrontendInputTypeFilter')->with('media_image');
+        $this->attributeCollection->expects($this->once())->method('setEntityTypeFilter')->with(
+            $this->equalTo($entityTypeId)
+        );
+        $this->attributeCollection->expects($this->once())->method('setFrontendInputTypeFilter')->with(
+            $this->equalTo('media_image')
+        );
 
-        $this->attribute->expects($this->once())->method('getAttributeCode')->willReturn('attributeCode');
-        $this->attribute->expects($this->once())->method('getFrontend')->willReturn($frontend);
+        $this->attribute->expects($this->once())->method('getAttributeCode')->will(
+            $this->returnValue('attributeCode')
+        );
+        $this->attribute->expects($this->once())->method('getFrontend')->will(
+            $this->returnValue($frontend)
+        );
 
-        $this->attributeCollection->expects($this->any())->method('getIterator')
-            ->willReturn(new \ArrayIterator([$this->attribute]));
+        $this->attributeCollection->expects($this->any())->method('getIterator')->will(
+            $this->returnValue(new \ArrayIterator([$this->attribute]))
+        );
 
-        $this->eavConfig->expects($this->any())->method('getEntityType')
-            ->with(Product::ENTITY)->willReturn($entityType);
+        $this->eavConfig->expects($this->any())->method('getEntityType')->with(
+            $this->equalTo(Product::ENTITY)
+        )->will($this->returnValue($entityType));
 
-        $this->escaperMock->expects($this->once())->method('escapeHtml')->with($actualLabel)
-            ->willReturn($expectedLabel);
-
-        $this->assertEquals([['field' => 'attributeCode_', 'label' => $expectedLabel]], $this->model->getPrefixes());
-    }
-
-    /**
-     * @return array
-     */
-    public function getPrefixesDataProvider()
-    {
-        return [
-            [
-                'actual_label' => 'testLabel',
-                'expected_label' => 'testLabel',
-            ],
-            [
-                'actual_label' => '<media-image-attributelabel',
-                'expected_label' => '&lt;media-image-attributelabel',
-            ],
-        ];
+        $this->assertEquals([['field' => 'attributeCode_', 'label' => 'testLabel']], $this->model->getPrefixes());
     }
 }

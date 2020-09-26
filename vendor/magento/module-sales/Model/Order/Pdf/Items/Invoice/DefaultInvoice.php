@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\Order\Pdf\Items\Invoice;
@@ -127,8 +127,7 @@ class DefaultInvoice extends \Magento\Sales\Model\Order\Pdf\Items\AbstractItems
                     'feed' => 35,
                 ];
 
-                // Checking whether option value is not null
-                if ($option['value']!= null) {
+                if ($option['value']) {
                     if (isset($option['print_value'])) {
                         $printValue = $option['print_value'];
                     } else {

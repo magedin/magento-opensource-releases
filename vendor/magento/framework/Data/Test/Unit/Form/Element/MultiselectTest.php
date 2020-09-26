@@ -1,17 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
 class MultiselectTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $escaperMock;
-
     /**
      * @var \Magento\Framework\Data\Form\Element\Multiselect
      */
@@ -20,14 +15,7 @@ class MultiselectTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->escaperMock = $this->getMockBuilder(\Magento\Framework\Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->escaperMock->method('escapeHtml')->willReturnArgument(0);
-        $this->_model = $testHelper->getObject(
-            \Magento\Framework\Data\Form\Element\Editablemultiselect::class,
-            ['escaper' => $this->escaperMock]
-        );
+        $this->_model = $testHelper->getObject('Magento\Framework\Data\Form\Element\Editablemultiselect');
         $this->_model->setForm(new \Magento\Framework\DataObject());
     }
 
@@ -38,37 +26,10 @@ class MultiselectTest extends \PHPUnit_Framework_TestCase
      */
     public function testHiddenFieldPresentInMultiSelect()
     {
-        $fieldName = 'fieldName';
-        $this->_model->setCanBeEmpty(true);
-        $this->_model->setName($fieldName);
-        $elementHtml = $this->_model->getElementHtml();
-        $this->assertContains('<input type="hidden" name="' . $fieldName . '"', $elementHtml);
-    }
-
-    /**
-     * Verify that hidden input is present in multiselect and it allow indicate is multiselect is disabled.
-     */
-    public function testHiddenDisabledFieldPresentInMultiSelect()
-    {
-        $fieldName = 'fieldName';
         $this->_model->setDisabled(true);
-        $this->_model->setName($fieldName);
+        $this->_model->setCanBeEmpty(true);
         $elementHtml = $this->_model->getElementHtml();
-        $this->assertContains('<input type="hidden" name="' . $fieldName . '_disabled"', $elementHtml);
-    }
-
-    /**
-     * Verify that hidden input doesn't present in multiselect and it allow indicate is multiselect is disabled.
-     *
-     * @covers \Magento\Framework\Data\Form\Element\Multiselect::getElementHtml
-     */
-    public function testHiddenDisabledFieldNotPresentInMultiSelect()
-    {
-        $fieldName = 'fieldName';
-        $this->_model->setDisabled(false);
-        $this->_model->setName($fieldName);
-        $elementHtml = $this->_model->getElementHtml();
-        $this->assertNotContains('<input type="hidden" name="' . $fieldName . '_disabled"', $elementHtml);
+        $this->assertContains('<input type="hidden"', $elementHtml);
     }
 
     /**

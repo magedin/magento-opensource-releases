@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2018 Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Phrase\Test\Unit\Renderer;
@@ -13,7 +13,7 @@ class InlineTest extends \PHPUnit_Framework_TestCase
     protected $translator;
 
     /**
-     * @var \Magento\Framework\Phrase\Renderer\Inline
+     * @var \Magento\Framework\Phrase\Renderer\Translate
      */
     protected $renderer;
 

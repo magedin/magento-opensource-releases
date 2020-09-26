@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Block;
@@ -18,7 +18,7 @@ class Newsletter extends \Magento\Customer\Block\Account\Dashboard
     /**
      * @var string
      */
-    protected $_template = 'Magento_Customer::form/newsletter.phtml';
+    protected $_template = 'form/newsletter.phtml';
 
     /**
      * @return bool

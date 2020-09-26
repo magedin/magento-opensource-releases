@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,7 +11,6 @@ use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductLinkExtensionFactory;
 use Magento\Catalog\Model\Product\Initialization\Helper\ProductLinks as LinksInitializer;
 use Magento\Catalog\Model\Product\LinkTypeProvider;
-use Magento\Framework\Api\SimpleDataObjectConverter;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\EntityManager\MetadataPool;
@@ -85,9 +84,6 @@ class Repository implements \Magento\Catalog\Api\ProductLinkRepositoryInterface
      * @param LinksInitializer $linkInitializer
      * @param Management $linkManagement
      * @param \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
-     * @param ProductLinkInterfaceFactory|null $productLinkFactory
-     * @param ProductLinkExtensionFactory|null $productLinkExtensionFactory
-     * @throws \RuntimeException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -95,25 +91,13 @@ class Repository implements \Magento\Catalog\Api\ProductLinkRepositoryInterface
         \Magento\Catalog\Model\ProductLink\CollectionProvider $entityCollectionProvider,
         \Magento\Catalog\Model\Product\Initialization\Helper\ProductLinks $linkInitializer,
         \Magento\Catalog\Model\ProductLink\Management $linkManagement,
-        \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor,
-        \Magento\Catalog\Api\Data\ProductLinkInterfaceFactory $productLinkFactory = null,
-        \Magento\Catalog\Api\Data\ProductLinkExtensionFactory $productLinkExtensionFactory = null
+        \Magento\Framework\Reflection\DataObjectProcessor $dataObjectProcessor
     ) {
         $this->productRepository = $productRepository;
         $this->entityCollectionProvider = $entityCollectionProvider;
         $this->linkInitializer = $linkInitializer;
         $this->linkManagement = $linkManagement;
         $this->dataObjectProcessor = $dataObjectProcessor;
-        if (null === $productLinkFactory) {
-            $productLinkFactory = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Catalog\Api\Data\ProductLinkInterfaceFactory::class);
-        }
-        if (null === $productLinkExtensionFactory) {
-            $productLinkExtensionFactory = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Catalog\Api\Data\ProductLinkExtensionFactory::class);
-        }
-        $this->productLinkFactory = $productLinkFactory;
-        $this->productLinkExtensionFactory = $productLinkExtensionFactory;
     }
 
     /**
@@ -165,7 +149,7 @@ class Repository implements \Magento\Catalog\Api\ProductLinkRepositoryInterface
             $collection = $this->entityCollectionProvider->getCollection($product, $linkTypeName);
             foreach ($collection as $item) {
                 /** @var \Magento\Catalog\Api\Data\ProductLinkInterface $productLink */
-                $productLink = $this->productLinkFactory->create();
+                $productLink = $this->getProductLinkFactory()->create();
                 $productLink->setSku($product->getSku())
                     ->setLinkType($linkTypeName)
                     ->setLinkedProductSku($item['sku'])
@@ -174,12 +158,12 @@ class Repository implements \Magento\Catalog\Api\ProductLinkRepositoryInterface
                 if (isset($item['custom_attributes'])) {
                     $productLinkExtension = $productLink->getExtensionAttributes();
                     if ($productLinkExtension === null) {
-                        $productLinkExtension = $this->productLinkExtensionFactory->create();
+                        $productLinkExtension = $this->getProductLinkExtensionFactory()->create();
                     }
                     foreach ($item['custom_attributes'] as $option) {
                         $name = $option['attribute_code'];
                         $value = $option['value'];
-                        $setterName = 'set' . SimpleDataObjectConverter::snakeCaseToUpperCamelCase($name);
+                        $setterName = 'set'.ucfirst($name);
                         // Check if setter exists
                         if (method_exists($productLinkExtension, $setterName)) {
                             call_user_func([$productLinkExtension, $setterName], $value);
@@ -272,6 +256,30 @@ class Repository implements \Magento\Catalog\Api\ProductLinkRepositoryInterface
                 ->get('Magento\Catalog\Model\Product\LinkTypeProvider');
         }
         return $this->linkTypeProvider;
+    }
+
+    /**
+     * @return ProductLinkInterfaceFactory
+     */
+    private function getProductLinkFactory()
+    {
+        if (null === $this->productLinkFactory) {
+            $this->productLinkFactory = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get('Magento\Catalog\Api\Data\ProductLinkInterfaceFactory');
+        }
+        return $this->productLinkFactory;
+    }
+
+    /**
+     * @return ProductLinkExtensionFactory
+     */
+    private function getProductLinkExtensionFactory()
+    {
+        if (null === $this->productLinkExtensionFactory) {
+            $this->productLinkExtensionFactory = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get('Magento\Catalog\Api\Data\ProductLinkExtensionFactory');
+        }
+        return $this->productLinkExtensionFactory;
     }
 
     /**

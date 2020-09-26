@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml;
-
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * @magentoAppArea adminhtml
@@ -25,11 +23,10 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
     public function testSaveAction($inputData, $defaultAttributes, $attributesSaved = [], $isSuccess = true)
     {
         /** @var $store \Magento\Store\Model\Store */
-        $store = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Store\Model\Store::class);
+        $store = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Store\Model\Store');
         $store->load('fixturestore', 'code');
         $storeId = $store->getId();
 
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue($inputData);
         $this->getRequest()->setParam('store', $storeId);
         $this->getRequest()->setParam('id', 2);
@@ -44,7 +41,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
 
         /** @var $category \Magento\Catalog\Model\Category */
         $category = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Catalog\Model\Category::class
+            'Magento\Catalog\Model\Category'
         );
         $category->setStoreId($storeId);
         $category->load(2);
@@ -78,7 +75,6 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
      */
     public function testSaveActionFromProductCreationPage($postData)
     {
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue($postData);
 
         $this->dispatch('backend/catalog/category/save');
@@ -90,7 +86,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
             );
         } else {
             $result = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-                \Magento\Framework\Json\Helper\Data::class
+                'Magento\Framework\Json\Helper\Data'
             )->jsonDecode(
                 $body
             );
@@ -237,7 +233,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
                     'display_mode' => true,
                     'meta_title' => true,
                     'custom_design' => true,
-                    'page_layout' => true,
+                    'page_layout' => false,
                     'is_active' => true,
                     'include_in_menu' => true,
                     'landing_page' => true,
@@ -246,7 +242,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
                     'description' => true,
                     'meta_keywords' => true,
                     'meta_description' => true,
-                    'custom_layout_update' => true,
+                    'custom_layout_update' => false,
                     'custom_design_from' => true,
                     'custom_design_to' => true,
                     'filter_price_range' => false
@@ -328,7 +324,6 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
 
     public function testSaveActionCategoryWithDangerRequest()
     {
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue(
             [
                 'general' => [
@@ -344,7 +339,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
         );
         $this->dispatch('backend/catalog/category/save');
         $this->assertSessionMessages(
-            $this->equalTo(['The value of attribute "name" must be set']),
+            $this->equalTo(['The value of attribute "is_active" must be set']),
             \Magento\Framework\Message\MessageInterface::TYPE_ERROR
         );
     }
@@ -369,7 +364,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
         foreach ($urlKeys as $categoryId => $urlKey) {
             /** @var $category \Magento\Catalog\Model\Category */
             $category = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-                \Magento\Catalog\Model\Category::class
+                'Magento\Catalog\Model\Category'
             );
             if ($categoryId > 0) {
                 $category->load($categoryId)
@@ -379,8 +374,7 @@ class CategoryTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
         }
         $this->getRequest()
             ->setPostValue('id', $grandChildId)
-            ->setPostValue('pid', $parentId)
-            ->setMethod(HttpRequest::METHOD_POST);
+            ->setPostValue('pid', $parentId);
         $this->dispatch('backend/catalog/category/move');
         $jsonResponse = json_decode($this->getResponse()->getBody());
         $this->assertNotNull($jsonResponse);

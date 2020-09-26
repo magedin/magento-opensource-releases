@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,7 +16,7 @@ class SubscriberTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Newsletter\Model\Subscriber::class
+            'Magento\Newsletter\Model\Subscriber'
         );
     }
 
@@ -28,7 +28,7 @@ class SubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->_model->subscribe('customer_confirm@example.com');
         $transportBuilder = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class);
+            ->get('Magento\TestFramework\Mail\Template\TransportBuilderMock');
         // confirmationCode 'ysayquyajua23iq29gxwu2eax2qb6gvy' is taken from fixture
         $this->assertContains(
             '/newsletter/subscriber/confirm/id/' . $this->_model->getSubscriberId()

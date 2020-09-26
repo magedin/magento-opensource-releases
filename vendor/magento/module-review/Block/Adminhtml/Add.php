@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -94,14 +94,13 @@ class Add extends \Magento\Backend\Block\Widget\Form\Container
                         if( response.error ) {
                             alert(response.message);
                         } else if( response.id ){
-                            var productName = response.name;
                             $("product_id").value = response.id;
 
                             $("product_name").innerHTML = \'<a href="' .
             $this->getUrl(
                 'catalog/product/edit'
             ) .
-            'id/\' + response.id + \'" target="_blank">\' + productName.escapeHTML() + \'</a>\';
+            'id/\' + response.id + \'" target="_blank">\' + response.name + \'</a>\';
                         } else if ( response.message ) {
                             alert(response.message);
                         }

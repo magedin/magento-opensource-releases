@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -87,10 +87,6 @@ class GrandTotalDetailsPluginTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @param array $data
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     protected function setupTaxTotal(array $data)
     {
         $taxTotalMock = $this->getMockBuilder('\Magento\Quote\Model\Quote\Address\Total')
@@ -104,10 +100,6 @@ class GrandTotalDetailsPluginTest extends \PHPUnit_Framework_TestCase
         return $taxTotalMock;
     }
 
-    /**
-     * @param array $taxRate
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     protected function setupTaxRateFactoryMock(array $taxRate)
     {
         $taxRateMock = $this->getMockBuilder('\Magento\Tax\Api\Data\GrandTotalRatesInterface')
@@ -129,10 +121,6 @@ class GrandTotalDetailsPluginTest extends \PHPUnit_Framework_TestCase
         return $taxRateMock;
     }
 
-    /**
-     * @param array $taxDetails
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     protected function setupTaxDetails(array $taxDetails)
     {
         $taxDetailsMock = $this->getMockBuilder('\Magento\Tax\Api\Data\GrandTotalDetailsInterface')

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -20,9 +20,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $block->addValues($values);
     }
 
-    /**
-     * @return array
-     */
     public function dataForAddValues()
     {
         $additionalData = [

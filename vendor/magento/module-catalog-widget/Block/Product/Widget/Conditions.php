@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -51,7 +51,7 @@ class Conditions extends Template implements RendererInterface
     /**
      * @var string
      */
-    protected $_template = 'Magento_CatalogWidget::product/widget/conditions.phtml';
+    protected $_template = 'product/widget/conditions.phtml';
 
     /**
      * @param \Magento\Framework\Data\Form\Element\Factory $elementFactory
@@ -73,7 +73,6 @@ class Conditions extends Template implements RendererInterface
         $this->conditions = $conditions;
         $this->rule = $rule;
         $this->registry = $registry;
-
         parent::__construct($context, $data);
     }
 
@@ -82,17 +81,12 @@ class Conditions extends Template implements RendererInterface
      */
     protected function _construct()
     {
-        $widgetParameters = [];
         $widget = $this->registry->registry('current_widget_instance');
-        
         if ($widget) {
             $widgetParameters = $widget->getWidgetParameters();
-        } elseif (($widgetOptions = $this->getLayout()->getBlock('wysiwyg_widget.options')) != false) {
-            $widgetParameters = $widgetOptions->getWidgetValues();
-        }
-
-        if (isset($widgetParameters['conditions'])) {
-            $this->rule->loadPost($widgetParameters);
+            if (isset($widgetParameters['conditions'])) {
+                $this->rule->loadPost($widgetParameters);
+            }
         }
     }
 

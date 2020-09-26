@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Test\Unit\Config;
@@ -62,9 +62,6 @@ class InitialTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->_model->getData($scope));
     }
 
-    /**
-     * @return array
-     */
     public function getDataDataProvider()
     {
         return [

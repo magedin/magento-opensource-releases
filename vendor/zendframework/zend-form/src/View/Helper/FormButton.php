@@ -20,7 +20,7 @@ class FormButton extends FormInput
      *
      * @var array
      */
-    protected $validTagAttributes = [
+    protected $validTagAttributes = array(
         'name'           => true,
         'autofocus'      => true,
         'disabled'       => true,
@@ -32,18 +32,18 @@ class FormButton extends FormInput
         'formtarget'     => true,
         'type'           => true,
         'value'          => true,
-    ];
+    );
 
     /**
      * Valid values for the button type
      *
      * @var array
      */
-    protected $validTypes = [
+    protected $validTypes = array(
         'button'         => true,
         'reset'          => true,
         'submit'         => true,
-    ];
+    );
 
     /**
      * Invoke helper as functor

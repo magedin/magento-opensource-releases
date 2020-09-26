@@ -38,7 +38,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
     /**
      * @var array
      */
-    protected $annotations = [];
+    protected $annotations = array();
 
     /**
      * @param  AnnotationManager $annotationManager
@@ -70,7 +70,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
      */
     protected function scan(array $tokens)
     {
-        $annotations     = [];
+        $annotations     = array();
         $annotationIndex = -1;
         $contentEnd      = false;
 
@@ -87,7 +87,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
                 $annotationIndex++;
                 $class                         = substr($token[1], 1);
                 $class                         = $this->nameInformation->resolveName($class);
-                $annotations[$annotationIndex] = [$class, null];
+                $annotations[$annotationIndex] = array($class, null);
                 goto SCANNER_CONTINUE;
                 // goto no break needed
 
@@ -142,7 +142,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
         $context     = 0x00;
         $stream      = $this->docComment;
         $streamIndex = null;
-        $tokens      = [];
+        $tokens      = array();
         $tokenIndex  = null;
         $currentChar = null;
         $currentWord = null;
@@ -159,7 +159,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
                 return false;
             }
             $currentChar = $stream[$streamIndex];
-            $matches     = [];
+            $matches     = array();
             $currentLine = (preg_match('#(.*?)(?:\n|\r\n?)#', $stream, $matches, null, $streamIndex) === 1) ? $matches[1] : substr($stream, $streamIndex);
             if ($currentChar === ' ') {
                 $currentWord = (preg_match('#( +)#', $currentLine, $matches) === 1) ? $matches[1] : $currentLine;
@@ -177,7 +177,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
         };
         $MACRO_TOKEN_ADVANCE       = function () use (&$tokenIndex, &$tokens) {
             $tokenIndex          = ($tokenIndex === null) ? 0 : $tokenIndex + 1;
-            $tokens[$tokenIndex] = ['ANNOTATION_UNKNOWN', ''];
+            $tokens[$tokenIndex] = array('ANNOTATION_UNKNOWN', '');
         };
         $MACRO_TOKEN_SET_TYPE      = function ($type) use (&$tokenIndex, &$tokens) {
             $tokens[$tokenIndex][0] = $type;
@@ -213,7 +213,7 @@ class AnnotationScanner extends AnnotationCollection implements ScannerInterface
         }
 
         if ($MACRO_HAS_CONTEXT($CONTEXT_CLASS)) {
-            if (in_array($currentChar, [' ', '(', "\n", "\r"])) {
+            if (in_array($currentChar, array(' ', '(', "\n", "\r"))) {
                 $context &= ~$CONTEXT_CLASS;
                 $MACRO_TOKEN_ADVANCE();
             } else {

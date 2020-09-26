@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Test\Unit\Model\Theme;
@@ -10,10 +10,6 @@ use Magento\Framework\View\Design\ThemeInterface;
 use Magento\Theme\Model\Theme\ThemeProvider;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-/**
- * Class ThemeProviderTest
- * @covers \Magento\Theme\Model\Theme\ThemeProvider
- */
 class ThemeProviderTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
@@ -56,21 +52,6 @@ class ThemeProviderTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $deploymentConfig = $this->getMockBuilder(\Magento\Framework\App\DeploymentConfig::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $deploymentConfig->expects($this->once())
-            ->method('isDbAvailable')
-            ->willReturn(true);
-
-        $objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
-        $objectManagerMock->expects($this->any())
-            ->method('get')
-            ->willReturnMap([
-                [\Magento\Framework\App\DeploymentConfig::class, $deploymentConfig],
-            ]);
-        \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
-
         $this->assertSame($theme, $themeProvider->getThemeByFullPath($path));
     }
 
@@ -85,9 +66,6 @@ class ThemeProviderTest extends \PHPUnit_Framework_TestCase
             false
         );
         $theme = $this->getMock('Magento\Theme\Model\Theme', [], [], '', false);
-        $theme->expects($this->once())
-            ->method('getId')
-            ->willReturn(1);
         $theme->expects($this->once())->method('load')->with($themeId)->will($this->returnSelf());
         $theme->expects($this->once())->method('getId')->will($this->returnValue(1));
         $theme->expects($this->once())->method('__sleep')->will($this->returnValue([]));

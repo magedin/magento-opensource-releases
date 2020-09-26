@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -115,10 +115,6 @@
             <file>
                 <protected_extensions>
                     <php>php</php>
-                    <php3>php3</php3>
-                    <php4>php4</php4>
-                    <php5>php5</php5>
-                    <php7>php7</php7>
                     <htaccess>htaccess</htaccess>
                     <jsp>jsp</jsp>
                     <pl>pl</pl>
@@ -130,18 +126,10 @@
                     <html>html</html>
                     <phtml>phtml</phtml>
                     <shtml>shtml</shtml>
-                    <phpt>phpt</phpt>
-                    <pht>pht</pht>
                 </protected_extensions>
                 <public_files_valid_paths>
                     <protected>
                         <app>/app/*/*</app>
-                        <bin>/bin/*/*</bin>
-                        <dev>/dev/*/*</dev>
-                        <lib>/lib/*/*</lib>
-                        <setup>/setup/*/*</setup>
-                        <update>/update/*/*</update>
-                        <vendor>/vendor/*/*</vendor>
                     </protected>
                 </public_files_valid_paths>
             </file>

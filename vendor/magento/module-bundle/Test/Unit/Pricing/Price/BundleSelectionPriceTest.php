@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -67,12 +67,17 @@ class BundleSelectionPriceTest extends \PHPUnit_Framework_TestCase
     protected $priceCurrencyMock;
 
     /**
+     * @var float
+     */
+    protected $quantity;
+
+    /**
      * Test setUp
      */
     protected function setUp()
     {
         $this->productMock = $this->getMock(
-            \Magento\Catalog\Model\Product::class,
+            'Magento\Catalog\Model\Product',
             ['__wakeup', 'getPriceInfo', 'getSelectionPriceType', 'getSelectionPriceValue'],
             [],
             '',
@@ -80,44 +85,44 @@ class BundleSelectionPriceTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->bundleMock = $this->getMock(
-            \Magento\Catalog\Model\Product::class,
+            'Magento\Catalog\Model\Product',
             ['__wakeup', 'getPriceType', 'getPriceInfo', 'setFinalPrice', 'getData'],
             [],
             '',
             false
         );
-        $this->calculatorMock = $this->getMockBuilder(\Magento\Framework\Pricing\Adjustment\CalculatorInterface::class)
+        $this->calculatorMock = $this->getMockBuilder('Magento\Framework\Pricing\Adjustment\CalculatorInterface')
             ->getMockForAbstractClass();
         $this->eventManagerMock = $this->getMock(
-            \Magento\Framework\Event\Manager::class,
+            'Magento\Framework\Event\Manager',
             ['dispatch'],
             [],
             '',
             false
         );
         $this->priceInfoMock = $this->getMock(
-            \Magento\Framework\Pricing\PriceInfo\Base::class,
+            'Magento\Framework\Pricing\PriceInfo\Base',
             ['getPrice'],
             [],
             '',
             false
         );
         $this->discountCalculatorMock = $this->getMock(
-            \Magento\Bundle\Pricing\Price\DiscountCalculator::class,
+            'Magento\Bundle\Pricing\Price\DiscountCalculator',
             [],
             [],
             '',
             false
         );
         $this->finalPriceMock = $this->getMock(
-            \Magento\Catalog\Pricing\Price\FinalPrice::class,
+            'Magento\Catalog\Pricing\Price\FinalPrice',
             [],
             [],
             '',
             false
         );
         $this->regularPriceMock = $this->getMock(
-            \Magento\Catalog\Pricing\Price\RegularPrice::class,
+            'Magento\Catalog\Pricing\Price\RegularPrice',
             [],
             [],
             '',
@@ -127,20 +132,18 @@ class BundleSelectionPriceTest extends \PHPUnit_Framework_TestCase
             ->method('getPriceInfo')
             ->will($this->returnValue($this->priceInfoMock));
 
-        $this->priceCurrencyMock = $this->getMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->getMock('\Magento\Framework\Pricing\PriceCurrencyInterface');
+
+        $this->quantity = 1;
 
         $this->setupSelectionPrice();
     }
 
-    /**
-     * @param bool $useRegularPrice
-     * @param int $qty
-     */
-    protected function setupSelectionPrice($useRegularPrice = false, $qty = 1)
+    protected function setupSelectionPrice($useRegularPrice = false)
     {
         $this->selectionPrice = new \Magento\Bundle\Pricing\Price\BundleSelectionPrice(
             $this->productMock,
-            $qty,
+            $this->quantity,
             $this->calculatorMock,
             $this->priceCurrencyMock,
             $this->bundleMock,
@@ -310,9 +313,6 @@ class BundleSelectionPriceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPrice, $this->selectionPrice->getValue());
     }
 
-    /**
-     * @return array
-     */
     public function useRegularPriceDataProvider()
     {
         return [
@@ -379,57 +379,5 @@ class BundleSelectionPriceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($amount);
 
         $this->assertEquals($amount, $this->selectionPrice->getAmount());
-    }
-
-    /**
-     * Test for method getValue with type Fixed and selectionPriceType is empty or zero.
-     *
-     * @param bool $useRegularPrice
-     * @return void
-     *
-     * @dataProvider useRegularPriceDataProvider
-     */
-    public function testFixedPriceWithMultipleQty($useRegularPrice)
-    {
-        $qty = 2;
-
-        $this->setupSelectionPrice($useRegularPrice, $qty);
-        $regularPrice = 100.125;
-        $discountedPrice = 70.453;
-        $convertedValue = 100.247;
-        $actualPrice = $useRegularPrice ? $convertedValue : $discountedPrice;
-        $expectedPrice = $useRegularPrice ? round($convertedValue, 2) : round($discountedPrice, 2);
-
-        $this->bundleMock->expects($this->once())
-            ->method('getPriceType')
-            ->will($this->returnValue(\Magento\Bundle\Model\Product\Price::PRICE_TYPE_FIXED));
-        $this->productMock->expects($this->once())
-            ->method('getSelectionPriceType')
-            ->will($this->returnValue(false));
-        $this->productMock->expects($this->any())
-            ->method('getSelectionPriceValue')
-            ->will($this->returnValue($regularPrice));
-
-        $this->priceCurrencyMock->expects($this->once())
-            ->method('convert')
-            ->with($regularPrice)
-            ->will($this->returnValue($convertedValue));
-
-        if (!$useRegularPrice) {
-            $this->discountCalculatorMock->expects($this->once())
-                ->method('calculateDiscount')
-                ->with(
-                    $this->equalTo($this->bundleMock),
-                    $this->equalTo($convertedValue)
-                )
-                ->will($this->returnValue($discountedPrice));
-        }
-
-        $this->priceCurrencyMock->expects($this->once())
-            ->method('round')
-            ->with($actualPrice)
-            ->will($this->returnValue($expectedPrice));
-
-        $this->assertEquals($expectedPrice, $this->selectionPrice->getValue());
     }
 }

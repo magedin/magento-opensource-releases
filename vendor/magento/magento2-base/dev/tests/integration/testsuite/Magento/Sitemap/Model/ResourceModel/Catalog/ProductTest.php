@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sitemap\Model\ResourceModel\Catalog;
@@ -9,7 +9,7 @@ namespace Magento\Sitemap\Model\ResourceModel\Catalog;
  * Test class for \Magento\Sitemap\Model\ResourceModel\Catalog\Product.
  * - test products collection generation for sitemap
  *
- * @magentoDataFixtureBeforeTransaction Magento/Catalog/_files/enable_reindex_schedule.php
+ * @magentoDataFixtureBeforeTransaction Magento/CatalogSearch/_files/full_reindex.php
  * @magentoDataFixture Magento/Sitemap/_files/sitemap_products.php
  */
 class ProductTest extends \PHPUnit_Framework_TestCase
@@ -24,7 +24,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function testGetCollectionNone()
     {
         $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Sitemap\Model\ResourceModel\Catalog\Product::class
+            'Magento\Sitemap\Model\ResourceModel\Catalog\Product'
         );
         $products = $model->getCollection(\Magento\Store\Model\Store::DISTRO_STORE_ID);
 
@@ -51,7 +51,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function testGetCollectionAll()
     {
         $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Sitemap\Model\ResourceModel\Catalog\Product::class
+            'Magento\Sitemap\Model\ResourceModel\Catalog\Product'
         );
         $products = $model->getCollection(\Magento\Store\Model\Store::DISTRO_STORE_ID);
 
@@ -119,7 +119,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function testGetCollectionBase()
     {
         $model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Sitemap\Model\ResourceModel\Catalog\Product::class
+            'Magento\Sitemap\Model\ResourceModel\Catalog\Product'
         );
         $products = $model->getCollection(\Magento\Store\Model\Store::DISTRO_STORE_ID);
 

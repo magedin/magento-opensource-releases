@@ -1,18 +1,20 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Braintree\Test\TestStep;
 
+use Magento\Config\Test\Fixture\ConfigData;
 use Magento\Mtf\ObjectManager;
-use Magento\Mtf\TestStep\TestStepInterface;
 use Magento\Sales\Test\Fixture\OrderInjectable;
 use Magento\Sales\Test\Page\Adminhtml\OrderCreditMemoNew;
 use Magento\Sales\Test\Page\Adminhtml\OrderIndex;
 use Magento\Sales\Test\Page\Adminhtml\OrderInvoiceView;
 use Magento\Sales\Test\Page\Adminhtml\SalesOrderView;
+use Magento\Mtf\TestStep\TestStepInterface;
+use Braintree\Gateway;
 
 /**
  * Create credit memo for order placed via Braintree credit card payment method.

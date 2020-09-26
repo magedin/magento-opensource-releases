@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleAdwords\Test\Unit\Model\Filter;
@@ -17,9 +17,6 @@ class UppercaseTitleTest extends \PHPUnit_Framework_TestCase
         $this->_model = new \Magento\GoogleAdwords\Model\Filter\UppercaseTitle();
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForFilterValues()
     {
         return [['some name', 'Some Name'], ['test', 'Test']];

@@ -1,54 +1,51 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 namespace Magento\ImportExport\Model;
 
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\FileTransferFactory;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Math\Random;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\ImportExport\Helper\Data;
-use Magento\ImportExport\Model\Export\Adapter\CsvFactory;
-use Magento\ImportExport\Model\Import\AbstractEntity as ImportAbstractEntity;
-use Magento\ImportExport\Model\Import\AbstractSource;
-use Magento\ImportExport\Model\Import\Adapter;
-use Magento\ImportExport\Model\Import\ConfigInterface;
-use Magento\ImportExport\Model\Import\Entity\AbstractEntity;
-use Magento\ImportExport\Model\Import\Entity\Factory;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
-use Magento\ImportExport\Model\ResourceModel\Import\Data as ImportData;
-use Magento\ImportExport\Model\Source\Import\AbstractBehavior;
-use Magento\ImportExport\Model\Source\Import\Behavior\Factory as BehaviorFactory;
-use Magento\MediaStorage\Model\File\Uploader;
-use Magento\MediaStorage\Model\File\UploaderFactory;
 
 /**
  * Import model
  *
+ * @author      Magento Core Team <core@magentocommerce.com>
+ *
  * @method string getBehavior() getBehavior()
- * @method self setEntity() setEntity(string $value)
+ * @method \Magento\ImportExport\Model\Import setEntity() setEntity(string $value)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class Import extends AbstractModel
+class Import extends \Magento\ImportExport\Model\AbstractModel
 {
+    /**#@+
+     * Import behaviors
+     */
     const BEHAVIOR_APPEND = 'append';
+
     const BEHAVIOR_ADD_UPDATE = 'add_update';
+
     const BEHAVIOR_REPLACE = 'replace';
+
     const BEHAVIOR_DELETE = 'delete';
+
     const BEHAVIOR_CUSTOM = 'custom';
+
+    /**#@-*/
+
+    /**#@+
+     * Form field names (and IDs)
+     */
+
+    /**
+     * Import source file.
+     */
     const FIELD_NAME_SOURCE_FILE = 'import_file';
 
     /**
@@ -81,140 +78,119 @@ class Import extends AbstractModel
      */
     const FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR = '_import_multiple_value_separator';
 
-    /**
-     * Import empty attribute value constant.
-     */
-    const FIELD_EMPTY_ATTRIBUTE_VALUE_CONSTANT = '_import_empty_attribute_value_constant';
-
-    /**
-     * Allow multiple values wrapping in double quotes for additional attributes.
-     */
-    const FIELDS_ENCLOSURE = 'fields_enclosure';
+    /**#@-*/
 
     /**
      * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR
      */
     const DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR = ',';
 
-    /**
-     * default empty attribute value constant
+    /**#@+
+     * Import constants
      */
-    const DEFAULT_EMPTY_ATTRIBUTE_VALUE_CONSTANT = '__EMPTY__VALUE__';
     const DEFAULT_SIZE = 50;
+
     const MAX_IMPORT_CHUNKS = 4;
+
     const IMPORT_HISTORY_DIR = 'import_history/';
+
     const IMPORT_DIR = 'import/';
+
+    /**#@-*/
 
     /**
      * Entity adapter.
      *
-     * @var AbstractEntity
+     * @var \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      */
     protected $_entityAdapter;
 
     /**
      * Import export data
      *
-     * @var Data
+     * @var \Magento\ImportExport\Helper\Data
      */
     protected $_importExportData = null;
 
     /**
-     * @var ConfigInterface
+     * @var \Magento\ImportExport\Model\Import\ConfigInterface
      */
     protected $_importConfig;
 
     /**
-     * @var Factory
+     * @var \Magento\ImportExport\Model\Import\Entity\Factory
      */
     protected $_entityFactory;
 
     /**
-     * @var ImportData
+     * @var \Magento\ImportExport\Model\ResourceModel\Import\Data
      */
     protected $_importData;
 
     /**
-     * @var CsvFactory
+     * @var \Magento\ImportExport\Model\Export\Adapter\CsvFactory
      */
     protected $_csvFactory;
 
     /**
-     * @var FileTransferFactory
+     * @var \Magento\Framework\HTTP\Adapter\FileTransferFactory
      */
     protected $_httpFactory;
 
     /**
-     * @var UploaderFactory
+     * @var \Magento\MediaStorage\Model\File\UploaderFactory
      */
     protected $_uploaderFactory;
 
     /**
-     * @var IndexerRegistry
+     * @var \Magento\Framework\Indexer\IndexerRegistry
      */
     protected $indexerRegistry;
 
     /**
-     * @var BehaviorFactory
+     * @var \Magento\ImportExport\Model\Source\Import\Behavior\Factory
      */
     protected $_behaviorFactory;
 
     /**
-     * @var Filesystem
+     * @var \Magento\Framework\Filesystem
      */
     protected $_filesystem;
 
     /**
-     * @var History
-     */
-    private $importHistoryModel;
-
-    /**
-     * @var DateTime
-     */
-    private $localeDate;
-
-    /**
-     * @var Random
-     */
-    private $random;
-
-    /**
      * @param \Psr\Log\LoggerInterface $logger
-     * @param Filesystem $filesystem
-     * @param Data $importExportData
-     * @param ScopeConfigInterface $coreConfig
+     * @param \Magento\Framework\Filesystem $filesystem
+     * @param \Magento\ImportExport\Helper\Data $importExportData
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig
      * @param Import\ConfigInterface $importConfig
      * @param Import\Entity\Factory $entityFactory
-     * @param ImportData $importData
+     * @param \Magento\ImportExport\Model\ResourceModel\Import\Data $importData
      * @param Export\Adapter\CsvFactory $csvFactory
      * @param FileTransferFactory $httpFactory
-     * @param UploaderFactory $uploaderFactory
+     * @param \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory
      * @param Source\Import\Behavior\Factory $behaviorFactory
-     * @param IndexerRegistry $indexerRegistry
+     * @param \Magento\Framework\Indexer\IndexerRegistry $indexerRegistry
      * @param History $importHistoryModel
-     * @param DateTime $localeDate
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime
      * @param array $data
-     * @param Random|null $random
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
-        Filesystem $filesystem,
-        Data $importExportData,
-        ScopeConfigInterface $coreConfig,
-        ConfigInterface $importConfig,
-        Factory $entityFactory,
-        ImportData $importData,
-        CsvFactory $csvFactory,
-        FileTransferFactory $httpFactory,
-        UploaderFactory $uploaderFactory,
-        BehaviorFactory $behaviorFactory,
-        IndexerRegistry $indexerRegistry,
-        History $importHistoryModel,
-        DateTime $localeDate,
-        array $data = [],
-        Random $random = null
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\ImportExport\Helper\Data $importExportData,
+        \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig,
+        \Magento\ImportExport\Model\Import\ConfigInterface $importConfig,
+        \Magento\ImportExport\Model\Import\Entity\Factory $entityFactory,
+        \Magento\ImportExport\Model\ResourceModel\Import\Data $importData,
+        \Magento\ImportExport\Model\Export\Adapter\CsvFactory $csvFactory,
+        \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
+        \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory,
+        \Magento\ImportExport\Model\Source\Import\Behavior\Factory $behaviorFactory,
+        \Magento\Framework\Indexer\IndexerRegistry $indexerRegistry,
+        \Magento\ImportExport\Model\History $importHistoryModel,
+        \Magento\Framework\Stdlib\DateTime\DateTime $localeDate,
+        array $data = []
     ) {
         $this->_importExportData = $importExportData;
         $this->_coreConfig = $coreConfig;
@@ -229,19 +205,18 @@ class Import extends AbstractModel
         $this->_filesystem = $filesystem;
         $this->importHistoryModel = $importHistoryModel;
         $this->localeDate = $localeDate;
-        $this->random = $random ?: ObjectManager::getInstance()
-            ->get(Random::class);
         parent::__construct($logger, $filesystem, $data);
     }
 
     /**
      * Create instance of entity adapter and return it
      *
-     * @throws LocalizedException
-     * @return AbstractEntity|ImportAbstractEntity
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return \Magento\ImportExport\Model\Import\Entity\AbstractEntity|\Magento\ImportExport\Model\Import\AbstractEntity
      */
     protected function _getEntityAdapter()
     {
+
         if (!$this->_entityAdapter) {
             $entities = $this->_importConfig->getEntities();
             if (isset($entities[$this->getEntity()])) {
@@ -249,30 +224,30 @@ class Import extends AbstractModel
                     $this->_entityAdapter = $this->_entityFactory->create($entities[$this->getEntity()]['model']);
                 } catch (\Exception $e) {
                     $this->_logger->critical($e);
-                    throw new LocalizedException(
+                    throw new \Magento\Framework\Exception\LocalizedException(
                         __('Please enter a correct entity model.')
                     );
                 }
-                if (!$this->_entityAdapter instanceof AbstractEntity &&
-                    !$this->_entityAdapter instanceof ImportAbstractEntity
+                if (!$this->_entityAdapter instanceof \Magento\ImportExport\Model\Import\Entity\AbstractEntity &&
+                    !$this->_entityAdapter instanceof \Magento\ImportExport\Model\Import\AbstractEntity
                 ) {
-                    throw new LocalizedException(
+                    throw new \Magento\Framework\Exception\LocalizedException(
                         __(
                             'The entity adapter object must be an instance of %1 or %2.',
-                            AbstractEntity::class,
-                            ImportAbstractEntity::class
+                            'Magento\ImportExport\Model\Import\Entity\AbstractEntity',
+                            'Magento\ImportExport\Model\Import\AbstractEntity'
                         )
                     );
                 }
 
                 // check for entity codes integrity
                 if ($this->getEntity() != $this->_entityAdapter->getEntityTypeCode()) {
-                    throw new LocalizedException(
+                    throw new \Magento\Framework\Exception\LocalizedException(
                         __('The input entity code is not equal to entity adapter code.')
                     );
                 }
             } else {
-                throw new LocalizedException(__('Please enter a correct entity.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Please enter a correct entity.'));
             }
             $this->_entityAdapter->setParameters($this->getData());
         }
@@ -283,11 +258,11 @@ class Import extends AbstractModel
      * Returns source adapter object.
      *
      * @param string $sourceFile Full path to source file
-     * @return AbstractSource
+     * @return \Magento\ImportExport\Model\Import\AbstractSource
      */
     protected function _getSourceAdapter($sourceFile)
     {
-        return Adapter::findAdapterFor(
+        return \Magento\ImportExport\Model\Import\Adapter::findAdapterFor(
             $sourceFile,
             $this->_filesystem->getDirectoryWrite(DirectoryList::ROOT),
             $this->getData(self::FIELD_FIELD_SEPARATOR)
@@ -341,10 +316,10 @@ class Import extends AbstractModel
     /**
      * Get attribute type for upcoming validation.
      *
-     * @param AbstractAttribute|Attribute $attribute
+     * @param \Magento\Eav\Model\Entity\Attribute\AbstractAttribute|\Magento\Eav\Model\Entity\Attribute $attribute
      * @return string
      */
-    public static function getAttributeType(AbstractAttribute $attribute)
+    public static function getAttributeType(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute $attribute)
     {
         $frontendInput = $attribute->getFrontendInput();
         if ($attribute->usesSource() && in_array($frontendInput, ['select', 'multiselect', 'boolean'])) {
@@ -359,7 +334,7 @@ class Import extends AbstractModel
     /**
      * DB data source model getter.
      *
-     * @return ImportData
+     * @return \Magento\ImportExport\Model\ResourceModel\Import\Data
      */
     public function getDataSourceModel()
     {
@@ -380,19 +355,14 @@ class Import extends AbstractModel
     /**
      * Override standard entity getter.
      *
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return string
      */
     public function getEntity()
     {
-        $entities = $this->_importConfig->getEntities();
-
-        if (empty($this->_data['entity'])
-            || !empty($this->_data['entity']) && !isset($entities[$this->_data['entity']])
-        ) {
-            throw new LocalizedException(__('Entity is unknown'));
+        if (empty($this->_data['entity'])) {
+            throw new \Magento\Framework\Exception\LocalizedException(__('Entity is unknown'));
         }
-
         return $this->_data['entity'];
     }
 
@@ -430,7 +400,7 @@ class Import extends AbstractModel
      * Import source file structure to DB.
      *
      * @return bool
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function importSource()
     {
@@ -460,6 +430,7 @@ class Import extends AbstractModel
             $this->importHistoryModel->invalidateReport($this);
         }
 
+
         return $result;
     }
 
@@ -477,7 +448,7 @@ class Import extends AbstractModel
             $this->_getEntityAdapter()->importData();
         } catch (\Exception $e) {
             $errorAggregator->addError(
-                AbstractEntity::ERROR_CODE_SYSTEM_EXCEPTION,
+                \Magento\ImportExport\Model\Import\Entity\AbstractEntity::ERROR_CODE_SYSTEM_EXCEPTION,
                 ProcessingError::ERROR_LEVEL_CRITICAL,
                 null,
                 null,
@@ -501,7 +472,7 @@ class Import extends AbstractModel
 
     /**
      * @return ProcessingErrorAggregatorInterface
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getErrorAggregator()
     {
@@ -511,7 +482,7 @@ class Import extends AbstractModel
     /**
      * Move uploaded file and create source adapter instance.
      *
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return string Source file path
      */
     public function uploadSource()
@@ -525,21 +496,20 @@ class Import extends AbstractModel
             } else {
                 $errorMessage = __('The file was not uploaded.');
             }
-            throw new LocalizedException($errorMessage);
+            throw new \Magento\Framework\Exception\LocalizedException($errorMessage);
         }
 
         $entity = $this->getEntity();
-        /** @var $uploader Uploader */
+        /** @var $uploader \Magento\MediaStorage\Model\File\Uploader */
         $uploader = $this->_uploaderFactory->create(['fileId' => self::FIELD_NAME_SOURCE_FILE]);
         $uploader->skipDbProcessing(true);
-        $fileName = $this->random->getRandomString(32) . '.' . $uploader->getFileExtension();
-        $result = $uploader->save($this->getWorkingDir(), $fileName);
+        $result = $uploader->save($this->getWorkingDir());
         $extension = pathinfo($result['file'], PATHINFO_EXTENSION);
 
         $uploadedFile = $result['path'] . $result['file'];
         if (!$extension) {
             $this->_varDirectory->delete($uploadedFile);
-            throw new LocalizedException(__('The file you uploaded has no extension.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('The file you uploaded has no extension.'));
         }
         $sourceFile = $this->getWorkingDir() . $entity;
 
@@ -556,34 +526,20 @@ class Import extends AbstractModel
                     $this->_varDirectory->getRelativePath($uploadedFile),
                     $sourceFileRelative
                 );
-            } catch (FileSystemException $e) {
-                throw new LocalizedException(__('The source file moving process failed.'));
+            } catch (\Magento\Framework\Exception\FileSystemException $e) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('The source file moving process failed.'));
             }
         }
         $this->_removeBom($sourceFile);
         $this->createHistoryReport($sourceFileRelative, $entity, $extension, $result);
-
-        return $sourceFile;
-    }
-
-    /**
-     * Move uploaded file and provide source instance.
-     *
-     * @return Import\AbstractSource
-     * @throws FileSystemException
-     * @throws LocalizedException
-     */
-    public function uploadFileAndGetSource()
-    {
-        $sourceFile = $this->uploadSource();
+        // trying to create source adapter for file and catch possible exception to be convinced in its adequacy
         try {
-            $source = $this->_getSourceAdapter($sourceFile);
+            $this->_getSourceAdapter($sourceFile);
         } catch (\Exception $e) {
-            $this->_varDirectory->delete($this->_varDirectory->getRelativePath($sourceFile));
-            throw new LocalizedException(__($e->getMessage()));
+            $this->_varDirectory->delete($sourceFileRelative);
+            throw new \Magento\Framework\Exception\LocalizedException(__($e->getMessage()));
         }
-
-        return $source;
+        return $sourceFile;
     }
 
     /**
@@ -603,30 +559,21 @@ class Import extends AbstractModel
     }
 
     /**
-     * Validates source file and returns validation result
+     * Validates source file and returns validation result.
      *
-     * Before validate data the method requires to initialize error aggregator (ProcessingErrorAggregatorInterface)
-     * with 'validation strategy' and 'allowed error count' values to allow using this parameters in validation process.
-     *
-     * @param AbstractSource $source
+     * @param \Magento\ImportExport\Model\Import\AbstractSource $source
      * @return bool
      */
-    public function validateSource(AbstractSource $source)
+    public function validateSource(\Magento\ImportExport\Model\Import\AbstractSource $source)
     {
         $this->addLogComment(__('Begin data validation'));
-
-        $errorAggregator = $this->getErrorAggregator();
-        $errorAggregator->initValidationStrategy(
-            $this->getData(self::FIELD_NAME_VALIDATION_STRATEGY),
-            $this->getData(self::FIELD_NAME_ALLOWED_ERROR_COUNT)
-        );
-
         try {
             $adapter = $this->_getEntityAdapter()->setSource($source);
-            $adapter->validateData();
+            $errorAggregator = $adapter->validateData();
         } catch (\Exception $e) {
+            $errorAggregator = $this->getErrorAggregator();
             $errorAggregator->addError(
-                AbstractEntity::ERROR_CODE_SYSTEM_EXCEPTION,
+                \Magento\ImportExport\Model\Import\Entity\AbstractEntity::ERROR_CODE_SYSTEM_EXCEPTION,
                 ProcessingError::ERROR_LEVEL_CRITICAL,
                 null,
                 null,
@@ -660,9 +607,7 @@ class Import extends AbstractModel
         foreach (array_keys($relatedIndexers) as $indexerId) {
             try {
                 $indexer = $this->indexerRegistry->get($indexerId);
-                if (!$indexer->isScheduled()) {
-                    $indexer->invalidate();
-                }
+                $indexer->invalidate();
             } catch (\InvalidArgumentException $e) {
             }
         }
@@ -681,7 +626,7 @@ class Import extends AbstractModel
      * )
      *
      * @return array
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getEntityBehaviors()
     {
@@ -690,7 +635,7 @@ class Import extends AbstractModel
         foreach ($entities as $entityCode => $entityData) {
             $behaviorClassName = isset($entityData['behaviorModel']) ? $entityData['behaviorModel'] : null;
             if ($behaviorClassName && class_exists($behaviorClassName)) {
-                /** @var $behavior AbstractBehavior */
+                /** @var $behavior \Magento\ImportExport\Model\Source\Import\AbstractBehavior */
                 $behavior = $this->_behaviorFactory->create($behaviorClassName);
                 $behaviourData[$entityCode] = [
                     'token' => $behaviorClassName,
@@ -698,7 +643,7 @@ class Import extends AbstractModel
                     'notes' => $behavior->getNotes($entityCode),
                 ];
             } else {
-                throw new LocalizedException(
+                throw new \Magento\Framework\Exception\LocalizedException(
                     __('The behavior token for %1 is invalid.', $entityCode)
                 );
             }
@@ -733,7 +678,7 @@ class Import extends AbstractModel
      *
      * @param string|null $entity
      * @return bool
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function isReportEntityType($entity = null)
     {
@@ -747,12 +692,10 @@ class Import extends AbstractModel
                 try {
                     $result = $this->_getEntityAdapter()->isNeedToLogInHistory();
                 } catch (\Exception $e) {
-                    throw new LocalizedException(
-                        __('Please enter a correct entity model')
-                    );
+                    throw new \Magento\Framework\Exception\LocalizedException(__('Please enter a correct entity model'));
                 }
             } else {
-                throw new LocalizedException(__('Please enter a correct entity model'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Please enter a correct entity model'));
             }
         } else {
             $result = $this->_getEntityAdapter()->isNeedToLogInHistory();
@@ -761,14 +704,14 @@ class Import extends AbstractModel
     }
 
     /**
-     * Create history report.
+     * Create history report
      *
-     * @param string $sourceFileRelative
      * @param string $entity
      * @param string $extension
+     * @param string $sourceFileRelative
      * @param array $result
      * @return $this
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function createHistoryReport($sourceFileRelative, $entity, $extension = null, $result = null)
     {
@@ -778,7 +721,7 @@ class Import extends AbstractModel
                 $sourceFileRelative = $this->_varDirectory->getRelativePath(self::IMPORT_DIR . $fileName);
             } elseif (isset($result['name'])) {
                 $fileName = $result['name'];
-            } elseif ($extension !== null) {
+            } elseif (!is_null($extension)) {
                 $fileName = $entity . $extension;
             } else {
                 $fileName = basename($sourceFileRelative);
@@ -792,13 +735,14 @@ class Import extends AbstractModel
                     $content = $this->_varDirectory->getDriver()->fileGetContents($sourceFileRelative);
                     $this->_varDirectory->writeFile($copyFile, $content);
                 }
-            } catch (FileSystemException $e) {
-                throw new LocalizedException(__('Source file coping failed'));
+            } catch (\Magento\Framework\Exception\FileSystemException $e) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('Source file coping failed'));
             }
             $this->importHistoryModel->addReport($copyName);
         }
         return $this;
     }
+
 
     /**
      * Get count of created items

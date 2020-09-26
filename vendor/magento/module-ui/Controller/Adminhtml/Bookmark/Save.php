@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Controller\Adminhtml\Bookmark;
 
 use Magento\Authorization\Model\UserContextInterface;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Api\BookmarkManagementInterface;
@@ -87,22 +86,17 @@ class Save extends AbstractAction
      * Action for AJAX request
      *
      * @return void
-     * @throws NotFoundException
-     * @throws \InvalidArgumentException
      */
     public function execute()
     {
         $bookmark = $this->bookmarkFactory->create();
         $jsonData = $this->_request->getParam('data');
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found.'));
-        }
         if (!$jsonData) {
             throw new \InvalidArgumentException('Invalid parameter "data"');
         }
         $data = $this->jsonDecoder->decode($jsonData);
         $action = key($data);
-        switch ($action) {
+        switch($action) {
             case self::ACTIVE_IDENTIFIER:
                 $this->updateCurrentBookmark($data[$action]);
                 break;

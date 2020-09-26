@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Ui\Controller\Adminhtml\Index;
@@ -28,23 +28,7 @@ class Render extends AbstractAction
         }
 
         $component = $this->factory->create($this->_request->getParam('namespace'));
-
-        $aclResource = $component->getData('acl');
-
-        if ($aclResource && !$this->_authorization->isAllowed($aclResource)) {
-            if (!$this->_request->isAjax()) {
-                $this->_redirect('admin/noroute');
-            }
-
-            return;
-        }
-
         $this->prepareComponent($component);
-
-        if ($component->getContext()->getAcceptType() === 'json') {
-            $this->_response->setHeader('Content-Type', 'application/json');
-        }
-
         $this->_response->appendBody((string) $component->render());
     }
 

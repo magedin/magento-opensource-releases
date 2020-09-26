@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -26,9 +26,6 @@ class HttpPluginTest extends \PHPUnit_Framework_TestCase
         $plugin->beforeSendResponse($responseMock);
     }
 
-    /**
-     * @return array
-     */
     public function beforeSendResponseDataProvider()
     {
         return [

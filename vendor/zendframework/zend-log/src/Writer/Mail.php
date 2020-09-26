@@ -33,7 +33,7 @@ class Mail extends AbstractWriter
      *
      * @var array
      */
-    protected $eventsToMail = [];
+    protected $eventsToMail = array();
 
     /**
      * Mail message instance to use
@@ -54,7 +54,7 @@ class Mail extends AbstractWriter
      *
      * @var array
      */
-    protected $numEntriesPerPriority = [];
+    protected $numEntriesPerPriority = array();
 
     /**
      * Subject prepend text.
@@ -89,9 +89,6 @@ class Mail extends AbstractWriter
             $mail      = isset($mail['mail']) ? $mail['mail'] : null;
             if (is_array($mail)) {
                 $mail = MailMessageFactory::getInstance($mail);
-            }
-            if (is_array($transport)) {
-                $transport = Transport\Factory::create($transport);
             }
         }
 
@@ -215,7 +212,7 @@ class Mail extends AbstractWriter
      */
     protected function getFormattedNumEntriesPerPriority()
     {
-        $strings = [];
+        $strings = array();
 
         foreach ($this->numEntriesPerPriority as $priority => $numEntries) {
             $strings[] = "{$priority}={$numEntries}";

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GoogleAdwords\Test\Unit\Helper;
@@ -91,9 +91,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($languages, $this->_helper->getLanguageCodes());
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestConvertLanguage()
     {
         return [

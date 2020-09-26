@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Indexer;
@@ -184,29 +184,6 @@ class FulltextTest extends \PHPUnit_Framework_TestCase
         $products = $this->search('Simple Product');
 
         $this->assertCount(4, $products);
-    }
-
-    /**
-     * Test the case when the last child product of the configurable becomes disabled/out of stock.
-     *
-     * Such behavior should enforce parent product to be deleted from the index as its latest child become unavailable
-     * and the configurable cannot be sold anymore.
-     *
-     * @magentoAppArea adminhtml
-     * @magentoDataFixture Magento/CatalogSearch/_files/product_configurable_with_single_child.php
-     */
-    public function testReindexParentProductWhenChildBeingDisabled()
-    {
-        $this->indexer->reindexAll();
-
-        $products = $this->search('Configurable');
-        $this->assertCount(1, $products);
-
-        $childProduct = $this->getProductBySku('configurable_option_single_child');
-        $childProduct->setStatus(Product\Attribute\Source\Status::STATUS_DISABLED)->save();
-
-        $products = $this->search('Configurable');
-        $this->assertCount(0, $products);
     }
 
     /**

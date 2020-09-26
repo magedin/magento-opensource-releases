@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Test\Unit\Helper;
@@ -164,9 +164,6 @@ class StockTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->stock->addInStockFilterToCollection($collectionMock));
     }
 
-    /**
-     * @return array
-     */
     public function filterProvider()
     {
         $configMock = $this->getMockBuilder('Magento\Framework\App\Config')

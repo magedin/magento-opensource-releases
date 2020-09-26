@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CustomerImportExport\Model\Import;
@@ -27,6 +27,7 @@ abstract class AbstractCustomer extends \Magento\ImportExport\Model\Import\Entit
     const COLUMN_DEFAULT_BILLING = 'default_billing';
 
     const COLUMN_DEFAULT_SHIPPING = 'default_shipping';
+
 
     /**#@-*/
 
@@ -231,8 +232,8 @@ abstract class AbstractCustomer extends \Magento\ImportExport\Model\Import\Entit
         } else {
             $email = strtolower($rowData[static::COLUMN_EMAIL]);
             $website = $rowData[static::COLUMN_WEBSITE];
-            $validator = new \Zend\Validator\EmailAddress();
-            if (!$validator->isValid($email)) {
+
+            if (!\Zend_Validate::is($email, 'EmailAddress')) {
                 $this->addRowError(static::ERROR_INVALID_EMAIL, $rowNumber, static::COLUMN_EMAIL);
             } elseif (!isset($this->_websiteCodeToId[$website])) {
                 $this->addRowError(static::ERROR_INVALID_WEBSITE, $rowNumber, static::COLUMN_WEBSITE);

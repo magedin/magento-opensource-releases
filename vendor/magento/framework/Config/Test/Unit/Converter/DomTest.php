@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Config\Test\Unit\Converter;
@@ -24,9 +24,6 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($resultFile, $converterDom->convert($dom));
     }
 
-    /**
-     * @return array
-     */
     public function convertDataProvider()
     {
         return [

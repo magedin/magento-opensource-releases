@@ -1,23 +1,18 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 /**
- * Adminhtml account controller.
+ * Adminhtml account controller
+ *
+ * @author      Magento Core Team <core@magentocommerce.com>
  */
 namespace Magento\MediaStorage\Controller\Adminhtml\System\Config\System;
 
 abstract class Storage extends \Magento\Backend\App\Action
 {
-    /**
-     * Authorization level of a basic admin session.
-     *
-     * @see _isAllowed()
-     */
-    const ADMIN_RESOURCE = 'Magento_Backend::system';
-
     /**
      * Return file storage singleton
      *

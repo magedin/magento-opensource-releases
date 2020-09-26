@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data\Form\Element;
@@ -169,11 +169,7 @@ abstract class AbstractElement extends AbstractForm
      */
     public function getHtmlId()
     {
-        return $this->_escaper->escapeHtml(
-            $this->getForm()->getHtmlIdPrefix() .
-            $this->getData('html_id') .
-            $this->getForm()->getHtmlIdSuffix()
-        );
+        return $this->getForm()->getHtmlIdPrefix() . $this->getData('html_id') . $this->getForm()->getHtmlIdSuffix();
     }
 
     /**
@@ -187,7 +183,7 @@ abstract class AbstractElement extends AbstractForm
         if ($suffix = $this->getForm()->getFieldNameSuffix()) {
             $name = $this->getForm()->addSuffixToName($name, $suffix);
         }
-        return $this->_escaper->escapeHtml($name);
+        return $name;
     }
 
     /**

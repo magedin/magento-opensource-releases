@@ -1,10 +1,8 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Catalog\Api\ProductRepositoryInterface;
 
 require 'product_configurable.php';
 
@@ -22,8 +20,8 @@ $payment = $objectManager->create('Magento\Sales\Model\Order\Payment');
 $payment->setMethod('checkmo');
 
 /** @var $product \Magento\Catalog\Model\Product */
-$productRepository = Bootstrap::getObjectManager()->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('configurable');
+$product = $objectManager->create('Magento\Catalog\Model\Product');
+$product->load(1);
 
 /** @var $attribute \Magento\Catalog\Model\ResourceModel\Eav\Attribute */
 $eavConfig = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get('Magento\Eav\Model\Config');

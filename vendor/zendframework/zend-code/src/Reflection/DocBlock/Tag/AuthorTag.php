@@ -36,7 +36,7 @@ class AuthorTag implements TagInterface
      */
     public function initialize($tagDocblockLine)
     {
-        $match = [];
+        $match = array();
 
         if (!preg_match('/^([^\<]*)(\<([^\>]*)\>)?(.*)$/u', $tagDocblockLine, $match)) {
             return;

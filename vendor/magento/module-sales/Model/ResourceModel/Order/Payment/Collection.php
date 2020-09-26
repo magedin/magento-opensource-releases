@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\ResourceModel\Order\Payment;
@@ -67,7 +67,7 @@ class Collection extends AbstractCollection implements OrderPaymentSearchResultI
     }
 
     /**
-     * Unserialize additional_information in each item.
+     * Unserialize additional_information in each item
      *
      * @return $this
      */
@@ -76,7 +76,6 @@ class Collection extends AbstractCollection implements OrderPaymentSearchResultI
         foreach ($this->_items as $item) {
             $this->getResource()->unserializeFields($item);
         }
-
         return parent::_afterLoad();
     }
 }

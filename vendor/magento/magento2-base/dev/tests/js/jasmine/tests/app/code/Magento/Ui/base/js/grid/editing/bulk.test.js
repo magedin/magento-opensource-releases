@@ -13,7 +13,6 @@ define([
 
         beforeEach(function () {
             bulkObj = new Bulk();
-            bulkObj.editor = jasmine.createSpy('editor');
         });
         it('has initObservable', function () {
             expect(bulkObj).toBeDefined();
@@ -34,5 +33,5 @@ define([
             bulkObj.updateState();
             expect(bulkObj.updateState).toHaveBeenCalled();
         });
-    });
+    })
 });

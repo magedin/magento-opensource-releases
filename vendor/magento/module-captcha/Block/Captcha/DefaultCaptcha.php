@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Captcha\Block\Captcha;
@@ -15,7 +15,7 @@ class DefaultCaptcha extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Captcha::default.phtml';
+    protected $_template = 'default.phtml';
 
     /**
      * @var string

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model;
@@ -10,11 +10,10 @@ use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Framework\Model\AbstractExtensibleModel;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Model\Quote\Address;
+use Magento\Sales\Model\ResourceModel;
 use Magento\Sales\Model\Status;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Sales\Model\OrderIncrementIdChecker;
 
 /**
  * Quote model
@@ -353,11 +352,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
     protected $shippingAddressesItems;
 
     /**
-     * @var \Magento\Sales\Model\OrderIncrementIdChecker
-     */
-    private $orderIncrementIdChecker;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -398,7 +392,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
-     * @param OrderIncrementIdChecker|null $orderIncrementIdChecker
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -441,8 +434,7 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
         \Magento\Quote\Model\ShippingAssignmentFactory $shippingAssignmentFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = [],
-        OrderIncrementIdChecker $orderIncrementIdChecker = null
+        array $data = []
     ) {
         $this->quoteValidator = $quoteValidator;
         $this->_catalogProduct = $catalogProduct;
@@ -477,8 +469,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
         $this->totalsReader = $totalsReader;
         $this->shippingFactory = $shippingFactory;
         $this->shippingAssignmentFactory = $shippingAssignmentFactory;
-        $this->orderIncrementIdChecker = $orderIncrementIdChecker ?: ObjectManager::getInstance()
-            ->get(OrderIncrementIdChecker::class);
         parent::__construct(
             $context,
             $registry,
@@ -497,7 +487,7 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
      */
     protected function _construct()
     {
-        $this->_init(\Magento\Quote\Model\ResourceModel\Quote::class);
+        $this->_init('Magento\Quote\Model\ResourceModel\Quote');
     }
 
     /**
@@ -972,7 +962,7 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
             $this->extensibleDataObjectConverter->toFlatArray(
                 $customer,
                 [],
-                \Magento\Customer\Api\Data\CustomerInterface::class
+                '\Magento\Customer\Api\Data\CustomerInterface'
             )
         );
         $customer->setAddresses($origAddresses);
@@ -1034,7 +1024,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
         $addresses = (array)$this->getCustomer()->getAddresses();
         $addresses[] = $address;
         $this->getCustomer()->setAddresses($addresses);
-        $this->updateCustomerData($this->customerRepository->save($this->getCustomer()));
         return $this;
     }
 
@@ -1580,11 +1569,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
                 __('We found an invalid request for adding product to quote.')
             );
         }
-        if (!$product->isSalable()) {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('Product that you are trying to add is not available.')
-            );
-        }
 
         $cartCandidates = $product->getTypeInstance()->prepareForCartAdvanced($request, $product, $processMode);
 
@@ -2001,7 +1985,7 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
         foreach ($this->getMessages() as $message) {
             /* @var $error \Magento\Framework\Message\AbstractMessage */
             if ($message->getType() == \Magento\Framework\Message\MessageInterface::TYPE_ERROR) {
-                $errors[] = $message;
+                array_push($errors, $message);
             }
         }
         return $errors;
@@ -2171,12 +2155,6 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
     {
         if (!$this->getReservedOrderId()) {
             $this->setReservedOrderId($this->_getResource()->getReservedOrderId($this));
-        } else {
-            //checking if reserved order id was already used for some order
-            //if yes reserving new one if not using old one
-            if ($this->orderIncrementIdChecker->isIncrementIdUsed($this->getReservedOrderId())) {
-                $this->setReservedOrderId($this->_getResource()->getReservedOrderId($this));
-            }
         }
         return $this;
     }
@@ -2363,17 +2341,13 @@ class Quote extends AbstractExtensibleModel implements \Magento\Quote\Api\Data\C
      * Trigger collect totals after loading, if required
      *
      * @return $this
-     * @throws \Exception
      */
     protected function _afterLoad()
     {
         // collect totals and save me, if required
         if (1 == $this->getData('trigger_recollect')) {
-            $this->collectTotals()
-                ->setTriggerRecollect(0)
-                ->save();
+            $this->collectTotals()->save();
         }
-
         return parent::_afterLoad();
     }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -55,7 +55,6 @@ class Webapi extends AbstractWebapi implements CustomerInterface
         $data = $this->prepareData($customer);
         $url = $_ENV['app_frontend_url'] . 'rest/V1/customers';
 
-        $this->webapiTransport->addOption(CURLOPT_SSL_VERIFYPEER, false);
         $this->webapiTransport->write($url, $data);
         $response = json_decode($this->webapiTransport->read(), true);
         $this->webapiTransport->close();

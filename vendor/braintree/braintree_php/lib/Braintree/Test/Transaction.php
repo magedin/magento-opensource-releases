@@ -11,7 +11,7 @@ use Braintree\Configuration;
  *
  * @copyright  2015 Braintree, a division of PayPal, Inc.
  */
-class Transaction
+final class Transaction
 {
     /**
      * settle a transaction by id in sandbox

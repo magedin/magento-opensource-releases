@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -100,12 +100,11 @@ define([
                 /**
                  * Escape key press handler,
                  * close modal window
-                 * @param {Object} event - event
                  */
-                escapeKey: function (event) {
+                escapeKey: function () {
                     if (this.options.isOpen && this.modal.find(document.activeElement).length ||
                         this.options.isOpen && this.modal[0] === document.activeElement) {
-                        this.closeModal(event);
+                        this.closeModal();
                     }
                 }
             }
@@ -197,7 +196,7 @@ define([
          */
         setSubTitle: function (subTitle) {
             this.options.subTitle = subTitle;
-            this.modal.find(this.options.modalSubTitle).text(subTitle);
+            this.modal.find(this.options.modalSubTitle).html(subTitle);
         },
 
         /**

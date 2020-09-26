@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,14 +9,14 @@ namespace Magento\Sales\Test\Block\Adminhtml\Order\View\Tab\Invoices;
 /**
  * Invoices grid on order view page.
  */
-class Grid extends \Magento\Ui\Test\Block\Adminhtml\DataGrid
+class Grid extends \Magento\Backend\Test\Block\Widget\Grid
 {
     /**
      * Locator value for link in action column.
      *
      * @var string
      */
-    protected $editLink = '.action-menu-item[href*="view"]';
+    protected $editLink = '[data-column="increment_id"]';
 
     /**
      * Locator for invoice ids

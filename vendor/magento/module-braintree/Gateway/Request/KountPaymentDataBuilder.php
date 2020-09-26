@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Request;
@@ -48,12 +48,10 @@ class KountPaymentDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $result = [];
-        $paymentDO = $this->subjectReader->readPayment($buildSubject);
-        $order = $paymentDO->getOrder();
-
-        if (!$this->config->hasFraudProtection($order->getStoreId())) {
+        if (!$this->config->hasFraudProtection()) {
             return $result;
         }
+        $paymentDO = $this->subjectReader->readPayment($buildSubject);
 
         $payment = $paymentDO->getPayment();
         $data = $payment->getAdditionalInformation();

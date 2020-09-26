@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(
@@ -10,6 +10,7 @@ define(
         'mage/storage',
         'Magento_Checkout/js/model/error-processor',
         'Magento_Customer/js/model/customer',
+        'Magento_Checkout/js/action/get-totals',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Checkout/js/action/get-payment-information'
     ],
@@ -19,8 +20,10 @@ define(
               storage,
               errorProcessor,
               customer,
+              getTotalsAction,
               fullScreenLoader,
-              getPaymentInformationAction) {
+              getPaymentInformationAction
+    ) {
         'use strict';
 
         return function (messageContainer) {
@@ -52,12 +55,18 @@ define(
                 serviceUrl, JSON.stringify(payload)
             ).done(
                 function () {
-                    var deferred = $.Deferred();
+                    var deferred = null;
 
-                    getPaymentInformationAction(deferred);
-                    $.when(deferred).done(function () {
+                    if (!quote.isVirtual()) {
+                        getTotalsAction([]);
                         fullScreenLoader.stopLoader();
-                    });
+                    } else {
+                        deferred = $.Deferred();
+                        getPaymentInformationAction(deferred);
+                        $.when(deferred).done(function () {
+                            fullScreenLoader.stopLoader();
+                        });
+                    }
                 }
             ).fail(
                 function (response) {

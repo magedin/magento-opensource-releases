@@ -26,17 +26,17 @@ class CollectionInputFilter extends InputFilter
     /**
      * @var array[]
      */
-    protected $collectionValues = [];
+    protected $collectionValues = array();
 
     /**
      * @var array[]
      */
-    protected $collectionRawValues = [];
+    protected $collectionRawValues = array();
 
     /**
      * @var array
      */
-    protected $collectionMessages = [];
+    protected $collectionMessages = array();
 
     /**
      * @var BaseInputFilter
@@ -60,7 +60,7 @@ class CollectionInputFilter extends InputFilter
             throw new Exception\RuntimeException(sprintf(
                 '%s expects an instance of %s; received "%s"',
                 __METHOD__,
-                BaseInputFilter::class,
+                'Zend\InputFilter\BaseInputFilter',
                 (is_object($inputFilter) ? get_class($inputFilter) : gettype($inputFilter))
             ));
         }
@@ -173,7 +173,7 @@ class CollectionInputFilter extends InputFilter
 
         foreach ($this->data as $key => $data) {
             if (!is_array($data)) {
-                $data = [];
+                $data = array();
             }
             $inputFilter->setData($data);
 
@@ -232,7 +232,7 @@ class CollectionInputFilter extends InputFilter
      */
     public function clearValues()
     {
-        return $this->collectionValues = [];
+        return $this->collectionValues = array();
     }
 
     /**
@@ -242,7 +242,7 @@ class CollectionInputFilter extends InputFilter
      */
     public function clearRawValues()
     {
-        return $this->collectionRawValues = [];
+        return $this->collectionRawValues = array();
     }
 
     /**

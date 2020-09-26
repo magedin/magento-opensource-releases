@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Controller\Adminhtml\Downloadable\File;
@@ -39,7 +39,7 @@ class Upload extends \Magento\Downloadable\Controller\Adminhtml\Downloadable\Fil
 
     /**
      *
-     * Copyright © Magento, Inc. All rights reserved.
+     * Copyright © 2016 Magento. All rights reserved.
      * See COPYING.txt for license details.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Downloadable\Model\Link $link
@@ -97,6 +97,13 @@ class Upload extends \Magento\Downloadable\Controller\Adminhtml\Downloadable\Fil
                 $this->storageDatabase->saveFile($relativePath);
             }
 
+            $result['cookie'] = [
+                'name' => $this->_getSession()->getName(),
+                'value' => $this->_getSession()->getSessionId(),
+                'lifetime' => $this->_getSession()->getCookieLifetime(),
+                'path' => $this->_getSession()->getCookiePath(),
+                'domain' => $this->_getSession()->getCookieDomain(),
+            ];
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }

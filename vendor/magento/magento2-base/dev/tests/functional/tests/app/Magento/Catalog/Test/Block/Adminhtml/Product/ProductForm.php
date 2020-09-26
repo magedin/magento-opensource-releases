@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -109,8 +109,6 @@ class ProductForm extends FormSections
         $sectionElement = $this->getContainerElement($sectionName);
         if ($sectionElement->getAttribute('type') == 'button') {
             $sectionElement->click();
-            // Wait until section animation finished.
-            $this->waitForElementVisible($this->closeButton);
         } else {
             parent::openSection($sectionName);
         }
@@ -151,7 +149,7 @@ class ProductForm extends FormSections
     public function getAttributesSearchGrid()
     {
         return $this->blockFactory->create(
-            \Magento\Catalog\Test\Block\Adminhtml\Product\Edit\Section\Attributes\Grid::class,
+            '\Magento\Catalog\Test\Block\Adminhtml\Product\Edit\Section\Attributes\Grid',
             ['element' => $this->browser->find($this->attributeSearch)]
         );
     }
@@ -190,7 +188,7 @@ class ProductForm extends FormSections
     public function getAttributeForm()
     {
         return $this->blockFactory->create(
-            \Magento\Catalog\Test\Block\Adminhtml\Product\Attribute\AttributeForm::class,
+            'Magento\Catalog\Test\Block\Adminhtml\Product\Attribute\AttributeForm',
             ['element' => $this->browser->find($this->newAttributeModal)]
         );
     }
@@ -206,7 +204,7 @@ class ProductForm extends FormSections
         return $this->_rootElement->find(
             sprintf($this->attributeBlock, $attribute->getAttributeCode()),
             Locator::SELECTOR_CSS,
-            \Magento\Catalog\Test\Block\Adminhtml\Product\Attribute\CustomAttribute::class
+            'Magento\Catalog\Test\Block\Adminhtml\Product\Attribute\CustomAttribute'
         );
     }
 }

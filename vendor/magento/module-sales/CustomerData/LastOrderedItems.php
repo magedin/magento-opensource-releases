@@ -1,21 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\CustomerData;
 
 use Magento\Customer\CustomerData\SectionSourceInterface;
 
-/**
- * Returns information for "Recently Ordered" widget.
- * It contains limited list of salable products from the last placed order.
- * Qty of products to display is limited by LastOrderedItems::SIDEBAR_ORDER_LIMIT constant.
- */
 class LastOrderedItems implements SectionSourceInterface
 {
     /**
-     * Limit of orders in side bar.
+     * Limit of orders in side bar
      */
     const SIDEBAR_ORDER_LIMIT = 5;
 
@@ -50,13 +45,6 @@ class LastOrderedItems implements SectionSourceInterface
     protected $stockRegistry;
 
     /**
-     * Store manager interface.
-     *
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    private $_storeManager;
-
-    /**
      * @param \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory
      * @param \Magento\Sales\Model\Order\Config $orderConfig
      * @param \Magento\Customer\Model\Session $customerSession
@@ -78,7 +66,7 @@ class LastOrderedItems implements SectionSourceInterface
     }
 
     /**
-     * Init last placed customer order to display on front.
+     * Init customer order for display on front
      *
      * @return void
      */
@@ -108,9 +96,8 @@ class LastOrderedItems implements SectionSourceInterface
 
         if ($order) {
             $website = $this->_storeManager->getStore()->getWebsiteId();
-            /** @var \Magento\Sales\Model\Order\Item $item */
             foreach ($order->getParentItemsRandomCollection($limit) as $item) {
-                if ($item->hasData('product') && in_array($website, $item->getProduct()->getWebsiteIds())) {
+                if ($item->getProduct() && in_array($website, $item->getProduct()->getWebsiteIds())) {
                     $items[] = [
                         'id' => $item->getId(),
                         'name' => $item->getName(),

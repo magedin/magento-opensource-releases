@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Test\Unit;
@@ -143,9 +143,6 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $this->_model->save($inputData, $inputId, $inputTags);
     }
 
-    /**
-     * @return array
-     */
     public function saveDataProvider()
     {
         $configTag = \Magento\Framework\App\Config::CACHE_TAG;
@@ -189,9 +186,6 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->_model->remove('test_id'));
     }
 
-    /**
-     * @return array
-     */
     public function successFailureDataProvider()
     {
         return ['success' => [true], 'failure' => [false]];

@@ -19,11 +19,6 @@ namespace Symfony\Component\Stopwatch;
 class Stopwatch
 {
     /**
-     * @var bool
-     */
-    private $morePrecision;
-
-    /**
      * @var Section[]
      */
     private $sections;
@@ -33,13 +28,9 @@ class Stopwatch
      */
     private $activeSections;
 
-    /**
-     * @param bool $morePrecision If true, time is stored as float to keep the original microsecond precision
-     */
-    public function __construct($morePrecision = false)
+    public function __construct()
     {
-        $this->morePrecision = $morePrecision;
-        $this->reset();
+        $this->sections = $this->activeSections = array('__root__' => new Section('__root__'));
     }
 
     /**
@@ -85,7 +76,7 @@ class Stopwatch
     {
         $this->stop('__section__');
 
-        if (1 == \count($this->activeSections)) {
+        if (1 == count($this->activeSections)) {
             throw new \LogicException('There is no started section to stop.');
         }
 
@@ -96,10 +87,10 @@ class Stopwatch
     /**
      * Starts an event.
      *
-     * @param string      $name     The event name
-     * @param string|null $category The event category
+     * @param string $name     The event name
+     * @param string $category The event category
      *
-     * @return StopwatchEvent
+     * @return StopwatchEvent A StopwatchEvent instance
      */
     public function start($name, $category = null)
     {
@@ -123,7 +114,7 @@ class Stopwatch
      *
      * @param string $name The event name
      *
-     * @return StopwatchEvent
+     * @return StopwatchEvent A StopwatchEvent instance
      */
     public function stop($name)
     {
@@ -135,7 +126,7 @@ class Stopwatch
      *
      * @param string $name The event name
      *
-     * @return StopwatchEvent
+     * @return StopwatchEvent A StopwatchEvent instance
      */
     public function lap($name)
     {
@@ -147,7 +138,7 @@ class Stopwatch
      *
      * @param string $name The event name
      *
-     * @return StopwatchEvent
+     * @return StopwatchEvent A StopwatchEvent instance
      */
     public function getEvent($name)
     {
@@ -159,18 +150,10 @@ class Stopwatch
      *
      * @param string $id A section identifier
      *
-     * @return StopwatchEvent[]
+     * @return StopwatchEvent[] An array of StopwatchEvent instances
      */
     public function getSectionEvents($id)
     {
-        return isset($this->sections[$id]) ? $this->sections[$id]->getEvents() : [];
-    }
-
-    /**
-     * Resets the stopwatch to its original state.
-     */
-    public function reset()
-    {
-        $this->sections = $this->activeSections = ['__root__' => new Section(null, $this->morePrecision)];
+        return isset($this->sections[$id]) ? $this->sections[$id]->getEvents() : array();
     }
 }

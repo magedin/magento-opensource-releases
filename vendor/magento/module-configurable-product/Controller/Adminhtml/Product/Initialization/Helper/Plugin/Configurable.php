@@ -2,7 +2,7 @@
 /**
  * Product initialization helper
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Controller\Adminhtml\Product\Initialization\Helper\Plugin;
@@ -95,7 +95,7 @@ class Configurable
             $product->setAttributeSetId($setId);
         }
         $extensionAttributes = $product->getExtensionAttributes();
-        $product->getResource()->getSortedAttributes($setId);
+
         $product->setNewVariationsAttributeSetId($setId);
 
         $configurableOptions = [];
@@ -127,9 +127,8 @@ class Configurable
      */
     private function setLinkedProducts(ProductInterface $product, ProductExtensionInterface $extensionAttributes)
     {
-        $associatedProductIds = $product->hasData('associated_product_ids') ?
-            $product->getData('associated_product_ids') : [];
-        $variationsMatrix = $this->getVariationMatrixFromProduct($product);
+        $associatedProductIds = $this->request->getPost('associated_product_ids', []);
+        $variationsMatrix = $this->getVariationMatrix();
 
         if ($associatedProductIds || $variationsMatrix) {
             $this->variationHandler->prepareAttributeSet($product);
@@ -143,34 +142,9 @@ class Configurable
     }
 
     /**
-     * Get variation-matrix from product
-     *
-     * @param ProductInterface $product
-     * @return array
-     */
-    private function getVariationMatrixFromProduct(ProductInterface $product)
-    {
-        $result = [];
-
-        $configurableMatrix = $product->hasData('configurable-matrix') ? $product->getData('configurable-matrix') : [];
-        foreach ($configurableMatrix as $item) {
-            if ($item['newProduct']) {
-                $result[$item['variationKey']] = $this->mapData($item);
-
-                if (isset($item['qty'])) {
-                    $result[$item['variationKey']]['quantity_and_stock_status']['qty'] = $item['qty'];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Get variation-matrix from request
      *
      * @return array
-     * @deprecated
      */
     protected function getVariationMatrix()
     {

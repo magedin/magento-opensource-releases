@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cron\Test\Unit\Observer;
@@ -530,9 +530,11 @@ class ProcessCronQueueObserverTest extends \PHPUnit_Framework_TestCase
     {
         $jobConfig = [
             'test_group' => [
-                'test_job1' => [
-                    'instance' => 'CronJob',
-                    'method' => 'execute',
+                'default' => [
+                    'test_job1' => [
+                        'instance' => 'CronJob',
+                        'method' => 'execute',
+                    ],
                 ],
             ],
         ];
@@ -540,9 +542,11 @@ class ProcessCronQueueObserverTest extends \PHPUnit_Framework_TestCase
         $this->_config->expects($this->at(0))->method('getJobs')->will($this->returnValue($jobConfig));
         $jobs = [
             'test_group' => [
-                'job1' => ['config_path' => 'test/path'],
-                'job2' => ['schedule' => ''],
-                'job3' => ['schedule' => '* * * * *'],
+                'default' => [
+                    'job1' => ['config_path' => 'test/path'],
+                    'job2' => ['schedule' => ''],
+                    'job3' => ['schedule' => '* * * * *'],
+                ],
             ],
         ];
         $this->_config->expects($this->at(1))->method('getJobs')->will($this->returnValue($jobs));
@@ -566,39 +570,31 @@ class ProcessCronQueueObserverTest extends \PHPUnit_Framework_TestCase
             $this->returnValue(time() + 10000000)
         );
 
-        $this->_scopeConfig->expects($this->any())->method('getValue')->willReturnMap(
-            [
-                [
-                    'system/cron/test_group/schedule_generate_every',
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-                    null,
-                    0
-                ],
-                [
-                    'system/cron/test_group/schedule_ahead_for',
-                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-                    null,
-                    2
-                ]
-            ]
-        );
+        $this->_scopeConfig->expects($this->at(0))->method('getValue')->will($this->returnValue(0));
 
+        $scheduleMethods = ['getJobCode', 'getScheduledAt', 'trySchedule', 'unsScheduleId', 'save', '__wakeup'];
         $schedule = $this->getMockBuilder(
             'Magento\Cron\Model\Schedule'
         )->setMethods(
-            ['getJobCode', 'getScheduledAt', 'trySchedule', 'unsScheduleId', 'save', '__wakeup', 'getCollection']
+            $scheduleMethods
         )->disableOriginalConstructor()->getMock();
         $schedule->expects($this->any())->method('getJobCode')->will($this->returnValue('job_code1'));
         $schedule->expects($this->once())->method('getScheduledAt')->will($this->returnValue('* * * * *'));
         $schedule->expects($this->any())->method('unsScheduleId')->will($this->returnSelf());
         $schedule->expects($this->any())->method('trySchedule')->will($this->returnSelf());
-        $schedule->expects($this->any())->method('getCollection')->willReturn($this->_collection);
-        $schedule->expects($this->atLeastOnce())->method('save')->willReturnSelf();
 
         $this->_collection->addItem(new \Magento\Framework\DataObject());
         $this->_collection->addItem($schedule);
 
         $this->_cache->expects($this->any())->method('save');
+
+        $scheduleMock = $this->getMockBuilder(
+            'Magento\Cron\Model\Schedule'
+        )->disableOriginalConstructor()->setMethods(
+            ['getCollection', '__wakeup']
+        )->getMock();
+        $scheduleMock->expects($this->any())->method('getCollection')->will($this->returnValue($this->_collection));
+        $this->_scheduleFactory->expects($this->any())->method('create')->will($this->returnValue($scheduleMock));
 
         $this->_scheduleFactory->expects($this->any())->method('create')->will($this->returnValue($schedule));
 

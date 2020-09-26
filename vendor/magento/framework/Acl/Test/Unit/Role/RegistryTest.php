@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Acl\Test\Unit\Role;
@@ -20,12 +20,6 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
         $this->model = new Registry();
     }
 
-    /**
-     * @param $roleId
-     * @param $parentRoleId
-     * @return array
-     * @throws \Zend_Acl_Role_Registry_Exception
-     */
     protected function initRoles($roleId, $parentRoleId)
     {
         $parentRole = $this->getMock('Zend_Acl_Role_Interface');

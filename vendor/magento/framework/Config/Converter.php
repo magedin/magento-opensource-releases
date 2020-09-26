@@ -1,17 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Config;
 
 use Magento\Framework\View\Xsd\Media\TypeDataExtractorPool;
 
-/**
- * Class Converter convert xml to appropriate array
- *
- * @package Magento\Framework\Config
- */
 class Converter implements \Magento\Framework\Config\ConverterInterface
 {
     /**

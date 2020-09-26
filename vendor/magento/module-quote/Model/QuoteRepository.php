@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model;
@@ -72,18 +72,11 @@ class QuoteRepository implements \Magento\Quote\Api\CartRepositoryInterface
     private $loadHandler;
 
     /**
-     * @var QuoteCollectionFactory
-     */
-    private $quoteCollectionFactory;
-
-    /**
      * @param QuoteFactory $quoteFactory
      * @param StoreManagerInterface $storeManager
      * @param \Magento\Quote\Model\ResourceModel\Quote\Collection $quoteCollection
      * @param \Magento\Quote\Api\Data\CartSearchResultsInterfaceFactory $searchResultsDataFactory
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
-     * @param QuoteCollectionFactory|null $quoteCollectionFactory
-     * @throws \RuntimeException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
@@ -91,15 +84,12 @@ class QuoteRepository implements \Magento\Quote\Api\CartRepositoryInterface
         StoreManagerInterface $storeManager,
         \Magento\Quote\Model\ResourceModel\Quote\Collection $quoteCollection,
         \Magento\Quote\Api\Data\CartSearchResultsInterfaceFactory $searchResultsDataFactory,
-        JoinProcessorInterface $extensionAttributesJoinProcessor,
-        QuoteCollectionFactory $quoteCollectionFactory = null
+        JoinProcessorInterface $extensionAttributesJoinProcessor
     ) {
         $this->quoteFactory = $quoteFactory;
         $this->storeManager = $storeManager;
         $this->searchResultsDataFactory = $searchResultsDataFactory;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
-        $this->quoteCollectionFactory = $quoteCollectionFactory
-            ?: ObjectManager::getInstance()->get(QuoteCollectionFactory::class);
     }
 
     /**
@@ -211,13 +201,16 @@ class QuoteRepository implements \Magento\Quote\Api\CartRepositoryInterface
 
     /**
      * Get quote collection
+     * Temporary method to support release backward compatibility.
      *
      * @deprecated
      * @return QuoteCollection
      */
     protected function getQuoteCollection()
     {
-        return $this->quoteCollectionFactory->create();
+        /** @var \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $collectionFactory */
+        $collectionFactory = ObjectManager::getInstance()->get(QuoteCollectionFactory::class);
+        return $collectionFactory->create();
     }
 
     /**

@@ -1,9 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Controller\Sidebar;
+
 
 class RemoveItem extends \Magento\Framework\App\Action\Action
 {
@@ -58,7 +59,7 @@ class RemoveItem extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost() || !$this->getFormKeyValidator()->validate($this->getRequest())) {
+        if (!$this->getFormKeyValidator()->validate($this->getRequest())) {
             return $this->resultRedirectFactory->create()->setPath('*/cart/');
         }
         $itemId = (int)$this->getRequest()->getParam('item_id');

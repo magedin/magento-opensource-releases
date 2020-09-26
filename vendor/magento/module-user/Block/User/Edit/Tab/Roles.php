@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\User\Block\User\Edit\Tab;
 
 use Magento\Backend\Block\Widget\Grid\Column;
 
-/**
- * Roles grid
- */
 class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
@@ -67,8 +64,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Adds column filter to collection
-     *
      * @param Column $column
      * @return $this
      */
@@ -93,8 +88,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares collection
-     *
      * @return $this
      */
     protected function _prepareCollection()
@@ -106,8 +99,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Prepares columns
-     *
      * @return $this
      */
     protected function _prepareColumns()
@@ -131,8 +122,6 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Gets grid url
-     *
      * @return string
      */
     public function getGridUrl()
@@ -142,20 +131,13 @@ class Roles extends \Magento\Backend\Block\Widget\Grid\Extended
     }
 
     /**
-     * Get selected roles
-     *
      * @param bool $json
      * @return array|string
      */
     public function getSelectedRoles($json = false)
     {
-        $userRoles = $this->getRequest()->getParam('user_roles');
-        if ($userRoles) {
-            if ($json) {
-                $result = json_decode($userRoles);
-                return $result ? $this->_jsonEncoder->encode($result) : '{}';
-            }
-            return $this->_escaper->escapeJs($this->escapeHtml($userRoles));
+        if ($this->getRequest()->getParam('user_roles') != "") {
+            return $this->getRequest()->getParam('user_roles');
         }
         /* @var $user \Magento\User\Model\User */
         $user = $this->_coreRegistry->registry('permissions_user');

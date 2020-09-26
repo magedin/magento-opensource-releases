@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -25,7 +25,7 @@ class Layout extends \Magento\Backend\Block\Template implements \Magento\Framewo
     /**
      * @var string
      */
-    protected $_template = 'Magento_Widget::instance/edit/layout.phtml';
+    protected $_template = 'instance/edit/layout.phtml';
 
     /**
      * @var \Magento\Catalog\Model\Product\Type

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Test\Unit\Asset;
@@ -18,7 +18,6 @@ use Magento\Framework\View\Asset\MergeStrategy\FileExists;
 
 /**
  * Class MergeServiceTest
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class MergeServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -118,9 +117,6 @@ class MergeServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($mergedAsset, $this->object->getMergedAssets($assets, $contentType));
     }
 
-    /**
-     * @return array
-     */
     public static function getMergedAssetsDataProvider()
     {
         $jsAssets = [

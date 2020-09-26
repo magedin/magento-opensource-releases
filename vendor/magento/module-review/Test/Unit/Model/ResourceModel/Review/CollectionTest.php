@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Test\Unit\Model\ResourceModel\Review;
@@ -148,9 +148,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->model->addEntityFilter($entity, $pkValue);
     }
 
-    /**
-     * @return array
-     */
     public function addEntityFilterDataProvider()
     {
         return [

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -41,15 +41,15 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->registry = $this->getMock(\Magento\Framework\Registry::class);
-        $this->session = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
+        $this->registry = $this->getMock('Magento\Framework\Registry');
+        $this->session = $this->getMockBuilder('Magento\Customer\Model\Session')
             ->disableOriginalConstructor()
             ->setMethods(['getSessionId', 'getVisitorData', 'setVisitorData'])
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->resource = $this->getMockBuilder(\Magento\Customer\Model\ResourceModel\Visitor::class)
+        $this->resource = $this->getMockBuilder('Magento\Customer\Model\ResourceModel\Visitor')
             ->setMethods([
                 'beginTransaction',
                 '__sleep',
@@ -64,7 +64,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
         $this->resource->expects($this->any())->method('addCommitCallback')->will($this->returnSelf());
 
         $arguments = $this->objectManagerHelper->getConstructArguments(
-            \Magento\Customer\Model\Visitor::class,
+            'Magento\Customer\Model\Visitor',
             [
                 'registry' => $this->registry,
                 'session' => $this->session,
@@ -72,19 +72,19 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->visitor = $this->objectManagerHelper->getObject(\Magento\Customer\Model\Visitor::class, $arguments);
+        $this->visitor = $this->objectManagerHelper->getObject('Magento\Customer\Model\Visitor', $arguments);
     }
 
     public function testInitByRequest()
     {
-        $oldSessionId = 'asdfhasdfjhkj2198sadf8sdf897';
-        $newSessionId = 'bsdfhasdfjhkj2198sadf8sdf897';
-        $this->session->expects($this->any())->method('getSessionId')
-            ->will($this->returnValue($newSessionId));
-        $this->session->expects($this->atLeastOnce())->method('getVisitorData')
-            ->willReturn(['session_id' => $oldSessionId]);
+        $this->session->expects($this->once())->method('getSessionId')
+            ->will($this->returnValue('asdfhasdfjhkj2198sadf8sdf897'));
         $this->visitor->initByRequest(null);
-        $this->assertEquals($newSessionId, $this->visitor->getSessionId());
+        $this->assertEquals('asdfhasdfjhkj2198sadf8sdf897', $this->visitor->getSessionId());
+
+        $this->visitor->setData(['visitor_id' => 1]);
+        $this->visitor->initByRequest(null);
+        $this->assertNull($this->visitor->getSessionId());
     }
 
     public function testSaveByRequest()
@@ -96,7 +96,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     public function testIsModuleIgnored()
     {
         $this->visitor = $this->objectManagerHelper->getObject(
-            \Magento\Customer\Model\Visitor::class,
+            'Magento\Customer\Model\Visitor',
             [
                 'registry' => $this->registry,
                 'session' => $this->session,

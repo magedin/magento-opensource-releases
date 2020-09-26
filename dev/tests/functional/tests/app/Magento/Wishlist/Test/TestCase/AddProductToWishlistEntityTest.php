@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -49,16 +49,15 @@ class AddProductToWishlistEntityTest extends AbstractWishlistTest
      *
      * @param Customer $customer
      * @param string $product
-     * @param bool $configure
      * @return array
      */
-    public function test(Customer $customer, $product, $configure = true)
+    public function test(Customer $customer, $product)
     {
         $product = $this->createProducts($product)[0];
 
         // Steps:
         $this->loginCustomer($customer);
-        $this->addToWishlist([$product], $configure);
+        $this->addToWishlist([$product], true);
 
         return ['product' => $product];
     }

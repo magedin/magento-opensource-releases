@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,7 +11,6 @@
  */
 namespace Magento\Catalog\Model\Product;
 
-use Magento\Catalog\Model\Product\Image\NotLoadInfoImageException;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Image as MagentoImage;
 use Magento\Store\Model\Store;
@@ -422,7 +421,7 @@ class Image extends \Magento\Framework\Model\AbstractModel
             $imageInfo['bits'] = 8;
         }
         return round(
-            ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + pow(2, 16)) * 1.65
+            ($imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $imageInfo['channels'] / 8 + Pow(2, 16)) * 1.65
         );
     }
 
@@ -499,7 +498,8 @@ class Image extends \Magento\Framework\Model\AbstractModel
         $path = [
             $this->_catalogProductMediaConfig->getBaseMediaPath(),
             'cache',
-            $this->getDestinationSubdir(),
+            $this->_storeManager->getStore()->getId(),
+            $path[] = $this->getDestinationSubdir(),
         ];
         if (!empty($this->_width) || !empty($this->_height)) {
             $path[] = "{$this->_width}x{$this->_height}";
@@ -937,29 +937,21 @@ class Image extends \Magento\Framework\Model\AbstractModel
      * Return resized product image information
      *
      * @return array
-     * @throws NotLoadInfoImageException
      */
     public function getResizedImageInfo()
     {
-        try {
-            $fileInfo = null;
-            if ($this->_newFile === true) {
-                $asset = $this->_assetRepo->createAsset(
-                    "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
-                );
-                $image = $asset->getSourceFile();
-                $fileInfo = getimagesize($image);
-            } else {
-                $image = $this->_mediaDirectory->getAbsolutePath($this->_newFile);
-                if ($this->_mediaDirectory->isFile($image)) {
-                    $fileInfo = getimagesize($image);
-                }
-            }
-            return $fileInfo;
-        } finally {
-            if (empty($fileInfo)) {
-                throw new NotLoadInfoImageException(__('Can\'t get information about the picture: %1', $image));
+        $fileInfo = null;
+        if ($this->_newFile === true) {
+            $asset = $this->_assetRepo->createAsset(
+                "Magento_Catalog::images/product/placeholder/{$this->getDestinationSubdir()}.jpg"
+            );
+            $img = $asset->getSourceFile();
+            $fileInfo = getimagesize($img);
+        } else {
+            if ($this->_mediaDirectory->isFile($this->_mediaDirectory->getAbsolutePath($this->_newFile))) {
+                $fileInfo = getimagesize($this->_mediaDirectory->getAbsolutePath($this->_newFile));
             }
         }
+        return $fileInfo;
     }
 }

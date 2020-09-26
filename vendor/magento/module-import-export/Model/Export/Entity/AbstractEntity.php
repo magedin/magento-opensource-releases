@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Model\Export\Entity;
@@ -543,13 +543,5 @@ abstract class AbstractEntity
         $this->_writer = $writer;
 
         return $this;
-    }
-
-    /**
-     * Clean cached values
-     */
-    public function __destruct()
-    {
-        self::$attrCodes = null;
     }
 }

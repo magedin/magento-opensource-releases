@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -143,6 +143,7 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
             [
                 'name' => "product[{$switchAttributeCode}]",
                 'values' => $this->getOptions(),
+                'value' => $switchAttributeCode,
                 'class' => 'required-entry next-toinput',
                 'no_span' => true,
                 'disabled' => $this->isDisabledField(),

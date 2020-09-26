@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
 use \Magento\Catalog\Model\Product\Copier;
 
-/**
- * Test class for \Magento\Catalog\Model\Product\Copier.
- */
 class CopierTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -23,17 +20,17 @@ class CopierTest extends \PHPUnit_Framework_TestCase
     protected $_model;
 
     /**
-     * @var \Magento\Catalog\Model\Product\CopyConstructorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $copyConstructorMock;
 
     /**
-     * @var \Magento\Catalog\Model\ProductFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productFactoryMock;
 
     /**
-     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
@@ -44,29 +41,29 @@ class CopierTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->copyConstructorMock = $this->getMock(\Magento\Catalog\Model\Product\CopyConstructorInterface::class);
+        $this->copyConstructorMock = $this->getMock('\Magento\Catalog\Model\Product\CopyConstructorInterface');
         $this->productFactoryMock = $this->getMock(
-            \Magento\Catalog\Model\ProductFactory::class,
+            '\Magento\Catalog\Model\ProductFactory',
             ['create'],
             [],
             '',
             false
         );
         $this->optionRepositoryMock = $this->getMock(
-            \Magento\Catalog\Model\Product\Option\Repository::class,
+            'Magento\Catalog\Model\Product\Option\Repository',
             [],
             [],
             '',
             false
         );
         $this->optionRepositoryMock;
-        $this->productMock = $this->getMock(\Magento\Catalog\Model\Product::class, [], [], '', false);
+        $this->productMock = $this->getMock('\Magento\Catalog\Model\Product', [], [], '', false);
         $this->productMock->expects($this->any())->method('getEntityId')->willReturn(1);
 
-        $this->metadata = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadata::class)
+        $this->metadata = $this->getMockBuilder('Magento\Framework\EntityManager\EntityMetadata')
             ->disableOriginalConstructor()
             ->getMock();
-        $metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
+        $metadataPool = $this->getMockBuilder('Magento\Framework\EntityManager\MetadataPool')
             ->disableOriginalConstructor()
             ->getMock();
         $metadataPool->expects($this->any())->method('getMetadata')->willReturn($this->metadata);
@@ -81,11 +78,6 @@ class CopierTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @covers \Magento\Catalog\Model\Product\Copier::copy
-     *
-     * @return void
-     */
     public function testCopy()
     {
         $this->productMock->expects($this->atLeastOnce())->method('getWebsiteIds');
@@ -95,18 +87,18 @@ class CopierTest extends \PHPUnit_Framework_TestCase
             ['linkField', null, '1'],
         ]);
 
-        $resourceMock = $this->getMock(\Magento\Catalog\Model\ResourceModel\Product::class, [], [], '', false);
+        $resourceMock = $this->getMock('\Magento\Catalog\Model\ResourceModel\Product', [], [], '', false);
         $this->productMock->expects($this->once())->method('getResource')->will($this->returnValue($resourceMock));
 
         $duplicateMock = $this->getMock(
-            \Magento\Catalog\Model\Product::class,
+            '\Magento\Catalog\Model\Product',
             [
                 '__wakeup',
                 'setData',
                 'setOptions',
                 'getData',
                 'setIsDuplicate',
-                'setOriginalLinkId',
+                'setOriginalId',
                 'setStatus',
                 'setCreatedAt',
                 'setUpdatedAt',
@@ -125,7 +117,7 @@ class CopierTest extends \PHPUnit_Framework_TestCase
 
         $duplicateMock->expects($this->once())->method('setOptions')->with([]);
         $duplicateMock->expects($this->once())->method('setIsDuplicate')->with(true);
-        $duplicateMock->expects($this->once())->method('setOriginalLinkId')->with(1);
+        $duplicateMock->expects($this->once())->method('setOriginalId')->with(1);
         $duplicateMock->expects(
             $this->once()
         )->method(
@@ -162,11 +154,8 @@ class CopierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Set object non-public properties.
-     *
      * @param $object
      * @param array $properties
-     * @return void
      */
     private function setProperties($object, $properties = [])
     {

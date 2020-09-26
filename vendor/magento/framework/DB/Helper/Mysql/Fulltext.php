@@ -1,15 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\DB\Helper\Mysql;
 
 use Magento\Framework\App\ResourceConnection;
 
-/**
- * MySQL Fulltext Query Builder
- */
 class Fulltext
 {
     /**
@@ -54,7 +51,7 @@ class Fulltext
     {
         $this->connection = $resource->getConnection();
     }
-
+    
     /**
      * Method for FULLTEXT search in Mysql, will generated MATCH ($columns) AGAINST ('$expression' $mode)
      *
@@ -76,7 +73,8 @@ class Fulltext
     }
 
     /**
-     * Method for FULLTEXT search in Mysql; will add generated MATCH ($columns) AGAINST ('$expression' $mode) to $select
+     * Method for FULLTEXT search in Mysql, will added generated
+     * MATCH ($columns) AGAINST ('$expression' $mode) to where clause
      *
      * @param \Magento\Framework\DB\Select $select
      * @param string|string[] $columns Columns which add to MATCH ()

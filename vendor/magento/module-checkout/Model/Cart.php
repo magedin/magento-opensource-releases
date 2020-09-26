@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Model;
@@ -90,11 +90,6 @@ class Cart extends DataObject implements CartInterface
      * @var ProductRepositoryInterface
      */
     protected $productRepository;
-
-    /**
-     * @var \Magento\Checkout\Model\Cart\RequestInfoFilterInterface
-     */
-    private $requestInfoFilter;
 
     /**
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -320,7 +315,6 @@ class Cart extends DataObject implements CartInterface
      *
      * @param   \Magento\Framework\DataObject|int|array $requestInfo
      * @return  \Magento\Framework\DataObject
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _getProductRequest($requestInfo)
     {
@@ -328,14 +322,11 @@ class Cart extends DataObject implements CartInterface
             $request = $requestInfo;
         } elseif (is_numeric($requestInfo)) {
             $request = new \Magento\Framework\DataObject(['qty' => $requestInfo]);
-        } elseif (is_array($requestInfo)) {
-            $request = new \Magento\Framework\DataObject($requestInfo);
         } else {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('We found an invalid request for adding product to quote.')
-            );
+            $request = new \Magento\Framework\DataObject($requestInfo);
         }
-        $this->getRequestInfoFilter()->filter($request);
+
+        !$request->hasFormKey() ?: $request->unsFormKey();
 
         return $request;
     }
@@ -730,20 +721,5 @@ class Cart extends DataObject implements CartInterface
         );
         $this->_checkoutSession->setLastAddedProductId($productId);
         return $result;
-    }
-
-    /**
-     * Getter for RequestInfoFilter
-     *
-     * @deprecated
-     * @return \Magento\Checkout\Model\Cart\RequestInfoFilterInterface
-     */
-    private function getRequestInfoFilter()
-    {
-        if ($this->requestInfoFilter === null) {
-            $this->requestInfoFilter = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Checkout\Model\Cart\RequestInfoFilterInterface::class);
-        }
-        return $this->requestInfoFilter;
     }
 }

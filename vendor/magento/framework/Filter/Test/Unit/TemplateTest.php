@@ -1,31 +1,22 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Framework\Filter\Test\Unit;
 
-use Magento\Framework\Filter\Template;
-use Magento\Store\Model\Store;
-
 class TemplateTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Template
+     * @var \Magento\Framework\Filter\Template
      */
     private $templateFilter;
-
-    /**
-     * @var Store
-     */
-    private $store;
 
     protected function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->templateFilter = $objectManager->getObject(Template::class);
-        $this->store = $objectManager->getObject(Store::class);
+        $this->templateFilter = $objectManager->getObject('Magento\Framework\Filter\Template');
     }
 
     public function testFilter()
@@ -147,9 +138,6 @@ EXPECTED_RESULT;
         $this->assertEquals($expectedResult, $this->templateFilter->filter($construction));
     }
 
-    /**
-     * @return array
-     */
     public function varDirectiveDataProvider()
     {
         /* @var $stub \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject */
@@ -198,39 +186,6 @@ EXPECTED_RESULT;
                     ],
                 ]),
             ],
-        ];
-    }
-
-    /**
-     * Test filtering disallowed methods calls.
-     *
-     * @param string $method
-     * @dataProvider disallowedMethods
-     * @expectedException \InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testDisallowedMethods($method)
-    {
-        $this->templateFilter->setVariables(['store' => $this->store]);
-        $this->templateFilter->filter('{{var store.' . $method . '()}}');
-    }
-
-    /**
-     * Data for testDisallowedMethods method.
-     *
-     * @return array
-     */
-    public function disallowedMethods()
-    {
-        return [
-            ['getResourceCollection'],
-            ['load'],
-            ['save'],
-            ['getCollection'],
-            ['getResource'],
-            ['getConfig'],
-            ['delete'],
         ];
     }
 }

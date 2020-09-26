@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -118,10 +118,6 @@ class Report extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected function getFilePath($filename)
     {
-        if (preg_match('/\.\.(\\\|\/)/', $filename)) {
-            throw new \InvalidArgumentException('Filename has not permitted symbols in it');
-        }
-
         return $this->varDirectory->getRelativePath(Import::IMPORT_HISTORY_DIR . $filename);
     }
 }

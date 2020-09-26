@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
@@ -71,9 +71,6 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
         $this->_model->evaluate($input);
     }
 
-    /**
-     * @return array
-     */
     public function evaluateWrongModelDataProvider()
     {
         return [

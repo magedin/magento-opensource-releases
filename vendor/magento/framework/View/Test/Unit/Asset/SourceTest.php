@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,11 +10,9 @@ namespace Magento\Framework\View\Test\Unit\Asset;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\DriverPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Asset\PreProcessor\ChainFactoryInterface;
 use Magento\Framework\View\Asset\PreProcessor\Chain;
 use Magento\Framework\View\Asset\Source;
-use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -97,8 +95,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->willReturn($this->chain);
 
-        $themeProvider = $this->getMock(ThemeProviderInterface::class);
-        $themeProvider->expects($this->any())
+        $themeList = $this->getMockForAbstractClass('Magento\Framework\View\Design\Theme\ListInterface');
+        $themeList->expects($this->any())
             ->method('getThemeByFullPath')
             ->with('frontend/magento_theme')
             ->willReturn($this->theme);
@@ -107,14 +105,14 @@ class SourceTest extends \PHPUnit_Framework_TestCase
 
         $this->initFilesystem();
 
-        $this->object = (new ObjectManager($this))->getObject(Source::class, [
-            'filesystem' => $this->filesystem,
-            'readFactory' => $this->readFactory,
-            'preProcessorPool' => $this->preProcessorPool,
-            'fallback' => $this->viewFileResolution,
-            'themeProvider' => $themeProvider,
-            'chainFactory' => $this->chainFactory
-        ]);
+        $this->object = new Source(
+            $this->filesystem,
+            $this->readFactory,
+            $this->preProcessorPool,
+            $this->viewFileResolution,
+            $themeList,
+            $this->chainFactory
+        );
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Translation\Model\Json;
@@ -12,8 +12,6 @@ use Magento\Framework\View\Asset\PreProcessor\Chain;
 use Magento\Framework\View\Asset\File\FallbackContext;
 use Magento\Framework\App\AreaList;
 use Magento\Framework\TranslateInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\View\DesignInterface;
 
 /**
  * PreProcessor responsible for providing js translation dictionary
@@ -45,29 +43,21 @@ class PreProcessor implements PreProcessorInterface
     protected $translate;
 
     /**
-     * @var DesignInterface
-     */
-    private $design;
-
-    /**
      * @param Config $config
      * @param DataProviderInterface $dataProvider
      * @param AreaList $areaList
      * @param TranslateInterface $translate
-     * @param DesignInterface|null $design
      */
     public function __construct(
         Config $config,
         DataProviderInterface $dataProvider,
         AreaList $areaList,
-        TranslateInterface $translate,
-        DesignInterface $design = null
+        TranslateInterface $translate
     ) {
         $this->config = $config;
         $this->dataProvider = $dataProvider;
         $this->areaList = $areaList;
         $this->translate = $translate;
-        $this->design = $design ?: ObjectManager::getInstance()->get(DesignInterface::class);
     }
 
     /**
@@ -75,7 +65,6 @@ class PreProcessor implements PreProcessorInterface
      *
      * @param Chain $chain
      * @return void
-     * @throws \Exception
      */
     public function process(Chain $chain)
     {
@@ -88,10 +77,7 @@ class PreProcessor implements PreProcessorInterface
             if ($context instanceof FallbackContext) {
                 $themePath = $context->getThemePath();
                 $areaCode = $context->getAreaCode();
-                $this->design->setDesignTheme($themePath, $areaCode);
-                $this->translate
-                    ->setLocale($context->getLocale())
-                    ->loadData($areaCode);
+                $this->translate->setLocale($context->getLocale());
             }
 
             $area = $this->areaList->getArea($areaCode);

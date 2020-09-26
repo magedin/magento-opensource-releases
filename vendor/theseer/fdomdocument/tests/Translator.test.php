@@ -4,7 +4,7 @@ namespace TheSeer\fDOM\Tests {
 
     use TheSeer\fDOM\CSS\Translator;
 
-    class TranslatorTest extends \PHPUnit\Framework\TestCase {
+    class TranslatorTest extends \PHPUnit_Framework_TestCase {
 
         /**
          * @dataProvider provider

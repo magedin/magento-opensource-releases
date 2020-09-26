@@ -9,9 +9,7 @@
 
 namespace Zend\Code\Generator;
 
-use ArrayObject as SplArrayObject;
-use Zend\Code\Exception\InvalidArgumentException;
-use Zend\Stdlib\ArrayObject as StdlibArrayObject;
+use Zend\Stdlib\ArrayObject;
 
 class ValueGenerator extends AbstractGenerator
 {
@@ -63,17 +61,17 @@ class ValueGenerator extends AbstractGenerator
     protected $allowedTypes = null;
     /**
      * Autodetectable constants
-     * @var SplArrayObject|StdlibArrayObject
+     * @var ArrayObject
      */
-    protected $constants;
+    protected $constants = null;
 
     /**
      * @param mixed       $value
      * @param string      $type
      * @param string      $outputMode
-     * @param null|SplArrayObject|StdlibArrayObject $constants
+     * @param ArrayObject $constants
      */
-    public function __construct($value = null, $type = self::TYPE_AUTO, $outputMode = self::OUTPUT_MULTIPLE_LINE, $constants = null)
+    public function __construct($value = null, $type = self::TYPE_AUTO, $outputMode = self::OUTPUT_MULTIPLE_LINE, ArrayObject $constants = null)
     {
         // strict check is important here if $type = AUTO
         if ($value !== null) {
@@ -85,14 +83,11 @@ class ValueGenerator extends AbstractGenerator
         if ($outputMode !== self::OUTPUT_MULTIPLE_LINE) {
             $this->setOutputMode($outputMode);
         }
-        if ($constants === null) {
-            $constants = new SplArrayObject();
-        } elseif (!(($constants instanceof SplArrayObject) || ($constants instanceof StdlibArrayObject))) {
-            throw new InvalidArgumentException(
-                '$constants must be an instance of ArrayObject or Zend\Stdlib\ArrayObject'
-            );
+        if ($constants !== null) {
+            $this->constants = $constants;
+        } else {
+            $this->constants = new ArrayObject();
         }
-        $this->constants = $constants;
     }
 
     /**
@@ -100,7 +95,7 @@ class ValueGenerator extends AbstractGenerator
      */
     public function initEnvironmentConstants()
     {
-        $constants   = [
+        $constants   = array(
             '__DIR__',
             '__FILE__',
             '__LINE__',
@@ -110,7 +105,7 @@ class ValueGenerator extends AbstractGenerator
             '__FUNCTION__',
             '__NAMESPACE__',
             '::'
-        ];
+        );
         $constants = array_merge($constants, array_keys(get_defined_constants()), $this->constants->getArrayCopy());
         $this->constants->exchangeArray($constants);
     }
@@ -148,7 +143,7 @@ class ValueGenerator extends AbstractGenerator
     /**
      * Return constant list
      *
-     * @return SplArrayObject|StdlibArrayObject
+     * @return ArrayObject
      */
     public function getConstants()
     {
@@ -167,7 +162,7 @@ class ValueGenerator extends AbstractGenerator
         }
 
         // valid types for constants
-        $scalarTypes = [
+        $scalarTypes = array(
             self::TYPE_BOOLEAN,
             self::TYPE_BOOL,
             self::TYPE_NUMBER,
@@ -178,7 +173,7 @@ class ValueGenerator extends AbstractGenerator
             self::TYPE_STRING,
             self::TYPE_CONSTANT,
             self::TYPE_NULL
-        ];
+        );
 
         return in_array($type, $scalarTypes);
     }
@@ -243,7 +238,7 @@ class ValueGenerator extends AbstractGenerator
      */
     protected function getValidatedType($type)
     {
-        $types = [
+        $types = array(
             self::TYPE_AUTO,
             self::TYPE_BOOLEAN,
             self::TYPE_BOOL,
@@ -258,7 +253,7 @@ class ValueGenerator extends AbstractGenerator
             self::TYPE_NULL,
             self::TYPE_OBJECT,
             self::TYPE_OTHER
-        ];
+        );
 
         if (in_array($type, $types)) {
             return $type;
@@ -352,7 +347,7 @@ class ValueGenerator extends AbstractGenerator
                 if ($this->outputMode == self::OUTPUT_MULTIPLE_LINE) {
                     $output .= self::LINE_FEED . str_repeat($this->indentation, $this->arrayDepth + 1);
                 }
-                $outputParts = [];
+                $outputParts = array();
                 $noKeyIndex  = 0;
                 foreach ($value as $n => $v) {
                     /* @var $v ValueGenerator */

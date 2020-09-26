@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Controller\Adminhtml\Promo\Catalog;
@@ -12,39 +12,34 @@ class Delete extends \Magento\CatalogRule\Controller\Adminhtml\Promo\Catalog
 {
     /**
      * @return void
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         $id = $this->getRequest()->getParam('id');
         if ($id) {
             try {
                 /** @var \Magento\CatalogRule\Api\CatalogRuleRepositoryInterface $ruleRepository */
                 $ruleRepository = $this->_objectManager->get(
-                    \Magento\CatalogRule\Api\CatalogRuleRepositoryInterface::class
+                    'Magento\CatalogRule\Api\CatalogRuleRepositoryInterface'
                 );
                 $ruleRepository->deleteById($id);
 
-                $this->_objectManager->create(\Magento\CatalogRule\Model\Flag::class)->loadSelf()->setState(1)->save();
-                $this->messageManager->addSuccessMessage(__('You deleted the rule.'));
+                $this->_objectManager->create('Magento\CatalogRule\Model\Flag')->loadSelf()->setState(1)->save();
+                $this->messageManager->addSuccess(__('You deleted the rule.'));
                 $this->_redirect('catalog_rule/*/');
                 return;
             } catch (LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
+                $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addErrorMessage(
+                $this->messageManager->addError(
                     __('We can\'t delete this rule right now. Please review the log and try again.')
                 );
-                $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
+                $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
                 $this->_redirect('catalog_rule/*/edit', ['id' => $this->getRequest()->getParam('id')]);
                 return;
             }
         }
-        $this->messageManager->addErrorMessage(__('We can\'t find a rule to delete.'));
+        $this->messageManager->addError(__('We can\'t find a rule to delete.'));
         $this->_redirect('catalog_rule/*/');
     }
 }

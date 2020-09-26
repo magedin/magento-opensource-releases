@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -100,8 +100,7 @@ define([
         _processState: function () {
             var anchor = window.location.hash,
                 isValid = $.mage.isValidSelector(anchor),
-                urlPath = window.location.pathname.replace(/\./g, ''),
-                state;
+                urlPath = window.location.pathname.replace('.', '');
 
             this.stateKey = encodeURIComponent(urlPath + this.element.attr("id"));
             
@@ -114,7 +113,7 @@ define([
                     }
                 }
             } else if (this.options.saveState && !this.options.disabled) {
-                state = this.storage.get(this.stateKey);
+                var state = this.storage.get(this.stateKey);
                 if (typeof state === 'undefined' || state === null) {
                     this.storage.set(this.stateKey,this.options.active);
                 } else if (state === true) {
@@ -417,10 +416,7 @@ define([
         _loadContent: function () {
             var url = this.element.find(this.options.ajaxUrlElement).attr("href");
             if(url) {
-                this.xhr = $.get({
-                    url: url,
-                    dataType: 'html'
-                }, function () {
+                this.xhr = $.get(url, function () {
                 });
             }
             var that = this;

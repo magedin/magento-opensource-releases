@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Search\Model;
@@ -42,37 +42,9 @@ class SynonymAnalyzerTest extends \PHPUnit_Framework_TestCase
                 'phrase' => 'universe is enormous',
                 'expectedResult' => [['universe', 'cosmos'], ['is'], ['big', 'huge', 'large', 'enormous']]
             ],
-            'WithCaseMismatch' => [
-                'phrase' => 'GNU\'s Not Unix',
-                'expectedResult' => [['GNU\'s'], ['Not'], ['unix', 'linux'],]
-            ],
-            'WithMultiWordPhrase' => [
-                'phrase' => 'Coastline of Great Britain stretches for 11,073 miles',
-                'expectedResult' => [
-                    ['Coastline'],
-                    ['of'],
-                    ['Great Britain', 'United Kingdom'],
-                    ['Britain'],
-                    ['stretches'],
-                    ['for'],
-                    ['11,073'],
-                    ['miles']
-                ]
-            ],
-            'PartialSynonymMatching' => [
-                'phrase' => 'Magento Engineering',
-                'expectedResult' => [
-                    ['orange', 'magento'],
-                    ['Engineering', 'Technical Staff']
-                ]
-            ],
             'noSynonyms' => [
                 'phrase' => 'this sentence has no synonyms',
                 'expectedResult' => [['this'], ['sentence'], ['has'], ['no'], ['synonyms']]
-            ],
-            'multipleSpaces' => [
-                'phrase' => 'GNU\'s Not   Unix',
-                'expectedResult' => [['GNU\'s'], ['Not'], ['unix', 'linux'],]
             ],
             'oneMoreTest' => [
                 'phrase' => 'schlicht',

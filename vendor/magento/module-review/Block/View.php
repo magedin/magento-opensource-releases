@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Block;
@@ -17,7 +17,7 @@ class View extends \Magento\Catalog\Block\Product\AbstractProduct
      *
      * @var string
      */
-    protected $_template = 'Magento_Review::view.phtml';
+    protected $_template = 'view.phtml';
 
     /**
      * Rating option model

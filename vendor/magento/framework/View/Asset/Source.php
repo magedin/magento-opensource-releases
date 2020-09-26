@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,10 +8,8 @@ namespace Magento\Framework\View\Asset;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Asset\PreProcessor\ChainFactoryInterface;
 use Magento\Framework\View\Design\FileResolution\Fallback\Resolver\Simple;
-use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 
 /**
  * A service for preprocessing content of assets
@@ -47,7 +45,6 @@ class Source
 
     /**
      * @var \Magento\Framework\View\Design\Theme\ListInterface
-     * @deprecated
      */
     private $themeList;
 
@@ -60,11 +57,6 @@ class Source
      * @var ReadFactory
      */
     private $readFactory;
-
-    /**
-     * @var ThemeProviderInterface
-     */
-    private $themeProvider;
 
     /**
      * Constructor
@@ -216,9 +208,7 @@ class Source
         LocalInterface $asset,
         \Magento\Framework\View\Asset\File\FallbackContext $context
     ) {
-        $themeModel = $this->getThemeProvider()->getThemeByFullPath(
-            $context->getAreaCode() . '/' . $context->getThemePath()
-        );
+        $themeModel = $this->themeList->getThemeByFullPath($context->getAreaCode() . '/' . $context->getThemePath());
         $sourceFile = $this->fallback->getFile(
             $context->getAreaCode(),
             $themeModel,
@@ -227,19 +217,6 @@ class Source
             $asset->getModule()
         );
         return $sourceFile;
-    }
-
-    /**
-     * @return ThemeProviderInterface
-     * @deprecated
-     */
-    private function getThemeProvider()
-    {
-        if (null === $this->themeProvider) {
-            $this->themeProvider = ObjectManager::getInstance()->get(ThemeProviderInterface::class);
-        }
-
-        return $this->themeProvider;
     }
 
     /**

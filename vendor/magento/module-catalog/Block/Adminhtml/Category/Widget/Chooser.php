@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -24,7 +24,7 @@ class Chooser extends \Magento\Catalog\Block\Adminhtml\Category\Tree
      *
      * @var string
      */
-    protected $_template = 'Magento_Catalog::catalog/category/widget/tree.phtml';
+    protected $_template = 'catalog/category/widget/tree.phtml';
 
     /**
      * @return void
@@ -144,7 +144,7 @@ class Chooser extends \Magento\Catalog\Block\Adminhtml\Category\Tree
      *
      * @param \Magento\Framework\Data\Tree\Node|array $node
      * @param int $level
-     * @return array
+     * @return string
      */
     protected function _getNodeJson($node, $level = 0)
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -65,9 +65,6 @@ class BuilderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->buildFactory->create($type, $arguments);
     }
 
-    /**
-     * @return array
-     */
     public function createDataProvider()
     {
         return [

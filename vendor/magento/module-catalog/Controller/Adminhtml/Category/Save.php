@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Category;
 
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Api\Data\CategoryAttributeInterface;
 
 /**
  * Class Save
@@ -50,13 +49,6 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Category
     private $storeManager;
 
     /**
-     * Config instance holder.
-     *
-     * @var \Magento\Eav\Model\Config
-     */
-    private $eavConfig;
-
-    /**
      * Constructor
      *
      * @param \Magento\Backend\App\Action\Context $context
@@ -80,9 +72,8 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Category
     }
 
     /**
-     * Filter category data.
+     * Filter category data
      *
-     * @deprecated
      * @param array $rawData
      * @return array
      */
@@ -123,17 +114,19 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Category
             return $resultRedirect->setPath('catalog/*/', ['_current' => true, 'id' => null]);
         }
 
-        $categoryPostData = $this->getRequest()->getPostValue();
+        $data['general'] = $this->getRequest()->getPostValue();
+        $categoryPostData = $data['general'];
 
         $isNewCategory = !isset($categoryPostData['entity_id']);
         $categoryPostData = $this->stringToBoolConverting($categoryPostData);
         $categoryPostData = $this->imagePreprocessing($categoryPostData);
+        $categoryPostData = $this->dateTimePreprocessing($category, $categoryPostData);
         $storeId = isset($categoryPostData['store_id']) ? $categoryPostData['store_id'] : null;
         $store = $this->storeManager->getStore($storeId);
         $this->storeManager->setCurrentStore($store->getCode());
         $parentId = isset($categoryPostData['parent']) ? $categoryPostData['parent'] : null;
         if ($categoryPostData) {
-            $category->addData($categoryPostData);
+            $category->addData($this->_filterCategoryPostData($categoryPostData));
             if ($isNewCategory) {
                 $parentCategory = $this->getParentCategory($parentId, $storeId);
                 $category->setPath($parentCategory->getPath());
@@ -255,46 +248,19 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Category
     }
 
     /**
-     * Sets image attribute data to false, if image was removed.
+     * Image data preprocessing
      *
      * @param array $data
      *
      * @return array
      */
-    public function imagePreprocessing(array $data)
+    public function imagePreprocessing($data)
     {
-        $emptyImageAttributes = $this->getEmptyImageAttributes($data);
-        $attributeCodes = array_keys($emptyImageAttributes);
-        foreach ($attributeCodes as $attributeCode) {
-            $data[$attributeCode] = false;
+        if (empty($data['image'])) {
+            unset($data['image']);
+            $data['image']['delete'] = true;
         }
-
         return $data;
-    }
-
-    /**
-     * Get image attributes without value.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function getEmptyImageAttributes(array $data)
-    {
-        $result = [];
-        $entityType = $this->getConfig()->getEntityType(CategoryAttributeInterface::ENTITY_TYPE_CODE);
-        foreach ($entityType->getAttributeCollection() as $attribute) {
-            $attributeCode = $attribute->getAttributeCode();
-            $backendModel = $attribute->getBackend();
-            if (isset($data[$attributeCode])) {
-                continue;
-            }
-            if (!$backendModel instanceof \Magento\Catalog\Model\Category\Attribute\Backend\Image) {
-                continue;
-            }
-            $result[$attributeCode] = $attribute;
-        }
-
-        return $result;
     }
 
     /**
@@ -379,21 +345,5 @@ class Save extends \Magento\Catalog\Controller\Adminhtml\Category
 
         }
         return ['path' => $path, 'params' => $params];
-    }
-
-    /**
-     * Get Config instance.
-     *
-     * @return \Magento\Eav\Model\Config
-     */
-    private function getConfig()
-    {
-        if (null === $this->eavConfig) {
-            $this->eavConfig = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                \Magento\Eav\Model\Config::class
-            );
-        }
-
-        return $this->eavConfig;
     }
 }

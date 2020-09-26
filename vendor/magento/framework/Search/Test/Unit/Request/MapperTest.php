@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Search\Test\Unit\Request;
@@ -849,9 +849,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->queryBool, $mapper->getRootQuery());
     }
 
-    /**
-     * @return array
-     */
     public function getQueryMatchProvider()
     {
         return [
@@ -879,9 +876,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getQueryFilterQueryReferenceProvider()
     {
         return [
@@ -929,9 +923,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getQueryBoolProvider()
     {
         return [

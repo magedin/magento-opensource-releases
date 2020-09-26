@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Ui\DataProvider\Product\Form\Modifier;
@@ -213,7 +213,7 @@ class AdvancedInventory extends AbstractModifier
                 'dataScope' => 'qty',
                 'validation' => [
                     'validate-number' => true,
-                    'validate-integer' => true,
+                    'validate-digits' => true,
                     'less-than-equals-to' => StockDataFilter::MAX_QTY_VALUE,
                 ],
                 'imports' => [

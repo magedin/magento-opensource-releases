@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Model;
@@ -288,7 +288,7 @@ class PhpReadinessCheck
 
         $data = [];
         $error = false;
-        $iniSetting = intval(ini_get('always_populate_raw_post_data'));
+        $iniSetting = intVal(ini_get('always_populate_raw_post_data'));
 
         $checkVersionConstraint = $this->versionParser->parseConstraints('~5.6.0');
         $normalizedPhpVersion = $this->getNormalizedCurrentPhpVersion(PHP_VERSION);
@@ -304,7 +304,7 @@ class PhpReadinessCheck
 	        Please open your php.ini file and set always_populate_raw_post_data to -1.
  	        If you need more help please call your hosting provider.',
             PHP_VERSION,
-            intval(ini_get('always_populate_raw_post_data'))
+            intVal(ini_get('always_populate_raw_post_data'))
         );
 
         $data['always_populate_raw_post_data'] = [

@@ -348,27 +348,22 @@ class CreditCardGateway
              'deviceData', 'fraudMerchantId', 'paymentMethodNonce',
              ['options' => $options],
              [
-                 'billingAddress' => self::billingAddressSignature()
+                 'billingAddress' => [
+                     'firstName',
+                     'lastName',
+                     'company',
+                     'countryCodeAlpha2',
+                     'countryCodeAlpha3',
+                     'countryCodeNumeric',
+                     'countryName',
+                     'extendedAddress',
+                     'locality',
+                     'region',
+                     'postalCode',
+                     'streetAddress'
+                 ],
              ],
          ];
-    }
-
-    public static function billingAddressSignature()
-    {
-        return [
-            'firstName',
-            'lastName',
-            'company',
-            'countryCodeAlpha2',
-            'countryCodeAlpha3',
-            'countryCodeNumeric',
-            'countryName',
-            'extendedAddress',
-            'locality',
-            'region',
-            'postalCode',
-            'streetAddress'
-        ];
     }
 
     public static function createSignature()
@@ -382,25 +377,23 @@ class CreditCardGateway
 
     public static function updateSignature()
     {
-        $options = self::baseOptions();
-        $options[] = "failOnDuplicatePaymentMethod";
-        $signature = self::baseSignature($options);
+         $signature = self::baseSignature(self::baseOptions());
 
-        $updateExistingBillingSignature = [
-            [
-                'options' => [
-                    'updateExisting'
-                ]
-            ]
-        ];
+         $updateExistingBillingSignature = [
+             [
+                 'options' => [
+                     'updateExisting'
+                 ]
+             ]
+         ];
 
-        foreach($signature AS $key => $value) {
-            if(is_array($value) and array_key_exists('billingAddress', $value)) {
-                $signature[$key]['billingAddress'] = array_merge_recursive($value['billingAddress'], $updateExistingBillingSignature);
-            }
-        }
+         foreach($signature AS $key => $value) {
+             if(is_array($value) and array_key_exists('billingAddress', $value)) {
+                 $signature[$key]['billingAddress'] = array_merge_recursive($value['billingAddress'], $updateExistingBillingSignature);
+             }
+         }
 
-        return $signature;
+         return $signature;
     }
 
     /**

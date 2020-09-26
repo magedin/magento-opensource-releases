@@ -26,17 +26,17 @@ class Fieldset extends Element implements FieldsetInterface
     /**
      * @var array
      */
-    protected $elements  = [];
+    protected $elements  = array();
 
     /**
      * @var array
      */
-    protected $fieldsets = [];
+    protected $fieldsets = array();
 
     /**
      * @var array
      */
-    protected $messages  = [];
+    protected $messages  = array();
 
     /**
      * @var PriorityList
@@ -75,7 +75,7 @@ class Fieldset extends Element implements FieldsetInterface
      * @param  null|int|string  $name    Optional name for the element
      * @param  array            $options Optional options for the element
      */
-    public function __construct($name = null, $options = [])
+    public function __construct($name = null, $options = array())
     {
         $this->iterator = new PriorityList();
         $this->iterator->isLIFO(false);
@@ -145,7 +145,7 @@ class Fieldset extends Element implements FieldsetInterface
      * @return Fieldset|FieldsetInterface
      * @throws Exception\InvalidArgumentException
      */
-    public function add($elementOrFieldset, array $flags = [])
+    public function add($elementOrFieldset, array $flags = array())
     {
         if (is_array($elementOrFieldset)
             || ($elementOrFieldset instanceof Traversable && !$elementOrFieldset instanceof ElementInterface)
@@ -325,7 +325,7 @@ class Fieldset extends Element implements FieldsetInterface
     public function getMessages($elementName = null)
     {
         if (null === $elementName) {
-            $messages = [];
+            $messages = array();
             foreach ($this->iterator as $name => $element) {
                 $messageSet = $element->getMessages();
                 if (!is_array($messageSet)
@@ -405,7 +405,7 @@ class Fieldset extends Element implements FieldsetInterface
 
                     /* This ensures that collections with allow_remove don't re-create child
                      * elements if they all were removed */
-                    $elementOrFieldset->populateValues([]);
+                    $elementOrFieldset->populateValues(array());
                     continue;
                 }
             }
@@ -558,11 +558,11 @@ class Fieldset extends Element implements FieldsetInterface
      * @param array $values
      * @return mixed|void
      */
-    public function bindValues(array $values = [])
+    public function bindValues(array $values = array())
     {
         $objectData = $this->extract();
         $hydrator = $this->getHydrator();
-        $hydratableData = [];
+        $hydratableData = array();
 
         foreach ($values as $name => $value) {
             if (!$this->has($name)) {
@@ -620,19 +620,19 @@ class Fieldset extends Element implements FieldsetInterface
     protected function extract()
     {
         if (!is_object($this->object)) {
-            return [];
+            return array();
         }
 
         $hydrator = $this->getHydrator();
         if (!$hydrator instanceof Hydrator\HydratorInterface) {
-            return [];
+            return array();
         }
 
         $values = $hydrator->extract($this->object);
 
         if (!is_array($values)) {
             // Do nothing if the hydrator returned a non-array
-            return [];
+            return array();
         }
 
         // Recursively extract and populate values for nested fieldsets
@@ -661,8 +661,8 @@ class Fieldset extends Element implements FieldsetInterface
     {
         $items = $this->iterator->toArray(PriorityList::EXTR_BOTH);
 
-        $this->elements  = [];
-        $this->fieldsets = [];
+        $this->elements  = array();
+        $this->fieldsets = array();
         $this->iterator  = new PriorityList();
         $this->iterator->isLIFO(false);
 

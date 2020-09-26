@@ -80,16 +80,16 @@ class ReCaptcha extends FormInput
         $pattern        = '<input type="hidden" %s%s';
         $closingBracket = $this->getInlineClosingBracket();
 
-        $attributes = $this->createAttributesString([
+        $attributes = $this->createAttributesString(array(
             'name' => $challengeName,
             'id'   => $challengeId,
-        ]);
+        ));
         $challenge = sprintf($pattern, $attributes, $closingBracket);
 
-        $attributes = $this->createAttributesString([
+        $attributes = $this->createAttributesString(array(
             'name' => $responseName,
             'id'   => $responseId,
-        ]);
+        ));
         $response = sprintf($pattern, $attributes, $closingBracket);
 
         return $challenge . $response;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -46,10 +46,6 @@ class DataSourcePoolTest extends \PHPUnit_Framework_TestCase
         $this->dataSourcePool->add('DataSourcePoolTestBlock', 'NotExistingBlockClass');
     }
 
-    /**
-     * @param $blockClass
-     * @return mixed
-     */
     protected function createBlock($blockClass)
     {
         $block = $this->getMock('Magento\Framework\View\Element\BlockInterface');

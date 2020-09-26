@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Category;
@@ -37,18 +37,13 @@ class CategoriesJson extends \Magento\Catalog\Controller\Adminhtml\Category
      * Get tree node (Ajax version)
      *
      * @return \Magento\Framework\Controller\ResultInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new \Magento\Framework\Exception\NotFoundException(__('Page not found.'));
-        }
-
         if ($this->getRequest()->getParam('expand_all')) {
-            $this->_objectManager->get(\Magento\Backend\Model\Auth\Session::class)->setIsTreeWasExpanded(true);
+            $this->_objectManager->get('Magento\Backend\Model\Auth\Session')->setIsTreeWasExpanded(true);
         } else {
-            $this->_objectManager->get(\Magento\Backend\Model\Auth\Session::class)->setIsTreeWasExpanded(false);
+            $this->_objectManager->get('Magento\Backend\Model\Auth\Session')->setIsTreeWasExpanded(false);
         }
         $categoryId = (int)$this->getRequest()->getPost('id');
         if ($categoryId) {
@@ -63,7 +58,7 @@ class CategoriesJson extends \Magento\Catalog\Controller\Adminhtml\Category
             /** @var \Magento\Framework\Controller\Result\Json $resultJson */
             $resultJson = $this->resultJsonFactory->create();
             return $resultJson->setJsonData(
-                $this->layoutFactory->create()->createBlock(\Magento\Catalog\Block\Adminhtml\Category\Tree::class)
+                $this->layoutFactory->create()->createBlock('Magento\Catalog\Block\Adminhtml\Category\Tree')
                     ->getTreeJson($category)
             );
         }

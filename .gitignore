@@ -23,8 +23,6 @@ atlassian*
 /lib/internal/flex/varien/.settings
 /node_modules
 /.grunt
-/Gruntfile.js
-/package.json
 
 /pub/media/*.*
 !/pub/media/.htaccess

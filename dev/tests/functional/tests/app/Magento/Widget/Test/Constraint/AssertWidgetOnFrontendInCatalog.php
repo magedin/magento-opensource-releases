@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -13,12 +13,12 @@ use Magento\Widget\Test\Fixture\Widget;
 use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
- * Check that created widget displayed on frontend in Catalog.
+ * Check that created widget displayed on frontent in Catalog.
  */
 class AssertWidgetOnFrontendInCatalog extends AbstractConstraint
 {
     /**
-     * Assert that created widget displayed on frontend in Catalog.
+     * Assert that created widget displayed on frontent in Catalog.
      *
      * @param CmsIndex $cmsIndex
      * @param CatalogCategoryView $catalogCategoryView

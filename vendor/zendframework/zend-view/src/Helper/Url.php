@@ -48,7 +48,7 @@ class Url extends AbstractHelper
      * @throws Exception\RuntimeException         If RouteMatch didn't contain a matched route name
      * @throws Exception\InvalidArgumentException If the params object was not an array or \Traversable object
      */
-    public function __invoke($name = null, $params = [], $options = [], $reuseMatchedParams = false)
+    public function __invoke($name = null, $params = array(), $options = array(), $reuseMatchedParams = false)
     {
         if (null === $this->router) {
             throw new Exception\RuntimeException('No RouteStackInterface instance provided');
@@ -56,7 +56,7 @@ class Url extends AbstractHelper
 
         if (3 == func_num_args() && is_bool($options)) {
             $reuseMatchedParams = $options;
-            $options = [];
+            $options = array();
         }
 
         if ($name === null) {

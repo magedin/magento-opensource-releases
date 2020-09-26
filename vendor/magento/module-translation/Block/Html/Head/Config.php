@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -31,6 +31,7 @@ class Config extends \Magento\Framework\View\Element\AbstractBlock
 
     /**
      * @param \Magento\Framework\View\Element\Context $context
+     * @param RequireJsConfig $config
      * @param \Magento\Framework\View\Page\Config $pageConfig
      * @param \Magento\Translation\Model\FileManager $fileManager
      * @param Inline $inline

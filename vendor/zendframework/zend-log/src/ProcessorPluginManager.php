@@ -18,11 +18,11 @@ class ProcessorPluginManager extends AbstractPluginManager
      *
      * @var array
      */
-    protected $invokableClasses = [
+    protected $invokableClasses = array(
         'backtrace' => 'Zend\Log\Processor\Backtrace',
         'referenceid' => 'Zend\Log\Processor\ReferenceId',
         'requestid' => 'Zend\Log\Processor\RequestId',
-    ];
+    );
 
     /**
      * Allow many processors of the same type

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Account;
@@ -13,7 +13,6 @@ use Magento\Customer\Model\Url as CustomerUrl;
 use Magento\Framework\Exception\EmailNotConfirmedException;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Data\Form\FormKey\Validator;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\State\UserLockedException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
@@ -167,24 +166,24 @@ class LoginPost extends \Magento\Customer\Controller\AbstractAccount
                         'This account is not confirmed. <a href="%1">Click here</a> to resend confirmation email.',
                         $value
                     );
+                    $this->messageManager->addError($message);
+                    $this->session->setUsername($login['username']);
                 } catch (UserLockedException $e) {
                     $message = __(
-                        'Invalid login or password.'
+                        'The account is locked. Please wait and try again or contact %1.',
+                        $this->getScopeConfig()->getValue('contact/email/recipient_email')
                     );
+                    $this->messageManager->addError($message);
+                    $this->session->setUsername($login['username']);
                 } catch (AuthenticationException $e) {
                     $message = __('Invalid login or password.');
-                } catch (LocalizedException $e) {
-                    $message = $e->getMessage();
+                    $this->messageManager->addError($message);
+                    $this->session->setUsername($login['username']);
                 } catch (\Exception $e) {
                     // PA DSS violation: throwing or logging an exception here can disclose customer password
                     $this->messageManager->addError(
                         __('An unspecified error occurred. Please contact us for assistance.')
                     );
-                } finally {
-                    if (isset($message)) {
-                        $this->messageManager->addError($message);
-                        $this->session->setUsername($login['username']);
-                    }
                 }
             } else {
                 $this->messageManager->addError(__('A login and a password are required.'));

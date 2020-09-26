@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,11 +8,10 @@ namespace Magento\Checkout\Test\TestCase;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Checkout\Test\Page\CheckoutCart;
+use Magento\Mtf\Client\BrowserInterface;
 use Magento\Mtf\Fixture\FixtureFactory;
 use Magento\Mtf\ObjectManager;
 use Magento\Mtf\TestCase\Injectable;
-use Magento\Mtf\TestStep\TestStepFactory;
-use Magento\Backend\Test\Page\Adminhtml\SystemConfigEdit;
 
 /**
  * Preconditions:
@@ -26,7 +25,6 @@ use Magento\Backend\Test\Page\Adminhtml\SystemConfigEdit;
  *
  * @group Shopping_Cart_(CS)
  * @ZephyrId MAGETWO-25382
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AddProductsToShoppingCartEntityTest extends Injectable
 {
@@ -36,103 +34,83 @@ class AddProductsToShoppingCartEntityTest extends Injectable
     /* end tags */
 
     /**
-     * Fixture factory.
+     * Browser interface
+     *
+     * @var BrowserInterface
+     */
+    protected $browser;
+
+    /**
+     * Fixture factory
      *
      * @var FixtureFactory
      */
     protected $fixtureFactory;
 
     /**
-     * Catalog product view page.
+     * Catalog product view page
      *
      * @var CatalogProductView
      */
     protected $catalogProductView;
 
     /**
-     * Checkout cart page.
+     * Checkout cart page
      *
      * @var CheckoutCart
      */
     protected $cartPage;
 
     /**
-     * Test step creation factory.
+     * Prepare test data
      *
-     * @var TestStepFactory
-     */
-    protected $testStepFactory;
-
-    /**
-     * Configuration data.
-     *
-     * @var string
-     */
-    protected $configData;
-
-    /**
-     * Prepare test data.
-     *
+     * @param BrowserInterface $browser
+     * @param FixtureFactory $fixtureFactory
      * @param CatalogProductView $catalogProductView
      * @param CheckoutCart $cartPage
-     * @param TestStepFactory $testStepFactory
-     * @param FixtureFactory $fixtureFactory
      * @return void
      */
     public function __prepare(
+        BrowserInterface $browser,
+        FixtureFactory $fixtureFactory,
         CatalogProductView $catalogProductView,
-        CheckoutCart $cartPage,
-        TestStepFactory $testStepFactory,
-        FixtureFactory $fixtureFactory
+        CheckoutCart $cartPage
     ) {
+        $this->browser = $browser;
+        $this->fixtureFactory = $fixtureFactory;
         $this->catalogProductView = $catalogProductView;
         $this->cartPage = $cartPage;
-        $this->testStepFactory = $testStepFactory;
-        $this->fixtureFactory = $fixtureFactory;
     }
 
     /**
-     * Run test add products to shopping cart.
+     * Run test add products to shopping cart
      *
      * @param string $productsData
      * @param array $cart
-     * @param string|null $configData [optional]
      * @return array
      */
-    public function test($productsData, array $cart, $configData = null)
+    public function test($productsData, array $cart)
     {
         // Preconditions
-        $this->configData = $configData;
-
-        $this->testStepFactory->create(
-            \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
-            ['configData' => $this->configData]
-        )->run();
         $products = $this->prepareProducts($productsData);
-        $this->setupConfiguration();
 
         // Steps
         $this->addToCart($products);
 
-        $cart['data'] = (array)$cart['data'];
         $cart['data']['items'] = ['products' => $products];
-        return [
-            'cart' => $this->fixtureFactory->createByCode('cart', $cart),
-            'product' => array_shift($products),
-            'products' => $products,
-        ];
+        return ['cart' => $this->fixtureFactory->createByCode('cart', $cart)];
     }
 
     /**
-     * Create products.
+     * Create products
      *
      * @param string $productList
      * @return array
      */
     protected function prepareProducts($productList)
     {
-        $addToCartStep = $this->testStepFactory->create(
-            \Magento\Catalog\Test\TestStep\CreateProductsStep::class,
+        $addToCartStep = ObjectManager::getInstance()->create(
+            'Magento\Catalog\Test\TestStep\CreateProductsStep',
             ['products' => $productList]
         );
 
@@ -141,38 +119,17 @@ class AddProductsToShoppingCartEntityTest extends Injectable
     }
 
     /**
-     * Add products to cart.
+     * Add products to cart
      *
      * @param array $products
      * @return void
      */
     protected function addToCart(array $products)
     {
-        $addToCartStep = $this->testStepFactory->create(
-            \Magento\Checkout\Test\TestStep\AddProductsToTheCartStep::class,
+        $addToCartStep = ObjectManager::getInstance()->create(
+            'Magento\Checkout\Test\TestStep\AddProductsToTheCartStep',
             ['products' => $products]
         );
         $addToCartStep->run();
-    }
-
-    /**
-     * Setup configuration.
-     *
-     * @return void
-     */
-    private function setupConfiguration()
-    {
-        $this->testStepFactory->create(
-            \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
-            ['configData' => $this->configData]
-        )->run();
-    }
-
-    protected function tearDown()
-    {
-        $this->testStepFactory->create(
-            \Magento\Config\Test\TestStep\SetupConfigurationStep::class,
-            ['configData' => $this->configData, 'rollback' => true]
-        )->cleanup();
     }
 }

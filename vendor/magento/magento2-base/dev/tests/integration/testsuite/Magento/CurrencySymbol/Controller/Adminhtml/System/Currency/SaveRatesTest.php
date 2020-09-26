@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CurrencySymbol\Controller\Adminhtml\System\Currency;
-
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 class SaveRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
@@ -19,7 +17,7 @@ class SaveRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
     protected function setUp()
     {
         $this->currencyRate = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            \Magento\Directory\Model\Currency::class
+            'Magento\Directory\Model\Currency'
         );
         parent::setUp();
     }
@@ -45,7 +43,6 @@ class SaveRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $rate = 1.0000;
 
         $request = $this->getRequest();
-        $request->setMethod(HttpRequest::METHOD_POST);
         $request->setPostValue(
             'rate',
             [
@@ -78,7 +75,6 @@ class SaveRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $rate = '0';
 
         $request = $this->getRequest();
-        $request->setMethod(HttpRequest::METHOD_POST);
         $request->setPostValue(
             'rate',
             [

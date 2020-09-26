@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -32,7 +32,6 @@ class ToolbarTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Framework\App\Config\ScopeConfigInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
-
     /**
      * @var \Magento\Catalog\Model\Config | \PHPUnit_Framework_MockObject_MockObject
      */
@@ -240,9 +239,6 @@ class ToolbarTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $block->getModes());
     }
 
-    /**
-     * @return array
-     */
     public function setModesDataProvider()
     {
         return [

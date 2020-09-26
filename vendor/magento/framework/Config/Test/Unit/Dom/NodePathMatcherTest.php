@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Config\Test\Unit\Dom;
@@ -32,9 +32,6 @@ class NodePathMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedResult, $actualResult);
     }
 
-    /**
-     * @return array
-     */
     public function getNodeInfoDataProvider()
     {
         return [

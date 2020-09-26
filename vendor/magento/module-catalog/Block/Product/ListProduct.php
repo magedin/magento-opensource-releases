@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -318,21 +318,13 @@ class ListProduct extends AbstractProduct implements IdentityInterface
     public function getIdentities()
     {
         $identities = [];
-
+        foreach ($this->_getProductCollection() as $item) {
+            $identities = array_merge($identities, $item->getIdentities());
+        }
         $category = $this->getLayer()->getCurrentCategory();
         if ($category) {
             $identities[] = Product::CACHE_PRODUCT_CATEGORY_TAG . '_' . $category->getId();
         }
-
-        //Check if category page shows only static block (No products)
-        if ($category->getData('display_mode') == Category::DM_PAGE) {
-            return $identities;
-        }
-
-        foreach ($this->_getProductCollection() as $item) {
-            $identities = array_merge($identities, $item->getIdentities());
-        }
-
         return $identities;
     }
 
@@ -340,7 +332,7 @@ class ListProduct extends AbstractProduct implements IdentityInterface
      * Get post parameters
      *
      * @param \Magento\Catalog\Model\Product $product
-     * @return array
+     * @return string
      */
     public function getAddToCartPostParams(\Magento\Catalog\Model\Product $product)
     {
@@ -371,8 +363,7 @@ class ListProduct extends AbstractProduct implements IdentityInterface
                 [
                     'include_container' => true,
                     'display_minimal_price' => true,
-                    'zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST,
-                    'list_category_page' => true
+                    'zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST
                 ]
             );
         }
@@ -381,14 +372,10 @@ class ListProduct extends AbstractProduct implements IdentityInterface
     }
 
     /**
-     * Specifies that price rendering should be done for the list of products
-     * i.e. rendering happens in the scope of product list, but not single product
-     *
      * @return \Magento\Framework\Pricing\Render
      */
     protected function getPriceRender()
     {
-        return $this->getLayout()->getBlock('product.price.render.default')
-            ->setData('is_product_list', true);
+        return $this->getLayout()->getBlock('product.price.render.default');
     }
 }

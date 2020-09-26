@@ -21,22 +21,22 @@ class TraitUsageGenerator extends AbstractGenerator
     /**
      * @var array Array of trait names
      */
-    protected $traits = [];
+    protected $traits = array();
 
     /**
      * @var array Array of trait aliases
      */
-    protected $traitAliases = [];
+    protected $traitAliases = array();
 
     /**
      * @var array Array of trait overrides
      */
-    protected $traitOverrides = [];
+    protected $traitOverrides = array();
 
     /**
      * @var array Array of string names
      */
-    protected $uses = [];
+    protected $uses = array();
 
     public function __construct(ClassGenerator $classGenerator)
     {
@@ -183,10 +183,10 @@ class TraitUsageGenerator extends AbstractGenerator
             throw new Exception\InvalidArgumentException('Invalid trait: Trait does not exists on this class');
         }
 
-        $this->traitAliases[$traitAndMethod] = [
+        $this->traitAliases[$traitAndMethod] = array(
             'alias'      => $alias,
             'visibility' => $visibility
-        ];
+        );
 
         return $this;
     }
@@ -205,7 +205,7 @@ class TraitUsageGenerator extends AbstractGenerator
     public function addTraitOverride($method, $traitsToReplace)
     {
         if (false === is_array($traitsToReplace)) {
-            $traitsToReplace = [$traitsToReplace];
+            $traitsToReplace = array($traitsToReplace);
         }
 
         $traitAndMethod = $method;
@@ -234,7 +234,7 @@ class TraitUsageGenerator extends AbstractGenerator
         }
 
         if (! array_key_exists($traitAndMethod, $this->traitOverrides)) {
-            $this->traitOverrides[$traitAndMethod] = [];
+            $this->traitOverrides[$traitAndMethod] = array();
         }
 
         foreach ($traitsToReplace as $traitToReplace) {
@@ -267,7 +267,7 @@ class TraitUsageGenerator extends AbstractGenerator
         }
 
         $overridesToRemove = (! is_array($overridesToRemove))
-            ? [$overridesToRemove]
+            ? array($overridesToRemove)
             : $overridesToRemove;
         foreach ($overridesToRemove as $traitToRemove) {
             $key = array_search($traitToRemove, $this->traitOverrides[$method]);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Service\V1;
@@ -80,11 +80,6 @@ class OrderGetTest extends WebapiAbstract
         $this->assertArrayHasKey('billing_address', $result);
         foreach ($expectedBillingAddressNotEmpty as $field) {
             $this->assertArrayHasKey($field, $result['billing_address']);
-        }
-
-        //check that nullable fields were marked as optional and were not sent
-        foreach ($result as $value) {
-            $this->assertNotNull($value);
         }
     }
 }

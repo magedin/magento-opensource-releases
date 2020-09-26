@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -112,17 +112,6 @@ class DeploymentConfig
     public function resetData()
     {
         $this->data = null;
-    }
-
-    /**
-     * Check if data from deploy files is available
-     *
-     * @return bool
-     */
-    public function isDbAvailable()
-    {
-        $this->load();
-        return isset($this->data['db']);
     }
 
     /**

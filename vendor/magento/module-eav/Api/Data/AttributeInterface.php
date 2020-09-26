@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Api\Data;
@@ -10,9 +10,7 @@ namespace Magento\Eav\Api\Data;
  * Interface AttributeInterface
  * @api
  */
-interface AttributeInterface extends
-    \Magento\Framework\Api\CustomAttributesDataInterface,
-    \Magento\Framework\Api\MetadataObjectInterface
+interface AttributeInterface extends \Magento\Framework\Api\CustomAttributesDataInterface
 {
     const ATTRIBUTE_ID = 'attribute_id';
 

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -47,9 +47,9 @@ class QuoteRepositoryTest extends \PHPUnit_Framework_TestCase
     protected $searchResultsDataFactory;
 
     /**
-     * @var \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Quote\Model\ResourceModel\Quote\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $quoteCollectionFactory;
+    protected $quoteCollectionMock;
 
     /**
      * @var JoinProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -93,9 +93,9 @@ class QuoteRepositoryTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $this->quoteCollectionFactory = $this->getMockBuilder(
-            'Magento\Quote\Model\ResourceModel\Quote\CollectionFactory'
-        )->disableOriginalConstructor()->setMethods(['create'])->getMock();
+        $this->quoteCollectionMock =
+            $this->getMock('Magento\Quote\Model\ResourceModel\Quote\Collection', [], [], '', false);
+
         $this->extensionAttributesJoinProcessorMock = $this->getMock(
             'Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface',
             [],
@@ -110,7 +110,7 @@ class QuoteRepositoryTest extends \PHPUnit_Framework_TestCase
                 'quoteFactory' => $this->quoteFactoryMock,
                 'storeManager' => $this->storeManagerMock,
                 'searchResultsDataFactory' => $this->searchResultsDataFactory,
-                'quoteCollectionFactory' => $this->quoteCollectionFactory,
+                'quoteCollection' => $this->quoteCollectionMock,
                 'extensionAttributesJoinProcessor' => $this->extensionAttributesJoinProcessorMock
             ]
         );
@@ -435,11 +435,7 @@ class QuoteRepositoryTest extends \PHPUnit_Framework_TestCase
         $filterMock->expects($this->once())->method('getValue')->will($this->returnValue('filter_value'));
 
         //back in getList()
-        $quoteCollection = $this->getMockBuilder('Magento\Quote\Model\ResourceModel\Quote\Collection')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteCollection->expects($this->once())->method('getSize')->willReturn($pageSize);
-        $this->quoteCollectionFactory->expects($this->atLeastOnce())->method('create')->willReturn($quoteCollection);
+        $this->quoteCollectionMock->expects($this->once())->method('getSize')->willReturn($pageSize);
         $searchResult->expects($this->once())->method('setTotalCount')->with($pageSize);
         $sortOrderMock = $this->getMockBuilder('Magento\Framework\Api\SortOrder')
             ->setMethods(['getField', 'getDirection'])

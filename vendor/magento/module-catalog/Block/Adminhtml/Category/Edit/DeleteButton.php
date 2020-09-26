@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Block\Adminhtml\Category\Edit;
@@ -27,8 +27,7 @@ class DeleteButton extends AbstractCategory implements ButtonProviderInterface
             return [
                 'id' => 'delete',
                 'label' => __('Delete'),
-                'on_click' => "deleteConfirm('" .__('Are you sure you want to delete this category?') ."', '"
-                    . $this->getDeleteUrl() . "', {data: {}})",
+                'on_click' => "categoryDelete('" . $this->getDeleteUrl() . "')",
                 'class' => 'delete',
                 'sort_order' => 10
             ];

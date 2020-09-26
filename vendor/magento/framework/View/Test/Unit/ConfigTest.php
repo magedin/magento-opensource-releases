@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -40,17 +40,17 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetViewConfig()
     {
-        $themeCode = 'area/theme';
+        $themeCode = 2;
 
         $themeMock = $this->getMock(
             'Magento\Theme\Model\Theme',
-            ['getFullPath'],
+            ['getCode'],
             [],
             '',
             false
         );
         $themeMock->expects($this->atLeastOnce())
-            ->method('getFullPath')
+            ->method('getCode')
             ->will($this->returnValue($themeCode));
         $params = [
             'themeModel' => $themeMock,

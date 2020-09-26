@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Element\UiComponent\Config\FileCollector;
@@ -75,7 +75,7 @@ class AggregatedFileCollector implements FileCollectorInterface
         }
         $files = $this->collectorAggregated->getFiles($this->design->getDesignTheme(), $searchPattern);
         foreach ($files as $file) {
-            $fullFileName = $file->getFilename();
+            $fullFileName = $file->getFileName();
             $fileDir = dirname($fullFileName);
             $fileName = basename($fullFileName);
             $dirRead = $this->readFactory->create($fileDir);

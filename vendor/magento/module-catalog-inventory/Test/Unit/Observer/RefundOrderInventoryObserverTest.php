@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Test\Unit\Observer;
@@ -152,10 +152,6 @@ class RefundOrderInventoryObserverTest extends \PHPUnit_Framework_TestCase
         $this->observer->execute($this->eventObserver);
     }
 
-    /**
-     * @param $productId
-     * @return mixed
-     */
     private function getCreditMemoItem($productId)
     {
         $parentItemId = false;

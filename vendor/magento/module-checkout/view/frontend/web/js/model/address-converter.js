@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(
@@ -44,13 +44,6 @@ define(
                         addressData.region.region_code = region['code'];
                         addressData.region.region = region['name'];
                     }
-                } else if (
-                    !addressData.region_id
-                    && countryData()[addressData.country_id]
-                    && countryData()[addressData.country_id]['regions']
-                ) {
-                    addressData.region.region_code = '';
-                    addressData.region.region = '';
                 }
                 delete addressData.region_id;
 

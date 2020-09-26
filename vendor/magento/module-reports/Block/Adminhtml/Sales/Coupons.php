@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Block\Adminhtml\Sales;
@@ -17,7 +17,7 @@ class Coupons extends \Magento\Backend\Block\Widget\Grid\Container
      *
      * @var string
      */
-    protected $_template = 'Magento_Reports::report/grid/container.phtml';
+    protected $_template = 'report/grid/container.phtml';
 
     /**
      * {@inheritdoc}

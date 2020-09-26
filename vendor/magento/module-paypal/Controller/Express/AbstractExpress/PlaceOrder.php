@@ -1,14 +1,12 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Controller\Express\AbstractExpress;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Paypal\Model\Api\ProcessableException as ApiProcessableException;
-use Magento\Sales\Api\PaymentFailuresInterface;
 
 /**
  * Class PlaceOrder
@@ -22,11 +20,6 @@ class PlaceOrder extends \Magento\Paypal\Controller\Express\AbstractExpress
     protected $agreementsValidator;
 
     /**
-     * @var PaymentFailuresInterface
-     */
-    private $paymentFailures;
-
-    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -36,8 +29,6 @@ class PlaceOrder extends \Magento\Paypal\Controller\Express\AbstractExpress
      * @param \Magento\Framework\Url\Helper\Data $urlHelper
      * @param \Magento\Customer\Model\Url $customerUrl
      * @param \Magento\Checkout\Api\AgreementsValidatorInterface $agreementValidator
-     * @param PaymentFailuresInterface|null $paymentFailures
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -48,13 +39,9 @@ class PlaceOrder extends \Magento\Paypal\Controller\Express\AbstractExpress
         \Magento\Framework\Session\Generic $paypalSession,
         \Magento\Framework\Url\Helper\Data $urlHelper,
         \Magento\Customer\Model\Url $customerUrl,
-        \Magento\Checkout\Api\AgreementsValidatorInterface $agreementValidator,
-        PaymentFailuresInterface $paymentFailures = null
+        \Magento\Checkout\Api\AgreementsValidatorInterface $agreementValidator
     ) {
         $this->agreementsValidator = $agreementValidator;
-        $this->paymentFailures = $paymentFailures ? : ObjectManager::getInstance()
-            ->get(PaymentFailuresInterface::class);
-
         parent::__construct(
             $context,
             $customerSession,
@@ -144,8 +131,6 @@ class PlaceOrder extends \Magento\Paypal\Controller\Express\AbstractExpress
      */
     protected function _processPaypalApiError($exception)
     {
-        $this->paymentFailures->handle($this->_getCheckoutSession()->getQuoteId(), $exception->getMessage());
-
         switch ($exception->getCode()) {
             case ApiProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED:
             case ApiProcessableException::API_TRANSACTION_EXPIRED:

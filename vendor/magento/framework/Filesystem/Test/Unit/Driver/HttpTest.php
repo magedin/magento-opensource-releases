@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filesystem\Test\Unit\Driver;
@@ -40,9 +40,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, (new Http())->isExists(''));
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestIsExists()
     {
         return [['200 OK', true], ['404 Not Found', false]];
@@ -57,9 +54,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, (new Http())->stat(''));
     }
 
-    /**
-     * @return array
-     */
     public function dataProviderForTestStat()
     {
         $headers1 = [

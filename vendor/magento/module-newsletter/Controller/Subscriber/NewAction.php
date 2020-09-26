@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Newsletter\Controller\Subscriber;
@@ -100,8 +100,7 @@ class NewAction extends \Magento\Newsletter\Controller\Subscriber
      */
     protected function validateEmailFormat($email)
     {
-        $validator = new \Zend\Validator\EmailAddress();
-        if (!$validator->isValid($email)) {
+        if (!\Zend_Validate::is($email, 'EmailAddress')) {
             throw new \Magento\Framework\Exception\LocalizedException(__('Please enter a valid email address.'));
         }
     }

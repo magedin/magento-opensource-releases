@@ -1,16 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Captcha\Model;
 
-use Magento\Framework\Math\Random;
-
 /**
  * Implementation of \Zend_Captcha
- *
- * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  */
@@ -73,29 +69,21 @@ class DefaultModel extends \Zend_Captcha_Image implements \Magento\Captcha\Model
     protected $_session;
 
     /**
-     * @var Random
-     */
-    private $randomMath;
-
-    /**
      * @param \Magento\Framework\Session\SessionManagerInterface $session
      * @param \Magento\Captcha\Helper\Data $captchaData
      * @param \Magento\Captcha\Model\ResourceModel\LogFactory $resLogFactory
      * @param string $formId
-     * @param Random $randomMath
      */
     public function __construct(
         \Magento\Framework\Session\SessionManagerInterface $session,
         \Magento\Captcha\Helper\Data $captchaData,
         \Magento\Captcha\Model\ResourceModel\LogFactory $resLogFactory,
-        $formId,
-        Random $randomMath = null
+        $formId
     ) {
         $this->_session = $session;
         $this->_captchaData = $captchaData;
         $this->_resLogFactory = $resLogFactory;
         $this->_formId = $formId;
-        $this->randomMath = $randomMath ?: \Magento\Framework\App\ObjectManager::getInstance()->get(Random::class);
     }
 
     /**
@@ -373,9 +361,13 @@ class DefaultModel extends \Zend_Captcha_Image implements \Magento\Captcha\Model
      */
     protected function _generateWord()
     {
-        $symbols = (string)$this->_captchaData->getConfig('symbols');
+        $word = '';
+        $symbols = $this->_getSymbols();
         $wordLen = $this->_getWordLen();
-        return $this->randomMath->getRandomString($wordLen, $symbols);
+        for ($i = 0; $i < $wordLen; $i++) {
+            $word .= $symbols[array_rand($symbols)];
+        }
+        return $word;
     }
 
     /**

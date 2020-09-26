@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Model\Metadata;
@@ -79,9 +79,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($isValid, $this->validator->isValid(new \Magento\Framework\DataObject($data)));
     }
 
-    /**
-     * @return array
-     */
     public function trueFalseDataProvider()
     {
         return [[true], [false]];

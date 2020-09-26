@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,15 +9,12 @@
  */
 namespace Magento\TestFramework\TestCase;
 
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Element\Message\InterpretationStrategyInterface;
 use Magento\Theme\Controller\Result\MessagePlugin;
 
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractController extends \PHPUnit_Framework_TestCase
 {
@@ -66,13 +63,10 @@ abstract class AbstractController extends \PHPUnit_Framework_TestCase
     {
         $this->_assertSessionErrors = false;
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->_objectManager->removeSharedInstance(\Magento\Framework\App\ResponseInterface::class);
-        $this->_objectManager->removeSharedInstance(\Magento\Framework\App\RequestInterface::class);
+        $this->_objectManager->removeSharedInstance('Magento\Framework\App\ResponseInterface');
+        $this->_objectManager->removeSharedInstance('Magento\Framework\App\RequestInterface');
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function tearDown()
     {
         $this->_request = null;
@@ -101,16 +95,7 @@ abstract class AbstractController extends \PHPUnit_Framework_TestCase
      */
     public function dispatch($uri)
     {
-        /** @var HttpRequest $request */
-        $request = $this->getRequest();
-        $request->setRequestUri($uri);
-        if ($request->isPost()
-            && !array_key_exists('form_key', $request->getPost())
-        ) {
-            /** @var FormKey $formKey */
-            $formKey = $this->_objectManager->get(FormKey::class);
-            $request->setPostValue('form_key', $formKey->getFormKey());
-        }
+        $this->getRequest()->setRequestUri($uri);
         $this->_getBootstrap()->runApp();
     }
 
@@ -212,24 +197,16 @@ abstract class AbstractController extends \PHPUnit_Framework_TestCase
     public function assertSessionMessages(
         \PHPUnit_Framework_Constraint $constraint,
         $messageType = null,
-        $messageManagerClass = \Magento\Framework\Message\Manager::class
+        $messageManagerClass = 'Magento\Framework\Message\Manager'
     ) {
         $this->_assertSessionErrors = false;
-        /** @var MessageInterface[]|string[] $messageObjects */
+
         $messages = $this->getMessages($messageType, $messageManagerClass);
-        /** @var string[] $messages */
-        $messagesFiltered = array_map(
-            function ($message) {
-                /** @var MessageInterface|string $message */
-                return ($message instanceof MessageInterface) ? $message->toString() : $message;
-            },
-            $messages
-        );
 
         $this->assertThat(
-            $messagesFiltered,
+            $messages,
             $constraint,
-            'Session messages do not meet expectations ' . var_export($messagesFiltered, true)
+            'Session messages do not meet expectations ' . var_export($messages, true)
         );
     }
 
@@ -242,7 +219,7 @@ abstract class AbstractController extends \PHPUnit_Framework_TestCase
      */
     protected function getMessages(
         $messageType = null,
-        $messageManagerClass = \Magento\Framework\Message\Manager::class
+        $messageManagerClass = 'Magento\Framework\Message\Manager'
     ) {
         return array_merge(
             $this->getSessionMessages($messageType, $messageManagerClass),
@@ -259,7 +236,7 @@ abstract class AbstractController extends \PHPUnit_Framework_TestCase
      */
     protected function getSessionMessages(
         $messageType = null,
-        $messageManagerClass = \Magento\Framework\Message\Manager::class
+        $messageManagerClass = 'Magento\Framework\Message\Manager'
     ) {
         /** @var $messageManager \Magento\Framework\Message\ManagerInterface */
         $messageManager = $this->_objectManager->get($messageManagerClass);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Shipping\Block\Adminhtml;
@@ -56,7 +56,7 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
                 'onclick',
                 "deleteConfirm('" . __(
                     'Are you sure you want to send a Shipment email to customer?'
-                ) . "', '" . $this->getEmailUrl() . "', {data: {}})"
+                ) . "', '" . $this->getEmailUrl() . "')"
             );
         }
 

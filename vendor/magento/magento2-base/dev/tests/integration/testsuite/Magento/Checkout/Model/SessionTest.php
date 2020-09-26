@@ -1,12 +1,11 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Model;
 
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Quote\Model\Quote;
 
 class SessionTest extends \PHPUnit_Framework_TestCase
 {
@@ -64,24 +63,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         /** Execute SUT */
         $quote = $this->_checkoutSession->getQuote();
         $this->_validateCustomerDataInQuote($quote);
-    }
-
-    /**
-     * @magentoDataFixture Magento/Sales/_files/quote_with_customer.php
-     * @magentoAppIsolation enabled
-     */
-    public function testGetQuoteWithMismatchingSession()
-    {
-        /** @var Quote $quote */
-        $quote = Bootstrap::getObjectManager()->create(Quote::class);
-        /** @var \Magento\Quote\Model\ResourceModel\Quote $quoteResource */
-        $quoteResource = Bootstrap::getObjectManager()->create(\Magento\Quote\Model\ResourceModel\Quote::class);
-        $quoteResource->load($quote, 'test01', 'reserved_order_id');
-        // Customer on quote is not logged in
-        $this->_checkoutSession->setQuoteId($quote->getId());
-        $sessionQuote = $this->_checkoutSession->getQuote();
-        $this->assertEmpty($sessionQuote->getCustomerId());
-        $this->assertNotEquals($quote->getId(), $sessionQuote->getId());
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint jquery:true browser:true*/
@@ -224,7 +224,7 @@
                 }
                 return true;
             },
-            $.mage.__('Please enter a number greater 0 in this field.')
+            'Please enter a number greater 0 in this field.'
         ],
         'validate-rating': [
             function () {
@@ -236,7 +236,7 @@
                 });
                 return noError;
             },
-            $.mage.__('Please select one of each ratings above.')
+            'Please select one of each ratings above.'
         ],
         'validate-downloadable-file': [
             function (v, element) {
@@ -267,7 +267,7 @@
                 }
                 return true;
             },
-            $.mage.__('Please specify Url.')
+            'Please specify Url.'
         ]
     }, function (rule, i) {
         rule.unshift(i);

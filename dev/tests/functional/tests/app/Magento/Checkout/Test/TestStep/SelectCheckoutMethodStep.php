@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -45,32 +45,22 @@ class SelectCheckoutMethodStep implements TestStepInterface
     protected $logoutCustomerOnFrontend;
 
     /**
-     * Shipping carrier and method.
-     *
-     * @var array
-     */
-    private $shipping;
-
-    /**
      * @constructor
      * @param CheckoutOnepage $checkoutOnepage
      * @param Customer $customer
      * @param LogoutCustomerOnFrontendStep $logoutCustomerOnFrontend
      * @param string $checkoutMethod
-     * @param array $shipping
      */
     public function __construct(
         CheckoutOnepage $checkoutOnepage,
         Customer $customer,
         LogoutCustomerOnFrontendStep $logoutCustomerOnFrontend,
-        $checkoutMethod,
-        array $shipping = []
+        $checkoutMethod
     ) {
         $this->checkoutOnepage = $checkoutOnepage;
         $this->customer = $customer;
         $this->logoutCustomerOnFrontend = $logoutCustomerOnFrontend;
         $this->checkoutMethod = $checkoutMethod;
-        $this->shipping = $shipping;
     }
 
     /**
@@ -82,8 +72,6 @@ class SelectCheckoutMethodStep implements TestStepInterface
     {
         if ($this->checkoutMethod === 'login') {
             $this->checkoutOnepage->getLoginBlock()->loginCustomer($this->customer);
-        } elseif (($this->checkoutMethod === 'guest') && empty($this->shipping)) {
-            $this->checkoutOnepage->getLoginBlock()->fillGuestFields($this->customer);
         }
     }
 

@@ -16,7 +16,7 @@ namespace Braintree;
  * @property-read string $disbursementDate
  * @property-read object $transactionDetails
  */
-class Dispute extends Base
+final class Dispute extends Base
 {
     protected $_attributes = [];
 

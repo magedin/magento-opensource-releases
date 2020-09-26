@@ -1,12 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Order;
-
-use \Magento\Framework\App\ObjectManager;
-use \Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface;
 
 /**
  * Sales order history block
@@ -16,7 +13,7 @@ class History extends \Magento\Framework\View\Element\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/history.phtml';
+    protected $_template = 'order/history.phtml';
 
     /**
      * @var \Magento\Sales\Model\ResourceModel\Order\CollectionFactory
@@ -35,11 +32,6 @@ class History extends \Magento\Framework\View\Element\Template
 
     /** @var \Magento\Sales\Model\ResourceModel\Order\Collection */
     protected $orders;
-
-    /**
-     * @var CollectionFactoryInterface
-     */
-    private $orderCollectionFactory;
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
@@ -71,19 +63,6 @@ class History extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * @return CollectionFactoryInterface
-     *
-     * @deprecated
-     */
-    private function getOrderCollectionFactory()
-    {
-        if ($this->orderCollectionFactory === null) {
-            $this->orderCollectionFactory = ObjectManager::getInstance()->get(CollectionFactoryInterface::class);
-        }
-        return $this->orderCollectionFactory;
-    }
-
-    /**
      * @return bool|\Magento\Sales\Model\ResourceModel\Order\Collection
      */
     public function getOrders()
@@ -92,8 +71,11 @@ class History extends \Magento\Framework\View\Element\Template
             return false;
         }
         if (!$this->orders) {
-            $this->orders = $this->getOrderCollectionFactory()->create($customerId)->addFieldToSelect(
+            $this->orders = $this->_orderCollectionFactory->create()->addFieldToSelect(
                 '*'
+            )->addFieldToFilter(
+                'customer_id',
+                $customerId
             )->addFieldToFilter(
                 'status',
                 ['in' => $this->_orderConfig->getVisibleOnFrontStatuses()]

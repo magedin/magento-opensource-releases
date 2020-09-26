@@ -1,15 +1,14 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Section;
 
-use Magento\Customer\CustomerData\Section\Identifier;
 use Magento\Customer\CustomerData\SectionPoolInterface;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Escaper;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Customer section controller
@@ -32,20 +31,15 @@ class Load extends \Magento\Framework\App\Action\Action
     protected $sectionPool;
 
     /**
-     * @var  Escaper
-     */
-    private $escaper;
-
-    /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
-     * @param Identifier $sectionIdentifier
+     * @param \Magento\Customer\CustomerData\Section\Identifier $sectionIdentifier
      * @param SectionPoolInterface $sectionPool
      */
     public function __construct(
         Context $context,
         JsonFactory $resultJsonFactory,
-        Identifier $sectionIdentifier,
+        \Magento\Customer\CustomerData\Section\Identifier $sectionIdentifier,
         SectionPoolInterface $sectionPool
     ) {
         parent::__construct($context);
@@ -61,14 +55,12 @@ class Load extends \Magento\Framework\App\Action\Action
     {
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
-        $resultJson->setHeader('Cache-Control', 'max-age=0, must-revalidate, no-cache, no-store', true);
-        $resultJson->setHeader('Pragma', 'no-cache', true);
         try {
             $sectionNames = $this->getRequest()->getParam('sections');
             $sectionNames = $sectionNames ? array_unique(\explode(',', $sectionNames)) : null;
 
             $updateSectionId = $this->getRequest()->getParam('update_section_id');
-            if ('false' === $updateSectionId) {
+            if ('false' == $updateSectionId) {
                 $updateSectionId = false;
             }
             $response = $this->sectionPool->getSectionsData($sectionNames, (bool)$updateSectionId);
@@ -78,21 +70,9 @@ class Load extends \Magento\Framework\App\Action\Action
                 \Zend\Http\AbstractMessage::VERSION_11,
                 'Bad Request'
             );
-            $response = ['message' => $this->getEscaper()->escapeHtml($e->getMessage())];
+            $response = ['message' => $e->getMessage()];
         }
 
         return $resultJson->setData($response);
-    }
-
-    /**
-     * @deprecated
-     * @return Escaper
-     */
-    private function getEscaper()
-    {
-        if ($this->escaper == null) {
-            $this->escaper = $this->_objectManager->get(Escaper::class);
-        }
-        return $this->escaper;
     }
 }

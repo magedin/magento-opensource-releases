@@ -26,7 +26,7 @@ class FormElementErrors extends AbstractHelper
     /**
      * @var array Default attributes for the open format tag
      */
-    protected $attributes = [];
+    protected $attributes = array();
 
     /**
      * Invoke helper as functor
@@ -37,7 +37,7 @@ class FormElementErrors extends AbstractHelper
      * @param  array            $attributes
      * @return string|FormElementErrors
      */
-    public function __invoke(ElementInterface $element = null, array $attributes = [])
+    public function __invoke(ElementInterface $element = null, array $attributes = array())
     {
         if (!$element) {
             return $this;
@@ -54,7 +54,7 @@ class FormElementErrors extends AbstractHelper
      * @throws Exception\DomainException
      * @return string
      */
-    public function render(ElementInterface $element, array $attributes = [])
+    public function render(ElementInterface $element, array $attributes = array())
     {
         $messages = $element->getMessages();
         if (empty($messages)) {
@@ -77,7 +77,7 @@ class FormElementErrors extends AbstractHelper
 
         // Flatten message array
         $escapeHtml      = $this->getEscapeHtmlHelper();
-        $messagesToPrint = [];
+        $messagesToPrint = array();
         array_walk_recursive($messages, function ($item) use (&$messagesToPrint, $escapeHtml) {
             $messagesToPrint[] = $escapeHtml($item);
         });

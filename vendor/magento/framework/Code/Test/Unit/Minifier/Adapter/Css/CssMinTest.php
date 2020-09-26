@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Code\Test\Unit\Minifier\Adapter\Css;
@@ -9,7 +9,7 @@ class CssMinTest extends \PHPUnit_Framework_TestCase
 {
     public function testMinify()
     {
-        $cssMinMock = $this->getMockBuilder(\tubalmartin\CssMin\Minifier::class)
+        $cssMinMock = $this->getMockBuilder(\CSSmin::class)
             ->disableOriginalConstructor()
             ->getMock();
         $cssMinAdapter = new \Magento\Framework\Code\Minifier\Adapter\Css\CSSmin($cssMinMock);

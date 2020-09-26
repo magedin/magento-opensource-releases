@@ -1,14 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Model\Indexer;
 
-use Magento\CatalogSearch\Model\Indexer\Fulltext\Action\Full;
 use Magento\CatalogSearch\Model\Indexer\Fulltext\Action\FullFactory;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext as FulltextResource;
-use Magento\Framework\App\ObjectManager;
 use \Magento\Framework\Search\Request\Config as SearchRequestConfig;
 use Magento\Framework\Search\Request\DimensionFactory;
 use Magento\Store\Model\StoreManagerInterface;
@@ -27,36 +25,26 @@ class Fulltext implements \Magento\Framework\Indexer\ActionInterface, \Magento\F
      * @var IndexerHandlerFactory
      */
     private $indexerHandlerFactory;
-
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
-
     /**
      * @var DimensionFactory
      */
     private $dimensionFactory;
-
     /**
      * @var Full
      */
     private $fullAction;
-
     /**
      * @var FulltextResource
      */
     private $fulltextResource;
-
     /**
      * @var SearchRequestConfig
      */
     private $searchRequestConfig;
-
-    /**
-     * @var ParentProductsResolver
-     */
-    private $parentProductsResolver;
 
     /**
      * @param FullFactory $fullActionFactory
@@ -66,7 +54,6 @@ class Fulltext implements \Magento\Framework\Indexer\ActionInterface, \Magento\F
      * @param FulltextResource $fulltextResource
      * @param SearchRequestConfig $searchRequestConfig
      * @param array $data
-     * @param ParentProductsResolver $parentProductsResolver
      */
     public function __construct(
         FullFactory $fullActionFactory,
@@ -75,8 +62,7 @@ class Fulltext implements \Magento\Framework\Indexer\ActionInterface, \Magento\F
         DimensionFactory $dimensionFactory,
         FulltextResource $fulltextResource,
         SearchRequestConfig $searchRequestConfig,
-        array $data,
-        ParentProductsResolver $parentProductsResolver = null
+        array $data
     ) {
         $this->fullAction = $fullActionFactory->create(['data' => $data]);
         $this->indexerHandlerFactory = $indexerHandlerFactory;
@@ -85,8 +71,6 @@ class Fulltext implements \Magento\Framework\Indexer\ActionInterface, \Magento\F
         $this->fulltextResource = $fulltextResource;
         $this->searchRequestConfig = $searchRequestConfig;
         $this->data = $data;
-        $this->parentProductsResolver = $parentProductsResolver
-            ?: ObjectManager::getInstance()->get(ParentProductsResolver::class);
     }
 
     /**
@@ -102,15 +86,10 @@ class Fulltext implements \Magento\Framework\Indexer\ActionInterface, \Magento\F
         $saveHandler = $this->indexerHandlerFactory->create([
             'data' => $this->data
         ]);
-
-        $ids = (array)$ids;
-        $parentProductIds = $this->parentProductsResolver->getParentProductIds($ids);
-        $idsToBeReIndexed = array_unique(array_merge($ids, $parentProductIds));
-
         foreach ($storeIds as $storeId) {
             $dimension = $this->dimensionFactory->create(['name' => 'scope', 'value' => $storeId]);
-            $saveHandler->deleteIndex([$dimension], new \ArrayObject($idsToBeReIndexed));
-            $saveHandler->saveIndex([$dimension], $this->fullAction->rebuildStoreIndex($storeId, $idsToBeReIndexed));
+            $saveHandler->deleteIndex([$dimension], new \ArrayObject($ids));
+            $saveHandler->saveIndex([$dimension], $this->fullAction->rebuildStoreIndex($storeId, $ids));
         }
     }
 

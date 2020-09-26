@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\UrlRewrite\Block;
@@ -65,7 +65,7 @@ class Edit extends \Magento\Backend\Block\Widget\Container
      */
     protected function _prepareLayout()
     {
-        $this->setTemplate('Magento_UrlRewrite::edit.phtml');
+        $this->setTemplate('edit.phtml');
 
         $this->_addBackButton();
         $this->_prepareLayoutFeatures();
@@ -173,7 +173,7 @@ class Edit extends \Magento\Backend\Block\Widget\Container
                             ['id' => $this->getUrlRewrite()->getId()]
                         )
                     )
-                    . ', {data: {}})',
+                    . ')',
                 'class' => 'scalable delete',
                 'level' => -1
             ]

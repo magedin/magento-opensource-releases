@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Observer\Frontend;
@@ -87,9 +87,6 @@ class AddVatRequestParamsOrderCommentTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->observer->execute($observer));
     }
 
-    /**
-     * @return array
-     */
     public function addVatRequestParamsOrderCommentDataProvider()
     {
         return [

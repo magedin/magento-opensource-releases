@@ -32,8 +32,6 @@ class JsonParserTest extends PHPUnit_Framework_TestCase
         '["http:\/\/foo\\\\zomg"]',
         '{"":"foo"}',
         '{"a":"b", "b":"c"}',
-        '0',
-        '""',
     );
 
     /**
@@ -101,7 +99,7 @@ class JsonParserTest extends PHPUnit_Framework_TestCase
             $parser->parse('{"bar": "foo}');
             $this->fail('Invalid unterminated string should be detected');
         } catch (ParsingException $e) {
-            $this->assertContains('Invalid string, it appears you forgot to terminate a string, or attempted to write a multiline string which is invalid', $e->getMessage());
+            $this->assertContains('Invalid string, it appears you forgot to terminated the string, or attempted to write a multiline string which is invalid', $e->getMessage());
         }
     }
 
@@ -113,7 +111,7 @@ class JsonParserTest extends PHPUnit_Framework_TestCase
 bar"}');
             $this->fail('Invalid multi-line string should be detected');
         } catch (ParsingException $e) {
-            $this->assertContains('Invalid string, it appears you forgot to terminate a string, or attempted to write a multiline string which is invalid', $e->getMessage());
+            $this->assertContains('Invalid string, it appears you forgot to terminated the string, or attempted to write a multiline string which is invalid', $e->getMessage());
         }
     }
 
@@ -156,9 +154,6 @@ bar"}');
     {
         $parser = new JsonParser();
 
-        if (PHP_VERSION_ID >= 70100) {
-            $this->markTestSkipped('Only for PHP < 7.1');
-        }
         try {
             $parser->parse('{"":"b", "_empty_":"a"}', JsonParser::DETECT_KEY_CONFLICTS);
             $this->fail('Duplicate keys should not be allowed');
@@ -187,9 +182,6 @@ bar"}');
     {
         $parser = new JsonParser();
 
-        if (PHP_VERSION_ID >= 70100) {
-            $this->markTestSkipped('Only for PHP < 7.1');
-        }
         $result = $parser->parse('{"":"a", "_empty_":"b"}', JsonParser::ALLOW_DUPLICATE_KEYS);
         $this->assertThat($result,
             $this->logicalAnd(
@@ -217,13 +209,5 @@ bar"}');
         } catch (ParsingException $e) {
             $this->assertContains('BOM detected', $e->getMessage());
         }
-    }
-
-    public function testLongString()
-    {
-        $parser = new JsonParser();
-
-        $json = '{"k":"' . str_repeat("a\\n",10000) . '"}';
-        $this->assertEquals(json_decode($json), $parser->parse($json));
     }
 }

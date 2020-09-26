@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Block\Html;
@@ -54,6 +54,7 @@ class Footer extends \Magento\Framework\View\Element\Template implements \Magent
     {
         $this->addData(
             [
+                'cache_lifetime' => false,
                 'cache_tags' => [\Magento\Store\Model\Store::CACHE_TAG, \Magento\Cms\Model\Block::CACHE_TAG],
             ]
         );
@@ -72,8 +73,6 @@ class Footer extends \Magento\Framework\View\Element\Template implements \Magent
             (int)$this->_storeManager->getStore()->isCurrentlySecure(),
             $this->_design->getDesignTheme()->getId(),
             $this->httpContext->getValue(Context::CONTEXT_AUTH),
-            $this->getTemplateFile(),
-            'template' => $this->getTemplate()
         ];
     }
 
@@ -117,15 +116,5 @@ class Footer extends \Magento\Framework\View\Element\Template implements \Magent
     public function getIdentities()
     {
         return [\Magento\Store\Model\Store::CACHE_TAG, \Magento\Cms\Model\Block::CACHE_TAG];
-    }
-
-    /**
-     * Get block cache life time
-     *
-     * @return int
-     */
-    protected function getCacheLifetime()
-    {
-        return parent::getCacheLifetime() ?: 3600;
     }
 }

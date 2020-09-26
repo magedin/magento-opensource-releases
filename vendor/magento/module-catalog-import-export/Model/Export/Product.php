@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogImportExport\Model\Export;
 
-use Magento\Framework\DB\Ddl\Table;
 use Magento\ImportExport\Model\Import;
 use \Magento\Store\Model\Store;
 use \Magento\CatalogImportExport\Model\Import\Product as ImportProduct;
@@ -87,13 +86,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     protected $_indexValueAttributes = [
         'status',
     ];
-
-    /**
-     * Attributes defined by user
-     *
-     * @var array
-     */
-    private $userDefinedAttributes = [];
 
     /**
      * @var array
@@ -263,20 +255,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     ];
 
     /**
-     * Codes of attributes which are displayed as dates
-     *
-     * @var array
-     */
-    protected $dateAttrCodes = [
-        'special_from_date',
-        'special_to_date',
-        'news_from_date',
-        'news_to_date',
-        'custom_design_from',
-        'custom_design_to'
-    ];
-
-    /**
      * Attributes codes which are appropriate for export and not the part of additional_attributes.
      *
      * @var array
@@ -360,7 +338,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      * @param Product\Type\Factory $_typeFactory
      * @param \Magento\Catalog\Model\Product\LinkTypeProvider $linkTypeProvider
      * @param \Magento\CatalogImportExport\Model\Export\RowCustomizerInterface $rowCustomizer
-     * @param array $dateAttrCodes
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -379,8 +356,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
         \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeColFactory,
         \Magento\CatalogImportExport\Model\Export\Product\Type\Factory $_typeFactory,
         \Magento\Catalog\Model\Product\LinkTypeProvider $linkTypeProvider,
-        \Magento\CatalogImportExport\Model\Export\RowCustomizerInterface $rowCustomizer,
-        array $dateAttrCodes = []
+        \Magento\CatalogImportExport\Model\Export\RowCustomizerInterface $rowCustomizer
     ) {
         $this->_entityCollectionFactory = $collectionFactory;
         $this->_exportConfig = $exportConfig;
@@ -395,7 +371,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
         $this->_typeFactory = $_typeFactory;
         $this->_linkTypeProvider = $linkTypeProvider;
         $this->rowCustomizer = $rowCustomizer;
-        $this->dateAttrCodes = array_merge($this->dateAttrCodes, $dateAttrCodes);
 
         parent::__construct($localeDate, $config, $resource, $storeManager);
 
@@ -763,9 +738,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     protected function getItemsPerPage()
     {
         if ($this->_itemsPerPage === null) {
-            $memoryLimitConfigValue = trim(ini_get('memory_limit'));
-            $lastMemoryLimitLetter = strtolower($memoryLimitConfigValue[strlen($memoryLimitConfigValue) - 1]);
-            $memoryLimit = (int) $memoryLimitConfigValue;
+            $memoryLimit = trim(ini_get('memory_limit'));
+            $lastMemoryLimitLetter = strtolower($memoryLimit[strlen($memoryLimit) - 1]);
             switch ($lastMemoryLimitLetter) {
                 case 'g':
                     $memoryLimit *= 1024;
@@ -923,29 +897,17 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     }
                     $fieldName = isset($this->_fieldsMap[$code]) ? $this->_fieldsMap[$code] : $code;
 
-                    if ($this->_attributeTypes[$code] == 'datetime') {
-                        if (in_array($code, $this->dateAttrCodes)
-                            || in_array($code, $this->userDefinedAttributes)
-                        ) {
-                            $attrValue = $this->_localeDate->formatDateTime(
-                                new \DateTime($attrValue),
-                                \IntlDateFormatter::SHORT,
-                                \IntlDateFormatter::NONE,
-                                null,
-                                date_default_timezone_get()
-                            );
-                        } else {
-                            $attrValue = $this->_localeDate->formatDateTime(
-                                new \DateTime($attrValue),
-                                \IntlDateFormatter::SHORT,
-                                \IntlDateFormatter::SHORT
-                            );
-                        }
+                    if ($this->_attributeTypes[$code] === 'datetime') {
+                        $attrValue = $this->_localeDate->formatDateTime(
+                            new \DateTime($attrValue),
+                            \IntlDateFormatter::SHORT,
+                            \IntlDateFormatter::SHORT
+                        );
                     }
 
                     if ($storeId != Store::DEFAULT_STORE_ID
                         && isset($data[$itemId][Store::DEFAULT_STORE_ID][$fieldName])
-                        && $data[$itemId][Store::DEFAULT_STORE_ID][$fieldName] == htmlspecialchars_decode($attrValue)
+                        && $data[$itemId][Store::DEFAULT_STORE_ID][$fieldName] == $attrValue
                     ) {
                         continue;
                     }
@@ -954,7 +916,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                         if (is_scalar($attrValue)) {
                             if (!in_array($fieldName, $this->_getExportMainAttrCodes())) {
                                 $additionalAttributes[$fieldName] = $fieldName .
-                                    ImportProduct::PAIR_NAME_VALUE_SEPARATOR . $this->wrapValue($attrValue);
+                                    ImportProduct::PAIR_NAME_VALUE_SEPARATOR . $attrValue;
                             }
                             $data[$itemId][$storeId][$fieldName] = htmlspecialchars_decode($attrValue);
                         }
@@ -964,7 +926,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                             $additionalAttributes[$code] = $fieldName .
                                 ImportProduct::PAIR_NAME_VALUE_SEPARATOR . implode(
                                     ImportProduct::PSEUDO_MULTI_LINE_SEPARATOR,
-                                    $this->wrapValue($this->collectedMultiselectsData[$storeId][$productLinkId][$code])
+                                    $this->collectedMultiselectsData[$storeId][$productLinkId][$code]
                                 );
                         }
                     }
@@ -984,7 +946,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     $data[$itemId][$storeId][self::COL_ATTR_SET] = $this->_attrSetIdToName[$attrSetId];
                     $data[$itemId][$storeId][self::COL_TYPE] = $item->getTypeId();
                 }
-                $data[$itemId][$storeId][self::COL_SKU] = htmlspecialchars_decode($item->getSku());
+                $data[$itemId][$storeId][self::COL_SKU] = $item->getSku();
                 $data[$itemId][$storeId]['store_id'] = $storeId;
                 $data[$itemId][$storeId]['product_id'] = $itemId;
                 $data[$itemId][$storeId]['product_link_id'] = $productLinkId;
@@ -993,25 +955,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
         }
 
         return $data;
-    }
-
-    /**
-     * Wrap values with double quotes if "Fields Enclosure" option is enabled
-     *
-     * @param string|array $value
-     * @return string|array
-     */
-    private function wrapValue($value)
-    {
-        if (!empty($this->_parameters[\Magento\ImportExport\Model\Export::FIELDS_ENCLOSURE])) {
-            $wrap = function ($value) {
-                return sprintf('"%s"', str_replace('"', '""', $value));
-            };
-
-            $value = is_array($value) ? array_map($wrap, $value) : $wrap($value);
-        }
-
-        return $value;
     }
 
     /**
@@ -1408,9 +1351,6 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
             $this->_attributeValues[$attribute->getAttributeCode()] = $this->getAttributeOptions($attribute);
             $this->_attributeTypes[$attribute->getAttributeCode()] =
                 \Magento\ImportExport\Model\Import::getAttributeType($attribute);
-            if ($attribute->getIsUserDefined()) {
-                $this->userDefinedAttributes[] = $attribute->getAttributeCode();
-            }
         }
         return $this;
     }

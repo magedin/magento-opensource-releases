@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(
@@ -8,25 +8,10 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/payment/method-list',
         'Magento_Checkout/js/action/select-payment-method'
-    ], function (_, quote, methodList, selectPaymentMethod) {
+    ],
+    function (_, quote, methodList, selectPaymentMethod) {
         'use strict';
-
-        /**
-         * Free method filter
-         * @param {Object} paymentMethod
-         * @return {Boolean}
-         */
-        var isFreePaymentMethod = function (paymentMethod) {
-                return paymentMethod.method === 'free';
-            },
-
-            /**
-             * Grabs the grand total from quote
-             * @return {Number}
-             */
-            getGrandTotal = function () {
-                return quote.totals()['grand_total'];
-            };
+        var freeMethodCode = 'free';
 
         return {
             isFreeAvailable: false,
@@ -35,19 +20,20 @@ define(
              * @param {Array} methods
              */
             setPaymentMethods: function (methods) {
-                var freeMethod,
+                var self = this,
+                    freeMethod,
                     filteredMethods,
-                    methodIsAvailable,
-                    methodNames;
+                    methodIsAvailable;
 
-                freeMethod = _.find(methods, isFreePaymentMethod);
-                this.isFreeAvailable = !!freeMethod;
+                freeMethod = _.find(methods, function (method) {
+                    return method.method === freeMethodCode;
+                });
+                this.isFreeAvailable = freeMethod ? true : false;
 
-                if (freeMethod && getGrandTotal() <= 0) {
+                if (self.isFreeAvailable && freeMethod && quote.totals().grand_total <= 0) {
                     methods.splice(0, methods.length, freeMethod);
                     selectPaymentMethod(freeMethod);
                 }
-
                 filteredMethods = _.without(methods, freeMethod);
 
                 if (filteredMethods.length === 1) {
@@ -61,38 +47,26 @@ define(
                         selectPaymentMethod(null);
                     }
                 }
-
-                /**
-                 * Overwrite methods with existing methods to preserve ko array references.
-                 * This prevent ko from re-rendering those methods.
-                 */
-                methodNames = _.pluck(methods, 'method');
-                _.map(methodList(), function (existingMethod) {
-                    var existingMethodIndex = methodNames.indexOf(existingMethod.method);
-
-                    if (existingMethodIndex !== -1) {
-                        methods[existingMethodIndex] = existingMethod;
-                    }
-                });
-
                 methodList(methods);
             },
             /**
              * Get the list of available payment methods.
-             * @return {Array}
+             * @returns {Array}
              */
             getAvailablePaymentMethods: function () {
-                var allMethods = methodList().slice(),
-                    grandTotalOverZero = getGrandTotal() > 0;
+                var methods = [],
+                    self = this;
+                _.each(methodList(), function (method) {
+                    if (self.isFreeAvailable && (
+                        quote.totals().grand_total <= 0 && method.method === freeMethodCode ||
+                        quote.totals().grand_total > 0 && method.method !== freeMethodCode
+                        ) || !self.isFreeAvailable
+                    ) {
+                        methods.push(method);
+                    }
+                });
 
-                if (!this.isFreeAvailable) {
-                    return allMethods;
-                }
-                if (grandTotalOverZero) {
-                    return _.reject(allMethods, isFreePaymentMethod);
-                }
-                return _.filter(allMethods, isFreePaymentMethod);
-
+                return methods;
             }
         };
     }

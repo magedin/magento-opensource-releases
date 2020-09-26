@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order;
@@ -14,57 +14,62 @@ class CreditmemoLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader
      */
-    private $loader;
+    protected $loader;
 
     /**
      * @var \Magento\Sales\Api\CreditmemoRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $creditmemoRepositoryMock;
+    protected $creditmemoRepositoryMock;
 
     /**
      * @var \Magento\Sales\Model\Order\CreditmemoFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $creditmemoFactoryMock;
+    protected $creditmemoFactoryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $orderFactoryMock;
+    protected $orderFactoryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $invoiceRepositoryMock;
+    protected $invoiceRepositoryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $eventManagerMock;
+    protected $serviceOrderFactoryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $sessionMock;
+    protected $eventManagerMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageManagerMock;
+    protected $sessionMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $registryMock;
+    protected $messageManagerMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $helperMock;
+    protected $registryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $stockConfiguration;
+    protected $helperMock;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $stockConfiguration;
 
     protected function setUp()
     {
@@ -81,7 +86,11 @@ class CreditmemoLoaderTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();
-        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\Manager::class)
+        $this->serviceOrderFactoryMock = $this->getMockBuilder('Magento\Sales\Model\Service\OrderFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->eventManagerMock = $this->getMockBuilder('Magento\Framework\Event\Manager')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

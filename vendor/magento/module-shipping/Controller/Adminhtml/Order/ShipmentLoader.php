@@ -1,18 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ *
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Shipping\Controller\Adminhtml\Order;
 
 use Magento\Framework\DataObject;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Api\Data\ShipmentTrackCreationInterface;
-use Magento\Sales\Api\Data\ShipmentTrackCreationInterfaceFactory;
-use Magento\Sales\Api\Data\ShipmentItemCreationInterfaceFactory;
-use Magento\Sales\Model\Order\ShipmentDocumentFactory;
-use Magento\Sales\Api\Data\ShipmentItemCreationInterface;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Class ShipmentLoader
@@ -24,10 +18,8 @@ use Magento\Framework\App\ObjectManager;
  * @method ShipmentLoader setTracking($tracking)
  * @method int getOrderId()
  * @method int getShipmentId()
- * @method array|null getShipment()
+ * @method array getShipment()
  * @method array getTracking()
- *          
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ShipmentLoader extends DataObject
 {
@@ -47,36 +39,19 @@ class ShipmentLoader extends DataObject
     protected $shipmentRepository;
 
     /**
-     * @var \Magento\Sales\Api\OrderRepositoryInterface
-     */
-    protected $orderRepository;
-
-    /**
-     * @var ShipmentDocumentFactory
-     */
-    protected $documentFactory;
-
-    /**
      * @var \Magento\Sales\Model\Order\ShipmentFactory
-     * @deprecated
      */
     protected $shipmentFactory;
 
     /**
-     * @var ShipmentTrackCreationInterfaceFactory
-     */
-    protected $shipmentTrackCreationFactory;
-
-    /**
      * @var \Magento\Sales\Model\Order\Shipment\TrackFactory
-     * @deprecated
      */
     protected $trackFactory;
 
     /**
-     * @var ShipmentItemCreationInterfaceFactory
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
      */
-    private $shipmentItemCreationFactory;
+    protected $orderRepository;
 
     /**
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
@@ -86,11 +61,6 @@ class ShipmentLoader extends DataObject
      * @param \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param array $data
-     * @param ShipmentDocumentFactory|null $documentFactory
-     * @param ShipmentTrackCreationInterfaceFactory|null $trackFactory
-     * @param ShipmentItemCreationInterfaceFactory|null $shipmentItemCreationFactory
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Message\ManagerInterface $messageManager,
@@ -99,10 +69,7 @@ class ShipmentLoader extends DataObject
         \Magento\Sales\Model\Order\ShipmentFactory $shipmentFactory,
         \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        array $data = [],
-        ShipmentDocumentFactory $documentFactory = null,
-        ShipmentTrackCreationInterfaceFactory $shipmentTrackCreationFactory = null,
-        ShipmentItemCreationInterfaceFactory $shipmentItemCreationFactory = null
+        array $data = []
     ) {
         $this->messageManager = $messageManager;
         $this->registry = $registry;
@@ -110,12 +77,6 @@ class ShipmentLoader extends DataObject
         $this->shipmentFactory = $shipmentFactory;
         $this->trackFactory = $trackFactory;
         $this->orderRepository = $orderRepository;
-        $this->documentFactory = $documentFactory ?: ObjectManager::getInstance()->get(ShipmentDocumentFactory::class);
-        $this->shipmentTrackCreationFactory = $shipmentTrackCreationFactory
-            ?: ObjectManager::getInstance()->get(ShipmentTrackCreationInterfaceFactory::class);
-        $this->shipmentItemCreationFactory = $shipmentItemCreationFactory
-            ?: ObjectManager::getInstance()->get(ShipmentItemCreationInterfaceFactory::class);
-
         parent::__construct($data);
     }
 
@@ -123,7 +84,6 @@ class ShipmentLoader extends DataObject
      * Initialize shipment items QTY
      *
      * @return array
-     * @deprecated
      */
     protected function getItemQtys()
     {
@@ -170,63 +130,14 @@ class ShipmentLoader extends DataObject
                 return false;
             }
 
-            $shipmentItems = $this->getShipmentItems((array)$this->getShipment());
-
-            $shipment = $this->documentFactory->create(
+            $shipment = $this->shipmentFactory->create(
                 $order,
-                $shipmentItems,
-                $this->getTrackingArray()
+                $this->getItemQtys(),
+                $this->getTracking()
             );
         }
 
         $this->registry->register('current_shipment', $shipment);
         return $shipment;
-    }
-
-    /**
-     * Convert UI-generated tracking array to Data Object array
-     *
-     * @return ShipmentTrackCreationInterface[]
-     * @throws LocalizedException
-     */
-    private function getTrackingArray()
-    {
-        $tracks = $this->getTracking() ?: [];
-        $trackingCreation = [];
-        foreach ($tracks as $track) {
-            if (!isset($track['number']) || !isset($track['title']) || !isset($track['carrier_code'])) {
-                throw new LocalizedException(
-                    __('Tracking information must contain title, carrier code, and tracking number')
-                );
-            }
-            /** @var ShipmentTrackCreationInterface $trackCreation */
-            $trackCreation = $this->shipmentTrackCreationFactory->create();
-            $trackCreation->setTrackNumber($track['number']);
-            $trackCreation->setTitle($track['title']);
-            $trackCreation->setCarrierCode($track['carrier_code']);
-            $trackingCreation[] = $trackCreation;
-        }
-
-        return $trackingCreation;
-    }
-
-    /**
-     * Extract product id => product quantity array from shipment data.
-     *
-     * @param array $shipmentData
-     * @return int[]
-     */
-    private function getShipmentItems(array $shipmentData)
-    {
-        $shipmentItems = [];
-        $itemQty = isset($shipmentData['items']) ? $shipmentData['items'] : [];
-        foreach ($itemQty as $itemId => $quantity) {
-            /** @var ShipmentItemCreationInterface $item */
-            $item = $this->shipmentItemCreationFactory->create();
-            $item->setOrderItemId($itemId);
-            $item->setQty($quantity);
-            $shipmentItems[] = $item;
-        }
-        return $shipmentItems;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Model\Adminhtml\System\Config;
@@ -8,13 +8,11 @@ namespace Magento\Braintree\Model\Adminhtml\System\Config;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Value;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
-use Magento\Framework\Unserialize\SecureUnserializer;
 
 /**
  * Class CountryCreditCard
@@ -27,11 +25,6 @@ class CountryCreditCard extends Value
     protected $mathRandom;
 
     /**
-     * @var SecureUnserializer
-     */
-    private $secureUnserializer;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
@@ -40,7 +33,6 @@ class CountryCreditCard extends Value
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
-     * @param SecureUnserializer|null $secureUnserializer
      */
     public function __construct(
         Context $context,
@@ -50,11 +42,9 @@ class CountryCreditCard extends Value
         Random $mathRandom,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
-        array $data = [],
-        SecureUnserializer $secureUnserializer = null
+        array $data = []
     ) {
         $this->mathRandom = $mathRandom;
-        $this->secureUnserializer = $secureUnserializer ?: ObjectManager::getInstance()->get(SecureUnserializer::class);
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
 
@@ -66,13 +56,6 @@ class CountryCreditCard extends Value
     public function beforeSave()
     {
         $value = $this->getValue();
-        if (!is_array($value)) {
-            try {
-                $value = $this->secureUnserializer->unserialize($value);
-            } catch (\InvalidArgumentException $e) {
-                $value = [];
-            }
-        }
         $result = [];
         foreach ($value as $data) {
             if (empty($data['country_id']) || empty($data['cc_types'])) {

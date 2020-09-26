@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Block\Adminhtml\Order\View\Tab;
@@ -17,7 +17,7 @@ class History extends \Magento\Backend\Block\Template implements \Magento\Backen
      *
      * @var string
      */
-    protected $_template = 'Magento_Sales::order/view/tab/history.phtml';
+    protected $_template = 'order/view/tab/history.phtml';
 
     /**
      * Core registry
@@ -157,11 +157,13 @@ class History extends \Magento\Backend\Block\Template implements \Magento\Backen
         if (!isset($item['created_at'])) {
             return '';
         }
+        $date = $item['created_at'] instanceof \DateTimeInterface
+            ? $item['created_at']
+            : new \DateTime($item['created_at']);
         if ('date' === $dateType) {
-            return $this->formatDate($item['created_at'], $format);
+            return $this->_localeDate->formatDateTime($date, $format, $format);
         }
-
-        return $this->formatTime($item['created_at'], $format);
+        return $this->_localeDate->formatDateTime($date, \IntlDateFormatter::NONE, $format);
     }
 
     /**

@@ -1,12 +1,13 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ConfigurableProduct\Controller\Adminhtml\Product\Attribute;
 
 use Magento\Backend\App\Action;
+use Magento\Catalog\Controller\Adminhtml\Product;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 
 class CreateOptions extends Action
@@ -50,11 +51,7 @@ class CreateOptions extends Action
      */
     public function execute()
     {
-        $result = [];
-        if ($this->getRequest()->isPost()) {
-            $result = $this->saveAttributeOptions();
-        }
-        $this->getResponse()->representJson($this->jsonHelper->jsonEncode($result));
+        $this->getResponse()->representJson($this->jsonHelper->jsonEncode($this->saveAttributeOptions()));
     }
 
     /**

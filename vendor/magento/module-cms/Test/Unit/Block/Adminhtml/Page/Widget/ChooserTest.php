@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Test\Unit\Block\Adminhtml\Page\Widget;
@@ -236,9 +236,6 @@ class ChooserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->elementMock, $this->this->prepareElementHtml($this->elementMock));
     }
 
-    /**
-     * @return array
-     */
     public function prepareElementHtmlDataProvider()
     {
         return [

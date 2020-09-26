@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -50,7 +50,6 @@ abstract class AbstractForm extends Form
      */
     public function fillFormData(array $data)
     {
-        $this->waitLoader();
         $data = $this->prepareData($data);
         if (isset($data['form_data'])) {
             $data['form_data'] = $this->dataMapping($data['form_data']);

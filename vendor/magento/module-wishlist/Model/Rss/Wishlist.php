@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Magento\Wishlist\Model\Rss;
 
 use Magento\Framework\App\Rss\DataProviderInterface;
-use Magento\Store\Model\ScopeInterface;
 
 /**
  * Wishlist RSS model
@@ -115,8 +114,10 @@ class Wishlist implements DataProviderInterface
      */
     public function isAllowed()
     {
-        return $this->scopeConfig->isSetFlag('rss/wishlist/active', ScopeInterface::SCOPE_STORE)
-            && $this->getWishlist()->getCustomerId() == $this->wishlistHelper->getCustomer()->getId();
+        return (bool)$this->scopeConfig->getValue(
+            'rss/wishlist/active',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
@@ -179,8 +180,8 @@ class Wishlist implements DataProviderInterface
             }
         } else {
             $data = [
-                'title' => __('We cannot retrieve the Wish List.')->render(),
-                'description' => __('We cannot retrieve the Wish List.')->render(),
+                'title' => __('We cannot retrieve the Wish List.'),
+                'description' => __('We cannot retrieve the Wish List.'),
                 'link' => $this->urlBuilder->getUrl(),
                 'charset' => 'UTF-8',
             ];
@@ -194,7 +195,7 @@ class Wishlist implements DataProviderInterface
      */
     public function getCacheKey()
     {
-        return 'rss_wishlist_data_' . $this->getWishlist()->getId();
+        return 'rss_wishlist_data';
     }
 
     /**
@@ -214,7 +215,7 @@ class Wishlist implements DataProviderInterface
     {
         $customerId = $this->getWishlist()->getCustomerId();
         $customer = $this->customerFactory->create()->load($customerId);
-        $title = __('%1\'s Wishlist', $customer->getName())->render();
+        $title = __('%1\'s Wishlist', $customer->getName());
         $newUrl = $this->urlBuilder->getUrl(
             'wishlist/shared/index',
             ['code' => $this->getWishlist()->getSharingCode()]
@@ -247,7 +248,7 @@ class Wishlist implements DataProviderInterface
         $priceRender = $this->layout->getBlock('product.price.render.default');
         if (!$priceRender) {
             $priceRender = $this->layout->createBlock(
-                \Magento\Framework\Pricing\Render::class,
+                'Magento\Framework\Pricing\Render',
                 'product.price.render.default',
                 ['data' => ['price_render_handle' => 'catalog_product_prices']]
             );

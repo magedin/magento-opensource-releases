@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Test\Unit\Gateway\Validator;
@@ -37,7 +37,7 @@ class GeneralResponseValidatorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->resultInterfaceFactoryMock = $this->getMockBuilder(
-            \Magento\Payment\Gateway\Validator\ResultInterfaceFactory::class
+            'Magento\Payment\Gateway\Validator\ResultInterfaceFactory'
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();

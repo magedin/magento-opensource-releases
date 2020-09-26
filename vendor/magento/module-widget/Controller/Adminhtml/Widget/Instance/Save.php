@@ -1,11 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ *
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Widget\Controller\Adminhtml\Widget\Instance;
-
-use Magento\Framework\Exception\NotFoundException;
 
 class Save extends \Magento\Widget\Controller\Adminhtml\Widget\Instance
 {
@@ -13,14 +12,9 @@ class Save extends \Magento\Widget\Controller\Adminhtml\Widget\Instance
      * Save action
      *
      * @return void
-     * @throws NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found.'));
-        }
-
         $widgetInstance = $this->_initWidgetInstance();
         if (!$widgetInstance) {
             $this->_redirect('adminhtml/*/');

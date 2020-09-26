@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -118,10 +118,8 @@ class PayflowproTest extends \PHPUnit_Framework_TestCase
         $client->expects($this->any())->method('request')->will($this->returnSelf());
         $client->expects($this->any())->method('getBody')->will($this->returnValue('RESULT name=value&name2=value2'));
 
-        $clientFactory = $this->getMockBuilder(ZendClientFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $clientFactory->method('create')->will($this->returnValue($client));
+        $clientFactory = $this->getMock('Magento\Framework\HTTP\ZendClientFactory', ['create'], [], '', false);
+        $clientFactory->expects($this->any())->method('create')->will($this->returnValue($client));
 
         $this->eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
 
@@ -203,9 +201,6 @@ class PayflowproTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($paymentExpected->getData(), $payment->getData());
     }
 
-    /**
-     * @return array
-     */
     public function setTransStatusDataProvider()
     {
         return [

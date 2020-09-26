@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,10 +10,6 @@
  * @author Magento Core Team <core@magentocommerce.com>
  */
 namespace Magento\Rule\Model\Condition\Product;
-
-use Magento\Catalog\Model\Indexer\Category\Product\AbstractAction;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Sql\UnionExpression;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -84,16 +80,6 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
     protected $_localeFormat;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Category
-     */
-    private $category;
-
-    /**
-     * @var array
-     */
-    private $categoryIdList = [];
-
-    /**
      * @param \Magento\Rule\Model\Condition\Context $context
      * @param \Magento\Backend\Helper\Data $backendData
      * @param \Magento\Eav\Model\Config $config
@@ -103,9 +89,6 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection $attrSetCollection
      * @param \Magento\Framework\Locale\FormatInterface $localeFormat
      * @param array $data
-     * @param \Magento\Catalog\Model\ResourceModel\Category|null $category
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Rule\Model\Condition\Context $context,
@@ -116,8 +99,7 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
         \Magento\Catalog\Model\ResourceModel\Product $productResource,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection $attrSetCollection,
         \Magento\Framework\Locale\FormatInterface $localeFormat,
-        array $data = [],
-        \Magento\Catalog\Model\ResourceModel\Category $category = null
+        array $data = []
     ) {
         $this->_backendData = $backendData;
         $this->_config = $config;
@@ -126,8 +108,6 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
         $this->_productResource = $productResource;
         $this->_attrSetCollection = $attrSetCollection;
         $this->_localeFormat = $localeFormat;
-        $this->category = $category ?: \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Magento\Catalog\Model\ResourceModel\Category::class);
         parent::__construct($context, $data);
     }
 
@@ -540,8 +520,7 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
         $attrCode = $this->getAttribute();
 
         if ('category_ids' == $attrCode) {
-            $productId = (int)$model->getEntityId();
-            return $this->validateAttribute($this->getCategoryIds($productId));
+            return $this->validateAttribute($model->getAvailableInCategories());
         } elseif (!isset($this->_entityAttributeValues[$model->getId()])) {
             if (!$model->getResource()) {
                 return false;
@@ -623,9 +602,7 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
      */
     public function getMappedSqlField()
     {
-        if ($this->getAttribute() == 'sku') {
-            $mappedSqlField = 'e.sku';
-        } elseif (!$this->isAttributeSetOrCategory()) {
+        if (!$this->isAttributeSetOrCategory()) {
             $mappedSqlField = $this->getEavAttributeTableAlias() . '.value';
         } elseif ($this->getAttribute() == 'category_ids') {
             $mappedSqlField = 'e.entity_id';
@@ -741,39 +718,5 @@ abstract class AbstractProduct extends \Magento\Rule\Model\Condition\AbstractCon
         $attribute = $this->getAttributeObject();
 
         return 'at_' . $attribute->getAttributeCode();
-    }
-
-    /**
-     * Retrieve category id list where product is present.
-     *
-     * @param int $productId
-     * @return array
-     */
-    private function getCategoryIds($productId)
-    {
-        if (!isset($this->categoryIdList[$productId])) {
-            $this->categoryIdList[$productId] = $this->_productResource->getConnection()->fetchCol(
-                $this->getCategorySelect($productId)
-            );
-        }
-
-        return $this->categoryIdList[$productId];
-    }
-
-    /**
-     * Returns DB select.
-     *
-     * @param int $productId
-     * @return Select
-     */
-    private function getCategorySelect($productId)
-    {
-        return $this->_productResource->getConnection()->select()->from(
-            $this->category->getCategoryProductTable(),
-            ['category_id']
-        )->where(
-            'product_id = ?',
-            $productId
-        );
     }
 }

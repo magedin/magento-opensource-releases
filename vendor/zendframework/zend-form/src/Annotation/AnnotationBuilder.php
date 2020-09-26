@@ -57,7 +57,7 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
     /**
      * @var array Default annotations to register
      */
-    protected $defaultAnnotations = [
+    protected $defaultAnnotations = array(
         'AllowEmpty',
         'Attributes',
         'ComposedObject',
@@ -77,7 +77,7 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
         'Type',
         'ValidationGroup',
         'Validator'
-    ];
+    );
 
     /**
      * @var bool
@@ -122,10 +122,10 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers([
+        $events->setIdentifiers(array(
             __CLASS__,
             get_class($this),
-        ]);
+        ));
         $events->attach(new ElementAnnotationsListener());
         $events->attach(new FormAnnotationsListener());
         $this->events = $events;
@@ -271,18 +271,18 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
     {
         $name                   = $this->discoverName($annotations, $reflection);
         $formSpec['name']       = $name;
-        $formSpec['attributes'] = [];
-        $formSpec['elements']   = [];
-        $formSpec['fieldsets']  = [];
+        $formSpec['attributes'] = array();
+        $formSpec['elements']   = array();
+        $formSpec['fieldsets']  = array();
 
         $events = $this->getEventManager();
         foreach ($annotations as $annotation) {
-            $events->trigger(__FUNCTION__, $this, [
+            $events->trigger(__FUNCTION__, $this, array(
                 'annotation' => $annotation,
                 'name'        => $name,
                 'formSpec'   => $formSpec,
                 'filterSpec' => $filterSpec,
-            ]);
+            ));
         }
     }
 
@@ -308,24 +308,24 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
         $events = $this->getEventManager();
         $name   = $this->discoverName($annotations, $reflection);
 
-        $elementSpec = new ArrayObject([
-            'flags' => [],
-            'spec'  => [
+        $elementSpec = new ArrayObject(array(
+            'flags' => array(),
+            'spec'  => array(
                 'name' => $name
-            ],
-        ]);
-        $inputSpec = new ArrayObject([
+            ),
+        ));
+        $inputSpec = new ArrayObject(array(
             'name' => $name,
-        ]);
+        ));
 
         $event = new Event();
-        $event->setParams([
+        $event->setParams(array(
             'name'        => $name,
             'elementSpec' => $elementSpec,
             'inputSpec'   => $inputSpec,
             'formSpec'    => $formSpec,
             'filterSpec'  => $filterSpec,
-        ]);
+        ));
         foreach ($annotations as $annotation) {
             $event->setParam('annotation', $annotation);
             $events->trigger(__FUNCTION__, $this, $event);
@@ -351,12 +351,12 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
         // If preserve defined order is true, all elements are composed as elements to keep their ordering
         if (!$this->preserveDefinedOrder() && is_subclass_of($type, 'Zend\Form\FieldsetInterface')) {
             if (!isset($formSpec['fieldsets'])) {
-                $formSpec['fieldsets'] = [];
+                $formSpec['fieldsets'] = array();
             }
             $formSpec['fieldsets'][] = $elementSpec;
         } else {
             if (!isset($formSpec['elements'])) {
-                $formSpec['elements'] = [];
+                $formSpec['elements'] = array();
             }
             $formSpec['elements'][] = $elementSpec;
         }
@@ -389,10 +389,10 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
      */
     protected function discoverName($annotations, $reflection)
     {
-        $results = $this->getEventManager()->trigger('discoverName', $this, [
+        $results = $this->getEventManager()->trigger('discoverName', $this, array(
             'annotations' => $annotations,
             'reflection'  => $reflection,
-        ], function ($r) {
+        ), function ($r) {
             return (is_string($r) && !empty($r));
         });
         return $results->last();
@@ -406,9 +406,9 @@ class AnnotationBuilder implements EventManagerAwareInterface, FormFactoryAwareI
      */
     protected function checkForExclude($annotations)
     {
-        $results = $this->getEventManager()->trigger('checkForExclude', $this, [
+        $results = $this->getEventManager()->trigger('checkForExclude', $this, array(
             'annotations' => $annotations,
-        ], function ($r) {
+        ), function ($r) {
             return (true === $r);
         });
         return (bool) $results->last();

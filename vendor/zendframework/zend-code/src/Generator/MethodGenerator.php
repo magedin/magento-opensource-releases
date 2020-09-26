@@ -21,7 +21,7 @@ class MethodGenerator extends AbstractMemberGenerator
     /**
      * @var ParameterGenerator[]
      */
-    protected $parameters = [];
+    protected $parameters = array();
 
     /**
      * @var string
@@ -123,7 +123,7 @@ class MethodGenerator extends AbstractMemberGenerator
         $method = new static($array['name']);
         foreach ($array as $name => $value) {
             // normalize key
-            switch (strtolower(str_replace(['.', '-', '_'], '', $name))) {
+            switch (strtolower(str_replace(array('.', '-', '_'), '', $name))) {
                 case 'docblock':
                     $docBlock = ($value instanceof DocBlockGenerator) ? $value : DocBlockGenerator::fromArray($value);
                     $method->setDocBlock($docBlock);
@@ -164,7 +164,7 @@ class MethodGenerator extends AbstractMemberGenerator
      */
     public function __construct(
         $name = null,
-        array $parameters = [],
+        array $parameters = array(),
         $flags = self::FLAG_PUBLIC,
         $body = null,
         $docBlock = null

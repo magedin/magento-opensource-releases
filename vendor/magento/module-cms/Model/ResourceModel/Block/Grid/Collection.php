@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Model\ResourceModel\Block\Grid;
 
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Api\Search\AggregationInterface;
+use Magento\Framework\Search\AggregationInterface;
 use Magento\Cms\Model\ResourceModel\Block\Collection as BlockCollection;
 
 /**
@@ -82,7 +82,19 @@ class Collection extends BlockCollection implements SearchResultInterface
     public function setAggregations($aggregations)
     {
         $this->aggregations = $aggregations;
-        return $this;
+    }
+
+    /**
+     * Retrieve all ids for collection
+     * Backward compatibility with EAV collection
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function getAllIds($limit = null, $offset = null)
+    {
+        return $this->getConnection()->fetchCol($this->_getAllIdsSelect($limit, $offset), $this->_bindParams);
     }
 
     /**

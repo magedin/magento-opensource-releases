@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Weee\Test\Unit\Block\Item\Price;
@@ -122,9 +122,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $this->renderer->displayPriceWithWeeeDetails());
     }
 
-    /**
-     * @return array
-     */
     public function testDisplayPriceWithWeeeDetailsDataProvider()
     {
         $data = [
@@ -475,9 +472,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $this->renderer->getBaseRowDisplayPriceInclTax());
     }
 
-    /**
-     * @return array
-     */
     public function testGetDisplayPriceDataProvider()
     {
         $data = [
@@ -745,9 +739,6 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $this->renderer->getBaseFinalRowDisplayPriceInclTax());
     }
 
-    /**
-     * @return array
-     */
     public function testGetFinalDisplayPriceDataProvider()
     {
         $data = [

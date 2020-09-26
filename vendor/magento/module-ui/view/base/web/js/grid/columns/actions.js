@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,9 +8,8 @@ define([
     'mageUtils',
     'uiRegistry',
     './column',
-    'Magento_Ui/js/modal/confirm',
-    'mage/dataPost'
-], function (_, utils, registry, Column, confirm, dataPost) {
+    'Magento_Ui/js/modal/confirm'
+], function (_, utils, registry, Column, confirm) {
     'use strict';
 
     return Column.extend({
@@ -251,14 +250,7 @@ define([
          * @param {Object} action - Actions' data.
          */
         defaultCallback: function (actionIndex, recordId, action) {
-            if (action.post) {
-                dataPost().postData({
-                    action: action.href,
-                    data: {}
-                });
-            } else {
-                window.location.href = action.href;
-            }
+            window.location.href = action.href;
         },
 
         /**

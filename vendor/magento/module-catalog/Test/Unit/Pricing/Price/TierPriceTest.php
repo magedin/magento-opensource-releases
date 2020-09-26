@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,8 +10,6 @@ namespace Magento\Catalog\Test\Unit\Pricing\Price;
 
 use Magento\Catalog\Pricing\Price\TierPrice;
 use Magento\Catalog\Pricing\Price\FinalPrice;
-use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\Price\PriceInterface;
 use Magento\Customer\Model\Group;
 use Magento\Customer\Model\GroupManagement;
 
@@ -363,37 +361,27 @@ class TierPriceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param float $basePrice
-     * @param float $tierPrice
-     * @param float $savedPercent
-     *
+     * @covers \Magento\Catalog\Pricing\Price\TierPrice::__construct
+     * @covers \Magento\Catalog\Pricing\Price\TierPrice::getSavePercent
+     * @covers \Magento\Catalog\Pricing\Price\TierPrice::getBasePrice
      * @dataProvider dataProviderGetSavePercent
      */
     public function testGetSavePercent($basePrice, $tierPrice, $savedPercent)
     {
-        /** @var AmountInterface|\PHPUnit_Framework_MockObject_MockObject $amount */
-        $amount = $this->getMockForAbstractClass(AmountInterface::class);
+        $price = $this->getMock('Magento\Framework\Pricing\Price\PriceInterface');
 
-        $amount->expects($this->any())
-            ->method('getValue')
-            ->willReturn($tierPrice);
-
-        $basePriceAmount = $this->getMockForAbstractClass(AmountInterface::class);
-
-        $basePriceAmount->expects($this->any())
-            ->method('getValue')
-            ->willReturn($basePrice);
-
-        $price = $this->getMockForAbstractClass(PriceInterface::class);
-
-        $price->expects($this->any())
-            ->method('getAmount')
-            ->willReturn($basePriceAmount);
-
-        $this->priceInfo->expects($this->any())
+        $this->priceInfo->expects(static::atLeastOnce())
             ->method('getPrice')
             ->with(FinalPrice::PRICE_CODE)
             ->willReturn($price);
+        $price->expects(static::atLeastOnce())
+            ->method('getValue')
+            ->willReturn($basePrice);
+
+        $amount = $this->getMockForAbstractClass('Magento\Framework\Pricing\Amount\AmountInterface');
+        $amount->expects($this->atLeastOnce())
+            ->method('getBaseAmount')
+            ->will($this->returnValue($tierPrice));
 
         $this->assertEquals($savedPercent, $this->model->getSavePercent($amount));
     }

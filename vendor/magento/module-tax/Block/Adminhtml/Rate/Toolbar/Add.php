@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -18,7 +18,7 @@ class Add extends \Magento\Backend\Block\Template implements \Magento\Backend\Bl
     /**
      * @var string
      */
-    protected $_template = 'Magento_Tax::toolbar/rate/add.phtml';
+    protected $_template = 'toolbar/rate/add.phtml';
 
     /**
      * @var \Magento\Backend\Block\Widget\Button\ButtonList

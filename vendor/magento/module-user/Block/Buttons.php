@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\User\Block;
@@ -30,13 +30,12 @@ class Buttons extends \Magento\Backend\Block\Template
 
     /**
      * @return $this
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
      */
     protected function _prepareLayout()
     {
         $this->getToolbar()->addChild(
             'backButton',
-            \Magento\Backend\Block\Widget\Button::class,
+            'Magento\Backend\Block\Widget\Button',
             [
                 'label' => __('Back'),
                 'onclick' => 'window.location.href=\'' . $this->getUrl('*/*/') . '\'',
@@ -46,14 +45,14 @@ class Buttons extends \Magento\Backend\Block\Template
 
         $this->getToolbar()->addChild(
             'resetButton',
-            \Magento\Backend\Block\Widget\Button::class,
+            'Magento\Backend\Block\Widget\Button',
             ['label' => __('Reset'), 'onclick' => 'window.location.reload()', 'class' => 'reset']
         );
 
-        if ((int)$this->getRequest()->getParam('rid')) {
+        if (intval($this->getRequest()->getParam('rid'))) {
             $this->getToolbar()->addChild(
                 'deleteButton',
-                \Magento\Backend\Block\Widget\Button::class,
+                'Magento\Backend\Block\Widget\Button',
                 [
                     'label' => __('Delete Role'),
                     'onclick' => 'deleteConfirm(\'' . __(
@@ -61,7 +60,7 @@ class Buttons extends \Magento\Backend\Block\Template
                     ) . '\', \'' . $this->getUrl(
                         '*/*/delete',
                         ['rid' => $this->getRequest()->getParam('rid')]
-                    ) . '\', {data: {}})',
+                    ) . '\')',
                     'class' => 'delete'
                 ]
             );
@@ -69,7 +68,7 @@ class Buttons extends \Magento\Backend\Block\Template
 
         $this->getToolbar()->addChild(
             'saveButton',
-            \Magento\Backend\Block\Widget\Button::class,
+            'Magento\Backend\Block\Widget\Button',
             [
                 'label' => __('Save Role'),
                 'class' => 'save primary save-role',
@@ -107,14 +106,12 @@ class Buttons extends \Magento\Backend\Block\Template
 
     /**
      * @return string|void
-     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
      */
     public function getDeleteButtonHtml()
     {
-        if ((int)$this->getRequest()->getParam('rid') === 0) {
+        if (intval($this->getRequest()->getParam('rid')) == 0) {
             return;
         }
-
         return $this->getChildHtml('deleteButton');
     }
 

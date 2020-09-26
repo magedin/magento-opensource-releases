@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -45,16 +45,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected $_db;
 
-    /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $connectionMock;
-
-    /**
-     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $selectMock;
-
     protected function setUp()
     {
         $this->_entityFactoryMock = $this->getMock('Magento\Framework\Data\Collection\EntityFactoryInterface');
@@ -89,9 +79,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function testAddWebsitesToResultDataProvider()
     {
         return [
@@ -162,30 +149,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             '\Magento\Rule\Model\ResourceModel\Rule\Collection\AbstractCollection',
             $this->abstractCollection->addWebsiteFilter($website)
-        );
-    }
-
-    public function testAddWebsiteFilterArray()
-    {
-        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->connectionMock->expects($this->atLeastOnce())
-            ->method('quoteInto')
-            ->with($this->equalTo('website. IN (?)'), $this->equalTo(['2', '3']))
-            ->willReturn(true);
-
-        $this->abstractCollection->expects($this->atLeastOnce())->method('getSelect')->willReturn($this->selectMock);
-        $this->abstractCollection->expects($this->atLeastOnce())->method('getConnection')
-            ->willReturn($this->connectionMock);
-
-        $this->assertInstanceOf(
-            \Magento\Rule\Model\ResourceModel\Rule\Collection\AbstractCollection::class,
-            $this->abstractCollection->addWebsiteFilter(['2', '3'])
         );
     }
 

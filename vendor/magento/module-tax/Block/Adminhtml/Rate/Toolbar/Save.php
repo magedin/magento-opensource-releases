@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,7 +16,7 @@ class Save extends \Magento\Backend\Block\Template implements \Magento\Backend\B
     /**
      * @var string
      */
-    protected $_template = 'Magento_Tax::toolbar/rate/save.phtml';
+    protected $_template = 'toolbar/rate/save.phtml';
 
     /**
      * @var \Magento\Backend\Block\Widget\Button\ButtonList
@@ -115,7 +115,7 @@ class Save extends \Magento\Backend\Block\Template implements \Magento\Backend\B
             ['label' => __('Reset'), 'onclick' => 'window.location.reload()', 'class' => 'reset']
         );
 
-        $rate = (int)$this->getRequest()->getParam('rate');
+        $rate = intval($this->getRequest()->getParam('rate'));
         if ($rate) {
             $this->buttonList->add(
                 'delete',
@@ -126,7 +126,7 @@ class Save extends \Magento\Backend\Block\Template implements \Magento\Backend\B
                     ) . '\', \'' . $this->getUrl(
                         'tax/*/delete',
                         ['rate' => $rate]
-                    ) . '\', {data: {}})',
+                    ) . '\')',
                     'class' => 'delete'
                 ]
             );

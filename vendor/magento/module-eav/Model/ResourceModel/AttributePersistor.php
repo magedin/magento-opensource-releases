@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -113,14 +113,13 @@ class AttributePersistor
             return;
         }
         $metadata = $this->metadataPool->getMetadata($entityType);
-        $linkField = $metadata->getLinkField();
         foreach ($this->delete[$entityType] as $link => $data) {
             $attributeCodes = array_keys($data);
             foreach ($attributeCodes as $attributeCode) {
                 /** @var AbstractAttribute $attribute */
                 $attribute = $this->attributeRepository->get($metadata->getEavEntityType(), $attributeCode);
                 $conditions = [
-                    $linkField . ' = ?' => $link,
+                    $metadata->getLinkField() . ' = ?' => $link,
                     'attribute_id = ?' => $attribute->getAttributeId()
                 ];
                 foreach ($context as $scope) {
@@ -148,7 +147,6 @@ class AttributePersistor
             return;
         }
         $metadata = $this->metadataPool->getMetadata($entityType);
-        $linkField = $metadata->getLinkField();
         foreach ($this->insert[$entityType] as $link => $data) {
             foreach ($data as $attributeCode => $attributeValue) {
                 /** @var AbstractAttribute $attribute */
@@ -157,7 +155,7 @@ class AttributePersistor
                     $attributeCode
                 );
                 $data = [
-                    $linkField => $link,
+                    $metadata->getLinkField() => $link,
                     'attribute_id' => $attribute->getAttributeId(),
                     'value' => $this->prepareValue($entityType, $attributeValue, $attribute)
                 ];
@@ -182,7 +180,6 @@ class AttributePersistor
             return;
         }
         $metadata = $this->metadataPool->getMetadata($entityType);
-        $linkField = $metadata->getLinkField();
         foreach ($this->update[$entityType] as $link => $data) {
             foreach ($data as $attributeCode => $attributeValue) {
                 /** @var AbstractAttribute $attribute */
@@ -191,7 +188,7 @@ class AttributePersistor
                     $attributeCode
                 );
                 $conditions = [
-                    $linkField . ' = ?' => $link,
+                    $metadata->getLinkField() . ' = ?' => $link,
                     'attribute_id = ?' => $attribute->getAttributeId(),
                 ];
                 foreach ($context as $scope) {

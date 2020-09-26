@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -20,8 +20,7 @@ class Address extends \Magento\Framework\App\Config\Value
     public function beforeSave()
     {
         $value = $this->getValue();
-        $validator = new \Zend\Validator\EmailAddress();
-        if (!$validator->isValid($value)) {
+        if (!\Zend_Validate::is($value, 'EmailAddress')) {
             throw new LocalizedException(__('Please correct the email address: "%1".', $value));
         }
         return $this;

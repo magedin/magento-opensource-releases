@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -21,7 +21,7 @@ use Magento\CatalogInventory\Model\Stock;
 use Magento\Framework\App\ScopeResolverInterface;
 
 /**
- * Build base Query for Index.
+ * Build base Query for Index
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class IndexBuilder implements IndexBuilderInterface
@@ -99,7 +99,6 @@ class IndexBuilder implements IndexBuilderInterface
      *
      * @param RequestInterface $request
      * @return Select
-     * @throws \LogicException
      */
     public function build(RequestInterface $request)
     {
@@ -133,7 +132,7 @@ class IndexBuilder implements IndexBuilderInterface
                 ),
                 []
             );
-            $select->where('stock_index.stock_status = ?', Stock::STOCK_IN_STOCK);
+            $select->where('stock_index.stock_status = ?', Stock::DEFAULT_STOCK_ID);
         }
 
         return $select;
@@ -148,7 +147,7 @@ class IndexBuilder implements IndexBuilderInterface
     {
         if ($this->stockConfiguration === null) {
             $this->stockConfiguration = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\CatalogInventory\Api\StockConfigurationInterface::class);
+                ->get('Magento\CatalogInventory\Api\StockConfigurationInterface');
         }
         return $this->stockConfiguration;
     }

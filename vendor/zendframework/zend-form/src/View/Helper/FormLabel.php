@@ -23,10 +23,10 @@ class FormLabel extends AbstractHelper
      *
      * @var array
      */
-    protected $validTagAttributes = [
+    protected $validTagAttributes = array(
         'for'  => true,
         'form' => true,
-    ];
+    );
 
     /**
      * Generate a form label, optionally with content
@@ -124,12 +124,12 @@ class FormLabel extends AbstractHelper
             ));
         }
 
-        $labelAttributes = [];
+        $labelAttributes = array();
         if ($attributesOrElement instanceof LabelAwareInterface) {
             $labelAttributes = $attributesOrElement->getLabelAttributes();
         }
 
-        $attributes = ['for' => $id];
+        $attributes = array('for' => $id);
 
         if (!empty($labelAttributes)) {
             $attributes = array_merge($labelAttributes, $attributes);

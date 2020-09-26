@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,11 +11,6 @@ namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $escaperMock;
-
     /**
      * @var \Magento\Config\Block\System\Config\Form\Field\File
      */
@@ -29,10 +24,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->escaperMock = $this->getMockBuilder(\Magento\Framework\Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->escaperMock->method('escapeHtml')->willReturnArgument(0);
 
         $this->testData = [
             'before_element_html' => 'test_before_element_html',
@@ -48,11 +39,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->file = $objectManager->getObject(
-            \Magento\Config\Block\System\Config\Form\Field\File::class,
-            [
-                'escaper' => $this->escaperMock,
-                'data' => $this->testData,
-            ]
+            'Magento\Config\Block\System\Config\Form\Field\File',
+            ['data' => $this->testData]
         );
 
         $formMock = new \Magento\Framework\DataObject();

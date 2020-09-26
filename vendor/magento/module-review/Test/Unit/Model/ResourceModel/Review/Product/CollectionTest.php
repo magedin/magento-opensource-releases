@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Test\Unit\Model\ResourceModel\Review\Product;
@@ -65,25 +65,16 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             false
         );
         $fetchStrategy->expects($this->any())->method('fetchAll')->will($this->returnValue([]));
-        $productLimitationMock = $this->getMock(
-            \Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitation::class
-        );
-        $productLimitationFactoryMock = $this->getMockBuilder(ProductLimitationFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $productLimitationFactoryMock->method('create')
-            ->willReturn($productLimitationMock);
-        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->model = $this->objectManager->getObject(
-            \Magento\Review\Model\ResourceModel\Review\Product\Collection::class,
-            [
-                'universalFactory' => $universalFactory,
-                'storeManager' => $storeManager,
-                'eavConfig' => $eavConfig,
-                'fetchStrategy' => $fetchStrategy,
-                'productLimitationFactory' => $productLimitationFactoryMock
-            ]
-        );
+        $this->model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
+            ->getObject(
+                '\Magento\Review\Model\ResourceModel\Review\Product\Collection',
+                [
+                    'universalFactory' => $universalFactory,
+                    'storeManager' => $storeManager,
+                    'eavConfig' => $eavConfig,
+                    'fetchStrategy' => $fetchStrategy
+                ]
+            );
     }
 
     /**

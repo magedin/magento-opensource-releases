@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Model\ResourceModel\Grid;
 
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Api\Search\AggregationInterface;
+use Magento\Framework\Search\AggregationInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 /**
@@ -15,6 +15,7 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
  */
 class Collection extends AbstractCollection implements SearchResultInterface
 {
+
     /**
      * @var AggregationInterface
      */
@@ -77,8 +78,8 @@ class Collection extends AbstractCollection implements SearchResultInterface
     public function setAggregations($aggregations)
     {
         $this->aggregations = $aggregations;
-        return $this;
     }
+
 
     /**
      * Retrieve all ids for collection

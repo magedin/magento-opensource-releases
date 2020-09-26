@@ -1,24 +1,18 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Test\Unit\App;
 
 use Magento\Backend\App\Config;
 
-/**
- * Test reading by path and reading flag from config
- *
- * @see \Magento\Backend\App\Config
- * @package Magento\Backend\Test\Unit\App
- */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Magento\Framework\App\Config|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\App\Config\ScopePool|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $appConfig;
+    protected $sectionPool;
 
     /**
      * @var Config
@@ -27,70 +21,102 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->appConfig = $this->getMock(
-            'Magento\Framework\App\Config',
-            ['get'],
+        $this->sectionPool = $this->getMock(
+            'Magento\Framework\App\Config\ScopePool',
+            ['getScope', 'clean'],
             [],
             '',
             false
         );
-        $this->model = new \Magento\Backend\App\Config(
-            $this->getMock(\Magento\Framework\App\Config\ScopePool::class, [], [], '', false, false),
-            $this->appConfig
-        );
+        $this->model = new \Magento\Backend\App\Config($this->sectionPool);
     }
 
     public function testGetValue()
     {
         $expectedValue = 'some value';
         $path = 'some path';
-        $this->appConfig->expects(
+        $configData = $this->getConfigDataMock('getValue');
+        $configData->expects(
             $this->once()
         )->method(
-            'get'
+            'getValue'
         )->with(
-            $this->equalTo('system'),
-            $this->equalTo('default/' . $path),
-            $this->isNull()
+            $this->equalTo($path)
         )->will(
             $this->returnValue($expectedValue)
+        );
+        $this->sectionPool->expects(
+            $this->once()
+        )->method(
+            'getScope'
+        )->with(
+            $this->equalTo('default'),
+            $this->isNull()
+        )->will(
+            $this->returnValue($configData)
         );
         $this->assertEquals($expectedValue, $this->model->getValue($path));
     }
 
+    public function testSetValue()
+    {
+        $value = 'some value';
+        $path = 'some path';
+        $configData = $this->getConfigDataMock('setValue');
+        $configData->expects($this->once())->method('setValue')->with($this->equalTo($path), $this->equalTo($value));
+        $this->sectionPool->expects(
+            $this->once()
+        )->method(
+            'getScope'
+        )->with(
+            $this->equalTo('default'),
+            $this->isNull()
+        )->will(
+            $this->returnValue($configData)
+        );
+        $this->model->setValue($path, $value);
+    }
+
     /**
-     * @param string $configPath
      * @param mixed $configValue
      * @param bool $expectedResult
      * @dataProvider isSetFlagDataProvider
      */
-    public function testIsSetFlag($configPath, $configValue, $expectedResult)
+    public function testIsSetFlag($configValue, $expectedResult)
     {
-        $this->appConfig->expects(
-            $this->any()
+        $path = 'some path';
+        $configData = $this->getConfigDataMock('getValue');
+        $configData->expects(
+            $this->once()
         )->method(
-            'get'
+            'getValue'
         )->with(
-            $this->equalTo('system'),
-            $this->equalTo('default/' . $configPath)
+            $this->equalTo($path)
         )->will(
             $this->returnValue($configValue)
         );
-        $this->assertEquals($expectedResult, $this->model->isSetFlag($configPath));
+        $this->sectionPool->expects(
+            $this->once()
+        )->method(
+            'getScope'
+        )->with(
+            $this->equalTo('default'),
+            $this->isNull()
+        )->will(
+            $this->returnValue($configData)
+        );
+        $this->assertEquals($expectedResult, $this->model->isSetFlag($path));
     }
 
-    /**
-     * @return array
-     */
     public function isSetFlagDataProvider()
     {
         return [
-            ['a', 0, false],
-            ['b', true, true],
-            ['c', '0', false],
-            ['d', '', false],
-            ['e', 'some string', true],
-            ['f', 1, true]
+            [0, false],
+            [true, true],
+            ['0', false],
+            ['', false],
+            ['some string', true],
+            [1, true]
         ];
     }
 

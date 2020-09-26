@@ -1,22 +1,16 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Model;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\ResourceModel\CustomerRepository;
-use Magento\Customer\Model\CustomerAuthUpdate;
 use Magento\Backend\App\ConfigInterface;
 use Magento\Framework\Encryption\EncryptorInterface as Encryptor;
 use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\Exception\State\UserLockedException;
 
-/**
- * Class Authentication
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Authentication implements AuthenticationInterface
 {
     /**
@@ -55,11 +49,6 @@ class Authentication implements AuthenticationInterface
      * @var CustomerRepositoryInterface
      */
     protected $customerRepository;
-
-    /**
-     * @var CustomerAuthUpdate
-     */
-    private $customerAuthUpdate;
 
     /**
      * @param CustomerRepositoryInterface $customerRepository
@@ -116,7 +105,7 @@ class Authentication implements AuthenticationInterface
         }
 
         $customerSecure->setFailuresNum($failuresNum);
-        $this->getCustomerAuthUpdate()->saveAuth($customerId);
+        $this->customerRepository->save($this->customerRepository->getById($customerId));
     }
 
     /**
@@ -128,7 +117,7 @@ class Authentication implements AuthenticationInterface
         $customerSecure->setFailuresNum(0);
         $customerSecure->setFirstFailure(null);
         $customerSecure->setLockExpires(null);
-        $this->getCustomerAuthUpdate()->saveAuth($customerId);
+        $this->customerRepository->save($this->customerRepository->getById($customerId));
     }
 
     /**
@@ -175,20 +164,5 @@ class Authentication implements AuthenticationInterface
             throw new InvalidEmailOrPasswordException(__('Invalid login or password.'));
         }
         return true;
-    }
-
-    /**
-     * Get customer authentication update model
-     *
-     * @return \Magento\Customer\Model\CustomerAuthUpdate
-     * @deprecated
-     */
-    private function getCustomerAuthUpdate()
-    {
-        if ($this->customerAuthUpdate === null) {
-            $this->customerAuthUpdate =
-                \Magento\Framework\App\ObjectManager::getInstance()->get(CustomerAuthUpdate::class);
-        }
-        return $this->customerAuthUpdate;
     }
 }

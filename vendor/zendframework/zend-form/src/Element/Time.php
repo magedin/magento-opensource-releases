@@ -19,9 +19,9 @@ class Time extends DateTime
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributes = array(
         'type' => 'time',
-    ];
+    );
 
     /**
      * Default date format
@@ -43,10 +43,10 @@ class Time extends DateTime
         $baseValue = (isset($this->attributes['min']))
                      ? $this->attributes['min'] : date($format, 0);
 
-        return new DateStepValidator([
+        return new DateStepValidator(array(
             'format'    => $format,
             'baseValue' => $baseValue,
             'step'      => new DateInterval("PT{$stepValue}S"),
-        ]);
+        ));
     }
 }

@@ -2,15 +2,14 @@
 /**
  * Grouped Products Price Indexer Resource model
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\GroupedProduct\Model\ResourceModel\Product\Indexer\Price;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\DefaultPrice;
 use Magento\Catalog\Api\Data\ProductInterface;
 
-class Grouped extends DefaultPrice implements GroupedInterface
+class Grouped extends \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\DefaultPrice
 {
     /**
      * Reindex temporary (price result data) for all products

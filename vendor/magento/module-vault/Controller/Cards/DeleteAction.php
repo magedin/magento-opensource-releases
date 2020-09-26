@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Vault\Controller\Cards;
@@ -133,7 +133,7 @@ class DeleteAction extends CardsManagement
     private function createSuccessMessage()
     {
         $this->messageManager->addSuccessMessage(
-            __('Stored Payment Method was successfully removed')
+            __('Credit Card was successfully removed')
         );
         return $this->_redirect('vault/cards/listaction');
     }

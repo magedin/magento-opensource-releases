@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Quote\Model\Quote\Address;
@@ -12,9 +12,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\QuoteAddressValidator;
 use Magento\Customer\Api\AddressRepositoryInterface;
 
-/**
- * Saves billing address for quotes.
- */
 class BillingAddressPersister
 {
     /**
@@ -40,17 +37,17 @@ class BillingAddressPersister
     }
 
     /**
-     * Save address for billing.
-     *
      * @param CartInterface $quote
      * @param AddressInterface $address
      * @param bool $useForShipping
      * @return void
+     * @throws NoSuchEntityException
+     * @throws InputException
      */
     public function save(CartInterface $quote, AddressInterface $address, $useForShipping = false)
     {
         /** @var \Magento\Quote\Model\Quote $quote */
-        $this->addressValidator->validateForCart($quote, $address);
+        $this->addressValidator->validate($address);
         $customerAddressId = $address->getCustomerAddressId();
         $shippingAddress = null;
         $addressData = [];

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\System\Design;
@@ -50,7 +50,7 @@ class Edit extends \Magento\Backend\Block\Widget
     {
         $this->getToolbar()->addChild(
             'back_button',
-            \Magento\Backend\Block\Widget\Button::class,
+            'Magento\Backend\Block\Widget\Button',
             [
                 'label' => __('Back'),
                 'onclick' => 'setLocation(\'' . $this->getUrl('adminhtml/*/') . '\')',
@@ -61,12 +61,12 @@ class Edit extends \Magento\Backend\Block\Widget
         if ($this->getDesignChangeId()) {
             $this->getToolbar()->addChild(
                 'delete_button',
-                \Magento\Backend\Block\Widget\Button::class,
+                'Magento\Backend\Block\Widget\Button',
                 [
                     'label' => __('Delete'),
                     'onclick' => 'deleteConfirm(\'' . __(
                         'Are you sure?'
-                    ) . '\', \'' . $this->getDeleteUrl() . '\', {data: {}})',
+                    ) . '\', \'' . $this->getDeleteUrl() . '\')',
                     'class' => 'delete'
                 ]
             );
@@ -74,7 +74,7 @@ class Edit extends \Magento\Backend\Block\Widget
 
         $this->getToolbar()->addChild(
             'save_button',
-            \Magento\Backend\Block\Widget\Button::class,
+            'Magento\Backend\Block\Widget\Button',
             [
                 'label' => __('Save'),
                 'class' => 'save primary',

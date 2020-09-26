@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Test\Unit\Block\Adminhtml\Attribute\Edit\Options;
@@ -171,9 +171,6 @@ class AbstractSwatchTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $values);
     }
 
-    /**
-     * @return array
-     */
     public function dataForGetStoreOptionValues()
     {
         return [

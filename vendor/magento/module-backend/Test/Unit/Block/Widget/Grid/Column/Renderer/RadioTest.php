@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Column\Renderer;
@@ -69,9 +69,6 @@ class RadioTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->_object->render(new \Magento\Framework\DataObject($rowData)));
     }
 
-    /**
-     * @return array
-     */
     public function renderDataProvider()
     {
         return [

@@ -1,26 +1,23 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Command;
 
 use Braintree\Transaction;
-use Magento\Braintree\Gateway\Helper\SubjectReader;
 use Magento\Braintree\Model\Adapter\BraintreeAdapter;
-use Magento\Braintree\Model\Adapter\BraintreeAdapterFactory;
 use Magento\Braintree\Model\Adapter\BraintreeSearchAdapter;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\App\ObjectManager;
+use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\CommandInterface;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
+use Magento\Braintree\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
-use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 
 /**
  * Class CaptureStrategyCommand
@@ -69,9 +66,9 @@ class CaptureStrategyCommand implements CommandInterface
     private $subjectReader;
 
     /**
-     * @var BraintreeAdapterFactory
+     * @var BraintreeAdapter
      */
-    private $braintreeAdapterFactory;
+    private $braintreeAdapter;
 
     /**
      * @var BraintreeSearchAdapter
@@ -79,6 +76,8 @@ class CaptureStrategyCommand implements CommandInterface
     private $braintreeSearchAdapter;
 
     /**
+     * Constructor
+     *
      * @param CommandPoolInterface $commandPool
      * @param TransactionRepositoryInterface $repository
      * @param FilterBuilder $filterBuilder
@@ -86,8 +85,6 @@ class CaptureStrategyCommand implements CommandInterface
      * @param SubjectReader $subjectReader
      * @param BraintreeAdapter $braintreeAdapter
      * @param BraintreeSearchAdapter $braintreeSearchAdapter
-     * @param BraintreeAdapterFactory|null $braintreeAdapterFactory
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
         CommandPoolInterface $commandPool,
@@ -96,17 +93,15 @@ class CaptureStrategyCommand implements CommandInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SubjectReader $subjectReader,
         BraintreeAdapter $braintreeAdapter,
-        BraintreeSearchAdapter $braintreeSearchAdapter,
-        BraintreeAdapterFactory $braintreeAdapterFactory = null
+        BraintreeSearchAdapter $braintreeSearchAdapter
     ) {
         $this->commandPool = $commandPool;
         $this->transactionRepository = $repository;
         $this->filterBuilder = $filterBuilder;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->subjectReader = $subjectReader;
+        $this->braintreeAdapter = $braintreeAdapter;
         $this->braintreeSearchAdapter = $braintreeSearchAdapter;
-        $this->braintreeAdapterFactory = $braintreeAdapterFactory ?
-            : ObjectManager::getInstance()->get(BraintreeAdapterFactory::class);
     }
 
     /**
@@ -117,29 +112,29 @@ class CaptureStrategyCommand implements CommandInterface
         /** @var \Magento\Payment\Gateway\Data\PaymentDataObjectInterface $paymentDO */
         $paymentDO = $this->subjectReader->readPayment($commandSubject);
 
-        $command = $this->getCommand($paymentDO);
+        /** @var \Magento\Sales\Api\Data\OrderPaymentInterface $paymentInfo */
+        $paymentInfo = $paymentDO->getPayment();
+        ContextHelper::assertOrderPayment($paymentInfo);
+
+        $command = $this->getCommand($paymentInfo);
         $this->commandPool->get($command)->execute($commandSubject);
     }
 
     /**
-     * Gets command name.
-     *
-     * @param PaymentDataObjectInterface $paymentDO
+     * Get execution command name
+     * @param OrderPaymentInterface $payment
      * @return string
      */
-    private function getCommand(PaymentDataObjectInterface $paymentDO)
+    private function getCommand(OrderPaymentInterface $payment)
     {
-        $payment = $paymentDO->getPayment();
-        ContextHelper::assertOrderPayment($payment);
-
-        // if auth transaction does not exist then execute authorize&capture command
+        // if auth transaction is not exists execute authorize&capture command
         $existsCapture = $this->isExistsCaptureTransaction($payment);
         if (!$payment->getAuthorizationTransaction() && !$existsCapture) {
             return self::SALE;
         }
 
         // do capture for authorization transaction
-        if (!$existsCapture && !$this->isExpiredAuthorization($payment, $paymentDO->getOrder())) {
+        if (!$existsCapture && !$this->isExpiredAuthorization($payment)) {
             return self::CAPTURE;
         }
 
@@ -148,16 +143,12 @@ class CaptureStrategyCommand implements CommandInterface
     }
 
     /**
-     * Checks if authorization transaction does not expired yet.
-     *
      * @param OrderPaymentInterface $payment
-     * @param OrderAdapterInterface $orderAdapter
-     * @return bool
+     * @return boolean
      */
-    private function isExpiredAuthorization(OrderPaymentInterface $payment, OrderAdapterInterface $orderAdapter)
+    private function isExpiredAuthorization(OrderPaymentInterface $payment)
     {
-        $adapter = $this->braintreeAdapterFactory->create($orderAdapter->getStoreId());
-        $collection = $adapter->search(
+        $collection = $this->braintreeAdapter->search(
             [
                 $this->braintreeSearchAdapter->id()->is($payment->getLastTransId()),
                 $this->braintreeSearchAdapter->status()->is(Transaction::AUTHORIZATION_EXPIRED)
@@ -175,25 +166,16 @@ class CaptureStrategyCommand implements CommandInterface
      */
     private function isExistsCaptureTransaction(OrderPaymentInterface $payment)
     {
-        $this->searchCriteriaBuilder->addFilters(
-            [
-                $this->filterBuilder
-                    ->setField('payment_id')
-                    ->setValue($payment->getId())
-                    ->create(),
-            ]
-        );
+        $filters[] = $this->filterBuilder->setField('payment_id')
+            ->setValue($payment->getId())
+            ->create();
 
-        $this->searchCriteriaBuilder->addFilters(
-            [
-                $this->filterBuilder
-                    ->setField('txn_type')
-                    ->setValue(TransactionInterface::TYPE_CAPTURE)
-                    ->create(),
-            ]
-        );
+        $filters[] = $this->filterBuilder->setField('txn_type')
+            ->setValue(TransactionInterface::TYPE_CAPTURE)
+            ->create();
 
-        $searchCriteria = $this->searchCriteriaBuilder->create();
+        $searchCriteria = $this->searchCriteriaBuilder->addFilters($filters)
+            ->create();
 
         $count = $this->transactionRepository->getList($searchCriteria)->getTotalCount();
         return (boolean) $count;

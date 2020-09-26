@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*global define*/
@@ -79,6 +79,7 @@ define(
                     fieldsetName = 'checkout.steps.shipping-step.shippingAddress.shipping-address-fieldset';
 
                 this._super();
+                shippingRatesValidator.initFields(fieldsetName);
 
                 if (!quote.isVirtual()) {
                     stepNavigator.registerStep(
@@ -113,13 +114,12 @@ define(
                     if (shippingAddressData) {
                         checkoutProvider.set(
                             'shippingAddress',
-                            $.extend(true, {}, checkoutProvider.get('shippingAddress'), shippingAddressData)
+                            $.extend({}, checkoutProvider.get('shippingAddress'), shippingAddressData)
                         );
                     }
                     checkoutProvider.on('shippingAddress', function (shippingAddressData) {
                         checkoutData.setShippingAddressFromData(shippingAddressData);
                     });
-                    shippingRatesValidator.initFields(fieldsetName);
                 });
 
                 return this;
@@ -150,37 +150,18 @@ define(
                         {
                             text: buttons.cancel.text ? buttons.cancel.text : $t('Cancel'),
                             class: buttons.cancel.class ? buttons.cancel.class : 'action secondary action-hide-popup',
-
-                            /** @inheritdoc */
-                            click: this.onClosePopUp.bind(this)
+                            click: function () {
+                                this.closeModal();
+                            }
                         }
                     ];
                     this.popUpForm.options.closed = function () {
                         self.isFormPopUpVisible(false);
                     };
-
-                    this.popUpForm.options.modalCloseBtnHandler = this.onClosePopUp.bind(this);
-                    this.popUpForm.options.keyEventHandlers = {
-                        escapeKey: this.onClosePopUp.bind(this)
-                    };
-
-                    /** @inheritdoc */
-                    this.popUpForm.options.opened = function () {
-                        // Store temporary address for revert action in case when user click cancel action
-                        self.temporaryAddress = $.extend(true, {}, checkoutData.getShippingAddressFromData());
-                    };
                     popUp = modal(this.popUpForm.options, $(this.popUpForm.element));
                 }
 
                 return popUp;
-            },
-
-            /**
-             * Revert address and close modal.
-             */
-            onClosePopUp: function () {
-                checkoutData.setShippingAddressFromData($.extend(true, {}, this.temporaryAddress));
-                this.getPopUp().closeModal();
             },
 
             /**
@@ -209,7 +190,7 @@ define(
                     newShippingAddress = createShippingAddress(addressData);
                     selectShippingAddress(newShippingAddress);
                     checkoutData.setSelectedShippingAddress(newShippingAddress.getKey());
-                    checkoutData.setNewCustomerShippingAddress($.extend(true, {}, addressData));
+                    checkoutData.setNewCustomerShippingAddress(addressData);
                     this.getPopUp().closeModal();
                     this.isNewAddressAdded(true);
                 }
@@ -261,7 +242,7 @@ define(
                     emailValidationResult = customer.isLoggedIn();
 
                 if (!quote.shippingMethod()) {
-                    this.errorValidationMessage($t('Please specify a shipping method.'));
+                    this.errorValidationMessage('Please specify a shipping method.');
 
                     return false;
                 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cookie\Test\Unit\Helper;
@@ -87,9 +87,6 @@ class CookieTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->_object->getCookieRestrictionLifetime(), 60 * 60 * 24 * 365);
     }
 
-    /**
-     * @return $this
-     */
     protected function _initMock()
     {
         $scopeConfig = $this->_getConfigStub();

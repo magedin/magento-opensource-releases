@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Observer\Backend;
@@ -31,6 +31,6 @@ class SubtractQtyFromQuotesObserver implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $product = $observer->getEvent()->getProduct();
-        $this->_quote->subtractProductFromQuotes($product);
+        $this->_quote->substractProductFromQuotes($product);
     }
 }

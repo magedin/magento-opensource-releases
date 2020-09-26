@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Pricing\Test\Unit\Adjustment;
@@ -79,9 +79,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty(array_diff($expectedResult, array_keys($result)));
     }
 
-    /**
-     * @return array
-     */
     public function getItemsDataProvider()
     {
         return [
@@ -107,9 +104,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $item->getAdjustmentCode());
     }
 
-    /**
-     * @return array
-     */
     public function getItemByCodeDataProvider()
     {
         return [

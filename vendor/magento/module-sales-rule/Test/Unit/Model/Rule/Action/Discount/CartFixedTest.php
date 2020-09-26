@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Test\Unit\Model\Rule\Action\Discount;
@@ -74,15 +74,10 @@ class CartFixedTest extends \PHPUnit_Framework_TestCase
         );
         $dataFactory->expects($this->any())->method('create')->will($this->returnValue($this->data));
         $this->priceCurrency = $this->getMockBuilder('Magento\Framework\Pricing\PriceCurrencyInterface')->getMock();
-        $deltaPriceRound = $this->getMockBuilder(\Magento\SalesRule\Model\DeltaPriceRound::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $this->model = new \Magento\SalesRule\Model\Rule\Action\Discount\CartFixed(
             $this->validator,
             $dataFactory,
-            $this->priceCurrency,
-            $deltaPriceRound
+            $this->priceCurrency
         );
     }
 

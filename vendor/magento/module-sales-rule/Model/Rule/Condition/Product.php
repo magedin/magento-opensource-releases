@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Model\Rule\Condition;
@@ -48,12 +48,6 @@ class Product extends \Magento\Rule\Model\Condition\Product\AbstractProduct
         )->setQuoteItemRowTotal(
             $model->getBaseRowTotal()
         );
-
-        $attrCode = $this->getAttribute();
-
-        if ('category_ids' == $attrCode) {
-            return $this->validateAttribute($this->_getAvailableInCategories($product->getId()));
-        }
 
         return parent::validate($product);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -315,10 +315,6 @@ class BundleTest extends \PHPUnit_Framework_TestCase
         return $bundleBlock;
     }
 
-    /**
-     * @param $price
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     private function getPriceInfoMock($price)
     {
         $priceInfoMock = $this->getMockBuilder('\Magento\Framework\Pricing\PriceInfo\Base')
@@ -343,10 +339,6 @@ class BundleTest extends \PHPUnit_Framework_TestCase
         return $priceInfoMock;
     }
 
-    /**
-     * @param $prices
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     private function getPriceMock($prices)
     {
         $methods = [];

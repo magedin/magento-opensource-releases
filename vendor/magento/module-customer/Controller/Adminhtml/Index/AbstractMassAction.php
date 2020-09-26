@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Adminhtml\Index;
@@ -10,7 +10,6 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
 
@@ -61,10 +60,6 @@ abstract class AbstractMassAction extends \Magento\Backend\App\Action
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found'));
-        }
-
         try {
             $collection = $this->filter->getCollection($this->collectionFactory->create());
             return $this->massAction($collection);

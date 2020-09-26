@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\DependencyInjection\Tests\Dumper;
 
-use DummyProxyDumper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -19,8 +18,6 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Variable;
 use Symfony\Component\ExpressionLanguage\Expression;
-
-require_once __DIR__.'/../Fixtures/includes/classes.php';
 
 class PhpDumperTest extends \PHPUnit_Framework_TestCase
 {
@@ -103,7 +100,7 @@ class PhpDumperTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(array('foo' => new Definition('stdClass'))),
-            array(array('foo' => new Expression('service("foo").foo() ~ (container.hasParameter("foo") ? parameter("foo") : "default")'))),
+            array(array('foo' => new Expression('service("foo").foo() ~ (container.hasparameter("foo") ? parameter("foo") : "default")'))),
             array(array('foo' => new Reference('foo'))),
             array(array('foo' => new Variable('foo'))),
         );
@@ -140,6 +137,16 @@ class PhpDumperTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group legacy
+     */
+    public function testLegacySynchronizedServices()
+    {
+        $container = include self::$fixturesPath.'/containers/container20.php';
+        $dumper = new PhpDumper($container);
+        $this->assertEquals(str_replace('%path%', str_replace('\\', '\\\\', self::$fixturesPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR), file_get_contents(self::$fixturesPath.'/php/services20.php')), $dumper->dump(), '->dump() dumps services');
+    }
+
     public function testServicesWithAnonymousFactories()
     {
         $container = include self::$fixturesPath.'/containers/container19.php';
@@ -148,51 +155,21 @@ class PhpDumperTest extends \PHPUnit_Framework_TestCase
         $this->assertStringEqualsFile(self::$fixturesPath.'/php/services19.php', $dumper->dump(), '->dump() dumps services with anonymous factories');
     }
 
-    public function testAddServiceIdWithUnsupportedCharacters()
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Service id "bar$" cannot be converted to a valid PHP method name.
+     */
+    public function testAddServiceInvalidServiceId()
     {
-        $class = 'Symfony_DI_PhpDumper_Test_Unsupported_Characters';
         $container = new ContainerBuilder();
         $container->register('bar$', 'FooClass');
-        $container->register('bar$!', 'FooClass');
         $dumper = new PhpDumper($container);
-        eval('?>'.$dumper->dump(array('class' => $class)));
-
-        $this->assertTrue(method_exists($class, 'getBarService'));
-        $this->assertTrue(method_exists($class, 'getBar2Service'));
-    }
-
-    public function testConflictingServiceIds()
-    {
-        $class = 'Symfony_DI_PhpDumper_Test_Conflicting_Service_Ids';
-        $container = new ContainerBuilder();
-        $container->register('foo_bar', 'FooClass');
-        $container->register('foobar', 'FooClass');
-        $dumper = new PhpDumper($container);
-        eval('?>'.$dumper->dump(array('class' => $class)));
-
-        $this->assertTrue(method_exists($class, 'getFooBarService'));
-        $this->assertTrue(method_exists($class, 'getFoobar2Service'));
-    }
-
-    public function testConflictingMethodsWithParent()
-    {
-        $class = 'Symfony_DI_PhpDumper_Test_Conflicting_Method_With_Parent';
-        $container = new ContainerBuilder();
-        $container->register('bar', 'FooClass');
-        $container->register('foo_bar', 'FooClass');
-        $dumper = new PhpDumper($container);
-        eval('?>'.$dumper->dump(array(
-            'class' => $class,
-            'base_class' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\containers\CustomContainer',
-        )));
-
-        $this->assertTrue(method_exists($class, 'getBar2Service'));
-        $this->assertTrue(method_exists($class, 'getFoobar2Service'));
+        $dumper->dump();
     }
 
     /**
      * @dataProvider provideInvalidFactories
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
+     * @expectedException Symfony\Component\DependencyInjection\Exception\RuntimeException
      * @expectedExceptionMessage Cannot dump definition
      */
     public function testInvalidFactories($factory)
@@ -250,7 +227,7 @@ class PhpDumperTest extends \PHPUnit_Framework_TestCase
         $container->set('bar', $bar = new \stdClass());
         $container->setParameter('foo_bar', 'foo_bar');
 
-        $this->assertSame($bar, $container->get('bar'), '->set() overrides an already defined service');
+        $this->assertEquals($bar, $container->get('bar'), '->set() overrides an already defined service');
     }
 
     public function testOverrideServiceWhenUsingADumpedContainerAndServiceIsUsedFromAnotherOne()
@@ -297,72 +274,5 @@ class PhpDumperTest extends \PHPUnit_Framework_TestCase
 
         $dumper = new PhpDumper($container);
         $this->assertStringEqualsFile(self::$fixturesPath.'/php/services13.php', $dumper->dump(), '->dump() dumps inline definitions which reference service_container');
-    }
-
-    public function testInitializePropertiesBeforeMethodCalls()
-    {
-        require_once self::$fixturesPath.'/includes/classes.php';
-
-        $container = new ContainerBuilder();
-        $container->register('foo', 'stdClass');
-        $container->register('bar', 'MethodCallClass')
-            ->setProperty('simple', 'bar')
-            ->setProperty('complex', new Reference('foo'))
-            ->addMethodCall('callMe');
-        $container->compile();
-
-        $dumper = new PhpDumper($container);
-        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Properties_Before_Method_Calls')));
-
-        $container = new \Symfony_DI_PhpDumper_Test_Properties_Before_Method_Calls();
-        $this->assertTrue($container->get('bar')->callPassed(), '->dump() initializes properties before method calls');
-    }
-
-    public function testCircularReferenceAllowanceForLazyServices()
-    {
-        $container = new ContainerBuilder();
-        $container->register('foo', 'stdClass')->addArgument(new Reference('bar'));
-        $container->register('bar', 'stdClass')->setLazy(true)->addArgument(new Reference('foo'));
-        $container->compile();
-
-        $dumper = new PhpDumper($container);
-        $dumper->dump();
-    }
-
-    public function testCircularReferenceAllowanceForInlinedDefinitionsForLazyServices()
-    {
-        /*
-         *   test graph:
-         *              [connection] -> [event_manager] --> [entity_manager](lazy)
-         *                                                           |
-         *                                                           --(call)- addEventListener ("@lazy_service")
-         *
-         *              [lazy_service](lazy) -> [entity_manager](lazy)
-         *
-         */
-
-        $container = new ContainerBuilder();
-
-        $eventManagerDefinition = new Definition('stdClass');
-
-        $connectionDefinition = $container->register('connection', 'stdClass');
-        $connectionDefinition->addArgument($eventManagerDefinition);
-
-        $container->register('entity_manager', 'stdClass')
-            ->setLazy(true)
-            ->addArgument(new Reference('connection'));
-
-        $lazyServiceDefinition = $container->register('lazy_service', 'stdClass');
-        $lazyServiceDefinition->setLazy(true);
-        $lazyServiceDefinition->addArgument(new Reference('entity_manager'));
-
-        $eventManagerDefinition->addMethodCall('addEventListener', array(new Reference('lazy_service')));
-
-        $container->compile();
-
-        $dumper = new PhpDumper($container);
-
-        $dumper->setProxyDumper(new DummyProxyDumper());
-        $dumper->dump();
     }
 }

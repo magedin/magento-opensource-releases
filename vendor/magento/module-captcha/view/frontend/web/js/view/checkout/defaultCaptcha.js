@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*browser:true jquery:true*/
@@ -26,9 +26,9 @@ define(
             },
             initialize: function() {
                 this._super();
+                captchaConfig = window[this.configSource]['captcha'];
 
-                if (window[this.configSource] && window[this.configSource]['captcha']) {
-                    captchaConfig = window[this.configSource]['captcha'];
+                if (captchaConfig) {
                     $.each(captchaConfig, function(formId, captchaData) {
                         captchaData.formId = formId;
                         captchaList.add(Captcha(captchaData));

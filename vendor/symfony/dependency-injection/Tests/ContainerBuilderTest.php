@@ -19,15 +19,15 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\Scope;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\Tests\Fixtures\CustomDefinition;
 use Symfony\Component\ExpressionLanguage\Expression;
 
 class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
@@ -59,19 +59,29 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation The "deprecated_foo" service is deprecated. You should stop using it, as it will soon be removed.
-     */
     public function testCreateDeprecatedService()
     {
+        $deprecations = array();
+        set_error_handler(function ($type, $msg) use (&$deprecations) {
+            if (E_USER_DEPRECATED !== $type) {
+                restore_error_handler();
+
+                return call_user_func_array('PHPUnit_Util_ErrorHandler::handleError', func_get_args());
+            }
+
+            $deprecations[] = $msg;
+        });
+
         $definition = new Definition('stdClass');
         $definition->setDeprecated(true);
 
         $builder = new ContainerBuilder();
-        $builder->setDefinition('deprecated_foo', $definition);
-        $builder->compile();
-        $builder->get('deprecated_foo');
+        $builder->createService($definition, 'deprecated_foo');
+
+        restore_error_handler();
+
+        $this->assertCount(1, $deprecations);
+        $this->assertContains('The "deprecated_foo" service is deprecated. You should stop using it, as it will soon be removed.', $deprecations[0]);
     }
 
     public function testRegister()
@@ -115,7 +125,7 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         try {
             @$builder->get('baz');
             $this->fail('->get() throws a ServiceCircularReferenceException if the service has a circular reference to itself');
-        } catch (ServiceCircularReferenceException $e) {
+        } catch (\Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException $e) {
             $this->assertEquals('Circular reference detected for service "baz", path: "baz".', $e->getMessage(), '->get() throws a LogicException if the service has a circular reference to itself');
         }
 
@@ -147,6 +157,27 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
         // we must also have the same RuntimeException here
         $builder->get('foo');
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testGetReturnsNullOnInactiveScope()
+    {
+        $builder = new ContainerBuilder();
+        $builder->register('foo', 'stdClass')->setScope('request');
+
+        $this->assertNull($builder->get('foo', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testGetReturnsNullOnInactiveScopeWhenServiceIsCreatedByAMethod()
+    {
+        $builder = new ProjectContainer();
+
+        $this->assertNull($builder->get('foobaz', ContainerInterface::NULL_ON_INVALID_REFERENCE));
     }
 
     public function testGetServiceIds()
@@ -237,24 +268,12 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($foo, $builder->get('alias'), '->set() replaces an existing alias');
     }
 
-    public function testAliasesKeepInvalidBehavior()
-    {
-        $builder = new ContainerBuilder();
-
-        $aliased = new Definition('stdClass');
-        $aliased->addMethodCall('setBar', array(new Reference('bar', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)));
-        $builder->setDefinition('aliased', $aliased);
-        $builder->setAlias('alias', 'aliased');
-
-        $this->assertEquals(new \stdClass(), $builder->get('alias'));
-    }
-
     public function testAddGetCompilerPass()
     {
         $builder = new ContainerBuilder();
         $builder->setResourceTracking(false);
         $builderCompilerPasses = $builder->getCompiler()->getPassConfig()->getPasses();
-        $builder->addCompilerPass($this->getMockBuilder('Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface')->getMock());
+        $builder->addCompilerPass($this->getMock('Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface'));
 
         $this->assertCount(count($builder->getCompiler()->getPassConfig()->getPasses()) - 1, $builderCompilerPasses);
     }
@@ -311,6 +330,35 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($builder->get('qux')->called, '->createService() calls the factory method to create the service instance');
         $this->assertTrue($builder->get('bar')->called, '->createService() uses anonymous service as factory');
         $this->assertTrue($builder->get('baz')->called, '->createService() uses another service as factory');
+    }
+
+    public function testLegacyCreateServiceFactory()
+    {
+        $builder = new ContainerBuilder();
+        $builder->register('bar', 'Bar\FooClass');
+        $builder
+            ->register('foo1', 'Bar\FooClass')
+            ->setFactoryClass('%foo_class%')
+            ->setFactoryMethod('getInstance')
+            ->addArgument(array('foo' => '%value%', '%value%' => 'foo', new Reference('bar')))
+        ;
+        $builder->setParameter('value', 'bar');
+        $builder->setParameter('foo_class', 'Bar\FooClass');
+        $this->assertTrue($builder->get('foo1')->called, '->createService() calls the factory method to create the service instance');
+        $this->assertEquals(array('foo' => 'bar', 'bar' => 'foo', $builder->get('bar')), $builder->get('foo1')->arguments, '->createService() passes the arguments to the factory method');
+    }
+
+    public function testLegacyCreateServiceFactoryService()
+    {
+        $builder = new ContainerBuilder();
+        $builder->register('foo_service', 'Bar\FooClass');
+        $builder
+            ->register('foo', 'Bar\FooClass')
+            ->setFactoryService('%foo_service%')
+            ->setFactoryMethod('getInstance')
+        ;
+        $builder->setParameter('foo_service', 'foo_service');
+        $this->assertTrue($builder->get('foo')->called, '->createService() calls the factory method to create the service instance');
     }
 
     public function testCreateServiceMethodCalls()
@@ -392,28 +440,6 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($builder->get('foo'), $builder->resolveServices(new Reference('foo')), '->resolveServices() resolves service references to service instances');
         $this->assertEquals(array('foo' => array('foo', $builder->get('foo'))), $builder->resolveServices(array('foo' => array('foo', new Reference('foo')))), '->resolveServices() resolves service references to service instances in nested arrays');
         $this->assertEquals($builder->get('foo'), $builder->resolveServices(new Expression('service("foo")')), '->resolveServices() resolves expressions');
-    }
-
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
-     * @expectedExceptionMessage Constructing service "foo" from a parent definition is not supported at build time.
-     */
-    public function testResolveServicesWithDecoratedDefinition()
-    {
-        $builder = new ContainerBuilder();
-        $builder->setDefinition('grandpa', new Definition('stdClass'));
-        $builder->setDefinition('parent', new DefinitionDecorator('grandpa'));
-        $builder->setDefinition('foo', new DefinitionDecorator('parent'));
-
-        $builder->get('foo');
-    }
-
-    public function testResolveServicesWithCustomDefinitionClass()
-    {
-        $builder = new ContainerBuilder();
-        $builder->setDefinition('foo', new CustomDefinition('stdClass'));
-
-        $this->assertInstanceOf('stdClass', $builder->get('foo'));
     }
 
     public function testMerge()
@@ -608,7 +634,7 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisteredButNotLoadedExtension()
     {
-        $extension = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface')->getMock();
+        $extension = $this->getMock('Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface');
         $extension->expects($this->once())->method('getAlias')->will($this->returnValue('project'));
         $extension->expects($this->never())->method('load');
 
@@ -620,7 +646,7 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisteredAndLoadedExtension()
     {
-        $extension = $this->getMockBuilder('Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface')->getMock();
+        $extension = $this->getMock('Symfony\\Component\\DependencyInjection\\Extension\\ExtensionInterface');
         $extension->expects($this->exactly(2))->method('getAlias')->will($this->returnValue('project'));
         $extension->expects($this->once())->method('load')->with(array(array('foo' => 'bar')));
 
@@ -661,12 +687,14 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $container->set('a', new \stdClass());
     }
 
+    /**
+     * @expectedException \BadMethodCallException
+     */
     public function testThrowsExceptionWhenAddServiceOnAFrozenContainer()
     {
         $container = new ContainerBuilder();
         $container->compile();
-        $container->set('a', $foo = new \stdClass());
-        $this->assertSame($foo, $container->get('a'));
+        $container->set('a', new \stdClass());
     }
 
     public function testNoExceptionWhenSetSyntheticServiceOnAFrozenContainer()
@@ -678,6 +706,58 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $container->compile();
         $container->set('a', $a = new \stdClass());
         $this->assertEquals($a, $container->get('a'));
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testLegacySetOnSynchronizedService()
+    {
+        $container = new ContainerBuilder();
+        $container->register('baz', 'BazClass')
+            ->setSynchronized(true)
+        ;
+        $container->register('bar', 'BarClass')
+            ->addMethodCall('setBaz', array(new Reference('baz')))
+        ;
+
+        $container->set('baz', $baz = new \BazClass());
+        $this->assertSame($baz, $container->get('bar')->getBaz());
+
+        $container->set('baz', $baz = new \BazClass());
+        $this->assertSame($baz, $container->get('bar')->getBaz());
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testLegacySynchronizedServiceWithScopes()
+    {
+        $container = new ContainerBuilder();
+        $container->addScope(new Scope('foo'));
+        $container->register('baz', 'BazClass')
+            ->setSynthetic(true)
+            ->setSynchronized(true)
+            ->setScope('foo')
+        ;
+        $container->register('bar', 'BarClass')
+            ->addMethodCall('setBaz', array(new Reference('baz', ContainerInterface::NULL_ON_INVALID_REFERENCE, false)))
+        ;
+        $container->compile();
+
+        $container->enterScope('foo');
+        $container->set('baz', $outerBaz = new \BazClass(), 'foo');
+        $this->assertSame($outerBaz, $container->get('bar')->getBaz());
+
+        $container->enterScope('foo');
+        $container->set('baz', $innerBaz = new \BazClass(), 'foo');
+        $this->assertSame($innerBaz, $container->get('bar')->getBaz());
+        $container->leaveScope('foo');
+
+        $this->assertNotSame($innerBaz, $container->get('bar')->getBaz());
+        $this->assertSame($outerBaz, $container->get('bar')->getBaz());
+
+        $container->leaveScope('foo');
     }
 
     /**
@@ -728,11 +808,12 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = new ClosureLoader($container = new ContainerBuilder());
         $loader->load(function (ContainerBuilder $container) {
-            $container->set('a', new \BazClass());
-            $definition = new Definition('BazClass');
-            $definition->setLazy(true);
-            $container->setDefinition('a', $definition);
-        });
+                $container->set('a', new \BazClass());
+                $definition = new Definition('BazClass');
+                $definition->setLazy(true);
+                $container->setDefinition('a', $definition);
+            }
+        );
 
         $container->setResourceTracking(true);
 
@@ -756,20 +837,6 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($classInList);
     }
 
-    public function testInitializePropertiesBeforeMethodCalls()
-    {
-        $container = new ContainerBuilder();
-        $container->register('foo', 'stdClass');
-        $container->register('bar', 'MethodCallClass')
-            ->setProperty('simple', 'bar')
-            ->setProperty('complex', new Reference('foo'))
-            ->addMethodCall('callMe');
-
-        $container->compile();
-
-        $this->assertTrue($container->get('bar')->callPassed(), '->compile() initializes properties before method calls');
-    }
-
     public function testAutowiring()
     {
         $container = new ContainerBuilder();
@@ -786,6 +853,14 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
 class FooClass
 {
+}
+
+class ProjectContainer extends ContainerBuilder
+{
+    public function getFoobazService()
+    {
+        throw new InactiveScopeException('foo', 'request');
+    }
 }
 
 class A

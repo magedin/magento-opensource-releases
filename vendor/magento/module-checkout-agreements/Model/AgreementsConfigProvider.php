@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CheckoutAgreements\Model;
@@ -45,18 +45,17 @@ class AgreementsConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getConfig()
     {
         $agreements = [];
         $agreements['checkoutAgreements'] = $this->getAgreementsConfig();
-
         return $agreements;
     }
 
     /**
-     * Returns agreements config.
+     * Returns agreements config
      *
      * @return array
      */
@@ -76,7 +75,7 @@ class AgreementsConfigProvider implements ConfigProviderInterface
                 'content' => $agreement->getIsHtml()
                     ? $agreement->getContent()
                     : nl2br($this->escaper->escapeHtml($agreement->getContent())),
-                'checkboxText' => $this->escaper->escapeHtml($agreement->getCheckboxText()),
+                'checkboxText' => $agreement->getCheckboxText(),
                 'mode' => $agreement->getMode(),
                 'agreementId' => $agreement->getAgreementId()
             ];

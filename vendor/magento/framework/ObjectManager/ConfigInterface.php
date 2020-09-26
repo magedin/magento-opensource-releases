@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2018 Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\ObjectManager;
@@ -29,7 +29,7 @@ interface ConfigInterface
      * Retrieve list of arguments per type
      *
      * @param string $type
-     * @return array|null
+     * @return array
      */
     public function getArguments($type);
 

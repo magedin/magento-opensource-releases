@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Version\Controller\Index;
@@ -9,6 +9,7 @@ namespace Magento\Version\Controller\Index;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Exception\StateException;
 
 /**
  * Magento Version controller

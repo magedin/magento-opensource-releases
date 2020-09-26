@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\BundleImportExport\Test\Unit\Model\Export\Product;
@@ -178,8 +178,7 @@ class RowCustomizerTest extends \PHPUnit_Framework_TestCase
     public function testAddData()
     {
         $preparedData = $this->rowCustomizerMock->prepareData($this->productResourceCollection, [1]);
-        $attributes = 'attribute=1,sku_type=1,attribute2="Text",price_type=1,price_view=1,weight_type=1,'
-            . 'values=values,shipment_type=1,attribute3=One,Two,Three';
+        $attributes = 'attribute=1,sku_type=1,price_type=1,price_view=1,weight_type=1,values=values,shipment_type=1';
         $dataRow = [
             'sku' => 'sku1',
             'additional_attributes' => $attributes
@@ -187,7 +186,7 @@ class RowCustomizerTest extends \PHPUnit_Framework_TestCase
         $preparedRow = $preparedData->addData($dataRow, 1);
         $expected = [
             'sku' => 'sku1',
-            'additional_attributes' => 'attribute=1,attribute2="Text",attribute3=One,Two,Three',
+            'additional_attributes' => 'attribute=1',
             'bundle_price_type' => 'fixed',
             'bundle_shipment_type' => 'separately',
             'bundle_sku_type' => 'fixed',

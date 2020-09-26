@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Email\Model\Template;
@@ -12,7 +12,6 @@ use Magento\Framework\Phrase;
 use Magento\Setup\Module\I18n\Locale;
 
 /**
- * @magentoAppIsolation enabled
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FilterTest extends \PHPUnit_Framework_TestCase
@@ -266,7 +265,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'Empty or missing file' => [
                 TemplateTypesInterface::TYPE_HTML,
                 'file="css/non-existent-file.css"',
-                '/* Contents of the specified CSS file could not be loaded or is empty */'
+                '/* Contents of css/non-existent-file.css could not be loaded or is empty */'
             ],
             'File with compilation error results in error message' => [
                 TemplateTypesInterface::TYPE_HTML,
@@ -284,7 +283,6 @@ class FilterTest extends \PHPUnit_Framework_TestCase
      * @magentoComponentsDir Magento/Email/Model/_files/design
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoConfigFixture default_store dev/static/sign 0
      * @dataProvider inlinecssDirectiveDataProvider
      *
      * @param string $templateText

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -97,7 +97,7 @@ class SearchTermsReportEntityTest extends Injectable
      */
     protected function createProducts($product, $countProduct)
     {
-        $name = 'simpleProductName' . random_int(0, PHP_INT_MAX);
+        $name = 'simpleProductName' . mt_rand();
         for ($i = 0; $i < $countProduct; $i++) {
             $productFixture = $this->fixtureFactory->createByCode(
                 'catalogProductSimple',

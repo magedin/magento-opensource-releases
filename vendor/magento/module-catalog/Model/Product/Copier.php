@@ -2,16 +2,13 @@
 /**
  * Catalog product copier. Creates product duplicate
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 
-/**
- * Catalog product copier.
- */
 class Copier
 {
     /**
@@ -57,15 +54,12 @@ class Copier
         $product->getWebsiteIds();
         $product->getCategoryIds();
 
-        /** @var \Magento\Framework\EntityManager\EntityMetadataInterface $metadata */
-        $metadata = $this->getMetadataPool()->getMetadata(ProductInterface::class);
-
         /** @var \Magento\Catalog\Model\Product $duplicate */
         $duplicate = $this->productFactory->create();
         $duplicate->setData($product->getData());
         $duplicate->setOptions([]);
         $duplicate->setIsDuplicate(true);
-        $duplicate->setOriginalLinkId($product->getData($metadata->getLinkField()));
+        $duplicate->setOriginalId($product->getEntityId());
         $duplicate->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED);
         $duplicate->setCreatedAt(null);
         $duplicate->setUpdatedAt(null);
@@ -87,11 +81,11 @@ class Copier
             }
         } while (!$isDuplicateSaved);
         $this->getOptionRepository()->duplicate($product, $duplicate);
+        $metadata = $this->getMetadataPool()->getMetadata(ProductInterface::class);
         $product->getResource()->duplicate(
             $product->getData($metadata->getLinkField()),
             $duplicate->getData($metadata->getLinkField())
         );
-
         return $duplicate;
     }
 
@@ -103,9 +97,8 @@ class Copier
     {
         if (null === $this->optionRepository) {
             $this->optionRepository = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Catalog\Model\Product\Option\Repository::class);
+                ->get('Magento\Catalog\Model\Product\Option\Repository');
         }
-        
         return $this->optionRepository;
     }
 
@@ -117,9 +110,8 @@ class Copier
     {
         if (null === $this->metadataPool) {
             $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\EntityManager\MetadataPool::class);
+                ->get('Magento\Framework\EntityManager\MetadataPool');
         }
-        
         return $this->metadataPool;
     }
 }

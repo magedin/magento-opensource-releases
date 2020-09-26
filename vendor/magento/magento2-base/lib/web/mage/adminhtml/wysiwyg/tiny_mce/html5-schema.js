@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -186,19 +186,11 @@ define([
         });
 
         _.each(compiled, function (node, nodeName) {
-            var filteredAttributes = [];
+            var attributes  = node.attributes.join('|'),
+                children    = node.children.join('|');
 
-            _.each(node.attributes, function (attribute) { //eslint-disable-line max-nested-callbacks
-                // Disallowing usage of 'on*' attributes.
-                if (!/^on/.test(attribute)) {
-                    filteredAttributes.push(attribute);
-                }
-            });
-
-            node.attributes = filteredAttributes;
-
-            validElements.push(nodeName + '[' + node.attributes.join('|') + ']');
-            validChildren.push(nodeName + '[' + node.children.join('|') + ']');
+            validElements.push(nodeName + '[' + attributes + ']');
+            validChildren.push(nodeName + '[' + children + ']');
         });
 
         return {

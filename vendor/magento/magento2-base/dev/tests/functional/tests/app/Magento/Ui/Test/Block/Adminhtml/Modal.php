@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -42,25 +42,11 @@ class Modal extends Block
     protected $inputFieldSelector = '[data-role="promptField"]';
 
     /**
-     * Locator value for accept warning button.
-     *
-     * @var string
-     */
-    protected $acceptWarningSelector = '.action-primary';
-
-    /**
      * Modal overlay selector.
      *
      * @var string
      */
     protected $modalOverlay = '.modals-overlay';
-
-    /**
-     * Selector for spinner element.
-     *
-     * @var string
-     */
-    protected $loadingMask = '[data-role="loader"]';
 
     /**
      * Press OK on an alert, confirm, prompt a dialog.
@@ -69,20 +55,7 @@ class Modal extends Block
      */
     public function acceptAlert()
     {
-        $this->waitModalAnimationFinished();
         $this->_rootElement->find($this->acceptButtonSelector)->click();
-    }
-
-    /**
-     * Press OK on a warning popup.
-     *
-     * @return void
-     */
-    public function acceptWarning()
-    {
-        $this->waitModalAnimationFinished();
-        $this->_rootElement->find($this->acceptWarningSelector)->click();
-        $this->waitForElementNotVisible($this->loadingMask);
     }
 
     /**
@@ -92,7 +65,6 @@ class Modal extends Block
      */
     public function dismissAlert()
     {
-        $this->waitModalAnimationFinished();
         $this->_rootElement->find($this->dismissButtonSelector)->click();
     }
 
@@ -103,7 +75,6 @@ class Modal extends Block
      */
     public function closeAlert()
     {
-        $this->waitModalAnimationFinished();
         $this->_rootElement->find($this->closeButtonSelector)->click();
     }
 
@@ -114,7 +85,6 @@ class Modal extends Block
      */
     public function getAlertText()
     {
-        $this->waitModalAnimationFinished();
         return $this->_rootElement->find($this->inputFieldSelector)->getValue();
     }
 
@@ -126,12 +96,11 @@ class Modal extends Block
      */
     public function setAlertText($text)
     {
-        $this->waitModalAnimationFinished();
         $this->_rootElement->find($this->inputFieldSelector)->setValue($text);
     }
 
     /**
-     * Wait until modal window will disappear.
+     * Wait until modal window will disapper.
      *
      * @return void
      */
@@ -142,16 +111,5 @@ class Modal extends Block
                 return $this->browser->find($this->modalOverlay)->isVisible() == false ? true : null;
             }
         );
-    }
-
-    /**
-     * Waiting until CSS animation is done.
-     * Transition-duration is set at this file: "<magento_root>/lib/web/css/source/components/_modals.less"
-     *
-     * @return void
-     */
-    private function waitModalAnimationFinished()
-    {
-        usleep(500000);
     }
 }

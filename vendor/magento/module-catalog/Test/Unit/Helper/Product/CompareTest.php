@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -107,13 +107,18 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         //Data
         $productId = 1;
         $removeUrl = 'catalog/product_compare/remove';
+        $compareListUrl = 'catalog/product_compare';
         $postParams = [
-            Action::PARAM_NAME_URL_ENCODED => '',
+            Action::PARAM_NAME_URL_ENCODED => strtr(base64_encode($compareListUrl), '+/=', '-_,'),
             'product' => $productId
         ];
 
         //Verification
-        $this->urlBuilder->expects($this->once())
+        $this->urlBuilder->expects($this->at(0))
+            ->method('getUrl')
+            ->with($compareListUrl)
+            ->will($this->returnValue($compareListUrl));
+        $this->urlBuilder->expects($this->at(1))
             ->method('getUrl')
             ->with($removeUrl)
             ->will($this->returnValue($removeUrl));
@@ -148,12 +153,18 @@ class CompareTest extends \PHPUnit_Framework_TestCase
     public function testGetPostDataClearList()
     {
         //Data
+        $refererUrl = 'home/';
         $clearUrl = 'catalog/product_compare/clear';
         $postParams = [
-            Action::PARAM_NAME_URL_ENCODED => ''
+            Action::PARAM_NAME_URL_ENCODED => strtr(base64_encode($refererUrl), '+/=', '-_,')
         ];
 
         //Verification
+        $this->request->expects($this->once())
+            ->method('getServer')
+            ->with('HTTP_REFERER')
+            ->will($this->returnValue($refererUrl));
+
         $this->urlBuilder->expects($this->once())
             ->method('getUrl')
             ->with($clearUrl)

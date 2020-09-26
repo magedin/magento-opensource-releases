@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\File\Test\Unit\Transfer\Adapter;
@@ -28,7 +28,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase
     {
         $this->response = $this->getMock(
             '\Magento\Framework\HTTP\PhpEnvironment\Response',
-            ['setHeader', 'sendHeaders', 'setHeaders'],
+            ['setHeader', 'sendHeaders'],
             [],
             '',
             false
@@ -57,29 +57,6 @@ class HttpTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(file_get_contents($file));
 
         $this->object->send($file);
-    }
-
-    public function testSendWithOptions()
-    {
-        $file = __DIR__ . '/../../_files/javascript.js';
-        $contentType = 'content/type';
-
-        $headers = $this->getMockBuilder(\Zend\Http\Headers::class)->getMock();
-        $this->response->expects($this->atLeastOnce())
-            ->method('setHeader')
-            ->withConsecutive(['Content-length', filesize($file)], ['Content-Type', $contentType]);
-        $this->response->expects($this->once())
-            ->method('setHeaders')
-            ->with($headers);
-        $this->response->expects($this->once())
-            ->method('sendHeaders');
-        $this->mime->expects($this->once())
-            ->method('getMimeType')
-            ->with($file)
-            ->willReturn($contentType);
-        $this->expectOutputString(file_get_contents($file));
-
-        $this->object->send(['filepath' => $file, 'headers' => $headers]);
     }
 
     /**

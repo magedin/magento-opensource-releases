@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Block\Adminhtml\Promo\Catalog\Edit\Tab;
@@ -8,8 +8,6 @@ namespace Magento\CatalogRule\Block\Adminhtml\Promo\Catalog\Edit\Tab;
 use Magento\Backend\Block\Widget\Form;
 use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Ui\Component\Layout\Tabs\TabInterface;
-use Magento\CatalogRule\Api\Data\RuleInterface;
-use Magento\Rule\Model\Condition\AbstractCondition;
 
 class Conditions extends Generic implements TabInterface
 {
@@ -136,7 +134,7 @@ class Conditions extends Generic implements TabInterface
     }
 
     /**
-     * @param RuleInterface $model
+     * @param \Magento\CatalogRule\Api\Data\RuleInterface $model
      * @param string $fieldsetId
      * @param string $formName
      * @return \Magento\Framework\Data\Form
@@ -177,30 +175,22 @@ class Conditions extends Generic implements TabInterface
             ->setRenderer($this->_conditions);
 
         $form->setValues($model->getData());
-        $this->setConditionFormName($model, $model->getConditions(), $formName);
+        $this->setConditionFormName($model->getConditions(), $formName);
         return $form;
     }
 
     /**
-     * @param RuleInterface $rule
-     * @param AbstractCondition $conditions
+     * @param \Magento\Rule\Model\Condition\AbstractCondition $conditions
      * @param string $formName
      * @return void
      */
-    private function setConditionFormName(
-        RuleInterface $rule,
-        AbstractCondition $conditions,
-        $formName
-    ) {
+    private function setConditionFormName(\Magento\Rule\Model\Condition\AbstractCondition $conditions, $formName)
+    {
         $conditions->setFormName($formName);
-        //For every fieldset there's a different form object.
-        $conditions->setJsFormObject(
-            $rule->getConditionsFieldSetId($formName)
-        );
-        $childConditions = $conditions->getCondition();
-        if ($childConditions && is_array($childConditions)) {
+        $conditions->setJsFormObject($formName);
+        if ($conditions->getConditions() && is_array($conditions->getConditions())) {
             foreach ($conditions->getConditions() as $condition) {
-                $this->setConditionFormName($rule, $condition, $formName);
+                $this->setConditionFormName($condition, $formName);
             }
         }
     }

@@ -1,6 +1,6 @@
 // jscs:disable requireDotNotation
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 // jscs:disable jsDoc
@@ -276,12 +276,12 @@ define([
             var element;
 
             _.each(this.disabledAttributes, function (attribute) {
-                registry.get('code = ' + attribute, 'index = ' + attribute).disabled(false);
+                registry.get('index = ' + attribute).disabled(false);
             });
             this.disabledAttributes = [];
 
             _.each(attributes, function (attribute) {
-                element = registry.get('code = ' + attribute.code, 'index = ' + attribute.code);
+                element = registry.get('index = ' + attribute.code);
                 if (!_.isUndefined(element)) {
                     element.disabled(true);
                     this.disabledAttributes.push(attribute.code);
@@ -301,37 +301,12 @@ define([
          * Chose action for the form save button
          */
         saveFormHandler: function() {
-            this.serializeData();
-
             if (this.checkForNewAttributes()) {
                 this.formSaveParams = arguments;
                 this.attributeSetHandlerModal().openModal();
             } else {
                 this.formElement().save(arguments[0], arguments[1]);
             }
-        },
-
-        /**
-         * Serialize data for specific form fields
-         *
-         * Get data from outdated fields, serialize it and produce new form fields.
-         *
-         * Outdated fields:
-         *   - configurable-matrix;
-         *   - associated_product_ids.
-         *
-         * New fields:
-         *   - configurable-matrix-serialized;
-         *   - associated_product_ids_serialized.
-         */
-        serializeData: function () {
-            this.source.data["product"]["configurable-matrix-serialized"] =
-                JSON.stringify(this.source.data["configurable-matrix"]);
-            delete this.source.data["configurable-matrix"];
-
-            this.source.data["product"]["associated_product_ids_serialized"] =
-                JSON.stringify(this.source.data["associated_product_ids"]);
-            delete this.source.data["associated_product_ids"];
         },
 
         /**

@@ -56,7 +56,7 @@ class DocBlockReflection implements ReflectionInterface
     /**
      * @var array
      */
-    protected $tags = [];
+    protected $tags = array();
 
     /**
      * @var bool
@@ -226,7 +226,7 @@ class DocBlockReflection implements ReflectionInterface
             return $this->tags;
         }
 
-        $returnTags = [];
+        $returnTags = array();
         foreach ($this->tags as $tag) {
             if ($tag->getName() == $filter) {
                 $returnTags[] = $tag;

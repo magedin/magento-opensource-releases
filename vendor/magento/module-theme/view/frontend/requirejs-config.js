@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -40,12 +40,5 @@ var config = {
         "mage/dataPost",
         "js/theme",
         "mage/bootstrap"
-    ],
-    config: {
-        mixins: {
-            'jquery/jquery-ui': {
-                'jquery/patches/jquery-ui': true
-            }
-        }
-    }
+    ]
 };

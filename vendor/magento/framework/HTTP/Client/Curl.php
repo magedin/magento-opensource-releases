@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\HTTP\Client;
@@ -222,11 +222,8 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
     /**
      * Make POST request
      *
-     * String type was added to parameter $param in order to support sending JSON or XML requests.
-     * This feature was added base on Community Pull Request https://github.com/magento/magento2/pull/8373
-     *
      * @param string $uri
-     * @param array|string $params
+     * @param array $params
      * @return void
      *
      * @see \Magento\Framework\HTTP\Client#post($uri, $params)
@@ -330,13 +327,9 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
 
     /**
      * Make request
-     *
-     * String type was added to parameter $param in order to support sending JSON or XML requests.
-     * This feature was added base on Community Pull Request https://github.com/magento/magento2/pull/8373
-     *
      * @param string $method
      * @param string $uri
-     * @param array|string $params - use $params as a string in case of JSON or XML POST request.
+     * @param array $params
      * @return void
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -344,11 +337,10 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
     protected function makeRequest($method, $uri, $params = [])
     {
         $this->_ch = curl_init();
-        $this->curlOption(CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_FTP | CURLPROTO_FTPS);
         $this->curlOption(CURLOPT_URL, $uri);
         if ($method == 'POST') {
             $this->curlOption(CURLOPT_POST, 1);
-            $this->curlOption(CURLOPT_POSTFIELDS, is_array($params) ? http_build_query($params) : $params);
+            $this->curlOption(CURLOPT_POSTFIELDS, http_build_query($params));
         } elseif ($method == "GET") {
             $this->curlOption(CURLOPT_HTTPGET, 1);
         } else {
@@ -427,6 +419,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
             }
             $this->_responseStatus = intval($line[1]);
         } else {
+            //var_dump($data);
             $name = $value = '';
             $out = explode(": ", trim($data), 2);
             if (count($out) == 2) {

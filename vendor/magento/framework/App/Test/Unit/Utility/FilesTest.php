@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Test\Unit\Utility;
@@ -23,22 +23,9 @@ class FilesTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->componentRegistrar = new ComponentRegistrar();
-        $this->dirSearch = $this->getMock(\Magento\Framework\Component\DirSearch::class, [], [], '', false);
-
-        $themePackageList = $this->getMock(
-            \Magento\Framework\View\Design\Theme\ThemePackageList::class,
-            [],
-            [],
-            '',
-            false
-        );
-        Files::setInstance(
-            new Files(
-                $this->componentRegistrar,
-                $this->dirSearch,
-                $themePackageList
-            )
-        );
+        $this->dirSearch = $this->getMock('Magento\Framework\Component\DirSearch', [], [], '', false);
+        $themePackageList = $this->getMock('Magento\Framework\View\Design\Theme\ThemePackageList', [], [], '', false);
+        Files::setInstance(new Files($this->componentRegistrar, $this->dirSearch, $themePackageList));
     }
 
     protected function tearDown()

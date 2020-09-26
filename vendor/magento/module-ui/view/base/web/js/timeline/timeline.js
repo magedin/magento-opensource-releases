@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -104,7 +104,7 @@ define([
          * @returns {Boolean}
          */
         isActive: function (record) {
-            return Number(record.status) === 1;
+            return record.status === 1;
         },
 
         /**
@@ -115,7 +115,7 @@ define([
          * @returns {Boolean}
          */
         isUpcoming: function (record) {
-            return Number(record.status) === 2;
+            return record.status === 2;
         },
 
         /**

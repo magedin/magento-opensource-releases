@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogRule\Plugin\Indexer;
@@ -36,7 +36,7 @@ class Category
     ) {
         /** @var \Magento\Catalog\Model\Category $result */
         $productIds = $result->getAffectedProductIds();
-        if ($productIds && !$this->productRuleProcessor->isIndexerScheduled()) {
+        if ($productIds) {
             $this->productRuleProcessor->reindexList($productIds);
         }
         return $result;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\DB;
@@ -46,11 +46,6 @@ class Select extends \Zend_Db_Select
      * Sql straight join
      */
     const SQL_STRAIGHT_JOIN = 'STRAIGHT_JOIN';
-
-    /**
-     * @var Select\SelectRenderer
-     */
-    private $selectRenderer;
 
     /**
      * Class constructor

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Block\Adminhtml\Promo\Widget;
@@ -87,7 +87,7 @@ class Chooser extends \Magento\Backend\Block\Widget\Grid\Extended
         if ($element->getValue()) {
             $rule = $this->ruleFactory->create()->load((int)$element->getValue());
             if ($rule->getId()) {
-                $chooser->setLabel($this->escapeHtml($rule->getName()));
+                $chooser->setLabel($rule->getName());
             }
         }
 

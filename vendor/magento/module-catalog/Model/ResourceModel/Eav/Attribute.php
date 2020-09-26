@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -351,11 +351,14 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     public function getApplyTo()
     {
-        $applyTo = $this->_getData(self::APPLY_TO) ?: [];
-        if (!is_array($applyTo)) {
-            $applyTo = explode(',', $applyTo);
+        if ($this->getData(self::APPLY_TO)) {
+            if (is_array($this->getData(self::APPLY_TO))) {
+                return $this->getData(self::APPLY_TO);
+            }
+            return explode(',', $this->getData(self::APPLY_TO));
+        } else {
+            return [];
         }
-        return $applyTo;
     }
 
     /**

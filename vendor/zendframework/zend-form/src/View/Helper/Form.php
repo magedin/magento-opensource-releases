@@ -23,7 +23,7 @@ class Form extends AbstractHelper
      *
      * @var array
      */
-    protected $validTagAttributes = [
+    protected $validTagAttributes = array(
         'accept-charset' => true,
         'action'         => true,
         'autocomplete'   => true,
@@ -32,7 +32,7 @@ class Form extends AbstractHelper
         'name'           => true,
         'novalidate'     => true,
         'target'         => true,
-    ];
+    );
 
     /**
      * Invoke as function
@@ -83,13 +83,13 @@ class Form extends AbstractHelper
     public function openTag(FormInterface $form = null)
     {
         $doctype    = $this->getDoctype();
-        $attributes = [];
+        $attributes = array();
 
         if (! (Doctype::HTML5 === $doctype || Doctype::XHTML5 === $doctype)) {
-            $attributes = [
+            $attributes = array(
                 'action' => '',
                 'method' => 'get',
-            ];
+            );
         }
 
         if ($form instanceof FormInterface) {

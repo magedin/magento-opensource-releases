@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -104,7 +104,7 @@ class Gallery extends \Magento\Framework\View\Element\AbstractBlock
      */
     public function getImages()
     {
-        return $this->getDataObject()->getData('media_gallery') ?: null;
+        return $this->registry->registry('current_product')->getData('media_gallery') ?: null;
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true, jquery:true*/
@@ -7,10 +7,9 @@
 define([
     "jquery",
     'Magento_Ui/js/modal/confirm',
-    'mage/dataPost',
     "jquery/ui",
     "mage/translate"
-], function($, confirm, dataPost){
+], function($, confirm){
     "use strict";
     
     $.widget('mage.address', {
@@ -51,29 +50,24 @@ define([
         /**
          * Delete the address whose id is specified in a data attribute after confirmation from the user.
          * @private
-         * @param {jQuery.Event} e
+         * @param {Event}
          * @return {Boolean}
          */
         _deleteAddress: function(e) {
-            var self = this,
-                addressId;
+            var self = this;
 
             confirm({
                 content: this.options.deleteConfirmMessage,
                 actions: {
                     confirm: function() {
                         if (typeof $(e.target).parent().data('address') !== 'undefined') {
-                            addressId = $(e.target).parent().data('address');
-                        } else {
-                            addressId = $(e.target).data('address');
+                            window.location = self.options.deleteUrlPrefix + $(e.target).parent().data('address')
+                                + '/form_key/' + $.mage.cookies.get('form_key');
                         }
-
-                        dataPost().postData({
-                            action: self.options.deleteUrlPrefix + addressId,
-                            data: {
-                                'form_key': $.mage.cookies.get('form_key')
-                            }
-                        });
+                        else {
+                            window.location = self.options.deleteUrlPrefix + $(e.target).data('address')
+                                + '/form_key/' + $.mage.cookies.get('form_key');
+                        }
                     }
                 }
             });

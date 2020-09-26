@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,20 +17,16 @@ define(
         'mage/storage',
         'Magento_Checkout/js/action/get-payment-information',
         'Magento_Checkout/js/model/totals',
-        'mage/translate',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'mage/translate'
     ],
-    function ($, quote, urlManager, errorProcessor, messageContainer, storage, getPaymentInformationAction, totals, $t,
-              fullScreenLoader) {
+    function ($, quote, urlManager, errorProcessor, messageContainer, storage, getPaymentInformationAction, totals, $t) {
         'use strict';
 
-        return function (isApplied) {
+        return function (isApplied, isLoading) {
             var quoteId = quote.getQuoteId(),
                 url = urlManager.getCancelCouponUrl(quoteId),
                 message = $t('Your coupon was successfully removed.');
-
             messageContainer.clear();
-            fullScreenLoader.startLoader();
 
             return storage.delete(
                 url,
@@ -43,7 +39,6 @@ define(
                     $.when(deferred).done(function () {
                         isApplied(false);
                         totals.isLoading(false);
-                        fullScreenLoader.stopLoader();
                     });
                     messageContainer.addSuccessMessage({
                         'message': message
@@ -52,8 +47,11 @@ define(
             ).fail(
                 function (response) {
                     totals.isLoading(false);
-                    fullScreenLoader.stopLoader();
                     errorProcessor.process(response, messageContainer);
+                }
+            ).always(
+                function () {
+                    isLoading(false);
                 }
             );
         };

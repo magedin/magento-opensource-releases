@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,7 +16,7 @@ class Created extends \Magento\Backend\Block\Widget
     /**
      * @var string
      */
-    protected $_template = 'Magento_ConfigurableProduct::catalog/product/attribute/new/created.phtml';
+    protected $_template = 'catalog/product/attribute/new/created.phtml';
 
     /**
      * Core registry

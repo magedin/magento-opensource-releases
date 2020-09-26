@@ -104,8 +104,8 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
         $resolver = new LoaderResolver(array(
-            new IniFileLoader($container, new FileLocator(self::$fixturesPath.'/ini')),
-            new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/xml')),
+            new IniFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml')),
+            new XmlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml')),
             new PhpFileLoader($container, new FileLocator(self::$fixturesPath.'/php')),
             $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml')),
         ));
@@ -118,6 +118,29 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
 
         // Bad import throws no exception due to ignore_errors value.
         $loader->load('services4_bad_import.yml');
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testLegacyLoadServices()
+    {
+        $container = new ContainerBuilder();
+        $loader = new YamlFileLoader($container, new FileLocator(self::$fixturesPath.'/yaml'));
+        $loader->load('legacy-services6.yml');
+        $services = $container->getDefinitions();
+        $this->assertEquals('FooClass', $services['constructor']->getClass());
+        $this->assertEquals('getInstance', $services['constructor']->getFactoryMethod());
+        $this->assertEquals('BazClass', $services['factory_service']->getClass());
+        $this->assertEquals('baz_factory', $services['factory_service']->getFactoryService());
+        $this->assertEquals('getInstance', $services['factory_service']->getFactoryMethod());
+        $this->assertEquals('container', $services['scope.container']->getScope());
+        $this->assertEquals('custom', $services['scope.custom']->getScope());
+        $this->assertEquals('prototype', $services['scope.prototype']->getScope());
+        $this->assertTrue($services['request']->isSynthetic(), '->load() parses the synthetic flag');
+        $this->assertTrue($services['request']->isSynchronized(), '->load() parses the synchronized flag');
+        $this->assertTrue($services['request']->isLazy(), '->load() parses the lazy flag');
+        $this->assertNull($services['request']->getDecoratedService());
     }
 
     public function testLoadServices()
@@ -135,7 +158,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('sc_configure', $services['configurator1']->getConfigurator(), '->load() parses the configurator tag');
         $this->assertEquals(array(new Reference('baz'), 'configure'), $services['configurator2']->getConfigurator(), '->load() parses the configurator tag');
         $this->assertEquals(array('BazClass', 'configureStatic'), $services['configurator3']->getConfigurator(), '->load() parses the configurator tag');
-        $this->assertEquals(array(array('setBar', array()), array('setBar', array()), array('setBar', array(new Expression('service("foo").foo() ~ (container.hasParameter("foo") ? parameter("foo") : "default")')))), $services['method_call1']->getMethodCalls(), '->load() parses the method_call tag');
+        $this->assertEquals(array(array('setBar', array()), array('setBar', array()), array('setBar', array(new Expression('service("foo").foo() ~ (container.hasparameter("foo") ? parameter("foo") : "default")')))), $services['method_call1']->getMethodCalls(), '->load() parses the method_call tag');
         $this->assertEquals(array(array('setBar', array('foo', new Reference('foo'), array(true, false)))), $services['method_call2']->getMethodCalls(), '->load() parses the method_call tag');
         $this->assertEquals('factory', $services['new_factory1']->getFactory(), '->load() parses the factory tag');
         $this->assertEquals(array(new Reference('baz'), 'getClass'), $services['new_factory2']->getFactory(), '->load() parses the factory tag');

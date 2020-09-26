@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\Product\Type;
@@ -96,9 +96,6 @@ class AbstractTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->model->attributesCompare($attribute, $attribute2));
     }
 
-    /**
-     * @return array
-     */
     public function attributeCompareProvider()
     {
         return [

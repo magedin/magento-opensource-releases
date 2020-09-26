@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -56,6 +56,5 @@ class MaintenanceStatusCommand extends AbstractSetupCommand
         $addressInfo = $this->maintenanceMode->getAddressInfo();
         $addresses = implode(', ', $addressInfo);
         $output->writeln('<info>List of exempt IP-addresses: ' . ($addresses ? $addresses : 'none') . '</info>');
-        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }

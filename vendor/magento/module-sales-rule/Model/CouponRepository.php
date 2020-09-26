@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -172,16 +172,19 @@ class CouponRepository implements \Magento\SalesRule\Api\CouponRepositoryInterfa
                 ($sortOrder->getDirection() == SortOrder::SORT_ASC) ? 'ASC' : 'DESC'
             );
         }
-
         $collection->setCurPage($searchCriteria->getCurrentPage());
         $collection->setPageSize($searchCriteria->getPageSize());
 
-        /** @var \Magento\SalesRule\Api\Data\CouponSearchResultInterface $searchResults */
+        $coupons = [];
+        /** @var \Magento\SalesRule\Model\Coupon $couponModel */
+        foreach ($collection->getItems() as $couponModel) {
+            $coupons[] = $couponModel->getData();
+        }
+
         $searchResults = $this->searchResultFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);
-        $searchResults->setItems($collection->getItems());
+        $searchResults->setItems($coupons);
         $searchResults->setTotalCount($collection->getSize());
-
         return $searchResults;
     }
 

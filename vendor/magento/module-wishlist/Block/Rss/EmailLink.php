@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -19,10 +19,10 @@ class EmailLink extends Link
     /**
      * @var string
      */
-    protected $_template = 'Magento_Wishlist::rss/email.phtml';
+    protected $_template = 'rss/email.phtml';
 
     /**
-     * @return array
+     * @return string
      */
     protected function getLinkParams()
     {

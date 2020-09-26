@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Model\Checks\CanUseForCountry;
 
-use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
+use Magento\Directory\Helper\Data as DirectoryHelper;
 
 class CountryProvider
 {
@@ -28,19 +27,13 @@ class CountryProvider
      * Get payment country
      *
      * @param Quote $quote
-     *
-     * @return string
+     * @return int
      */
     public function getCountry(Quote $quote)
     {
-        /** @var string $country */
-        $country = $quote->getBillingAddress()->getCountry() ? :
-            $quote->getShippingAddress()->getCountry();
-
-        if (!$country) {
-            $country = $this->directoryHelper->getDefaultCountry();
-        }
-
-        return $country;
+        $address = $quote->isVirtual() ? $quote->getBillingAddress() : $quote->getShippingAddress();
+        return $address
+            ? $address->getCountry()
+            : $this->directoryHelper->getDefaultCountry();
     }
 }

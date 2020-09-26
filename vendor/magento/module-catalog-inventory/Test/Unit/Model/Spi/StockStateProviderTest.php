@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Test\Unit\Model\Spi;
@@ -252,66 +252,41 @@ class StockStateProviderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function verifyStockDataProvider()
     {
         return $this->prepareDataForMethod('verifyStock');
     }
 
-    /**
-     * @return array
-     */
     public function verifyNotificationDataProvider()
     {
         return $this->prepareDataForMethod('verifyNotification');
     }
 
-    /**
-     * @return array
-     */
     public function checkQtyDataProvider()
     {
         return $this->prepareDataForMethod('checkQty');
     }
 
-    /**
-     * @return array
-     */
     public function suggestQtyDataProvider()
     {
         return $this->prepareDataForMethod('suggestQty');
     }
 
-    /**
-     * @return array
-     */
     public function getStockQtyDataProvider()
     {
         return $this->prepareDataForMethod('getStockQty');
     }
 
-    /**
-     * @return array
-     */
     public function checkQtyIncrementsDataProvider()
     {
         return $this->prepareDataForMethod('checkQtyIncrements');
     }
 
-    /**
-     * @return array
-     */
     public function checkQuoteItemQtyDataProvider()
     {
         return $this->prepareDataForMethod('checkQuoteItemQty');
     }
 
-    /**
-     * @param $methodName
-     * @return array
-     */
     protected function prepareDataForMethod($methodName)
     {
         $variations = [];
@@ -352,9 +327,6 @@ class StockStateProviderTest extends \PHPUnit_Framework_TestCase
         return $variations;
     }
 
-    /**
-     * @return array
-     */
     protected function getVariations()
     {
         $stockQty = 100;
@@ -467,9 +439,6 @@ class StockStateProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedMsg, $result->getMessage()->render());
     }
 
-    /**
-     * @return array
-     */
     public function checkQtyIncrementsMsgDataProvider()
     {
         return [

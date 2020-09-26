@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\View\Layout\Reader;
@@ -141,12 +141,11 @@ class Container implements Layout\ReaderInterface
     ) {
         $containerName = $currentElement->getAttribute('name');
         $containerRemove = filter_var($currentElement->getAttribute('remove'), FILTER_VALIDATE_BOOLEAN);
+
         if ($containerRemove) {
             $scheduledStructure->setElementToRemoveList($containerName);
-            return;
-        } elseif ($currentElement->getAttribute('remove')) {
-            $scheduledStructure->unsetElementFromListToRemove($containerName);
+        } else {
+            $this->mergeContainerAttributes($scheduledStructure, $currentElement);
         }
-        $this->mergeContainerAttributes($scheduledStructure, $currentElement);
     }
 }

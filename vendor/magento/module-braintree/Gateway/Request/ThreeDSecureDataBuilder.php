@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Braintree\Gateway\Request;
@@ -64,15 +64,12 @@ class ThreeDSecureDataBuilder implements BuilderInterface
      */
     private function is3DSecureEnabled(OrderAdapterInterface $order, $amount)
     {
-        $storeId = $order->getStoreId();
-        if (!$this->config->isVerify3DSecure($storeId)
-            || $amount < $this->config->getThresholdAmount($storeId)
-        ) {
+        if (!$this->config->isVerify3DSecure() || $amount < $this->config->getThresholdAmount()) {
             return false;
         }
 
         $billingAddress = $order->getBillingAddress();
-        $specificCounties = $this->config->get3DSecureSpecificCountries($storeId);
+        $specificCounties = $this->config->get3DSecureSpecificCountries();
         if (!empty($specificCounties) && !in_array($billingAddress->getCountryId(), $specificCounties)) {
             return false;
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -70,12 +70,12 @@ abstract class AbstractMethod extends \Magento\Framework\Model\AbstractExtensibl
     /**
      * @var string
      */
-    protected $_formBlockType = \Magento\Payment\Block\Form::class;
+    protected $_formBlockType = 'Magento\Payment\Block\Form';
 
     /**
      * @var string
      */
-    protected $_infoBlockType = \Magento\Payment\Block\Info::class;
+    protected $_infoBlockType = 'Magento\Payment\Block\Info';
 
     /**
      * Payment Method feature

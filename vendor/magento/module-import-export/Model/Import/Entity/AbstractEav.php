@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Model\Import\Entity;
@@ -16,7 +16,7 @@ abstract class AbstractEav extends \Magento\ImportExport\Model\Import\AbstractEn
     /**
      * Attribute collection name
      */
-    const ATTRIBUTE_COLLECTION_NAME = \Magento\Framework\Data\Collection::class;
+    const ATTRIBUTE_COLLECTION_NAME = 'Magento\Framework\Data\Collection';
 
     /**
      * Store manager
@@ -222,14 +222,9 @@ abstract class AbstractEav extends \Magento\ImportExport\Model\Import\AbstractEn
                 foreach ($attribute->getSource()->getAllOptions(false) as $option) {
                     $value = is_array($option['value']) ? $option['value'] : [$option];
                     foreach ($value as $innerOption) {
-                        // skip ' -- Please Select -- ' option
                         if (strlen($innerOption['value'])) {
-                            if ($attribute->isStatic()) {
-                                $options[strtolower($innerOption[$index])] = $innerOption['value'];
-                            } else {
-                                // Non-static attributes flip keys an values
-                                $options[$innerOption['value']] = $innerOption[$index];
-                            }
+                            // skip ' -- Please Select -- ' option
+                            $options[strtolower($innerOption[$index])] = $innerOption['value'];
                         }
                     }
                 }

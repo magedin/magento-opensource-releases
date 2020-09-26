@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,17 +9,12 @@
 namespace Magento\Framework\App\Test\Unit;
 
 use Magento\Framework\App\Bootstrap;
-use Magento\Framework\App\State;
+use Magento\Framework\Filesystem;
 
-/**
- * Tests Magento\Framework\App\StaticResource.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class StaticResourceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var State|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $state;
 
@@ -65,15 +60,15 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->state = $this->getMock(State::class, [], [], '', false);
-        $this->response = $this->getMock(\Magento\MediaStorage\Model\File\Storage\Response::class, [], [], '', false);
-        $this->request = $this->getMock(\Magento\Framework\App\Request\Http::class, [], [], '', false);
-        $this->publisher = $this->getMock(\Magento\Framework\App\View\Asset\Publisher::class, [], [], '', false);
-        $this->assetRepo = $this->getMock(\Magento\Framework\View\Asset\Repository::class, [], [], '', false);
-        $this->moduleList = $this->getMock(\Magento\Framework\Module\ModuleList::class, [], [], '', false);
-        $this->objectManager = $this->getMockForAbstractClass(\Magento\Framework\ObjectManagerInterface::class);
+        $this->state = $this->getMock('Magento\Framework\App\State', [], [], '', false);
+        $this->response = $this->getMock('Magento\MediaStorage\Model\File\Storage\Response', [], [], '', false);
+        $this->request = $this->getMock('Magento\Framework\App\Request\Http', [], [], '', false);
+        $this->publisher = $this->getMock('Magento\Framework\App\View\Asset\Publisher', [], [], '', false);
+        $this->assetRepo = $this->getMock('Magento\Framework\View\Asset\Repository', [], [], '', false);
+        $this->moduleList = $this->getMock('Magento\Framework\Module\ModuleList', [], [], '', false);
+        $this->objectManager = $this->getMockForAbstractClass('Magento\Framework\ObjectManagerInterface');
         $this->configLoader = $this->getMock(
-            \Magento\Framework\App\ObjectManager\ConfigLoader::class, [], [], '', false
+            'Magento\Framework\App\ObjectManager\ConfigLoader', [], [], '', false
         );
         $this->object = new \Magento\Framework\App\StaticResource(
             $this->state,
@@ -84,7 +79,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
             $this->moduleList,
             $this->objectManager,
             $this->configLoader,
-            $this->getMockForAbstractClass(\Magento\Framework\View\DesignInterface::class)
+            $this->getMockForAbstractClass('\Magento\Framework\View\DesignInterface')
         );
     }
 
@@ -92,7 +87,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->state->expects($this->once())
             ->method('getMode')
-            ->will($this->returnValue(State::MODE_PRODUCTION));
+            ->will($this->returnValue(\Magento\Framework\App\State::MODE_PRODUCTION));
         $this->response->expects($this->once())
             ->method('setHttpResponseCode')
             ->with(404);
@@ -140,7 +135,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
             ->method('has')
             ->with($requestedModule)
             ->will($this->returnValue($moduleExists));
-        $asset = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\LocalInterface::class);
+        $asset = $this->getMockForAbstractClass('\Magento\Framework\View\Asset\LocalInterface');
         $asset->expects($this->once())->method('getSourceFile')->will($this->returnValue('resource/file.css'));
         $this->assetRepo->expects($this->once())
             ->method('createAsset')
@@ -160,7 +155,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'developer mode with non-modular resource' => [
-                State::MODE_DEVELOPER,
+                \Magento\Framework\App\State::MODE_DEVELOPER,
                 'area/Magento/theme/locale/dir/file.js',
                 'dir',
                 false,
@@ -168,7 +163,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
                 ['area' => 'area', 'locale' => 'locale', 'module' => '', 'theme' => 'Magento/theme'],
             ],
             'default mode with modular resource' => [
-                State::MODE_DEFAULT,
+                \Magento\Framework\App\State::MODE_DEFAULT,
                 'area/Magento/theme/locale/Namespace_Module/dir/file.js',
                 'Namespace_Module',
                 true,
@@ -188,7 +183,7 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->state->expects($this->once())
             ->method('getMode')
-            ->will($this->returnValue(State::MODE_DEVELOPER));
+            ->will($this->returnValue(\Magento\Framework\App\State::MODE_DEVELOPER));
         $this->request->expects($this->once())
             ->method('get')
             ->with('resource')
@@ -204,25 +199,5 @@ class StaticResourceTest extends \PHPUnit_Framework_TestCase
         $this->response->expects($this->once())->method('setHttpResponseCode')->with(404);
         $this->response->expects($this->once())->method('sendResponse');
         $this->assertTrue($this->object->catchException($bootstrap, $exception));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testLaunchPathAbove()
-    {
-        $this->state->expects($this->once())
-            ->method('getMode')
-            ->will($this->returnValue(State::MODE_DEVELOPER));
-        $this->request->expects($this->once())
-            ->method('get')
-            ->with('resource')
-            ->will(
-                $this->returnValue(
-                    'frontend/..\..\folder_above'
-                    . '/././Magento_Ui/template/messages.html'
-                )
-            );
-        $this->object->launch();
     }
 }

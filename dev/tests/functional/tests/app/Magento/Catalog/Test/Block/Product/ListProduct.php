@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,16 +16,12 @@ use Magento\Mtf\Fixture\FixtureInterface;
  */
 class ListProduct extends Block
 {
-    // @codingStandardsIgnoreStart
-
     /**
      * Locator for product item block.
      *
      * @var string
      */
     protected $productItem = './/*[contains(@class,"product-item-link") and normalize-space(text())="%s"]/ancestor::li';
-
-    // @codingStandardsIgnoreEnd
 
     /**
      * Locator for product item link.
@@ -52,7 +48,7 @@ class ListProduct extends Block
         $locator = sprintf($this->productItem, $product->getName());
 
         return $this->blockFactory->create(
-            \Magento\Catalog\Test\Block\Product\ProductList\ProductItem::class,
+            'Magento\Catalog\Test\Block\Product\ProductList\ProductItem',
             ['element' => $this->_rootElement->find($locator, Locator::SELECTOR_XPATH)]
         );
     }
@@ -81,8 +77,6 @@ class ListProduct extends Block
      */
     public function getSortByValues()
     {
-        $sortValues = $this->_rootElement->find($this->sorter)->getText();
-        
-        return array_filter(array_map("trim", explode("\n", $sortValues)));
+        return explode("\n", $this->_rootElement->find($this->sorter)->getText());
     }
 }

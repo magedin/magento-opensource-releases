@@ -4,6 +4,3 @@
 /fDOMDocument-1.1.0.tgz
 .idea
 build
-composer.lock
-composer.phar
-vendor/

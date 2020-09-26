@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Payment\Test\Unit\Gateway\Validator;
@@ -27,14 +27,13 @@ class CountryValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->configMock = $this->getMockBuilder(\Magento\Payment\Gateway\ConfigInterface::class)
+        $this->configMock = $this->getMockBuilder('Magento\Payment\Gateway\ConfigInterface')
             ->getMockForAbstractClass();
-        $this->resultFactoryMock = $this->getMockBuilder(
-            \Magento\Payment\Gateway\Validator\ResultInterfaceFactory::class
-        )->setMethods(['create'])
+        $this->resultFactoryMock = $this->getMockBuilder('Magento\Payment\Gateway\Validator\ResultInterfaceFactory')
+            ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultMock = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\Result::class)
+        $this->resultMock = $this->getMockBuilder('Magento\Payment\Gateway\Validator\Result')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -43,6 +42,7 @@ class CountryValidatorTest extends \PHPUnit_Framework_TestCase
             $this->configMock
         );
     }
+
 
     /**
      * @dataProvider validateAllowspecificTrueDataProvider
@@ -68,9 +68,6 @@ class CountryValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->resultMock, $this->model->validate($validationSubject));
     }
 
-    /**
-     * @return array
-     */
     public function validateAllowspecificTrueDataProvider()
     {
         return [
@@ -99,9 +96,6 @@ class CountryValidatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->resultMock, $this->model->validate($validationSubject));
     }
 
-    /**
-     * @return array
-     */
     public function validateAllowspecificFalseDataProvider()
     {
         return [

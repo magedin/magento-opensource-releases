@@ -1,18 +1,15 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model;
 
-use Magento\Authorization\Model\UserContextInterface;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductLinkRepositoryInterface;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\SaleableInterface;
 use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
@@ -25,6 +22,7 @@ use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryExtensionFactory;
  * @method Product setHasError(bool $value)
  * @method \Magento\Catalog\Model\ResourceModel\Product getResource()
  * @method null|bool getHasError()
+ * @method Product setAssociatedProductIds(array $productIds)
  * @method array getAssociatedProductIds()
  * @method Product setNewVariationsAttributeSetId(int $value)
  * @method int getNewVariationsAttributeSetId()
@@ -119,11 +117,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      * @var Product\Url
      */
     protected $_urlModel = null;
-
-    /**
-     * @var ResourceModel\Product
-     */
-    protected $_resource;
 
     /**
      * @var string
@@ -351,16 +344,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     protected $linkTypeProvider;
 
     /**
-     * @var UserContextInterface
-     */
-    private $userContext;
-
-    /**
-     * @var AuthorizationInterface
-     */
-    private $authorization;
-
-    /**
      * Product constructor.
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -484,19 +467,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     protected function _construct()
     {
-        $this->_init(\Magento\Catalog\Model\ResourceModel\Product::class);
-    }
-
-    /**
-     * Get resource instance
-     *
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @return \Magento\Catalog\Model\ResourceModel\Product
-     * @deprecated because resource models should be used directly
-     */
-    protected function _getResource()
-    {
-        return parent::_getResource();
+        $this->_init('Magento\Catalog\Model\ResourceModel\Product');
     }
 
     /**
@@ -849,34 +820,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     }
 
     /**
-     * Get user context.
-     *
-     * @return UserContextInterface
-     */
-    private function getUserContext()
-    {
-        if (!$this->userContext) {
-            $this->userContext = ObjectManager::getInstance()->get(UserContextInterface::class);
-        }
-
-        return $this->userContext;
-    }
-
-    /**
-     * Get authorization service.
-     *
-     * @return AuthorizationInterface
-     */
-    private function getAuthorization()
-    {
-        if (!$this->authorization) {
-            $this->authorization = ObjectManager::getInstance()->get(AuthorizationInterface::class);
-        }
-
-        return $this->authorization;
-    }
-
-    /**
      * Check product options and type options and save them, too
      *
      * @return void
@@ -892,21 +835,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         $this->setRequiredOptions(false);
 
         $this->getTypeInstance()->beforeSave($this);
-
-        //Validate changing of design.
-        $userType = $this->getUserContext()->getUserType();
-        if (($userType === UserContextInterface::USER_TYPE_ADMIN
-                || $userType === UserContextInterface::USER_TYPE_INTEGRATION)
-            && !$this->getAuthorization()->isAllowed('Magento_Catalog::edit_product_design')
-        ) {
-            $this->setData('custom_design', $this->getOrigData('custom_design'));
-            $this->setData('page_layout', $this->getOrigData('page_layout'));
-            $this->setData('options_container', $this->getOrigData('options_container'));
-            $this->setData('custom_layout_update', $this->getOrigData('custom_layout_update'));
-            $this->setData('custom_design_from', $this->getOrigData('custom_design_from'));
-            $this->setData('custom_design_to', $this->getOrigData('custom_design_to'));
-            $this->setData('custom_layout', $this->getOrigData('custom_layout'));
-        }
 
         $hasOptions = false;
         $hasRequiredOptions = false;
@@ -1131,7 +1059,8 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function cleanCache()
     {
-        return $this->cleanModelCache();
+        $this->_cacheManager->clean('catalog_product_' . $this->getId());
+        return $this;
     }
 
     /**
@@ -1685,17 +1614,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function isSalable()
     {
-        if ($this->_catalogProduct->getSkipSaleableCheck()) {
-            return true;
-        }
-        if (($this->getOrigData('status') != $this->getData('status'))
-            || $this->isStockStatusChanged()) {
-            $this->unsetData('salable');
-        }
-
-        if ($this->hasData('salable')) {
-            return $this->getData('salable');
-        }
         $this->_eventManager->dispatch('catalog_product_is_salable_before', ['product' => $this]);
 
         $salable = $this->isAvailable();
@@ -1705,8 +1623,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
             'catalog_product_is_salable_after',
             ['product' => $this, 'salable' => $object]
         );
-        $this->setData('salable', $object->getIsSalable());
-        return $this->getData('salable');
+        return $object->getIsSalable();
     }
 
     /**
@@ -1716,7 +1633,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function isAvailable()
     {
-        return $this->_catalogProduct->getSkipSaleableCheck() || $this->getTypeInstance()->isSalable($this);
+        return $this->getTypeInstance()->isSalable($this) || $this->_catalogProduct->getSkipSaleableCheck();
     }
 
     /**
@@ -1989,18 +1906,14 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function getOptionById($optionId)
     {
-        $result = null;
-        if (is_array($this->getOptions())) {
-            /** @var \Magento\Catalog\Model\Product\Option $option */
-            foreach ($this->getOptions() as $option) {
-                if ($option->getId() == $optionId) {
-                    $result = $option;
-                    break;
-                }
+        /** @var \Magento\Catalog\Model\Product\Option $option */
+        foreach ($this->getOptions() as $option) {
+            if ($option->getId() == $optionId) {
+                return $option;
             }
         }
 
-        return $result;
+        return null;
     }
 
     /**
@@ -2350,16 +2263,13 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function getIdentities()
     {
-        $identities = [];
-
-        if ($this->getId()) {
-            $identities[] = self::CACHE_TAG . '_' . $this->getId();
-        }
+        $identities = [self::CACHE_TAG . '_' . $this->getId()];
         if ($this->getIsChangedCategories()) {
             foreach ($this->getAffectedCategoryIds() as $categoryId) {
                 $identities[] = self::CACHE_PRODUCT_CATEGORY_TAG . '_' . $categoryId;
             }
         }
+        
         if (($this->getOrigData('status') != $this->getData('status')) || $this->isStockStatusChanged()) {
             foreach ($this->getCategoryIds() as $categoryId) {
                 $identities[] = self::CACHE_PRODUCT_CATEGORY_TAG . '_' . $categoryId;
@@ -2698,29 +2608,5 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
                 ->get('Magento\Catalog\Model\Product\Gallery\Processor');
         }
         return $this->mediaGalleryProcessor;
-    }
-
-    /**
-     * Set the associated products
-     * @param array $productIds
-     * @return void
-     */
-    public function setAssociatedProductIds(array $productIds)
-    {
-        $this->getExtensionAttributes()->setConfigurableProductLinks($productIds);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCacheTags()
-    {
-        //Preferring individual tags over broad ones.
-        $individualTags = $this->getIdentities();
-        if ($individualTags) {
-            return $individualTags;
-        }
-
-        return parent::getCacheTags();
     }
 }

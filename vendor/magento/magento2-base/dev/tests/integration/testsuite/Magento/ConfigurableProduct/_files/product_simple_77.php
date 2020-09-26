@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -72,8 +72,7 @@ $product->setTypeId(Type::TYPE_SIMPLE)
             'is_in_stock'               => 1,
         ]
     )->setCanSaveCustomOptions(true)
-    ->setHasOptions(true)
-    ->setCustomAttribute('test_configurable', 42);
+    ->setHasOptions(true);
 
 $oldOptions = [
     [
@@ -105,14 +104,14 @@ $oldOptions = [
         'sort_order' => 0,
         'values'    => [
             [
-                'option_type_id' => null,
+                'option_type_id' => -1,
                 'title'         => 'Option 1',
                 'price'         => 3,
                 'price_type'    => 'fixed',
                 'sku'           => '3-1-select',
             ],
             [
-                'option_type_id' => null,
+                'option_type_id' => -1,
                 'title'         => 'Option 2',
                 'price'         => 3,
                 'price_type'    => 'fixed',
@@ -128,14 +127,14 @@ $oldOptions = [
         'sort_order' => 0,
         'values'    => [
             [
-                'option_type_id' => null,
+                'option_type_id' => -1,
                 'title'         => 'Option 1',
                 'price'         => 3,
                 'price_type'    => 'fixed',
                 'sku'           => '4-1-radio',
             ],
             [
-                'option_type_id' => null,
+                'option_type_id' => -1,
                 'title'         => 'Option 2',
                 'price'         => 3,
                 'price_type'    => 'fixed',

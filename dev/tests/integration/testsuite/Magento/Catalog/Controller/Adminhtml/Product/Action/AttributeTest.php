@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Product\Action;
-
-use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * @magentoAppArea adminhtml
@@ -22,18 +20,17 @@ class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var $session \Magento\Backend\Model\Session */
-        $session = $objectManager->get(\Magento\Backend\Model\Session::class);
+        $session = $objectManager->get('Magento\Backend\Model\Session');
         $session->setProductIds([1]);
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
 
         $this->dispatch('backend/catalog/product_action_attribute/save/store/0');
 
         $this->assertEquals(302, $this->getResponse()->getHttpResponseCode());
         /** @var \Magento\Backend\Model\UrlInterface $urlBuilder */
-        $urlBuilder = $objectManager->get(\Magento\Framework\UrlInterface::class);
+        $urlBuilder = $objectManager->get('Magento\Framework\UrlInterface');
 
         /** @var \Magento\Catalog\Helper\Product\Edit\Action\Attribute $attributeHelper */
-        $attributeHelper = $objectManager->get(\Magento\Catalog\Helper\Product\Edit\Action\Attribute::class);
+        $attributeHelper = $objectManager->get('Magento\Catalog\Helper\Product\Edit\Action\Attribute');
         $expectedUrl = $urlBuilder->getUrl(
             'catalog/product/index',
             ['store' => $attributeHelper->getSelectedStoreId()]
@@ -61,7 +58,7 @@ class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var $session \Magento\Backend\Model\Session */
-        $session = $objectManager->get(\Magento\Backend\Model\Session::class);
+        $session = $objectManager->get('Magento\Backend\Model\Session');
         $session->setProductIds([1, 2]);
 
         $this->getRequest()->setParam('attributes', $attributes);

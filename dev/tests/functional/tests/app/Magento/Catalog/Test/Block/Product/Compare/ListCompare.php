@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -16,13 +16,6 @@ use Magento\Mtf\Client\Element\SimpleElement;
  */
 class ListCompare extends Block
 {
-    /**
-     * Price displaying format.
-     *
-     * @var int
-     */
-    protected $priceFormat = 2;
-
     /**
      * Selector by product info.
      *
@@ -94,12 +87,12 @@ class ListCompare extends Block
     protected $messageBlock = '#messages';
 
     /**
-     * Get Product info.
+     * Get product info.
      *
      * @param int $index
      * @param string $attributeKey
      * @param string $currency
-     * @return string|array
+     * @return string
      */
     public function getProductInfo($index, $attributeKey, $currency = ' $')
     {

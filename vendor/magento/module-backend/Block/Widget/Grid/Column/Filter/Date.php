@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -125,7 +125,7 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
 
     /**
      * @param string|null $index
-     * @return array|string|int|float|null
+     * @return string
      */
     public function getEscapedValue($index = null)
     {
@@ -136,11 +136,6 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
                 $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT)
             );
         }
-
-        if (is_string($value)) {
-            return $this->escapeHtml($value);
-        }
-
         return $value;
     }
 

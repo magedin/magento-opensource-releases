@@ -41,7 +41,7 @@ class Bcrypt implements PasswordInterface
      * @param array|Traversable $options
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($options = [])
+    public function __construct($options = array())
     {
         if (!empty($options)) {
             if ($options instanceof Traversable) {

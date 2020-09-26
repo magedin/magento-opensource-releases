@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogInventory\Helper;
@@ -154,10 +154,7 @@ class Stock
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
             $resource = $this->getStockStatusResource();
-            $resource->addStockDataToCollection(
-                $collection,
-                !$isShowOutOfStock
-            );
+            $resource->addStockDataToCollection($collection, !$isShowOutOfStock);
             $collection->setFlag($stockFlag, true);
         }
     }

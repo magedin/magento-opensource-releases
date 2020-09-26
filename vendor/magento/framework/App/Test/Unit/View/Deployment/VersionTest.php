@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\App\Test\Unit\View\Deployment;
@@ -61,9 +61,6 @@ class VersionTest extends \PHPUnit_Framework_TestCase
         $this->object->getValue(); // Ensure caching in memory
     }
 
-    /**
-     * @return array
-     */
     public function getValueFromStorageDataProvider()
     {
         return [

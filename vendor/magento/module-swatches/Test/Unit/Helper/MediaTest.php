@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Swatches\Test\Unit\Helper;
@@ -136,9 +136,6 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $expectedResult);
     }
 
-    /**
-     * @return array
-     */
     public function dataForFullPath()
     {
         return [
@@ -196,7 +193,6 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         $this->imageFactoryMock->expects($this->any())->method('create')->willReturn($image);
         $this->generateImageConfig();
         $image->expects($this->any())->method('resize')->will($this->returnSelf());
-        $image->expects($this->atLeastOnce())->method('backgroundColor')->with([255, 255, 255])->willReturnSelf();
         $this->mediaHelperObject->generateSwatchVariations('/e/a/earth.png');
     }
 
@@ -232,9 +228,6 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
-    /**
-     * @return array
-     */
     public function dataForFolderName()
     {
         return [
@@ -326,9 +319,6 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $this->mediaHelperObject->getSwatchCachePath($swatchType));
     }
 
-    /**
-     * @return array
-     */
     public function getSwatchTypes()
     {
         return [

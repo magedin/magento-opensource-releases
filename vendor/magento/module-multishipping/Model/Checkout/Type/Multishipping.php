@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,8 +10,6 @@ namespace Magento\Multishipping\Model\Checkout\Type;
 
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Quote\Api\Data\CartExtensionFactory;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\ObjectManager;
@@ -143,12 +141,12 @@ class Multishipping extends \Magento\Framework\DataObject
     protected $totalsCollector;
 
     /**
-     * @var CartExtensionFactory
+     * @var \Magento\Quote\Api\Data\CartExtensionFactory
      */
     private $cartExtensionFactory;
 
     /**
-     * @var ShippingAssignmentProcessor
+     * @var \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor
      */
     private $shippingAssignmentProcessor;
 
@@ -175,10 +173,7 @@ class Multishipping extends \Magento\Framework\DataObject
      * @param \Magento\Framework\Api\FilterBuilder $filterBuilder
      * @param \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector
      * @param array $data
-     * @param CartExtensionFactory|null $cartExtensionFactory
-     * @param ShippingAssignmentProcessor|null $shippingAssignmentProcessor
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @throws \RuntimeException
      */
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -202,9 +197,7 @@ class Multishipping extends \Magento\Framework\DataObject
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\FilterBuilder $filterBuilder,
         \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector,
-        array $data = [],
-        CartExtensionFactory $cartExtensionFactory = null,
-        ShippingAssignmentProcessor $shippingAssignmentProcessor = null
+        array $data = []
     ) {
         $this->_eventManager = $eventManager;
         $this->_scopeConfig = $scopeConfig;
@@ -229,14 +222,6 @@ class Multishipping extends \Magento\Framework\DataObject
         $this->totalsCollector = $totalsCollector;
         parent::__construct($data);
         $this->_init();
-        if (!$cartExtensionFactory) {
-            $cartExtensionFactory = ObjectManager::getInstance()->get(CartExtensionFactory::class);
-        }
-        $this->cartExtensionFactory = $cartExtensionFactory;
-        if (!$shippingAssignmentProcessor) {
-            $shippingAssignmentProcessor = ObjectManager::getInstance()->get(ShippingAssignmentProcessor::class);
-        }
-        $this->shippingAssignmentProcessor = $shippingAssignmentProcessor;
     }
 
     /**
@@ -409,8 +394,6 @@ class Multishipping extends \Magento\Framework\DataObject
                     $this->_addShippingItem($quoteItemId, $data);
                 }
             }
-
-            $this->prepareShippingAssignment($quote);
 
             /**
              * Delete all not virtual quote items which are not added to shipping address
@@ -994,15 +977,39 @@ class Multishipping extends \Magento\Framework\DataObject
     {
         $cartExtension = $quote->getExtensionAttributes();
         if ($cartExtension === null) {
-            $cartExtension = $this->cartExtensionFactory->create();
+            $cartExtension = $this->getCartExtensionFactory()->create();
         }
         /** @var \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment */
-        $shippingAssignment = $this->shippingAssignmentProcessor->create($quote);
+        $shippingAssignment = $this->getShippingAssignmentProcessor()->create($quote);
         $shipping = $shippingAssignment->getShipping();
 
         $shipping->setMethod(null);
         $shippingAssignment->setShipping($shipping);
         $cartExtension->setShippingAssignments([$shippingAssignment]);
         return $quote->setExtensionAttributes($cartExtension);
+    }
+
+    /**
+     * @return \Magento\Quote\Api\Data\CartExtensionFactory
+     */
+    private function getCartExtensionFactory()
+    {
+        if (!$this->cartExtensionFactory) {
+            $this->cartExtensionFactory = ObjectManager::getInstance()
+                ->get(\Magento\Quote\Api\Data\CartExtensionFactory::class);
+        }
+        return $this->cartExtensionFactory;
+    }
+
+    /**
+     * @return \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor
+     */
+    private function getShippingAssignmentProcessor()
+    {
+        if (!$this->shippingAssignmentProcessor) {
+            $this->shippingAssignmentProcessor = ObjectManager::getInstance()
+                ->get(\Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor::class);
+        }
+        return $this->shippingAssignmentProcessor;
     }
 }

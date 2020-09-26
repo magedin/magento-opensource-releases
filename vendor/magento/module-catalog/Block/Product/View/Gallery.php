@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -117,8 +117,6 @@ class Gallery extends \Magento\Catalog\Block\Product\View\AbstractView
                 'caption' => $image->getLabel(),
                 'position' => $image->getPosition(),
                 'isMain' => $this->isMainImage($image),
-                'type' => str_replace('external-', '', $image->getMediaType()),
-                'videoUrl' => $image->getVideoUrl(),
             ];
         }
         if (empty($imagesItems)) {
@@ -129,8 +127,6 @@ class Gallery extends \Magento\Catalog\Block\Product\View\AbstractView
                 'caption' => '',
                 'position' => '0',
                 'isMain' => true,
-                'type' => 'image',
-                'videoUrl' => null,
             ];
         }
         return json_encode($imagesItems);

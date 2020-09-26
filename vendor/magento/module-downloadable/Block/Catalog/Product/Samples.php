@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,8 +8,7 @@
 
 namespace Magento\Downloadable\Block\Catalog\Product;
 
-use Magento\Downloadable\Model\ResourceModel\Sample\Collection as SampleCollection;
-use Magento\Downloadable\Api\Data\SampleInterface;
+use Magento\Downloadable\Model\ResourceModel\Sample;
 
 /**
  * Downloadable Product Samples part block
@@ -31,7 +30,7 @@ class Samples extends \Magento\Catalog\Block\Product\AbstractProduct
     /**
      * Get downloadable product samples
      *
-     * @return SampleCollection
+     * @return array
      */
     public function getSamples()
     {
@@ -39,7 +38,7 @@ class Samples extends \Magento\Catalog\Block\Product\AbstractProduct
     }
 
     /**
-     * @param SampleInterface $sample
+     * @param Sample $sample
      * @return string
      */
     public function getSampleUrl($sample)

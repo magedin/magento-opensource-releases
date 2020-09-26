@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Model;
@@ -552,7 +552,7 @@ class Session extends \Magento\Framework\Session\SessionManager
     }
 
     /**
-     * Reset core session hosts after resetting session ID
+     * Reset core session hosts after reseting session ID
      *
      * @return $this
      */

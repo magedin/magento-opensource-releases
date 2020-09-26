@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Block\Widget\Grid\Massaction;
@@ -205,8 +205,9 @@ abstract class AbstractMassaction extends \Magento\Backend\Block\Widget
         if ($selected = $this->getRequest()->getParam($this->getFormFieldNameInternal())) {
             $selected = explode(',', $selected);
             return join(',', $selected);
+        } else {
+            return '';
         }
-        return '';
     }
 
     /**
@@ -219,8 +220,9 @@ abstract class AbstractMassaction extends \Magento\Backend\Block\Widget
         if ($selected = $this->getRequest()->getParam($this->getFormFieldNameInternal())) {
             $selected = explode(',', $selected);
             return $selected;
+        } else {
+            return [];
         }
-        return [];
     }
 
     /**

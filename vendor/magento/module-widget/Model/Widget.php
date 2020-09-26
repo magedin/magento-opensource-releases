@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Widget\Model;
@@ -89,7 +89,7 @@ class Widget
     {
         if ($this->mathRandom === null) {
             $this->mathRandom = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\Math\Random::class);
+                ->get('\Magento\Framework\Math\Random');
         }
         return $this->mathRandom;
     }
@@ -313,12 +313,13 @@ class Widget
                     $value = $parameters[$name]->getValue();
                 }
             }
-            if (isset($value)) {
-                $directive .= sprintf(' %s="%s"', $name, $this->escaper->escapeQuote($value));
+            if ($value) {
+                $directive .= sprintf(' %s="%s"', $name, $value);
             }
         }
 
         $directive .= $this->getWidgetPageVarName($params);
+
         $directive .= '}}';
 
         if ($asIs) {

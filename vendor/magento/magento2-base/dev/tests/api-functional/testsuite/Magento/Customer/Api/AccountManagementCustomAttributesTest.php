@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Api;
@@ -103,7 +103,7 @@ class AccountManagementCustomAttributesTest extends WebapiAbstract
                 $this->assertTrue($response);
             }
         }
-        $this->accountManagement = null;
+        unset($this->accountManagement);
         $mediaDirectory = $this->fileSystem->getDirectoryWrite(DirectoryList::MEDIA);
         $mediaDirectory->delete(CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER);
     }

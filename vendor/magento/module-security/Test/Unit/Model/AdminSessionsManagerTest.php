@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -113,8 +113,7 @@ class AdminSessionsManagerTest extends \PHPUnit_Framework_TestCase
                 'setIsOtherSessionsTerminated',
                 'save',
                 'getUserId',
-                'getSessionId',
-                'getUpdatedAt'
+                'getSessionId'
             ],
             [],
             '',
@@ -241,8 +240,7 @@ class AdminSessionsManagerTest extends \PHPUnit_Framework_TestCase
     public function testProcessProlong()
     {
         $sessionId = 50;
-        $lastUpdatedAt = '2015-12-31 23:59:59';
-        $newUpdatedAt = '2016-01-01 00:00:30';
+        $updatedAt = '2015-12-31 23:59:59';
 
         $this->adminSessionInfoFactoryMock->expects($this->any())
             ->method('create')
@@ -256,21 +254,13 @@ class AdminSessionsManagerTest extends \PHPUnit_Framework_TestCase
             ->method('load')
             ->willReturnSelf();
 
-        $this->currentSessionMock->expects($this->once())
+        $this->authSessionMock->expects($this->once())
             ->method('getUpdatedAt')
-            ->willReturn($lastUpdatedAt);
-
-        $this->authSessionMock->expects($this->exactly(2))
-            ->method('getUpdatedAt')
-            ->willReturn(strtotime($newUpdatedAt));
-
-        $this->securityConfigMock->expects($this->once())
-            ->method('getAdminSessionLifetime')
-            ->willReturn(100);
+            ->willReturn($updatedAt);
 
         $this->currentSessionMock->expects($this->once())
             ->method('setData')
-            ->with('updated_at', $newUpdatedAt)
+            ->with('updated_at', $updatedAt)
             ->willReturnSelf();
 
         $this->currentSessionMock->expects($this->once())

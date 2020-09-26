@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -27,7 +27,6 @@
         <?php echo $block->getAdjustmentsHtml() ?>
     <?php endif; ?>
     <?php if ($block->getSchema()): ?>
-        <meta itemprop="price" content="<?php /* @noEscape */ echo $block->getDisplayValue(); ?>" />
         <meta itemprop="priceCurrency" content="<?php /* @escapeNotVerified */ echo $block->getDisplayCurrencyCode()?>" />
     <?php endif; ?>
 </span>

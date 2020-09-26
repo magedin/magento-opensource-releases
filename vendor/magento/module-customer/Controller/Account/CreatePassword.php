@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Account;
@@ -52,30 +52,27 @@ class CreatePassword extends \Magento\Customer\Controller\AbstractAccount
     public function execute()
     {
         $resetPasswordToken = (string)$this->getRequest()->getParam('token');
-        $isDirectLink = $resetPasswordToken != '';
+        $customerId = (int)$this->getRequest()->getParam('id');
+        $isDirectLink = $resetPasswordToken != '' && $customerId != 0;
         if (!$isDirectLink) {
             $resetPasswordToken = (string)$this->session->getRpToken();
+            $customerId = (int)$this->session->getRpCustomerId();
         }
 
         try {
-            $this->accountManagement->validateResetPasswordLinkToken(
-                0,
-                $resetPasswordToken
-            );
+            $this->accountManagement->validateResetPasswordLinkToken($customerId, $resetPasswordToken);
 
             if ($isDirectLink) {
                 $this->session->setRpToken($resetPasswordToken);
+                $this->session->setRpCustomerId($customerId);
                 $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setPath('*/*/createpassword');
-
                 return $resultRedirect;
             } else {
                 /** @var \Magento\Framework\View\Result\Page $resultPage */
                 $resultPage = $this->resultPageFactory->create();
-                $resultPage->getLayout()
-                    ->getBlock('resetPassword')
+                $resultPage->getLayout()->getBlock('resetPassword')->setCustomerId($customerId)
                     ->setResetPasswordLinkToken($resetPasswordToken);
-
                 return $resultPage;
             }
         } catch (\Exception $exception) {

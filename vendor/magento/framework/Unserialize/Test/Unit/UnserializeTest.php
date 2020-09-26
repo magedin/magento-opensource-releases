@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Unserialize\Test\Unit;
@@ -36,9 +36,6 @@ class UnserializeTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->unserialize->unserialize($serialized));
     }
 
-    /**
-     * @return array
-     */
     public function serializedObjectDataProvider()
     {
         return [

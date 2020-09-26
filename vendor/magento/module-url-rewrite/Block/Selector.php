@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\UrlRewrite\Block;
@@ -18,7 +18,7 @@ class Selector extends \Magento\Backend\Block\Template
     /**
      * @var string
      */
-    protected $_template = 'Magento_UrlRewrite::selector.phtml';
+    protected $_template = 'selector.phtml';
 
     /**
      * Set block template and get available modes

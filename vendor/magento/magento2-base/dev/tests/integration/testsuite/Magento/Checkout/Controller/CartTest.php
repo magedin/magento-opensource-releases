@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -9,13 +9,7 @@
  */
 namespace Magento\Checkout\Controller;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Checkout\Model\Session;
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\App\Request\Http as HttpRequest;
-
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @magentoDbIsolation enabled
  */
 class CartTest extends \Magento\TestFramework\TestCase\AbstractController
@@ -27,11 +21,11 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testConfigureActionWithSimpleProduct()
     {
-        /** @var $session Session  */
-        $session = $this->_objectManager->create(Session::class);
+        /** @var $session \Magento\Checkout\Model\Session  */
+        $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create(ProductRepositoryInterface::class);
+        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
         /** @var $product \Magento\Catalog\Model\Product */
         $product = $productRepository->get('simple');
 
@@ -60,11 +54,11 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testConfigureActionWithSimpleProductAndCustomOption()
     {
-        /** @var $session Session  */
-        $session = $this->_objectManager->create(Session::class);
+        /** @var $session \Magento\Checkout\Model\Session  */
+        $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create(ProductRepositoryInterface::class);
+        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
         /** @var $product \Magento\Catalog\Model\Product */
         $product = $productRepository->get('simple');
 
@@ -100,11 +94,11 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testConfigureActionWithBundleProduct()
     {
-        /** @var $session Session  */
-        $session = $this->_objectManager->create(Session::class);
+        /** @var $session \Magento\Checkout\Model\Session  */
+        $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create(ProductRepositoryInterface::class);
+        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
         /** @var $product \Magento\Catalog\Model\Product */
         $product = $productRepository->get('bundle-product');
 
@@ -133,11 +127,11 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testConfigureActionWithDownloadableProduct()
     {
-        /** @var $session Session  */
-        $session = $this->_objectManager->create(Session::class);
+        /** @var $session \Magento\Checkout\Model\Session  */
+        $session = $this->_objectManager->create('Magento\Checkout\Model\Session');
 
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create(ProductRepositoryInterface::class);
+        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
         /** @var $product \Magento\Catalog\Model\Product */
         $product = $productRepository->get('downloadable-product');
 
@@ -173,8 +167,8 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testUpdatePostAction()
     {
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->_objectManager->create(ProductRepositoryInterface::class);
+        /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+        $productRepository = $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface');
         /** @var $product \Magento\Catalog\Model\Product */
         $product = $productRepository->get('simple');
 
@@ -183,21 +177,20 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
         $productId = $product->getId();
         $originalQuantity = 1;
         $updatedQuantity = 2;
-        /** @var $checkoutSession Session  */
-        $checkoutSession = $this->_objectManager->create(Session::class);
+        /** @var $checkoutSession \Magento\Checkout\Model\Session  */
+        $checkoutSession = $this->_objectManager->create('Magento\Checkout\Model\Session');
         $quoteItem = $this->_getQuoteItemIdByProductId($checkoutSession->getQuote(), $productId);
 
-        /** @var FormKey $formKey */
-        $formKey = $this->_objectManager->get(FormKey::class);
+        /** @var \Magento\Framework\Data\Form\FormKey $formKey */
+        $formKey = $this->_objectManager->get('Magento\Framework\Data\Form\FormKey');
         $postData = [
             'cart' => [$quoteItem->getId() => ['qty' => $updatedQuantity]],
             'update_cart_action' => 'update_qty',
             'form_key' => $formKey->getFormKey(),
         ];
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue($postData);
-        /** @var $customerSession Session */
-        $customerSession = $this->_objectManager->create(Session::class);
+        /** @var $customerSession \Magento\Customer\Model\Session */
+        $customerSession = $this->_objectManager->create('Magento\Customer\Model\Session');
         $customerSession->setCustomerId($customerFromFixture);
 
         $this->assertNotNull($quoteItem, 'Cannot get quote item for simple product');
@@ -212,7 +205,7 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
 
         /** Check results */
         /** @var \Magento\Quote\Model\Quote $quote */
-        $quote = $this->_objectManager->create(\Magento\Quote\Model\Quote::class);
+        $quote = $this->_objectManager->create('Magento\Quote\Model\Quote');
         $quote->load($checkoutSession->getQuote()->getId());
         $quoteItem = $this->_getQuoteItemIdByProductId($quote, $product->getId());
         $this->assertEquals($updatedQuantity, $quoteItem->getQty(), "Invalid quote item quantity");
@@ -235,53 +228,5 @@ class CartTest extends \Magento\TestFramework\TestCase\AbstractController
             }
         }
         return null;
-    }
-
-    /**
-     * Test for \Magento\Checkout\Controller\Cart::execute() with simple product
-     *
-     * @param string $area
-     * @param string $expectedPrice
-     * @magentoDataFixture Magento/Catalog/_files/products.php
-     * @magentoAppIsolation enabled
-     * @dataProvider addAddProductDataProvider
-     */
-    public function testAddToCartSimpleProduct($area, $expectedPrice)
-    {
-        $formKey = $this->_objectManager->get(FormKey::class);
-        $postData = [
-            'qty' => '1',
-            'product' => '1',
-            'custom_price' => 1,
-            'form_key' => $formKey->getFormKey(),
-            'isAjax' => 1
-        ];
-        \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea($area);
-        $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
-        $this->getRequest()->setPostValue($postData);
-
-        $quote =  $this->_objectManager->create(\Magento\Checkout\Model\Cart::class);
-        /** @var \Magento\Checkout\Controller\Cart\Add $controller */
-        $controller = $this->_objectManager->create(\Magento\Checkout\Controller\Cart\Add::class, [$quote]);
-        $controller->execute();
-
-        $this->assertContains(json_encode([]), $this->getResponse()->getBody());
-        $items = $quote->getItems()->getItems();
-        $this->assertTrue(is_array($items), 'Quote doesn\'t have any items');
-        $this->assertCount(1, $items, 'Expected quote items not equal to 1');
-        $item = reset($items);
-        $this->assertEquals(1, $item->getProductId(), 'Quote has more than one product');
-        $this->assertEquals($expectedPrice, $item->getPrice(), 'Expected product price failed');
-    }
-
-    /**
-     * Data provider for testAddToCartSimpleProduct
-     */
-    public function addAddProductDataProvider()
-    {
-        return [
-            'frontend' => ['frontend', 'expected_price' => 10],
-            'adminhtml' => ['adminhtml', 'expected_price' => 1]
-        ];
     }
 }

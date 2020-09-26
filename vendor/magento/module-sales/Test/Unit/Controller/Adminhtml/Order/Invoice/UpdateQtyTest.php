@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Invoice;
@@ -9,9 +9,9 @@ use Magento\Backend\App\Action;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
- * Tests \Magento\Sales\Controller\Adminhtml\Order\Invoice\UpdateQty.
+ * Class UpdateQtyTest
  *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @package Magento\Sales\Controller\Adminhtml\Order\Invoice
  */
 class UpdateQtyTest extends \PHPUnit_Framework_TestCase
 {
@@ -84,39 +84,39 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->titleMock = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
+        $this->titleMock = $this->getMockBuilder('Magento\Framework\View\Page\Title')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+        $this->requestMock = $this->getMockBuilder('Magento\Framework\App\Request\Http')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $this->responseMock = $this->getMockBuilder('Magento\Framework\App\Response\Http')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->requestMock->expects($this->any())->method('isPost')->willReturn(true);
-        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->resultPageMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
+        $this->resultPageMock = $this->getMockBuilder('Magento\Backend\Model\View\Result\Page')
             ->setMethods([])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
+        $this->pageConfigMock = $this->getMockBuilder('Magento\Framework\View\Page\Config')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->viewMock = $this->getMockBuilder(\Magento\Framework\App\ViewInterface::class)
+        $this->viewMock = $this->getMockBuilder('Magento\Framework\App\ViewInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->viewMock->expects($this->any())->method('loadLayout')->will($this->returnSelf());
 
-        $this->objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->getMock('Magento\Framework\ObjectManagerInterface');
 
-        $this->pageConfigMock->expects($this->any())->method('getTitle')->willReturn($this->titleMock);
+        $this->pageConfigMock->expects($this->any())->method('getTitle')->will($this->returnValue($this->titleMock));
 
-        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder('Magento\Framework\ObjectManagerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
+        $contextMock = $this->getMockBuilder('Magento\Backend\App\Action\Context')
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->any())
@@ -135,33 +135,33 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->method('getObjectManager')
             ->will($this->returnValue($this->objectManagerMock));
 
-        $this->resultPageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
+        $this->resultPageFactoryMock = $this->getMockBuilder('Magento\Framework\View\Result\PageFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->resultRawFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\RawFactory::class)
+        $this->resultRawFactoryMock = $this->getMockBuilder('Magento\Framework\Controller\Result\RawFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->resultJsonFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
+        $this->resultJsonFactoryMock = $this->getMockBuilder('Magento\Framework\Controller\Result\JsonFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->invoiceServiceMock = $this->getMockBuilder(\Magento\Sales\Model\Service\InvoiceService::class)
+        $this->invoiceServiceMock = $this->getMockBuilder('Magento\Sales\Model\Service\InvoiceService')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->controller = $objectManager->getObject(
-            \Magento\Sales\Controller\Adminhtml\Order\Invoice\UpdateQty::class,
+            'Magento\Sales\Controller\Adminhtml\Order\Invoice\UpdateQty',
             [
                 'context' => $contextMock,
                 'resultPageFactory' => $this->resultPageFactoryMock,
                 'resultRawFactory' => $this->resultRawFactoryMock,
                 'resultJsonFactory' => $this->resultJsonFactoryMock,
-                'invoiceService' => $this->invoiceServiceMock,
+                'invoiceService' => $this->invoiceServiceMock
             ]
         );
     }
@@ -177,15 +177,16 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
         $invoiceData = ['comment_text' => 'test'];
         $response = 'test data';
 
-        $this->requestMock->expects($this->any())->method('getParam')
-            ->willReturnMap(
-                [
-                    ['order_id', null, $orderId],
-                    ['invoice', [], $invoiceData],
-                ]
-            );
+        $this->requestMock->expects($this->at(0))
+            ->method('getParam')
+            ->with('order_id')
+            ->will($this->returnValue($orderId));
+        $this->requestMock->expects($this->at(1))
+            ->method('getParam')
+            ->with('invoice', [])
+            ->will($this->returnValue($invoiceData));
 
-        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
+        $invoiceMock = $this->getMockBuilder('Magento\Sales\Model\Order\Invoice')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -193,7 +194,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->method('getTotalQty')
             ->willReturn(2);
 
-        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+        $orderMock = $this->getMockBuilder('Magento\Sales\Model\Order')
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'canInvoice'])
             ->getMock();
@@ -215,46 +216,46 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
 
         $this->objectManagerMock->expects($this->at(0))
             ->method('create')
-            ->with(\Magento\Sales\Model\Order::class)
+            ->with('Magento\Sales\Model\Order')
             ->willReturn($orderMock);
 
-        $blockItemMock = $this->getMockBuilder(\Magento\Sales\Block\Order\Items::class)
+        $blockItemMock = $this->getMockBuilder('Magento\Sales\Block\Order\Items')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $blockItemMock->expects($this->once())
             ->method('toHtml')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
 
-        $layoutMock = $this->getMockBuilder(\Magento\Framework\View\Layout::class)
+        $layoutMock = $this->getMockBuilder('Magento\Framework\View\Layout')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $layoutMock->expects($this->once())
             ->method('getBlock')
             ->with('order_items')
-            ->willReturn($blockItemMock);
+            ->will($this->returnValue($blockItemMock));
 
         $this->resultPageMock->expects($this->once())
             ->method('getLayout')
-            ->willReturn($layoutMock);
+            ->will($this->returnValue($layoutMock));
         $this->resultPageMock->expects($this->once())
             ->method('getConfig')
-            ->willReturn($this->pageConfigMock);
+            ->will($this->returnValue($this->pageConfigMock));
 
-        $this->pageConfigMock->expects($this->once())->method('getTitle')->willReturn($this->titleMock);
+        $this->pageConfigMock->expects($this->once())->method('getTitle')->will($this->returnValue($this->titleMock));
 
         $this->resultPageFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($this->resultPageMock);
+            ->will($this->returnValue($this->resultPageMock));
 
-        $resultRaw = $this->getMockBuilder(\Magento\Framework\Controller\Result\Raw::class)
+        $resultRaw = $this->getMockBuilder('Magento\Framework\Controller\Result\Raw')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $resultRaw->expects($this->once())->method('setContents')->with($response);
 
-        $this->resultRawFactoryMock->expects($this->once())->method('create')->willReturn($resultRaw);
+        $this->resultRawFactoryMock->expects($this->once())->method('create')->will($this->returnValue($resultRaw));
 
         $this->assertSame($resultRaw, $this->controller->execute());
     }
@@ -269,7 +270,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
         $message = 'The order no longer exists.';
         $response = ['error' => true, 'message' => $message];
 
-        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+        $orderMock = $this->getMockBuilder('Magento\Sales\Model\Order')
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'canInvoice'])
             ->getMock();
@@ -281,7 +282,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
         $this->objectManagerMock->expects($this->at(0))
             ->method('create')
-            ->with(\Magento\Sales\Model\Order::class)
+            ->with('Magento\Sales\Model\Order')
             ->willReturn($orderMock);
 
         $this->titleMock->expects($this->never())
@@ -289,7 +290,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->with('Invoices');
 
         /** @var \Magento\Framework\Controller\Result\Json|\PHPUnit_Framework_MockObject_MockObject */
-        $resultJsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
+        $resultJsonMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Json')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -297,7 +298,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
 
         $this->resultJsonFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($resultJsonMock);
+            ->will($this->returnValue($resultJsonMock));
 
         $this->assertSame($resultJsonMock, $this->controller->execute());
     }
@@ -312,7 +313,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
         $message = 'The order no longer exists.';
         $response = ['error' => true, 'message' => $message];
 
-        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+        $orderMock = $this->getMockBuilder('Magento\Sales\Model\Order')
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'canInvoice'])
             ->getMock();
@@ -324,7 +325,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
         $this->objectManagerMock->expects($this->at(0))
             ->method('create')
-            ->with(\Magento\Sales\Model\Order::class)
+            ->with('Magento\Sales\Model\Order')
             ->willReturn($orderMock);
 
         $this->titleMock->expects($this->never())
@@ -332,7 +333,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
             ->with('Invoices');
 
         /** @var \Magento\Framework\Controller\Result\Json|\PHPUnit_Framework_MockObject_MockObject */
-        $resultJsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
+        $resultJsonMock = $this->getMockBuilder('Magento\Framework\Controller\Result\Json')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -340,7 +341,7 @@ class UpdateQtyTest extends \PHPUnit_Framework_TestCase
 
         $this->resultJsonFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($resultJsonMock);
+            ->will($this->returnValue($resultJsonMock));
 
         $this->assertSame($resultJsonMock, $this->controller->execute());
     }

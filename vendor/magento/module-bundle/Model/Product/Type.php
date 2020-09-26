@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -497,12 +497,12 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
 
         foreach ($selections as $selection) {
             if ($selection->getProductId() == $optionProduct->getId()) {
-                foreach ($options as $quoteItemOption) {
-                    if ($quoteItemOption->getCode() == 'selection_qty_' . $selection->getSelectionId()) {
+                foreach ($options as &$option) {
+                    if ($option->getCode() == 'selection_qty_' . $selection->getSelectionId()) {
                         if ($optionUpdateFlag) {
-                            $quoteItemOption->setValue(intval($quoteItemOption->getValue()));
+                            $option->setValue(intval($option->getValue()));
                         } else {
-                            $quoteItemOption->setValue($value);
+                            $option->setValue($value);
                         }
                     }
                 }
@@ -948,8 +948,9 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
         ];
         if ($aPosition == $bPosition) {
             return 0;
+        } else {
+            return $aPosition < $bPosition ? -1 : 1;
         }
-        return $aPosition < $bPosition ? -1 : 1;
     }
 
     /**

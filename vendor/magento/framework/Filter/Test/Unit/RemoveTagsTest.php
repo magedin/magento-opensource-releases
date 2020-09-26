@@ -1,13 +1,10 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Filter\Test\Unit;
 
-/**
- * Test for \Magento\Framework\Filter\RemoveTags
- */
 class RemoveTagsTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -20,15 +17,6 @@ class RemoveTagsTest extends \PHPUnit_Framework_TestCase
         $removeTags = new \Magento\Framework\Filter\RemoveTags();
         $actual = $removeTags->filter($input);
         $expected = '10 < 11 > 10';
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testFilterEncodedValue()
-    {
-        $input = '&quot;&gt;&lt;script&gt;alert(&quot;website&quot;)&lt;/script&gt;&lt;br a=&quot;';
-        $removeTags = new \Magento\Framework\Filter\RemoveTags();
-        $actual = $removeTags->filter($input);
-        $expected = '">alert("website")';
         $this->assertSame($expected, $actual);
     }
 }

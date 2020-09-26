@@ -39,21 +39,21 @@ class HeadMeta extends Placeholder\Container\AbstractStandalone
      *
      * @var array
      */
-    protected $typeKeys = ['name', 'http-equiv', 'charset', 'property', 'itemprop'];
+    protected $typeKeys = array('name', 'http-equiv', 'charset', 'property', 'itemprop');
 
     /**
      * Required attributes for meta tag
      *
      * @var array
      */
-    protected $requiredKeys = ['content'];
+    protected $requiredKeys = array('content');
 
     /**
      * Allowed modifier keys
      *
      * @var array
      */
-    protected $modifierKeys = ['lang', 'scheme'];
+    protected $modifierKeys = array('lang', 'scheme');
 
     /**
      * Registry key for placeholder
@@ -89,7 +89,7 @@ class HeadMeta extends Placeholder\Container\AbstractStandalone
         $content = null,
         $keyValue = null,
         $keyType = 'name',
-        $modifiers = [],
+        $modifiers = array(),
         $placement = Placeholder\Container\AbstractContainer::APPEND
     ) {
         if ((null !== $content) && (null !== $keyValue)) {
@@ -140,7 +140,7 @@ class HeadMeta extends Placeholder\Container\AbstractStandalone
             }
 
             if (3 > $argc) {
-                $args[] = [];
+                $args[] = array();
             }
 
             $item  = $this->createData($type, $args[0], $args[1], $args[2]);
@@ -169,7 +169,7 @@ class HeadMeta extends Placeholder\Container\AbstractStandalone
             ? $this->getWhitespace($indent)
             : $this->getIndent();
 
-        $items = [];
+        $items = array();
         $this->getContainer()->ksort();
 
         try {
@@ -453,7 +453,7 @@ class HeadMeta extends Placeholder\Container\AbstractStandalone
         $item->type = 'charset';
         $item->charset = $charset;
         $item->content = null;
-        $item->modifiers = [];
+        $item->modifiers = array();
         $this->set($item);
 
         return $this;

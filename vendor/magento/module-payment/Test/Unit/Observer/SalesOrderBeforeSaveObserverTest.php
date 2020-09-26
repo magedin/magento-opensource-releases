@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -26,12 +26,12 @@ class SalesOrderBeforeSaveObserverTest extends \PHPUnit_Framework_TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->salesOrderBeforeSaveObserver = $this->objectManagerHelper->getObject(
-            \Magento\Payment\Observer\SalesOrderBeforeSaveObserver::class,
+            'Magento\Payment\Observer\SalesOrderBeforeSaveObserver',
             []
         );
 
         $this->observerMock = $this->getMockBuilder(
-            \Magento\Framework\Event\Observer::class
+            'Magento\Framework\Event\Observer'
         )->disableOriginalConstructor()->setMethods([])->getMock();
     }
 
@@ -131,7 +131,7 @@ class SalesOrderBeforeSaveObserverTest extends \PHPUnit_Framework_TestCase
     private function _prepareEventMockWithMethods($methodsList)
     {
         $this->eventMock = $this->getMockBuilder(
-            \Magento\Framework\Event::class
+            'Magento\Framework\Event'
         )->disableOriginalConstructor()->setMethods($methodsList)->getMock();
         $this->observerMock->expects($this->any())->method('getEvent')->will($this->returnValue($this->eventMock));
     }
@@ -145,15 +145,15 @@ class SalesOrderBeforeSaveObserverTest extends \PHPUnit_Framework_TestCase
      */
     private function _getPreparedOrderMethod($methodCode, $orderMethods = [])
     {
-        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)->disableOriginalConstructor()->setMethods(
+        $order = $this->getMockBuilder('Magento\Sales\Model\Order')->disableOriginalConstructor()->setMethods(
             array_merge(['__wakeup', 'getPayment'], $orderMethods)
         )->getMock();
         $paymentMock = $this->getMockBuilder(
-            \Magento\Sales\Model\Order\Payment::class
+            'Magento\Sales\Model\Order\Payment'
         )->disableOriginalConstructor()->setMethods([])->getMock();
         $order->expects($this->once())->method('getPayment')->will($this->returnValue($paymentMock));
         $methodInstance = $this->getMockBuilder(
-            \Magento\Payment\Model\MethodInterface::class
+            'Magento\Payment\Model\MethodInterface'
         )->getMockForAbstractClass();
         $paymentMock->expects($this->once())->method('getMethodInstance')->will($this->returnValue($methodInstance));
         $methodInstance->expects($this->once())->method('getCode')->will($this->returnValue($methodCode));

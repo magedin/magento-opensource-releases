@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Directory\Model\Country\Postcode\Config;
@@ -12,10 +12,7 @@ class Reader extends \Magento\Framework\Config\Reader\Filesystem
      *
      * @var array
      */
-    protected $_idAttributes = [
-        '/config/zip' => 'countryCode',
-        '/config/zip/codes/code' => 'id',
-    ];
+    protected $_idAttributes = ['/config/zip' => 'countryCode'];
 
     /**
      * Construct the FileSystem Reader Class

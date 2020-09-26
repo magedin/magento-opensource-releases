@@ -1,12 +1,10 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Indexer\Controller\Adminhtml\Indexer;
-
-use Magento\Framework\Exception\NotFoundException;
 
 class MassOnTheFly extends \Magento\Indexer\Controller\Adminhtml\Indexer
 {
@@ -14,14 +12,9 @@ class MassOnTheFly extends \Magento\Indexer\Controller\Adminhtml\Indexer
      * Turn mview off for the given indexers
      *
      * @return void
-     * @throws NotFoundException
      */
     public function execute()
     {
-        if (!$this->getRequest()->isPost()) {
-            throw new NotFoundException(__('Page not found'));
-        }
-
         $indexerIds = $this->getRequest()->getParam('indexer_ids');
         if (!is_array($indexerIds)) {
             $this->messageManager->addError(__('Please select indexers.'));
@@ -29,9 +22,7 @@ class MassOnTheFly extends \Magento\Indexer\Controller\Adminhtml\Indexer
             try {
                 foreach ($indexerIds as $indexerId) {
                     /** @var \Magento\Framework\Indexer\IndexerInterface $model */
-                    $model = $this->_objectManager->get(
-                        \Magento\Framework\Indexer\IndexerRegistry::class
-                    )->get($indexerId);
+                    $model = $this->_objectManager->get('Magento\Framework\Indexer\IndexerRegistry')->get($indexerId);
                     $model->setScheduled(false);
                 }
                 $this->messageManager->addSuccess(

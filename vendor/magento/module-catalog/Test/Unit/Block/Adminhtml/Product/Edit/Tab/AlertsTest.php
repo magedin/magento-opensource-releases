@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Product\Edit\Tab;
@@ -55,9 +55,6 @@ class AlertsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($canShowTab, $this->alerts->canShowTab());
     }
 
-    /**
-     * @return array
-     */
     public function canShowTabDataProvider()
     {
         return [

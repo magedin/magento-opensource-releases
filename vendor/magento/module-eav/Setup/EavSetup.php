@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Setup;
@@ -192,9 +192,6 @@ class EavSetup
             'additional_attribute_table' => $this->_getValue($params, 'additional_attribute_table'),
             'entity_attribute_collection' => $this->_getValue($params, 'entity_attribute_collection'),
         ];
-        if (isset($params['entity_type_id'])) {
-            $data['entity_type_id'] = $params['entity_type_id'];
-        }
 
         if ($this->getEntityType($code, 'entity_type_id')) {
             $this->updateEntityType($code, $data);
@@ -202,11 +199,7 @@ class EavSetup
             $this->setup->getConnection()->insert($this->setup->getTable('eav_entity_type'), $data);
         }
 
-        if (isset($params['entity_type_id'])) {
-            $this->addAttributeSet($code, $this->_defaultAttributeSetName, null, $params['entity_type_id']);
-        } else {
-            $this->addAttributeSet($code, $this->_defaultAttributeSetName);
-        }
+        $this->addAttributeSet($code, $this->_defaultAttributeSetName);
         $this->addAttributeGroup($code, $this->_defaultGroupName, $this->_generalGroupName);
 
         return $this;
@@ -317,20 +310,15 @@ class EavSetup
      * @param int|string $entityTypeId
      * @param string $name
      * @param int $sortOrder
-     * @param int $setId
      * @return $this
      */
-    public function addAttributeSet($entityTypeId, $name, $sortOrder = null, $setId = null)
+    public function addAttributeSet($entityTypeId, $name, $sortOrder = null)
     {
         $data = [
             'entity_type_id' => $this->getEntityTypeId($entityTypeId),
             'attribute_set_name' => $name,
             'sort_order' => $this->getAttributeSetSortOrder($entityTypeId, $sortOrder),
         ];
-
-        if ($setId !== null) {
-            $data['attribute_set_id'] = $setId;
-        }
 
         $setId = $this->getAttributeSet($entityTypeId, $name, 'attribute_set_id');
         if ($setId) {

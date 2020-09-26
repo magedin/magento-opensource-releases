@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Framework\Data\Form\Element;
@@ -177,6 +177,14 @@ class Checkboxes extends AbstractElement
         }
         return;
     }
+
+    //    public function getName($value)
+    //    {
+    //        if ($name = $this->getData('name')) {
+    //            return str_replace('$value', $value, $name);
+    //        }
+    //        return ;
+    //    }
 
     /**
      * @param array $option

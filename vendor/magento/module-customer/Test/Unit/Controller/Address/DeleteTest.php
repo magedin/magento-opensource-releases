@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Controller\Address;
@@ -43,61 +43,56 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     /** @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirect;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp()
     {
-        $this->sessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
+        $this->sessionMock = $this->getMockBuilder('Magento\Customer\Model\Session')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->validatorMock = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey\Validator::class)
+        $this->validatorMock = $this->getMockBuilder('Magento\Framework\Data\Form\FormKey\Validator')
             ->disableOriginalConstructor()
             ->getMock();
-        $formFactoryMock = $this->getMockBuilder(\Magento\Customer\Model\Metadata\FormFactory::class)
+        $formFactoryMock = $this->getMockBuilder('Magento\Customer\Model\Metadata\FormFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->addressRepositoryMock = $this->getMockBuilder(\Magento\Customer\Api\AddressRepositoryInterface::class)
+        $this->addressRepositoryMock = $this->getMockBuilder('Magento\Customer\Api\AddressRepositoryInterface')
             ->getMockForAbstractClass();
-        $addressInterfaceFactoryMock = $this->getMockBuilder(\Magento\Customer\Api\Data\AddressInterfaceFactory::class)
+        $addressInterfaceFactoryMock = $this->getMockBuilder('Magento\Customer\Api\Data\AddressInterfaceFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $regionInterfaceFactoryMock = $this->getMockBuilder(\Magento\Customer\Api\Data\RegionInterfaceFactory::class)
+        $regionInterfaceFactoryMock = $this->getMockBuilder('Magento\Customer\Api\Data\RegionInterfaceFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $dataObjectProcessorMock = $this->getMockBuilder(\Magento\Framework\Reflection\DataObjectProcessor::class)
+        $dataObjectProcessorMock = $this->getMockBuilder('Magento\Framework\Reflection\DataObjectProcessor')
             ->disableOriginalConstructor()
             ->getMock();
-        $dataObjectHelperMock = $this->getMockBuilder(\Magento\Framework\Api\DataObjectHelper::class)
+        $dataObjectHelperMock = $this->getMockBuilder('Magento\Framework\Api\DataObjectHelper')
             ->disableOriginalConstructor()
             ->getMock();
-        $forwardFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\ForwardFactory::class)
+        $forwardFactoryMock = $this->getMockBuilder('Magento\Framework\Controller\Result\ForwardFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $pageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
+        $pageFactoryMock = $this->getMockBuilder('Magento\Framework\View\Result\PageFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
-            ->setMethods(['isPost'])
+        $this->request = $this->getMockBuilder('Magento\Framework\App\RequestInterface')
             ->getMockForAbstractClass();
-        $this->request->expects($this->any())->method('isPost')->willReturn(true);
-        $this->address = $this->getMockBuilder(\Magento\Customer\Api\Data\AddressInterface::class)
+        $this->address = $this->getMockBuilder('Magento\Customer\Api\Data\AddressInterface')
             ->getMockForAbstractClass();
-        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder('Magento\Framework\Message\ManagerInterface')
             ->getMockForAbstractClass();
-        $this->resultRedirectFactory = $this->getMockBuilder(
-            \Magento\Framework\Controller\Result\RedirectFactory::class
-        )->disableOriginalConstructor()->getMock();
-        $this->resultRedirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
+        $this->resultRedirectFactory = $this->getMockBuilder('Magento\Framework\Controller\Result\RedirectFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->resultRedirect = $this->getMockBuilder('Magento\Framework\Controller\Result\Redirect')
             ->disableOriginalConstructor()
             ->getMock();
 
         $objectManager = new ObjectManagerHelper($this);
         $this->context = $objectManager->getObject(
-            \Magento\Framework\App\Action\Context::class,
+            'Magento\Framework\App\Action\Context',
             [
                 'request' => $this->request,
                 'messageManager' => $this->messageManager,
@@ -105,21 +100,18 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->model = $objectManager->getObject(
-            Delete::class,
-            [
-                'context' => $this->context,
-                'customerSession' => $this->sessionMock,
-                'formKeyValidator' => $this->validatorMock,
-                'formFactory' => $formFactoryMock,
-                'addressRepository' => $this->addressRepositoryMock,
-                'addressDataFactory' => $addressInterfaceFactoryMock,
-                'regionDataFactory' => $regionInterfaceFactoryMock,
-                'dataProcessor' => $dataObjectProcessorMock,
-                'dataObjectHelper' => $dataObjectHelperMock,
-                'resultForwardFactory' => $forwardFactoryMock,
-                'resultPageFactory' => $pageFactoryMock,
-            ]
+        $this->model = new Delete(
+            $this->context,
+            $this->sessionMock,
+            $this->validatorMock,
+            $formFactoryMock,
+            $this->addressRepositoryMock,
+            $addressInterfaceFactoryMock,
+            $regionInterfaceFactoryMock,
+            $dataObjectProcessorMock,
+            $dataObjectHelperMock,
+            $forwardFactoryMock,
+            $pageFactoryMock
         );
     }
 
@@ -153,7 +145,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ->method('deleteById')
             ->with($addressId);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')
+            ->method('addSuccess')
             ->with(__('You deleted the address.'));
         $this->resultRedirect->expects($this->once())
             ->method('setPath')
@@ -190,11 +182,11 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
             ->willReturn(34);
         $exception = new \Exception('Exception');
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with(__('We can\'t delete the address right now.'))
             ->willThrowException($exception);
         $this->messageManager->expects($this->once())
-            ->method('addExceptionMessage')
+            ->method('addException')
             ->with($exception, __('We can\'t delete the address right now.'));
         $this->resultRedirect->expects($this->once())
             ->method('setPath')

@@ -1,40 +1,18 @@
 <?php
 /**
  *
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Controller\Download;
 
-use Magento\Catalog\Model\Product\SalabilityChecker;
 use Magento\Downloadable\Helper\Download as DownloadHelper;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 
-/**
- * Class Sample executes download sample action.
- */
 class Sample extends \Magento\Downloadable\Controller\Download
 {
     /**
-     * @var SalabilityChecker
-     */
-    private $salabilityChecker;
-
-    /**
-     * @param Context $context
-     * @param SalabilityChecker|null $salabilityChecker
-     */
-    public function __construct(
-        Context $context,
-        SalabilityChecker $salabilityChecker = null
-    ) {
-        parent::__construct($context);
-        $this->salabilityChecker = $salabilityChecker ?: $this->_objectManager->get(SalabilityChecker::class);
-    }
-
-    /**
-     * Download sample action.
+     * Download sample action
      *
      * @return ResponseInterface
      * @SuppressWarnings(PHPMD.ExitExpression)
@@ -43,8 +21,8 @@ class Sample extends \Magento\Downloadable\Controller\Download
     {
         $sampleId = $this->getRequest()->getParam('sample_id', 0);
         /** @var \Magento\Downloadable\Model\Sample $sample */
-        $sample = $this->_objectManager->create(\Magento\Downloadable\Model\Sample::class)->load($sampleId);
-        if ($sample->getId() && $this->salabilityChecker->isSalable($sample->getProductId())) {
+        $sample = $this->_objectManager->create('Magento\Downloadable\Model\Sample')->load($sampleId);
+        if ($sample->getId()) {
             $resource = '';
             $resourceType = '';
             if ($sample->getSampleType() == DownloadHelper::LINK_TYPE_URL) {
@@ -52,7 +30,7 @@ class Sample extends \Magento\Downloadable\Controller\Download
                 $resourceType = DownloadHelper::LINK_TYPE_URL;
             } elseif ($sample->getSampleType() == DownloadHelper::LINK_TYPE_FILE) {
                 /** @var \Magento\Downloadable\Helper\File $helper */
-                $helper = $this->_objectManager->get(\Magento\Downloadable\Helper\File::class);
+                $helper = $this->_objectManager->get('Magento\Downloadable\Helper\File');
                 $resource = $helper->getFilePath($sample->getBasePath(), $sample->getSampleFile());
                 $resourceType = DownloadHelper::LINK_TYPE_FILE;
             }
@@ -65,7 +43,6 @@ class Sample extends \Magento\Downloadable\Controller\Download
                 );
             }
         }
-
         return $this->getResponse()->setRedirect($this->_redirect->getRedirectUrl());
     }
 }

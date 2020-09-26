@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -10,8 +10,6 @@ namespace Magento\Framework\Mview\View;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Ddl\Trigger;
-use Magento\Framework\DB\Ddl\TriggerFactory;
-use Magento\Framework\Mview\ViewInterface;
 
 class Subscription implements SubscriptionInterface
 {
@@ -23,12 +21,12 @@ class Subscription implements SubscriptionInterface
     protected $connection;
 
     /**
-     * @var TriggerFactory
+     * @var \Magento\Framework\DB\Ddl\TriggerFactory
      */
     protected $triggerFactory;
 
     /**
-     * @var CollectionInterface
+     * @var \Magento\Framework\Mview\View\CollectionInterface
      */
     protected $viewCollection;
 
@@ -60,31 +58,20 @@ class Subscription implements SubscriptionInterface
     protected $resource;
 
     /**
-     * List of columns that can be updated in a subscribed table
-     * without creating a new change log entry
-     *
-     * @var array
-     */
-    private $ignoredUpdateColumns = [];
-
-    /**
      * @param ResourceConnection $resource
-     * @param TriggerFactory $triggerFactory
-     * @param CollectionInterface $viewCollection
-     * @param ViewInterface $view
+     * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
+     * @param \Magento\Framework\Mview\View\CollectionInterface $viewCollection
+     * @param \Magento\Framework\Mview\ViewInterface $view
      * @param string $tableName
      * @param string $columnName
-     * @param array $ignoredUpdateColumns
-     * @throws \DomainException
      */
     public function __construct(
         ResourceConnection $resource,
-        TriggerFactory $triggerFactory,
-        CollectionInterface $viewCollection,
-        ViewInterface $view,
+        \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
+        \Magento\Framework\Mview\View\CollectionInterface $viewCollection,
+        \Magento\Framework\Mview\ViewInterface $view,
         $tableName,
-        $columnName,
-        array $ignoredUpdateColumns = []
+        $columnName
     ) {
         $this->connection = $resource->getConnection();
         $this->triggerFactory = $triggerFactory;
@@ -93,14 +80,12 @@ class Subscription implements SubscriptionInterface
         $this->tableName = $tableName;
         $this->columnName = $columnName;
         $this->resource = $resource;
-        $this->ignoredUpdateColumns = $ignoredUpdateColumns;
     }
 
     /**
-     * Create subscription
+     * Create subsciption
      *
-     * @return SubscriptionInterface
-     * @throws \InvalidArgumentException
+     * @return \Magento\Framework\Mview\View\SubscriptionInterface
      */
     public function create()
     {
@@ -117,7 +102,7 @@ class Subscription implements SubscriptionInterface
 
             // Add statements for linked views
             foreach ($this->getLinkedViews() as $view) {
-                /** @var ViewInterface $view */
+                /** @var \Magento\Framework\Mview\ViewInterface $view */
                 $trigger->addStatement($this->buildStatement($event, $view->getChangelog()));
             }
 
@@ -131,8 +116,7 @@ class Subscription implements SubscriptionInterface
     /**
      * Remove subscription
      *
-     * @return SubscriptionInterface
-     * @throws \InvalidArgumentException
+     * @return \Magento\Framework\Mview\View\SubscriptionInterface
      */
     public function remove()
     {
@@ -147,7 +131,7 @@ class Subscription implements SubscriptionInterface
 
             // Add statements for linked views
             foreach ($this->getLinkedViews() as $view) {
-                /** @var ViewInterface $view */
+                /** @var \Magento\Framework\Mview\ViewInterface $view */
                 $trigger->addStatement($this->buildStatement($event, $view->getChangelog()));
             }
 
@@ -170,10 +154,10 @@ class Subscription implements SubscriptionInterface
     protected function getLinkedViews()
     {
         if (!$this->linkedViews) {
-            $viewList = $this->viewCollection->getViewsByStateMode(StateInterface::MODE_ENABLED);
+            $viewList = $this->viewCollection->getViewsByStateMode(\Magento\Framework\Mview\View\StateInterface::MODE_ENABLED);
 
             foreach ($viewList as $view) {
-                /** @var ViewInterface $view */
+                /** @var \Magento\Framework\Mview\ViewInterface $view */
                 // Skip the current view
                 if ($view->getId() == $this->getView()->getId()) {
                     continue;
@@ -191,58 +175,35 @@ class Subscription implements SubscriptionInterface
     }
 
     /**
-     * Build trigger statement for INSERT, UPDATE, DELETE events
+     * Build trigger statement for INSER, UPDATE, DELETE events
      *
      * @param string $event
-     * @param ChangelogInterface $changelog
+     * @param \Magento\Framework\Mview\View\ChangelogInterface $changelog
      * @return string
      */
     protected function buildStatement($event, $changelog)
     {
         switch ($event) {
             case Trigger::EVENT_INSERT:
-                $trigger = 'INSERT IGNORE INTO %s (%s) VALUES (NEW.%s);';
-                break;
-
             case Trigger::EVENT_UPDATE:
-                $trigger = 'INSERT IGNORE INTO %s (%s) VALUES (NEW.%s);';
-
-                if ($this->connection->isTableExists($this->getTableName())
-                    && $describe = $this->connection->describeTable($this->getTableName())
-                ) {
-                    $columnNames = array_column($describe, 'COLUMN_NAME');
-                    $columnNames = array_diff($columnNames, $this->ignoredUpdateColumns);
-                    if ($columnNames) {
-                        $columns = [];
-                        foreach ($columnNames as $columnName) {
-                            $columns[] = sprintf(
-                                'NEW.%1$s != OLD.%1$s',
-                                $this->connection->quoteIdentifier($columnName)
-                            );
-                        }
-                        $trigger = sprintf(
-                            "IF (%s) THEN %s END IF;",
-                            implode(' OR ', $columns),
-                            $trigger
-                        );
-                    }
-                }
-                break;
+                return sprintf(
+                    "INSERT IGNORE INTO %s (%s) VALUES (NEW.%s);",
+                    $this->connection->quoteIdentifier($this->resource->getTableName($changelog->getName())),
+                    $this->connection->quoteIdentifier($changelog->getColumnName()),
+                    $this->connection->quoteIdentifier($this->getColumnName())
+                );
 
             case Trigger::EVENT_DELETE:
-                $trigger = 'INSERT IGNORE INTO %s (%s) VALUES (OLD.%s);';
-                break;
+                return sprintf(
+                    "INSERT IGNORE INTO %s (%s) VALUES (OLD.%s);",
+                    $this->connection->quoteIdentifier($this->resource->getTableName($changelog->getName())),
+                    $this->connection->quoteIdentifier($changelog->getColumnName()),
+                    $this->connection->quoteIdentifier($this->getColumnName())
+                );
 
             default:
                 return '';
         }
-
-        return sprintf(
-            $trigger,
-            $this->connection->quoteIdentifier($this->resource->getTableName($changelog->getName())),
-            $this->connection->quoteIdentifier($changelog->getColumnName()),
-            $this->connection->quoteIdentifier($this->getColumnName())
-        );
     }
 
     /**
@@ -264,7 +225,7 @@ class Subscription implements SubscriptionInterface
     /**
      * Retrieve View related to subscription
      *
-     * @return ViewInterface
+     * @return \Magento\Framework\Mview\ViewInterface
      * @codeCoverageIgnore
      */
     public function getView()

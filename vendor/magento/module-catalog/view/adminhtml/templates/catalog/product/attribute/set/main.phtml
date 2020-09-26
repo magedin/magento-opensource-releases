@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -106,6 +106,7 @@
                             this.ge.addListener('beforeshow', editSet.editGroup);
                             this.ge.addListener('beforecomplete', editSet.beforeRenameGroup);
                             //this.ge.addListener('startedit', editSet.editGroup);
+
                             //-------------------------------------------------------------
 
                             var tree2 = new Ext.tree.TreePanel('tree-div2', {
@@ -187,15 +188,6 @@
                                 for( j in config[i].children ) {
                                     if(config[i].children[j].id) {
                                         newNode = new Ext.tree.TreeNode(config[i].children[j]);
-
-                                        if (typeof newNode.ui.onTextChange === 'function') {
-                                            newNode.ui.onTextChange = function (_3, _4, _5) {
-                                                if (this.rendered) {
-                                                    this.textNode.innerText = _4;
-                                                }
-                                            }
-                                        }
-
                                         node.appendChild(newNode);
                                         newNode.addListener('click', editSet.unregister);
                                     }
@@ -208,14 +200,6 @@
                 editSet = function() {
                     return {
                         register : function(node) {
-                            if (typeof node.ui.onTextChange === 'function') {
-                                node.ui.onTextChange = function (_3, _4, _5) {
-                                    if (this.rendered) {
-                                        this.textNode.innerText = _4;
-                                    }
-                                }
-                            }
-
                             editSet.currentNode = node;
                         },
 
@@ -288,15 +272,6 @@
                                                 allowDrop : true,
                                                 allowDrag : true
                                             });
-
-                                            if (typeof newNode.ui.onTextChange === 'function') {
-                                                newNode.ui.onTextChange = function (_3, _4, _5) {
-                                                    if (this.rendered) {
-                                                        this.textNode.innerText = _4;
-                                                    }
-                                                }
-                                            }
-
                                             TreePanels.root.appendChild(newNode);
                                             newNode.addListener('beforemove', editSet.groupBeforeMove);
                                             newNode.addListener('beforeinsert', editSet.groupBeforeInsert);
@@ -320,23 +295,16 @@
                         },
 
                         validateGroupName : function(name, exceptNodeId) {
-                            var textNode;
-                                result = true;
-
                             name = name.strip();
-                            name = name.escapeHTML();
+                            var result = true;
                             if (name === '') {
                                 result = false;
                             }
                             for (var i=0; i < TreePanels.root.childNodes.length; i++) {
                                 if (TreePanels.root.childNodes[i].text.toLowerCase() == name.toLowerCase() && TreePanels.root.childNodes[i].id != exceptNodeId) {
                                     errorText = '<?php /* @escapeNotVerified */ echo __('An attribute group named "/name/" already exists".') ?>';
-                                    errorText = errorText.replace("/name/", name);
-                                    textNode = jQuery('<span></span>')[0];
-                                    textNode.textContent = errorText;
                                     alert({
-                                        content: textNode
-
+                                        content: errorText.replace("/name/",name)
                                     });
                                     result =  false;
                                 }
@@ -345,13 +313,8 @@
                         },
 
                         save : function() {
-                            var block;
-
                             if ($('messages')) {
                                 $('messages').update();
-                            } else {
-                                block = jQuery('<div/>').attr('id', 'messages');
-                                jQuery('.page-main-actions').after(block);
                             }
                             TreePanels.rebuildTrees();
                             if(!jQuery('#set-prop-form').valid()) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -88,7 +88,7 @@ class SynonymReader extends AbstractDb
         $matchQuery = $this->fullTextSelect->getMatchQuery(
             ['synonyms' => 'synonyms'],
             $phrase,
-            Fulltext::FULLTEXT_MODE_NATURAL
+            Fulltext::FULLTEXT_MODE_BOOLEAN
         );
         $query = $this->getConnection()->select()->from(
             $this->getMainTable()

@@ -1,5 +1,5 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -340,7 +340,7 @@ define([
         var sections,
             redirects;
 
-        if (settings.type.match(/post|put|delete/i)) {
+        if (settings.type.match(/post|put/i)) {
             sections = sectionConfig.getAffectedSections(settings.url);
 
             if (sections) {
@@ -361,7 +361,7 @@ define([
     $(document).on('submit', function (event) {
         var sections;
 
-        if (event.target.method.match(/post|put|delete/i)) {
+        if (event.target.method.match(/post|put/i)) {
             sections = sectionConfig.getAffectedSections(event.target.action);
 
             if (sections) {

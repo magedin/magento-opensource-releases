@@ -1,5 +1,5 @@
 // /**
-//  * Copyright © Magento, Inc. All rights reserved.
+//  * Copyright © 2016 Magento. All rights reserved.
 //  * See COPYING.txt for license details.
 //  */
 
@@ -227,7 +227,9 @@
     display: inline-block;
 
     input[type='text'] {
-        .lib-css(appearance, none, 1);
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
         border: 0;
         display: inline;
         margin: 0;
@@ -367,7 +369,9 @@
 }
 
 .selectmenu-item-action {
-    .lib-css(appearance, none, 1);
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
     background: transparent;
     border: 0;
     color: @text__color;

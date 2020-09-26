@@ -27,7 +27,7 @@ class SharedEventManager implements
      * Identifiers with event connections
      * @var array
      */
-    protected $identifiers = [];
+    protected $identifiers = array();
 
     /**
      * Attach a listener to an event
@@ -62,7 +62,7 @@ class SharedEventManager implements
     public function attach($id, $event, $callback, $priority = 1)
     {
         $ids = (array) $id;
-        $listeners = [];
+        $listeners = array();
         foreach ($ids as $id) {
             if (!array_key_exists($id, $this->identifiers)) {
                 $this->identifiers[$id] = new EventManager($id);
