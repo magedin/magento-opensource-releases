@@ -3,29 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Response;
 
-use Magento\Framework\ObjectManager\TMap;
-use Magento\Framework\ObjectManager\TMapFactory;
 use Magento\Payment\Gateway\Response\HandlerChain;
 use Magento\Payment\Gateway\Response\HandlerInterface;
-use PHPUnit\Framework\TestCase;
 
-class HandlerChainTest extends TestCase
+class HandlerChainTest extends \PHPUnit\Framework\TestCase
 {
     public function testHandle()
     {
-        $handler1 = $this->getMockBuilder(HandlerInterface::class)
+        $handler1 = $this->getMockBuilder(\Magento\Payment\Gateway\Response\HandlerInterface::class)
             ->getMockForAbstractClass();
-        $handler2 = $this->getMockBuilder(HandlerInterface::class)
+        $handler2 = $this->getMockBuilder(\Magento\Payment\Gateway\Response\HandlerInterface::class)
             ->getMockForAbstractClass();
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -34,8 +29,8 @@ class HandlerChainTest extends TestCase
             ->with(
                 [
                     'array' => [
-                        'handler1' => HandlerInterface::class,
-                        'handler2' => HandlerInterface::class
+                        'handler1' => \Magento\Payment\Gateway\Response\HandlerInterface::class,
+                        'handler2' => \Magento\Payment\Gateway\Response\HandlerInterface::class
                     ],
                     'type' => HandlerInterface::class
                 ]
@@ -57,8 +52,8 @@ class HandlerChainTest extends TestCase
         $chain = new HandlerChain(
             $tMapFactory,
             [
-                'handler1' => HandlerInterface::class,
-                'handler2' => HandlerInterface::class
+                'handler1' => \Magento\Payment\Gateway\Response\HandlerInterface::class,
+                'handler2' => \Magento\Payment\Gateway\Response\HandlerInterface::class
             ]
         );
         $chain->handle($handlingSubject, $response);

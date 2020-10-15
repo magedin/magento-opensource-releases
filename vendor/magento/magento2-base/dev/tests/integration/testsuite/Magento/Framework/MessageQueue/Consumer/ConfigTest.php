@@ -19,7 +19,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -61,19 +61,18 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('queue5', $consumer->getQueue());
         $this->assertEquals('amqp', $consumer->getConnection());
         $this->assertEquals(\Magento\Framework\MessageQueue\ConsumerInterface::class, $consumer->getConsumerInstance());
-        $this->assertNull($consumer->getMaxMessages());
+        $this->assertEquals(null, $consumer->getMaxMessages());
         $handlers = $consumer->getHandlers();
         $this->assertInstanceOf(HandlerIterator::class, $handlers);
         $this->assertCount(0, $handlers);
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Consumer 'undeclaredConsumer' is not declared.
      */
     public function testGetUndeclaredConsumer()
     {
-        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-        $this->expectExceptionMessage('Consumer \'undeclaredConsumer\' is not declared.');
-
         /** @var \Magento\Framework\MessageQueue\Consumer\ConfigInterface $config */
         $config = $this->objectManager->create(\Magento\Framework\MessageQueue\Consumer\ConfigInterface::class);
         $config->getConsumer('undeclaredConsumer');

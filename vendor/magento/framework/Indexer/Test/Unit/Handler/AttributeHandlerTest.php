@@ -7,19 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\Framework\Indexer\Test\Unit\Handler;
 
-use Magento\Framework\App\ResourceConnection\SourceProviderInterface;
 use Magento\Framework\Indexer\Handler\AttributeHandler;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\ResourceConnection\SourceProviderInterface;
 
 /**
  * Unit test for Magento\Framework\Indexer\Handler\AttributeHandler.
  */
-class AttributeHandlerTest extends TestCase
+class AttributeHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SourceProviderInterface|MockObject
+     * @var SourceProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
@@ -31,7 +29,7 @@ class AttributeHandlerTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->source = $this->getMockBuilder(SourceProviderInterface::class)
             ->disableOriginalConstructor()

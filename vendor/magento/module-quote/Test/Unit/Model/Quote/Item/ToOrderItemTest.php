@@ -3,72 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Item;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type\Simple;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\DataObject\Copy;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Quote\Model\Quote\Item\ToOrderItem;
-use Magento\Sales\Api\Data\OrderItemInterface;
-use Magento\Sales\Api\Data\OrderItemInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ToOrderItemTest extends TestCase
+/**
+ * Class ToOrderItemTest
+ */
+class ToOrderItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ToOrderItem
+     * @var \Magento\Quote\Model\Quote\Item\ToOrderItem
      */
     protected $converter;
 
     /**
-     * @var OrderItemInterfaceFactory|MockObject
+     * @var \Magento\Sales\Api\Data\OrderItemInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderItemFactoryMock;
 
     /**
-     * @var Copy|MockObject
+     * @var \Magento\Framework\DataObject\Copy|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectCopyServiceMock;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Quote\Model\Quote\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteItemMock;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var Simple|MockObject
+     * @var \Magento\Catalog\Model\Product\Type\Simple|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productTypeMock;
 
     /**
-     * @var OrderItemInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderItemInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderItemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->orderItemFactoryMock = $this->createPartialMock(
-            OrderItemInterfaceFactory::class,
+            \Magento\Sales\Api\Data\OrderItemInterfaceFactory::class,
             ['create']
         );
-        $this->objectCopyServiceMock = $this->createMock(Copy::class);
-        $this->quoteItemMock = $this->createMock(Item::class);
-        $this->productMock = $this->createMock(Product::class);
-        $this->productTypeMock = $this->createMock(Simple::class);
+        $this->objectCopyServiceMock = $this->createMock(\Magento\Framework\DataObject\Copy::class);
+        $this->quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->productTypeMock = $this->createMock(\Magento\Catalog\Model\Product\Type\Simple::class);
         $this->orderItemMock = $this->createMock(\Magento\Sales\Model\Order\Item::class);
-        $dataObjectHelper = $this->createMock(DataObjectHelper::class);
+        $dataObjectHelper = $this->createMock(\Magento\Framework\Api\DataObjectHelper::class);
 
-        $this->converter = new ToOrderItem(
+        $this->converter = new \Magento\Quote\Model\Quote\Item\ToOrderItem(
             $this->orderItemFactoryMock,
             $this->objectCopyServiceMock,
             $dataObjectHelper

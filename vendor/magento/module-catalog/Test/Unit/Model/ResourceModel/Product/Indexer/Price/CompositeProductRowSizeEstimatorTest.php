@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Price;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\CompositeProductRelationsCalculator;
 use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\CompositeProductRowSizeEstimator;
-use Magento\Customer\Model\ResourceModel\Group\Collection;
-use Magento\Customer\Model\ResourceModel\Group\CollectionFactory;
-use Magento\Store\Api\WebsiteManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CompositeProductRowSizeEstimatorTest extends TestCase
+class CompositeProductRowSizeEstimatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompositeProductRowSizeEstimator
@@ -23,29 +16,29 @@ class CompositeProductRowSizeEstimatorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $websiteManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $relationsCalculatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->websiteManagementMock = $this->getMockForAbstractClass(WebsiteManagementInterface::class);
+        $this->websiteManagementMock = $this->createMock(\Magento\Store\Api\WebsiteManagementInterface::class);
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Customer\Model\ResourceModel\Group\CollectionFactory::class,
             ['create']
         );
         $this->relationsCalculatorMock = $this->createMock(
-            CompositeProductRelationsCalculator::class
+            \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\CompositeProductRelationsCalculator::class
         );
         $this->model = new CompositeProductRowSizeEstimator(
             $this->websiteManagementMock,
@@ -60,7 +53,7 @@ class CompositeProductRowSizeEstimatorTest extends TestCase
         $maxRelatedProductCount = 10;
 
         $this->websiteManagementMock->expects($this->once())->method('getCount')->willReturn(100);
-        $collectionMock = $this->createMock(Collection::class);
+        $collectionMock = $this->createMock(\Magento\Customer\Model\ResourceModel\Group\Collection::class);
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($collectionMock);
         $collectionMock->expects($this->once())->method('getSize')->willReturn(200);
         $this->relationsCalculatorMock->expects($this->once())

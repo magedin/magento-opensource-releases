@@ -3,20 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Block\Adminhtml\System\Config;
 
 use Magento\Analytics\Block\Adminhtml\System\Config\AdditionalComment;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Data\Form;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AdditionalCommentTest extends TestCase
+class AdditionalCommentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AdditionalComment
@@ -24,21 +19,21 @@ class AdditionalCommentTest extends TestCase
     private $additionalComment;
 
     /**
-     * @var AbstractElement|MockObject
+     * @var AbstractElement|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractElementMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var Form|MockObject
+     * @var Form|\PHPUnit_Framework_MockObject_MockObject
      */
     private $formMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->abstractElementMock = $this->getMockBuilder(AbstractElement::class)
             ->setMethods(['getComment', 'getLabel'])
@@ -46,15 +41,19 @@ class AdditionalCommentTest extends TestCase
             ->getMock();
 
         $objectManager = new ObjectManager($this);
-        $escaper = $objectManager->getObject(Escaper::class);
+        $escaper = $objectManager->getObject(\Magento\Framework\Escaper::class);
         $reflection = new \ReflectionClass($this->abstractElementMock);
         $reflection_property = $reflection->getProperty('_escaper');
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->abstractElementMock, $escaper);
 
         $this->abstractElementMock->setEscaper($escaper);
-        $this->contextMock = $this->createMock(Context::class);
-        $this->formMock = $this->createMock(Form::class);
+        $this->contextMock = $this->getMockBuilder(Context::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->formMock = $this->getMockBuilder(Form::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $objectManager = new ObjectManager($this);
         $this->additionalComment = $objectManager->getObject(
@@ -68,18 +67,18 @@ class AdditionalCommentTest extends TestCase
     public function testRender()
     {
         $this->abstractElementMock->setForm($this->formMock);
-        $this->abstractElementMock
+        $this->abstractElementMock->expects($this->any())
             ->method('getComment')
             ->willReturn('New comment');
-        $this->abstractElementMock
+        $this->abstractElementMock->expects($this->any())
             ->method('getLabel')
             ->willReturn('Comment label');
         $html = $this->additionalComment->render($this->abstractElementMock);
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             "/New comment/",
             $html
         );
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             "/Comment label/",
             $html
         );

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin for the template engine factory that makes a decision of whether to activate debugging hints or not
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -14,9 +16,6 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Request\Http;
 
-/**
- * Plugin for the template engine factory that makes a decision of whether to activate debugging hints or not
- */
 class DebugHints
 {
     /**
@@ -27,27 +26,22 @@ class DebugHints
     /**
      * @var ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     /**
      * @var StoreManagerInterface
      */
-    private $storeManager;
+    protected $storeManager;
 
     /**
      * @var DevHelper
      */
-    private $devHelper;
+    protected $devHelper;
 
     /**
      * @var DebugHintsFactory
      */
-    private $debugHintsFactory;
-
-    /**
-     * @var Http
-     */
-    private $http;
+    protected $debugHintsFactory;
 
     /**
      * XPath of configuration of the debug hints
@@ -58,7 +52,7 @@ class DebugHints
      *
      * @var string
      */
-    private $debugHintsPath;
+    protected $debugHintsPath;
 
     /**
      * XPath of configuration of the debug hints show with parameter
@@ -83,8 +77,8 @@ class DebugHints
      * @param StoreManagerInterface $storeManager
      * @param DevHelper $devHelper
      * @param DebugHintsFactory $debugHintsFactory
-     * @param Http $http
      * @param string $debugHintsPath
+     * @param Http $http
      * @param string $debugHintsWithParam
      * @param string $debugHintsParameter
      */
@@ -93,8 +87,8 @@ class DebugHints
         StoreManagerInterface $storeManager,
         DevHelper $devHelper,
         DebugHintsFactory $debugHintsFactory,
-        Http $http,
         $debugHintsPath,
+        Http $http = null,
         $debugHintsWithParam = null,
         $debugHintsParameter = null
     ) {
@@ -102,8 +96,10 @@ class DebugHints
         $this->storeManager = $storeManager;
         $this->devHelper = $devHelper;
         $this->debugHintsFactory = $debugHintsFactory;
-        $this->http = $http;
         $this->debugHintsPath = $debugHintsPath;
+        $this->http = $http ?: \Magento\Framework\App\ObjectManager::getInstance()->get(
+            \Magento\Framework\App\Request\Http::class
+        );
         $this->debugHintsWithParam = $debugHintsWithParam;
         $this->debugHintsParameter = $debugHintsParameter;
     }
@@ -156,7 +152,6 @@ class DebugHints
                 ]);
             }
         }
-
         return $invocationResult;
     }
 }

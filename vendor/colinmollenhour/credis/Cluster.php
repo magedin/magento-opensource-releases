@@ -240,11 +240,7 @@ class Credis_Cluster
       $client = $this->clients[0];
     }
     else {
-      $hashKey = $args[0];
-      if (is_array($hashKey)) {
-        $hashKey = join('|', $hashKey);
-      }
-      $client = $this->byHash($hashKey);
+      $client = $this->byHash($args[0]);
     }
     // Ensure that current client is working on the same database as expected.
     if ($client->getSelectedDb() != $this->selectedDb) {

@@ -7,9 +7,7 @@ namespace Magento\Config\Block\System\Config;
 
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Framework\App\Cache\State;
-use Magento\Framework\Config\FileResolverInterface;
 use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\View\Element\Text;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Helper\Xpath;
 
@@ -67,7 +65,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /** @var string String value stored in DB */
     private static $websiteDBString = 'test db value';
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->formFactory = $this->objectManager->create(\Magento\Framework\Data\FormFactory::class);
@@ -85,17 +83,17 @@ class FormTest extends \PHPUnit\Framework\TestCase
         )->setCurrentScope(
             FrontNameResolver::AREA_CODE
         );
-        /** @var $block Form */
-        $block = $layout->createBlock(Form::class, 'block');
+        /** @var $block \Magento\Config\Block\System\Config\Form */
+        $block = $layout->createBlock(\Magento\Config\Block\System\Config\Form::class, 'block');
 
-        /** @var $childBlock Text */
-        $childBlock = $layout->addBlock(Text::class, 'element_dependence', 'block');
+        /** @var $childBlock \Magento\Framework\View\Element\Text */
+        $childBlock = $layout->addBlock(\Magento\Framework\View\Element\Text::class, 'element_dependence', 'block');
 
         $expectedValue = 'dependence_html_relations';
-        $this->assertStringNotContainsString($expectedValue, $block->toHtml());
+        $this->assertNotContains($expectedValue, $block->toHtml());
 
         $childBlock->setText($expectedValue);
-        $this->assertStringContainsString($expectedValue, $block->toHtml());
+        $this->assertContains($expectedValue, $block->toHtml());
     }
 
     /**
@@ -131,7 +129,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         )->createBlock(
             FormStub::class
         );
-        $block->setScope(Form::SCOPE_WEBSITES);
+        $block->setScope(\Magento\Config\Block\System\Config\Form::SCOPE_WEBSITES);
         $block->setStubConfigData($this->configData);
         $block->initFields($fieldset, $this->group, $this->section);
 
@@ -234,7 +232,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         )->createBlock(
             FormStub::class
         );
-        $block->setScope(Form::SCOPE_DEFAULT);
+        $block->setScope(\Magento\Config\Block\System\Config\Form::SCOPE_DEFAULT);
         $block->setStubConfigData($this->configData);
         $block->initFields($fieldset, $this->group, $this->section);
 
@@ -303,8 +301,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->_setupFieldsInheritCheckbox($fieldId, false, $expectedConfigValue);
 
         if ($isDbOverrideValue) {
-            $backendModel = $this->field->getAttribute('backend_model') ?: \Magento\Framework\App\Config\Value::class;
-            $path = $this->section->getId() . '/' . $this->group->getId() . '/' . $this->field->getId();
+            $backendModel = $this->field->getAttribute('backend_model') ? : \Magento\Framework\App\Config\Value::class;
+            $path = $this->section->getId() .'/'. $this->group->getId() . '/' . $this->field->getId();
             $model = Bootstrap::getObjectManager()->create($backendModel);
             $model->setPath($path);
             $model->setScopeId($currentScopeCode);
@@ -334,7 +332,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $fieldsetHtml = $fieldset->getElementHtml();
 
-        $elementId = $this->section->getId() . '_' . $this->group->getId() . '_' . $this->field->getId();
+        $elementId = $this->section->getId() .'_'. $this->group->getId() . '_' . $this->field->getId();
         if (is_array($expectedConfigValue)) {
             $expectedConfigValue = implode('|', $expectedConfigValue);
         }
@@ -398,7 +396,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $fileIterator = $fileIteratorFactory->create(
             [__DIR__ . '/_files/test_system.xml']
         );
-        $fileResolverMock->expects($this->any())->method('get')->willReturn($fileIterator);
+        $fileResolverMock->expects($this->any())->method('get')->will($this->returnValue($fileIterator));
 
         $objectManager = Bootstrap::getObjectManager();
 
@@ -442,11 +440,11 @@ class FormTest extends \PHPUnit\Framework\TestCase
             'section',
             'general'
         );
-        /** @var $block Form */
+        /** @var $block \Magento\Config\Block\System\Config\Form */
         $block = Bootstrap::getObjectManager()->get(
             \Magento\Framework\View\LayoutInterface::class
         )->createBlock(
-            Form::class
+            \Magento\Config\Block\System\Config\Form::class
         );
         $block->initForm();
         $expectedIds = [
@@ -511,7 +509,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             $encryptor->encrypt(self::$defaultConfigEncrypted)
         );
 
-        $fileResolver = Bootstrap::getObjectManager()->create(FileResolverInterface::class);
+        $fileResolver = Bootstrap::getObjectManager()->create(\Magento\Framework\Config\FileResolverInterface::class);
         $directories = $fileResolver->get('config.xml', 'global');
 
         $property = new \ReflectionProperty($directories, 'paths');
@@ -521,7 +519,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             array_merge($property->getValue($directories), [__DIR__ . '/_files/test_config.xml'])
         );
 
-        $fileResolverMock = $this->getMockForAbstractClass(FileResolverInterface::class);
+        $fileResolverMock = $this->getMockForAbstractClass(\Magento\Framework\Config\FileResolverInterface::class);
         $fileResolverMock->method('get')->willReturn($directories);
 
         $initialReader = Bootstrap::getObjectManager()->create(
@@ -583,7 +581,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->setEncryptedValue('{ENCRYPTED_VALUE}');
 

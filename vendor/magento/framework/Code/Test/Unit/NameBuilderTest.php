@@ -5,22 +5,17 @@
  */
 namespace Magento\Framework\Code\Test\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Code\NameBuilder;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Backend\Block\System\Store\Edit;
-
-class NameBuilderTest extends TestCase
+class NameBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NameBuilder
+     * @var \Magento\Framework\Code\NameBuilder
      */
     protected $nameBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $nelper = new ObjectManager($this);
-        $this->nameBuilder = $nelper->getObject(NameBuilder::class);
+        $nelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->nameBuilder = $nelper->getObject(\Magento\Framework\Code\NameBuilder::class);
     }
 
     /**
@@ -43,7 +38,7 @@ class NameBuilderTest extends TestCase
             [['Checkout', 'Controller', 'Index'], 'Checkout\Controller\Index'],
             [['checkout', 'controller', 'index'], 'Checkout\Controller\Index'],
             [
-                ['magento_backend', 'block', 'system', 'store', 'edit'], Edit::class
+                ['magento_backend', 'block', 'system', 'store', 'edit'], \Magento\Backend\Block\System\Store\Edit::class
             ],
             [['MyNamespace', 'MyModule'], 'MyNamespace\MyModule'],
             [['uc', 'words', 'test'], 'Uc\Words\Test'],

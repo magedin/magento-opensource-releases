@@ -3,36 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model;
 
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for CustomerRegistry
  *
  */
-class CustomerRegistryTest extends TestCase
+class CustomerRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerRegistry
+     * @var \Magento\Customer\Model\CustomerRegistry
      */
     private $customerRegistry;
 
     /**
-     * @var CustomerFactory|MockObject
+     * @var \Magento\Customer\Model\CustomerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerFactory;
 
     /**
-     * @var Customer|MockObject
+     * @var \Magento\Customer\Model\Customer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customer;
 
@@ -43,18 +36,18 @@ class CustomerRegistryTest extends TestCase
     const CUSTOMER_EMAIL = 'customer@example.com';
     const WEBSITE_ID = 1;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerFactory = $this->getMockBuilder(CustomerFactory::class)
+        $this->customerFactory = $this->getMockBuilder(\Magento\Customer\Model\CustomerFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $objectManager = new ObjectManager($this);
         $this->customerRegistry = $objectManager->getObject(
-            CustomerRegistry::class,
+            \Magento\Customer\Model\CustomerRegistry::class,
             ['customerFactory' => $this->customerFactory]
         );
-        $this->customer = $this->getMockBuilder(Customer::class)
+        $this->customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -76,13 +69,13 @@ class CustomerRegistryTest extends TestCase
         $this->customer->expects($this->once())
             ->method('load')
             ->with(self::CUSTOMER_ID)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getId')
-            ->willReturn(self::CUSTOMER_ID);
+            ->will($this->returnValue(self::CUSTOMER_ID));
         $this->customerFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $actual = $this->customerRegistry->retrieve(self::CUSTOMER_ID);
         $this->assertEquals($this->customer, $actual);
         $actualCached = $this->customerRegistry->retrieve(self::CUSTOMER_ID);
@@ -94,71 +87,73 @@ class CustomerRegistryTest extends TestCase
         $this->customer->expects($this->once())
             ->method('loadByEmail')
             ->with(self::CUSTOMER_EMAIL)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getId')
-            ->willReturn(self::CUSTOMER_ID);
+            ->will($this->returnValue(self::CUSTOMER_ID));
         $this->customer->expects($this->any())
             ->method('getEmail')
-            ->willReturn(self::CUSTOMER_EMAIL);
+            ->will($this->returnValue(self::CUSTOMER_EMAIL));
         $this->customer->expects($this->any())
             ->method('getWebsiteId')
-            ->willReturn(self::WEBSITE_ID);
+            ->will($this->returnValue(self::WEBSITE_ID));
         $this->customer->expects($this->any())
             ->method('setEmail')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('setWebsiteId')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customerFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $actual = $this->customerRegistry->retrieveByEmail(self::CUSTOMER_EMAIL, self::WEBSITE_ID);
         $this->assertEquals($this->customer, $actual);
         $actualCached = $this->customerRegistry->retrieveByEmail(self::CUSTOMER_EMAIL, self::WEBSITE_ID);
         $this->assertEquals($this->customer, $actualCached);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function testRetrieveException()
     {
-        $this->expectException(NoSuchEntityException::class);
-
         $this->customer->expects($this->once())
             ->method('load')
             ->with(self::CUSTOMER_ID)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->customerFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customerRegistry->retrieve(self::CUSTOMER_ID);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function testRetrieveByEmailException()
     {
-        $this->expectException(NoSuchEntityException::class);
-
         $this->customer->expects($this->once())
             ->method('loadByEmail')
             ->with(self::CUSTOMER_EMAIL)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getEmail')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->customer->expects($this->any())
             ->method('getWebsiteId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->customer->expects($this->any())
             ->method('setEmail')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('setWebsiteId')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customerFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customerRegistry->retrieveByEmail(self::CUSTOMER_EMAIL, self::WEBSITE_ID);
     }
 
@@ -167,13 +162,13 @@ class CustomerRegistryTest extends TestCase
         $this->customer->expects($this->exactly(2))
             ->method('load')
             ->with(self::CUSTOMER_ID)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getId')
-            ->willReturn(self::CUSTOMER_ID);
+            ->will($this->returnValue(self::CUSTOMER_ID));
         $this->customerFactory->expects($this->exactly(2))
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $actual = $this->customerRegistry->retrieve(self::CUSTOMER_ID);
         $this->assertEquals($this->customer, $actual);
         $this->customerRegistry->remove(self::CUSTOMER_ID);
@@ -186,25 +181,25 @@ class CustomerRegistryTest extends TestCase
         $this->customer->expects($this->exactly(2))
             ->method('loadByEmail')
             ->with(self::CUSTOMER_EMAIL)
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('getId')
-            ->willReturn(self::CUSTOMER_ID);
+            ->will($this->returnValue(self::CUSTOMER_ID));
         $this->customer->expects($this->any())
             ->method('getEmail')
-            ->willReturn(self::CUSTOMER_EMAIL);
+            ->will($this->returnValue(self::CUSTOMER_EMAIL));
         $this->customer->expects($this->any())
             ->method('getWebsiteId')
-            ->willReturn(self::WEBSITE_ID);
+            ->will($this->returnValue(self::WEBSITE_ID));
         $this->customer->expects($this->any())
             ->method('setEmail')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customer->expects($this->any())
             ->method('setWebsiteId')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $this->customerFactory->expects($this->exactly(2))
             ->method('create')
-            ->willReturn($this->customer);
+            ->will($this->returnValue($this->customer));
         $actual = $this->customerRegistry->retrieveByEmail(self::CUSTOMER_EMAIL, self::WEBSITE_ID);
         $this->assertEquals($this->customer, $actual);
         $this->customerRegistry->removeByEmail(self::CUSTOMER_EMAIL, self::WEBSITE_ID);

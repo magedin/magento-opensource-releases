@@ -64,7 +64,7 @@ class ViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
@@ -183,7 +183,7 @@ class ViewTest extends TestCase
         $this->block->setTemplate('Magento_Catalog::product/view/addtocart.phtml');
         $output = $this->block->toHtml();
 
-        $this->assertStringNotContainsString((string)__('Add to Cart'), $output);
+        $this->assertNotContains((string)__('Add to Cart'), $output);
     }
 
     /**
@@ -196,7 +196,7 @@ class ViewTest extends TestCase
         $this->block->setTemplate('Magento_Catalog::product/view/addtocart.phtml');
         $output = $this->block->toHtml();
 
-        $this->assertStringContainsString((string)__('Add to Cart'), $output);
+        $this->assertContains((string)__('Add to Cart'), $output);
     }
 
     /**
@@ -211,7 +211,7 @@ class ViewTest extends TestCase
         $currentStoreId = $this->storeManager->getStore()->getId();
         $output = $this->renderDescriptionBlock($product);
 
-        $this->assertStringContainsString('First store view short description', $output);
+        $this->assertContains('First store view short description', $output);
 
         $secondStore = $this->storeManager->getStore('fixturestore');
         $this->storeManager->setCurrentStore($secondStore->getId());
@@ -225,7 +225,7 @@ class ViewTest extends TestCase
             );
             $newBlockOutput = $this->renderDescriptionBlock($product, true);
 
-            $this->assertStringContainsString('Second store view short description', $newBlockOutput);
+            $this->assertContains('Second store view short description', $newBlockOutput);
         } finally {
             $this->storeManager->setCurrentStore($currentStoreId);
         }

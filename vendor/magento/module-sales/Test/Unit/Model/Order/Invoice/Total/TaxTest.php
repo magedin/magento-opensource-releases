@@ -3,57 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Invoice\Total;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Invoice\Item;
-use Magento\Sales\Model\Order\Invoice\Total\Tax;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TaxTest extends TestCase
+class TaxTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Tax
+     * @var \Magento\Sales\Model\Order\Invoice\Total\Tax
      */
     protected $model;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $order;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoice;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        /** @var Tax $model */
-        $this->model = $this->objectManager->getObject(Tax::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Sales\Model\Order\Invoice\Total\Tax $model */
+        $this->model = $this->objectManager->getObject(\Magento\Sales\Model\Order\Invoice\Total\Tax::class);
 
-        $this->order = $this->createPartialMock(Order::class, [
-            'getInvoiceCollection'
-        ]);
+        $this->order = $this->createPartialMock(\Magento\Sales\Model\Order::class, [
+                'getInvoiceCollection',
+                '__wakeup'
+            ]);
 
-        $this->invoice = $this->createPartialMock(Invoice::class, [
-            'getAllItems',
-            'getOrder',
-            'roundPrice',
-            'isLast',
-        ]);
-        $this->invoice->expects($this->atLeastOnce())->method('getOrder')->willReturn($this->order);
+        $this->invoice = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice::class, [
+                'getAllItems',
+                'getOrder',
+                'roundPrice',
+                'isLast',
+                '__wakeup',
+            ]);
+        $this->invoice->expects($this->atLeastOnce())->method('getOrder')->will($this->returnValue($this->order));
     }
 
     /**
@@ -70,12 +62,12 @@ class TaxTest extends TestCase
         foreach ($orderData['data_fields'] as $key => $value) {
             $this->order->setData($key, $value);
         }
-        /** @var Invoice[] $previousInvoices */
+        /** @var \Magento\Sales\Model\Order\Invoice[] $previousInvoices */
         $previousInvoices = [];
         foreach ($orderData['previous_invoices'] as $previousInvoiceData) {
-            $previousInvoice = $this->getMockBuilder(Invoice::class)
+            $previousInvoice = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
                 ->disableOriginalConstructor()
-                ->setMethods(['isCanceled'])
+                ->setMethods(['isCanceled', '__wakeup'])
                 ->getMock();
             $previousInvoice->setData('shipping_amount', $previousInvoiceData['shipping_amount']);
             $previousInvoices[] = $previousInvoice;
@@ -83,33 +75,35 @@ class TaxTest extends TestCase
 
         $this->order->expects($this->once())
             ->method('getInvoiceCollection')
-            ->willReturn($previousInvoices);
+            ->will($this->returnValue($previousInvoices));
 
         //Set up invoice mock
-        /** @var Item[] $invoiceItems */
+        /** @var \Magento\Sales\Model\Order\Invoice\Item[] $invoiceItems */
         $invoiceItems = [];
         foreach ($invoiceData['items'] as $itemKey => $invoiceItemData) {
             $invoiceItems[$itemKey] = $this->getInvoiceItem($invoiceItemData);
         }
         $this->invoice->expects($this->once())
             ->method('getAllItems')
-            ->willReturn($invoiceItems);
+            ->will($this->returnValue($invoiceItems));
         $this->invoice->expects($this->once())
             ->method('isLast')
-            ->willReturn($invoiceData['is_last']);
+            ->will($this->returnValue($invoiceData['is_last']));
         foreach ($invoiceData['data_fields'] as $key => $value) {
             $this->invoice->setData($key, $value);
         }
         $this->invoice->expects($this->any())
             ->method('roundPrice')
-            ->willReturnCallback(function ($price, $type) use (&$roundingDelta) {
-                if (!isset($roundingDelta[$type])) {
-                    $roundingDelta[$type] = 0;
+            ->will($this->returnCallback(
+                function ($price, $type) use (&$roundingDelta) {
+                    if (!isset($roundingDelta[$type])) {
+                        $roundingDelta[$type] = 0;
+                    }
+                    $roundedPrice = round($price + $roundingDelta[$type], 2);
+                    $roundingDelta[$type] = $price - $roundedPrice;
+                    return $roundedPrice;
                 }
-                $roundedPrice = round($price + $roundingDelta[$type], 2);
-                $roundingDelta[$type] = $price - $roundedPrice;
-                return $roundedPrice;
-            });
+            ));
 
         $this->model->collect($this->invoice);
 
@@ -355,27 +349,29 @@ class TaxTest extends TestCase
 
     /**
      * @param $invoiceItemData array
-     * @return Item|MockObject
+     * @return \Magento\Sales\Model\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getInvoiceItem($invoiceItemData)
     {
-        /** @var \Magento\Sales\Model\Order\Item|MockObject $orderItem */
+        /** @var \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject $orderItem */
         $orderItem = $this->createPartialMock(\Magento\Sales\Model\Order\Item::class, [
-            'isDummy'
-        ]);
+                'isDummy',
+                '__wakeup'
+            ]);
         foreach ($invoiceItemData['order_item'] as $key => $value) {
             $orderItem->setData($key, $value);
         }
 
-        /** @var Item|MockObject $invoiceItem */
-        $invoiceItem = $this->createPartialMock(Item::class, [
-            'getOrderItem',
-            'isLast'
-        ]);
-        $invoiceItem->expects($this->any())->method('getOrderItem')->willReturn($orderItem);
+        /** @var \Magento\Sales\Model\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject $invoiceItem */
+        $invoiceItem = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice\Item::class, [
+                'getOrderItem',
+                'isLast',
+                '__wakeup'
+            ]);
+        $invoiceItem->expects($this->any())->method('getOrderItem')->will($this->returnValue($orderItem));
         $invoiceItem->expects($this->any())
             ->method('isLast')
-            ->willReturn($invoiceItemData['is_last']);
+            ->will($this->returnValue($invoiceItemData['is_last']));
         $invoiceItem->setData('qty', $invoiceItemData['qty']);
         return $invoiceItem;
     }

@@ -24,7 +24,7 @@ class InvoiceServiceTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->invoiceService = Bootstrap::getObjectManager()->create(InvoiceService::class);
     }

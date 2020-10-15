@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -6,10 +6,9 @@
 
 namespace Vertex\Tax\Test\Unit\Model;
 
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\DataObject;
 use Magento\Framework\DataObjectFactory;
-use Magento\Framework\Serialize\Serializer\Serialize;
-use PHPUnit\Framework\MockObject\MockObject;
 use Vertex\Data\LineItem;
 use Vertex\Data\Tax;
 use Vertex\Tax\Model\TaxQuote\TaxQuoteResponse;
@@ -22,10 +21,10 @@ use Vertex\Tax\Test\Unit\TestCase;
  */
 class TaxRegistryTest extends TestCase
 {
-    /** @var MockObject|DataObjectFactory */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|DataObjectFactory */
     private $dataObjectFactoryMock;
 
-    /** @var MockObject|StorageInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|StorageInterface */
     private $storageInterfaceMock;
 
     /** @var TaxQuoteResponse */
@@ -40,7 +39,7 @@ class TaxRegistryTest extends TestCase
     /**
      * Perform test setup.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

@@ -59,7 +59,7 @@ class HttpMethodMap
      *
      * @return string[]
      *
-     * @see \Laminas\Http\Request Has list of methods as METHOD_* constants.
+     * @see \Zend\Http\Request Has list of methods as METHOD_* constants.
      */
     public function getMap(): array
     {

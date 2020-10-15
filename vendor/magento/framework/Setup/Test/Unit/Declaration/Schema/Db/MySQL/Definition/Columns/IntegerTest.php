@@ -3,12 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Columns;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Boolean;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Comment;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Identity;
@@ -16,11 +14,8 @@ use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Integ
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Nullable;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Unsigned;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Integer as IntegerColumnDto;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class IntegerTest extends TestCase
+class IntegerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -33,36 +28,36 @@ class IntegerTest extends TestCase
     private $integer;
 
     /**
-     * @var Nullable|MockObject
+     * @var Nullable|\PHPUnit_Framework_MockObject_MockObject
      */
     private $nullableMock;
 
     /**
-     * @var Comment|MockObject
+     * @var Comment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
     /**
-     * @var Identity|MockObject
+     * @var Identity|\PHPUnit_Framework_MockObject_MockObject
      */
     private $identityMock;
 
     /**
-     * @var Unsigned|MockObject
+     * @var Unsigned|\PHPUnit_Framework_MockObject_MockObject
      */
     private $unsignedMock;
 
     /**
-     * @var Boolean|MockObject
+     * @var Boolean|\PHPUnit_Framework_MockObject_MockObject
      */
     private $booleanMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->nullableMock = $this->getMockBuilder(Nullable::class)
@@ -101,7 +96,7 @@ class IntegerTest extends TestCase
      */
     public function testToDefinition()
     {
-        /** @var IntegerColumnDto|MockObject $column */
+        /** @var IntegerColumnDto|\PHPUnit_Framework_MockObject_MockObject $column */
         $column = $this->getMockBuilder(IntegerColumnDto::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -128,9 +123,9 @@ class IntegerTest extends TestCase
         $this->identityMock->expects($this->any())
             ->method('toDefinition')
             ->willReturn('AUTO_INCREMENT');
-        $adapterMock = $this->getMockBuilder(AdapterInterface::class)
+        $adapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->resourceConnectionMock->expects($this->once())->method('getConnection')->willReturn($adapterMock);
         $adapterMock->expects($this->once())
             ->method('quoteIdentifier')
@@ -145,7 +140,7 @@ class IntegerTest extends TestCase
             ->with($column)
             ->willReturn('COMMENT "Comment"');
         $this->assertEquals(
-            '`int_column` int UNSIGNED NOT NULL DEFAULT 0 AUTO_INCREMENT COMMENT "Comment"',
+            '`int_column` int(10) UNSIGNED NOT NULL DEFAULT 0 AUTO_INCREMENT COMMENT "Comment"',
             $this->integer->toDefinition($column)
         );
     }
@@ -180,15 +175,13 @@ class IntegerTest extends TestCase
     {
         return [
             ['int'],
-            ['int(10)'],
+            ['int(10)', 10],
             ['tinyint'],
-            ['tinyint(1)', 1],
-            ['tinyint(2)'],
-            ['mediumint(5)'],
+            ['mediumint(5)', 5],
             ['mediumint'],
-            ['smallint(3)'],
+            ['smallint(3)', 3],
             ['smallint'],
-            ['bigint(10)'],
+            ['bigint(10)', 10],
             ['bigint'],
         ];
     }

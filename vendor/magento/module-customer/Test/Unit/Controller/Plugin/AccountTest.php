@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Controller\Plugin;
 
-use Closure;
-use Magento\Customer\Controller\AccountInterface;
 use Magento\Customer\Controller\Plugin\Account;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\ActionFlag;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\Action\AbstractAction;
 use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Controller\ResultInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class AccountTest extends TestCase
+class AccountTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -31,51 +27,59 @@ class AccountTest extends TestCase
     protected $plugin;
 
     /**
-     * @var Session|MockObject
+     * @var Session | \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $sessionMock;
+    protected $session;
 
     /**
-     * @var AccountInterface|MockObject
+     * @var AbstractAction | \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $actionMock;
+    protected $subject;
 
     /**
-     * @var Http|MockObject
+     * @var Http | \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $requestMock;
+    protected $request;
 
     /**
-     * @var ActionFlag|MockObject
+     * @var ActionFlag | \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $actionFlagMock;
+    protected $actionFlag;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $resultMock;
+    private $resultInterface;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->session = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setNoReferer', 'unsNoReferer', 'authenticate'])
+            ->setMethods([
+                'setNoReferer',
+                'unsNoReferer',
+                'authenticate',
+            ])
             ->getMock();
 
-        $this->actionMock = $this->getMockBuilder(AccountInterface::class)
-            ->setMethods(['getActionFlag'])
+        $this->subject = $this->getMockBuilder(AbstractAction::class)
+            ->setMethods([
+                'getActionFlag',
+            ])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->requestMock = $this->getMockBuilder(HttpRequest::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getActionName'])
+            ->setMethods([
+                'getActionName',
+            ])
             ->getMock();
 
-        $this->resultMock = $this->getMockBuilder(ResultInterface::class)
+        $this->resultInterface = $this->getMockBuilder(ResultInterface::class)
             ->getMockForAbstractClass();
 
-        $this->actionFlagMock = $this->getMockBuilder(ActionFlag::class)
+        $this->actionFlag = $this->getMockBuilder(\Magento\Framework\App\ActionFlag::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -83,78 +87,102 @@ class AccountTest extends TestCase
     /**
      * @param string $action
      * @param array $allowedActions
-     * @param boolean $isAllowed
+     * @param boolean $isActionAllowed
+     * @param boolean $isAuthenticated
      *
-     * @dataProvider beforeExecuteDataProvider
+     * @dataProvider beforeDispatchDataProvider
      */
-    public function testAroundExecuteInterruptsOriginalCallWhenNotAllowed(
-        string $action,
-        array $allowedActions,
-        bool $isAllowed
+    public function testBeforeDispatch(
+        $action,
+        $allowedActions,
+        $isActionAllowed,
+        $isAuthenticated
     ) {
-        /** @var callable|MockObject $proceedMock */
-        $proceedMock = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(['__invoke'])
-            ->getMock();
-
-        $closureMock = Closure::fromCallable($proceedMock);
-
-        $this->requestMock->expects($this->once())
+        $this->request->expects($this->once())
             ->method('getActionName')
             ->willReturn($action);
 
-        if ($isAllowed) {
-            $proceedMock->expects($this->once())->method('__invoke')->willReturn($this->resultMock);
+        if ($isActionAllowed) {
+            $this->session->expects($this->once())
+                ->method('setNoReferer')
+                ->with(true)
+                ->willReturnSelf();
         } else {
-            $proceedMock->expects($this->never())->method('__invoke');
+            $this->session->expects($this->once())
+                ->method('authenticate')
+                ->willReturn($isAuthenticated);
+            if (!$isAuthenticated) {
+                $this->subject->expects($this->once())
+                    ->method('getActionFlag')
+                    ->willReturn($this->actionFlag);
+
+                $this->actionFlag->expects($this->once())
+                    ->method('set')
+                    ->with('', ActionInterface::FLAG_NO_DISPATCH, true)
+                    ->willReturnSelf();
+            }
         }
 
-        $plugin = new Account($this->requestMock, $this->sessionMock, $allowedActions);
-        $result = $plugin->aroundExecute($this->actionMock, $closureMock);
-
-        if ($isAllowed) {
-            $this->assertSame($this->resultMock, $result);
-        } else {
-            $this->assertNull($result);
-        }
+        $plugin = new Account($this->session, $allowedActions);
+        $plugin->beforeDispatch($this->subject, $this->request);
     }
 
     /**
      * @return array
      */
-    public function beforeExecuteDataProvider()
+    public function beforeDispatchDataProvider()
     {
         return [
             [
                 'action' => 'TestAction',
                 'allowed_actions' => ['TestAction'],
-                'is_action_allowed' => true,
-                'is_authenticated' => false,
+                'is_action_allowed' => 1,
+                'is_authenticated' => 0,
             ],
             [
                 'action' => 'testaction',
                 'allowed_actions' => ['testaction'],
-                'is_action_allowed' => true,
-                'is_authenticated' => false,
+                'is_action_allowed' => 1,
+                'is_authenticated' => 0,
             ],
             [
                 'action' => 'wrongaction',
                 'allowed_actions' => ['testaction'],
-                'is_action_allowed' => false,
-                'is_authenticated' => false,
+                'is_action_allowed' => 0,
+                'is_authenticated' => 0,
             ],
             [
                 'action' => 'wrongaction',
                 'allowed_actions' => ['testaction'],
-                'is_action_allowed' => false,
-                'is_authenticated' => true,
+                'is_action_allowed' => 0,
+                'is_authenticated' => 1,
             ],
             [
                 'action' => 'wrongaction',
                 'allowed_actions' => [],
-                'is_action_allowed' => false,
-                'is_authenticated' => true,
+                'is_action_allowed' => 0,
+                'is_authenticated' => 1,
             ],
         ];
+    }
+
+    public function testAfterDispatch()
+    {
+        $this->session->expects($this->once())
+            ->method('unsNoReferer')
+            ->with(false)
+            ->willReturnSelf();
+
+        $plugin = (new ObjectManager($this))->getObject(
+            Account::class,
+            [
+                'session' => $this->session,
+                'allowedActions' => ['testaction']
+            ]
+        );
+        $this->assertSame(
+            $this->resultInterface,
+            $plugin->afterDispatch($this->subject, $this->resultInterface, $this->request)
+        );
     }
 }

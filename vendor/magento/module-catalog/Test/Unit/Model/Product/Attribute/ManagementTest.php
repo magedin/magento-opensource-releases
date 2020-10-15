@@ -4,32 +4,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute;
 
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Model\Product\Attribute\Management;
-use Magento\Eav\Api\AttributeManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ManagementTest extends TestCase
+class ManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Management
+     * @var \Magento\Catalog\Model\Product\Attribute\Management
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $attrManagementMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->attrManagementMock = $this->getMockForAbstractClass(AttributeManagementInterface::class);
-        $this->model = new Management($this->attrManagementMock);
+        $this->attrManagementMock = $this->createMock(\Magento\Eav\Api\AttributeManagementInterface::class);
+        $this->model = new \Magento\Catalog\Model\Product\Attribute\Management($this->attrManagementMock);
     }
 
     public function testAssign()
@@ -42,7 +35,7 @@ class ManagementTest extends TestCase
         $this->attrManagementMock->expects($this->once())
             ->method('assign')
             ->with(
-                ProductAttributeInterface::ENTITY_TYPE_CODE,
+                \Magento\Catalog\Api\Data\ProductAttributeInterface::ENTITY_TYPE_CODE,
                 $attributeSetId,
                 $attributeGroupId,
                 $attributeCode,
@@ -67,12 +60,12 @@ class ManagementTest extends TestCase
     public function testGetAttributes()
     {
         $attributeSetId = 1;
-        $attributeMock = $this->getMockForAbstractClass(ProductAttributeInterface::class);
+        $attributeMock = $this->createMock(\Magento\Catalog\Api\Data\ProductAttributeInterface::class);
 
         $this->attrManagementMock->expects($this->once())
             ->method('getAttributes')
             ->with(
-                ProductAttributeInterface::ENTITY_TYPE_CODE,
+                \Magento\Catalog\Api\Data\ProductAttributeInterface::ENTITY_TYPE_CODE,
                 $attributeSetId
             )->willReturn([$attributeMock]);
         $this->assertEquals([$attributeMock], $this->model->getAttributes($attributeSetId));

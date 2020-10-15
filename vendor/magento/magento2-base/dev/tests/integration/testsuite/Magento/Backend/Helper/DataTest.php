@@ -22,7 +22,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     protected $_auth;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\Config\ScopeInterface::class
@@ -34,7 +34,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_helper = null;
         $this->_auth = null;

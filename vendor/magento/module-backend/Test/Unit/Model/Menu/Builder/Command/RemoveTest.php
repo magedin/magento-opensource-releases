@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Menu\Builder\Command;
 
-use Magento\Backend\Model\Menu\Builder\Command\Remove;
-use PHPUnit\Framework\TestCase;
-
-class RemoveTest extends TestCase
+class RemoveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Remove
+     * @var \Magento\Backend\Model\Menu\Builder\Command\Remove
      */
     protected $_model;
 
     protected $_params = ['id' => 'item'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Remove($this->_params);
+        $this->_model = new \Magento\Backend\Model\Menu\Builder\Command\Remove($this->_params);
     }
 
     public function testExecuteMarksItemAsRemoved()

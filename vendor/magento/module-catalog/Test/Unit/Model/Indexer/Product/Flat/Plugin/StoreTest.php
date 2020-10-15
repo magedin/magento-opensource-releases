@@ -3,43 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Flat\Plugin;
 
-use Magento\Catalog\Model\Indexer\Product\Flat\Processor;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StoreTest extends TestCase
+class StoreTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorMock;
 
     /**
-     * @var Store|MockObject
+     * @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->processorMock = $this->createPartialMock(
-            Processor::class,
+            \Magento\Catalog\Model\Indexer\Product\Flat\Processor::class,
             ['markIndexerAsInvalid']
         );
 
         $this->subjectMock = $this->createMock(\Magento\Store\Model\ResourceModel\Store::class);
         $this->storeMock = $this->createPartialMock(
-            Store::class,
-            ['getId', 'dataHasChangedFor']
+            \Magento\Store\Model\Store::class,
+            ['getId', '__wakeup', 'dataHasChangedFor']
         );
     }
 
@@ -52,7 +45,7 @@ class StoreTest extends TestCase
     {
         $this->processorMock->expects($this->{$matcherMethod}())->method('markIndexerAsInvalid');
 
-        $this->storeMock->expects($this->once())->method('getId')->willReturn($storeId);
+        $this->storeMock->expects($this->once())->method('getId')->will($this->returnValue($storeId));
 
         $model = new \Magento\Catalog\Model\Indexer\Product\Flat\Plugin\Store($this->processorMock);
         $model->beforeSave($this->subjectMock, $this->storeMock);
@@ -67,7 +60,7 @@ class StoreTest extends TestCase
     {
         $this->processorMock->expects($this->{$matcherMethod}())->method('markIndexerAsInvalid');
 
-        $this->storeMock->expects($this->once())->method('getId')->willReturn(1);
+        $this->storeMock->expects($this->once())->method('getId')->will($this->returnValue(1));
 
         $this->storeMock->expects(
             $this->once()
@@ -75,8 +68,8 @@ class StoreTest extends TestCase
             'dataHasChangedFor'
         )->with(
             'group_id'
-        )->willReturn(
-            $storeGroupChanged
+        )->will(
+            $this->returnValue($storeGroupChanged)
         );
 
         $model = new \Magento\Catalog\Model\Indexer\Product\Flat\Plugin\Store($this->processorMock);

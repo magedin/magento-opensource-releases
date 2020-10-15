@@ -44,11 +44,11 @@ class ParamsBuilderTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->viewConfig = $this->getMockForAbstractClass(ConfigInterface::class);
+        $this->scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $this->viewConfig = $this->createMock(ConfigInterface::class);
         $this->model = $objectManager->getObject(
             ParamsBuilder::class,
             [

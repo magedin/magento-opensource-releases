@@ -3,36 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Model\Plugin;
 
-use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  \Magento\Bundle\Model\Plugin\Product */
     private $plugin;
 
-    /** @var  MockObject|Type */
+    /** @var  MockObject|\Magento\Bundle\Model\Product\Type */
     private $type;
 
-    /** @var  MockObject|Product */
+    /** @var  MockObject|\Magento\Catalog\Model\Product */
     private $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->product = $this->getMockBuilder(Product::class)
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEntityId'])
             ->getMock();
-        $this->type = $this->getMockBuilder(Type::class)
+        $this->type = $this->getMockBuilder(\Magento\Bundle\Model\Product\Type::class)
             ->disableOriginalConstructor()
             ->setMethods(['getParentIdsByChild'])
             ->getMock();
@@ -63,11 +60,11 @@ class ProductTest extends TestCase
         ];
         $this->product->expects($this->once())
             ->method('getEntityId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $this->type->expects($this->once())
             ->method('getParentIdsByChild')
             ->with($id)
-            ->willReturn($parentIds);
+            ->will($this->returnValue($parentIds));
         $identities = $this->plugin->afterGetIdentities($this->product, $baseIdentities);
         $this->assertEquals($expectedIdentities, $identities);
     }

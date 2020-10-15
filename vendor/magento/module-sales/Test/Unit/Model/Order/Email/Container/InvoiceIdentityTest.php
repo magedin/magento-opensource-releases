@@ -3,58 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Container;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Sales\Model\Order\Email\Container\InvoiceIdentity;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Sales\Model\Order\Email\Container\InvoiceIdentity;
 
-class InvoiceIdentityTest extends TestCase
+class InvoiceIdentityTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InvoiceIdentity
+     * @var \Magento\Sales\Model\Order\Email\Container\InvoiceIdentity
      */
     protected $identity;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigInterfaceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     protected $storeId;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeConfigInterfaceMock = $this->getMockForAbstractClass(
-            ScopeConfigInterface::class
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
         );
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
-        $this->storeMock = $this->getMockBuilder(Store::class)
-            ->addMethods(['getStoreId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getStoreId', '__wakeup']);
 
         $this->storeId = 999999999999;
         $this->storeMock->expects($this->any())
             ->method('getStoreId')
-            ->willReturn($this->storeId);
+            ->will($this->returnValue($this->storeId));
 
         $this->identity = new InvoiceIdentity($this->scopeConfigInterfaceMock, $this->storeManagerMock);
     }
@@ -64,11 +53,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('isSetFlag')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_ENABLED,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_ENABLED),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->isEnabled();
         $this->assertTrue($result);
@@ -79,11 +68,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn('test_value,test_value2');
+            ->will($this->returnValue('test_value,test_value2'));
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getEmailCopyTo();
         $this->assertEquals(['test_value', 'test_value2'], $result);
@@ -94,11 +83,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn('test_value, test_value2');
+            ->will($this->returnValue('test_value, test_value2'));
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getEmailCopyTo();
         $this->assertEquals(['test_value', 'test_value2'], $result);
@@ -109,11 +98,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getEmailCopyTo();
         $this->assertFalse($result);
@@ -124,11 +113,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_COPY_METHOD,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_COPY_METHOD),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn('copy_method');
+            ->will($this->returnValue('copy_method'));
 
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getCopyMethod();
@@ -140,11 +129,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_GUEST_TEMPLATE,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_GUEST_TEMPLATE),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn('template_id');
+            ->will($this->returnValue('template_id'));
 
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getGuestTemplateId();
@@ -156,11 +145,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_TEMPLATE,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_TEMPLATE),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn('template_id');
+            ->will($this->returnValue('template_id'));
 
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getTemplateId();
@@ -178,7 +167,7 @@ class InvoiceIdentityTest extends TestCase
     {
         $this->storeManagerMock->expects($this->once())
             ->method('getStore')
-            ->willReturn($this->storeMock);
+            ->will($this->returnValue($this->storeMock));
         $result = $this->identity->getStore();
         $this->assertEquals($this->storeMock, $result);
     }
@@ -203,11 +192,11 @@ class InvoiceIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                InvoiceIdentity::XML_PATH_EMAIL_IDENTITY,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(InvoiceIdentity::XML_PATH_EMAIL_IDENTITY),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
-            ->willReturn($emailIdentity);
+            ->will($this->returnValue($emailIdentity));
 
         $this->identity->setStore($this->storeMock);
         $result = $this->identity->getEmailIdentity();

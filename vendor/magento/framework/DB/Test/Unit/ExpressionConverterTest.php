@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit;
 
 use Magento\Framework\DB\ExpressionConverter;
-use PHPUnit\Framework\TestCase;
 
-class ExpressionConverterTest extends TestCase
+class ExpressionConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider shortenEntityNameDataProvider
@@ -18,7 +16,10 @@ class ExpressionConverterTest extends TestCase
     public function testShortenEntityName($in, $prefix, $expectedOut)
     {
         $resultEntityName = ExpressionConverter::shortenEntityName($in, $prefix);
-        $this->assertStringStartsWith($expectedOut, $resultEntityName);
+        $this->assertTrue(
+            strpos($resultEntityName, $expectedOut) === 0,
+            "Entity name '$resultEntityName' did not begin with expected value '$expectedOut'"
+        );
     }
 
     /**
@@ -53,6 +54,6 @@ class ExpressionConverterTest extends TestCase
         $length64 = '________________________________________________________________';
         $longPrefix = 'pre_____________________________________';
         $shortenedName = ExpressionConverter::shortenEntityName($length64 . '_cannotBeAbbreviated', $longPrefix);
-        $this->assertStringStartsNotWith('pre', $shortenedName);
+        $this->assertNotSame(0, strpos($shortenedName, 'pre'), 'Entity name not supposed to with long prefix');
     }
 }

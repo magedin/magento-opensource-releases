@@ -598,7 +598,7 @@ class WriteTest extends \PHPUnit\Framework\TestCase
     /**
      * Tear down
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         /** @var Write $directory */
         foreach ($this->testDirectories as $directory) {

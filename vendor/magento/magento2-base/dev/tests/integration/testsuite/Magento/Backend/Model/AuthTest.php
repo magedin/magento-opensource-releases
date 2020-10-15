@@ -22,7 +22,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -36,11 +36,10 @@ class AuthTest extends \PHPUnit\Framework\TestCase
      * @dataProvider getLoginDataProvider
      * @param string $userName
      * @param string $password
+     * @expectedException \Magento\Framework\Exception\AuthenticationException
      */
     public function testLoginFailed($userName, $password)
     {
-        $this->expectException(\Magento\Framework\Exception\AuthenticationException::class);
-
         $this->_model->login($userName, $password);
     }
 

@@ -6,13 +6,6 @@
 
 namespace Vertex\Tax\Test\Integration\ApiValidation;
 
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\StateException;
-use Magento\Quote\Api\Data\CartInterface;
-use Magento\Framework\Exception\State\InvalidTransitionException;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Checkout\Api\Data\TotalsInformationInterface;
 use Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory;
@@ -67,7 +60,7 @@ class CustomerTaxClassSentToVertexTest extends TestCase
     /**
      * Fetch objects necessary for running our test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -86,15 +79,14 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      * Ensure that when totals are collected our tax request being sent to Vertex also sends the Product's Tax Class
      *
      * @magentoConfigFixture default_store tax/vertex_settings/enable_vertex 1
-     * @magentoConfigFixture default_store tax/vertex_settings/trustedId 0123456789ABCDEF
      * @magentoConfigFixture default_store tax/vertex_settings/api_url https://example.org/CalculateTax70
      * @magentoDbIsolation enabled
      *
-     * @throws CouldNotSaveException
-     * @throws InputException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws StateException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\StateException
      * @return void
      */
     public function testOutgoingRequestContainsCustomerTaxClass()
@@ -105,8 +97,7 @@ class CustomerTaxClassSentToVertexTest extends TestCase
         $customer = $this->createCustomer($customerTaxClassId);
         $cart = $this->createCartWithProduct($product, $customer->getId());
 
-        $soapClient = $this->getMockBuilder(\SoapClient::class)->disableOriginalConstructor()
-            ->addMethods(['CalculateTax70'])->getMock();
+        $soapClient = $this->createPartialMock(\SoapClient::class, ['CalculateTax70']);
         $soapClient->expects($this->atLeastOnce())
             ->method('CalculateTax70')
             ->with(
@@ -146,9 +137,9 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      *
      * @param ProductInterface $product
      * @param int $customerId
-     * @return CartInterface
-     * @throws CouldNotSaveException
-     * @throws NoSuchEntityException
+     * @return \Magento\Quote\Api\Data\CartInterface
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function createCartWithProduct(ProductInterface $product, $customerId)
     {
@@ -162,11 +153,11 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      *
      * @param int|string $taxClassId
      * @return CustomerInterface
-     * @throws InputException
-     * @throws NoSuchEntityException
-     * @throws StateException
-     * @throws InvalidTransitionException
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\StateException
+     * @throws \Magento\Framework\Exception\State\InvalidTransitionException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createCustomer($taxClassId)
     {
@@ -185,10 +176,10 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      *
      * @param $taxClassId
      * @return int
-     * @throws InputException
-     * @throws NoSuchEntityException
-     * @throws InvalidTransitionException
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\State\InvalidTransitionException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createCustomerGroup($taxClassId)
     {
@@ -205,10 +196,10 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      *
      * @param int|string $taxClassId
      * @return ProductInterface
-     * @throws CouldNotSaveException
-     * @throws InputException
-     * @throws NoSuchEntityException
-     * @throws StateException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\StateException
      */
     private function createProduct($taxClassId)
     {
@@ -251,8 +242,8 @@ class CustomerTaxClassSentToVertexTest extends TestCase
      * @param string $taxClassName
      * @param string $type
      * @return string Tax Class ID
-     * @throws InputException
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function createTaxClass($taxClassName, $type = 'CUSTOMER')
     {

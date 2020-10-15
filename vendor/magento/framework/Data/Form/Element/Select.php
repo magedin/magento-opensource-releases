@@ -5,10 +5,7 @@
  */
 namespace Magento\Framework\Data\Form\Element;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * Form select element
@@ -20,39 +17,21 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
 class Select extends AbstractElement
 {
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
-     * @var Random
-     */
-    private $random;
-
-    /**
      * @param Factory $factoryElement
      * @param CollectionFactory $factoryCollection
      * @param Escaper $escaper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
-     * @param Random|null $random
      */
     public function __construct(
         Factory $factoryElement,
         CollectionFactory $factoryCollection,
         Escaper $escaper,
-        $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null,
-        ?Random $random = null
+        $data = []
     ) {
-        $secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-        $random = $random ?? ObjectManager::getInstance()->get(Random::class);
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data, $secureRenderer, $random);
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
         $this->setType('select');
         $this->setExtType('combobox');
         $this->_prepareOptions();
-        $this->secureRenderer = $secureRenderer;
-        $this->random = $random;
     }
 
     /**
@@ -126,16 +105,13 @@ class Select extends AbstractElement
             }
             $html .= '</optgroup>' . "\n";
         } else {
-            $optionId = 'optId' .$this->random->getRandomString(8);
-            $html = '<option value="' . $this->_escape($option['value']) . '" id="' .$optionId .'" ';
+            $html = '<option value="' . $this->_escape($option['value']) . '"';
             $html .= isset($option['title']) ? 'title="' . $this->_escape($option['title']) . '"' : '';
+            $html .= isset($option['style']) ? 'style="' . $option['style'] . '"' : '';
             if (in_array($option['value'], $selected)) {
                 $html .= ' selected="selected"';
             }
             $html .= '>' . $this->_escape($option['label']) . '</option>' . "\n";
-            if (!empty($option['style'])) {
-                $html .= $this->secureRenderer->renderStyleAsTag($option['style'], "#$optionId");
-            }
         }
         return $html;
     }

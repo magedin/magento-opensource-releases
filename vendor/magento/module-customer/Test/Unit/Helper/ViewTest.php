@@ -3,43 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Helper;
 
 use Magento\Customer\Api\CustomerMetadataInterface;
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Helper\View;
-use Magento\Framework\App\Helper\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\App\Helper\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var View|MockObject */
+    /** @var \Magento\Customer\Helper\View|\PHPUnit_Framework_MockObject_MockObject */
     protected $object;
 
-    /** @var CustomerMetadataInterface|MockObject */
+    /** @var CustomerMetadataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerMetadataService;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\App\Helper\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customerMetadataService = $this->getMockForAbstractClass(CustomerMetadataInterface::class);
+        $this->customerMetadataService = $this->createMock(\Magento\Customer\Api\CustomerMetadataInterface::class);
 
-        $attributeMetadata = $this->getMockForAbstractClass(AttributeMetadataInterface::class);
-        $attributeMetadata->expects($this->any())->method('isVisible')->willReturn(true);
+        $attributeMetadata = $this->createMock(\Magento\Customer\Api\Data\AttributeMetadataInterface::class);
+        $attributeMetadata->expects($this->any())->method('isVisible')->will($this->returnValue(true));
         $this->customerMetadataService->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willReturn($attributeMetadata);
+            ->will($this->returnValue($attributeMetadata));
 
-        $this->object = new View($this->context, $this->customerMetadataService);
+        $this->object = new \Magento\Customer\Helper\View($this->context, $this->customerMetadataService);
     }
 
     /**
@@ -47,19 +39,19 @@ class ViewTest extends TestCase
      */
     public function testGetCustomerName($prefix, $firstName, $middleName, $lastName, $suffix, $result)
     {
-        $customerData = $this->getMockBuilder(CustomerInterface::class)
+        $customerData = $this->getMockBuilder(\Magento\Customer\Api\Data\CustomerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $customerData->expects($this->any())
-            ->method('getPrefix')->willReturn($prefix);
+            ->method('getPrefix')->will($this->returnValue($prefix));
         $customerData->expects($this->any())
-            ->method('getFirstname')->willReturn($firstName);
+            ->method('getFirstname')->will($this->returnValue($firstName));
         $customerData->expects($this->any())
-            ->method('getMiddlename')->willReturn($middleName);
+            ->method('getMiddlename')->will($this->returnValue($middleName));
         $customerData->expects($this->any())
-            ->method('getLastname')->willReturn($lastName);
+            ->method('getLastname')->will($this->returnValue($lastName));
         $customerData->expects($this->any())
-            ->method('getSuffix')->willReturn($suffix);
+            ->method('getSuffix')->will($this->returnValue($suffix));
         $this->assertEquals($result, $this->object->getCustomerName($customerData));
     }
 

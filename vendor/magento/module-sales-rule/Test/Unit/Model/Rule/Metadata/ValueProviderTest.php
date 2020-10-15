@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\Rule\Metadata;
 
 use Magento\Customer\Api\Data\GroupInterface;
@@ -19,12 +17,11 @@ use Magento\SalesRule\Model\Rule\Action\SimpleActionOptionsProvider;
 use Magento\SalesRule\Model\Rule\Metadata\ValueProvider;
 use Magento\SalesRule\Model\RuleFactory;
 use Magento\Store\Model\System\Store;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @covers Magento\SalesRule\Model\Rule\Metadata\ValueProvider
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ValueProviderTest extends TestCase
 {
@@ -63,17 +60,17 @@ class ValueProviderTest extends TestCase
      */
     private $simpleActionOptionsProviderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $expectedData = include __DIR__ . '/_files/MetaData.php';
         $this->searchCriteriaBuilderMock = $this->createMock(SearchCriteriaBuilder::class);
         $this->storeMock = $this->createMock(Store::class);
-        $this->groupRepositoryMock = $this->getMockForAbstractClass(GroupRepositoryInterface::class);
+        $this->groupRepositoryMock = $this->createMock(GroupRepositoryInterface::class);
         $this->dataObjectMock = $this->createMock(DataObject::class);
         $this->simpleActionOptionsProviderMock = $this->createMock(SimpleActionOptionsProvider::class);
-        $searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
-        $groupSearchResultsMock = $this->getMockForAbstractClass(GroupSearchResultsInterface::class);
-        $groupsMock = $this->getMockForAbstractClass(GroupInterface::class);
+        $searchCriteriaMock = $this->createMock(SearchCriteriaInterface::class);
+        $groupSearchResultsMock = $this->createMock(GroupSearchResultsInterface::class);
+        $groupsMock = $this->createMock(GroupInterface::class);
 
         $this->searchCriteriaBuilderMock->expects($this->once())->method('create')->willReturn($searchCriteriaMock);
         $this->groupRepositoryMock->expects($this->once())->method('getList')->with($searchCriteriaMock)

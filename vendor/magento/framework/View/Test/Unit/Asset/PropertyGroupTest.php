@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset;
 
-use Magento\Framework\View\Asset\PropertyGroup;
-use PHPUnit\Framework\TestCase;
-
-class PropertyGroupTest extends TestCase
+class PropertyGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PropertyGroup
+     * @var \Magento\Framework\View\Asset\PropertyGroup
      */
     protected $_object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_object = new PropertyGroup(['test_property' => 'test_value']);
+        $this->_object = new \Magento\Framework\View\Asset\PropertyGroup(['test_property' => 'test_value']);
     }
 
     public function testGetProperties()

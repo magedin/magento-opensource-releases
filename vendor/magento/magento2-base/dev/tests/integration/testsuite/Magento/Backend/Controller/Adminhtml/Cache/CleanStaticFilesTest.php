@@ -11,7 +11,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 class CleanStaticFilesTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    protected function setUp(): void
+    public function setUp()
     {
         $this->resource = 'Magento_Backend::cache';
         $this->uri = 'backend/admin/cache/cleanStaticFiles';
@@ -36,7 +36,7 @@ class CleanStaticFilesTest extends \Magento\TestFramework\TestCase\AbstractBacke
         // test
         parent::testAclHasAccess();
         $this->assertSessionMessages(
-            $this->containsEqual("The static files cache has been cleaned."),
+            $this->contains("The static files cache has been cleaned."),
             \Magento\Framework\Message\MessageInterface::TYPE_SUCCESS,
             \Magento\Framework\Message\ManagerInterface::class
         );

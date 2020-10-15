@@ -19,7 +19,7 @@ class CsvfileTest extends \PHPUnit\Framework\TestCase
      */
     protected $_outputFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_outputFile = tempnam(sys_get_temp_dir(), __CLASS__);
     }

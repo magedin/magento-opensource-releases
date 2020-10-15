@@ -4,27 +4,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Model\QuoteIdMaskFactory;
-use PHPUnit\Framework\TestCase;
-
+/**
+ * Class GuestCartTestHelper
+ *
+ */
 class GuestCartTestHelper
 {
     /**
-     * @var TestCase
+     * @var \PHPUnit\Framework\TestCase
      */
     protected $testCase;
 
     /**
      * Initialize helper
      *
-     * @param TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      */
-    public function __construct(TestCase $testCase)
+    public function __construct(\PHPUnit\Framework\TestCase $testCase)
     {
         $this->testCase = $testCase;
     }
@@ -40,11 +38,11 @@ class GuestCartTestHelper
      */
     public function mockQuoteIdMask($maskedCartId, $cartId)
     {
-        $quoteIdMaskMock = $this->testCase->getMockBuilder(QuoteIdMask::class)
+        $quoteIdMaskMock = $this->testCase->getMockBuilder(\Magento\Quote\Model\QuoteIdMask::class)
             ->setMethods(['load', 'getQuoteId', 'getMaskedId'])
             ->disableOriginalConstructor()
             ->getMock();
-        $quoteIdMaskFactoryMock = $this->testCase->getMockBuilder(QuoteIdMaskFactory::class)
+        $quoteIdMaskFactoryMock = $this->testCase->getMockBuilder(\Magento\Quote\Model\QuoteIdMaskFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();

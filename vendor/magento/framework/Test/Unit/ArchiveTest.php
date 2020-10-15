@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Test\Unit;
 
-use Magento\Framework\Archive;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Archive;
 
-class ArchiveTest extends TestCase
+class ArchiveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Archive
@@ -37,14 +35,14 @@ class ArchiveTest extends TestCase
      */
     protected $unpacked;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->archive = new Archive();
         $this->sourceFilePath = __DIR__ . '/_files/source.txt';
         $this->destinationDir = __DIR__ . '/_files/archives/';
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         if (!empty($this->packed) && file_exists($this->packed)) {
             unlink($this->packed);

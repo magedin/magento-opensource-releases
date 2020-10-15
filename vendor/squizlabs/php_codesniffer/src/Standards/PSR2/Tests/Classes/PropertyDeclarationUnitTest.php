@@ -36,16 +36,6 @@ class PropertyDeclarationUnitTest extends AbstractSniffUnitTest
             38 => 1,
             41 => 1,
             42 => 1,
-            50 => 2,
-            51 => 1,
-            55 => 1,
-            56 => 1,
-            61 => 1,
-            62 => 1,
-            68 => 1,
-            69 => 1,
-            71 => 1,
-            72 => 1,
         ];
 
     }//end getErrorList()
@@ -65,7 +55,6 @@ class PropertyDeclarationUnitTest extends AbstractSniffUnitTest
             13 => 1,
             14 => 1,
             15 => 1,
-            53 => 1,
         ];
 
     }//end getWarningList()

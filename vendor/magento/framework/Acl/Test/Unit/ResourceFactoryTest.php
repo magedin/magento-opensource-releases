@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Acl\AclResourceFactory
  *
@@ -7,39 +7,33 @@
  */
 namespace Magento\Framework\Acl\Test\Unit;
 
-use Magento\Framework\Acl\AclResource;
-use Magento\Framework\Acl\AclResourceFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class ResourceFactoryTest extends TestCase
+class ResourceFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AclResourceFactory
+     * @var \Magento\Framework\Acl\AclResourceFactory
      */
     protected $_model;
 
     /**
-     * @var ObjectManagerInterface
+     * @var \Magento\Framework\ObjectManagerInterface
      */
     protected $_objectManager;
 
     /**
-     * @var AclResource
+     * @var \Magento\Framework\Acl\AclResource
      */
     protected $_expectedObject;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $this->_expectedObject = $this->createMock(AclResource::class);
+        $this->_expectedObject = $this->createMock(\Magento\Framework\Acl\AclResource::class);
 
         $this->_model = $helper->getObject(
-            AclResourceFactory::class,
+            \Magento\Framework\Acl\AclResourceFactory::class,
             ['objectManager' => $this->_objectManager]
         );
     }
@@ -52,10 +46,10 @@ class ResourceFactoryTest extends TestCase
         )->method(
             'create'
         )->with(
-            AclResource::class,
+            \Magento\Framework\Acl\AclResource::class,
             $arguments
-        )->willReturn(
-            $this->_expectedObject
+        )->will(
+            $this->returnValue($this->_expectedObject)
         );
         $this->assertEquals($this->_expectedObject, $this->_model->createResource($arguments));
     }

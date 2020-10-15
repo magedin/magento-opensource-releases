@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Webapi\Test\Unit\Rest\Response;
 
-use Magento\Framework\Webapi\Rest\Request;
 use Magento\Framework\Webapi\Rest\Response\FieldsFilter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for FieldsFilter
  */
-class FieldsFilterTest extends TestCase
+class FieldsFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FieldsFilter SUT
@@ -28,7 +24,7 @@ class FieldsFilterTest extends TestCase
     protected $sampleResponseValue;
 
     /**
-     * @var Request|MockObject
+     * @var \Magento\Framework\Webapi\Rest\Request|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
@@ -40,9 +36,9 @@ class FieldsFilterTest extends TestCase
     /**
      * Setup SUT
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->createMock(Request::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\Webapi\Rest\Request::class);
         $this->processor = new FieldsFilter($this->requestMock);
         $this->sampleResponseValue = [
             'customer' => [
@@ -117,7 +113,7 @@ class FieldsFilterTest extends TestCase
         $expected = ['customer' => $this->sampleResponseValue['customer']];
 
         $simpleFilter = 'customer';
-        $this->requestMock->expects($this->any())->method('getParam')->willReturn($simpleFilter);
+        $this->requestMock->expects($this->any())->method('getParam')->will($this->returnValue($simpleFilter));
         $filteredResponse = $this->processor->filter($this->sampleResponseValue);
 
         $this->assertEquals($expected, $filteredResponse);
@@ -134,7 +130,7 @@ class FieldsFilterTest extends TestCase
 
         $simpleFilter = "customer[email,id]";
 
-        $this->requestMock->expects($this->any())->method('getParam')->willReturn($simpleFilter);
+        $this->requestMock->expects($this->any())->method('getParam')->will($this->returnValue($simpleFilter));
         $filteredResponse = $this->processor->filter($this->sampleResponseValue);
 
         $this->assertEquals($expected, $filteredResponse);
@@ -169,7 +165,7 @@ class FieldsFilterTest extends TestCase
 
         $nestedFilter = 'customer[id,email],addresses[city,postcode,region[region_code,region]]';
 
-        $this->requestMock->expects($this->any())->method('getParam')->willReturn($nestedFilter);
+        $this->requestMock->expects($this->any())->method('getParam')->will($this->returnValue($nestedFilter));
         $filteredResponse = $this->processor->filter($this->sampleResponseValue);
 
         $this->assertEquals($expected, $filteredResponse);
@@ -208,7 +204,7 @@ class FieldsFilterTest extends TestCase
         $this->requestMock
             ->expects($this->any())
             ->method('getParam')
-            ->willReturn($nonExistentFieldFilter);
+            ->will($this->returnValue($nonExistentFieldFilter));
         $filteredResponse = $this->processor->filter($this->sampleResponseValue);
 
         $this->assertEquals($expected, $filteredResponse);
@@ -219,7 +215,7 @@ class FieldsFilterTest extends TestCase
      */
     public function testInvalidFilters($invalidFilter)
     {
-        $this->requestMock->expects($this->any())->method('getParam')->willReturn($invalidFilter);
+        $this->requestMock->expects($this->any())->method('getParam')->will($this->returnValue($invalidFilter));
         $filteredResponse = $this->processor->filter($this->sampleResponseValue);
 
         $this->assertEmpty($filteredResponse);

@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Pricing\Test\Unit\Price;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Pricing\Adjustment\Calculator;
-use Magento\Framework\Pricing\Price\AbstractPrice;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Pricing\PriceInfo\Base;
-use Magento\Framework\Pricing\SaleableInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\Price\AbstractPrice;
 
-class AbstractPriceTest extends TestCase
+/**
+ * Class RegularPriceTest
+ */
+class AbstractPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AbstractPrice
@@ -25,44 +19,44 @@ class AbstractPriceTest extends TestCase
     protected $price;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\PriceInfo\Base |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceInfoMock;
 
     /**
-     * @var SaleableInterface|MockObject
+     * @var \Magento\Framework\Pricing\SaleableInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $saleableItemMock;
 
     /**
-     * @var Calculator|MockObject
+     * @var \Magento\Framework\Pricing\Adjustment\Calculator |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $calculatorMock;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceCurrencyMock;
 
     /**
      * Test setUp
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $qty = 1;
-        $this->saleableItemMock = $this->createMock(Product::class);
-        $this->priceInfoMock = $this->createMock(Base::class);
-        $this->calculatorMock = $this->createMock(Calculator::class);
+        $this->saleableItemMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->priceInfoMock = $this->createMock(\Magento\Framework\Pricing\PriceInfo\Base::class);
+        $this->calculatorMock = $this->createMock(\Magento\Framework\Pricing\Adjustment\Calculator::class);
 
         $this->saleableItemMock->expects($this->once())
             ->method('getPriceInfo')
-            ->willReturn($this->priceInfoMock);
-        $objectManager = new ObjectManager($this);
+            ->will($this->returnValue($this->priceInfoMock));
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
 
         $this->price = $objectManager->getObject(
-            Stub::class,
+            \Magento\Framework\Pricing\Test\Unit\Price\Stub::class,
             [
                 'saleableItem' => $this->saleableItemMock,
                 'quantity' => $qty,
@@ -81,8 +75,8 @@ class AbstractPriceTest extends TestCase
         $amountValue = 88;
         $this->calculatorMock->expects($this->once())
             ->method('getAmount')
-            ->with($priceValue)
-            ->willReturn($amountValue);
+            ->with($this->equalTo($priceValue))
+            ->will($this->returnValue($amountValue));
         $this->assertEquals($amountValue, $this->price->getAmount());
     }
 
@@ -104,11 +98,11 @@ class AbstractPriceTest extends TestCase
         $this->priceCurrencyMock->expects($this->any())
             ->method('convertAndRound')
             ->with($amount)
-            ->willReturn($convertedValue);
+            ->will($this->returnValue($convertedValue));
         $this->calculatorMock->expects($this->once())
             ->method('getAmount')
             ->with($convertedValue, $this->saleableItemMock, $exclude)
-            ->willReturn($customAmount);
+            ->will($this->returnValue($customAmount));
 
         $this->assertEquals($customAmount, $this->price->getCustomAmount($amount, $exclude));
     }
@@ -119,7 +113,7 @@ class AbstractPriceTest extends TestCase
         $this->calculatorMock->expects($this->once())
             ->method('getAmount')
             ->with($this->price->getValue(), $this->saleableItemMock, null)
-            ->willReturn($customAmount);
+            ->will($this->returnValue($customAmount));
 
         $this->assertEquals($customAmount, $this->price->getCustomAmount());
     }

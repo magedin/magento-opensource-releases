@@ -3,50 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Plugin\Indexer;
 
-use Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor;
-use Magento\CatalogRule\Plugin\Indexer\CustomerGroup;
-use Magento\Customer\Model\Group;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CustomerGroupTest extends TestCase
+class CustomerGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Rule processor mock
      *
-     * @var RuleProductProcessor|MockObject
+     * @var \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleProductProcessor;
 
     /**
      * Subject group
      *
-     * @var Group|MockObject
+     * @var \Magento\Customer\Model\Group|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
 
     /**
      * Tested plugin
      *
-     * @var CustomerGroup
+     * @var \Magento\CatalogRule\Plugin\Indexer\CustomerGroup
      */
     protected $plugin;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->ruleProductProcessor = $this->createMock(
-            RuleProductProcessor::class
+            \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor::class
         );
-        $this->subject = $this->createMock(Group::class);
+        $this->subject = $this->createMock(\Magento\Customer\Model\Group::class);
 
         $this->plugin = (new ObjectManager($this))->getObject(
-            CustomerGroup::class,
+            \Magento\CatalogRule\Plugin\Indexer\CustomerGroup::class,
             [
                 'ruleProductProcessor' => $this->ruleProductProcessor,
             ]

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
 <?php
 /**
@@ -12,20 +10,17 @@
  */
 $items = $block->getItems();
 ?>
-<?php if (!empty($items)): ?>
-    <dl id="tab_content_<?= $block->getHtmlId() ?>" name="tab_content_<?= $block->getHtmlId() ?>" class="accordion">
-    <?php foreach ($items as $_item): ?>
+<?php if (!empty($items)) : ?>
+    <dl id="tab_content_<?= /* @noEscape */ $block->getHtmlId() ?>" name="tab_content_<?= /* @noEscape */ $block->getHtmlId() ?>" class="accordion">
+    <?php foreach ($items as $_item) : ?>
         <?= $block->getChildHtml($_item->getId()) ?>
     <?php endforeach ?>
     </dl>
-    <?php $scriptString = <<<script
+    <script>
         require([
             'mage/adminhtml/accordion'
         ], function(){
-            tab_content_{$block->getHtmlId()}AccordionJs = new varienAccordion('tab_content_{$block->getHtmlId()}',
-             '{$block->escapeJs($block->getShowOnlyOne())}');
+            tab_content_<?= /* @noEscape */ $block->getHtmlId() ?>AccordionJs = new varienAccordion('tab_content_<?= /* @noEscape */ $block->getHtmlId() ?>', '<?= $block->escapeJs($block->getShowOnlyOne()) ?>');
         });
-script;
-    ?>
-    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+    </script>
 <?php endif; ?>

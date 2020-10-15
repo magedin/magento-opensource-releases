@@ -3,29 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\QuoteRepository;
 
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Quote\Model\QuoteRepository\SaveHandler;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Quote\Api\Data\CartExtensionInterface;
+use Magento\Quote\Model\ResourceModel\Quote as QuoteResourceModel;
+use Magento\Quote\Model\Quote\Item\CartItemPersister;
+use Magento\Quote\Model\Quote\Address\BillingAddressPersister;
+use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentPersister;
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address as QuoteAddress;
-use Magento\Quote\Model\Quote\Address\BillingAddressPersister;
+use Magento\Quote\Api\Data\CartExtensionInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Magento\Quote\Model\Quote\Item\CartItemPersister;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentPersister;
-use Magento\Quote\Model\QuoteRepository\SaveHandler;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResourceModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Exception\NoSuchEntityException;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class SaveHandlerTest extends TestCase
+class SaveHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SaveHandler
@@ -38,46 +31,46 @@ class SaveHandlerTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var QuoteResourceModel|MockObject
+     * @var QuoteResourceModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteResourceModelMock;
 
     /**
-     * @var CartItemPersister|MockObject
+     * @var CartItemPersister|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cartItemPersisterMock;
 
     /**
-     * @var BillingAddressPersister|MockObject
+     * @var BillingAddressPersister|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAddressPersisterMock;
 
     /**
-     * @var ShippingAssignmentPersister|MockObject
+     * @var ShippingAssignmentPersister|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAssignmentPersisterMock;
 
     /**
-     * @var AddressRepositoryInterface|MockObject
+     * @var AddressRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressRepositoryMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var QuoteAddress|MockObject
+     * @var QuoteAddress|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAddressMock;
 
     /**
-     * @var CartExtensionInterface|MockObject
+     * @var CartExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionAttributesMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->quoteResourceModelMock = $this->getMockBuilder(QuoteResourceModel::class)
             ->disableOriginalConstructor()
@@ -133,7 +126,7 @@ class SaveHandlerTest extends TestCase
     public function testSaveForVirtualQuote()
     {
         $quoteItemMock = $this->createQuoteItemMock(false);
-
+        
         $this->quoteMock->expects(static::atLeastOnce())
             ->method('getItems')
             ->willReturn([$quoteItemMock]);
@@ -165,7 +158,7 @@ class SaveHandlerTest extends TestCase
             ->method('save')
             ->with($this->quoteMock)
             ->willReturnSelf();
-
+        
         $this->assertSame($this->quoteMock, $this->saveHandler->save($this->quoteMock));
     }
 
@@ -211,7 +204,7 @@ class SaveHandlerTest extends TestCase
      * Create quote item mock
      *
      * @param bool $isDeleted
-     * @return QuoteItem|MockObject
+     * @return QuoteItem|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createQuoteItemMock($isDeleted)
     {

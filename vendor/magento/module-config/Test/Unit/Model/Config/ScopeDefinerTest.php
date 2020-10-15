@@ -3,36 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config;
 
-use Magento\Config\Model\Config\ScopeDefiner;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ScopeDefinerTest extends TestCase
+class ScopeDefinerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeDefiner
+     * @var \Magento\Config\Model\Config\ScopeDefiner
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $objectManager = new ObjectManager($this);
         $this->_model = $objectManager->getObject(
-            ScopeDefiner::class,
+            \Magento\Config\Model\Config\ScopeDefiner::class,
             ['request' => $this->_requestMock]
         );
     }
@@ -48,10 +41,10 @@ class ScopeDefinerTest extends TestCase
             $this->any()
         )->method(
             'getParam'
-        )->willReturnMap(
-            [['website', null, 'someWebsite'], ['store', null, 'someStore']]
+        )->will(
+            $this->returnValueMap([['website', null, 'someWebsite'], ['store', null, 'someStore']])
         );
-        $this->assertEquals(ScopeInterface::SCOPE_STORE, $this->_model->getScope());
+        $this->assertEquals(\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->_model->getScope());
     }
 
     public function testGetScopeReturnsWebsiteScopeIfWebsiteIsSpecified()
@@ -60,9 +53,9 @@ class ScopeDefinerTest extends TestCase
             $this->any()
         )->method(
             'getParam'
-        )->willReturnMap(
-            [['website', null, 'someWebsite'], ['store', null, null]]
+        )->will(
+            $this->returnValueMap([['website', null, 'someWebsite'], ['store', null, null]])
         );
-        $this->assertEquals(ScopeInterface::SCOPE_WEBSITE, $this->_model->getScope());
+        $this->assertEquals(\Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE, $this->_model->getScope());
     }
 }

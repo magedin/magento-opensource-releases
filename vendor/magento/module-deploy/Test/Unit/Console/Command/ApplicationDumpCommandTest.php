@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command;
 
 use Magento\Config\Model\Config\Export\Comment;
@@ -14,48 +12,46 @@ use Magento\Framework\App\Config\Reader\Source\SourceInterface;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\Console\Cli;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Test command for dump application state
  */
-class ApplicationDumpCommandTest extends TestCase
+class ApplicationDumpCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InputInterface|MockObject
+     * @var InputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $input;
 
     /**
-     * @var OutputInterface|MockObject
+     * @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $output;
 
     /**
-     * @var Writer|MockObject
+     * @var Writer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writer;
 
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sourceEnv;
 
     /**
-     * @var Hash|MockObject
+     * @var Hash|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configHashMock;
 
     /**
-     * @var Comment|MockObject
+     * @var Comment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentMock;
 
@@ -64,7 +60,7 @@ class ApplicationDumpCommandTest extends TestCase
      */
     private $command;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->configHashMock = $this->getMockBuilder(Hash::class)
             ->disableOriginalConstructor()
@@ -78,10 +74,10 @@ class ApplicationDumpCommandTest extends TestCase
             ->getMock();
         $this->source = $this->getMockBuilder(SourceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->sourceEnv = $this->getMockBuilder(SourceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->commentMock = $this->getMockBuilder(Comment::class)
             ->disableOriginalConstructor()
             ->getMock();

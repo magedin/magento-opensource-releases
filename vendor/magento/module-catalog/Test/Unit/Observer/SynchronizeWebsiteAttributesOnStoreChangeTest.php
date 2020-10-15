@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Observer;
 
@@ -11,9 +10,8 @@ use Magento\Catalog\Model\ResourceModel\Attribute\WebsiteAttributesSynchronizer;
 use Magento\Catalog\Observer\SynchronizeWebsiteAttributesOnStoreChange;
 use Magento\Framework\Event\Observer;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\TestCase;
 
-class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
+class SynchronizeWebsiteAttributesOnStoreChangeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param $invalidDataObject
@@ -92,8 +90,8 @@ class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
 
         $store->expects($this->once())
             ->method('hasDataChanges')
-            ->willReturn(
-                false
+            ->will(
+                $this->returnValue(false)
             );
 
         $store->expects($this->never())
@@ -149,27 +147,27 @@ class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
 
         $store->expects($this->once())
             ->method('hasDataChanges')
-            ->willReturn(
-                true
+            ->will(
+                $this->returnValue(true)
             );
 
         $store->expects($this->once())
             ->method('getOrigData')
             ->with('website_id')
-            ->willReturn(
-                $sameWebsiteId
+            ->will(
+                $this->returnValue($sameWebsiteId)
             );
 
         $store->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn(
-                $sameWebsiteId
+            ->will(
+                $this->returnValue($sameWebsiteId)
             );
 
         $store->expects($this->once())
             ->method('isObjectNew')
-            ->willReturn(
-                false
+            ->will(
+                $this->returnValue(false)
             );
 
         return [
@@ -222,27 +220,27 @@ class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
 
         $storeNew->expects($this->once())
             ->method('hasDataChanges')
-            ->willReturn(
-                true
+            ->will(
+                $this->returnValue(true)
             );
 
         $storeNew->expects($this->once())
             ->method('getOrigData')
             ->with('website_id')
-            ->willReturn(
-                $sameWebsiteId
+            ->will(
+                $this->returnValue($sameWebsiteId)
             );
 
         $storeNew->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn(
-                $sameWebsiteId
+            ->will(
+                $this->returnValue($sameWebsiteId)
             );
 
         $storeNew->expects($this->once())
             ->method('isObjectNew')
-            ->willReturn(
-                true
+            ->will(
+                $this->returnValue(true)
             );
 
         $sameWebsiteId = 1;
@@ -259,27 +257,27 @@ class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
 
         $storeChangedWebsite->expects($this->once())
             ->method('hasDataChanges')
-            ->willReturn(
-                true
+            ->will(
+                $this->returnValue(true)
             );
 
         $storeChangedWebsite->expects($this->once())
             ->method('getOrigData')
             ->with('website_id')
-            ->willReturn(
-                $sameWebsiteId
+            ->will(
+                $this->returnValue($sameWebsiteId)
             );
 
         $storeChangedWebsite->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn(
-                $newWebsiteId
+            ->will(
+                $this->returnValue($newWebsiteId)
             );
 
         $storeChangedWebsite->expects($this->once())
             ->method('isObjectNew')
-            ->willReturn(
-                false
+            ->will(
+                $this->returnValue(false)
             );
 
         return [

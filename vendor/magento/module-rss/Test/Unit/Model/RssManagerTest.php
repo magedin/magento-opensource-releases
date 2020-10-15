@@ -3,40 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Rss\Test\Unit\Model;
 
-use Magento\Framework\App\Rss\DataProviderInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Rss\Model\RssManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RssManagerTest extends TestCase
+class RssManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RssManager
+     * @var \Magento\Rss\Model\RssManager
      */
     protected $rssManager;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->rssManager = $objectManagerHelper->getObject(
-            RssManager::class,
+            \Magento\Rss\Model\RssManager::class,
             [
                 'objectManager' => $this->objectManager,
                 'dataProviders' => [
-                    'rss_feed' => DataProviderInterface::class,
+                    'rss_feed' => \Magento\Framework\App\Rss\DataProviderInterface::class,
                     'bad_rss_feed' => 'Some\Class\Not\Existent',
                 ]
             ]
@@ -45,11 +39,11 @@ class RssManagerTest extends TestCase
 
     public function testGetProvider()
     {
-        $dataProvider = $this->getMockForAbstractClass(DataProviderInterface::class);
-        $this->objectManager->expects($this->once())->method('get')->willReturn($dataProvider);
+        $dataProvider = $this->createMock(\Magento\Framework\App\Rss\DataProviderInterface::class);
+        $this->objectManager->expects($this->once())->method('get')->will($this->returnValue($dataProvider));
 
         $this->assertInstanceOf(
-            DataProviderInterface::class,
+            \Magento\Framework\App\Rss\DataProviderInterface::class,
             $this->rssManager->getProvider('rss_feed')
         );
     }

@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Autoload\Test\Unit;
 
 use Composer\Autoload\ClassLoader;
-use Magento\Framework\Autoload\ClassLoaderWrapper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ClassLoaderWrapperTest extends TestCase
+class ClassLoaderWrapperTest extends \PHPUnit\Framework\TestCase
 {
     const PREFIX = 'Namespace\\Prefix\\';
 
@@ -22,20 +18,20 @@ class ClassLoaderWrapperTest extends TestCase
     const DEFAULT_PREPEND = false;
 
     /**
-     * @var ClassLoader|MockObject
+     * @var ClassLoader | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $autoloaderMock;
 
     /**
-     * @var ClassLoaderWrapper
+     * @var \Magento\Framework\Autoload\ClassLoaderWrapper
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->autoloaderMock = $this->createMock(ClassLoader::class);
+        $this->autoloaderMock = $this->createMock(\Composer\Autoload\ClassLoader::class);
         $this->model = (new ObjectManager($this))->getObject(
-            ClassLoaderWrapper::class,
+            \Magento\Framework\Autoload\ClassLoaderWrapper::class,
             [
                 'autoloader' => $this->autoloaderMock
             ]

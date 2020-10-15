@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config\Xml;
 
-use Magento\Framework\MessageQueue\DefaultValueProvider;
 use Magento\Framework\MessageQueue\Publisher\Config\Xml\Converter;
 use Magento\Framework\Stdlib\BooleanUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Converter
@@ -21,17 +16,17 @@ class ConverterTest extends TestCase
     private $converter;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $defaultConfigProviderMock;
 
     /**
      * Initialize parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->defaultConfigProviderMock =
-            $this->createMock(DefaultValueProvider::class);
+            $this->createMock(\Magento\Framework\MessageQueue\DefaultValueProvider::class);
         $this->converter = new Converter(new BooleanUtils(), $this->defaultConfigProviderMock);
     }
 
@@ -44,16 +39,18 @@ class ConverterTest extends TestCase
         $this->defaultConfigProviderMock->expects($this->any())->method('getExchange')->willReturn('magento');
         $result = $this->converter->convert($dom);
 
-        $expectedData = include $fixtureDir . '/valid.php';
+        $expectedData = include($fixtureDir . '/valid.php');
         foreach ($expectedData as $key => $value) {
             $this->assertEquals($value, $result[$key], 'Invalid data for ' . $key);
         }
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Connection name is missing
+     */
     public function testConvertWithException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Connection name is missing');
         $fixtureDir = __DIR__ . '/../../../_files/queue_publisher';
         $xmlFile = $fixtureDir . '/invalid.xml';
         $dom = new \DOMDocument();

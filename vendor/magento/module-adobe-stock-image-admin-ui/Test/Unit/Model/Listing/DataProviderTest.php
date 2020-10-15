@@ -10,7 +10,6 @@ namespace Magento\AdobeStockImageAdminUi\Test\Unit\Model\Listing;
 
 use Magento\AdobeStockImageAdminUi\Model\Listing\DataProvider;
 use Magento\AdobeStockImageApi\Api\GetImageListInterface;
-use Magento\Framework\Api\AttributeInterface;
 use Magento\Framework\Api\Search\Document;
 use Magento\Framework\Api\Search\SearchCriteria;
 use Magento\Framework\Api\Search\SearchCriteriaBuilder;
@@ -19,6 +18,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Magento\Framework\Api\AttributeInterface;
 
 /**
  * Test data image provider.

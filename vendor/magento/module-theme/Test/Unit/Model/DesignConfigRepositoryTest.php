@@ -3,69 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Theme\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ReinitableConfigInterface;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Api\Data\DesignConfigDataInterface;
-use Magento\Theme\Api\Data\DesignConfigInterface;
 use Magento\Theme\Model\Data\Design\Config;
-use Magento\Theme\Model\Design\Config\Storage;
-use Magento\Theme\Model\Design\Config\Validator;
 use Magento\Theme\Model\DesignConfigRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class DesignConfigRepositoryTest extends TestCase
+class DesignConfigRepositoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Storage|MockObject */
+    /** @var \Magento\Theme\Model\Design\Config\Storage|\PHPUnit_Framework_MockObject_MockObject */
     protected $configStorage;
 
-    /** @var ReinitableConfigInterface|MockObject */
+    /** @var \Magento\Framework\App\Config\ReinitableConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $reinitableConfig;
 
-    /** @var IndexerRegistry|MockObject */
+    /** @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject */
     protected $indexerRegistry;
 
-    /** @var DesignConfigInterface|MockObject */
+    /** @var \Magento\Theme\Api\Data\DesignConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $designConfig;
 
-    /** @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|MockObject */
+    /** @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $designExtension;
 
-    /** @var DesignConfigDataInterface|MockObject */
+    /** @var \Magento\Theme\Api\Data\DesignConfigDataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $designConfigData;
 
-    /** @var IndexerInterface|MockObject */
+    /** @var \Magento\Framework\Indexer\IndexerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $indexer;
 
     /** @var DesignConfigRepository */
     protected $repository;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $validator;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->configStorage = $this->createMock(Storage::class);
+        $this->configStorage = $this->createMock(\Magento\Theme\Model\Design\Config\Storage::class);
         $this->reinitableConfig = $this->getMockForAbstractClass(
-            ReinitableConfigInterface::class,
+            \Magento\Framework\App\Config\ReinitableConfigInterface::class,
             [],
             '',
             false
         );
-        $this->indexerRegistry = $this->createMock(IndexerRegistry::class);
+        $this->indexerRegistry = $this->createMock(\Magento\Framework\Indexer\IndexerRegistry::class);
         $this->designConfig = $this->getMockForAbstractClass(
-            DesignConfigInterface::class,
+            \Magento\Theme\Api\Data\DesignConfigInterface::class,
             [],
             '',
             false
@@ -80,19 +67,19 @@ class DesignConfigRepositoryTest extends TestCase
             ['getDesignConfigData']
         );
         $this->designConfigData = $this->getMockForAbstractClass(
-            DesignConfigDataInterface::class,
+            \Magento\Theme\Api\Data\DesignConfigDataInterface::class,
             [],
             '',
             false
         );
         $this->indexer = $this->getMockForAbstractClass(
-            IndexerInterface::class,
+            \Magento\Framework\Indexer\IndexerInterface::class,
             [],
             '',
             false
         );
 
-        $this->validator = $this->createMock(Validator::class);
+        $this->validator = $this->createMock(\Magento\Theme\Model\Design\Config\Validator::class);
         $objectManagerHelper = new ObjectManager($this);
         $this->repository = $objectManagerHelper->getObject(
             DesignConfigRepository::class,
@@ -128,12 +115,12 @@ class DesignConfigRepositoryTest extends TestCase
         $this->assertSame($this->designConfig, $this->repository->save($this->designConfig));
     }
 
+    /**
+     * @expectedExceptionMessage The config can't be saved because it's empty. Complete the config and try again.
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     */
     public function testSaveWithoutConfig()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage(
-            'The config can\'t be saved because it\'s empty. Complete the config and try again.'
-        );
         $this->designConfig->expects($this->exactly(2))
             ->method('getExtensionAttributes')
             ->willReturn($this->designExtension);

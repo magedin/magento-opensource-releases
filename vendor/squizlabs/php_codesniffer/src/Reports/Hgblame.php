@@ -53,7 +53,7 @@ class Hgblame extends VersionControl
 
         $parts = array_slice($parts, 0, (count($parts) - 6));
 
-        return trim(preg_replace('|<.+>|', '', implode(' ', $parts)));
+        return trim(preg_replace('|<.+>|', '', implode($parts, ' ')));
 
     }//end getAuthor()
 
@@ -64,7 +64,6 @@ class Hgblame extends VersionControl
      * @param string $filename File to blame.
      *
      * @return array
-     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException
      */
     protected function getBlameContent($filename)
     {
@@ -75,7 +74,7 @@ class Hgblame extends VersionControl
         $location  = '';
         while (empty($fileParts) === false) {
             array_pop($fileParts);
-            $location = implode(DIRECTORY_SEPARATOR, $fileParts);
+            $location = implode($fileParts, DIRECTORY_SEPARATOR);
             if (is_dir($location.DIRECTORY_SEPARATOR.'.hg') === true) {
                 $found = true;
                 break;

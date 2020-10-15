@@ -18,7 +18,7 @@ class CartItemRepositoryTest extends WebapiAbstract
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -47,7 +47,7 @@ class CartItemRepositoryTest extends WebapiAbstract
             ],
         ];
         $response = $this->_webApiCall($serviceInfo, ['cartId' => $quoteId]);
-        $this->assertCount(1, $response);
+        $this->assertEquals(1, count($response));
         $response = $response[0];
         $bundleOption = $quote->getItemById($response['item_id'])->getBuyRequest()->getBundleOption();
         $bundleOptionQty = $quote->getItemById($response['item_id'])->getBuyRequest()->getBundleOptionQty();
@@ -192,7 +192,7 @@ class CartItemRepositoryTest extends WebapiAbstract
         $cartItems = $quoteUpdated->getAllVisibleItems();
         $buyRequest = $cartItems[0]->getBuyRequest()->toArray();
 
-        $this->assertCount(1, $cartItems);
+        $this->assertEquals(1, count($cartItems));
         $this->assertEquals(count($buyRequest['bundle_option']), count($bundleOptions));
         foreach ($bundleOptions as $option) {
             $optionId = $option['option_id'];

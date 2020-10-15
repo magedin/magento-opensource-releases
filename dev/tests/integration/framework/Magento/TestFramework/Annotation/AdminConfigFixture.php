@@ -9,22 +9,17 @@
  */
 namespace Magento\TestFramework\Annotation;
 
-use Magento\Framework\App\Config\MutableScopeConfigInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use PHPUnit\Framework\TestCase;
-
 /**
- * Handler for applying magentoAdminConfigFixture annotation
+ * Handler for applying magentoAdminConfig annotation
+ *
+ * @package Magento\TestFramework\Annotation
  */
 class AdminConfigFixture
 {
-    public const ANNOTATION = 'magentoAdminConfigFixture';
-
     /**
      * Test instance that is available between 'startTest' and 'stopTest' events
      *
-     * @var TestCase
+     * @var \PHPUnit\Framework\TestCase
      */
     protected $_currentTest;
 
@@ -43,7 +38,11 @@ class AdminConfigFixture
      */
     protected function _getConfigValue($configPath)
     {
-        return Bootstrap::getObjectManager()->get(MutableScopeConfigInterface::class)->getValue($configPath);
+        return \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\App\Config\MutableScopeConfigInterface::class
+        )->getValue(
+            $configPath
+        );
     }
 
     /**
@@ -51,27 +50,29 @@ class AdminConfigFixture
      *
      * @param string $configPath
      * @param string $value
-     * @return void
      */
     protected function _setConfigValue($configPath, $value)
     {
-        Bootstrap::getObjectManager()->get(MutableScopeConfigInterface::class)->setValue($configPath, $value);
+        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\App\Config\MutableScopeConfigInterface::class
+        )->setValue(
+            $configPath,
+            $value
+        );
     }
 
     /**
      * Assign required config values and save original ones
      *
-     * @param TestCase $test
-     * @return void
+     * @param \PHPUnit\Framework\TestCase $test
      */
-    protected function _assignConfigData(TestCase $test)
+    protected function _assignConfigData(\PHPUnit\Framework\TestCase $test)
     {
-        $resolver = Resolver::getInstance();
         $annotations = $test->getAnnotations();
-        $existingFixtures = $annotations['method'][self::ANNOTATION] ?? [];
-        /* Need to be applied even test does not have added fixtures because fixture can be added via config */
-        $testAnnotations = $resolver->applyConfigFixtures($test, $existingFixtures, self::ANNOTATION);
-        foreach ($testAnnotations as $configPathAndValue) {
+        if (!isset($annotations['method']['magentoAdminConfigFixture'])) {
+            return;
+        }
+        foreach ($annotations['method']['magentoAdminConfigFixture'] as $configPathAndValue) {
             list($configPath, $requiredValue) = preg_split('/\s+/', $configPathAndValue, 2);
 
             $originalValue = $this->_getConfigValue($configPath);
@@ -83,8 +84,6 @@ class AdminConfigFixture
 
     /**
      * Restore original values for changed config options
-     *
-     * @return void
      */
     protected function _restoreConfigData()
     {
@@ -97,10 +96,9 @@ class AdminConfigFixture
     /**
      * Handler for 'startTest' event
      *
-     * @param TestCase $test
-     * @return void
+     * @param \PHPUnit\Framework\TestCase $test
      */
-    public function startTest(TestCase $test)
+    public function startTest(\PHPUnit\Framework\TestCase $test)
     {
         $this->_currentTest = $test;
         $this->_assignConfigData($test);
@@ -109,11 +107,11 @@ class AdminConfigFixture
     /**
      * Handler for 'endTest' event
      *
-     * @param TestCase $test
-     * @return void
+     * @param \PHPUnit\Framework\TestCase $test
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function endTest(TestCase $test)
+    public function endTest(\PHPUnit\Framework\TestCase $test)
     {
         $this->_currentTest = null;
         $this->_restoreConfigData();
@@ -121,8 +119,6 @@ class AdminConfigFixture
 
     /**
      * Reassign configuration data whenever application is reset
-     *
-     * @return void
      */
     public function initStoreAfter()
     {

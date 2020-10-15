@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Command;
 
-use Magento\Framework\Exception\NotFoundException;
-use Magento\Framework\ObjectManager\TMap;
-use Magento\Framework\ObjectManager\TMapFactory;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\CommandInterface;
-use PHPUnit\Framework\TestCase;
 
-class CommandPoolTest extends TestCase
+class CommandPoolTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
-        $commandI = $this->getMockBuilder(CommandInterface::class)
+        $commandI = $this->getMockBuilder(\Magento\Payment\Gateway\CommandInterface::class)
             ->getMockForAbstractClass();
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -32,7 +26,7 @@ class CommandPoolTest extends TestCase
             ->method('create')
             ->with(
                 [
-                    'array' => [CommandInterface::class],
+                    'array' => [\Magento\Payment\Gateway\CommandInterface::class],
                     'type' => CommandInterface::class
                 ]
             )
@@ -46,20 +40,20 @@ class CommandPoolTest extends TestCase
             ->with('command')
             ->willReturn($commandI);
 
-        $pool = new CommandPool($tMapFactory, [CommandInterface::class]);
+        $pool = new CommandPool($tMapFactory, [\Magento\Payment\Gateway\CommandInterface::class]);
 
         static::assertSame($commandI, $pool->get('command'));
     }
 
     public function testGetException()
     {
-        $this->expectException(NotFoundException::class);
+        $this->expectException(\Magento\Framework\Exception\NotFoundException::class);
 
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 

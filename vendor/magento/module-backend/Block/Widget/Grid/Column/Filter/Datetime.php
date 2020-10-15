@@ -20,7 +20,7 @@ class Datetime extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Date
     const END_OF_DAY_IN_SECONDS = 86399;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getValue($index = null)
     {
@@ -117,7 +117,8 @@ class Datetime extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Date
             ) . '/>' . '</div></div>';
         $html .= '<input type="hidden" name="' . $this->_getHtmlName() . '[locale]"' . ' value="'
             . $this->localeResolver->getLocale() . '"/>';
-        $scriptString = 'require(["jquery", "mage/calendar"],function($){
+        $html .= '<script>
+            require(["jquery", "mage/calendar"],function($){
                     $("#' . $htmlId . '_range").dateRange({
                         dateFormat: "' . $format . '",
                         timeFormat: "' . $timeFormat . '",
@@ -130,9 +131,8 @@ class Datetime extends \Magento\Backend\Block\Widget\Grid\Column\Filter\Date
                             id: "' . $htmlId . '_to"
                         }
                     })
-            });';
-        $html .= $this->secureHtmlRenderer->renderTag('script', [], $scriptString, false);
-
+            });
+        </script>';
         return $html;
     }
 

@@ -3,29 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Widget\Grid\Column;
-use Magento\Backend\Block\Widget\Grid\Column\Renderer\Concat;
 use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class ConcatTest extends TestCase
+class ConcatTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager  */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager  */
     protected $objectManagerHelper;
 
-    /** @var Concat */
+    /** @var \Magento\Backend\Block\Widget\Grid\Column\Renderer\Concat */
     protected $renderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->renderer = $this->objectManagerHelper->getObject(
-            Concat::class
+            \Magento\Backend\Block\Widget\Grid\Column\Renderer\Concat::class
         );
     }
 
@@ -46,16 +40,13 @@ class ConcatTest extends TestCase
     public function testRender($method, $getters)
     {
         $object = new DataObject(['test' => 'a', 'best' => 'b']);
-        $column = $this->getMockBuilder(Column::class)
-            ->addMethods([$method, 'getSeparator'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $column = $this->createPartialMock(\Magento\Backend\Block\Widget\Grid\Column::class, [$method, 'getSeparator']);
         $column->expects($this->any())
             ->method('getSeparator')
-            ->willReturn('-');
+            ->will($this->returnValue('-'));
         $column->expects($this->any())
             ->method($method)
-            ->willReturn($getters);
+            ->will($this->returnValue($getters));
         if ($method == 'getGetter') {
             $column->expects($this->any())
                 ->method('getGetter')

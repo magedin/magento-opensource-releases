@@ -3,42 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Robots\Test\Unit\Controller\Index;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Robots\Controller\Index\Index;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Index
+     * @var \Magento\Framework\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $contextMock;
+
+    /**
+     * @var \Magento\Framework\Controller\Result\RawFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resultPageFactory;
+
+    /**
+     * @var \Magento\Robots\Controller\Index\Index
      */
     private $controller;
 
-    /**
-     * @var PageFactory|MockObject
-     */
-    private $resultPageFactoryMock;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->resultPageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
-        $this->controller = $objectManager->getObject(
-            Index::class,
-            [
-                'resultPageFactory' => $this->resultPageFactoryMock
-            ]
+        $this->controller = new \Magento\Robots\Controller\Index\Index(
+            $this->contextMock,
+            $this->resultPageFactory
         );
     }
 
@@ -47,7 +45,7 @@ class IndexTest extends TestCase
      */
     public function testExecute()
     {
-        $resultPageMock = $this->getMockBuilder(Page::class)
+        $resultPageMock = $this->getMockBuilder(\Magento\Framework\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
         $resultPageMock->expects($this->once())
@@ -57,12 +55,13 @@ class IndexTest extends TestCase
             ->method('setHeader')
             ->with('Content-Type', 'text/plain');
 
-        $this->resultPageFactoryMock->method('create')
+        $this->resultPageFactory->expects($this->any())
+            ->method('create')
             ->with(true)
             ->willReturn($resultPageMock);
 
         $this->assertInstanceOf(
-            Page::class,
+            \Magento\Framework\View\Result\Page::class,
             $this->controller->execute()
         );
     }

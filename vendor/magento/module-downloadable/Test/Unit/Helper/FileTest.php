@@ -3,72 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Downloadable\Test\Unit\Helper;
 
-use Magento\Downloadable\Helper\File;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\MediaStorage\Model\File\Uploader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\Downloadable\Helper\File
      */
     private $file;
 
     /**
      * Core file storage database
      *
-     * @var Database|MockObject
+     * @var \Magento\MediaStorage\Helper\File\Storage\Database|\PHPUnit_Framework_MockObject_MockObject
      */
     private $coreFileStorageDatabase;
 
     /**
      * Filesystem object.
      *
-     * @var \Magento\Framework\Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystem;
 
     /**
      * Media Directory object (writable).
      *
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $mediaDirectory;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\App\Helper\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appContext;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->mediaDirectory = $this->getMockBuilder(WriteInterface::class)
+        $this->mediaDirectory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMockForAbstractClass();
 
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->filesystem->expects($this->any())
             ->method('getDirectoryWrite')
-            ->with(DirectoryList::MEDIA)
+            ->with(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA)
             ->willReturn($this->mediaDirectory);
 
         $this->coreFileStorageDatabase =
-            $this->getMockBuilder(Database::class)
+            $this->getMockBuilder(\Magento\MediaStorage\Helper\File\Storage\Database::class)
                 ->setMethods(['create'])
                 ->disableOriginalConstructor()
                 ->getMock();
-        $this->appContext = $this->getMockBuilder(Context::class)
+        $this->appContext = $this->getMockBuilder(\Magento\Framework\App\Helper\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -86,7 +75,7 @@ class FileTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->file = new File(
+        $this->file = new \Magento\Downloadable\Helper\File(
             $this->appContext,
             $this->coreFileStorageDatabase,
             $this->filesystem
@@ -95,7 +84,7 @@ class FileTest extends TestCase
 
     public function testUploadFromTmp()
     {
-        $uploaderMock = $this->getMockBuilder(Uploader::class)
+        $uploaderMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\Uploader::class)
             ->disableOriginalConstructor()
             ->getMock();
         $uploaderMock->expects($this->once())->method('setAllowRenameFiles');

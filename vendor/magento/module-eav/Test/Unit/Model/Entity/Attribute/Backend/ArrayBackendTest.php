@@ -3,34 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Attribute\Backend;
 
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
-
-class ArrayBackendTest extends TestCase
+class ArrayBackendTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ArrayBackend
+     * @var \Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend
      */
     protected $_model;
 
     /**
-     * @var Attribute
+     * @var \Magento\Eav\Model\Entity\Attribute
      */
     protected $_attribute;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_attribute = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Eav\Model\Entity\Attribute::class,
             ['getAttributeCode', '__wakeup']
         );
-        $this->_model = new ArrayBackend();
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->_model = new \Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend($logger);
         $this->_model->setAttribute($this->_attribute);
     }
 
@@ -39,11 +33,11 @@ class ArrayBackendTest extends TestCase
      */
     public function testValidate($data)
     {
-        $this->_attribute->expects($this->atLeastOnce())->method('getAttributeCode')->willReturn('code');
-        $product = new DataObject(['code' => $data, 'empty' => null]);
+        $this->_attribute->expects($this->atLeastOnce())->method('getAttributeCode')->will($this->returnValue('code'));
+        $product = new \Magento\Framework\DataObject(['code' => $data, 'empty' => '']);
         $this->_model->validate($product);
         $this->assertEquals('1,2,3', $product->getCode());
-        $this->assertNull($product->getEmpty());
+        $this->assertEquals(null, $product->getEmpty());
     }
 
     /**

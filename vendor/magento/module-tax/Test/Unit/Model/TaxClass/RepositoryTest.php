@@ -3,107 +3,92 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\TaxClass;
 
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessor;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Api\Data\TaxClassInterface;
-use Magento\Tax\Api\Data\TaxClassSearchResultsInterface;
-use Magento\Tax\Api\Data\TaxClassSearchResultsInterfaceFactory;
-use Magento\Tax\Model\ClassModel;
-use Magento\Tax\Model\ClassModelRegistry;
-use Magento\Tax\Model\ResourceModel\TaxClass;
-use Magento\Tax\Model\ResourceModel\TaxClass\Collection;
-use Magento\Tax\Model\ResourceModel\TaxClass\CollectionFactory;
 use Magento\Tax\Model\TaxClass\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RepositoryTest extends TestCase
+class RepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Repository */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResultFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResultMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $taxClassResourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $classModelRegistryMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $taxClassCollectionFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $extensionAttributesJoinProcessorMock;
 
     /**
-     * @var CollectionProcessorInterface|MockObject
+     * @var \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface |
+     *  \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionProcessor;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->searchResultFactory = $this->createPartialMock(
-            TaxClassSearchResultsInterfaceFactory::class,
+            \Magento\Tax\Api\Data\TaxClassSearchResultsInterfaceFactory::class,
             ['create']
         );
-        $this->searchResultMock = $this->getMockForAbstractClass(TaxClassSearchResultsInterface::class);
+        $this->searchResultMock = $this->createMock(\Magento\Tax\Api\Data\TaxClassSearchResultsInterface::class);
 
-        $this->classModelRegistryMock = $this->createMock(ClassModelRegistry::class);
+        $this->classModelRegistryMock = $this->createMock(\Magento\Tax\Model\ClassModelRegistry::class);
 
         $this->taxClassCollectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Tax\Model\ResourceModel\TaxClass\CollectionFactory::class,
             ['create']
         );
 
-        $this->taxClassResourceMock = $this->createMock(TaxClass::class);
+        $this->taxClassResourceMock = $this->createMock(\Magento\Tax\Model\ResourceModel\TaxClass::class);
 
         $this->extensionAttributesJoinProcessorMock = $this->createPartialMock(
-            JoinProcessor::class,
+            \Magento\Framework\Api\ExtensionAttribute\JoinProcessor::class,
             ['process']
         );
         $this->collectionProcessor = $this->createMock(
-            CollectionProcessorInterface::class
+            \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
         );
         $this->model = $this->objectManager->getObject(
-            Repository::class,
+            \Magento\Tax\Model\TaxClass\Repository::class,
             [
                 'classModelRegistry' => $this->classModelRegistryMock,
                 'taxClassResource' => $this->taxClassResourceMock,
@@ -120,7 +105,7 @@ class RepositoryTest extends TestCase
      */
     public function testDelete()
     {
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->once())->method('getClassId')->willReturn(1);
         $this->taxClassResourceMock->expects($this->once())->method('delete')->with($taxClass);
         $this->classModelRegistryMock->expects($this->once())->method('remove')->with(1);
@@ -129,12 +114,12 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Exception\CouldNotDeleteException
+     * @expectedExceptionMessage Some Message
      */
     public function testDeleteResourceException()
     {
-        $this->expectException(CouldNotDeleteException::class);
-        $this->expectExceptionMessage('Some Message');
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->once())->method('getClassId')->willReturn(1);
         $this->taxClassResourceMock
             ->expects($this->once())
@@ -148,7 +133,7 @@ class RepositoryTest extends TestCase
      */
     public function testDeleteWithException()
     {
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->once())->method('getClassId')->willReturn(1);
         $this->taxClassResourceMock
             ->expects($this->once())
@@ -162,7 +147,7 @@ class RepositoryTest extends TestCase
      */
     public function testGet()
     {
-        $taxClass = $this->getMockForAbstractClass(TaxClassInterface::class);
+        $taxClass = $this->createMock(\Magento\Tax\Api\Data\TaxClassInterface::class);
         $classId = 1;
         $this->classModelRegistryMock
             ->expects($this->once())
@@ -178,7 +163,7 @@ class RepositoryTest extends TestCase
      */
     public function testDeleteById()
     {
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $classId = 1;
         $this->classModelRegistryMock
             ->expects($this->once())
@@ -198,14 +183,13 @@ class RepositoryTest extends TestCase
      */
     public function testGetList()
     {
-        $taxClassOne = $this->getMockForAbstractClass(TaxClassInterface::class);
-        $taxClassTwo = $this->getMockForAbstractClass(TaxClassInterface::class);
-        $searchCriteria = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
-        $collection = $this->getMockBuilder(Collection::class)
-            ->addMethods(['setItems'])
-            ->onlyMethods(['getSize', 'getItems'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $taxClassOne = $this->createMock(\Magento\Tax\Api\Data\TaxClassInterface::class);
+        $taxClassTwo = $this->createMock(\Magento\Tax\Api\Data\TaxClassInterface::class);
+        $searchCriteria = $this->createMock(\Magento\Framework\Api\SearchCriteriaInterface::class);
+        $collection = $this->createPartialMock(
+            \Magento\Tax\Model\ResourceModel\TaxClass\Collection::class,
+            ['setItems', 'getSize', 'getItems']
+        );
 
         $this->extensionAttributesJoinProcessorMock->expects($this->once())
             ->method('process')
@@ -231,13 +215,13 @@ class RepositoryTest extends TestCase
      */
     public function testSave()
     {
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->any())->method('getClassName')->willReturn('Class Name');
         $taxClass->expects($this->any())->method('getClassType')->willReturn('PRODUCT');
         $taxClass->expects($this->any())->method('getClassId')->willReturn(10);
         $this->classModelRegistryMock->expects($this->once())->method('registerTaxClass')->with($taxClass);
 
-        $originTaxClass = $this->createMock(ClassModel::class);
+        $originTaxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $originTaxClass->expects($this->once())->method('getClassType')->willReturn('PRODUCT');
 
         $this->classModelRegistryMock
@@ -252,13 +236,13 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage Updating classType is not allowed.
      */
     public function testSaveWithInputException()
     {
-        $this->expectException(InputException::class);
-        $this->expectExceptionMessage('Updating classType is not allowed.');
-        $taxClass = $this->createMock(ClassModel::class);
-        $originalTax = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
+        $originalTax = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->exactly(2))->method('getClassId')->willReturn(10);
         $this->classModelRegistryMock->expects($this->once())->method('retrieve')->with(10)->willReturn($originalTax);
         $originalTax->expects($this->once())->method('getClassType')->willReturn('PRODUCT');
@@ -268,17 +252,17 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Something went wrong
      */
     public function testSaveWithLocalizedException()
     {
-        $this->expectException(LocalizedException::class);
-        $this->expectExceptionMessage('Something went wrong');
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->any())->method('getClassName')->willReturn('Class Name');
         $taxClass->expects($this->atLeastOnce())->method('getClassType')->willReturn('PRODUCT');
         $taxClass->expects($this->any())->method('getClassId')->willReturn(10);
 
-        $originTaxClass = $this->createMock(ClassModel::class);
+        $originTaxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $originTaxClass->expects($this->once())->method('getClassType')->willReturn('PRODUCT');
 
         $this->classModelRegistryMock
@@ -294,17 +278,17 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage A class with the same name already exists for ClassType PRODUCT.
      */
     public function testSaveWithSameClassException()
     {
-        $this->expectException(LocalizedException::class);
-        $this->expectExceptionMessage('A class with the same name already exists for ClassType PRODUCT.');
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->any())->method('getClassName')->willReturn('Class Name');
         $taxClass->expects($this->atLeastOnce())->method('getClassType')->willReturn('PRODUCT');
         $taxClass->expects($this->any())->method('getClassId')->willReturn(10);
 
-        $originTaxClass = $this->createMock(ClassModel::class);
+        $originTaxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $originTaxClass->expects($this->once())->method('getClassType')->willReturn('PRODUCT');
 
         $this->classModelRegistryMock
@@ -322,17 +306,17 @@ class RepositoryTest extends TestCase
      * @param string $classType
      * @return void
      * @dataProvider validateTaxClassDataProvider
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage One or more input exceptions have occurred.
      */
     public function testSaveWithValidateTaxClassDataException($classType)
     {
-        $this->expectException(InputException::class);
-        $this->expectExceptionMessage('One or more input exceptions have occurred.');
-        $taxClass = $this->createMock(ClassModel::class);
+        $taxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $taxClass->expects($this->any())->method('getClassName')->willReturn('');
         $taxClass->expects($this->atLeastOnce())->method('getClassType')->willReturn($classType);
         $taxClass->expects($this->any())->method('getClassId')->willReturn(10);
 
-        $originTaxClass = $this->createMock(ClassModel::class);
+        $originTaxClass = $this->createMock(\Magento\Tax\Model\ClassModel::class);
         $originTaxClass->expects($this->once())->method('getClassType')->willReturn($classType);
 
         $this->classModelRegistryMock

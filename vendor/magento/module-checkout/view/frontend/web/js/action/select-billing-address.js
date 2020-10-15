@@ -18,7 +18,7 @@ define([
         if (quote.shippingAddress() && billingAddress.getCacheKey() == //eslint-disable-line eqeqeq
             quote.shippingAddress().getCacheKey()
         ) {
-            address = $.extend(true, {}, billingAddress);
+            address = $.extend({}, billingAddress);
             address.saveInAddressBook = null;
         } else {
             address = billingAddress;

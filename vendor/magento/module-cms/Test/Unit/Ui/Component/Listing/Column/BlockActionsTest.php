@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Cms\Ui\Component\Listing\Column\BlockActions;
@@ -13,13 +11,12 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * BlockActionsTest contains unit tests for \Magento\Cms\Ui\Component\Listing\Column\BlockActions class.
  */
-class BlockActionsTest extends TestCase
+class BlockActionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BlockActions
@@ -39,11 +36,11 @@ class BlockActionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $context = $this->getMockForAbstractClass(ContextInterface::class);
+        $context = $this->createMock(ContextInterface::class);
 
         $processor = $this->getMockBuilder(Processor::class)
             ->disableOriginalConstructor()
@@ -52,7 +49,7 @@ class BlockActionsTest extends TestCase
             ->method('getProcessor')
             ->willReturn($processor);
 
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilder = $this->createMock(UrlInterface::class);
 
         $this->escaper = $this->getMockBuilder(Escaper::class)
             ->disableOriginalConstructor()
@@ -99,6 +96,7 @@ class BlockActionsTest extends TestCase
                     'edit' => [
                         'href' => 'test/url/edit',
                         'label' => __('Edit'),
+                        '__disableTmpl' => true,
                     ],
                     'delete' => [
                         'href' => 'test/url/delete',
@@ -108,6 +106,7 @@ class BlockActionsTest extends TestCase
                             'message' => __('Are you sure you want to delete a %1 record?', $title),
                         ],
                         'post' => true,
+                        '__disableTmpl' => true,
                     ],
                 ],
             ],

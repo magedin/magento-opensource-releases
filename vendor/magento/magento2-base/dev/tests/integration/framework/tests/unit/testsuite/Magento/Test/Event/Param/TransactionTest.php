@@ -16,7 +16,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
      */
     protected $_object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_object = new \Magento\TestFramework\Event\Param\Transaction();
     }

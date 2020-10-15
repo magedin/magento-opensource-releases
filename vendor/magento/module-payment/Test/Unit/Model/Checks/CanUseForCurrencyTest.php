@@ -3,26 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Checks;
 
-use Magento\Payment\Model\Checks\CanUseForCurrency;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Checks\CanUseForCurrency;
 
-class CanUseForCurrencyTest extends TestCase
+class CanUseForCurrencyTest extends \PHPUnit\Framework\TestCase
 {
-    private const EXPECTED_CURRENCY_CODE = 'US';
+    /**
+     * Expected currency code
+     */
+    const EXPECTED_CURRENCY_CODE = 'US';
 
     /**
      * @var CanUseForCurrency
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = new CanUseForCurrency();
     }
@@ -34,26 +32,22 @@ class CanUseForCurrencyTest extends TestCase
     public function testIsApplicable($expectation)
     {
         $paymentMethod = $this->getMockBuilder(
-            MethodInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
+            \Magento\Payment\Model\MethodInterface::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
         $paymentMethod->expects($this->once())->method('canUseForCurrency')->with(
             self::EXPECTED_CURRENCY_CODE
-        )->willReturn($expectation);
+        )->will($this->returnValue($expectation));
 
-        $quoteMock = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                []
-            )->getMock();
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->disableOriginalConstructor()->setMethods(
+            []
+        )->getMock();
         $store = $this->getMockBuilder(
-            Store::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
-        $store->expects($this->once())->method('getBaseCurrencyCode')->willReturn(
-            self::EXPECTED_CURRENCY_CODE
+            \Magento\Store\Model\Store::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
+        $store->expects($this->once())->method('getBaseCurrencyCode')->will(
+            $this->returnValue(self::EXPECTED_CURRENCY_CODE)
         );
-        $quoteMock->expects($this->once())->method('getStore')->willReturn($store);
+        $quoteMock->expects($this->once())->method('getStore')->will($this->returnValue($store));
 
         $this->assertEquals($expectation, $this->_model->isApplicable($paymentMethod, $quoteMock));
     }

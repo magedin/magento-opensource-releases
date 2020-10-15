@@ -41,7 +41,7 @@ class ProductUrlRewriteTest extends AbstractUrlRewriteTest
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

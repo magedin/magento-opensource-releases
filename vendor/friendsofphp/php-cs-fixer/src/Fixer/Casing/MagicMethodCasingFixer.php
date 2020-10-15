@@ -153,7 +153,8 @@ $foo->__INVOKE(1);
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -168,7 +169,8 @@ $foo->__INVOKE(1);
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -183,7 +185,8 @@ $foo->__INVOKE(1);
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -218,6 +221,7 @@ $foo->__INVOKE(1);
     }
 
     /**
+     * @param Tokens $tokens
      * @param int    $index
      * @param string $nameInCorrectCasing
      */

@@ -110,16 +110,15 @@ class Checkboxes extends AbstractElement
     }
 
     /**
-     * Was given value selected?
-     *
-     * @param string $value
-     * @return string|null
+     * @param mixed $value
+     * @return string|void
      */
     public function getChecked($value)
     {
-        $checked = $this->getValue() ?? $this->getData('checked');
-        if (!$checked) {
-            return null;
+        if ($checked = $this->getValue()) {
+        } elseif ($checked = $this->getData('checked')) {
+        } else {
+            return;
         }
         if (!is_array($checked)) {
             $checked = [(string)$checked];
@@ -131,14 +130,12 @@ class Checkboxes extends AbstractElement
         if (in_array((string)$value, $checked)) {
             return 'checked';
         }
-        return null;
+        return;
     }
 
     /**
-     * Was value disabled for selection?
-     *
-     * @param string $value
-     * @return string|null
+     * @param mixed $value
+     * @return string
      */
     public function getDisabled($value)
     {
@@ -154,40 +151,34 @@ class Checkboxes extends AbstractElement
                 return 'disabled';
             }
         }
-        return null;
+        return;
     }
 
     /**
-     * Get onclick event handler.
-     *
-     * @param string $value
-     * @return string|null
+     * @param mixed $value
+     * @return mixed
      */
-    public function getOnclick($value = '$value')
+    public function getOnclick($value)
     {
         if ($onclick = $this->getData('onclick')) {
             return str_replace('$value', $value, $onclick);
         }
-        return null;
+        return;
     }
 
     /**
-     * Get onchange event handler.
-     *
-     * @param string $value
-     * @return string|null
+     * @param mixed $value
+     * @return mixed
      */
-    public function getOnchange($value = '$value')
+    public function getOnchange($value)
     {
         if ($onchange = $this->getData('onchange')) {
             return str_replace('$value', $value, $onchange);
         }
-        return null;
+        return;
     }
 
     /**
-     * Render a checkbox.
-     *
      * @param array $option
      * @return string
      */

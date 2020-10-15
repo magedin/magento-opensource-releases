@@ -33,7 +33,7 @@ abstract class AbstractFactoryRuntimeDefinitionsTestCases extends \PHPUnit\Frame
      */
     abstract protected function createFactoryToTest();
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->factory = $this->createFactoryToTest();
 

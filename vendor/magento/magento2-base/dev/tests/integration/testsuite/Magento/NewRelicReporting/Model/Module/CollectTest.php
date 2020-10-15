@@ -21,7 +21,7 @@ class CollectTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collect = Bootstrap::getObjectManager()->create(Collect::class);
     }

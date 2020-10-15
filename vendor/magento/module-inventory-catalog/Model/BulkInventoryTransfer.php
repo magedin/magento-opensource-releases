@@ -7,13 +7,13 @@ declare(strict_types=1);
 
 namespace Magento\InventoryCatalog\Model;
 
-use Magento\CatalogInventory\Model\Indexer\Stock as LegacyIndexer;
 use Magento\Framework\Validation\ValidationException;
 use Magento\InventoryCatalog\Model\ResourceModel\BulkInventoryTransfer as BulkInventoryTransferResource;
 use Magento\InventoryCatalogApi\Api\BulkInventoryTransferInterface;
 use Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface;
 use Magento\InventoryCatalogApi\Model\BulkInventoryTransferValidatorInterface;
 use Magento\InventoryCatalogApi\Model\GetProductIdsBySkusInterface;
+use Magento\CatalogInventory\Model\Indexer\Stock as LegacyIndexer;
 use Magento\InventoryIndexer\Indexer\Source\SourceIndexer;
 
 /**
@@ -52,6 +52,7 @@ class BulkInventoryTransfer implements BulkInventoryTransferInterface
     private $sourceIndexer;
 
     /**
+     * MassProductSourceAssign constructor.
      * @param BulkInventoryTransferValidatorInterface $inventoryTransferValidator
      * @param BulkInventoryTransferResource $bulkInventoryTransfer
      * @param SourceIndexer $sourceIndexer
@@ -77,7 +78,17 @@ class BulkInventoryTransfer implements BulkInventoryTransferInterface
     }
 
     /**
+     * Reindex legacy stock (for default source)
+     * @param array $productIds
+     */
+    private function reindexLegacy(array $productIds): void
+    {
+        $this->legacyIndexer->executeList($productIds);
+    }
+
+    /**
      * @inheritdoc
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute(
         array $skus,
@@ -92,12 +103,7 @@ class BulkInventoryTransfer implements BulkInventoryTransferInterface
         );
 
         if (!$validationResult->isValid()) {
-            throw new ValidationException(
-                __('Validation Error: Select different sources for origin and destination.'),
-                null,
-                0,
-                $validationResult
-            );
+            throw new ValidationException(__('Validation Failed'), null, 0, $validationResult);
         }
 
         $this->bulkInventoryTransfer->execute(
@@ -116,15 +122,5 @@ class BulkInventoryTransfer implements BulkInventoryTransferInterface
         }
 
         return true;
-    }
-
-    /**
-     * Reindex legacy stock (for default source).
-     *
-     * @param array $productIds
-     */
-    private function reindexLegacy(array $productIds): void
-    {
-        $this->legacyIndexer->executeList($productIds);
     }
 }

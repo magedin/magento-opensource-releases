@@ -3,32 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Translate\Test\Unit\Inline;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Translate\Inline;
-use Magento\Framework\Translate\Inline\Proxy;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Translate\Inline\Proxy;
 
-class ProxyTest extends TestCase
+class ProxyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Inline|MockObject
+     * @var \Magento\Framework\Translate\Inline|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $translateMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->translateMock = $this->createMock(Inline::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->translateMock = $this->createMock(\Magento\Framework\Translate\Inline::class);
     }
 
     public function testIsAllowed()
@@ -38,16 +32,16 @@ class ProxyTest extends TestCase
         )->method(
             'get'
         )->with(
-            Inline::class
-        )->willReturn(
-            $this->translateMock
+            \Magento\Framework\Translate\Inline::class
+        )->will(
+            $this->returnValue($this->translateMock)
         );
         $this->objectManagerMock->expects($this->never())->method('create');
-        $this->translateMock->expects($this->once())->method('isAllowed')->willReturn(false);
+        $this->translateMock->expects($this->once())->method('isAllowed')->will($this->returnValue(false));
 
         $model = new Proxy(
             $this->objectManagerMock,
-            Inline::class,
+            \Magento\Framework\Translate\Inline::class,
             true
         );
 
@@ -62,16 +56,16 @@ class ProxyTest extends TestCase
         )->method(
             'create'
         )->with(
-            Inline::class
-        )->willReturn(
-            $this->translateMock
+            \Magento\Framework\Translate\Inline::class
+        )->will(
+            $this->returnValue($this->translateMock)
         );
         $this->objectManagerMock->expects($this->never())->method('get');
-        $this->translateMock->expects($this->once())->method('getParser')->willReturn($parser);
+        $this->translateMock->expects($this->once())->method('getParser')->will($this->returnValue($parser));
 
         $model = new Proxy(
             $this->objectManagerMock,
-            Inline::class,
+            \Magento\Framework\Translate\Inline::class,
             false
         );
 
@@ -86,19 +80,20 @@ class ProxyTest extends TestCase
         )->method(
             'get'
         )->with(
-            Inline::class
-        )->willReturn(
-            $this->translateMock
+            \Magento\Framework\Translate\Inline::class
+        )->will(
+            $this->returnValue($this->translateMock)
         );
         $this->objectManagerMock->expects($this->never())->method('create');
 
         $this->translateMock->expects($this->once())
             ->method('processResponseBody')
-            ->with('', $isJson)->willReturnSelf();
+            ->with('', $isJson)
+            ->will($this->returnSelf());
 
         $model = new Proxy(
             $this->objectManagerMock,
-            Inline::class,
+            \Magento\Framework\Translate\Inline::class,
             true
         );
         $body = '';
@@ -113,19 +108,19 @@ class ProxyTest extends TestCase
         )->method(
             'create'
         )->with(
-            Inline::class
-        )->willReturn(
-            $this->translateMock
+            \Magento\Framework\Translate\Inline::class
+        )->will(
+            $this->returnValue($this->translateMock)
         );
         $this->objectManagerMock->expects($this->never())->method('get');
         $this->translateMock->expects($this->exactly(2))
             ->method('getAdditionalHtmlAttribute')
             ->with($this->logicalOr('some_value', null))
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
 
         $model = new Proxy(
             $this->objectManagerMock,
-            Inline::class,
+            \Magento\Framework\Translate\Inline::class,
             false
         );
 

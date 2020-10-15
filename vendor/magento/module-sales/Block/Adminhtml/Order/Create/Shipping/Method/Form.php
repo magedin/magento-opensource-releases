@@ -52,7 +52,6 @@ class Form extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
         array $data = []
     ) {
         $this->_taxData = $taxData;
-        $data['taxHelper'] = $this->_taxData;
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
     }
 

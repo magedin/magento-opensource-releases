@@ -3,49 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\App\Task;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Module\Di\App\Task\Operation\ProxyGenerator;
 use Magento\Setup\Module\Di\Code\Scanner;
-use Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner;
-use Magento\Setup\Module\Di\Code\Scanner\XmlScanner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
 
-class ProxyGeneratorTest extends TestCase
+class ProxyGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Scanner\XmlScanner|MockObject
+     * @var Scanner\XmlScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $proxyScannerMock;
 
     /**
-     * @var ConfigurationScanner|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $configurationScannerMock;
 
     /**
-     * @var ProxyGenerator
+     * @var \Magento\Setup\Module\Di\App\Task\Operation\ProxyGenerator
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->proxyScannerMock = $this->getMockBuilder(XmlScanner::class)
+        $this->proxyScannerMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Scanner\XmlScanner::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->configurationScannerMock = $this->getMockBuilder(
-            ConfigurationScanner::class
+            \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner::class
         )->disableOriginalConstructor()
             ->getMock();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            ProxyGenerator::class,
+            \Magento\Setup\Module\Di\App\Task\Operation\ProxyGenerator::class,
             [
                 'proxyScanner' => $this->proxyScannerMock,
                 'configurationScanner' => $this->configurationScannerMock,

@@ -3,23 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Page\Config\Generator;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Layout\Generator\Context;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Config\Generator\Body;
-use Magento\Framework\View\Page\Config\Structure;
-use PHPUnit\Framework\MockObject\MockObject;
+use \Magento\Framework\View\Page\Config\Generator\Body;
 
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
  * Test for page config generator model
  */
-class BodyTest extends TestCase
+class BodyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Body
@@ -27,19 +21,19 @@ class BodyTest extends TestCase
     protected $bodyGenerator;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->pageConfigMock = $this->getMockBuilder(Config::class)
+        $this->pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->bodyGenerator = $objectManagerHelper->getObject(
-            Body::class,
+            \Magento\Framework\View\Page\Config\Generator\Body::class,
             [
                 'pageConfig' => $this->pageConfigMock,
             ]
@@ -48,11 +42,11 @@ class BodyTest extends TestCase
 
     public function testProcess()
     {
-        $generatorContextMock = $this->getMockBuilder(Context::class)
+        $generatorContextMock = $this->getMockBuilder(\Magento\Framework\View\Layout\Generator\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $structureMock = $this->getMockBuilder(Structure::class)
+        $structureMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config\Structure::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -66,7 +60,7 @@ class BodyTest extends TestCase
         $bodyClasses = ['class_1', 'class--2'];
         $structureMock->expects($this->once())
             ->method('getBodyClasses')
-            ->willReturn($bodyClasses);
+            ->will($this->returnValue($bodyClasses));
         $this->pageConfigMock->expects($this->exactly(2))
             ->method('addBodyClass')
             ->withConsecutive(['class_1'], ['class--2']);

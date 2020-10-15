@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Topology\Config\RemoteService;
 
 use Magento\Framework\Communication\Config\ReflectionGenerator;
@@ -13,10 +11,8 @@ use Magento\Framework\MessageQueue\Topology\Config\RemoteService\Reader;
 use Magento\Framework\ObjectManager\ConfigInterface as ObjectManagerConfig;
 use Magento\Framework\Reflection\MethodsMap as ServiceMethodsMap;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Reader
@@ -24,29 +20,29 @@ class ReaderTest extends TestCase
     private $reader;
 
     /**
-     * @var DefaultValueProvider|MockObject
+     * @var DefaultValueProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $defaultValueProvider;
 
     /**
-     * @var ObjectManagerConfig|MockObject
+     * @var ObjectManagerConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerConfig;
 
     /**
-     * @var ReflectionGenerator|MockObject
+     * @var ReflectionGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $reflectionGenerator;
 
     /**
-     * @var ServiceMethodsMap|MockObject
+     * @var ServiceMethodsMap|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $serviceMethodsMap;
 
     /**
      * Initialize parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->defaultValueProvider = $this->createMock(DefaultValueProvider::class);
@@ -120,10 +116,12 @@ class ReaderTest extends TestCase
         $this->assertEquals($expectedResult, $this->reader->read());
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Service interface was expected, "Some\Service\NameInterface" given
+     */
     public function testReadInvalidService()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Service interface was expected, "Some\Service\NameInterface" given');
         $this->defaultValueProvider->expects($this->any())->method('getConnection')->willReturn('amqp');
         $this->defaultValueProvider->expects($this->any())->method('getExchange')->willReturn('magento');
 

@@ -3,29 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Controller\Adminhtml\Order\Create;
 
 use Magento\Backend\App\Action;
-use Magento\Backend\Model\View\Result\Forward;
 use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Catalog\Helper\Product;
-use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\Escaper;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Controller\Adminhtml\Order\Create;
-use Magento\Sales\Helper\Reorder as ReorderHelper;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Reorder\UnavailableProductsProvider;
-use Psr\Log\LoggerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Helper\Reorder as ReorderHelper;
 
-/**
- * Controller create order.
- */
-class Reorder extends Create implements HttpGetActionInterface
+class Reorder extends \Magento\Sales\Controller\Adminhtml\Order\Create
 {
     /**
      * @var UnavailableProductsProvider
@@ -43,36 +30,28 @@ class Reorder extends Create implements HttpGetActionInterface
     private $reorderHelper;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param Action\Context $context
-     * @param Product $productHelper
-     * @param Escaper $escaper
+     * @param \Magento\Catalog\Helper\Product $productHelper
+     * @param \Magento\Framework\Escaper $escaper
      * @param PageFactory $resultPageFactory
      * @param ForwardFactory $resultForwardFactory
      * @param UnavailableProductsProvider $unavailableProductsProvider
      * @param OrderRepositoryInterface $orderRepository
      * @param ReorderHelper $reorderHelper
-     * @param LoggerInterface $logger
      */
     public function __construct(
         Action\Context $context,
-        Product $productHelper,
-        Escaper $escaper,
+        \Magento\Catalog\Helper\Product $productHelper,
+        \Magento\Framework\Escaper $escaper,
         PageFactory $resultPageFactory,
         ForwardFactory $resultForwardFactory,
         UnavailableProductsProvider $unavailableProductsProvider,
         OrderRepositoryInterface $orderRepository,
-        ReorderHelper $reorderHelper,
-        LoggerInterface $logger
+        ReorderHelper $reorderHelper
     ) {
         $this->unavailableProductsProvider = $unavailableProductsProvider;
         $this->orderRepository = $orderRepository;
         $this->reorderHelper = $reorderHelper;
-        $this->logger = $logger;
         parent::__construct(
             $context,
             $productHelper,
@@ -83,21 +62,19 @@ class Reorder extends Create implements HttpGetActionInterface
     }
 
     /**
-     * Adminhtml controller create order.
-     *
-     * @return Forward|Redirect
+     * @return \Magento\Backend\Model\View\Result\Forward|\Magento\Backend\Model\View\Result\Redirect
      */
     public function execute()
     {
         $this->_getSession()->clearStorage();
         $orderId = $this->getRequest()->getParam('order_id');
-        /** @var Order $order */
+        /** @var \Magento\Sales\Model\Order $order */
         $order = $this->orderRepository->get($orderId);
         if (!$this->reorderHelper->canReorder($order->getEntityId())) {
             return $this->resultForwardFactory->create()->forward('noroute');
         }
 
-        /** @var Redirect $resultRedirect */
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if (!$order->getId()) {
             $resultRedirect->setPath('sales/order/');
@@ -113,20 +90,10 @@ class Reorder extends Create implements HttpGetActionInterface
             }
             $resultRedirect->setPath('sales/order/view', ['order_id' => $orderId]);
         } else {
-            try {
-                $order->setReordered(true);
-                $this->_getSession()->setUseOldShippingMethod(true);
-                $this->_getOrderCreateModel()->initFromOrder($order);
-                $resultRedirect->setPath('sales/*');
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $this->logger->critical($e);
-                $this->messageManager->addErrorMessage($e->getMessage());
-                return $resultRedirect->setPath('sales/*');
-            } catch (\Exception $e) {
-                $this->logger->critical($e);
-                $this->messageManager->addException($e, __('Error while processing order.'));
-                return $resultRedirect->setPath('sales/*');
-            }
+            $order->setReordered(true);
+            $this->_getSession()->setUseOldShippingMethod(true);
+            $this->_getOrderCreateModel()->initFromOrder($order);
+            $resultRedirect->setPath('sales/*');
         }
 
         return $resultRedirect;

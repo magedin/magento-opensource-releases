@@ -3,59 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ProductRender;
 
 use Magento\Catalog\Model\ProductRender\PriceInfo;
-use Magento\Framework\Api\AttributeValueFactory;
-use Magento\Framework\Api\ExtensionAttributesFactory;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PriceInfoTest extends TestCase
+class PriceInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PriceInfo
+     * @var \Magento\Catalog\Model\ProductRender\PriceInfo
      */
     private $priceInfo;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var ExtensionAttributesFactory|MockObject
+     * @var \Magento\Framework\Api\ExtensionAttributesFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionFactoryMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $registryMock;
 
     /**
-     * @var AttributeValueFactory|MockObject
+     * @var \Magento\Framework\Api\AttributeValueFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeValueFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->extensionFactoryMock = $this->getMockBuilder(ExtensionAttributesFactory::class)
+        $this->extensionFactoryMock = $this->getMockBuilder(\Magento\Framework\Api\ExtensionAttributesFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->attributeValueFactoryMock = $this->getMockBuilder(AttributeValueFactory::class)
+        $this->attributeValueFactoryMock = $this->getMockBuilder(\Magento\Framework\Api\AttributeValueFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 

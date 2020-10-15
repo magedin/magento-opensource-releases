@@ -3,19 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Controller\Test\Unit\Controller;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Controller\Noroute\Index;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NorouteTest extends TestCase
+class NorouteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\Controller\Noroute
@@ -23,32 +13,29 @@ class NorouteTest extends TestCase
     protected $_controller;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_viewMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_statusMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
-        $this->_requestMock = $this->createMock(Http::class);
-        $this->_viewMock = $this->getMockForAbstractClass(ViewInterface::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->_viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
         $this->_statusMock =
-            $this->getMockBuilder(DataObject::class)
-                ->addMethods(['getLoaded', 'getForwarded'])
-                ->disableOriginalConstructor()
-                ->getMock();
+            $this->createPartialMock(\Magento\Framework\DataObject::class, ['getLoaded', 'getForwarded']);
         $this->_controller = $helper->getObject(
-            Index::class,
+            \Magento\Framework\Controller\Noroute\Index::class,
             ['request' => $this->_requestMock, 'view' => $this->_viewMock]
         );
     }
@@ -61,10 +48,10 @@ class NorouteTest extends TestCase
             'getParam'
         )->with(
             '__status__'
-        )->willReturn(
-            $this->_statusMock
+        )->will(
+            $this->returnValue($this->_statusMock)
         );
-        $this->_statusMock->expects($this->any())->method('getLoaded')->willReturn(false);
+        $this->_statusMock->expects($this->any())->method('getLoaded')->will($this->returnValue(false));
         $this->_viewMock->expects($this->once())->method('loadLayout')->with(['default', 'noroute']);
         $this->_viewMock->expects($this->once())->method('renderLayout');
         $this->_controller->execute();
@@ -78,18 +65,18 @@ class NorouteTest extends TestCase
             'getParam'
         )->with(
             '__status__'
-        )->willReturn(
-            $this->_statusMock
+        )->will(
+            $this->returnValue($this->_statusMock)
         );
-        $this->_statusMock->expects($this->any())->method('getLoaded')->willReturn(true);
-        $this->_statusMock->expects($this->any())->method('getForwarded')->willReturn(false);
+        $this->_statusMock->expects($this->any())->method('getLoaded')->will($this->returnValue(true));
+        $this->_statusMock->expects($this->any())->method('getForwarded')->will($this->returnValue(false));
         $this->_viewMock->expects($this->never())->method('loadLayout');
         $this->_requestMock->expects(
             $this->once()
         )->method(
             'setActionName'
-        )->willReturn(
-            $this->_requestMock
+        )->will(
+            $this->returnValue($this->_requestMock)
         );
         $this->_controller->execute();
     }
@@ -102,8 +89,8 @@ class NorouteTest extends TestCase
             'getParam'
         )->with(
             '__status__'
-        )->willReturn(
-            'string'
+        )->will(
+            $this->returnValue('string')
         );
         $this->_controller->execute();
     }

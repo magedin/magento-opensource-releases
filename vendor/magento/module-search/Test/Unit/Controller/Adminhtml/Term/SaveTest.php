@@ -3,69 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Search\Test\Unit\Controller\Adminhtml\Term;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Search\Controller\Adminhtml\Term\Save;
-use Magento\Search\Model\Query;
-use Magento\Search\Model\QueryFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $request;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     private $redirect;
 
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $messageManager;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     private $session;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $context;
 
-    /** @var Query|MockObject */
+    /** @var \Magento\Search\Model\Query|\PHPUnit_Framework_MockObject_MockObject */
     private $query;
 
-    /** @var Save */
+    /** @var \Magento\Search\Controller\Adminhtml\Term\Save */
     private $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->redirect = $this->getMockBuilder(Redirect::class)
+        $this->redirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->setMethods(['setPath'])
             ->disableOriginalConstructor()
             ->getMock();
-        $redirectFactory = $this->getMockBuilder(ResultFactory::class)
+        $redirectFactory = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $redirectFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->redirect);
+            ->will($this->returnValue($this->redirect));
         $this->context->expects($this->any())
             ->method('getResultRedirectFactory')
             ->willReturn($redirectFactory);
@@ -73,7 +57,7 @@ class SaveTest extends TestCase
             ->method('getResultFactory')
             ->willReturn($redirectFactory);
 
-        $this->request = $this->getMockBuilder(RequestInterface::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPostValue', 'isPost', 'getPost'])
             ->getMockForAbstractClass();
@@ -81,7 +65,7 @@ class SaveTest extends TestCase
             ->method('getRequest')
             ->willReturn($this->request);
 
-        $objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();
@@ -89,7 +73,7 @@ class SaveTest extends TestCase
             ->method('getObjectManager')
             ->willReturn($objectManager);
 
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['addSuccessMessage', 'addErrorMessage', 'addExceptionMessage'])
             ->getMockForAbstractClass();
@@ -97,7 +81,7 @@ class SaveTest extends TestCase
             ->method('getMessageManager')
             ->willReturn($this->messageManager);
 
-        $this->session = $this->getMockBuilder(Session::class)
+        $this->session = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['setPageData'])
             ->getMock();
@@ -105,20 +89,20 @@ class SaveTest extends TestCase
             ->method('getSession')
             ->willReturn($this->session);
 
-        $this->query = $this->getMockBuilder(Query::class)
+        $this->query = $this->getMockBuilder(\Magento\Search\Model\Query::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', 'load', 'addData', 'setIsProcessed', 'save', 'loadByQueryText', 'setStoreId'])
             ->getMock();
-        $queryFactory = $this->getMockBuilder(QueryFactory::class)
+        $queryFactory = $this->getMockBuilder(\Magento\Search\Model\QueryFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $queryFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->query);
+            ->will($this->returnValue($this->query));
 
         $this->controller = $objectManagerHelper->getObject(
-            Save::class,
+            \Magento\Search\Controller\Adminhtml\Term\Save::class,
             [
                 'context' => $this->context,
                 'queryFactory' => $queryFactory,

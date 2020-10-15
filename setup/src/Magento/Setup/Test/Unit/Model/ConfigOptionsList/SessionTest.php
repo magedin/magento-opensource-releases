@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model\ConfigOptionsList;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Config\Data\ConfigData;
-use Magento\Framework\Setup\Option\SelectConfigOption;
-use Magento\Framework\Setup\Option\TextConfigOption;
 use Magento\Setup\Model\ConfigOptionsList\Session as SessionConfigOptionsList;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Setup\Option\TextConfigOption;
+use Magento\Framework\Setup\Option\SelectConfigOption;
 
-class SessionTest extends TestCase
+class SessionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Setup\Model\ConfigOptionsList\Session
@@ -22,15 +18,15 @@ class SessionTest extends TestCase
     private $configList;
 
     /**
-     * @var DeploymentConfig
+     * @var \Magento\Framework\App\DeploymentConfig
      */
     private $deploymentConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configList = new SessionConfigOptionsList();
 
-        $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
+        $this->deploymentConfigMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
     }
 
     public function testGetOptions()
@@ -118,7 +114,7 @@ class SessionTest extends TestCase
     public function testCreateConfig()
     {
         $configData = $this->configList->createConfig([], $this->deploymentConfigMock);
-        $this->assertInstanceOf(ConfigData::class, $configData);
+        $this->assertInstanceOf(\Magento\Framework\Config\Data\ConfigData::class, $configData);
     }
 
     public function testCreateConfigWithSessionSaveFiles()

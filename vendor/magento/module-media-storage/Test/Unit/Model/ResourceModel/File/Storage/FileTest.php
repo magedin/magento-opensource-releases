@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\MediaStorage\Test\Unit\Model\ResourceModel\File\Storage;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Helper\File\Media;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class FileTest extends TestCase
+/**
+ * Class FileTest
+ */
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\Framework\Filesystem\Io\File
      */
     private $fileIoMock;
 
@@ -30,33 +24,33 @@ class FileTest extends TestCase
     protected $storageFile;
 
     /**
-     * @var Media|MockObject
+     * @var \Magento\MediaStorage\Helper\File\Media|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystemMock;
 
     /**
-     * @var Read|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Read|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directoryReadMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->filesystemMock = $this->createPartialMock(Filesystem::class, ['getDirectoryRead']);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->filesystemMock = $this->createPartialMock(\Magento\Framework\Filesystem::class, ['getDirectoryRead']);
         $this->directoryReadMock = $this->createPartialMock(
-            Read::class,
+            \Magento\Framework\Filesystem\Directory\Read::class,
             ['isDirectory', 'readRecursively']
         );
 
-        $this->fileIoMock = $this->createPartialMock(File::class, ['getPathInfo']);
+        $this->fileIoMock = $this->createPartialMock(\Magento\Framework\Filesystem\Io\File::class, ['getPathInfo']);
 
         $objectManager = new ObjectManager($this);
 
@@ -70,7 +64,7 @@ class FileTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->storageFile);
     }
@@ -85,26 +79,28 @@ class FileTest extends TestCase
         )->method(
             'getDirectoryRead'
         )->with(
-            DirectoryList::MEDIA
-        )->willReturn(
-            $this->directoryReadMock
+            $this->equalTo(DirectoryList::MEDIA)
+        )->will(
+            $this->returnValue($this->directoryReadMock)
         );
 
         $this->directoryReadMock->expects(
             $this->any()
         )->method(
             'isDirectory'
-        )->willReturnMap(
-            [
-                ['/', true],
-                ['folder_one', true],
-                ['file_three.txt', false],
-                ['folder_one/.svn', false],
-                ['folder_one/file_one.txt', false],
-                ['folder_one/folder_two', true],
-                ['folder_one/folder_two/.htaccess', false],
-                ['folder_one/folder_two/file_two.txt', false],
-            ]
+        )->will(
+            $this->returnValueMap(
+                [
+                    ['/', true],
+                    ['folder_one', true],
+                    ['file_three.txt', false],
+                    ['folder_one/.svn', false],
+                    ['folder_one/file_one.txt', false],
+                    ['folder_one/folder_two', true],
+                    ['folder_one/folder_two/.htaccess', false],
+                    ['folder_one/folder_two/file_two.txt', false],
+                ]
+            )
         );
 
         $paths = [
@@ -128,7 +124,7 @@ class FileTest extends TestCase
             $this->any()
         )->method(
             'getPathInfo'
-        )->willReturnMap($pathInfos);
+        )->will($this->returnValueMap($pathInfos));
 
         sort($paths);
         $this->directoryReadMock->expects(
@@ -136,9 +132,9 @@ class FileTest extends TestCase
         )->method(
             'readRecursively'
         )->with(
-            '/'
-        )->willReturn(
-            $paths
+            $this->equalTo('/')
+        )->will(
+            $this->returnValue($paths)
         );
 
         $expected = [

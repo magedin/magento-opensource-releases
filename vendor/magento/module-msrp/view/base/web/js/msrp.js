@@ -299,9 +299,8 @@ define([
          * @param {Event} event
          * @param {mixed} priceIndex
          * @param {Object} prices
-         * @param {Object|undefined} $priceBox
          */
-        onUpdateMsrpPrice: function onUpdateMsrpPrice(event, priceIndex, prices, $priceBox) {
+        onUpdateMsrpPrice: function onUpdateMsrpPrice(event, priceIndex, prices) {
 
             var defaultMsrp,
                 defaultPrice,
@@ -323,20 +322,18 @@ define([
                 finalPrice = prices[priceIndex].finalPrice.amount;
 
                 if (msrpPrice === null || msrpPrice <= finalPrice) {
-                    this.updateNonMsrpPrice(priceUtils.formatPrice(finalPrice), $priceBox);
+                    this.updateNonMsrpPrice(priceUtils.formatPrice(finalPrice));
                 } else {
                     this.updateMsrpPrice(
                         priceUtils.formatPrice(finalPrice),
                         priceUtils.formatPrice(msrpPrice),
-                        false,
-                        $priceBox);
+                        false);
                 }
             } else {
                 this.updateMsrpPrice(
                     priceUtils.formatPrice(defaultPrice),
                     priceUtils.formatPrice(defaultMsrp),
-                    true,
-                    $priceBox);
+                    true);
             }
         },
 
@@ -346,14 +343,13 @@ define([
          * @param {String} finalPrice
          * @param {String} msrpPrice
          * @param {Boolean} useDefaultPrice
-         * @param {Object|undefined} $priceBox
          */
-        updateMsrpPrice: function (finalPrice, msrpPrice, useDefaultPrice, $priceBox) {
+        updateMsrpPrice: function (finalPrice, msrpPrice, useDefaultPrice) {
             var options = this.tierOptions || this.options;
 
-            $(this.options.fallbackPriceContainer, $priceBox).hide();
-            $(this.options.displayPriceContainer, $priceBox).show();
-            $(this.options.mapInfoLinks, $priceBox).show();
+            $(this.options.fallbackPriceContainer).hide();
+            $(this.options.displayPriceContainer).show();
+            $(this.options.mapInfoLinks).show();
 
             if (useDefaultPrice || !this.wasOpened) {
                 if (this.$popup) {
@@ -361,14 +357,14 @@ define([
                     this.$popup.find(this.options.priceLabelId).html(options.realPrice);
                 }
 
-                $(this.options.displayPriceElement, $priceBox).html(msrpPrice);
+                $(this.options.displayPriceElement).html(msrpPrice);
                 this.wasOpened = true;
             }
 
             if (!useDefaultPrice) {
                 this.$popup.find(this.options.msrpPriceElement).html(msrpPrice);
                 this.$popup.find(this.options.priceElement).html(finalPrice);
-                $(this.options.displayPriceElement, $priceBox).html(msrpPrice);
+                $(this.options.displayPriceElement).html(msrpPrice);
             }
         },
 
@@ -376,13 +372,12 @@ define([
          * Display non MAP price for irrelevant products
          *
          * @param {String} price
-         * @param {Object|undefined} $priceBox
          */
-        updateNonMsrpPrice: function (price, $priceBox) {
-            $(this.options.fallbackPriceElement, $priceBox).html(price);
-            $(this.options.displayPriceContainer, $priceBox).hide();
-            $(this.options.mapInfoLinks, $priceBox).hide();
-            $(this.options.fallbackPriceContainer, $priceBox).show();
+        updateNonMsrpPrice: function (price) {
+            $(this.options.fallbackPriceElement).html(price);
+            $(this.options.displayPriceContainer).hide();
+            $(this.options.mapInfoLinks).hide();
+            $(this.options.fallbackPriceContainer).show();
         },
 
         /**

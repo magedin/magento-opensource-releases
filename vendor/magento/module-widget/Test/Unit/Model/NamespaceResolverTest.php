@@ -3,36 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model;
 
-use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Widget\Model\NamespaceResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NamespaceResolverTest extends TestCase
+class NamespaceResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NamespaceResolver
+     * @var \Magento\Widget\Model\NamespaceResolver
      */
     protected $namespaceResolver;
 
     /**
-     * @var ModuleListInterface|MockObject
+     * @var \Magento\Framework\Module\ModuleListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $moduleListMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->moduleListMock = $this->getMockBuilder(ModuleListInterface::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->moduleListMock = $this->getMockBuilder(\Magento\Framework\Module\ModuleListInterface::class)
             ->getMockForAbstractClass();
 
         $this->namespaceResolver = $objectManager->getObject(
-            NamespaceResolver::class,
+            \Magento\Widget\Model\NamespaceResolver::class,
             [
                 'moduleList' => $this->moduleListMock
             ]

@@ -20,7 +20,7 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminArea"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminArea"/>
             <!--Create mora than 20 sources-->
             <createData entity="_minimalSource" stepKey="createFirstCustomSource"/>
             <createData entity="_minimalSource" stepKey="createSecondCustomSource"/>
@@ -116,7 +116,7 @@
             </actionGroup>
             <deleteData createDataKey="category" stepKey="deleteCategory"/>
             <deleteData createDataKey="product" stepKey="deleteProduct"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdminArea"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdminArea"/>
         </after>
 
         <!--Search for the product and open in edit mode.-->

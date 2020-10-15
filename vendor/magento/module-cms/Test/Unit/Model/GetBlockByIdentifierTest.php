@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model;
 
-use Magento\Cms\Model\Block;
-use Magento\Cms\Model\BlockFactory;
 use Magento\Cms\Model\GetBlockByIdentifier;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Cms\Model\GetBlockByIdentifier
  */
 
-class GetBlockByIdentifierTest extends TestCase
+class GetBlockByIdentifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GetBlockByIdentifier
@@ -25,23 +19,23 @@ class GetBlockByIdentifierTest extends TestCase
     private $getBlockByIdentifierCommand;
 
     /**
-     * @var MockObject|Block
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Cms\Model\Block
      */
     private $block;
 
     /**
-     * @var MockObject|BlockFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Cms\Model\BlockFactory
      */
     private $blockFactory;
 
     /**
-     * @var MockObject|\Magento\Cms\Model\ResourceModel\Block
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Cms\Model\ResourceModel\Block
      */
     private $blockResource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->blockFactory = $this->getMockBuilder(BlockFactory::class)
+        $this->blockFactory = $this->getMockBuilder(\Magento\Cms\Model\BlockFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -50,7 +44,7 @@ class GetBlockByIdentifierTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->block = $this->getMockBuilder(Block::class)
+        $this->block = $this->getMockBuilder(\Magento\Cms\Model\Block::class)
             ->disableOriginalConstructor()
             ->setMethods(['setStoreId', 'getId'])
             ->getMock();

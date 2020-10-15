@@ -3,62 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Review\Test\Unit\Block;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Review\Block\Form;
-use Magento\Review\Helper\Data;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Form */
+    /** @var \Magento\Review\Block\Form */
     protected $object;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Review\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $reviewDataMock;
 
-    /** @var ProductRepositoryInterface|MockObject */
+    /** @var \Magento\Catalog\Api\ProductRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $productRepository;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit_Framework_MockObject_MockObject */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->reviewDataMock = $this->getMockBuilder(Data::class)
+        $this->storeManager = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->reviewDataMock = $this->getMockBuilder(\Magento\Review\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -66,28 +52,26 @@ class FormTest extends TestCase
             ->method('getIsGuestAllowToWrite')
             ->willReturn(true);
 
-        $this->urlBuilder = $this->getMockBuilder(UrlInterface::class)
-            ->getMockForAbstractClass();
-        $this->context = $this->createMock(Context::class);
+        $this->urlBuilder = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)->getMockForAbstractClass();
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
         $this->context->expects(
             $this->any()
         )->method(
             'getStoreManager'
-        )->willReturn(
-            $this->storeManager
+        )->will(
+            $this->returnValue($this->storeManager)
         );
         $this->context->expects($this->any())
             ->method('getRequest')
             ->willReturn($this->requestMock);
         $this->context->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilder);
-        $this->productRepository = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
+        $this->productRepository = $this->createMock(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 
-        $this->serializerMock = $this->getMockBuilder(Json::class)
-            ->getMock();
+        $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->object = $this->objectManagerHelper->getObject(
-            Form::class,
+            \Magento\Review\Block\Form::class,
             [
                 'context' => $this->context,
                 'reviewData' => $this->reviewDataMock,
@@ -111,8 +95,8 @@ class FormTest extends TestCase
             $this->any()
         )->method(
             'getStore'
-        )->willReturn(
-            new DataObject(['id' => $storeId])
+        )->will(
+            $this->returnValue(new \Magento\Framework\DataObject(['id' => $storeId]))
         );
 
         $this->requestMock->expects($this->once())
@@ -120,7 +104,7 @@ class FormTest extends TestCase
             ->with('id', false)
             ->willReturn($productId);
 
-        $productMock = $this->getMockForAbstractClass(ProductInterface::class);
+        $productMock = $this->createMock(\Magento\Catalog\Api\Data\ProductInterface::class);
         $this->productRepository->expects($this->once())
             ->method('getById')
             ->with($productId, false, $storeId)
@@ -170,7 +154,7 @@ class FormTest extends TestCase
         ];
 
         $this->serializerMock->expects($this->once())->method('serialize')
-            ->willReturn(json_encode($jsLayout));
+            ->will($this->returnValue(json_encode($jsLayout)));
         $this->assertEquals('{"some-layout":"layout information"}', $this->object->getJsLayout());
     }
 }

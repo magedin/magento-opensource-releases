@@ -10,20 +10,8 @@ define([
     'use strict';
 
     describe('ui/js/modal/prompt', function () {
-
-        var element,
-            prompt,
-            widget;
-
-        beforeEach(function () {
-            element = $('<div id="element">some element</div>'),
+        var element = $('<div>some element</div>'),
             prompt = element.prompt({});
-            widget = element.prompt({}).data('mage-prompt');
-        });
-
-        afterEach(function () {
-            $('#element').remove();
-        });
 
         it('Check for modal definition', function () {
             expect(prompt).toBeDefined();
@@ -34,13 +22,6 @@ define([
         });
         it('Integration: modal created on page', function () {
             expect(prompt.length).toEqual(1);
-        });
-        it('Check cancel action', function () {
-            var cancel = spyOn(widget.options.actions, 'cancel');
-
-            jQuery('.modals-overlay').click();
-            expect(widget.options.outerClickHandler).toBeDefined();
-            expect(cancel).toHaveBeenCalled();
         });
     });
 });

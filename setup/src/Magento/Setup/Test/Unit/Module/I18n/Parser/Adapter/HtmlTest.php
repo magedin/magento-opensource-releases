@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Parser\Adapter\Html;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Module\I18n\Dictionary\Phrase;
 
-class HtmlTest extends TestCase
+class HtmlTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -24,16 +21,16 @@ class HtmlTest extends TestCase
     protected $_stringsCount;
 
     /**
-     * @var Html
+     * @var \Magento\Setup\Module\I18n\Parser\Adapter\Html
      */
     protected $_adapter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_testFile = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/_files/email.html';
         $this->_stringsCount = count(file($this->_testFile));
 
-        $this->_adapter = (new ObjectManager($this))->getObject(Html::class);
+        $this->_adapter = (new ObjectManager($this))->getObject(\Magento\Setup\Module\I18n\Parser\Adapter\Html::class);
     }
 
     public function testParse()

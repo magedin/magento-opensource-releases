@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Model\Import;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError;
-use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregator;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
-use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-abstract class AbstractImportTestCase extends TestCase
+abstract class AbstractImportTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
      */
     protected $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -31,22 +24,22 @@ abstract class AbstractImportTestCase extends TestCase
 
     /**
      * @param array|null $methods
-     * @return ProcessingErrorAggregatorInterface|MockObject
+     * @return ProcessingErrorAggregatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getErrorAggregatorObject($methods = null)
     {
         $errorFactory = $this->getMockBuilder(
-            ProcessingErrorFactory::class
+            \Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $errorFactory->method('create')->willReturn(
             $this->objectManagerHelper->getObject(
-                ProcessingError::class
+                \Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError::class
             )
         );
         return $this->getMockBuilder(
-            ProcessingErrorAggregator::class
+            \Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregator::class
         )->setMethods($methods)
             ->setConstructorArgs(['errorFactory' => $errorFactory])
             ->getMock();

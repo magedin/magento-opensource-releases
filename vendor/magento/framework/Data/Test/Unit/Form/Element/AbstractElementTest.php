@@ -3,71 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
-
-use Magento\Framework\Data\Form\AbstractForm;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\Form\Element\Collection;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Renderer\RendererInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\AbstractElement
  */
-class AbstractElementTest extends TestCase
+class AbstractElementTest extends \PHPUnit\Framework\TestCase
 {
-    private const RANDOM_STRING = '123456abcdefg';
-
     /**
-     * @var AbstractElement|MockObject
+     * @var \Magento\Framework\Data\Form\Element\AbstractElement|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_model;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_factoryMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_collectionFactoryMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_escaperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_factoryMock =
-            $this->createMock(Factory::class);
+            $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
         $this->_collectionFactoryMock =
-            $this->createMock(CollectionFactory::class);
-        $this->_escaperMock = $objectManager->getObject(Escaper::class);
-        $randomMock = $this->createMock(Random::class);
-        $randomMock->method('getRandomString')->willReturn(self::RANDOM_STRING);
+            $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $this->_escaperMock = $objectManager->getObject(\Magento\Framework\Escaper::class);
 
         $this->_model = $this->getMockForAbstractClass(
-            AbstractElement::class,
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
             [
                 $this->_factoryMock,
                 $this->_collectionFactoryMock,
-                $this->_escaperMock,
-                [],
-                $this->createMock(SecureHtmlRenderer::class),
-                $randomMock
+                $this->_escaperMock
             ]
         );
     }
@@ -79,7 +56,7 @@ class AbstractElementTest extends TestCase
     {
         $elementId = 11;
         $elementMock = $this->getMockForAbstractClass(
-            AbstractElement::class,
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
             [],
             '',
             false,
@@ -89,12 +66,12 @@ class AbstractElementTest extends TestCase
         );
         $elementMock->expects($this->once())
             ->method('getId')
-            ->willReturn($elementId);
+            ->will($this->returnValue($elementId));
 
-        $formMock = $this->getMockBuilder(AbstractForm::class)
-            ->addMethods(['checkElementId', 'addElementToCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\AbstractForm::class,
+            ['checkElementId', 'addElementToCollection']
+        );
         $formMock->expects($this->once())
             ->method('checkElementId')
             ->with($elementId);
@@ -102,11 +79,11 @@ class AbstractElementTest extends TestCase
             ->method('addElementToCollection')
             ->with($elementMock);
 
-        $collectionMock = $this->createMock(Collection::class);
+        $collectionMock = $this->createMock(\Magento\Framework\Data\Form\Element\Collection::class);
 
         $this->_collectionFactoryMock->expects($this->any())
             ->method('create')
-            ->willReturn($collectionMock);
+            ->will($this->returnValue($collectionMock));
 
         $this->_model->setForm($formMock);
         $this->_model->addElement($elementMock);
@@ -121,16 +98,16 @@ class AbstractElementTest extends TestCase
         $htmlIdSuffix = ']]';
         $htmlId = 'some_id';
 
-        $formMock = $this->getMockBuilder(AbstractForm::class)
-            ->addMethods(['getHtmlIdPrefix', 'getHtmlIdSuffix'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\AbstractForm::class,
+            ['getHtmlIdPrefix', 'getHtmlIdSuffix']
+        );
         $formMock->expects($this->any())
             ->method('getHtmlIdPrefix')
-            ->willReturn($htmlIdPrefix);
+            ->will($this->returnValue($htmlIdPrefix));
         $formMock->expects($this->any())
             ->method('getHtmlIdSuffix')
-            ->willReturn($htmlIdSuffix);
+            ->will($this->returnValue($htmlIdSuffix));
 
         $this->_model->setId($htmlId);
         $this->_model->setForm($formMock);
@@ -142,13 +119,13 @@ class AbstractElementTest extends TestCase
      */
     public function testGetNameWithoutSuffix()
     {
-        $formMock = $this->getMockBuilder(AbstractForm::class)
-            ->addMethods(['getFieldNameSuffix', 'addSuffixToName'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\AbstractForm::class,
+            ['getFieldNameSuffix', 'addSuffixToName']
+        );
         $formMock->expects($this->any())
             ->method('getFieldNameSuffix')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $formMock->expects($this->never())
             ->method('addSuffixToName');
 
@@ -163,16 +140,16 @@ class AbstractElementTest extends TestCase
     {
         $returnValue = 'some_value';
 
-        $formMock = $this->getMockBuilder(AbstractForm::class)
-            ->addMethods(['getFieldNameSuffix', 'addSuffixToName'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\AbstractForm::class,
+            ['getFieldNameSuffix', 'addSuffixToName']
+        );
         $formMock->expects($this->once())
             ->method('getFieldNameSuffix')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $formMock->expects($this->once())
             ->method('addSuffixToName')
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
 
         $this->_model->setForm($formMock);
 
@@ -186,19 +163,19 @@ class AbstractElementTest extends TestCase
     {
         $elementId = 'element_id';
 
-        $formMock = $this->createPartialMock(AbstractForm::class, ['removeField']);
+        $formMock = $this->createPartialMock(\Magento\Framework\Data\Form\AbstractForm::class, ['removeField']);
         $formMock->expects($this->once())
             ->method('removeField')
             ->with($elementId);
 
-        $collectionMock = $this->createPartialMock(Collection::class, ['remove']);
+        $collectionMock = $this->createPartialMock(\Magento\Framework\Data\Form\Element\Collection::class, ['remove']);
         $collectionMock->expects($this->once())
             ->method('remove')
             ->with($elementId);
 
         $this->_collectionFactoryMock->expects($this->any())
             ->method('create')
-            ->willReturn($collectionMock);
+            ->will($this->returnValue($collectionMock));
 
         $this->_model->setForm($formMock);
         $this->_model->removeField($elementId);
@@ -279,14 +256,11 @@ class AbstractElementTest extends TestCase
         $value = '<a href="#hash_tag">my &#039;quoted&#039; string</a>';
         $expectedValue = '&lt;a href=&quot;#hash_tag&quot;&gt;my &#039;quoted&#039; string&lt;/a&gt;';
 
-        $filterMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['filter'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $filterMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['filter']);
         $filterMock->expects($this->once())
             ->method('filter')
             ->with($value)
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
 
         $this->_model->setValueFilter($filterMock);
         $this->_model->setValue($value);
@@ -302,7 +276,7 @@ class AbstractElementTest extends TestCase
     public function testGetElementHtml(array $initialData, $expectedValue)
     {
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
 
         $this->_model->setData($initialData);
@@ -320,7 +294,7 @@ class AbstractElementTest extends TestCase
         $idSuffix = isset($initialData['id_suffix']) ? $initialData['id_suffix'] : null;
         $this->_model->setData($initialData);
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
         $this->assertEquals($expectedValue, $this->_model->getLabelHtml($idSuffix));
     }
@@ -335,7 +309,7 @@ class AbstractElementTest extends TestCase
     {
         $this->_model->setData($initialData);
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
         $this->assertEquals($expectedValue, $this->_model->getDefaultHtml());
     }
@@ -347,12 +321,11 @@ class AbstractElementTest extends TestCase
     {
         $this->_model->setRequired(true);
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
         $expectedHtml = '<div class="admin__field">'
             . "\n"
-            . '<input id="" name=""  data-ui-id="form-element-" value="" class=" required-entry _required"'
-            .' formelementhookid="elemId' .self::RANDOM_STRING .'"/></div>'
+            . '<input id="" name=""  data-ui-id="form-element-" value="" class=" required-entry _required"/></div>'
             . "\n";
 
         $this->assertEquals($expectedHtml, $this->_model->getHtml());
@@ -369,12 +342,12 @@ class AbstractElementTest extends TestCase
         $expectedHtml = 'some-html';
 
         $rendererMock = $this->getMockForAbstractClass(
-            RendererInterface::class
+            \Magento\Framework\Data\Form\Element\Renderer\RendererInterface::class
         );
         $rendererMock->expects($this->once())
             ->method('render')
             ->with($this->_model)
-            ->willReturn($expectedHtml);
+            ->will($this->returnValue($expectedHtml));
         $this->_model->setRenderer($rendererMock);
 
         $this->assertEquals($expectedHtml, $this->_model->getHtml());
@@ -395,8 +368,7 @@ class AbstractElementTest extends TestCase
             unset($initialData['attributes']);
         }
         $this->_model->setData($initialData);
-        $expectedValue .= ' formelementhookid="elemId' .self::RANDOM_STRING .'"';
-        $this->assertEquals(trim($expectedValue), $this->_model->serialize($attributes));
+        $this->assertEquals($expectedValue, $this->_model->serialize($attributes));
     }
 
     /**
@@ -405,7 +377,7 @@ class AbstractElementTest extends TestCase
     public function testGetHtmlContainerIdWithoutId()
     {
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
         $this->assertEquals('', $this->_model->getHtmlContainerId());
     }
@@ -418,7 +390,7 @@ class AbstractElementTest extends TestCase
         $containerId = 'some-id';
         $this->_model->setContainerId($containerId);
         $this->_model->setForm(
-            $this->createMock(AbstractForm::class)
+            $this->createMock(\Magento\Framework\Data\Form\AbstractForm::class)
         );
         $this->assertEquals($containerId, $this->_model->getHtmlContainerId());
     }
@@ -430,13 +402,13 @@ class AbstractElementTest extends TestCase
     {
         $id = 'id';
         $prefix = 'prefix_';
-        $formMock = $this->getMockBuilder(AbstractForm::class)
-            ->addMethods(['getFieldContainerIdPrefix'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\AbstractForm::class,
+            ['getFieldContainerIdPrefix']
+        );
         $formMock->expects($this->once())
             ->method('getFieldContainerIdPrefix')
-            ->willReturn($prefix);
+            ->will($this->returnValue($prefix));
 
         $this->_model->setId($id);
         $this->_model->setForm($formMock);
@@ -553,8 +525,7 @@ class AbstractElementTest extends TestCase
             [
                 [],
                 '<div class="admin__field">' . "\n"
-                . '<input id="" name=""  data-ui-id="form-element-" value=""'
-                .' formelementhookid="elemId' .self::RANDOM_STRING .'"/></div>' . "\n",
+                . '<input id="" name=""  data-ui-id="form-element-" value="" /></div>' . "\n",
             ],
             [
                 ['default_html' => 'some default html'],
@@ -570,8 +541,7 @@ class AbstractElementTest extends TestCase
                 '<div class="admin__field">' . "\n"
                 . '<label class="label admin__field-label" for="html-id" data-ui-id="form-element-some-namelabel">'
                 . '<span>some label</span></label>' . "\n"
-                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>'
+                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />'
                 . '</div>' . "\n"
             ],
             [
@@ -584,8 +554,7 @@ class AbstractElementTest extends TestCase
                 ],
                 '<label class="label admin__field-label" for="html-id" data-ui-id="form-element-some-namelabel">'
                 . '<span>some label</span></label>' . "\n"
-                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>'
+                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />'
             ],
         ];
     }
@@ -634,8 +603,7 @@ class AbstractElementTest extends TestCase
         return [
             [
                 [],
-                '<input id="" name=""  data-ui-id="form-element-" value="" formelementhookid="elemId'
-                    .self::RANDOM_STRING .'"/>',
+                '<input id="" name=""  data-ui-id="form-element-" value="" />',
             ],
             [
                 [
@@ -643,8 +611,7 @@ class AbstractElementTest extends TestCase
                     'name' => 'some-name',
                     'value' => 'some-value',
                 ],
-                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                    .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>'
+                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />'
             ],
             [
                 [
@@ -654,8 +621,7 @@ class AbstractElementTest extends TestCase
                     'before_element_html' => 'some-html',
                 ],
                 '<label class="addbefore" for="html-id">some-html</label>'
-                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>'
+                . '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />'
             ],
             [
                 [
@@ -664,8 +630,7 @@ class AbstractElementTest extends TestCase
                     'value' => 'some-value',
                     'after_element_js' => 'some-js',
                 ],
-                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                    .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>some-js'
+                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />some-js'
             ],
             [
                 [
@@ -674,9 +639,8 @@ class AbstractElementTest extends TestCase
                     'value' => 'some-value',
                     'after_element_html' => 'some-html',
                 ],
-                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value"'
-                    .' formelementhookid="elemId' .self::RANDOM_STRING .'"/>'
-                    . '<label class="addafter" for="html-id">some-html</label>'
+                '<input id="html-id" name="some-name"  data-ui-id="form-element-some-name" value="some-value" />'
+                . '<label class="addafter" for="html-id">some-html</label>'
             ]
         ];
     }

@@ -5,24 +5,22 @@
  */
 
 /* @var $block \Magento\ConfigurableProduct\Block\Product\Configurable\AttributeSelector */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-
-<?php $scriptString = <<<script
+<script>
 (function(){
     'use strict';
-
-    var _form;
+    
+    var $form;
 
     require([
         'jquery',
         'jquery/ui',
         'Magento_Ui/js/modal/modal'
     ], function($){
-        _form = $('[data-role=affected-attribute-set-selector]');
+        $form = $('[data-role=affected-attribute-set-selector]');
         var resetValidation = function() {
-                _form.find('.messages .message.error').hide();
-                _form.find('form').validation().data('validator').resetForm();
+                $form.find('.messages .message.error').hide();
+                $form.find('form').validation().data('validator').resetForm();
             },
             setAttributeSetId = function (id) {
                 $('[data-role=new-variations-attribute-set-id]').val(id);
@@ -33,10 +31,10 @@
             newAttributeSetContainer = $('[data-role=affected-attribute-set-new-name-container]'),
             existingAttributeSetContainer = $('[data-role=affected-attribute-set-existing-name-container]');
 
-        _form.find('input[type=text]').on('keypress',function(e){
+        $form.find('input[type=text]').on('keypress',function(e){
             if(e.keyCode === 13){
                 e.preventDefault();
-                _form.closest('[data-role=modal]').find('button[data-action=confirm]').click();
+                $form.closest('[data-role=modal]').find('button[data-action=confirm]').click();
             }
         });
 
@@ -46,67 +44,66 @@
             'data-role': 'new-variations-attribute-set-id'
         }));
 
-        _form
+        $form
             .modal({
-                title: '{$block->escapeJs(__('Choose Affected Attribute Set'))}',
+                title: '<?= $block->escapeJs(__('Choose Affected Attribute Set')) ?>',
                 closed: function () {
                     resetValidation();
                 },
                 buttons: [{
-                    text: '{$block->escapeJs(__('Confirm'))}',
+                    text: '<?= $block->escapeJs(__('Confirm')) ?>',
                     attr: {
                         'data-action': 'confirm'
                     },
                     'class': 'action-primary',
                     click: function() {
-                        var affectedAttributeSetId = _form.find('input[name=affected-attribute-set]:checked').val();
+                        var affectedAttributeSetId = $form.find('input[name=affected-attribute-set]:checked').val();
                         if (affectedAttributeSetId == 'current') {
                             setAttributeSetId($('#attribute_set_id').val());
-                            closeDialogAndProcessForm(_form);
+                            closeDialogAndProcessForm($form);
                             return;
                         } else if (affectedAttributeSetId == 'existing') {
                             setAttributeSetId($('select', existingAttributeSetContainer).val());
-                            closeDialogAndProcessForm(form);
+                            closeDialogAndProcessForm($form);
                         }
 
-                        _form.find('.messages .message.error').hide();
-                        if (!_form.find('form').validation().valid()) {
-                            _form.find('input[name=new-attribute-set-name]').focus();
+                        $form.find('.messages .message.error').hide();
+                        if (!$form.find('form').validation().valid()) {
+                            $form.find('input[name=new-attribute-set-name]').focus();
                             return false;
                         }
 
                         $.ajax({
                             type: 'POST',
-                            url: '{$block->escapeUrl($block->getAttributeSetCreationUrl())}',
+                            url: '<?= $block->escapeUrl($block->getAttributeSetCreationUrl()) ?>',
                             data: {
                                 gotoEdit: 1,
-                                attribute_set_name: _form.find('input[name=new-attribute-set-name]').val(),
+                                attribute_set_name: $form.find('input[name=new-attribute-set-name]').val(),
                                 skeleton_set: $('#attribute_set_id').val(),
-                                form_key: '{$block->escapeJs($block->getFormKey())}',
+                                form_key: '<?= $block->escapeJs($block->getFormKey()) ?>',
                                 return_session_messages_only: 1
                             },
                             dataType: 'json',
                             showLoader: true,
-                            context: _form
+                            context: $form
                         })
                             .done(function (data) {
                                 if (!data.error) {
                                     setAttributeSetId(data.id);
-                                    closeDialogAndProcessForm(_form);
+                                    closeDialogAndProcessForm($form);
                                 } else {
-                                    _form.find('.messages .message.error').replaceWith($(data.messages)
-                                    .find('.message.error'));
+                                    $form.find('.messages .message.error').replaceWith($(data.messages).find('.message.error'));
                                 }
                             });
 
                         return false;
                     }
                 },{
-                    text: '{$block->escapeJs(__('Cancel'))}',
-                    id: '{$block->escapeJs($block->getJsId('close-button'))}',
+                    text: '<?= $block->escapeJs(__('Cancel')) ?>',
+                    id: '<?= $block->escapeJs($block->getJsId('close-button')) ?>',
                     'class': 'action-close',
                     click: function() {
-                        _form.modal('closeModal');
+                        $form.modal('closeModal');
                     }
                 }]
             })
@@ -120,7 +117,7 @@
                 }
             });
     });
-
+    
     require([
         'jquery'
     ], function ($) {
@@ -130,17 +127,17 @@
          *
          * @return {Array}
          */
-        var getAttributes = function (_node) {
+        var getAttributes = function ($node) {
             return $.map(
-                _node.find('[data-role=configurable-attributes-container] [data-role=attribute-info]') || [],
+                $node.find('[data-role=configurable-attributes-container] [data-role=attribute-info]') || [],
                 function (attribute) {
-                    var _attribute = $(attribute);
+                    var $attribute = $(attribute);
 
                     return {
-                        id: _attribute.find('[name$="[attribute_id]"]').val(),
-                        code: _attribute.find('[name$="[code]"]').val(),
-                        label: _attribute.find('[name$="[label]"]').val(),
-                        position: _attribute.find('[name$="[position]"]').val()
+                        id: $attribute.find('[name$="[attribute_id]"]').val(),
+                        code: $attribute.find('[name$="[code]"]').val(),
+                        label: $attribute.find('[name$="[label]"]').val(),
+                        position: $attribute.find('[name$="[position]"]').val()
                     };
                 }
             );
@@ -173,13 +170,10 @@
 
             event.stopImmediatePropagation();
 
-            _form.data('target', event.target).modal('openModal');
+            $form.data('target', event.target).modal('openModal');
         });
 
     });
 
 })();
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
-
+</script>

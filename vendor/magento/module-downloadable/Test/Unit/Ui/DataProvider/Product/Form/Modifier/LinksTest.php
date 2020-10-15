@@ -3,30 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Directory\Model\Currency;
-use Magento\Downloadable\Model\Source\Shareable;
-use Magento\Downloadable\Model\Source\TypeUpload;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Links as LinksData;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Links;
-use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Api\Data\StoreInterface;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Links;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Links as LinksData;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Model\Source\TypeUpload;
+use Magento\Downloadable\Model\Source\Shareable;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\Stdlib\ArrayManager;
 
 /**
  * Test for class Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Links
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LinksTest extends TestCase
+class LinksTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -34,42 +28,42 @@ class LinksTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var LinksData|MockObject
+     * @var LinksData|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $linksDataMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var TypeUpload|MockObject
+     * @var TypeUpload|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeUploadMock;
 
     /**
-     * @var Shareable|MockObject
+     * @var Shareable|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shareableMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var ArrayManager|MockObject
+     * @var ArrayManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $arrayManagerMock;
 
@@ -81,13 +75,13 @@ class LinksTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
-        $this->productMock = $this->getMockForAbstractClass(ProductInterface::class);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->locatorMock = $this->createMock(LocatorInterface::class);
+        $this->productMock = $this->createMock(ProductInterface::class);
+        $this->storeManagerMock = $this->createMock(StoreManagerInterface::class);
+        $this->urlBuilderMock = $this->createMock(UrlInterface::class);
         $this->linksDataMock = $this->createMock(LinksData::class);
         $this->typeUploadMock = $this->createMock(TypeUpload::class);
         $this->shareableMock = $this->createMock(Shareable::class);
@@ -181,10 +175,10 @@ class LinksTest extends TestCase
         $this->urlBuilderMock->expects($this->exactly(2))
             ->method('getUrl');
 
-        $currencyMock = $this->createMock(Currency::class);
+        $currencyMock = $this->createMock(\Magento\Directory\Model\Currency::class);
         $currencyMock->expects($this->once())
             ->method('getCurrencySymbol');
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->setMethods(['getBaseCurrency'])
             ->getMockForAbstractClass();
         $storeMock->expects($this->once())

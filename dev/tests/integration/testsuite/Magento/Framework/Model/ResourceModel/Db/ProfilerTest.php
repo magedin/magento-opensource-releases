@@ -29,7 +29,7 @@ class ProfilerTest extends \PHPUnit\Framework\TestCase
      *
      * phpcs:disable Magento2.Functions.StaticFunction
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         self::$_testResourceName = 'testtest_' . random_int(1000, 9999) . '_setup';
 
@@ -41,12 +41,12 @@ class ProfilerTest extends \PHPUnit\Framework\TestCase
      *
      * phpcs:disable Magento2.Functions.StaticFunction
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         \Magento\Framework\Profiler::disable();
     } // phpcs:enable
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\App\ResourceConnection::class);

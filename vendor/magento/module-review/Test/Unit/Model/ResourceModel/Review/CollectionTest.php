@@ -3,69 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Review\Test\Unit\Model\ResourceModel\Review;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Review\Model\ResourceModel\Review\Collection;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Review\Model\ResourceModel\Review\Collection
      */
     protected $model;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerAdapterMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $store = $this->createPartialMock(Store::class, ['getId']);
-        $store->expects($this->any())->method('getId')->willReturn(1);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->storeManagerMock->expects($this->any())->method('getStore')->willReturn($store);
-        $this->objectManager = (new ObjectManager($this));
-        $this->resourceMock = $this->getMockBuilder(AbstractDb::class)
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getId']);
+        $store->expects($this->any())->method('getId')->will($this->returnValue(1));
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->storeManagerMock->expects($this->any())->method('getStore')->will($this->returnValue($store));
+        $this->objectManager = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this));
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection', 'getMainTable', 'getTable'])
             ->getMockForAbstractClass();
-        $this->readerAdapterMock = $this->getMockBuilder(Mysql::class)
+        $this->readerAdapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['select', 'prepareSqlCondition', 'quoteInto'])
             ->getMockForAbstractClass();
-        $this->selectMock = $this->getMockBuilder(Select::class)
+        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->readerAdapterMock->expects($this->any())
@@ -83,7 +70,7 @@ class CollectionTest extends TestCase
                 return $table;
             });
         $this->model = $this->objectManager->getObject(
-            Collection::class,
+            \Magento\Review\Model\ResourceModel\Review\Collection::class,
             [
                 'storeManager' => $this->storeManagerMock,
                 'resource' => $this->resourceMock,
@@ -101,7 +88,7 @@ class CollectionTest extends TestCase
                 ['detail_id', 'title', 'detail', 'nickname', 'customer_id']
             );
         $this->objectManager->getObject(
-            Collection::class,
+            \Magento\Review\Model\ResourceModel\Review\Collection::class,
             [
                 'storeManager' => $this->storeManagerMock,
                 'resource' => $this->resourceMock,

@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace tests\unit\Magento\FunctionalTestFramework\Config\Reader;
+namespace Tests\unit\Magento\FunctionalTestFramework\Test\Config\Reader;
 
 use Magento\FunctionalTestingFramework\Config\FileResolver\Module;
 use Magento\FunctionalTestingFramework\Config\Reader\Filesystem;
@@ -19,7 +19,7 @@ class FilesystemTest extends TestCase
      * Before test functionality
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         TestLoggingUtil::getInstance()->setMockLoggingUtil();
     }
@@ -100,7 +100,7 @@ class FilesystemTest extends TestCase
      * After class functionality
      * @return void
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         TestLoggingUtil::getInstance()->clearMockLoggingUtil();
         parent::tearDownAfterClass();

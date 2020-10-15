@@ -42,7 +42,7 @@ class ProductViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -58,7 +58,7 @@ class ProductViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
 
@@ -83,7 +83,7 @@ class ProductViewTest extends TestCase
     {
         $product = $this->registerProduct('simple2');
         $html = $this->block->toHtml();
-        $this->assertStringContainsString('sendfriend/product/send/id/' . $product->getId(), $html);
+        $this->assertContains('sendfriend/product/send/id/' . $product->getId(), $html);
         $this->assertEquals('Email', trim(strip_tags($html)));
     }
 

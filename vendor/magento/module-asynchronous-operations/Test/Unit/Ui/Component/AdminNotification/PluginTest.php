@@ -3,32 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Test\Unit\Ui\Component\AdminNotification;
 
-use Magento\AdminNotification\Ui\Component\DataProvider\DataProvider;
-use Magento\AsynchronousOperations\Ui\Component\AdminNotification\Plugin;
 use Magento\Framework\AuthorizationInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PluginTest extends TestCase
+class PluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Plugin
+     * @var \Magento\AsynchronousOperations\Ui\Component\AdminNotification\Plugin
      */
     private $plugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $authorizationMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
-        $this->plugin = new Plugin(
+        $this->authorizationMock = $this->createMock(AuthorizationInterface::class);
+        $this->plugin = new \Magento\AsynchronousOperations\Ui\Component\AdminNotification\Plugin(
             $this->authorizationMock
         );
     }
@@ -47,7 +41,7 @@ class PluginTest extends TestCase
                 ]
             ]
         ];
-        $dataProviderMock = $this->createMock(DataProvider::class);
+        $dataProviderMock = $this->createMock(\Magento\AdminNotification\Ui\Component\DataProvider\DataProvider::class);
         $this->authorizationMock->expects($this->once())->method('isAllowed')->willReturn(true);
         $this->assertEquals($expectedResult, $this->plugin->afterGetMeta($dataProviderMock, $result));
     }

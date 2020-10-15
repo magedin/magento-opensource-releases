@@ -23,7 +23,7 @@ class MethodCollectorTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->methodCollector = $this->objectManager->create(

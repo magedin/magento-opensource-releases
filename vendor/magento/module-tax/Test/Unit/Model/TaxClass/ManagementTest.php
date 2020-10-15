@@ -3,52 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\TaxClass;
 
-use Magento\Framework\Api\Filter;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Api\Data\TaxClassKeyInterface;
-use Magento\Tax\Api\Data\TaxRateSearchResultsInterface;
-use Magento\Tax\Model\ClassModel;
-use Magento\Tax\Model\TaxClass\Management;
-use Magento\Tax\Model\TaxClass\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Tax\Model\TaxClass\Management;
 
-class ManagementTest extends TestCase
+class ManagementTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Management */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $filterBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchCriteriaBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $classRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->classRepository = $this->createMock(Repository::class);
-        $this->searchCriteriaBuilder = $this->createMock(SearchCriteriaBuilder::class);
-        $this->filterBuilder = $this->createMock(FilterBuilder::class);
+        $this->classRepository = $this->createMock(\Magento\Tax\Model\TaxClass\Repository::class);
+        $this->searchCriteriaBuilder = $this->createMock(\Magento\Framework\Api\SearchCriteriaBuilder::class);
+        $this->filterBuilder = $this->createMock(\Magento\Framework\Api\FilterBuilder::class);
         $this->model = $helper->getObject(
-            Management::class,
+            \Magento\Tax\Model\TaxClass\Management::class,
             [
                 'filterBuilder' => $this->filterBuilder,
                 'searchCriteriaBuilder' => $this->searchCriteriaBuilder,
@@ -64,20 +52,20 @@ class ManagementTest extends TestCase
 
     public function testGetTaxClassIdByIDType()
     {
-        $taxClassKey = $this->getMockForAbstractClass(TaxClassKeyInterface::class);
+        $taxClassKey = $this->createMock(\Magento\Tax\Api\Data\TaxClassKeyInterface::class);
         $taxClassKey->expects($this->once())
             ->method('getType')
-            ->willReturn(TaxClassKeyInterface::TYPE_ID);
+            ->willReturn(\Magento\Tax\Api\Data\TaxClassKeyInterface::TYPE_ID);
         $taxClassKey->expects($this->once())->method('getValue')->willReturn('value');
         $this->assertEquals('value', $this->model->getTaxClassId($taxClassKey));
     }
 
     public function testGetTaxClassIdByNameType()
     {
-        $taxClassKey = $this->getMockForAbstractClass(TaxClassKeyInterface::class);
+        $taxClassKey = $this->createMock(\Magento\Tax\Api\Data\TaxClassKeyInterface::class);
         $taxClassKey->expects($this->once())
             ->method('getType')
-            ->willReturn(TaxClassKeyInterface::TYPE_NAME);
+            ->willReturn(\Magento\Tax\Api\Data\TaxClassKeyInterface::TYPE_NAME);
         $taxClassKey->expects($this->once())->method('getValue')->willReturn('value');
 
         $this->filterBuilder
@@ -85,8 +73,8 @@ class ManagementTest extends TestCase
             ->method('setField')
             ->with(
                 $this->logicalOr(
-                    ClassModel::KEY_TYPE,
-                    ClassModel::KEY_NAME
+                    \Magento\Tax\Model\ClassModel::KEY_TYPE,
+                    \Magento\Tax\Model\ClassModel::KEY_NAME
                 )
             )->willReturnSelf();
 
@@ -100,7 +88,7 @@ class ManagementTest extends TestCase
                 )
             )->willReturnSelf();
 
-        $filter = $this->createMock(Filter::class);
+        $filter = $this->createMock(\Magento\Framework\Api\Filter::class);
         $this->filterBuilder->expects($this->exactly(2))->method('create')->willReturn($filter);
         $this->searchCriteriaBuilder
             ->expects($this->exactly(2))
@@ -108,10 +96,10 @@ class ManagementTest extends TestCase
             ->with([$filter])
             ->willReturnSelf();
 
-        $searchCriteria = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
+        $searchCriteria = $this->createMock(\Magento\Framework\Api\SearchCriteriaInterface::class);
         $this->searchCriteriaBuilder->expects($this->once())->method('create')->willReturn($searchCriteria);
 
-        $result = $this->getMockForAbstractClass(TaxRateSearchResultsInterface::class);
+        $result = $this->createMock(\Magento\Tax\Api\Data\TaxRateSearchResultsInterface::class);
         $result->expects($this->once())->method('getItems')->willReturn([]);
         $this->classRepository->expects($this->once())->method('getList')->with($searchCriteria)->willReturn($result);
 

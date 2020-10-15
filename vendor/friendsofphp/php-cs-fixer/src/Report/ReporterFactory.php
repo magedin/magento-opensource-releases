@@ -32,7 +32,7 @@ final class ReporterFactory
 
     public function registerBuiltInReporters()
     {
-        /** @var null|string[] $builtInReporters */
+        /** @var string[] $builtInReporters */
         static $builtInReporters;
 
         if (null === $builtInReporters) {
@@ -58,6 +58,8 @@ final class ReporterFactory
     }
 
     /**
+     * @param ReporterInterface $reporter
+     *
      * @return $this
      */
     public function registerReporter(ReporterInterface $reporter)

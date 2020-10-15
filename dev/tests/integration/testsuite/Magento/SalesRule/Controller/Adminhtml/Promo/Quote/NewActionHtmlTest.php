@@ -48,7 +48,7 @@ class NewActionHtmlTest extends AbstractBackendController
         $this->dispatch($this->uri);
         $html = $this->getResponse()
             ->getBody();
-        $this->assertStringContainsString($this->formName, $html);
+        $this->assertContains($this->formName, $html);
     }
 
     /**

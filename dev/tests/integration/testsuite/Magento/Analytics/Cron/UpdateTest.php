@@ -63,7 +63,7 @@ class UpdateTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->httpClient = $this->getMockBuilder(ClientInterface::class)

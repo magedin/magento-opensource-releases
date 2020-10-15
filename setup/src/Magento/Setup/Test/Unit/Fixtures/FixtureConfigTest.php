@@ -3,40 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
 use Magento\Framework\Xml\Parser;
 use Magento\Setup\Fixtures\FixtureConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FixtureConfigTest extends TestCase
+class FixtureConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FixtureConfig
+     * @var \Magento\Setup\Fixtures\FixtureConfig
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $fileParserMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->fileParserMock = $this->createPartialMock(Parser::class, ['getDom', 'xmlToArray']);
 
         $this->model = new FixtureConfig($this->fileParserMock);
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Profile configuration file `exception.file` is not readable or does not exists.
+     */
     public function testLoadConfigException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage(
-            'Profile configuration file `exception.file` is not readable or does not exists.'
-        );
         $this->model->loadConfig('exception.file');
     }
 
@@ -59,7 +56,7 @@ class FixtureConfigTest extends TestCase
 
     public function testGetValue()
     {
-        $this->assertNull($this->model->getValue('null_key'));
+        $this->assertSame(null, $this->model->getValue('null_key'));
     }
 }
 

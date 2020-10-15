@@ -70,7 +70,6 @@ class AddressDeterminer
         }
 
         if (!$customerId) {
-            // The address is incomplete and there's nothing to fall back to
             return null;
         }
 

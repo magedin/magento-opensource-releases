@@ -24,12 +24,12 @@ class IndexTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
         $this->dispatch('backend/admin/locks/index');
 
         $body = $this->getResponse()->getBody();
-        $this->assertStringContainsString('<h1 class="page-title">Locked Users</h1>', $body);
-        $this->assertMatchesRegularExpression(
+        $this->assertContains('<h1 class="page-title">Locked Users</h1>', $body);
+        $this->assertRegExp(
             '/<td data-column\="username"\s*class\="[^"]*col-name[^"]*col-username[^"]*"\s*>\s*adminUser1\s*<\/td>/',
             $body
         );
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             '/<td data-column\="username"\s*class\="[^"]*col-name[^"]*col-username\s*"[^"]*>\s*adminUser2\s*<\/td>/',
             $body
         );

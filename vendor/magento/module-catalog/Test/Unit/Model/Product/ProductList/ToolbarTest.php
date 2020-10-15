@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\ProductList;
 
-use Magento\Catalog\Model\Product\ProductList\Toolbar;
-use Magento\Framework\App\Request\Http;
+use \Magento\Catalog\Model\Product\ProductList\Toolbar;
+
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class ToolbarTest extends TestCase
+class ToolbarTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Toolbar
@@ -22,20 +18,20 @@ class ToolbarTest extends TestCase
     protected $toolbarModel;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->toolbarModel = (new ObjectManager($this))->getObject(
-            Toolbar::class,
+            \Magento\Catalog\Model\Product\ProductList\Toolbar::class,
             [
                 'request' => $this->requestMock,
             ]
@@ -51,7 +47,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::ORDER_PARAM_NAME)
-            ->willReturn($param);
+            ->will($this->returnValue($param));
         $this->assertEquals($param, $this->toolbarModel->getOrder());
     }
 
@@ -64,7 +60,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::DIRECTION_PARAM_NAME)
-            ->willReturn($param);
+            ->will($this->returnValue($param));
         $this->assertEquals($param, $this->toolbarModel->getDirection());
     }
 
@@ -77,7 +73,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::MODE_PARAM_NAME)
-            ->willReturn($param);
+            ->will($this->returnValue($param));
         $this->assertEquals($param, $this->toolbarModel->getMode());
     }
 
@@ -90,7 +86,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::LIMIT_PARAM_NAME)
-            ->willReturn($param);
+            ->will($this->returnValue($param));
         $this->assertEquals($param, $this->toolbarModel->getLimit());
     }
 
@@ -103,7 +99,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::PAGE_PARM_NAME)
-            ->willReturn($param);
+            ->will($this->returnValue($param));
         $this->assertEquals($param, $this->toolbarModel->getCurrentPage());
     }
 
@@ -112,7 +108,7 @@ class ToolbarTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with(Toolbar::PAGE_PARM_NAME)
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->assertEquals(1, $this->toolbarModel->getCurrentPage());
     }
 

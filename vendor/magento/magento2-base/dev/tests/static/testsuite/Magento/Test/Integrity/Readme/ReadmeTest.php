@@ -25,7 +25,7 @@ class ReadmeTest extends \PHPUnit\Framework\TestCase
     /** @var array */
     private $scanList = [];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->blacklist = $this->getPaths(__DIR__ . '/' . self::BLACKLIST_FILES_PATTERN);
         $this->scanList = $this->getPaths(__DIR__ . '/' . self::SCAN_LIST_FILE);

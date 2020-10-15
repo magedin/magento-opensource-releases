@@ -1,44 +1,57 @@
-<?php declare(strict_types=1);
+<?php
 /*
- * This file is part of the finder-facade package.
+ * This file is part of the Finder Facade package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\FinderFacade;
 
 use Symfony\Component\Finder\Finder;
 
-final class FinderFacade
+/**
+ * Convenience wrapper for Symfony's Finder component.
+ *
+ * @since     Class available since Release 1.0.0
+ */
+class FinderFacade
 {
     /**
      * @var array
      */
-    private $items = [];
+    protected $items = array();
 
     /**
      * @var array
      */
-    private $excludes = [];
+    protected $excludes = array();
 
     /**
      * @var array
      */
-    private $names = [];
+    protected $names = array();
 
     /**
      * @var array
      */
-    private $notNames = [];
+    protected $notNames = array();
 
     /**
      * @var array
      */
-    private $regularExpressionsExcludes = [];
+    protected $regularExpressionsExcludes = array();
 
-    public function __construct(array $items = [], array $excludes = [], array $names = [], array $notNames = [], $regularExpressionsExcludes = [])
+    /**
+     * @param array $items
+     * @param array $excludes
+     * @param array $names
+     * @param array $notNames
+     * @param array $regularExpressionsExcludes
+     */
+    public function __construct(array $items = array(), array $excludes = array(), array $names = array(), array $notNames = array(), $regularExpressionsExcludes = array())
     {
         $this->items                      = $items;
         $this->excludes                   = $excludes;
@@ -48,23 +61,22 @@ final class FinderFacade
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function findFiles(): array
+    public function findFiles()
     {
-        $files   = [];
+        $files   = array();
         $finder  = new Finder;
         $iterate = false;
 
         $finder->ignoreUnreadableDirs();
-        $finder->sortByName();
 
         foreach ($this->items as $item) {
-            if (!\is_file($item)) {
+            if (!is_file($item)) {
                 $finder->in($item);
                 $iterate = true;
             } else {
-                $files[] = \realpath($item);
+                $files[] = realpath($item);
             }
         }
 
@@ -93,7 +105,10 @@ final class FinderFacade
         return $files;
     }
 
-    public function loadConfiguration(string $file): void
+    /**
+     * @param string $file
+     */
+    public function loadConfiguration($file)
     {
         $configuration = new Configuration($file);
         $configuration = $configuration->parse();

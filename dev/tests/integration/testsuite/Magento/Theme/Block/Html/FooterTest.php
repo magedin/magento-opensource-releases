@@ -14,7 +14,7 @@ class FooterTest extends \PHPUnit\Framework\TestCase
      */
     protected $_theme;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\App\State::class)
             ->setAreaCode('frontend');

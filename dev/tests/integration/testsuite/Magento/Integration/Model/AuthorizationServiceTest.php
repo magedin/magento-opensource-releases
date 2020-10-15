@@ -19,15 +19,15 @@ class AuthorizationServiceTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Framework\Authorization */
     protected $libAuthorization;
 
-    /** @var \Magento\Authorization\Model\UserContextInterface|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var \Magento\Authorization\Model\UserContextInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $userContextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->disableOriginalConstructor()->getMock();
-        $loggerMock->expects($this->any())->method('critical')->willReturnSelf();
+        $loggerMock->expects($this->any())->method('critical')->will($this->returnSelf());
         $this->_service = $objectManager->create(
             \Magento\Integration\Model\AuthorizationService::class,
             [
@@ -41,7 +41,7 @@ class AuthorizationServiceTest extends \PHPUnit\Framework\TestCase
         $this->userContextMock
             ->expects($this->any())
             ->method('getUserType')
-            ->willReturn(UserContextInterface::USER_TYPE_INTEGRATION);
+            ->will($this->returnValue(UserContextInterface::USER_TYPE_INTEGRATION));
         $roleLocator = $objectManager->create(
             \Magento\Webapi\Model\WebapiRoleLocator::class,
             ['userContext' => $this->userContextMock]
@@ -126,7 +126,7 @@ class AuthorizationServiceTest extends \PHPUnit\Framework\TestCase
         $this->userContextMock
             ->expects($this->any())
             ->method('getUserId')
-            ->willReturn($integrationId);
+            ->will($this->returnValue($integrationId));
         foreach ($resources as $resource) {
             $this->assertTrue(
                 $this->libAuthorization->isAllowed($resource),
@@ -146,7 +146,7 @@ class AuthorizationServiceTest extends \PHPUnit\Framework\TestCase
         $this->userContextMock
             ->expects($this->any())
             ->method('getUserId')
-            ->willReturn($integrationId);
+            ->will($this->returnValue($integrationId));
         foreach ($resources as $resource) {
             $this->assertFalse(
                 $this->libAuthorization->isAllowed($resource),

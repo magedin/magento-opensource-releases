@@ -3,52 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Block\Product;
 
-use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Block\Product\Image;
 use Magento\Catalog\Block\Product\ImageBuilder;
-use Magento\Catalog\Block\Product\View\Type\Simple;
 use Magento\Catalog\Model\Product;
-use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Api\StockRegistryInterface;
-use Magento\Framework\Pricing\Render;
-use Magento\Framework\Stdlib\ArrayUtils;
-use Magento\Framework\View\Layout;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class for testing methods of AbstractProduct
  */
-class AbstractProductTest extends TestCase
+class AbstractProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Simple
+     * @var \Magento\Catalog\Block\Product\View\Type\Simple
      */
     protected $block;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Catalog\Block\Product\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productContextMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var StockRegistryInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stockRegistryMock;
 
     /**
-     * @var ImageBuilder|MockObject
+     * @var ImageBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $imageBuilder;
 
@@ -56,16 +44,16 @@ class AbstractProductTest extends TestCase
      * Set up mocks and tested class
      * Child class is used as the tested class is declared abstract
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productContextMock = $this->createPartialMock(
-            Context::class,
+            \Magento\Catalog\Block\Product\Context::class,
             ['getLayout', 'getStockRegistry', 'getImageBuilder']
         );
-        $arrayUtilsMock = $this->createMock(ArrayUtils::class);
-        $this->layoutMock = $this->createPartialMock(Layout::class, ['getBlock']);
+        $arrayUtilsMock = $this->createMock(\Magento\Framework\Stdlib\ArrayUtils::class);
+        $this->layoutMock = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['getBlock']);
         $this->stockRegistryMock = $this->getMockForAbstractClass(
-            StockRegistryInterface::class,
+            \Magento\CatalogInventory\Api\StockRegistryInterface::class,
             [],
             '',
             false,
@@ -78,15 +66,15 @@ class AbstractProductTest extends TestCase
 
         $this->productContextMock->expects($this->once())
             ->method('getStockRegistry')
-            ->willReturn($this->stockRegistryMock);
+            ->will($this->returnValue($this->stockRegistryMock));
         $this->productContextMock->expects($this->once())
             ->method('getLayout')
-            ->willReturn($this->layoutMock);
+            ->will($this->returnValue($this->layoutMock));
         $this->productContextMock->expects($this->once())
             ->method('getImageBuilder')
-            ->willReturn($this->imageBuilder);
+            ->will($this->returnValue($this->imageBuilder));
 
-        $this->block = new Simple(
+        $this->block = new \Magento\Catalog\Block\Product\View\Type\Simple(
             $this->productContextMock,
             $arrayUtilsMock
         );
@@ -101,16 +89,16 @@ class AbstractProductTest extends TestCase
     public function testGetProductPrice()
     {
         $expectedPriceHtml = '<html>Expected Price html with price $30</html>';
-        $priceRenderBlock = $this->createPartialMock(Render::class, ['render']);
+        $priceRenderBlock = $this->createPartialMock(\Magento\Framework\Pricing\Render::class, ['render']);
         $product = $this->createMock(Product::class);
 
         $this->layoutMock->expects($this->once())
             ->method('getBlock')
             ->with('product.price.render.default')
-            ->willReturn($priceRenderBlock);
+            ->will($this->returnValue($priceRenderBlock));
         $priceRenderBlock->expects($this->once())
             ->method('render')
-            ->willReturn($expectedPriceHtml);
+            ->will($this->returnValue($expectedPriceHtml));
 
         $this->assertEquals($expectedPriceHtml, $this->block->getProductPrice($product));
     }
@@ -121,17 +109,17 @@ class AbstractProductTest extends TestCase
     public function testGetProductPriceHtml()
     {
         $expectedPriceHtml = '<html>Expected Price html with price $30</html>';
-        $priceRenderBlock = $this->createPartialMock(Render::class, ['render']);
+        $priceRenderBlock = $this->createPartialMock(\Magento\Framework\Pricing\Render::class, ['render']);
         $product = $this->createMock(Product::class);
 
         $this->layoutMock->expects($this->once())
             ->method('getBlock')
             ->with('product.price.render.default')
-            ->willReturn($priceRenderBlock);
+            ->will($this->returnValue($priceRenderBlock));
 
         $priceRenderBlock->expects($this->once())
             ->method('render')
-            ->willReturn($expectedPriceHtml);
+            ->will($this->returnValue($expectedPriceHtml));
 
         $this->assertEquals(
             $expectedPriceHtml,
@@ -154,9 +142,9 @@ class AbstractProductTest extends TestCase
         $websiteId = 99;
 
         $productMock = $this->createPartialMock(Product::class, ['getId', 'getStore']);
-        $storeMock = $this->createPartialMock(Store::class, ['getWebsiteId']);
+        $storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getWebsiteId']);
         $stockItemMock = $this->getMockForAbstractClass(
-            StockItemInterface::class,
+            \Magento\CatalogInventory\Api\Data\StockItemInterface::class,
             [],
             '',
             false,
@@ -168,21 +156,21 @@ class AbstractProductTest extends TestCase
         $this->stockRegistryMock->expects($this->once())
             ->method('getStockItem')
             ->with($id, $websiteId)
-            ->willReturn($stockItemMock);
+            ->will($this->returnValue($stockItemMock));
         $productMock->expects($this->once())
             ->method('getId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $productMock->expects($this->once())
             ->method('getStore')
-            ->willReturn($storeMock);
+            ->will($this->returnValue($storeMock));
         $storeMock->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn($websiteId);
+            ->will($this->returnValue($websiteId));
         $stockItemMock->expects($this->once())
             ->method('getMinSaleQty')
-            ->willReturn($minSale);
+            ->will($this->returnValue($minSale));
 
-        /** @var Product|MockObject $productMock */
+        /** @var Product|\PHPUnit_Framework_MockObject_MockObject $productMock */
         $this->assertEquals($result, $this->block->getMinimalQty($productMock));
     }
 

@@ -56,7 +56,10 @@ final class FileCacheManager implements CacheManagerInterface
     private $cacheDirectory;
 
     /**
-     * @param bool $isDryRun
+     * @param FileHandlerInterface    $handler
+     * @param SignatureInterface      $signature
+     * @param bool                    $isDryRun
+     * @param null|DirectoryInterface $cacheDirectory
      */
     public function __construct(
         FileHandlerInterface $handler,

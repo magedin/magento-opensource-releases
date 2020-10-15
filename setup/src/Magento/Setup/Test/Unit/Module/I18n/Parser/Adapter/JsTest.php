@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Module\I18n\Dictionary\Phrase;
-use Magento\Setup\Module\I18n\Parser\Adapter\Js;
-use PHPUnit\Framework\TestCase;
 
-class JsTest extends TestCase
+class JsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -25,16 +21,16 @@ class JsTest extends TestCase
     protected $_stringsCount;
 
     /**
-     * @var Js
+     * @var \Magento\Setup\Module\I18n\Parser\Adapter\Js
      */
     protected $_adapter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_testFile = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/_files/file.js';
         $this->_stringsCount = count(file($this->_testFile));
 
-        $this->_adapter = (new ObjectManager($this))->getObject(Js::class);
+        $this->_adapter = (new ObjectManager($this))->getObject(\Magento\Setup\Module\I18n\Parser\Adapter\Js::class);
     }
 
     public function testParse()

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Pricing\Render;
 
 use Magento\Catalog\Model\Product;
@@ -20,12 +18,8 @@ use Magento\Framework\Pricing\Render\RendererPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\Template\Context;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class FinalPriceBoxTest extends TestCase
+class FinalPriceBoxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context|MockObject
@@ -70,17 +64,15 @@ class FinalPriceBoxTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->context = $this->createMock(Context::class);
         $this->saleableItem = $this->createMock(Product::class);
-        $this->price = $this->getMockForAbstractClass(PriceInterface::class);
+        $this->price = $this->createMock(PriceInterface::class);
         $this->rendererPool = $this->createMock(RendererPool::class);
-        $this->salableResolver = $this->getMockForAbstractClass(SalableResolverInterface::class);
-        $this->minimalPriceCalculator = $this->getMockForAbstractClass(MinimalPriceCalculatorInterface::class);
-        $this->configurableOptionsProvider = $this->getMockForAbstractClass(
-            ConfigurableOptionsProviderInterface::class
-        );
+        $this->salableResolver = $this->createMock(SalableResolverInterface::class);
+        $this->minimalPriceCalculator = $this->createMock(MinimalPriceCalculatorInterface::class);
+        $this->configurableOptionsProvider = $this->createMock(ConfigurableOptionsProviderInterface::class);
 
         $this->model = (new ObjectManager($this))->getObject(
             FinalPriceBox::class,
@@ -107,15 +99,15 @@ class FinalPriceBoxTest extends TestCase
         float $finalPrice,
         bool $expected
     ) {
-        $priceMockOne = $this->getMockForAbstractClass(PriceInterface::class);
+        $priceMockOne = $this->createMock(PriceInterface::class);
         $priceMockOne->expects($this->once())
             ->method('getValue')
             ->willReturn($regularPrice);
-        $priceMockTwo = $this->getMockForAbstractClass(PriceInterface::class);
+        $priceMockTwo = $this->createMock(PriceInterface::class);
         $priceMockTwo->expects($this->once())
             ->method('getValue')
             ->willReturn($finalPrice);
-        $priceInfoMock = $this->getMockForAbstractClass(PriceInfoInterface::class);
+        $priceInfoMock = $this->createMock(PriceInfoInterface::class);
         $priceInfoMock->expects($this->exactly(2))
             ->method('getPrice')
             ->willReturnMap(

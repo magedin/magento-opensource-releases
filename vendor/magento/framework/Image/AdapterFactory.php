@@ -5,9 +5,6 @@
  */
 namespace Magento\Framework\Image;
 
-/**
- * Factory for Adapters that Image Library is using to process images
- */
 class AdapterFactory
 {
     /**

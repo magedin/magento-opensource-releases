@@ -3,32 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset\File;
-
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\File\FallbackContext;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Framework\View\Asset\File\FallbackContext
  */
-class FallbackContextTest extends TestCase
+class FallbackContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var FallbackContext
+     * @var \Magento\Framework\View\Asset\File\FallbackContext
      */
     protected $fallbackContext;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     /**
@@ -48,7 +42,7 @@ class FallbackContextTest extends TestCase
         $expectedResult
     ) {
         $this->fallbackContext = $this->objectManager->getObject(
-            FallbackContext::class,
+            \Magento\Framework\View\Asset\File\FallbackContext::class,
             [
                 'baseUrl' => $baseUrl,
                 'areaType' => $areaType,

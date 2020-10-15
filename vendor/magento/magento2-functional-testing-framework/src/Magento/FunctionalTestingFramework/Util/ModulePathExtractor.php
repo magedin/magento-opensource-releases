@@ -90,7 +90,7 @@ class ModulePathExtractor
         }
 
         foreach ($this->testModulePaths as $key => $value) {
-            if (substr($path, 0, strlen($value)) == $value) {
+            if ($value == $shortenedPath) {
                 return $key;
             }
         }

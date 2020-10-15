@@ -3,49 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\MysqlMq\Test\Unit\Model;
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MysqlMq\Model\MessageStatus;
-use Magento\MysqlMq\Model\QueueManagement;
-use Magento\MysqlMq\Model\ResourceModel\MessageStatusCollection;
-use Magento\MysqlMq\Model\ResourceModel\MessageStatusCollectionFactory;
-use Magento\MysqlMq\Model\ResourceModel\Queue;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for QueueManagement model.
  */
-class QueueManagementTest extends TestCase
+class QueueManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Queue|MockObject
+     * @var \Magento\MysqlMq\Model\ResourceModel\Queue|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageResource;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
     /**
-     * @var DateTime|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dateTime;
 
     /**
-     * @var MessageStatusCollectionFactory|MockObject
+     * @var \Magento\MysqlMq\Model\ResourceModel\MessageStatusCollectionFactory
+     *      |\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageStatusCollectionFactory;
 
     /**
-     * @var QueueManagement
+     * @var \Magento\MysqlMq\Model\QueueManagement
      */
     private $queueManagement;
 
@@ -54,26 +42,23 @@ class QueueManagementTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->messageResource = $this->getMockBuilder(Queue::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->dateTime = $this->getMockBuilder(DateTime::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->messageResource = $this->getMockBuilder(\Magento\MysqlMq\Model\ResourceModel\Queue::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->dateTime = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
+            ->disableOriginalConstructor()->getMock();
         $this->messageStatusCollectionFactory = $this
-            ->getMockBuilder(MessageStatusCollectionFactory::class)
+            ->getMockBuilder(\Magento\MysqlMq\Model\ResourceModel\MessageStatusCollectionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->queueManagement = $objectManager->getObject(
-            QueueManagement::class,
+            \Magento\MysqlMq\Model\QueueManagement::class,
             [
                 'messageResource' => $this->messageResource,
                 'scopeConfig' => $this->scopeConfig,
@@ -133,43 +118,42 @@ class QueueManagementTest extends TestCase
     public function testMarkMessagesForDelete()
     {
         $messageId = 99;
-        $collection = $this->getMockBuilder(MessageStatusCollection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $collection = $this->getMockBuilder(\Magento\MysqlMq\Model\ResourceModel\MessageStatusCollection::class)
+            ->disableOriginalConstructor()->getMock();
         $this->messageStatusCollectionFactory->expects($this->once())->method('create')->willReturn($collection);
         $this->scopeConfig->expects($this->exactly(8))->method('getValue')
             ->withConsecutive(
                 [
-                    QueueManagement::XML_PATH_SUCCESSFUL_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_SUCCESSFUL_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_FAILED_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_FAILED_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_NEW_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_NEW_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_RETRY_IN_PROGRESS_AFTER,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_RETRY_IN_PROGRESS_AFTER,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_SUCCESSFUL_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_SUCCESSFUL_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_FAILED_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_FAILED_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_NEW_MESSAGES_LIFETIME,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_NEW_MESSAGES_LIFETIME,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ],
                 [
-                    QueueManagement::XML_PATH_RETRY_IN_PROGRESS_AFTER,
-                    ScopeInterface::SCOPE_STORE,
+                    \Magento\MysqlMq\Model\QueueManagement::XML_PATH_RETRY_IN_PROGRESS_AFTER,
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 ]
             )->willReturn(1);
         $collection->expects($this->once())->method('addFieldToFilter')
@@ -177,10 +161,10 @@ class QueueManagementTest extends TestCase
                 'status',
                 [
                     'in' => [
-                        QueueManagement::MESSAGE_STATUS_COMPLETE,
-                        QueueManagement::MESSAGE_STATUS_ERROR,
-                        QueueManagement::MESSAGE_STATUS_NEW,
-                        QueueManagement::MESSAGE_STATUS_IN_PROGRESS,
+                        \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_COMPLETE,
+                        \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_ERROR,
+                        \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_NEW,
+                        \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_IN_PROGRESS,
                     ]
                 ]
             )->willReturnSelf();
@@ -193,23 +177,23 @@ class QueueManagementTest extends TestCase
             ];
         $this->dateTime->expects($this->exactly(4))->method('gmtTimestamp')->willReturn(1486741063);
         $messageStatuses[0]->expects($this->atLeastOnce())->method('getStatus')->willReturn(
-            QueueManagement::MESSAGE_STATUS_COMPLETE
+            \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_COMPLETE
         );
         $messageStatuses[1]->expects($this->atLeastOnce())->method('getStatus')->willReturn(
-            QueueManagement::MESSAGE_STATUS_ERROR
+            \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_ERROR
         );
         $messageStatuses[2]->expects($this->atLeastOnce())->method('getStatus')->willReturn(
-            QueueManagement::MESSAGE_STATUS_NEW
+            \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_NEW
         );
         $messageStatuses[3]->expects($this->atLeastOnce())->method('getStatus')->willReturn(
-            QueueManagement::MESSAGE_STATUS_IN_PROGRESS
+            \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_IN_PROGRESS
         );
         $messageStatuses[0]->expects($this->once())->method('setStatus')
-            ->with(QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
+            ->with(\Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
         $messageStatuses[1]->expects($this->once())->method('setStatus')
-            ->with(QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
+            ->with(\Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
         $messageStatuses[2]->expects($this->once())->method('setStatus')
-            ->with(QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
+            ->with(\Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_TO_BE_DELETED)->willReturnSelf();
         $messageStatuses[0]->expects($this->once())->method('save')->willReturnSelf();
         $messageStatuses[1]->expects($this->once())->method('save')->willReturnSelf();
         $messageStatuses[2]->expects($this->once())->method('save')->willReturnSelf();
@@ -223,14 +207,13 @@ class QueueManagementTest extends TestCase
     /**
      * Create mock of MessageStatus method.
      *
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getMessageStatusMock()
     {
-        $messageStatus = $this->getMockBuilder(MessageStatus::class)
+        $messageStatus = $this->getMockBuilder(\Magento\MysqlMq\Model\MessageStatus::class)
             ->setMethods(['getStatus', 'setStatus', 'save', 'getId', 'getUpdatedAt'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $messageStatus->expects($this->once())->method('getUpdatedAt')->willReturn('2010-01-01 00:00:00');
         return $messageStatus;
     }
@@ -241,7 +224,7 @@ class QueueManagementTest extends TestCase
     public function testChangeStatus()
     {
         $messageIds = [1, 2];
-        $status = QueueManagement::MESSAGE_STATUS_TO_BE_DELETED;
+        $status = \Magento\MysqlMq\Model\QueueManagement::MESSAGE_STATUS_TO_BE_DELETED;
         $this->messageResource->expects($this->once())->method('changeStatus')->with($messageIds, $status);
         $this->queueManagement->changeStatus($messageIds, $status);
     }

@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Block\Adminhtml\System\Config;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Paypal\Block\Adminhtml\System\Config\ResolutionRules;
 use Magento\Paypal\Model\Config\Rules\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class ResolutionRulesTest
  *
  * Test for class \Magento\Paypal\Block\Adminhtml\System\Config\ResolutionRules
  */
-class ResolutionRulesTest extends TestCase
+class ResolutionRulesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ResolutionRules
@@ -30,7 +26,7 @@ class ResolutionRulesTest extends TestCase
     protected $context;
 
     /**
-     * @var Reader|MockObject
+     * @var Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerMock;
 
@@ -39,7 +35,7 @@ class ResolutionRulesTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 

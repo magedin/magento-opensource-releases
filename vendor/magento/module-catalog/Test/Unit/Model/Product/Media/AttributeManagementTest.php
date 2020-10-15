@@ -3,22 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Media;
 
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Model\Product;
+
 use Magento\Catalog\Model\Product\Media\AttributeManagement;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class AttributeManagementTest extends TestCase
+class AttributeManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeManagement
@@ -31,31 +22,31 @@ class AttributeManagementTest extends TestCase
     private $storeId;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $factoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->factoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class,
             ['create']
         );
         $this->storeId = 1;
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $storeMock = $this->createMock(Store::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $storeMock->expects($this->any())
             ->method('getId')
-            ->willReturn($this->storeId);
+            ->will($this->returnValue($this->storeId));
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
             ->with(null)
-            ->willReturn($storeMock);
+            ->will($this->returnValue($storeMock));
         $this->model = new AttributeManagement(
             $this->factoryMock,
             $this->storeManagerMock
@@ -66,9 +57,9 @@ class AttributeManagementTest extends TestCase
     {
         $attributeSetName = 'Default Attribute Set';
         $expectedResult = [
-            $this->getMockForAbstractClass(ProductAttributeInterface::class),
+            $this->createMock(\Magento\Catalog\Api\Data\ProductAttributeInterface::class),
         ];
-        $collectionMock = $this->createMock(Collection::class);
+        $collectionMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class);
         $collectionMock->expects($this->once())
             ->method('setAttributeSetFilterBySetName')
             ->with($attributeSetName, Product::ENTITY);
@@ -80,8 +71,8 @@ class AttributeManagementTest extends TestCase
             ->with($this->storeId);
         $collectionMock->expects($this->once())
             ->method('getItems')
-            ->willReturn($expectedResult);
-        $this->factoryMock->expects($this->once())->method('create')->willReturn($collectionMock);
+            ->will($this->returnValue($expectedResult));
+        $this->factoryMock->expects($this->once())->method('create')->will($this->returnValue($collectionMock));
 
         $this->assertEquals($expectedResult, $this->model->getList($attributeSetName));
     }

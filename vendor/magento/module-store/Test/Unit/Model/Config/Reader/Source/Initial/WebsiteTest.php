@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Reader\Source\Initial;
 
 use Magento\Framework\App\Config\Initial;
-use Magento\Framework\App\Config\Scope\Converter;
 use Magento\Store\Model\Config\Reader\Source\Initial\DefaultScope;
 use Magento\Store\Model\Config\Reader\Source\Initial\Website;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\Scope\Converter;
 
-class WebsiteTest extends TestCase
+class WebsiteTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {

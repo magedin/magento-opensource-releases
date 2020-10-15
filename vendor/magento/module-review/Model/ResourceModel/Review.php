@@ -361,12 +361,12 @@ class Review extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         );
         $select = $connection->select()->from($this->_aggregateTable)
             ->where('entity_pk_value = :pk_value')
-            ->where('store_id = :store_id')
-            ->where('entity_type = :entity_type');
+            ->where('entity_type = :entity_type')
+            ->where('store_id = :store_id');
         $bind = [
             ':pk_value' => $object->getEntityPkValue(),
-            ':store_id' => $ratingSummaryObject->getStoreId(),
             ':entity_type' => $object->getEntityId(),
+            ':store_id' => $ratingSummaryObject->getStoreId(),
         ];
         $oldData = $connection->fetchRow($select, $bind);
         $data = new \Magento\Framework\DataObject();
@@ -424,7 +424,6 @@ class Review extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * Aggregate this review's ratings.
-     *
      * Useful, when changing the review.
      *
      * @param int[] $ratingIds
@@ -472,7 +471,6 @@ class Review extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * Delete reviews by product id.
-     *
      * Better to call this method in transaction, because operation performed on two separated tables
      *
      * @param int $productId

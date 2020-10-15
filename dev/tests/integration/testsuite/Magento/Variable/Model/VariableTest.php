@@ -12,7 +12,7 @@ class VariableTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Variable\Model\Variable::class
@@ -75,7 +75,7 @@ class VariableTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $collection->getStoreId(), 'Store id setter and getter');
 
         $collection->addValuesToResult();
-        $this->assertStringContainsString('variable_value', (string)$collection->getSelect());
+        $this->assertContains('variable_value', (string)$collection->getSelect());
     }
 
     /**

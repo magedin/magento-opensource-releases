@@ -25,7 +25,7 @@
             <createData entity="SimpleSubCategory" stepKey="createCategory"/>
 
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
         </before>
         <after>
             <magentoCLI stepKey="removeDownloadableDomain" command="downloadable:domains:remove static.magento.com"/>
@@ -33,23 +33,23 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
 
             <!-- Delete created downloadable product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="DownloadableProduct"/>
             </actionGroup>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create downloadable product -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
         <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
-        <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createProduct">
+        <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="createProduct">
             <argument name="productType" value="downloadable"/>
         </actionGroup>
 
         <!-- Fill downloadable product values -->
-        <actionGroup ref="FillMainProductFormNoWeightActionGroup" stepKey="fillDownloadableProductForm">
+        <actionGroup ref="fillMainProductFormNoWeight" stepKey="fillDownloadableProductForm">
             <argument name="product" value="DownloadableProduct"/>
         </actionGroup>
 
@@ -63,13 +63,12 @@
         <checkOption selector="{{AdminProductDownloadableSection.isLinksPurchasedSeparately}}" stepKey="checkOptionPurchaseSeparately"/>
 
         <!-- Add downloadable link -->
-        <actionGroup ref="AddDownloadableProductLinkWithMaxDownloadsActionGroup" stepKey="addDownloadableProductLink">
+        <actionGroup ref="addDownloadableProductLinkWithMaxDownloads" stepKey="addDownloadableProductLink">
             <argument name="link" value="downloadableLinkWithMaxDownloads"/>
         </actionGroup>
 
         <!-- Save product -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
-        <magentoCron stepKey="runIndexCronJobs" groups="index"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProduct"/>
 
         <!-- Assert product in storefront category page -->
         <amOnPage url="$$createCategory.name$$.html" stepKey="amOnCategoryPage"/>
@@ -79,7 +78,7 @@
         </actionGroup>
 
         <!-- Assert product in storefront product page -->
-        <actionGroup ref="AssertProductNameAndSkuInStorefrontProductPageActionGroup" stepKey="AssertProductInStorefrontProductPage">
+        <actionGroup ref="AssertProductNameAndSkuInStorefrontProductPage" stepKey="AssertProductInStorefrontProductPage">
             <argument name="product" value="DownloadableProduct"/>
         </actionGroup>
 
@@ -97,7 +96,8 @@
         </actionGroup>
 
         <!-- Assert product price in cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="openShoppingCartPage"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="openShoppingCartPage"/>
+        <waitForPageLoad stepKey="waitForShoppingCartPageLoad"/>
         <see selector="{{CheckoutCartProductSection.ProductPriceByName(DownloadableProduct.name)}}" userInput="$51.99" stepKey="assertProductPriceInCart"/>
     </test>
 </tests>

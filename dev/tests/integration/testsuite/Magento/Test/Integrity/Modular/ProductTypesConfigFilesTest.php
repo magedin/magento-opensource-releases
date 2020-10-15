@@ -14,7 +14,7 @@ class ProductTypesConfigFilesTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var $moduleDirSearch \Magento\Framework\Component\DirSearch */
@@ -25,9 +25,9 @@ class ProductTypesConfigFilesTest extends \PHPUnit\Framework\TestCase
         );
 
         $fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
-        $fileResolverMock->expects($this->any())->method('get')->willReturn($xmlFiles);
+        $fileResolverMock->expects($this->any())->method('get')->will($this->returnValue($xmlFiles));
         $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
-        $validationStateMock->expects($this->any())->method('isValidationRequired')->willReturn(true);
+        $validationStateMock->expects($this->any())->method('isValidationRequired')->will($this->returnValue(true));
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_model = $objectManager->create(
             \Magento\Catalog\Model\ProductTypes\Config\Reader::class,

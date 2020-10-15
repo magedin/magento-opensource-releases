@@ -3,44 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Option;
 
-use Magento\Catalog\Model\ResourceModel\Product\Option;
-use Magento\Catalog\Model\ResourceModel\Product\Option\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Option\Value;
-use Magento\Catalog\Model\ResourceModel\Product\Option\Value\CollectionFactory;
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategy\Query;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use \Magento\Catalog\Model\ResourceModel\Product\Option\Collection;
+use \Magento\Catalog\Model\ResourceModel\Product\Option\Value;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var MetadataPool
+     * @var \Magento\Framework\EntityManager\MetadataPool
      */
     protected $metadataPoolMock;
 
@@ -50,93 +29,92 @@ class CollectionTest extends TestCase
     protected $collection;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var Value\CollectionFactory|MockObject
+     * @var Value\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $optionsFactoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var JoinProcessorInterface|MockObject
+     * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $joinProcessor;
 
     /**
-     * @var Option|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Option|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->entityFactoryMock = $this->createPartialMock(
-            EntityFactory::class,
+            \Magento\Framework\Data\Collection\EntityFactory::class,
             ['create']
         );
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->fetchStrategyMock = $this->createPartialMock(
-            Query::class,
+            \Magento\Framework\Data\Collection\Db\FetchStrategy\Query::class,
             ['fetchAll']
         );
-        $this->eventManagerMock = $this->createMock(Manager::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\Manager::class);
         $this->optionsFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Option\Value\CollectionFactory::class,
             ['create']
         );
-        $this->storeManagerMock = $this->createMock(StoreManager::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
         $this->joinProcessor = $this->getMockBuilder(
-            JoinProcessorInterface::class
-        )->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            \Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface::class
+        )->disableOriginalConstructor()->getMockForAbstractClass();
         $this->resourceMock = $this->createPartialMock(
-            Option::class,
-            ['getConnection', 'getMainTable', 'getTable']
+            \Magento\Catalog\Model\ResourceModel\Product\Option::class,
+            ['getConnection', '__wakeup', 'getMainTable', 'getTable']
         );
-        $this->selectMock = $this->createPartialMock(Select::class, ['from', 'reset', 'join']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['from', 'reset', 'join']);
         $this->connection =
-            $this->createPartialMock(Mysql::class, ['select']);
+            $this->createPartialMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, ['select']);
         $this->connection->expects($this->once())
             ->method('select')
-            ->willReturn($this->selectMock);
+            ->will($this->returnValue($this->selectMock));
         $this->resourceMock->expects($this->once())
             ->method('getConnection')
-            ->willReturn($this->connection);
+            ->will($this->returnValue($this->connection));
         $this->resourceMock->expects($this->once())
             ->method('getMainTable')
-            ->willReturn('test_main_table');
+            ->will($this->returnValue('test_main_table'));
         $this->resourceMock->expects($this->exactly(3))
             ->method('getTable')
             ->withConsecutive(
@@ -148,8 +126,8 @@ class CollectionTest extends TestCase
                 'catalog_product_entity',
                 'catalog_product_entity'
             );
-        $this->metadataPoolMock = $this->createMock(MetadataPool::class);
-        $metadata = $this->createMock(EntityMetadata::class);
+        $this->metadataPoolMock = $this->createMock(\Magento\Framework\EntityManager\MetadataPool::class);
+        $metadata = $this->createMock(\Magento\Framework\EntityManager\EntityMetadata::class);
         $metadata->expects($this->any())->method('getLinkField')->willReturn('id');
         $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($metadata);
         $this->selectMock->expects($this->exactly(2))->method('join');

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model;
 
 use Magento\Customer\Model\Customer as CustomerModel;
@@ -15,10 +13,11 @@ use Magento\Customer\Model\ResourceModel\Customer as CustomerResourceModel;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CustomerAuthUpdateTest extends TestCase
+/**
+ * Class CustomerAuthUpdateTest
+ */
+class CustomerAuthUpdateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CustomerAuthUpdate
@@ -26,17 +25,17 @@ class CustomerAuthUpdateTest extends TestCase
     protected $model;
 
     /**
-     * @var CustomerRegistry|MockObject
+     * @var CustomerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerRegistry;
 
     /**
-     * @var CustomerResourceModel|MockObject
+     * @var CustomerResourceModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerResourceModel;
 
     /**
-     * @var CustomerModel|MockObject
+     * @var CustomerModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerModel;
 
@@ -48,7 +47,7 @@ class CustomerAuthUpdateTest extends TestCase
     /**
      * Setup the test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -79,7 +78,7 @@ class CustomerAuthUpdateTest extends TestCase
 
         $customerSecureMock = $this->createMock(CustomerSecure::class);
 
-        $dbAdapter = $this->getMockForAbstractClass(AdapterInterface::class);
+        $dbAdapter = $this->createMock(AdapterInterface::class);
 
         $this->customerRegistry->expects($this->once())
             ->method('retrieveSecureData')

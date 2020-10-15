@@ -20,22 +20,22 @@
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginToAdminPanel"/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="LoginToAdminPanel"/>
         </before>
         <after>
-            <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCategory">
+            <actionGroup ref="DeleteCategory" stepKey="deleteCategory">
                 <argument name="categoryEntity" value="_defaultCategory" />
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout" />
+            <actionGroup ref="logout" stepKey="logout" />
         </after>
 
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="OpenAdminCatergoryIndexPage"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="OpenAdminCatergoryIndexPage"/>
         <click selector="{{AdminCategorySidebarActionSection.AddRootCategoryButton}}" stepKey="ClickOnAddRootButton"/>
         <fillField selector="{{AdminCategoryBasicFieldSection.CategoryNameInput}}" userInput="{{_defaultCategory.name}}" stepKey="FillCategoryField"/>
         <checkOption selector="{{AdminCategoryBasicFieldSection.EnableCategory}}" stepKey="EnableCheckOption"/>
         <click selector="{{AdminCategoryMainActionsSection.SaveButton}}" stepKey="ClickSaveButton"/>
         <waitForPageLoad stepKey="WaitForCategorySaved"/>
-        <actionGroup ref="AssertAdminCategorySaveSuccessMessageActionGroup" stepKey="AssertSuccessMessage"/>
+        <see selector="{{AdminCategoryMessagesSection.SuccessMessage}}" userInput="You saved the category." stepKey="AssertSuccessMessage"/>
         <seeCheckboxIsChecked selector="{{AdminCategoryBasicFieldSection.EnableCategory}}"  stepKey="SeeCheckBoxisSelected"/>
         <seeInField selector="{{AdminCategoryBasicFieldSection.CategoryNameInput}}" userInput="{{_defaultCategory.name}}" stepKey="SeedFieldInput"/>
     </test>

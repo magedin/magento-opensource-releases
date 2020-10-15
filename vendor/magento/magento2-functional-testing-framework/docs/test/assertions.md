@@ -1,5 +1,6 @@
 # Assertions
 
+
 Assertions serve to pass or fail the [test](../test.md#test-tag) if a condition is not met. These assertions will look familiar to you if you've used any other testing framework, like PHPUnit.
 
 All assertions contain the same [common actions attributes](./actions.md#common-attributes): `stepKey`, `before`, and `after`.
@@ -30,8 +31,6 @@ To use variables embedded in a string in `expected` and `actual` of your asserti
 
 `actual="A long assert string {$stepKeyOfGrab} with an embedded variable reference." actualType="variable"`
 
-In case of `assertContains` actions, `<expectedResult>` is the needle and `<actualResult>` is the haystack.
-
 ## Example
 
 The following example shows a common test that gets text from a page and asserts that it matches what we expect to see. If it does not, the test will fail at the assert step.
@@ -54,13 +53,14 @@ The following example shows a common test that gets text from a page and asserts
 Example:
 
 ```xml
-<assertElementContainsAttribute stepKey="assertElementContainsAttribute">
-    <expectedResult selector=".admin__menu-overlay" attribute="style" type="string">color: #333;</expectedResult>
-</assertElementContainsAttribute>
+<assertElementContainsAttribute selector=".admin__menu-overlay" attribute="style" expectedValue="color: #333;" stepKey="assertElementContainsAttribute"/>
 ```
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`selector`|string|required|
+`expectedValue`|string|optional| A value of the expected result.
+`attribute`|string|required|
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
 `after`|string|optional| `stepKey` of the preceding action.
@@ -92,7 +92,12 @@ It must be in typical array format like `[1,2,3,4,5]` or `[alpha, brontosaurus, 
 See [assertArrayHasKey docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertArrayHasKey)
 
 Attribute|Type|Use|Description
----|---|---|---`message`|string|optional|Text of informational message about a cause of failure.
+---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
 `after`|string|optional| `stepKey` of the preceding action.
@@ -103,6 +108,26 @@ See [assertArrayNotHasKey docs on codeception.com](http://codeception.com/docs/m
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`message`|string|optional|Text of informational message about a cause of failure.
+`stepKey`|string|required| A unique identifier of the text step.
+`before`|string|optional| `stepKey` of action that must be executed next.
+`after`|string|optional| `stepKey` of the preceding action.
+
+### assertArraySubset
+
+See [assertArraySubset docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertArraySubset).
+
+Attribute|Type|Use|Description
+---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`strict`|boolean|optional|
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -114,31 +139,13 @@ See [assertContains docs on codeception.com](http://codeception.com/docs/modules
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertStringContainsString
-
-See [assertStringContainsString docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertStringContainsString).
-
-Attribute|Type|Use|Description
----|---|---|---
-`message`|string|optional|Text describing the cause of the failure.
-`stepKey`|string|required| Unique identifier of the text step.
-`before`|string|optional| `stepKey` of the action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertStringContainsStringIgnoringCase
-
-See [assertStringContainsStringIgnoringCase docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertStringContainsStringIgnoringCase).
-
-Attribute|Type|Use|Description
----|---|---|---
-`message`|string|optional|Message describing the cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of the action that must be executed next.
 `after`|string|optional| `stepKey` of the preceding action.
 
 ### assertCount
@@ -147,6 +154,10 @@ See [assertCount docs on codeception.com](http://codeception.com/docs/modules/As
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -158,6 +169,8 @@ See [assertEmpty docs on codeception.com](http://codeception.com/docs/modules/As
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -169,40 +182,11 @@ See [assertEquals docs on codeception.com](http://codeception.com/docs/modules/A
 
 Attribute|Type|Use|Description
 ---|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertEqualsWithDelta
-
-See [assertEqualsWithDelta docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertEqualsWithDelta).
-
-Attribute|Type|Use|Description
----|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `delta`|string|optional|
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertEqualsCanonicalizing
-
-See [assertEqualsCanonicalizing docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertEqualsCanonicalizing).
-
-Attribute|Type|Use|Description
----|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertEqualsIgnoringCase
-
-See [assertEqualsIgnoringCase docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertEqualsIgnoringCase).
-
-Attribute|Type|Use|Description
----|---|---|---
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -214,6 +198,8 @@ See [assertFalse docs on codeception.com](http://codeception.com/docs/modules/As
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| Actual value.
+`actualType`|assertEnum|optional| Type of actual value.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -225,6 +211,8 @@ See [assertFileExists docs on codeception.com](http://codeception.com/docs/modul
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -236,6 +224,8 @@ See [assertFileNotExists docs on codeception.com](http://codeception.com/docs/mo
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -247,6 +237,10 @@ See [assertGreaterOrEquals docs on codeception.com](http://codeception.com/docs/
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -258,6 +252,10 @@ See [assertGreaterThan docs on codeception.com](http://codeception.com/docs/modu
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -269,6 +267,10 @@ See [assertGreaterThanOrEqual docs on codeception.com](http://codeception.com/do
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -280,6 +282,25 @@ See [assertInstanceOf docs on codeception.com](http://codeception.com/docs/modul
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`message`|string|optional|Text of informational message about a cause of failure.
+`stepKey`|string|required| A unique identifier of the text step.
+`before`|string|optional| `stepKey` of action that must be executed next.
+`after`|string|optional| `stepKey` of the preceding action.
+
+### assertInternalType
+
+See [assertInternalType docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertInternalType).
+
+Attribute|Type|Use|Description
+---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -291,6 +312,8 @@ See [assertIsEmpty docs on codeception.com](http://codeception.com/docs/modules/
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -302,6 +325,10 @@ See [assertLessOrEquals docs on codeception.com](http://codeception.com/docs/mod
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -313,6 +340,10 @@ See [assertLessThan docs on codeception.com](http://codeception.com/docs/modules
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -324,6 +355,10 @@ See [assertLessThanOrEqual docs on codeception.com](http://codeception.com/docs/
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -335,28 +370,10 @@ See [assertNotContains docs on codeception.com](http://codeception.com/docs/modu
 
 Attribute|Type|Use|Description
 ---|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertStringNotContainsString
-
-See [assertStringNotContainsString docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertStringNotContainsString).
-
-Attribute|Type|Use|Description
----|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertStringContainsStringIgnoringCase
-
-See [assertStringNotContainsStringIgnoringCase docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertStringNotContainsStringIgnoringCase).
-
-Attribute|Type|Use|Description
----|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -368,6 +385,8 @@ See [assertNotEmpty docs on codeception.com](http://codeception.com/docs/modules
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -379,40 +398,11 @@ See [assertNotEquals docs on codeception.com](http://codeception.com/docs/module
 
 Attribute|Type|Use|Description
 ---|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertNotEqualsWithDelta
-
-See [assertNotEqualsWithDelta docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertNotEqualsWithDelta).
-
-Attribute|Type|Use|Description
----|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `delta`|string|optional|
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertNotEqualsCanonicalizing
-
-See [assertNotEqualsCanonicalizing docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertNotEqualsCanonicalizing).
-
-Attribute|Type|Use|Description
----|---|---|---
-`message`|string|optional|Text of informational message about a cause of failure.
-`stepKey`|string|required| A unique identifier of the text step.
-`before`|string|optional| `stepKey` of action that must be executed next.
-`after`|string|optional| `stepKey` of the preceding action.
-
-### assertNotEqualsIgnoringCase
-
-See [assertNotEqualsIgnoringCase docs on codeception.com](http://codeception.com/docs/modules/Asserts#assertNotEqualsIgnoringCase).
-
-Attribute|Type|Use|Description
----|---|---|---
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -424,6 +414,10 @@ See [assertNotInstanceOf docs on codeception.com](http://codeception.com/docs/mo
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -435,6 +429,8 @@ See [assertNotNull docs on codeception.com](http://codeception.com/docs/modules/
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -446,6 +442,10 @@ See [assertNotRegExp docs on codeception.com](http://codeception.com/docs/module
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -457,6 +457,10 @@ See [assertNotSame docs on codeception.com](http://codeception.com/docs/modules/
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -468,6 +472,8 @@ See [assertNull docs on codeception.com](http://codeception.com/docs/modules/Ass
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -479,6 +485,10 @@ See [assertRegExp docs on codeception.com](http://codeception.com/docs/modules/A
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -490,6 +500,10 @@ See [assertSame docs on codeception.com](http://codeception.com/docs/modules/Ass
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -501,6 +515,10 @@ See [assertStringStartsNotWith docs on codeception.com](http://codeception.com/d
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -512,6 +530,10 @@ See [assertStringStartsWith docs on codeception.com](http://codeception.com/docs
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -523,6 +545,8 @@ See [assertTrue docs on codeception.com](http://codeception.com/docs/modules/Ass
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `message`|string|optional|Text of informational message about a cause of failure.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
@@ -534,6 +558,10 @@ See [expectException docs on codeception.com](http://codeception.com/docs/module
 
 Attribute|Type|Use|Description
 ---|---|---|---
+`expected`|string|required| A value of the expected result.
+`expectedType`|string|optional| A type of the expected result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
+`actual`|string|required| A value of the actual result.
+`actualType`|string|optional| A type of the actual result. Possible values: `const` (default), `int`, `float`, `bool`, `string`, `variable`, `array`.
 `stepKey`|string|required| A unique identifier of the text step.
 `before`|string|optional| `stepKey` of action that must be executed next.
 `after`|string|optional| `stepKey` of the preceding action.

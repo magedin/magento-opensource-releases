@@ -3,19 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block;
 
-use Magento\Customer\Block\SectionConfig;
-use Magento\Framework\Config\DataInterface;
-use Magento\Framework\Json\EncoderInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SectionConfigTest extends TestCase
+class SectionConfigTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Customer\Block\block */
     protected $block;
@@ -23,24 +15,24 @@ class SectionConfigTest extends TestCase
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var DataInterface|MockObject */
+    /** @var \Magento\Framework\Config\DataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $sectionConfig;
 
-    /** @var EncoderInterface|MockObject */
+    /** @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $encoder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->createMock(Context::class);
-        $this->sectionConfig = $this->getMockForAbstractClass(DataInterface::class);
-        $this->encoder = $this->getMockForAbstractClass(EncoderInterface::class);
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->sectionConfig = $this->createMock(\Magento\Framework\Config\DataInterface::class);
+        $this->encoder = $this->createMock(\Magento\Framework\Json\EncoderInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->block = $this->objectManagerHelper->getObject(
-            SectionConfig::class,
+            \Magento\Customer\Block\SectionConfig::class,
             [
                 'context' => $this->context,
                 'sectionConfig' => $this->sectionConfig

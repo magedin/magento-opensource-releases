@@ -16,7 +16,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
     /** @var Order */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = Bootstrap::getObjectManager()->create(\Magento\Sales\Model\Convert\Order::class);
     }

@@ -49,7 +49,7 @@ class StockResolverTest extends WebapiAbstract
     /**
      * Create objects.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->stockRepository = $this->objectManager->get(StockRepositoryInterface::class);

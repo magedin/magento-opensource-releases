@@ -9,7 +9,6 @@ namespace Magento\Framework\Console\Test\Unit;
 
 use Magento\Framework\Console\Cli;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  *  Test for Magento\Framework\Console\Cli class.
  */
-class CliTest extends TestCase
+class CliTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cli
@@ -37,7 +36,7 @@ class CliTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->inputMock = $this->getMockBuilder(InputInterface::class)
             ->getMockForAbstractClass();
@@ -48,14 +47,15 @@ class CliTest extends TestCase
 
     /**
      * Make sure exception message is displayed and trace is logged.
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Test message
      */
     public function testDoRunExceptionLogging()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Test message');
         $e = new \Exception('Test message');
         $this->inputMock->expects($this->once())->method('getFirstArgument')->willThrowException($e);
-        $loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $loggerMock = $this->createMock(LoggerInterface::class);
         $loggerMock->expects($this->once())
             ->method('error')
             ->with($e->getMessage() . PHP_EOL . $e->getTraceAsString());

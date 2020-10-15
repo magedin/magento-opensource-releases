@@ -4,52 +4,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Event\Observer;
-use Magento\Persistent\Model\QuoteManager;
-use Magento\Persistent\Observer\CustomerAuthenticatedEventObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CustomerAuthenticatedEventObserverTest extends TestCase
+class CustomerAuthenticatedEventObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerAuthenticatedEventObserver
+     * @var \Magento\Persistent\Observer\CustomerAuthenticatedEventObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerSessionMock = $this->createMock(Session::class);
-        $this->observerMock = $this->createMock(Observer::class);
-        $this->quoteManagerMock = $this->createMock(QuoteManager::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->model = new CustomerAuthenticatedEventObserver(
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $this->quoteManagerMock = $this->createMock(\Magento\Persistent\Model\QuoteManager::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->model = new \Magento\Persistent\Observer\CustomerAuthenticatedEventObserver(
             $this->customerSessionMock,
             $this->requestMock,
             $this->quoteManagerMock
@@ -61,16 +52,18 @@ class CustomerAuthenticatedEventObserverTest extends TestCase
         $this->customerSessionMock
             ->expects($this->once())
             ->method('setCustomerId')
-            ->with(null)->willReturnSelf();
+            ->with(null)
+            ->will($this->returnSelf());
         $this->customerSessionMock
             ->expects($this->once())
             ->method('setCustomerGroupId')
-            ->with(null)->willReturnSelf();
+            ->with(null)
+            ->will($this->returnSelf());
         $this->requestMock
             ->expects($this->once())
             ->method('getParam')
             ->with('context')
-            ->willReturn('not_checkout');
+            ->will($this->returnValue('not_checkout'));
         $this->quoteManagerMock->expects($this->once())->method('expire');
         $this->quoteManagerMock->expects($this->never())->method('setGuest');
         $this->model->execute($this->observerMock);
@@ -81,16 +74,18 @@ class CustomerAuthenticatedEventObserverTest extends TestCase
         $this->customerSessionMock
             ->expects($this->once())
             ->method('setCustomerId')
-            ->with(null)->willReturnSelf();
+            ->with(null)
+            ->will($this->returnSelf());
         $this->customerSessionMock
             ->expects($this->once())
             ->method('setCustomerGroupId')
-            ->with(null)->willReturnSelf();
+            ->with(null)
+            ->will($this->returnSelf());
         $this->requestMock
             ->expects($this->once())
             ->method('getParam')
             ->with('context')
-            ->willReturn('checkout');
+            ->will($this->returnValue('checkout'));
         $this->quoteManagerMock->expects($this->never())->method('expire');
         $this->quoteManagerMock->expects($this->once())->method('setGuest');
         $this->model->execute($this->observerMock);

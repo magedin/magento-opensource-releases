@@ -5,25 +5,15 @@
  */
 declare(strict_types=1);
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Address as OrderAddress;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
+require 'order.php';
 /** @var Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
-$payment = $order->getPayment();
-$orderItems = $order->getItems();
-$orderItem = reset($orderItems);
-$addressData = include __DIR__ . '/address_data.php';
+/** @var Order\Payment $payment */
+/** @var Order\Item $orderItem */
+/** @var array $addressData Data for creating addresses for the orders. */
 $orders = [
     [
         'increment_id' => '100000002',
@@ -87,7 +77,7 @@ foreach ($orders as $orderData) {
     $newPayment = clone $payment;
     $newPayment->setId(null);
     /** @var $order \Magento\Sales\Model\Order */
-    $order = Bootstrap::getObjectManager()->create(
+    $order = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
         \Magento\Sales\Model\Order::class
     );
 

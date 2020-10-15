@@ -20,13 +20,14 @@
 
         <before>
             <!--Create test data.-->
+            <magentoCLI command="config:set {{EnableInventorySynchronization.path}} {{EnableInventorySynchronization.value}}" stepKey="enableInventorySynchronization"/>
             <createData entity="SimpleSubCategory" stepKey="category"/>
             <createData entity="SimpleProduct" stepKey="product">
                 <requiredEntity createDataKey="category"/>
             </createData>
             <createData entity="Simple_US_Customer" stepKey="customer"/>
             <createData entity="_minimalSource" stepKey="source"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminArea"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminArea"/>
             <!--Assign Default Stock to Main Website.-->
             <actionGroup ref="AssignWebsiteToStockActionGroup" stepKey="assignMainWebsiteToDefaultStock">
                 <argument name="stockName" value="{{_defaultStock.name}}"/>
@@ -36,18 +37,17 @@
             <amOnPage url="{{AdminProductEditPage.url($product.id$)}}" stepKey="openProductEditPage"/>
             <actionGroup ref="AdminFillSourceQtyOnProductEditPageActionGroup" stepKey="setProductQuantity"/>
             <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
-            <magentoCLI command="config:set {{EnableInventorySynchronization.path}} {{EnableInventorySynchronization.value}}" stepKey="enableInventorySynchronization"/>
-            <magentoCron groups="index" stepKey="reindex"/>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <!--Delete test data.-->
             <magentoCLI command="config:set {{DisableInventorySynchronization.path}} {{DisableInventorySynchronization.value}}" stepKey="disableInventorySynchronization"/>
-            <magentoCron groups="index" stepKey="reindex"/>
             <deleteData createDataKey="category" stepKey="deleteCategory"/>
             <deleteData createDataKey="customer" stepKey="deleteCustomer"/>
             <!--Disable source.-->
             <actionGroup ref="DisableAllSourcesActionGroup" stepKey="disableAllSources"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdminArea"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdminArea"/>
         </after>
 
         <!--Add product to cart.-->
@@ -66,12 +66,12 @@
         <!--Delete product.-->
         <deleteData createDataKey="product" stepKey="deleteProduct"/>
         <actionGroup ref="CliConsumerStartActionGroup" stepKey="cleanUpSourceItems">
-            <argument name="consumerName" value="inventory.source.items.cleanup"/>
-            <argument name="maxMessages" value="1"/>
+            <argument name="consumerName" value="{{AdminInventorySourceItemsCleanupData.consumerName}}"/>
+            <argument name="maxMessages" value="{{AdminInventorySourceItemsCleanupData.messageLimit}}"/>
         </actionGroup>
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="cleanUpReservation">
-            <argument name="consumerName" value="inventory.reservations.cleanup"/>
-            <argument name="maxMessages" value="1"/>
+        <actionGroup ref="CliConsumerStartActionGroup" stepKey="updateReservations">
+            <argument name="consumerName" value="{{AdminInventoryReservationsCleanupData.consumerName}}"/>
+            <argument name="maxMessages" value="{{AdminInventoryReservationsCleanupData.messageLimit}}"/>
         </actionGroup>
         <!--Create Shipment-->
         <actionGroup ref="OpenOrderByIdActionGroup" stepKey="openOrder">

@@ -3,53 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Calculation;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Model\Calculation\Rate;
-use Magento\Tax\Model\Calculation\RateFactory;
-use Magento\Tax\Model\Calculation\RateRegistry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for RateRegistry
  *
  */
-class RateRegistryTest extends TestCase
+class RateRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RateRegistry
+     * @var \Magento\Tax\Model\Calculation\RateRegistry
      */
     private $rateRegistry;
 
     /**
-     * @var MockObject|RateFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Tax\Model\Calculation\RateFactory
      */
     private $rateModelFactoryMock;
 
     /**
-     * @var MockObject|Rate
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Tax\Model\Calculation\Rate
      */
     private $rateModelMock;
 
     const TAX_RATE_ID = 1;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->rateModelFactoryMock = $this->getMockBuilder(RateFactory::class)
+        $this->rateModelFactoryMock = $this->getMockBuilder(\Magento\Tax\Model\Calculation\RateFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->rateRegistry = $objectManager->getObject(
-            RateRegistry::class,
+            \Magento\Tax\Model\Calculation\RateRegistry::class,
             ['taxModelRateFactory' => $this->rateModelFactoryMock]
         );
-        $this->rateModelMock = $this->getMockBuilder(Rate::class)
+        $this->rateModelMock = $this->getMockBuilder(\Magento\Tax\Model\Calculation\Rate::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -58,7 +52,7 @@ class RateRegistryTest extends TestCase
     {
         $this->rateModelMock->expects($this->any())
             ->method('getId')
-            ->willReturn(self::TAX_RATE_ID);
+            ->will($this->returnValue(self::TAX_RATE_ID));
         $this->rateRegistry->registerTaxRate($this->rateModelMock);
         $this->assertEquals($this->rateModelMock, $this->rateRegistry->retrieveTaxRate(self::TAX_RATE_ID));
     }
@@ -68,13 +62,13 @@ class RateRegistryTest extends TestCase
         $this->rateModelMock->expects($this->once())
             ->method('load')
             ->with(self::TAX_RATE_ID)
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
         $this->rateModelMock->expects($this->any())
             ->method('getId')
-            ->willReturn(self::TAX_RATE_ID);
+            ->will($this->returnValue(self::TAX_RATE_ID));
         $this->rateModelFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
 
         $actual = $this->rateRegistry->retrieveTaxRate(self::TAX_RATE_ID);
         $this->assertEquals($this->rateModelMock, $actual);
@@ -83,19 +77,21 @@ class RateRegistryTest extends TestCase
         $this->assertSame($actual, $actualCached);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function testRetrieveException()
     {
-        $this->expectException(NoSuchEntityException::class);
         $this->rateModelMock->expects($this->once())
             ->method('load')
             ->with(self::TAX_RATE_ID)
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
         $this->rateModelMock->expects($this->any())
             ->method('getId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->rateModelFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
         $this->rateRegistry->retrieveTaxRate(self::TAX_RATE_ID);
     }
 
@@ -104,7 +100,7 @@ class RateRegistryTest extends TestCase
         $this->rateModelMock->expects($this->any())
             ->method('load')
             ->with(self::TAX_RATE_ID)
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
 
         // The second time this is called, want it to return null indicating a new object
         $this->rateModelMock->expects($this->any())
@@ -113,7 +109,7 @@ class RateRegistryTest extends TestCase
 
         $this->rateModelFactoryMock->expects($this->any())
             ->method('create')
-            ->willReturn($this->rateModelMock);
+            ->will($this->returnValue($this->rateModelMock));
 
         $actual = $this->rateRegistry->retrieveTaxRate(self::TAX_RATE_ID);
         $this->assertEquals($this->rateModelMock, $actual);

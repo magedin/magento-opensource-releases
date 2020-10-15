@@ -3,57 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Validation;
 
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Validation\CanRefund;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CanRefundTest extends TestCase
+/**
+ * Class CanRefundTest
+ */
+class CanRefundTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CanRefund|MockObject
+     * @var \Magento\Sales\Model\Order\Validation\CanRefund|\PHPUnit_Framework_MockObject_MockObject
      */
     private $model;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $priceCurrencyMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->orderMock = $this->getMockBuilder(OrderInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStatus', 'getItems'])
             ->getMockForAbstractClass();
 
-        $this->priceCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $this->priceCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->priceCurrencyMock->expects($this->any())
             ->method('round')
             ->willReturnArgument(0);
-        $this->model = new CanRefund(
+        $this->model = new \Magento\Sales\Model\Order\Validation\CanRefund(
             $this->priceCurrencyMock
         );
     }

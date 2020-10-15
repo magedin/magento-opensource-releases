@@ -30,7 +30,7 @@ class ProductServiceTest extends WebapiAbstract
     /**
      * Execute per test initialization
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->productCollection = $objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
@@ -39,7 +39,7 @@ class ProductServiceTest extends WebapiAbstract
     /**
      * Execute per test cleanup
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->deleteProductBySku(self::BUNDLE_PRODUCT_ID);
         parent::tearDown();

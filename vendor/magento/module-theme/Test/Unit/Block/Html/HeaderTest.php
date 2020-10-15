@@ -3,44 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Html;
 
-use Magento\Framework\App\Config;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Theme\Block\Html\Header;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class HeaderTest extends TestCase
+class HeaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Header
+     * @var \Magento\Theme\Block\Html\Header
      */
     protected $unit;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->setMethods(['getScopeConfig'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->scopeConfig = $this->getMockBuilder(Config::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config::class)
             ->setMethods(['getValue'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $context->expects($this->once())->method('getScopeConfig')->willReturn($this->scopeConfig);
+            ->disableOriginalConstructor()->getMock();
+        $context->expects($this->once())->method('getScopeConfig')->will($this->returnValue($this->scopeConfig));
 
-        $this->unit = (new ObjectManager($this))->getObject(
-            Header::class,
+        $this->unit = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
+            \Magento\Theme\Block\Html\Header::class,
             ['context' => $context]
         );
     }
@@ -48,7 +37,7 @@ class HeaderTest extends TestCase
     public function testGetWelcomeDefault()
     {
         $this->scopeConfig->expects($this->once())->method('getValue')
-            ->with('design/header/welcome', ScopeInterface::SCOPE_STORE)
+            ->with('design/header/welcome', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn('Welcome Message');
 
         $this->assertEquals('Welcome Message', $this->unit->getWelcome());

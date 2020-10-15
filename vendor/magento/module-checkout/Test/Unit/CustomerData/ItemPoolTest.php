@@ -3,22 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\CustomerData;
 
-use Magento\Checkout\CustomerData\ItemInterface;
-use Magento\Checkout\CustomerData\ItemPool;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ItemPoolTest extends TestCase
+class ItemPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
@@ -33,17 +23,17 @@ class ItemPoolTest extends TestCase
     protected $itemMap = [];
 
     /**
-     * @var ItemPool
+     * @var \Magento\Checkout\CustomerData\ItemPool
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->model = $objectManager->getObject(
-            ItemPool::class,
+            \Magento\Checkout\CustomerData\ItemPool::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'defaultItemId' => $this->defaultItemId,
@@ -56,10 +46,10 @@ class ItemPoolTest extends TestCase
     {
         $itemData = ['key' => 'value'];
         $productType = 'product_type';
-        $quoteItemMock = $this->createMock(Item::class);
+        $quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $quoteItemMock->expects($this->once())->method('getProductType')->willReturn($productType);
 
-        $itemMock = $this->getMockForAbstractClass(ItemInterface::class);
+        $itemMock = $this->createMock(\Magento\Checkout\CustomerData\ItemInterface::class);
         $itemMock->expects($this->once())->method('getItemData')->with($quoteItemMock)->willReturn($itemData);
 
         $this->objectManagerMock->expects($this->once())
@@ -76,10 +66,10 @@ class ItemPoolTest extends TestCase
         $productType = 'product_type';
         $this->itemMap[$productType] = 'product_id';
 
-        $quoteItemMock = $this->createMock(Item::class);
+        $quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $quoteItemMock->expects($this->once())->method('getProductType')->willReturn($productType);
 
-        $itemMock = $this->getMockForAbstractClass(ItemInterface::class);
+        $itemMock = $this->createMock(\Magento\Checkout\CustomerData\ItemInterface::class);
         $itemMock->expects($this->once())->method('getItemData')->with($quoteItemMock)->willReturn($itemData);
 
         $this->objectManagerMock->expects($this->once())
@@ -87,9 +77,9 @@ class ItemPoolTest extends TestCase
             ->with($this->itemMap[$productType])
             ->willReturn($itemMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            ItemPool::class,
+            \Magento\Checkout\CustomerData\ItemPool::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'defaultItemId' => $this->defaultItemId,
@@ -100,18 +90,20 @@ class ItemPoolTest extends TestCase
         $this->assertEquals($itemData, $this->model->getItemData($quoteItemMock));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * #@expectedExceptionMessage product_type doesn't extend \Magento\Checkout\CustomerData\ItemInterface
+     */
     public function testGetItemDataIfItemNotValid()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('product_type doesn\'t extend \Magento\Checkout\CustomerData\ItemInterface');
         $itemData = ['key' => 'value'];
         $productType = 'product_type';
-        $quoteItemMock = $this->createMock(Item::class);
+        $quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $quoteItemMock->expects($this->once())->method('getProductType')->willReturn($productType);
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with($this->defaultItemId)
-            ->willReturn($this->createMock(Item::class));
+            ->willReturn($this->createMock(\Magento\Quote\Model\Quote\Item::class));
         $this->assertEquals($itemData, $this->model->getItemData($quoteItemMock));
     }
 }

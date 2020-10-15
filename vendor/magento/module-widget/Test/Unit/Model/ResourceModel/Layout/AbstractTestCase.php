@@ -3,19 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model\ResourceModel\Layout;
 
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Magento\Widget\Model\ResourceModel\Layout\Update\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-abstract class AbstractTestCase extends TestCase
+abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test 'where' condition for assertion
@@ -28,7 +18,7 @@ abstract class AbstractTestCase extends TestCase
     const TEST_DAYS_BEFORE = 3;
 
     /**
-     * @var Collection
+     * @var \Magento\Widget\Model\ResourceModel\Layout\Update\Collection
      */
     protected $_collection;
 
@@ -46,7 +36,7 @@ abstract class AbstractTestCase extends TestCase
      */
     protected $_expectedConditions = [];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_expectedConditions = [
             'counter' => 0,
@@ -60,17 +50,17 @@ abstract class AbstractTestCase extends TestCase
     /**
      * Retrieve resource model instance
      *
-     * @param Select $select
-     * @return MockObject
+     * @param \Magento\Framework\DB\Select $select
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function _getResource(Select $select)
+    protected function _getResource(\Magento\Framework\DB\Select $select)
     {
-        $connection = $this->createMock(Mysql::class);
-        $connection->expects($this->once())->method('select')->willReturn($select);
-        $connection->expects($this->any())->method('quoteIdentifier')->willReturnArgument(0);
+        $connection = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
+        $connection->expects($this->once())->method('select')->will($this->returnValue($select));
+        $connection->expects($this->any())->method('quoteIdentifier')->will($this->returnArgument(0));
 
         $resource = $this->getMockForAbstractClass(
-            AbstractDb::class,
+            \Magento\Framework\Model\ResourceModel\Db\AbstractDb::class,
             [],
             '',
             false,
@@ -78,34 +68,34 @@ abstract class AbstractTestCase extends TestCase
             true,
             ['getConnection', 'getMainTable', 'getTable', '__wakeup']
         );
-        $resource->expects($this->any())->method('getConnection')->willReturn($connection);
-        $resource->expects($this->any())->method('getTable')->willReturnArgument(0);
+        $resource->expects($this->any())->method('getConnection')->will($this->returnValue($connection));
+        $resource->expects($this->any())->method('getTable')->will($this->returnArgument(0));
 
         return $resource;
     }
 
     /**
      * @abstract
-     * @param Select $select
-     * @return AbstractCollection
+     * @param \Magento\Framework\DB\Select $select
+     * @return \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
      */
-    abstract protected function _getCollection(Select $select);
+    abstract protected function _getCollection(\Magento\Framework\DB\Select $select);
 
     public function testAddUpdatedDaysBeforeFilter()
     {
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects($this->any())->method('where')->with(self::TEST_WHERE_CONDITION);
 
         $collection = $this->_getCollection($select);
 
-        /** @var \PHPUnit\Framework\MockObject\MockObject $connection */
+        /** @var $connection \PHPUnit_Framework_MockObject_MockObject */
         $connection = $collection->getResource()->getConnection();
         $connection->expects(
             $this->any()
         )->method(
             'prepareSqlCondition'
-        )->willReturnCallback(
-            [$this, 'verifyPrepareSqlCondition']
+        )->will(
+            $this->returnCallback([$this, 'verifyPrepareSqlCondition'])
         );
 
         // expected date without time
@@ -142,7 +132,7 @@ abstract class AbstractTestCase extends TestCase
         $this->assertArrayHasKey($key, $condition);
 
         if ($key == 'lt') {
-            $this->assertStringContainsString($value, $condition[$key]);
+            $this->assertContains($value, $condition[$key]);
         } else {
             $this->assertContains($value, $condition);
         }

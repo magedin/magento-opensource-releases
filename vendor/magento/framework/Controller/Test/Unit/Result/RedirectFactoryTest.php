@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Unit test for Magento\Framework\ValidatorFactory
  *
@@ -8,35 +8,29 @@
 
 namespace Magento\Framework\Controller\Test\Unit\Result;
 
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\ValidatorFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RedirectFactoryTest extends TestCase
+class RedirectFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  ValidatorFactory */
+    /** @var  \Magento\Framework\ValidatorFactory */
     private $model;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject */
     private $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->model = $objectManager->getObject(
-            RedirectFactory::class,
+            \Magento\Framework\Controller\Result\RedirectFactory::class,
             ['objectManager' => $this->objectManagerMock]
         );
     }
 
     public function testCreate()
     {
-        $redirect = $this->getMockBuilder(Redirect::class)
+        $redirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -44,7 +38,7 @@ class RedirectFactoryTest extends TestCase
             ->willReturn($redirect);
 
         $resultRedirect = $this->model->create();
-        $this->assertInstanceOf(Redirect::class, $resultRedirect);
+        $this->assertInstanceOf(\Magento\Framework\Controller\Result\Redirect::class, $resultRedirect);
         $this->assertSame($redirect, $resultRedirect);
     }
 }

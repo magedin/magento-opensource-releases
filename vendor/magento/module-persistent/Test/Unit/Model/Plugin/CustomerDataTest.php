@@ -3,51 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Model\Plugin;
 
-use Magento\Customer\CustomerData\Customer;
-use Magento\Customer\Model\Session;
-use Magento\Persistent\Helper\Data;
-use Magento\Persistent\Model\Plugin\CustomerData;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CustomerDataTest extends TestCase
+class CustomerDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerData
+     * @var \Magento\Persistent\Model\Plugin\CustomerData
      */
     protected $plugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $persistentSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helperMock = $this->createMock(Data::class);
-        $this->customerSessionMock = $this->createMock(Session::class);
+        $this->helperMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
         $this->persistentSessionMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
-        $this->subjectMock = $this->createMock(Customer::class);
-        $this->plugin = new CustomerData(
+        $this->subjectMock = $this->createMock(\Magento\Customer\CustomerData\Customer::class);
+        $this->plugin = new \Magento\Persistent\Model\Plugin\CustomerData(
             $this->helperMock,
             $this->customerSessionMock,
             $this->persistentSessionMock

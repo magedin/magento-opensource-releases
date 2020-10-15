@@ -3,94 +3,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product;
 
-use Magento\Catalog\Model\Indexer\Category\Product;
-use Magento\Catalog\Model\Indexer\Category\Product\Action\Full;
-use Magento\Catalog\Model\Indexer\Category\Product\Action\FullFactory;
-use Magento\Catalog\Model\Indexer\Product\Category;
-use Magento\Catalog\Model\Indexer\Product\Category\Action\Rows;
-use Magento\Catalog\Model\Indexer\Product\Category\Action\RowsFactory;
-use Magento\Framework\Indexer\CacheContext;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Product
+     * @var \Magento\Catalog\Model\Indexer\Category\Product
      */
     protected $model;
 
     /**
-     * @var FullFactory|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Category\Product\Action\FullFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fullMock;
 
     /**
-     * @var RowsFactory|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Category\Action\RowsFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rowsMock;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var \Magento\Framework\Indexer\IndexerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerRegistryMock;
 
     /**
-     * @var CacheContext|MockObject
+     * @var \Magento\Framework\Indexer\CacheContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheContextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fullMock = $this->createPartialMock(
-            FullFactory::class,
+            \Magento\Catalog\Model\Indexer\Category\Product\Action\FullFactory::class,
             ['create']
         );
 
         $this->rowsMock = $this->createPartialMock(
-            RowsFactory::class,
+            \Magento\Catalog\Model\Indexer\Product\Category\Action\RowsFactory::class,
             ['create']
         );
 
         $this->indexerMock = $this->getMockForAbstractClass(
-            IndexerInterface::class,
+            \Magento\Framework\Indexer\IndexerInterface::class,
             [],
             '',
             false,
             false,
             true,
-            ['getId', 'load', 'isInvalid', 'isWorking']
+            ['getId', 'load', 'isInvalid', 'isWorking', '__wakeup']
         );
 
         $this->indexerRegistryMock = $this->createPartialMock(
-            IndexerRegistry::class,
+            \Magento\Framework\Indexer\IndexerRegistry::class,
             ['get']
         );
 
-        $this->model = new Category(
+        $this->model = new \Magento\Catalog\Model\Indexer\Product\Category(
             $this->fullMock,
             $this->rowsMock,
             $this->indexerRegistryMock
         );
 
-        $this->cacheContextMock = $this->createMock(CacheContext::class);
+        $this->cacheContextMock = $this->createMock(\Magento\Framework\Indexer\CacheContext::class);
 
         $cacheContextProperty = new \ReflectionProperty(
-            Product::class,
+            \Magento\Catalog\Model\Indexer\Category\Product::class,
             'cacheContext'
         );
         $cacheContextProperty->setAccessible(true);
@@ -104,12 +87,12 @@ class CategoryTest extends TestCase
         $this->prepareIndexer();
 
         $rowMock = $this->createPartialMock(
-            Rows::class,
+            \Magento\Catalog\Model\Indexer\Product\Category\Action\Rows::class,
             ['execute']
         );
-        $rowMock->expects($this->at(0))->method('execute')->with($ids)->willReturnSelf();
+        $rowMock->expects($this->at(0))->method('execute')->with($ids)->will($this->returnSelf());
 
-        $this->rowsMock->expects($this->once())->method('create')->willReturn($rowMock);
+        $this->rowsMock->expects($this->once())->method('create')->will($this->returnValue($rowMock));
 
         $this->model->execute($ids);
     }
@@ -121,12 +104,12 @@ class CategoryTest extends TestCase
         $this->prepareIndexer();
 
         $rowMock = $this->createPartialMock(
-            Rows::class,
+            \Magento\Catalog\Model\Indexer\Product\Category\Action\Rows::class,
             ['execute']
         );
-        $rowMock->expects($this->once())->method('execute')->with($ids)->willReturnSelf();
+        $rowMock->expects($this->once())->method('execute')->with($ids)->will($this->returnSelf());
 
-        $this->rowsMock->expects($this->once())->method('create')->willReturn($rowMock);
+        $this->rowsMock->expects($this->once())->method('create')->will($this->returnValue($rowMock));
 
         $this->cacheContextMock->expects($this->once())
             ->method('registerEntities')
@@ -139,14 +122,14 @@ class CategoryTest extends TestCase
     {
         $this->indexerRegistryMock->expects($this->any())
             ->method('get')
-            ->with(Category::INDEXER_ID)
-            ->willReturn($this->indexerMock);
+            ->with(\Magento\Catalog\Model\Indexer\Product\Category::INDEXER_ID)
+            ->will($this->returnValue($this->indexerMock));
     }
 
     public function testExecuteFull()
     {
-        /** @var Full $productIndexerFlatFull */
-        $productIndexerFlatFull = $this->createMock(Full::class);
+        /** @var \Magento\Catalog\Model\Indexer\Category\Product\Action\Full $productIndexerFlatFull */
+        $productIndexerFlatFull = $this->createMock(\Magento\Catalog\Model\Indexer\Category\Product\Action\Full::class);
         $this->fullMock->expects($this->once())
             ->method('create')
             ->willReturn($productIndexerFlatFull);

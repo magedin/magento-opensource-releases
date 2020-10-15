@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Controller\Adminhtml\Product\Initialization\Helper\Plugin;
 
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper;
@@ -15,33 +13,35 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableP
 use Magento\ConfigurableProduct\Model\Product\VariationHandler;
 use Magento\ConfigurableProduct\Test\Unit\Model\Product\ProductExtensionAttributes;
 use Magento\Framework\App\Request\Http;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class ConfigurableTest extends TestCase
+/**
+ * Class ConfigurableTest
+ */
+class ConfigurableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var VariationHandler|MockObject
+     * @var Magento\ConfigurableProduct\Model\Product\VariationHandler|MockObject
      */
     private $variationHandler;
 
     /**
-     * @var Http|MockObject
+     * @var Magento\Framework\App\Request\Http|MockObject
      */
     private $request;
 
     /**
-     * @var Factory|MockObject
+     * @var Magento\ConfigurableProduct\Helper\Product\Options\Factory|MockObject
      */
     private $optionFactory;
 
     /**
-     * @var Product|MockObject
+     * @var Magento\Catalog\Model\Product|MockObject
      */
     private $product;
 
     /**
-     * @var Helper|MockObject
+     * @var Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper|MockObject
      */
     private $subject;
 
@@ -53,7 +53,7 @@ class ConfigurableTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->variationHandler = $this->getMockBuilder(VariationHandler::class)
             ->disableOriginalConstructor()

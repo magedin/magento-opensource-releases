@@ -46,23 +46,9 @@ function example($foo = "two words", $bar) {}
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after NullableTypeDeclarationForDefaultNullValueFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {
-        if (\PHP_VERSION_ID >= 70400 && $tokens->isTokenKindFound(T_FN)) {
-            return true;
-        }
-
         return $tokens->isTokenKindFound(T_FUNCTION);
     }
 
@@ -80,10 +66,7 @@ function example($foo = "two words", $bar) {}
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         for ($i = 0, $l = $tokens->count(); $i < $l; ++$i) {
-            if (
-                !$tokens[$i]->isGivenKind(T_FUNCTION)
-                && (\PHP_VERSION_ID < 70400 || !$tokens[$i]->isGivenKind(T_FN))
-            ) {
+            if (!$tokens[$i]->isGivenKind(T_FUNCTION)) {
                 continue;
             }
 
@@ -95,8 +78,9 @@ function example($foo = "two words", $bar) {}
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function fixFunctionDefinition(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -126,8 +110,9 @@ function example($foo = "two words", $bar) {}
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      *
      * @return null|int
      */
@@ -146,12 +131,11 @@ function example($foo = "two words", $bar) {}
                 return $i;
             }
         }
-
-        return null;
     }
 
     /**
-     * @param int $variableIndex
+     * @param Tokens $tokens
+     * @param int    $variableIndex
      *
      * @return bool
      */
@@ -161,8 +145,9 @@ function example($foo = "two words", $bar) {}
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function removeDefaultArgument(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -174,7 +159,8 @@ function example($foo = "two words", $bar) {}
     }
 
     /**
-     * @param int $index Index of "="
+     * @param Tokens $tokens
+     * @param int    $index  Index of "="
      *
      * @return bool
      */
@@ -201,7 +187,8 @@ function example($foo = "two words", $bar) {}
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function clearWhitespacesBeforeIndex(Tokens $tokens, $index)
     {

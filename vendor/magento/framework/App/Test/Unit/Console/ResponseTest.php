@@ -4,23 +4,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Console;
 
-use Magento\Framework\App\Console\Response;
-use PHPUnit\Framework\TestCase;
-
-class ResponseTest extends TestCase
+class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Response
+     * @var \Magento\Framework\App\Console\Response
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new Response();
+        $this->model = new \Magento\Framework\App\Console\Response();
         $this->model->terminateOnSend(false);
     }
 

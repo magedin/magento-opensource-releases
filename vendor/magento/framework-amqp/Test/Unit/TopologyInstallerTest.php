@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Amqp\Test\Unit;
 
 use Magento\Framework\Amqp\TopologyInstaller;
-use Magento\Framework\MessageQueue\Topology\ConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\MessageQueue\Topology\ConfigInterface;
 use PhpAmqpLib\Exception\AMQPLogicException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
  * Unit tests for @see \Magento\Framework\Amqp\TopologyInstaller
  */
-class TopologyInstallerTest extends TestCase
+class TopologyInstallerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TopologyInstaller
+     * @var \Magento\Framework\Amqp\TopologyInstaller
      */
     private $topologyInstaller;
 
@@ -31,23 +27,23 @@ class TopologyInstallerTest extends TestCase
     private $objectManager;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $topologyConfigMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
      * Initialize topology installer.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->topologyConfigMock = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->topologyConfigMock = $this->createMock(ConfigInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->topologyInstaller = $this->objectManager->getObject(
             TopologyInstaller::class,
             ['topologyConfig' => $this->topologyConfigMock, 'logger' => $this->loggerMock]

@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\DB\Transaction;
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Api\InvoiceItemRepositoryInterface;
 use Magento\Sales\Api\InvoiceManagementInterface;
 use Magento\Sales\Model\Order;
@@ -16,19 +14,12 @@ use Magento\Sales\Model\Order\Invoice\ItemFactory;
 use Magento\Sales\Model\Order\InvoiceFactory;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'default_rollback.php';
+require __DIR__ . '/order.php';
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
-/** @var \Magento\Sales\Model\Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 /** @var InvoiceManagementInterface $orderService */
-$orderService = $objectManager->create(InvoiceManagementInterface::class);
+$orderService = Bootstrap::getObjectManager()->create(InvoiceManagementInterface::class);
 /** @var Invoice $invoice */
 $invoice = $orderService->prepareInvoice($order);
 $invoice->register();
@@ -36,11 +27,11 @@ $invoice->register();
 $order = $invoice->getOrder();
 $order->setIsInProcess(true);
 /** @var Transaction $transactionSave */
-$transactionSave = $objectManager->create(Transaction::class);
+$transactionSave = Bootstrap::getObjectManager()->create(Transaction::class);
 $transactionSave->addObject($invoice)->addObject($order)->save();
 
 /** @var ItemFactory $invoiceItemFactory */
-$invoiceItemFactory = $objectManager->create(ItemFactory::class);
+$invoiceItemFactory = Bootstrap::getObjectManager()->create(ItemFactory::class);
 
 $items = [
     [
@@ -96,7 +87,7 @@ $items = [
 ];
 
 /** @var InvoiceItemRepositoryInterface $invoiceItemRepository */
-$invoiceItemRepository = $objectManager->get(InvoiceItemRepositoryInterface::class);
+$invoiceItemRepository = Bootstrap::getObjectManager()->get(InvoiceItemRepositoryInterface::class);
 
 foreach ($items as $data) {
     /** @var OrderItem $orderItem */

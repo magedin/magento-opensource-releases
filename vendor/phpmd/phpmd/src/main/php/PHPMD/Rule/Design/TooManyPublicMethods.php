@@ -49,7 +49,7 @@ class TooManyPublicMethods extends AbstractRule implements ClassAware
         if ($node->getMetric('npm') <= $threshold) {
             return;
         }
-        /** @var AbstractTypeNode $node */
+        /** @var $node AbstractTypeNode */
         $nom = $this->countMethods($node);
         if ($nom <= $threshold) {
             return;

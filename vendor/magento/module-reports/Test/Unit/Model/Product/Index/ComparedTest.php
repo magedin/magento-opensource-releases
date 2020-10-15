@@ -3,127 +3,111 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Model\Product\Index;
 
-use Magento\Catalog\Helper\Product\Compare;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Model\ResourceModel\Product\Compare\Item\Collection;
-use Magento\Customer\Model\Session;
-use Magento\Customer\Model\Visitor;
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Framework\Session\Generic;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\Reports\Model\Product\Index\Compared;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ComparedTest extends TestCase
+class ComparedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Compared
+     * @var \Magento\Reports\Model\Product\Index\Compared
      */
     protected $compared;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var Visitor|MockObject
+     * @var \Magento\Customer\Model\Visitor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $visitorMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var Generic|MockObject
+     * @var \Magento\Framework\Session\Generic|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $genericMock;
 
     /**
-     * @var Visibility|MockObject
+     * @var \Magento\Catalog\Model\Product\Visibility|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $visibilityMock;
 
     /**
-     * @var DateTime|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateTimeMock;
 
     /**
-     * @var Compare|MockObject
+     * @var \Magento\Catalog\Helper\Product\Compare|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $catalogProductHelperMock;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Data\Collection\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dbMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->getMock();
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMock();
-        $this->visitorMock = $this->getMockBuilder(Visitor::class)
+        $this->visitorMock = $this->getMockBuilder(\Magento\Customer\Model\Visitor::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->sessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->genericMock = $this->getMockBuilder(Generic::class)
+        $this->genericMock = $this->getMockBuilder(\Magento\Framework\Session\Generic::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->visibilityMock = $this->getMockBuilder(Visibility::class)
+        $this->visibilityMock = $this->getMockBuilder(\Magento\Catalog\Model\Product\Visibility::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dateTimeMock = $this->getMockBuilder(DateTime::class)
+        $this->dateTimeMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime::class)
             ->getMock();
-        $this->catalogProductHelperMock = $this->getMockBuilder(Compare::class)
+        $this->catalogProductHelperMock = $this->getMockBuilder(\Magento\Catalog\Helper\Product\Compare::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resourceMock = $this->getMockBuilder(AbstractResource::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\AbstractResource::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIdFieldName', '_construct', 'getConnection'])
             ->getMockForAbstractClass();
-        $this->dbMock = $this->getMockBuilder(AbstractDb::class)
+        $this->dbMock = $this->getMockBuilder(\Magento\Framework\Data\Collection\AbstractDb::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -147,13 +131,13 @@ class ComparedTest extends TestCase
      */
     public function testGetExcludeProductIds()
     {
-        $collection = $this->getMockBuilder(Collection::class)
+        $collection = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Compare\Item\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEntityId'])
             ->getMock();
         $collection->expects($this->once())->method('getEntityId')->willReturn(1);
 
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
             ->getMock();

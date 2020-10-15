@@ -3,53 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\View\Asset;
 
 use Magento\Catalog\Model\Product\Media\ConfigInterface;
 use Magento\Catalog\Model\View\Asset\Image;
+use Magento\Framework\Encryption\Encryptor;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Asset\ContextInterface;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ImageTest extends TestCase
+/**
+ * Class ImageTest
+ */
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Image
+     * @var \Magento\Catalog\Model\View\Asset\Image
      */
     protected $model;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaConfig;
 
     /**
-     * @var EncryptorInterface|MockObject
+     * @var EncryptorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $encryptor;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetRepo;
 
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->mediaConfig = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->encryptor = $this->getMockForAbstractClass(EncryptorInterface::class);
-        $this->context = $this->getMockForAbstractClass(ContextInterface::class);
+        $this->mediaConfig = $this->createMock(ConfigInterface::class);
+        $this->encryptor = $this->createMock(EncryptorInterface::class);
+        $this->context = $this->createMock(ContextInterface::class);
         $this->assetRepo = $this->createMock(Repository::class);
         $this->objectManager = new ObjectManager($this);
         $this->model = $this->objectManager->getObject(
@@ -128,7 +128,7 @@ class ImageTest extends TestCase
             ->with($readableParams, $this->anything())
             ->willReturn($hashPath);
         static::assertEquals(
-            $absolutePath . '/cache/' . $hashPath . $filePath,
+            $absolutePath . '/cache/'. $hashPath . $filePath,
             $imageModel->getPath()
         );
     }

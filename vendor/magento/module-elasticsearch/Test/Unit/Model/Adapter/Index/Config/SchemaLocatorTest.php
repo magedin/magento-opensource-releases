@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\Index\Config;
 
-use Magento\Elasticsearch\Model\Adapter\Index\Config\SchemaLocator;
-use Magento\Framework\Module\Dir\Reader;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $moduleReaderMock;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\Elasticsearch\Model\Adapter\Index\Config\SchemaLocator
      */
     protected $model;
 
@@ -30,9 +24,9 @@ class SchemaLocatorTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->moduleReaderMock = $this->createMock(Reader::class);
+        $this->moduleReaderMock = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
         $this->moduleReaderMock->expects(
             $this->any()
         )->method(
@@ -40,13 +34,13 @@ class SchemaLocatorTest extends TestCase
         )->with(
             'etc',
             'Magento_Elasticsearch'
-        )->willReturn(
-            'schema_dir'
+        )->will(
+            $this->returnValue('schema_dir')
         );
 
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            SchemaLocator::class,
+            \Magento\Elasticsearch\Model\Adapter\Index\Config\SchemaLocator::class,
             [
                 'moduleReader' => $this->moduleReaderMock
             ]

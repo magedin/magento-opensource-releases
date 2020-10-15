@@ -4,7 +4,5 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('adminhtml');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category.php');
+require_once __DIR__ . '/category.php';

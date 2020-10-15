@@ -27,7 +27,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
      */
     protected $urlPathGenerator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Catalog\Model\Product\Url::class
@@ -53,8 +53,8 @@ class UrlTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture fixturestore_store web/unsecure/base_url http://sample-second.com/
      * @magentoConfigFixture fixturestore_store web/unsecure/base_link_url http://sample-second.com/
      * @magentoDataFixture Magento/Catalog/_files/product_simple_multistore.php
-     * @dataProvider getUrlsWithSecondStoreProvider
      * @magentoDbIsolation disabled
+     * @dataProvider getUrlsWithSecondStoreProvider
      * @magentoAppArea adminhtml
      */
     public function testGetUrlInStoreWithSecondStore($storeCode, $expectedProductUrl)
@@ -139,7 +139,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             \Magento\Catalog\Model\Product::class
         );
         $product->setId(100);
-        $this->assertStringContainsString('catalog/product/view/id/100/', $this->_model->getUrl($product));
+        $this->assertContains('catalog/product/view/id/100/', $this->_model->getUrl($product));
     }
 
     /**
@@ -169,7 +169,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
         $product = $productRepository->get('simple');
         $category = $categoryRepository->get($product->getCategoryIds()[0]);
         $registry->register('current_category', $category);
-        $this->assertStringNotContainsString($category->getUrlPath(), $this->_model->getProductUrl($product));
+        $this->assertNotContains($category->getUrlPath(), $this->_model->getProductUrl($product));
 
         $rewrites = $urlFinder->findAllByData(
             [
@@ -184,6 +184,6 @@ class UrlTest extends \PHPUnit\Framework\TestCase
             }
         }
         $urlPersist->replace($rewrites);
-        $this->assertStringNotContainsString($category->getUrlPath(), $this->_model->getProductUrl($product));
+        $this->assertNotContains($category->getUrlPath(), $this->_model->getProductUrl($product));
     }
 }

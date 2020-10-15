@@ -10,7 +10,6 @@ namespace Magento\Paypal\Controller\Express;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Paypal\Model\Config as PayPalConfig;
 use Magento\Paypal\Model\Express\Checkout as PayPalCheckout;
 use Magento\Paypal\Model\Api\ProcessableException as ApiProcessableException;
@@ -161,16 +160,12 @@ class OnAuthorization extends AbstractExpress implements HttpPostActionInterface
         } catch (ApiProcessableException $e) {
             $responseContent['success'] = false;
             $responseContent['error_message'] = $e->getUserMessage();
-        } catch (LocalizedException $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $responseContent['success'] = false;
             $responseContent['error_message'] = $e->getMessage();
         } catch (\Exception $e) {
             $responseContent['success'] = false;
             $responseContent['error_message'] = __('We can\'t process Express Checkout approval.');
-        }
-
-        if (!$responseContent['success']) {
-            $this->messageManager->addErrorMessage($responseContent['error_message']);
         }
 
         return $controllerResult->setData($responseContent);

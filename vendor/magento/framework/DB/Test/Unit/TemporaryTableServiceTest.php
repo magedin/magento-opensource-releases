@@ -3,37 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
+use Magento\Framework\DB\TemporaryTableService;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\TemporaryTableService;
-use Magento\Framework\Math\Random;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Math\Random;
 
-class TemporaryTableServiceTest extends TestCase
+class TemporaryTableServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TemporaryTableService|MockObject
+     * @var TemporaryTableService|\PHPUnit_Framework_MockObject_MockObject
      */
     private $temporaryTableService;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $adapterMock;
 
     /**
-     * @var Random|MockObject
+     * @var Random|\PHPUnit_Framework_MockObject_MockObject
      */
     private $randomMock;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectMock;
 
@@ -42,9 +38,9 @@ class TemporaryTableServiceTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->adapterMock = $this->createMock(AdapterInterface::class);
         $this->selectMock = $this->createMock(Select::class);
         $this->randomMock = $this->createMock(Random::class);
         $this->temporaryTableService = (new ObjectManager($this))->getObject(

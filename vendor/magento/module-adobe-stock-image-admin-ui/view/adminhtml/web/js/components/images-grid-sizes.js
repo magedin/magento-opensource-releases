@@ -3,9 +3,8 @@
  * See COPYING.txt for license details.
  */
 define([
-    'Magento_Ui/js/grid/paging/sizes',
-    'underscore'
-], function (Sizes, _) {
+    'Magento_Ui/js/grid/paging/sizes'
+], function (Sizes) {
     'use strict';
 
     return Sizes.extend({
@@ -36,14 +35,14 @@ define([
         },
 
         /**
-         * @inheritdoc
+         * @override
          */
-        updateArray: function () {
-            if (_.isUndefined(this.options)) {
-                this.options = this.sizes;
-            }
+        initialize: function () {
+            this._super();
+            this.options = this.sizes;
+            this.updateArray();
 
-            return this._super();
+            return this;
         }
     });
 });

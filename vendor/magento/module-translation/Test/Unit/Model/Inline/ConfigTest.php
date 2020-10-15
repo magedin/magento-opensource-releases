@@ -3,19 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\Model\Inline;
 
-use Magento\Developer\Helper\Data;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Translation\Model\Inline\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Translation\Model\Inline\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -23,19 +15,19 @@ class ConfigTest extends TestCase
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Developer\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->helperMock = $this->createPartialMock(Data::class, ['isDevAllowed']);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->helperMock = $this->createPartialMock(\Magento\Developer\Helper\Data::class, ['isDevAllowed']);
         $this->model = new Config(
             $this->scopeConfigMock,
             $this->helperMock
@@ -46,21 +38,21 @@ class ConfigTest extends TestCase
     {
         $store = 'some store';
         $result = 'result';
-        $scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $scopeConfig = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $scopeConfig->expects(
             $this->once()
         )->method(
             'isSetFlag'
         )->with(
-            'dev/translate_inline/active',
-            ScopeInterface::SCOPE_STORE,
-            $store
-        )->willReturn(
-            $result
+            $this->equalTo('dev/translate_inline/active'),
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $this->equalTo($store)
+        )->will(
+            $this->returnValue($result)
         );
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $config = $objectManager->getObject(
-            Config::class,
+            \Magento\Translation\Model\Inline\Config::class,
             ['scopeConfig' => $scopeConfig]
         );
         $this->assertEquals($result, $config->isActive($store));
@@ -77,8 +69,8 @@ class ConfigTest extends TestCase
             'isDevAllowed'
         )->with(
             $store
-        )->willReturn(
-            $result
+        )->will(
+            $this->returnValue($result)
         );
 
         $this->assertEquals($result, $this->model->isDevAllowed($store));

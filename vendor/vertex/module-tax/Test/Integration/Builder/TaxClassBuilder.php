@@ -6,8 +6,6 @@
 
 namespace Vertex\Tax\Test\Integration\Builder;
 
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Tax\Api\Data\TaxClassInterface;
 use Magento\Tax\Api\Data\TaxClassInterfaceFactory;
 use Magento\Tax\Api\TaxClassRepositoryInterface;
@@ -39,8 +37,8 @@ class TaxClassBuilder
      * @param string $taxClassName
      * @param string $taxClassType One of PRODUCT or CATEGORY
      * @return string Tax Class ID
-     * @throws InputException
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function createTaxClass($taxClassName, $taxClassType = 'PRODUCT')
     {

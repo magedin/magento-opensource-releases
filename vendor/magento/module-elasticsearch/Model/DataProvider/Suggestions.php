@@ -3,24 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Model\DataProvider;
 
+use Magento\Store\Model\ScopeInterface;
+use Magento\Search\Model\QueryInterface;
 use Magento\AdvancedSearch\Model\SuggestedQueriesInterface;
 use Magento\Elasticsearch\Model\Config;
 use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Search\Model\QueryInterface;
 use Magento\Search\Model\QueryResultFactory;
-use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
 use Magento\Store\Model\StoreManagerInterface as StoreManager;
 
 /**
- * The implementation to provide suggestions mechanism for Elasticsearch5
+ * The implementation to provide suggestions mechanism for Elasticsearch2
  *
- * @deprecated 100.3.5 because of EOL for Elasticsearch5
+ * @deprecated 100.3.5 because of EOL for Elasticsearch2
  * @see \Magento\Elasticsearch\Model\DataProvider\Base\Suggestions
  */
 class Suggestions implements SuggestedQueriesInterface
@@ -131,7 +129,7 @@ class Suggestions implements SuggestedQueriesInterface
     public function isResultsCountEnabled()
     {
         return $this->scopeConfig->isSetFlag(
-            self::SEARCH_SUGGESTION_COUNT_RESULTS_ENABLED,
+            self::CONFIG_SUGGESTION_COUNT_RESULTS_ENABLED,
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -208,7 +206,7 @@ class Suggestions implements SuggestedQueriesInterface
     private function getSearchSuggestionsCount()
     {
         return (int)$this->scopeConfig->getValue(
-            self::SEARCH_SUGGESTION_COUNT,
+            self::CONFIG_SUGGESTION_COUNT,
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -221,7 +219,7 @@ class Suggestions implements SuggestedQueriesInterface
     private function isSuggestionsAllowed()
     {
         $isSuggestionsEnabled = $this->scopeConfig->isSetFlag(
-            self::SEARCH_SUGGESTION_ENABLED,
+            self::CONFIG_SUGGESTION_ENABLED,
             ScopeInterface::SCOPE_STORE
         );
         $isEnabled = $this->config->isElasticsearchEnabled();

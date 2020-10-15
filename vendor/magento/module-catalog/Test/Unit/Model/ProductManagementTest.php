@@ -3,35 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model;
 
-use Magento\Catalog\Model\ProductManagement;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProductManagementTest extends TestCase
+class ProductManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ProductManagement
+     * @var \Magento\Catalog\Model\ProductManagement
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productsFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productsFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class,
             ['create']
         );
-        $this->model = new ProductManagement(
+        $this->model = new \Magento\Catalog\Model\ProductManagement(
             $this->productsFactoryMock
         );
     }
@@ -39,7 +31,7 @@ class ProductManagementTest extends TestCase
     public function testGetEnabledCount()
     {
         $statusEnabled = 1;
-        $productsMock = $this->createMock(Collection::class);
+        $productsMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
 
         $this->productsFactoryMock
             ->expects($this->once())
@@ -64,7 +56,7 @@ class ProductManagementTest extends TestCase
     public function testGetDisabledCount()
     {
         $statusDisabled = 2;
-        $productsMock = $this->createMock(Collection::class);
+        $productsMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
 
         $this->productsFactoryMock
             ->expects($this->once())

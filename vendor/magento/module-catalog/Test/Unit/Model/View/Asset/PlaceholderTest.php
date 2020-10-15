@@ -3,50 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\View\Asset;
 
-use Magento\Catalog\Model\View\Asset\Placeholder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Catalog\Model\View\Asset\Placeholder;
 use Magento\Framework\View\Asset\ContextInterface;
-use Magento\Framework\View\Asset\MergeableInterface;
 use Magento\Framework\View\Asset\Repository;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PlaceholderTest extends TestCase
+/**
+ * Class PlaceholderTest
+ */
+class PlaceholderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Placeholder
+     * @var \Magento\Catalog\Model\View\Asset\Placeholder
      */
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repository;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $imageContext;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
-            ->getMockForAbstractClass();
-        $this->imageContext = $this->getMockBuilder(ContextInterface::class)
-            ->getMockForAbstractClass();
-        $this->repository = $this->getMockBuilder(Repository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)->getMockForAbstractClass();
+        $this->imageContext = $this->getMockBuilder(ContextInterface::class)->getMockForAbstractClass();
+        $this->repository = $this->getMockBuilder(Repository::class)->disableOriginalConstructor()->getMock();
         $this->model = new Placeholder(
             $this->imageContext,
             $this->scopeConfig,
@@ -95,13 +88,13 @@ class PlaceholderTest extends TestCase
             ->method('getValue')
             ->with(
                 "catalog/placeholder/{$imageType}_placeholder",
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 null
             )->willReturn($placeholderPath);
 
         if ($placeholderPath == null) {
             $this->imageContext->expects($this->never())->method('getPath');
-            $assetMock = $this->getMockBuilder(MergeableInterface::class)
+            $assetMock = $this->getMockBuilder(\Magento\Framework\View\Asset\MergeableInterface::class)
                 ->getMockForAbstractClass();
             $expectedResult = 'path/to_default/placeholder/by_type';
             $assetMock->expects($this->any())->method('getSourceFile')->willReturn($expectedResult);
@@ -135,7 +128,7 @@ class PlaceholderTest extends TestCase
             ->method('getValue')
             ->with(
                 "catalog/placeholder/{$imageType}_placeholder",
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 null
             )->willReturn($placeholderPath);
 

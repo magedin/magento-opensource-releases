@@ -18,7 +18,7 @@ class NewTest extends \PHPUnit\Framework\TestCase
      */
     protected $_block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /**
          * @var \Magento\Customer\Api\GroupManagementInterface $groupManagement
@@ -110,7 +110,7 @@ class NewTest extends \PHPUnit\Framework\TestCase
 
         $html = $this->_block->toHtml();
         $this->assertNotEmpty($html);
-        $this->assertStringContainsString('New Product', $html);
+        $this->assertContains('New Product', $html);
         $this->assertInstanceOf(
             \Magento\Catalog\Model\ResourceModel\Product\Collection::class,
             $this->_block->getProductCollection()

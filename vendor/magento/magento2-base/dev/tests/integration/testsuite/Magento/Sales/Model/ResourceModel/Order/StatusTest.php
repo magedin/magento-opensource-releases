@@ -21,7 +21,7 @@ class StatusTest extends \PHPUnit\Framework\TestCase
     /**
      * Test setUp
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->resourceModel = Bootstrap::getObjectManager()
             ->create(

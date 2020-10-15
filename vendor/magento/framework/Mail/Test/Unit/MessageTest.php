@@ -3,26 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mail\Test\Unit;
-
-use Magento\Framework\Mail\Message;
-use PHPUnit\Framework\TestCase;
 
 /**
  * test Magento\Framework\Mail\Message
  */
-class MessageTest extends TestCase
+class MessageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Message
+     * @var \Magento\Framework\Mail\Message
      */
     protected $message;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->message = new Message();
+        $this->message = new \Magento\Framework\Mail\Message();
     }
 
     public function testSetBodyHtml()

@@ -12,5 +12,4 @@
                 type="Magento\InventoryDistanceBasedSourceSelectionApi\Model\GetDistance"/>
     <preference for="Magento\InventoryDistanceBasedSourceSelectionApi\Api\GetLatLngFromAddressInterface"
                 type="Magento\InventoryDistanceBasedSourceSelectionApi\Model\GetLatLngFromAddress"/>
-    <preference for="Magento\InventoryDistanceBasedSourceSelectionApi\Api\GetLatsLngsFromAddressInterface" type="Magento\InventoryDistanceBasedSourceSelectionApi\Model\GetLatsLngsFromAddress"/>
 </config>

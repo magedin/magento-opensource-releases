@@ -115,7 +115,7 @@ class JSONRenderer extends AbstractRenderer
     /**
      * Encode report data to the JSON representation string
      *
-     * @param array $data The report data
+     * @param $data array The report data
      *
      * @return string
      */

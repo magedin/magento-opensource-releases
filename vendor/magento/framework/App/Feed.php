@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\Framework\App;
 
-use Laminas\Feed\Writer\FeedFactory;
+use Zend\Feed\Writer\FeedFactory;
 
 /**
  * Default XML feed class
@@ -29,7 +29,7 @@ class Feed implements FeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getFormattedContent() : string
     {

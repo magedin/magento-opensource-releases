@@ -4,80 +4,66 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Persistent\Controller\Index;
-use Magento\Persistent\Helper\Data;
-use Magento\Persistent\Helper\Session;
-use Magento\Persistent\Model\QuoteManager;
-use Magento\Persistent\Observer\MakePersistentQuoteGuestObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class MakePersistentQuoteGuestObserverTest extends TestCase
+class MakePersistentQuoteGuestObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MakePersistentQuoteGuestObserver
+     * @var \Magento\Persistent\Observer\MakePersistentQuoteGuestObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $actionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->actionMock = $this->createMock(Index::class);
-        $this->observerMock = $this->createMock(Observer::class);
-        $this->sessionHelperMock = $this->createMock(Session::class);
-        $this->helperMock = $this->createMock(Data::class);
+        $this->actionMock = $this->createMock(\Magento\Persistent\Controller\Index::class);
+        $this->observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $this->sessionHelperMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
+        $this->helperMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
         $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
-        $this->quoteManagerMock = $this->createMock(QuoteManager::class);
+        $this->quoteManagerMock = $this->createMock(\Magento\Persistent\Model\QuoteManager::class);
         $this->eventManagerMock =
-            $this->getMockBuilder(Event::class)
-                ->addMethods(['getControllerAction'])
-                ->disableOriginalConstructor()
-                ->getMock();
+            $this->createPartialMock(\Magento\Framework\Event::class, ['getControllerAction', '__wakeUp']);
         $this->observerMock
             ->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventManagerMock);
-        $this->model = new MakePersistentQuoteGuestObserver(
+            ->will($this->returnValue($this->eventManagerMock));
+        $this->model = new \Magento\Persistent\Observer\MakePersistentQuoteGuestObserver(
             $this->sessionHelperMock,
             $this->helperMock,
             $this->customerSessionMock,
@@ -90,9 +76,9 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getControllerAction')
-            ->willReturn($this->actionMock);
-        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
-        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
+            ->will($this->returnValue($this->actionMock));
+        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->will($this->returnValue(true));
+        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->will($this->returnValue(false));
         $this->helperMock->expects($this->never())->method('isShoppingCartPersist');
         $this->quoteManagerMock->expects($this->once())->method('setGuest')->with(true);
         $this->model->execute($this->observerMock);
@@ -103,10 +89,10 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getControllerAction')
-            ->willReturn($this->actionMock);
-        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
-        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(true);
+            ->will($this->returnValue($this->actionMock));
+        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->will($this->returnValue(true));
+        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->will($this->returnValue(true));
         $this->quoteManagerMock->expects($this->once())->method('setGuest')->with(true);
         $this->model->execute($this->observerMock);
     }
@@ -116,10 +102,10 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getControllerAction')
-            ->willReturn($this->actionMock);
-        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
-        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(false);
+            ->will($this->returnValue($this->actionMock));
+        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->will($this->returnValue(true));
+        $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->will($this->returnValue(false));
         $this->quoteManagerMock->expects($this->never())->method('setGuest');
         $this->model->execute($this->observerMock);
     }

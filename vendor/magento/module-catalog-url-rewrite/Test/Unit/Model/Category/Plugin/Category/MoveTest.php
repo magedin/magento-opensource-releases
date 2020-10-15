@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Category\Plugin\Category;
 
-use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
-use Magento\CatalogUrlRewrite\Model\Category\ChildrenCategoriesProvider;
 use Magento\CatalogUrlRewrite\Model\Category\Plugin\Category\Move as CategoryMovePlugin;
-use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
+use Magento\CatalogUrlRewrite\Model\Category\ChildrenCategoriesProvider;
+use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
+use Magento\Catalog\Model\Category;
 
-class MoveTest extends TestCase
+class MoveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -25,27 +21,27 @@ class MoveTest extends TestCase
     private $objectManager;
 
     /**
-     * @var ChildrenCategoriesProvider|MockObject
+     * @var ChildrenCategoriesProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $childrenCategoriesProviderMock;
 
     /**
-     * @var CategoryUrlPathGenerator|MockObject
+     * @var CategoryUrlPathGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryUrlPathGeneratorMock;
 
     /**
-     * @var CategoryResourceModel|MockObject
+     * @var CategoryResourceModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
     /**
-     * @var Category|MockObject
+     * @var Category|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryMock;
 
     /**
-     * @var CategoryFactory|MockObject
+     * @var CategoryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryFactory;
 
@@ -54,7 +50,7 @@ class MoveTest extends TestCase
      */
     private $plugin;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->categoryUrlPathGeneratorMock = $this->getMockBuilder(CategoryUrlPathGenerator::class)

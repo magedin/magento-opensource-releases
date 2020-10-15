@@ -3,63 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Creditmemo\Relation;
 
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\ResourceModel\Order\Creditmemo\Relation\Refund;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RefundTest extends TestCase
+/**
+ * Class RefundTest
+ */
+class RefundTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Refund
+     * @var \Magento\Sales\Model\ResourceModel\Order\Creditmemo\Relation\Refund
      */
     protected $refundResource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceCurrencyMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->orderRepositoryMock = $this->getMockBuilder(OrderRepositoryInterface::class)
+        $this->orderRepositoryMock = $this->getMockBuilder(\Magento\Sales\Api\OrderRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->invoiceRepositoryMock = $this->getMockBuilder(InvoiceRepositoryInterface::class)
+        $this->invoiceRepositoryMock = $this->getMockBuilder(\Magento\Sales\Api\InvoiceRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->priceCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $this->priceCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->refundResource = $objectManager->getObject(
-            Refund::class,
+            \Magento\Sales\Model\ResourceModel\Order\Creditmemo\Relation\Refund::class,
             [
                 'orderRepository' => $this->orderRepositoryMock,
                 'invoiceRepository' => $this->invoiceRepositoryMock,
@@ -70,23 +60,23 @@ class RefundTest extends TestCase
 
     public function testProcessRelation()
     {
-        $paymentMock = $this->getMockBuilder(Payment::class)
+        $paymentMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
         $orderMock->expects($this->once())
             ->method('getPayment')
             ->willReturn($paymentMock);
 
-        $creditmemoMock = $this->getMockBuilder(Creditmemo::class)
+        $creditmemoMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Creditmemo::class)
             ->disableOriginalConstructor()
             ->getMock();
         $creditmemoMock->expects($this->once())
             ->method('getState')
-            ->willReturn(Creditmemo::STATE_REFUNDED);
+            ->willReturn(\Magento\Sales\Model\Order\Creditmemo::STATE_REFUNDED);
         $creditmemoMock->expects($this->any())
             ->method('getOrder')
             ->willReturn($orderMock);

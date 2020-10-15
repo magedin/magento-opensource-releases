@@ -8,24 +8,39 @@ declare(strict_types=1);
 
 namespace Magento\AdobeStockAsset\Model;
 
+use Magento\AdobeStockAsset\Model\ResourceModel\Creator as ResourceModel;
 use Magento\AdobeStockAsset\Model\ResourceModel\Creator\Collection as CreatorCollection;
 use Magento\AdobeStockAsset\Model\ResourceModel\Creator\CollectionFactory as CreatorCollectionFactory;
+use Magento\AdobeStockAsset\Model\ResourceModel\Creator\Command\Save;
 use Magento\AdobeStockAssetApi\Api\CreatorRepositoryInterface;
 use Magento\AdobeStockAssetApi\Api\Data\CreatorInterface;
 use Magento\AdobeStockAssetApi\Api\Data\CreatorSearchResultsInterface;
 use Magento\AdobeStockAssetApi\Api\Data\CreatorSearchResultsInterfaceFactory;
-use Magento\AdobeStockAssetApi\Model\Creator\Command\DeleteByIdInterface;
-use Magento\AdobeStockAssetApi\Model\Creator\Command\LoadByIdInterface;
-use Magento\AdobeStockAssetApi\Model\Creator\Command\SaveInterface;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Centralize common data access functionality for the Adobe Stock creator. Uses commands as proxy for those operations.
  */
 class CreatorRepository implements CreatorRepositoryInterface
 {
+    /**
+     * @var Save
+     */
+    private $saveService;
+
+    /**
+     * @var ResourceModel
+     */
+    private $resource;
+
+    /**
+     * @var CreatorFactory
+     */
+    private $factory;
+
     /**
      * @var CreatorCollectionFactory
      */
@@ -47,47 +62,32 @@ class CreatorRepository implements CreatorRepositoryInterface
     private $searchResultFactory;
 
     /**
-     * @var LoadByIdInterface
-     */
-    private $loadByIdCommand;
-
-    /**
-     * @var SaveInterface
-     */
-    private $saveCommand;
-
-    /**
-     * @var DeleteByIdInterface
-     */
-    private $deleteByIdCommand;
-
-    /**
      * CreatorRepository constructor.
      *
+     * @param ResourceModel $resource
      * @param CreatorCollectionFactory $collectionFactory
+     * @param CreatorFactory $factory
      * @param JoinProcessorInterface $joinProcessor
      * @param CollectionProcessorInterface $collectionProcessor
      * @param CreatorSearchResultsInterfaceFactory $searchResultFactory
-     * @param LoadByIdInterface $loadByIdCommand
-     * @param SaveInterface $saveCommand
-     * @param DeleteByIdInterface $deleteByIdCommand
+     * @param Save $commandSave
      */
     public function __construct(
+        ResourceModel $resource,
         CreatorCollectionFactory $collectionFactory,
+        CreatorFactory $factory,
         JoinProcessorInterface $joinProcessor,
         CollectionProcessorInterface $collectionProcessor,
         CreatorSearchResultsInterfaceFactory $searchResultFactory,
-        LoadByIdInterface $loadByIdCommand,
-        SaveInterface $saveCommand,
-        DeleteByIdInterface $deleteByIdCommand
+        Save $commandSave
     ) {
+        $this->resource = $resource;
         $this->collectionFactory = $collectionFactory;
+        $this->factory = $factory;
         $this->joinProcessor = $joinProcessor;
         $this->collectionProcessor = $collectionProcessor;
         $this->searchResultFactory = $searchResultFactory;
-        $this->loadByIdCommand = $loadByIdCommand;
-        $this->saveCommand = $saveCommand;
-        $this->deleteByIdCommand = $deleteByIdCommand;
+        $this->saveService = $commandSave;
     }
 
     /**
@@ -95,7 +95,7 @@ class CreatorRepository implements CreatorRepositoryInterface
      */
     public function save(CreatorInterface $item): CreatorInterface
     {
-        $this->saveCommand->execute($item);
+        $this->saveService->execute($item);
 
         return $item;
     }
@@ -105,7 +105,7 @@ class CreatorRepository implements CreatorRepositoryInterface
      */
     public function delete(CreatorInterface $item): void
     {
-        $this->deleteByIdCommand->execute($item->getId());
+        $this->resource->delete($item);
     }
 
     /**
@@ -135,7 +135,12 @@ class CreatorRepository implements CreatorRepositoryInterface
      */
     public function getById(int $id) : CreatorInterface
     {
-        return $this->loadByIdCommand->execute($id);
+        $item = $this->factory->create();
+        $this->resource->load($item, $id);
+        if (!$item->getId()) {
+            throw new NoSuchEntityException(__('Object with id "%1" does not exist.', $id));
+        }
+        return $item;
     }
 
     /**
@@ -143,6 +148,6 @@ class CreatorRepository implements CreatorRepositoryInterface
      */
     public function deleteById(int $id): void
     {
-        $this->deleteByIdCommand->execute($id);
+        $this->delete($this->getById($id));
     }
 }

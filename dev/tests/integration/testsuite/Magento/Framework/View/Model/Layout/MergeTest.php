@@ -21,11 +21,11 @@ class MergeTest extends \PHPUnit\Framework\TestCase
     protected $model;
 
     /**
-     * @var LayoutCacheKeyInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var LayoutCacheKeyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutCacheKeyMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

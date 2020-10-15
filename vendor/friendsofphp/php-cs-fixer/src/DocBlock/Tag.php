@@ -49,6 +49,8 @@ class Tag
 
     /**
      * Create a new tag instance.
+     *
+     * @param Line $line
      */
     public function __construct(Line $line)
     {
@@ -80,7 +82,7 @@ class Tag
     /**
      * Set the tag name.
      *
-     * This will also be persisted to the upstream line and annotation.
+     * This will also be persisted to the upsteam line and annotation.
      *
      * @param string $name
      */

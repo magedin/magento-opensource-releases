@@ -3,40 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Search\Model\EngineResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Psr\Log\LoggerInterface;
 
-class EngineResolverTest extends TestCase
+class EngineResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var EngineResolver
+     * @var \Magento\Search\Model\EngineResolver
      */
     private $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
     /**
-     * @var string|MockObject
+     * @var string|\PHPUnit_Framework_MockObject_MockObject
      */
     private $path;
 
     /**
-     * @var string|MockObject
+     * @var string|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeType;
 
     /**
-     * @var null|string|MockObject
+     * @var null|string|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeCode;
 
@@ -46,32 +42,27 @@ class EngineResolverTest extends TestCase
     private $engines = [];
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
-
-    /**
-     * @var string
-     */
-    private $defaultEngine = 'defaultentengine';
 
     /**
      * Setup
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
             ->getMockForAbstractClass();
 
         $this->path = 'catalog/search/engine';
         $this->scopeType = 'default';
         $this->scopeCode = null;
-        $this->engines = ['defaultentengine', 'anotherengine'];
+        $this->engines = [EngineResolver::CATALOG_SEARCH_MYSQL_ENGINE, 'anotherengine'];
 
         $this->model = new EngineResolver(
             $this->scopeConfig,
@@ -79,8 +70,7 @@ class EngineResolverTest extends TestCase
             $this->loggerMock,
             $this->path,
             $this->scopeType,
-            $this->scopeCode,
-            $this->defaultEngine
+            $this->scopeCode
         );
     }
 
@@ -101,50 +91,21 @@ class EngineResolverTest extends TestCase
     /**
      * Test getCurrentSearchEngine
      */
-    public function testGetCurrentSearchEngineDefaultEngine()
+    public function testGetCurrentSearchEngineWithoutEngine()
     {
-        $configEngine = 'nonexistentengine';
+        $engine = 'nonexistentengine';
 
         $this->scopeConfig->expects($this->any())
             ->method('getValue')
-            ->willReturn($configEngine);
+            ->willReturn($engine);
 
         $this->loggerMock->expects($this->any())
             ->method('error')
             ->with(
-                "{$configEngine} search engine doesn't exist. Falling back to {$this->defaultEngine}"
+                $engine . ' search engine doesn\'t exists. Falling back to '
+                . EngineResolver::CATALOG_SEARCH_MYSQL_ENGINE
             );
 
-        $this->assertEquals($this->defaultEngine, $this->model->getCurrentSearchEngine());
-    }
-
-    /**
-     * Test getCurrentSearchEngine
-     */
-    public function testGetCurrentSearchEngineDefaultEngineNonExistent()
-    {
-        $configEngine = 'nonexistentengine';
-        $this->defaultEngine = 'nonexistenddefaultengine';
-
-        $this->scopeConfig->expects($this->any())
-            ->method('getValue')
-            ->willReturn($configEngine);
-
-        $this->loggerMock->expects($this->any())
-            ->method('error')
-            ->with(
-                'Default search engine is not configured, fallback is not possible'
-            );
-
-        $model = new EngineResolver(
-            $this->scopeConfig,
-            $this->engines,
-            $this->loggerMock,
-            $this->path,
-            $this->scopeType,
-            $this->scopeCode,
-            $this->defaultEngine
-        );
-        $this->assertEquals($this->defaultEngine, $model->getCurrentSearchEngine());
+        $this->assertEquals(EngineResolver::CATALOG_SEARCH_MYSQL_ENGINE, $this->model->getCurrentSearchEngine());
     }
 }

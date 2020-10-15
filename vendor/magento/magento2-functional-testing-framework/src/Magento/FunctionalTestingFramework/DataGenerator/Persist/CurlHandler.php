@@ -6,15 +6,15 @@
 namespace Magento\FunctionalTestingFramework\DataGenerator\Persist;
 
 use Magento\FunctionalTestingFramework\Allure\AllureHelper;
-use Magento\FunctionalTestingFramework\DataTransport\AdminFormExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\FrontendFormExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiNoAuthExecutor;
+use Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl\AdminExecutor;
+use Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl\FrontendExecutor;
+use Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl\WebapiExecutor;
+use Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl\WebapiNoAuthExecutor;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationDefinitionObject;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
+use Magento\FunctionalTestingFramework\Util\Protocol\CurlInterface;
 
 /**
  * Class CurlHandler
@@ -134,21 +134,19 @@ class CurlHandler
             false
         );
 
-        AllureHelper::addAttachmentToCurrentStep(json_encode($this->requestData, JSON_PRETTY_PRINT), 'Request Body');
-
         if (($contentType === 'application/json') && ($authorization === 'adminOauth')) {
             $this->isJson = true;
-            $executor = new WebApiExecutor($this->storeCode);
+            $executor = new WebapiExecutor($this->storeCode);
         } elseif ($authorization === 'adminFormKey') {
-            $executor = new AdminFormExecutor($this->operationDefinition->removeUrlBackend());
+            $executor = new AdminExecutor($this->operationDefinition->removeUrlBackend());
         } elseif ($authorization === 'customerFormKey') {
-            $executor = new FrontendFormExecutor(
+            $executor = new FrontendExecutor(
                 $this->requestData['customer_email'],
                 $this->requestData['customer_password']
             );
         } elseif ($authorization === 'anonymous') {
             $this->isJson = true;
-            $executor = new WebApiNoAuthExecutor($this->storeCode);
+            $executor = new WebapiNoAuthExecutor($this->storeCode);
         }
 
         if (!$executor) {
@@ -171,6 +169,7 @@ class CurlHandler
         $response = $executor->read($successRegex, $returnRegex, $returnIndex);
         $executor->close();
 
+        AllureHelper::addAttachmentToCurrentStep(json_encode($this->requestData, JSON_PRETTY_PRINT), 'Request Body');
         AllureHelper::addAttachmentToCurrentStep(
             json_encode(json_decode($response, true), JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE+JSON_UNESCAPED_SLASHES),
             'Response Data'
@@ -230,7 +229,7 @@ class CurlHandler
                 foreach ($entityObjects as $entityObject) {
                     $param = null;
 
-                    if ($paramEntityParent === "" || $entityObject->getType() === $paramEntityParent) {
+                    if ($paramEntityParent === "" || $entityObject->getType() == $paramEntityParent) {
                         $param = $entityObject->getDataByName(
                             $dataItem,
                             EntityDataObject::CEST_UNIQUE_VALUE

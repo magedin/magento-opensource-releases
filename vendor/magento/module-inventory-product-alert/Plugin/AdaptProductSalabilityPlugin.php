@@ -10,8 +10,8 @@ namespace Magento\InventoryProductAlert\Plugin;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\InventoryApi\Api\Data\StockInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
 use Magento\InventorySalesApi\Api\Data\SalesChannelInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 use Magento\InventorySalesApi\Api\StockResolverInterface;
 use Magento\ProductAlert\Model\ProductSalability;
 use Magento\Store\Api\Data\WebsiteInterface;
@@ -27,26 +27,24 @@ class AdaptProductSalabilityPlugin
     private $stockResolver;
 
     /**
-     * @var AreProductsSalableInterface
+     * @var IsProductSalableInterface
      */
-    private $areProductsSalable;
+    private $isProductSalable;
 
     /**
      * @param StockResolverInterface $stockResolver
-     * @param AreProductsSalableInterface $areProductsSalable
+     * @param IsProductSalableInterface $isProductSalable
      */
     public function __construct(
         StockResolverInterface $stockResolver,
-        AreProductsSalableInterface $areProductsSalable
+        IsProductSalableInterface $isProductSalable
     ) {
         $this->stockResolver = $stockResolver;
-        $this->areProductsSalable = $areProductsSalable;
+        $this->isProductSalable = $isProductSalable;
     }
 
     /**
-     * Get product saleability status considering multi stock environment.
-     *
-     * @param ProductSalability $productSalability
+     * @param  ProductSalability $productSalability
      * @param callable $proceed
      * @param ProductInterface $product
      * @param WebsiteInterface $website
@@ -63,9 +61,8 @@ class AdaptProductSalabilityPlugin
     ): bool {
         /** @var StockInterface $stock */
         $stock = $this->stockResolver->execute(SalesChannelInterface::TYPE_WEBSITE, $website->getCode());
-        $result = $this->areProductsSalable->execute([$product->getSku()], (int)$stock->getStockId());
-        $result = current($result);
+        $isSalable = $this->isProductSalable->execute($product->getSku(), (int)$stock->getStockId());
 
-        return $result->isSalable();
+        return $isSalable;
     }
 }

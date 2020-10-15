@@ -3,38 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\App\Config\Type\System;
 
-use Magento\Config\App\Config\Type\System\Reader;
 use Magento\Framework\App\Config\ConfigSourceInterface;
-use Magento\Framework\App\Config\Spi\PostProcessorInterface;
-use Magento\Framework\App\Config\Spi\PreProcessorInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Config\Processor\Fallback;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\Spi\PreProcessorInterface;
+use Magento\Framework\App\Config\Spi\PostProcessorInterface;
+use Magento\Config\App\Config\Type\System\Reader;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigSourceInterface|MockObject
+     * @var ConfigSourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
     /**
-     * @var Fallback|MockObject
+     * @var Fallback|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fallback;
 
     /**
-     * @var PreProcessorInterface|MockObject
+     * @var PreProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $preProcessor;
 
     /**
-     * @var PostProcessorInterface|MockObject
+     * @var PostProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $postProcessor;
 
@@ -43,9 +38,9 @@ class ReaderTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->source = $this->getMockBuilder(ConfigSourceInterface::class)
             ->disableOriginalConstructor()

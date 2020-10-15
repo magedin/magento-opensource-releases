@@ -6,6 +6,7 @@
 namespace Magento\AdvancedPricingImportExport\Model\Import;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\ImportExport\Model\Import;
 
 /**
  * @magentoAppArea adminhtml
@@ -35,7 +36,7 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
      */
     protected $expectedTierPrice;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->fileSystem = $this->objectManager->get(\Magento\Framework\Filesystem::class);
@@ -46,53 +47,53 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
             'AdvancedPricingSimple 1' => [
                 [
                     'customer_group_id' => \Magento\Customer\Model\Group::CUST_GROUP_ALL,
-                    'value'             => '300.000000',
+                    'value'             => '300.0000',
                     'qty'               => '10.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => '1',
-                    'value'             => '11.000000',
+                    'value'             => '11.0000',
                     'qty'               => '11.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => '3',
-                    'value'             => '14.000000',
+                    'value'             => '14.0000',
                     'qty'               => '14.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => \Magento\Customer\Model\Group::CUST_GROUP_ALL,
-                    'value'             => 160.5,
+                    'value'             => '160.5000',
                     'qty'               => '20.0000',
-                    'percentage_value'  => '50.00'
+                    'percentage_value'  => '50.0000'
                 ]
             ],
             'AdvancedPricingSimple 2' => [
                 [
                     'customer_group_id' => \Magento\Customer\Model\Group::CUST_GROUP_ALL,
-                    'value'             => '1000000.000000',
+                    'value'             => '1000000.0000',
                     'qty'               => '100.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => '0',
-                    'value'             => '12.000000',
+                    'value'             => '12.0000',
                     'qty'               => '12.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => '2',
-                    'value'             => '13.000000',
+                    'value'             => '13.0000',
                     'qty'               => '13.0000',
                     'percentage_value'  => null
                 ],
                 [
                     'customer_group_id' => \Magento\Customer\Model\Group::CUST_GROUP_ALL,
-                    'value'             => 327.0,
+                    'value'             => '327.0000',
                     'qty'               => '200.0000',
-                    'percentage_value'  => '50.00'
+                    'percentage_value'  => '50.0000'
                 ]
             ]
         ];
@@ -138,7 +139,7 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
         foreach ($productIdList as $sku => $productId) {
             $product->load($productId);
             $tierPriceCollection = $product->getTierPrices();
-            $this->assertCount(4, $tierPriceCollection);
+            $this->assertEquals(4, count($tierPriceCollection));
             $index = 0;
             /** @var \Magento\Catalog\Model\Product\TierPrice $tierPrice */
             foreach ($tierPriceCollection as $tierPrice) {
@@ -165,11 +166,11 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
         $sku,
         $index
     ) {
-        $this->assertEquals(
-            (int)$this->expectedTierPrice[$sku][$index]['percentage_value'],
-            (int)$tierPrice->getExtensionAttributes()->getPercentageValue()
-        );
-        $tierPrice->setData('percentage_value', $tierPrice->getExtensionAttributes()->getPercentageValue());
+            $this->assertEquals(
+                $this->expectedTierPrice[$sku][$index]['percentage_value'],
+                $tierPrice->getExtensionAttributes()->getPercentageValue()
+            );
+            $tierPrice->setData('percentage_value', $tierPrice->getExtensionAttributes()->getPercentageValue());
     }
 
     /**
@@ -236,7 +237,7 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
             $newPricingData = $this->objectManager->create(\Magento\Catalog\Model\Product::class)
                 ->load($ids[$index])
                 ->getTierPrices();
-            $this->assertCount(0, $newPricingData);
+            $this->assertEquals(0, count($newPricingData));
         }
     }
 
@@ -280,7 +281,7 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
         foreach ($productIdList as $sku => $productId) {
             $product->load($productId);
             $tierPriceCollection = $product->getTierPrices();
-            $this->assertCount(4, $tierPriceCollection);
+            $this->assertEquals(4, count($tierPriceCollection));
             $index = 0;
             /** @var \Magento\Catalog\Model\Product\TierPrice $tierPrice */
             foreach ($tierPriceCollection as $tierPrice) {

@@ -108,13 +108,6 @@ define([
         },
 
         /**
-         * @inheritdoc
-         */
-        getPreview: function () {
-            return this.shiftedValue();
-        },
-
-        /**
          * Prepares and sets date/time value that will be displayed
          * in the input field.
          *

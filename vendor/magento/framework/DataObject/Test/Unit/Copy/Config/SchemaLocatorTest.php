@@ -3,32 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DataObject\Test\Unit\Copy\Config;
 
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\DataObject\Copy\Config\SchemaLocator;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Framework\DataObject\Copy\Config\SchemaLocator
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $urnResolverMock = $this->createMock(UrnResolver::class);
+        $urnResolverMock = $this->createMock(\Magento\Framework\Config\Dom\UrnResolver::class);
         $urnResolverMock->expects($this->exactly(2))
             ->method('getRealPath')
-            ->willReturnCallback(function ($urn) {
+            ->will($this->returnCallback(function ($urn) {
                 $urnParts = explode(':', $urn);
                 return 'schema_dir/' . $urnParts[3];
-            });
+            }));
 
-        $this->model = new SchemaLocator(
+        $this->model = new \Magento\Framework\DataObject\Copy\Config\SchemaLocator(
             $urnResolverMock,
             'urn:magento:framework:DataObject/etc/schema.xsd',
             'urn:magento:framework:DataObject/etc/perFileSchema.xsd'

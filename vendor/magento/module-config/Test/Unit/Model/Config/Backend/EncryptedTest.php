@@ -3,56 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Backend;
 
-use Magento\Config\Model\Config\Backend\Encrypted;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class EncryptedTest extends TestCase
+class EncryptedTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_encryptorMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_configMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_resourceMock;
 
-    /** @var Encrypted */
+    /** @var \Magento\Config\Model\Config\Backend\Encrypted */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $eventDispatcherMock = $this->createMock(Manager::class);
-        $contextMock = $this->createMock(Context::class);
+        $eventDispatcherMock = $this->createMock(\Magento\Framework\Event\Manager::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\Context::class);
         $contextMock->expects(
             $this->any()
         )->method(
             'getEventDispatcher'
-        )->willReturn(
-            $eventDispatcherMock
+        )->will(
+            $this->returnValue($eventDispatcherMock)
         );
-        $this->_resourceMock = $this->getMockBuilder(AbstractResource::class)
-            ->addMethods(['getIdFieldName', 'save'])
-            ->onlyMethods(['getConnection', 'beginTransaction', 'commit', 'addCommitCallback'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->_configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->_encryptorMock = $this->getMockForAbstractClass(EncryptorInterface::class);
+        $this->_resourceMock = $this->createPartialMock(
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
+            [
+                '_construct',
+                'getConnection',
+                'getIdFieldName',
+                'beginTransaction',
+                'save',
+                'commit',
+                'addCommitCallback',
+            ]
+        );
+        $this->_configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_encryptorMock = $this->createMock(\Magento\Framework\Encryption\EncryptorInterface::class);
         $this->_model = $helper->getObject(
-            Encrypted::class,
+            \Magento\Config\Model\Config\Backend\Encrypted::class,
             [
                 'config' => $this->_configMock,
                 'context' => $contextMock,
@@ -72,8 +67,8 @@ class EncryptedTest extends TestCase
             'decrypt'
         )->with(
             $value
-        )->willReturn(
-            $result
+        )->will(
+            $this->returnValue($result)
         );
         $this->assertEquals($result, $this->_model->processValue($value));
     }
@@ -91,7 +86,7 @@ class EncryptedTest extends TestCase
         $this->_encryptorMock->expects($this->exactly($encryptMethodCall))
             ->method('encrypt')
             ->with($value)
-            ->willReturn('encrypted');
+            ->will($this->returnValue('encrypted'));
 
         $this->_model->setValue($value);
         $this->_model->setPath('some/path');

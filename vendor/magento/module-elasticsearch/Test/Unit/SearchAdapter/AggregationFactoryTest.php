@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter;
 
 use Magento\Elasticsearch\SearchAdapter\AggregationFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Search\Response\Aggregation;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AggregationFactoryTest extends TestCase
+/**
+ * Class AggregationFactoryTest
+ */
+class AggregationFactoryTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -23,7 +20,7 @@ class AggregationFactoryTest extends TestCase
     private $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
@@ -32,9 +29,9 @@ class AggregationFactoryTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -42,9 +39,9 @@ class AggregationFactoryTest extends TestCase
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->objectManager->expects($this->any())
             ->method('create')
-            ->willReturn($this->createMock(Aggregation::class));
+            ->willReturn($this->createMock(\Magento\Framework\Search\Response\Aggregation::class));
         $this->model = $objectManagerHelper->getObject(
-            AggregationFactory::class,
+            \Magento\Elasticsearch\SearchAdapter\AggregationFactory::class,
             [
                 'objectManager' => $this->objectManager
             ]

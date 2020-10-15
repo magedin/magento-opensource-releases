@@ -3,58 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Test\Unit\Controller\Adminhtml\Index;
-
-use Magento\AsynchronousOperations\Controller\Adminhtml\Index\Index;
-use Magento\Backend\Model\Menu;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $viewMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var Index
+     * @var \Magento\AsynchronousOperations\Controller\Adminhtml\Index\Index
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager =  new ObjectManager($this);
-        $this->viewMock = $this->getMockForAbstractClass(ViewInterface::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->resultFactoryMock = $this->createMock(PageFactory::class);
+        $objectManager =  new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->resultFactoryMock = $this->createMock(\Magento\Framework\View\Result\PageFactory::class);
 
         $this->model = $objectManager->getObject(
-            Index::class,
+            \Magento\AsynchronousOperations\Controller\Adminhtml\Index\Index::class,
             [
                 'request' => $this->requestMock,
                 'view' => $this->viewMock,
@@ -68,17 +52,17 @@ class IndexTest extends TestCase
     {
         $itemId = 'Magento_AsynchronousOperations::system_magento_logging_bulk_operations';
         $prependText = 'Bulk Actions Log';
-        $layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
-        $menuModelMock = $this->createMock(Menu::class);
-        $pageMock = $this->createMock(Page::class);
-        $pageConfigMock = $this->createMock(Config::class);
-        $titleMock = $this->createMock(Title::class);
+        $layoutMock = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
+        $menuModelMock = $this->createMock(\Magento\Backend\Model\Menu::class);
+        $pageMock = $this->createMock(\Magento\Framework\View\Result\Page::class);
+        $pageConfigMock = $this->createMock(\Magento\Framework\View\Page\Config::class);
+        $titleMock = $this->createMock(\Magento\Framework\View\Page\Title::class);
         $this->resultFactoryMock->expects($this->once())->method('create')->willReturn($pageMock);
 
-        $blockMock = $this->getMockBuilder(BlockInterface::class)
-            ->addMethods(['setActive', 'getMenuModel'])
-            ->onlyMethods(['toHtml'])
-            ->getMockForAbstractClass();
+        $blockMock = $this->createPartialMock(
+            \Magento\Framework\View\Element\BlockInterface::class,
+            ['setActive', 'getMenuModel', 'toHtml']
+        );
 
         $this->viewMock->expects($this->once())->method('getLayout')->willReturn($layoutMock);
         $layoutMock->expects($this->once())->method('getBlock')->willReturn($blockMock);

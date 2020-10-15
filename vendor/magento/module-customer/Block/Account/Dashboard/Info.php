@@ -5,15 +5,7 @@
  */
 namespace Magento\Customer\Block\Account\Dashboard;
 
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Block\Form\Register;
-use Magento\Customer\Helper\Session\CurrentCustomer;
-use Magento\Customer\Helper\View;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Newsletter\Model\Subscriber;
-use Magento\Newsletter\Model\SubscriberFactory;
 
 /**
  * Dashboard Customer Info
@@ -21,44 +13,44 @@ use Magento\Newsletter\Model\SubscriberFactory;
  * @api
  * @since 100.0.2
  */
-class Info extends Template
+class Info extends \Magento\Framework\View\Element\Template
 {
     /**
      * Cached subscription object
      *
-     * @var Subscriber
+     * @var \Magento\Newsletter\Model\Subscriber
      */
     protected $_subscription;
 
     /**
-     * @var SubscriberFactory
+     * @var \Magento\Newsletter\Model\SubscriberFactory
      */
     protected $_subscriberFactory;
 
     /**
-     * @var View
+     * @var \Magento\Customer\Helper\View
      */
     protected $_helperView;
 
     /**
-     * @var CurrentCustomer
+     * @var \Magento\Customer\Helper\Session\CurrentCustomer
      */
     protected $currentCustomer;
 
     /**
      * Constructor
      *
-     * @param Context $context
-     * @param CurrentCustomer $currentCustomer
-     * @param SubscriberFactory $subscriberFactory
-     * @param View $helperView
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Magento\Customer\Helper\Session\CurrentCustomer $currentCustomer
+     * @param \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
+     * @param \Magento\Customer\Helper\View $helperView
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        CurrentCustomer $currentCustomer,
-        SubscriberFactory $subscriberFactory,
-        View $helperView,
+        \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Customer\Helper\Session\CurrentCustomer $currentCustomer,
+        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory,
+        \Magento\Customer\Helper\View $helperView,
         array $data = []
     ) {
         $this->currentCustomer = $currentCustomer;
@@ -70,7 +62,7 @@ class Info extends Template
     /**
      * Returns the Magento Customer Model for this block
      *
-     * @return CustomerInterface|null
+     * @return \Magento\Customer\Api\Data\CustomerInterface|null
      */
     public function getCustomer()
     {
@@ -92,8 +84,6 @@ class Info extends Template
     }
 
     /**
-     * Get the url to change password
-     *
      * @return string
      */
     public function getChangePasswordUrl()
@@ -104,7 +94,7 @@ class Info extends Template
     /**
      * Get Customer Subscription Object Information
      *
-     * @return Subscriber
+     * @return \Magento\Newsletter\Model\Subscriber
      */
     public function getSubscriptionObject()
     {
@@ -112,8 +102,7 @@ class Info extends Template
             $this->_subscription = $this->_createSubscriber();
             $customer = $this->getCustomer();
             if ($customer) {
-                $websiteId = (int)$this->_storeManager->getWebsite()->getId();
-                $this->_subscription->loadByCustomer((int)$customer->getId(), $websiteId);
+                $this->_subscription->loadByCustomerId($customer->getId());
             }
         }
         return $this->_subscription;
@@ -139,14 +128,12 @@ class Info extends Template
     public function isNewsletterEnabled()
     {
         return $this->getLayout()
-            ->getBlockSingleton(Register::class)
+            ->getBlockSingleton(\Magento\Customer\Block\Form\Register::class)
             ->isNewsletterEnabled();
     }
 
     /**
-     * Create new instance of Subscriber
-     *
-     * @return Subscriber
+     * @return \Magento\Newsletter\Model\Subscriber
      */
     protected function _createSubscriber()
     {
@@ -154,7 +141,7 @@ class Info extends Template
     }
 
     /**
-     * @inheritdoc
+     * @return string
      */
     protected function _toHtml()
     {

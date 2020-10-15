@@ -12,7 +12,6 @@ use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
 use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
-use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
 
 /**
  * MFTF test.xml configuration XML DOM utility
@@ -38,12 +37,6 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @var DuplicateNodeValidationUtil
      */
     protected $testsValidationUtil;
-
-    /**
-     * SingleNodePerFileValidationUtil
-     * @var SingleNodePerFileValidationUtil
-     */
-    protected $singleNodePerFileValidationUtil;
 
     /**
      * ExceptionCollector
@@ -72,7 +65,6 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
     ) {
         $this->actionsValidationUtil = new DuplicateNodeValidationUtil('stepKey', $exceptionCollector);
         $this->testsValidationUtil = new DuplicateNodeValidationUtil('name', $exceptionCollector);
-        $this->singleNodePerFileValidationUtil = new SingleNodePerFileValidationUtil($exceptionCollector);
         $this->exceptionCollector = $exceptionCollector;
         parent::__construct(
             $xml,
@@ -99,21 +91,14 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
         // Cannot rely on filename to ensure this file is a Test.xml
         if ($dom->getElementsByTagName('tests')->length > 0) {
             $testsNode = $dom->getElementsByTagName('tests')[0];
+            $testNodes = $dom->getElementsByTagName('test');
             $this->testsValidationUtil->validateChildUniqueness(
                 $testsNode,
                 $filename,
                 null
             );
-            // Validate single test node per file
-            $this->singleNodePerFileValidationUtil->validateSingleNodeForTag(
-                $dom,
-                'test',
-                $filename
-            );
-
-            if ($dom->getElementsByTagName('test')->length > 0) {
+            foreach ($testNodes as $testNode) {
                 /** @var \DOMElement $testNode */
-                $testNode = $dom->getElementsByTagName('test')[0];
                 $testNode->setAttribute(self::TEST_META_FILENAME_ATTRIBUTE, $filename);
                 if ($testNode->getAttribute(self::TEST_MERGE_POINTER_AFTER) !== "") {
                     $this->appendMergePointerToActions(

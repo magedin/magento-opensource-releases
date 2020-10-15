@@ -3,63 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Block\Adminhtml\Catalog\Product\Edit\Tab\Attributes;
 
-use Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Attributes\Extend;
 use Magento\Catalog\Model\Product;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\Constraint\ArrayHasKey;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ExtendTest extends TestCase
+class ExtendTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $registry;
 
-    /** @var FormFactory|MockObject */
+    /** @var \Magento\Framework\Data\FormFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $formFactory;
 
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     protected $objectManagerHelper;
 
-    /** @var Extend */
+    /** @var \Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Attributes\Extend */
     protected $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->registry = $this->getMockBuilder(Registry::class)
+        $this->registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->formFactory = $this->getMockBuilder(
-            FormFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->objectManagerHelper = new ObjectManager($this);
+            \Magento\Framework\Data\FormFactory::class
+        )->disableOriginalConstructor()->getMock();
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->object = $this->objectManagerHelper->getObject(
-            Extend::class,
+            \Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Attributes\Extend::class,
             ['registry' => $this->registry, 'formFactory' => $this->formFactory]
         );
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     public function getProduct()
     {
-        $product = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $product = $this->getMockBuilder(Product::class)->disableOriginalConstructor()->getMock();
         $this->registry->expects($this->once())
             ->method('registry')
             ->with('product')
-            ->willReturn(
-                $product
+            ->will(
+                $this->returnValue($product)
             );
         return $product;
     }
@@ -67,20 +54,18 @@ class ExtendTest extends TestCase
     public function testGetExtendedElement()
     {
         $switchAttributeCode = 'test_code';
-        $form = $this->getMockBuilder(Form::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $hasKey = new ArrayHasKey('value');
+        $form = $this->getMockBuilder(\Magento\Framework\Data\Form::class)->disableOriginalConstructor()->getMock();
+        $hasKey = new \PHPUnit\Framework\Constraint\ArrayHasKey('value');
         $form->expects($this->once())->method('addField')->with(
             $switchAttributeCode,
             'select',
             $hasKey
         );
 
-        $this->formFactory->expects($this->once())->method('create')->with()->willReturn($form);
+        $this->formFactory->expects($this->once())->method('create')->with()->will($this->returnValue($form));
         $product = $this->getProduct();
-        $product->expects($this->once())->method('getData')->with($switchAttributeCode)->willReturn(
-            123
+        $product->expects($this->once())->method('getData')->with($switchAttributeCode)->will(
+            $this->returnValue(123)
         );
         $this->object->setIsDisabledField(true);
         $this->object->getExtendedElement($switchAttributeCode);

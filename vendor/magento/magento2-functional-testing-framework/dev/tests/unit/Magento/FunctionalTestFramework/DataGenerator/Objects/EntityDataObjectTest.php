@@ -6,7 +6,7 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Objects;
 
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use tests\unit\Util\TestLoggingUtil;
 
@@ -40,7 +40,7 @@ class EntityDataObjectTest extends MagentoTestCase
      * Before test functionality
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         TestLoggingUtil::getInstance()->setMockLoggingUtil();
     }
@@ -141,7 +141,7 @@ class EntityDataObjectTest extends MagentoTestCase
      * After class functionality
      * @return void
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         TestLoggingUtil::getInstance()->clearMockLoggingUtil();
     }

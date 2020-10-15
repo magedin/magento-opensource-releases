@@ -6,14 +6,7 @@
  */
 namespace Magento\Multishipping\Controller\Checkout;
 
-use Magento\Framework\App\Action\HttpPostActionInterface;
-
-/**
- * Class RemoveItem
- *
- * Removes multishipping items
- */
-class RemoveItem extends \Magento\Multishipping\Controller\Checkout implements HttpPostActionInterface
+class RemoveItem extends \Magento\Multishipping\Controller\Checkout
 {
     /**
      * Multishipping checkout remove item action

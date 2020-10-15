@@ -1,45 +1,32 @@
 <?php
 /**
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Controller\Adminhtml\Dashboard;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Block\Dashboard\Totals;
-use Magento\Backend\Controller\Adminhtml\Dashboard;
-use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\Controller\Result\Raw;
-use Magento\Framework\Controller\Result\RawFactory;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\View\LayoutFactory;
-
-/**
- * Class used to retrieve content of dashboard totals block via ajax
- */
-class AjaxBlock extends Dashboard implements HttpPostActionInterface
+class AjaxBlock extends \Magento\Backend\Controller\Adminhtml\Dashboard
 {
     /**
-     * @var RawFactory
+     * @var \Magento\Framework\Controller\Result\RawFactory
      */
     protected $resultRawFactory;
 
     /**
-     * @var LayoutFactory
+     * @var \Magento\Framework\View\LayoutFactory
      */
     protected $layoutFactory;
 
     /**
-     * @param Context $context
-     * @param RawFactory $resultRawFactory
-     * @param LayoutFactory $layoutFactory
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
+     * @param \Magento\Framework\View\LayoutFactory $layoutFactory
      */
     public function __construct(
-        Context $context,
-        RawFactory $resultRawFactory,
-        LayoutFactory $layoutFactory
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
+        \Magento\Framework\View\LayoutFactory $layoutFactory
     ) {
         parent::__construct($context);
         $this->resultRawFactory = $resultRawFactory;
@@ -47,22 +34,23 @@ class AjaxBlock extends Dashboard implements HttpPostActionInterface
     }
 
     /**
-     * Retrieve block content via ajax
-     *
-     * @return Raw
+     * @return \Magento\Framework\Controller\Result\Raw
      */
     public function execute()
     {
         $output = '';
         $blockTab = $this->getRequest()->getParam('block');
-
-        if ($blockTab === 'totals') {
+        $blockClassSuffix = str_replace(
+            ' ',
+            '\\',
+            ucwords(str_replace('_', ' ', $blockTab))
+        );
+        if (in_array($blockTab, ['tab_orders', 'tab_amounts', 'totals'])) {
             $output = $this->layoutFactory->create()
-                ->createBlock(Totals::class)
+                ->createBlock('Magento\\Backend\\Block\\Dashboard\\' . $blockClassSuffix)
                 ->toHtml();
         }
-
-        /** @var Raw $resultRaw */
+        /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         return $resultRaw->setContents($output);
     }

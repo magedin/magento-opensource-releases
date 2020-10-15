@@ -3,42 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Store\Model\ResourceModel\Store\Collection;
-use Magento\Store\Model\ResourceModel\Store\CollectionFactory;
-use Magento\Store\Model\StoreManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StoreManagementTest extends TestCase
+class StoreManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoreManagement
+     * @var \Magento\Store\Model\StoreManagement
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Store\Model\ResourceModel\Store\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storesFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->storesFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Store\Model\ResourceModel\Store\CollectionFactory::class,
             ['create']
         );
-        $this->model = new StoreManagement(
+        $this->model = new \Magento\Store\Model\StoreManagement(
             $this->storesFactoryMock
         );
     }
 
     public function testGetCount()
     {
-        $storesMock = $this->createMock(Collection::class);
+        $storesMock = $this->createMock(\Magento\Store\Model\ResourceModel\Store\Collection::class);
 
         $this->storesFactoryMock
             ->expects($this->once())

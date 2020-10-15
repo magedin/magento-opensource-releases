@@ -3,84 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Platform\Quote;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\ColumnsRenderer;
-use Magento\Framework\DB\Select\DistinctRenderer;
-use Magento\Framework\DB\Select\ForUpdateRenderer;
-use Magento\Framework\DB\Select\FromRenderer;
-use Magento\Framework\DB\Select\GroupRenderer;
-use Magento\Framework\DB\Select\HavingRenderer;
-use Magento\Framework\DB\Select\LimitRenderer;
-use Magento\Framework\DB\Select\OrderRenderer;
-use Magento\Framework\DB\Select\SelectRenderer;
-use Magento\Framework\DB\Select\UnionRenderer;
-use Magento\Framework\DB\Select\WhereRenderer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\DB\Select;
 
 /**
+ * Class SelectTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SelectTest extends TestCase
+class SelectTest extends \PHPUnit\Framework\TestCase
 {
     public function testWhere()
     {
-        $quote = new Quote();
-        $renderer = new SelectRenderer(
+        $quote = new \Magento\Framework\DB\Platform\Quote();
+        $renderer = new \Magento\Framework\DB\Select\SelectRenderer(
             [
                 'distinct' => [
-                    'renderer' => new DistinctRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\DistinctRenderer(),
                     'sort' => 100,
                     'part' => 'distinct'
                 ],
                 'columns' => [
-                    'renderer' => new ColumnsRenderer($quote),
+                    'renderer' => new \Magento\Framework\DB\Select\ColumnsRenderer($quote),
                     'sort' => 200,
                     'part' => 'columns'
                 ],
                 'union' => [
-                    'renderer' => new UnionRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\UnionRenderer(),
                     'sort' => 300,
                     'part' => 'union'
                 ],
                 'from' => [
-                    'renderer' => new FromRenderer($quote),
+                    'renderer' => new \Magento\Framework\DB\Select\FromRenderer($quote),
                     'sort' => 400,
                     'part' => 'from'
                 ],
                 'where' => [
-                    'renderer' => new WhereRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\WhereRenderer(),
                     'sort' => 500,
                     'part' => 'where'
                 ],
                 'group' => [
-                    'renderer' => new GroupRenderer($quote),
+                    'renderer' => new \Magento\Framework\DB\Select\GroupRenderer($quote),
                     'sort' => 600,
                     'part' => 'group'
                 ],
                 'having' => [
-                    'renderer' => new HavingRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\HavingRenderer(),
                     'sort' => 700,
                     'part' => 'having'
                 ],
                 'order' => [
-                    'renderer' => new OrderRenderer($quote),
+                    'renderer' => new \Magento\Framework\DB\Select\OrderRenderer($quote),
                     'sort' => 800,
                     'part' => 'order'
                 ],
                 'limit' => [
-                    'renderer' => new LimitRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\LimitRenderer(),
                     'sort' => 900,
                     'part' => 'limitcount'
                 ],
                 'for_update' => [
-                    'renderer' => new ForUpdateRenderer(),
+                    'renderer' => new \Magento\Framework\DB\Select\ForUpdateRenderer(),
                     'sort' => 1000,
                     'part' => 'forupdate'
                 ],
@@ -113,17 +97,17 @@ class SelectTest extends TestCase
      *
      * @param int $callCount
      * @param string|null $returnValue
-     * @return Mysql|MockObject
+     * @return \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function _getConnectionMockWithMockedQuote($callCount, $returnValue = null)
     {
         $connection = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['supportStraightJoin', 'quote']
         );
         $method = $connection->expects($this->exactly($callCount))->method('quote');
         if ($callCount > 0) {
-            $method->willReturn($returnValue);
+            $method->will($this->returnValue($returnValue));
         }
         return $connection;
     }

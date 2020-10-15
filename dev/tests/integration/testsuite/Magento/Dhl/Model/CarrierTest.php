@@ -50,7 +50,7 @@ class CarrierTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->dhlCarrier = $objectManager->get(Carrier::class);
@@ -62,7 +62,7 @@ class CarrierTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->config->setValue(
             'shipping/origin/country_id',
@@ -366,7 +366,7 @@ class CarrierTest extends \PHPUnit\Framework\TestCase
         string $regionCode
     ): string {
         $countryNames = [
-            'US' => 'United States Of America',
+            'US' => 'United States of America',
             'SG' => 'Singapore',
             'GB' => 'United Kingdom',
             'DE' => 'Germany',
@@ -441,10 +441,10 @@ class CarrierTest extends \PHPUnit\Framework\TestCase
             self::assertEquals($expectedRates[$i], $actualRate);
         }
         $requestXml = $this->httpClient->getLastRequest()->getBody();
-        self::assertStringContainsString('<Weight>18.223</Weight>', $requestXml);
-        self::assertStringContainsString('<Height>0.63</Height>', $requestXml);
-        self::assertStringContainsString('<Width>0.63</Width>', $requestXml);
-        self::assertStringContainsString('<Depth>0.63</Depth>', $requestXml);
+        self::assertContains('<Weight>18.223</Weight>', $requestXml);
+        self::assertContains('<Height>0.63</Height>', $requestXml);
+        self::assertContains('<Width>0.63</Width>', $requestXml);
+        self::assertContains('<Depth>0.63</Depth>', $requestXml);
     }
 
     /**
@@ -468,9 +468,9 @@ class CarrierTest extends \PHPUnit\Framework\TestCase
         $this->dhlCarrier->collectRates($request)->getAllRates();
 
         $requestXml = $this->httpClient->getLastRequest()->getBody();
-        $this->assertStringNotContainsString('<Width>', $requestXml);
-        $this->assertStringNotContainsString('<Height>', $requestXml);
-        $this->assertStringNotContainsString('<Depth>', $requestXml);
+        $this->assertNotContains('<Width>', $requestXml);
+        $this->assertNotContains('<Height>', $requestXml);
+        $this->assertNotContains('<Depth>', $requestXml);
 
         $this->config->reinit();
     }

@@ -3,18 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Module\Di\Code\Scanner;
 
 use Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator;
 use Magento\Framework\Api\Code\Generator\ExtensionAttributesInterfaceGenerator;
 use Magento\Framework\ObjectManager\Code\Generator\Factory as FactoryGenerator;
-use Magento\Framework\Reflection\TypeProcessor;
 use Magento\Setup\Module\Di\Compiler\Log\Log;
+use \Magento\Framework\Reflection\TypeProcessor;
 
 /**
- * Finds factory and extension attributes classes which require auto-generation.
+ * Class PhpScanner
+ *
+ * @package Magento\Setup\Module\Di\Code\Scanner
  */
 class PhpScanner implements ScannerInterface
 {
@@ -50,31 +50,18 @@ class PhpScanner implements ScannerInterface
      * @param string $entityType
      * @return string[]
      */
-    private function findMissingFactories($file, $classReflection, $methodName, $entityType)
+    protected function _findMissingClasses($file, $classReflection, $methodName, $entityType)
     {
         $missingClasses = [];
-        if (!$classReflection->hasMethod($methodName)) {
-            return $missingClasses;
-        }
-
-        $factorySuffix = '\\' . ucfirst(FactoryGenerator::ENTITY_TYPE);
-        $constructor = $classReflection->getMethod($methodName);
-        $parameters = $constructor->getParameters();
-        /** @var $parameter \ReflectionParameter */
-        foreach ($parameters as $parameter) {
-            preg_match('/\[\s\<\w+?>\s([\w\\\\]+)/s', $parameter->__toString(), $matches);
-            if (isset($matches[1]) && substr($matches[1], -strlen($entityType)) == $entityType) {
-                $missingClassName = $matches[1];
-                if ($this->shouldGenerateClass($missingClassName, $entityType, $file)) {
-
-                    if (substr($missingClassName, -strlen($factorySuffix)) == $factorySuffix) {
-                        $entityName = rtrim(substr($missingClassName, 0, -strlen($factorySuffix)), '\\');
-                        $this->_log->add(
-                            Log::CONFIGURATION_ERROR,
-                            $missingClassName,
-                            'Invalid Factory declaration for class ' . $entityName . ' in file ' . $file
-                        );
-                    } else {
+        if ($classReflection->hasMethod($methodName)) {
+            $constructor = $classReflection->getMethod($methodName);
+            $parameters = $constructor->getParameters();
+            /** @var $parameter \ReflectionParameter */
+            foreach ($parameters as $parameter) {
+                preg_match('/\[\s\<\w+?>\s([\w\\\\]+)/s', $parameter->__toString(), $matches);
+                if (isset($matches[1]) && substr($matches[1], -strlen($entityType)) == $entityType) {
+                    $missingClassName = $matches[1];
+                    if ($this->shouldGenerateClass($missingClassName, $entityType, $file)) {
                         $missingClasses[] = $missingClassName;
                     }
                 }
@@ -123,12 +110,24 @@ class PhpScanner implements ScannerInterface
      */
     protected function _fetchFactories($reflectionClass, $file)
     {
-        $absentFactories = $this->findMissingFactories(
+        $factorySuffix = '\\' . ucfirst(FactoryGenerator::ENTITY_TYPE);
+        $absentFactories = $this->_findMissingClasses(
             $file,
             $reflectionClass,
             '__construct',
             ucfirst(FactoryGenerator::ENTITY_TYPE)
         );
+        foreach ($absentFactories as $key => $absentFactory) {
+            if (substr($absentFactory, -strlen($factorySuffix)) == $factorySuffix) {
+                $entityName = rtrim(substr($absentFactory, 0, -strlen($factorySuffix)), '\\');
+                $this->_log->add(
+                    Log::CONFIGURATION_ERROR,
+                    $absentFactory,
+                    'Invalid Factory declaration for class ' . $entityName . ' in file ' . $file
+                );
+                unset($absentFactories[$key]);
+            }
+        }
         return $absentFactories;
     }
 
@@ -146,24 +145,26 @@ class PhpScanner implements ScannerInterface
         $entityType = ucfirst(\Magento\Framework\Api\Code\Generator\ExtensionAttributesInterfaceGenerator::ENTITY_TYPE);
         if ($reflectionClass->hasMethod($methodName) && $reflectionClass->isInterface()) {
             $returnType = $this->typeProcessor->getGetterReturnType(
-                (new \Laminas\Code\Reflection\ClassReflection($reflectionClass->getName()))->getMethod($methodName)
+                (new \Zend\Code\Reflection\ClassReflection($reflectionClass->getName()))->getMethod($methodName)
             );
             $missingClassName = $returnType['type'];
             if ($this->shouldGenerateClass($missingClassName, $entityType, $file)) {
                 $missingExtensionInterfaces[] = $missingClassName;
-
-                $extension = rtrim(substr($missingClassName, 0, -strlen('Interface')), '\\');
-                if (!class_exists($extension)) {
-                    $missingExtensionInterfaces[] = $extension;
-                }
-                $extensionFactory = $extension . 'Factory';
-                if (!class_exists($extensionFactory)) {
-                    $missingExtensionInterfaces[] = $extensionFactory;
-                }
             }
         }
-
-        return $missingExtensionInterfaces;
+        $missingExtensionClasses = [];
+        $missingExtensionFactories = [];
+        foreach ($missingExtensionInterfaces as $missingExtensionInterface) {
+            $extension = rtrim(substr($missingExtensionInterface, 0, -strlen('Interface')), '\\');
+            if (!class_exists($extension)) {
+                $missingExtensionClasses[] = $extension;
+            }
+            $extensionFactory = $extension . 'Factory';
+            if (!class_exists($extensionFactory)) {
+                $missingExtensionFactories[] = $extensionFactory;
+            }
+        }
+        return array_merge($missingExtensionInterfaces, $missingExtensionClasses, $missingExtensionFactories);
     }
 
     /**
@@ -177,11 +178,11 @@ class PhpScanner implements ScannerInterface
     {
         $output = [[]];
         foreach ($files as $file) {
-            $classes = $this->getDeclaredClasses($file);
+            $classes = $this->_getDeclaredClasses($file);
             foreach ($classes as $className) {
                 $reflectionClass = new \ReflectionClass($className);
-                $output[] = $this->_fetchFactories($reflectionClass, $file);
-                $output[] = $this->_fetchMissingExtensionAttributesClasses($reflectionClass, $file);
+                $output [] = $this->_fetchFactories($reflectionClass, $file);
+                $output [] = $this->_fetchMissingExtensionAttributesClasses($reflectionClass, $file);
             }
         }
         return array_unique(array_merge(...$output));
@@ -210,30 +211,23 @@ class PhpScanner implements ScannerInterface
     }
 
     /**
-     * Fetches class name from tokenized PHP file.
+     * Fetch class names from tokenized PHP file
      *
      * @param string $namespace
      * @param int $tokenIterator
      * @param int $count
      * @param array $tokens
-     * @return string|null
+     * @return array
      */
-    private function fetchClass($namespace, $tokenIterator, $count, $tokens):? string
+    protected function _fetchClasses($namespace, $tokenIterator, $count, $tokens)
     {
-        // anonymous classes should be omitted
-        if (is_array($tokens[$tokenIterator - 2]) && $tokens[$tokenIterator - 2][0] === T_NEW) {
-            return null;
-        }
-
+        $classes = [];
         for ($tokenOffset = $tokenIterator + 1; $tokenOffset < $count; ++$tokenOffset) {
-            if ($tokens[$tokenOffset] !== '{') {
-                continue;
+            if ($tokens[$tokenOffset] === '{') {
+                $classes[] = $namespace . "\\" . $tokens[$tokenIterator + 2][1];
             }
-
-            return $namespace . "\\" . $tokens[$tokenIterator + 2][1];
         }
-
-        return null;
+        return $classes;
     }
 
     /**
@@ -242,9 +236,9 @@ class PhpScanner implements ScannerInterface
      * @param string $file
      * @return array
      */
-    private function getDeclaredClasses($file): array
+    protected function _getDeclaredClasses($file)
     {
-        $classes = [];
+        $classes = [[]];
         $namespaceParts = [];
         // phpcs:ignore
         $tokens = token_get_all(file_get_contents($file));
@@ -258,13 +252,10 @@ class PhpScanner implements ScannerInterface
             if (($tokens[$tokenIterator][0] == T_CLASS || $tokens[$tokenIterator][0] == T_INTERFACE)
                 && $tokens[$tokenIterator - 1][0] != T_DOUBLE_COLON
             ) {
-                $class = $this->fetchClass(join('', $namespaceParts), $tokenIterator, $count, $tokens);
-                if ($class !== null && !in_array($class, $classes)) {
-                    $classes[] = $class;
-                }
+                $classes[] = $this->_fetchClasses(join('', $namespaceParts), $tokenIterator, $count, $tokens);
             }
         }
-        return $classes;
+        return array_unique(array_merge(...$classes));
     }
 
     /**

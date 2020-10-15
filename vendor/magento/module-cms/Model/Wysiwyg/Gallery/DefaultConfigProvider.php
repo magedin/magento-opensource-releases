@@ -8,11 +8,6 @@ declare(strict_types=1);
 
 namespace Magento\Cms\Model\Wysiwyg\Gallery;
 
-use Magento\Ui\Component\Form\Element\DataType\Media\OpenDialogUrl;
-
-/**
- * @inheritdoc
- */
 class DefaultConfigProvider implements \Magento\Framework\Data\Wysiwyg\ConfigProviderInterface
 {
     /**
@@ -36,33 +31,25 @@ class DefaultConfigProvider implements \Magento\Framework\Data\Wysiwyg\ConfigPro
     private $currentTreePath;
 
     /**
-     * @var OpednDialogUrl
-     */
-    private $openDialogUrl;
-
-    /**
      * @param \Magento\Backend\Model\UrlInterface $backendUrl
      * @param \Magento\Cms\Helper\Wysiwyg\Images $imagesHelper
-     * @param OpenDialogUrl $openDialogUrl
      * @param array $windowSize
      * @param string|null $currentTreePath
      */
     public function __construct(
         \Magento\Backend\Model\UrlInterface $backendUrl,
         \Magento\Cms\Helper\Wysiwyg\Images $imagesHelper,
-        OpenDialogUrl $openDialogUrl,
         array $windowSize = [],
         $currentTreePath = null
     ) {
         $this->backendUrl = $backendUrl;
         $this->imagesHelper = $imagesHelper;
-        $this->openDialogUrl = $openDialogUrl;
         $this->windowSize = $windowSize;
         $this->currentTreePath = $currentTreePath;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getConfig(\Magento\Framework\DataObject $config) : \Magento\Framework\DataObject
     {
@@ -85,7 +72,7 @@ class DefaultConfigProvider implements \Magento\Framework\Data\Wysiwyg\ConfigPro
             [
                 'add_images' => true,
                 'files_browser_window_url' => $this->backendUrl->getUrl(
-                    $this->openDialogUrl->get(),
+                    'cms/wysiwyg_images/index',
                     $fileBrowserUrlParams
                 ),
                 'files_browser_window_width' => $this->windowSize['width'],

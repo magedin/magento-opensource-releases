@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\Component\Product\Form\Categories;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Ui\Component\Product\Form\Categories\Options as CategoriesOptions;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
+use Magento\Catalog\Model\Category;
 
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CategoriesOptions
@@ -28,7 +24,7 @@ class OptionsTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var CategoryCollectionFactory|MockObject
+     * @var CategoryCollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryCollectionFactoryMock;
 
@@ -43,7 +39,7 @@ class OptionsTest extends TestCase
         Category::KEY_IS_ACTIVE => 'getIsActive'
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->categoryCollectionFactoryMock = $this->getMockBuilder(CategoryCollectionFactory::class)
             ->setMethods(['create'])
@@ -145,7 +141,7 @@ class OptionsTest extends TestCase
 
     /**
      * @param array $categories
-     * @return CategoryCollection|MockObject
+     * @return CategoryCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getCategoryCollectionMock($categories)
     {
@@ -172,7 +168,7 @@ class OptionsTest extends TestCase
 
     /**
      * @param array $data
-     * @return Category|MockObject
+     * @return Category|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getCategoryMock($data)
     {

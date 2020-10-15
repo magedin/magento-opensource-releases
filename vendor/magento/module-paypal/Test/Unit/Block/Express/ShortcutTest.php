@@ -3,23 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Block\Express;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Paypal\Block\Express\Shortcut;
 use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\ConfigFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ShortcutTest extends TestCase
+class ShortcutTest extends \PHPUnit\Framework\TestCase
 {
-    private const STUB_ALIAS = 'alias';
+    /**
+     * Alias
+     */
+    const ALIAS = 'alias';
 
     /**
-     * @var ConfigFactory|MockObject
+     * @var ConfigFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_paypalConfigFactory;
 
@@ -41,15 +39,15 @@ class ShortcutTest extends TestCase
             ->method('setMethod')
             ->with('test-method');
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $model = $helper->getObject(
             Shortcut::class,
             [
-                'alias' => self::STUB_ALIAS,
+                'alias' => self::ALIAS,
                 'paymentMethodCode' => 'test-method',
                 'paypalConfigFactory' => $paypalConfigFactoryMock
             ]
         );
-        $this->assertEquals(self::STUB_ALIAS, $model->getAlias());
+        $this->assertEquals(self::ALIAS, $model->getAlias());
     }
 }

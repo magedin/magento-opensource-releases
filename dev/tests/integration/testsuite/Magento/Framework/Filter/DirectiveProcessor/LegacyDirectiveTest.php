@@ -24,7 +24,7 @@ class LegacyDirectiveTest extends TestCase
      */
     private $filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = ObjectManager::getInstance();
         $this->filter = $objectManager->create(LegacyFilter::class);

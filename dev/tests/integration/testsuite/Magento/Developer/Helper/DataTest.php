@@ -5,7 +5,7 @@
  */
 namespace Magento\Developer\Helper;
 
-use \Laminas\Stdlib\Parameters;
+use \Zend\Stdlib\Parameters;
 
 class DataTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,7 +14,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     protected $helper = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helper = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Developer\Helper\Data::class

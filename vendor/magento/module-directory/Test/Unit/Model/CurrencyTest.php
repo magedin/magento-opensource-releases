@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Directory\Test\Unit\Model;
 
 use Magento\Directory\Model\Currency;
-use Magento\Framework\Locale\CurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CurrencyTest extends TestCase
+class CurrencyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Currency
@@ -23,17 +18,17 @@ class CurrencyTest extends TestCase
     protected $currencyCode = 'USD';
 
     /**
-     * @var CurrencyInterface|MockObject
+     * @var \Magento\Framework\Locale\CurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeCurrencyMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->localeCurrencyMock = $this->getMockForAbstractClass(CurrencyInterface::class);
+        $this->localeCurrencyMock = $this->createMock(\Magento\Framework\Locale\CurrencyInterface::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->currency = $objectManager->getObject(
-            Currency::class,
+            \Magento\Directory\Model\Currency::class,
             [
                 'localeCurrency' => $this->localeCurrencyMock,
                 'data' => [

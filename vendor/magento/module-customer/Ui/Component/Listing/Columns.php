@@ -12,9 +12,6 @@ use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater;
 use Magento\Customer\Api\CustomerMetadataInterface;
 
-/**
- * Columns component
- */
 class Columns extends \Magento\Ui\Component\Listing\Columns
 {
     /**
@@ -31,11 +28,6 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
      * @var \Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater
      */
     protected $inlineEditUpdater;
-
-    /**
-     * @var ColumnFactory
-     */
-    private $columnFactory;
 
     /**
      * @var array
@@ -71,8 +63,6 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
     }
 
     /**
-     * Return default sort order
-     *
      * @return int
      */
     protected function getDefaultSortOrder()
@@ -104,7 +94,7 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function prepare()
     {
@@ -123,8 +113,6 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
     }
 
     /**
-     * Add column to the component
-     *
      * @param array $attributeData
      * @param string $columnName
      * @return void
@@ -141,8 +129,6 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
     }
 
     /**
-     * Update column in component
-     *
      * @param array $attributeData
      * @param string $newAttributeCode
      * @return void
@@ -214,6 +200,6 @@ class Columns extends \Magento\Ui\Component\Listing\Columns
      */
     protected function getFilterType($frontendInput)
     {
-        return $this->filterMap[$frontendInput] ?? $this->filterMap['default'];
+        return isset($this->filterMap[$frontendInput]) ? $this->filterMap[$frontendInput] : $this->filterMap['default'];
     }
 }

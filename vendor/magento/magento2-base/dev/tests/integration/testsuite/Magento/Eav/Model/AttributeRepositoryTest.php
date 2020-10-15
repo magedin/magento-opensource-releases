@@ -19,7 +19,7 @@ class AttributeRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     private $repository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->repository = Bootstrap::getObjectManager()->create(AttributeRepositoryInterface::class);
     }
@@ -68,7 +68,7 @@ class AttributeRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $searchResult->getTotalCount());
 
         $items = array_values($searchResult->getItems());
-        $this->assertCount(1, $items);
+        $this->assertEquals(1, count($items));
         $this->assertEquals('attribute_for_search_3', $items[0]['attribute_code']);
     }
 }

@@ -7,35 +7,35 @@
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
 ?>
 <?php
-/** @var $block \Magento\LayeredNavigation\Block\Navigation\FilterRenderer */
-/** @var \Magento\LayeredNavigation\ViewModel\Layer\Filter $viewModel */
-$viewModel = $block->getData('product_layer_view_model');
+/**
+ * Template for filter items block
+ *
+ * @var $block \Magento\LayeredNavigation\Block\Navigation\FilterRenderer
+ */
 ?>
 
 <ol class="items">
-    <?php foreach ($filterItems as $filterItem): ?>
+    <?php foreach ($filterItems as $filterItem) : ?>
         <li class="item">
-            <?php if ($filterItem->getCount() > 0): ?>
-                <a href="<?= $block->escapeUrl($filterItem->getUrl()) ?>" rel="nofollow">
+            <?php if ($filterItem->getCount() > 0) : ?>
+                <a href="<?= $block->escapeUrl($filterItem->getUrl()) ?>">
                     <?= /* @noEscape */ $filterItem->getLabel() ?>
-                    <?php if ($viewModel->shouldDisplayProductCountOnLayer()): ?>
-                        <span class="count"><?= /* @noEscape */ (int)$filterItem->getCount() ?>
-                          <span class="filter-count-label">
-                            <?php if ($filterItem->getCount() == 1):
+                    <?php if ($this->helper(\Magento\Catalog\Helper\Data::class)->shouldDisplayProductCountOnLayer()) : ?>
+                        <span class="count"><?= /* @noEscape */ (int)$filterItem->getCount() ?><span class="filter-count-label">
+                            <?php if ($filterItem->getCount() == 1) :
                                 ?> <?= $block->escapeHtml(__('item')) ?><?php
-                            else:
+                            else :
                                 ?> <?= $block->escapeHtml(__('item')) ?><?php
                             endif;?></span></span>
                     <?php endif; ?>
                 </a>
-            <?php else: ?>
+            <?php else :?>
                 <?= /* @noEscape */ $filterItem->getLabel() ?>
-                <?php if ($viewModel->shouldDisplayProductCountOnLayer()): ?>
-                    <span class="count"><?= /* @noEscape */ (int)$filterItem->getCount() ?>
-                      <span class="filter-count-label">
-                        <?php if ($filterItem->getCount() == 1):
+                <?php if ($this->helper(\Magento\Catalog\Helper\Data::class)->shouldDisplayProductCountOnLayer()) : ?>
+                    <span class="count"><?= /* @noEscape */ (int)$filterItem->getCount() ?><span class="filter-count-label">
+                        <?php if ($filterItem->getCount() == 1) :
                             ?><?= $block->escapeHtml(__('items')) ?><?php
-                        else:
+                        else :
                             ?><?= $block->escapeHtml(__('items')) ?><?php
                         endif;?></span></span>
                 <?php endif; ?>

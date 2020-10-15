@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\MessageQueue\Test\Unit\Model\Cron;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Lock\LockManagerInterface;
 use Magento\Framework\MessageQueue\ConnectionTypeResolver;
-use Magento\Framework\MessageQueue\Consumer\Config\ConsumerConfigItemInterface;
-use Magento\Framework\MessageQueue\Consumer\ConfigInterface as ConsumerConfigInterface;
+use \PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Magento\Framework\ShellInterface;
+use Magento\Framework\MessageQueue\Consumer\ConfigInterface as ConsumerConfigInterface;
+use Magento\Framework\MessageQueue\Consumer\Config\ConsumerConfigItemInterface;
+use Magento\Framework\App\DeploymentConfig;
 use Magento\MessageQueue\Model\Cron\ConsumersRunner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\PhpExecutableFinder;
+use Magento\Framework\Lock\LockManagerInterface;
 
 /**
  * Unit tests for ConsumersRunner.
  */
-class ConsumersRunnerTest extends TestCase
+class ConsumersRunnerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var LockManagerInterface|MockObject
@@ -61,11 +58,11 @@ class ConsumersRunnerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         require_once __DIR__ . '/../../_files/consumers_runner_functions_mocks.php';
 
-        $this->phpExecutableFinderMock = $this->getMockBuilder(PhpExecutableFinder::class)
+        $this->phpExecutableFinderMock = $this->getMockBuilder(phpExecutableFinder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->lockManagerMock = $this->getMockBuilder(LockManagerInterface::class)
@@ -184,7 +181,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 20000,
                 'isLocked' => false,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=20000'],
                 'allowedConsumers' => [],
                 'shellBackgroundExpects' => 1,
@@ -194,7 +191,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => false,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => [],
                 'shellBackgroundExpects' => 1,
@@ -204,7 +201,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => false,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => ['someConsumer'],
                 'shellBackgroundExpects' => 0,
@@ -214,7 +211,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => true,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => ['someConsumer'],
                 'shellBackgroundExpects' => 0,
@@ -224,7 +221,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => true,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => [],
                 'shellBackgroundExpects' => 0,
@@ -234,7 +231,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => true,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => ['consumerName'],
                 'shellBackgroundExpects' => 0,
@@ -244,7 +241,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 10000,
                 'isLocked' => false,
                 'php' => '',
-                'command' => 'php ' . BP . '/bin/magento queue:consumers:start %s %s %s',
+                'command' => 'php '. BP . '/bin/magento queue:consumers:start %s %s %s',
                 'arguments' => ['consumerName', '--single-thread', '--max-messages=10000'],
                 'allowedConsumers' => ['consumerName'],
                 'shellBackgroundExpects' => 1,
@@ -254,7 +251,7 @@ class ConsumersRunnerTest extends TestCase
                 'maxMessages' => 0,
                 'isLocked' => false,
                 'php' => '/bin/php',
-                'command' => '/bin/php ' . BP . '/bin/magento queue:consumers:start %s %s',
+                'command' => '/bin/php '. BP . '/bin/magento queue:consumers:start %s %s',
                 'arguments' => ['consumerName', '--single-thread'],
                 'allowedConsumers' => ['consumerName'],
                 'shellBackgroundExpects' => 1,

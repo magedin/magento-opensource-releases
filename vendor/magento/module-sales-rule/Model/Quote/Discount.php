@@ -6,53 +6,37 @@
 namespace Magento\SalesRule\Model\Quote;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address\Total;
-use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Quote\Model\Quote\Item\AbstractItem;
-use Magento\SalesRule\Api\Data\DiscountDataInterface;
-use Magento\SalesRule\Api\Data\DiscountDataInterfaceFactory;
 use Magento\SalesRule\Api\Data\RuleDiscountInterfaceFactory;
-use Magento\SalesRule\Model\Data\RuleDiscount;
-use Magento\SalesRule\Model\Discount\PostProcessorFactory;
-use Magento\SalesRule\Model\Validator;
-use Magento\Store\Model\StoreManagerInterface;
+use Magento\SalesRule\Api\Data\DiscountDataInterfaceFactory;
 
 /**
  * Discount totals calculation model.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Discount extends AbstractTotal
+class Discount extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
 {
     const COLLECTOR_TYPE_CODE = 'discount';
 
     /**
      * Discount calculation object
      *
-     * @var Validator
+     * @var \Magento\SalesRule\Model\Validator
      */
     protected $calculator;
 
     /**
      * Core event manager proxy
      *
-     * @var ManagerInterface
+     * @var \Magento\Framework\Event\ManagerInterface
      */
     protected $eventManager = null;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var PriceCurrencyInterface
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface
      */
     protected $priceCurrency;
 
@@ -67,18 +51,18 @@ class Discount extends AbstractTotal
     private $discountDataInterfaceFactory;
 
     /**
-     * @param ManagerInterface $eventManager
-     * @param StoreManagerInterface $storeManager
-     * @param Validator $validator
-     * @param PriceCurrencyInterface $priceCurrency
+     * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\SalesRule\Model\Validator $validator
+     * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
      * @param RuleDiscountInterfaceFactory|null $discountInterfaceFactory
      * @param DiscountDataInterfaceFactory|null $discountDataInterfaceFactory
      */
     public function __construct(
-        ManagerInterface $eventManager,
-        StoreManagerInterface $storeManager,
-        Validator $validator,
-        PriceCurrencyInterface $priceCurrency,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\SalesRule\Model\Validator $validator,
+        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         RuleDiscountInterfaceFactory $discountInterfaceFactory = null,
         DiscountDataInterfaceFactory $discountDataInterfaceFactory = null
     ) {
@@ -96,17 +80,17 @@ class Discount extends AbstractTotal
     /**
      * Collect address discount amount
      *
-     * @param Quote $quote
-     * @param ShippingAssignmentInterface $shippingAssignment
-     * @param Total $total
+     * @param \Magento\Quote\Model\Quote $quote
+     * @param \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment
+     * @param \Magento\Quote\Model\Quote\Address\Total $total
      * @return $this
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function collect(
-        Quote $quote,
-        ShippingAssignmentInterface $shippingAssignment,
-        Total $total
+        \Magento\Quote\Model\Quote $quote,
+        \Magento\Quote\Api\Data\ShippingAssignmentInterface $shippingAssignment,
+        \Magento\Quote\Model\Quote\Address\Total $total
     ) {
         parent::collect($quote, $shippingAssignment, $total);
 
@@ -138,7 +122,7 @@ class Discount extends AbstractTotal
         $address->getExtensionAttributes()->setDiscounts([]);
         $addressDiscountAggregator = [];
 
-        /** @var Item $item */
+        /** @var \Magento\Quote\Model\Quote\Item $item */
         foreach ($items as $item) {
             if ($item->getNoDiscount() || !$this->calculator->canApplyDiscount($item)) {
                 $item->setDiscountAmount(0);
@@ -163,6 +147,7 @@ class Discount extends AbstractTotal
 
             if ($item->getHasChildren() && $item->isChildrenCalculated()) {
                 $this->calculator->process($item);
+                $this->distributeDiscount($item);
                 foreach ($item->getChildren() as $child) {
                     $eventArgs['item'] = $child;
                     $this->eventManager->dispatch('sales_quote_address_discount_item', $eventArgs);
@@ -190,13 +175,13 @@ class Discount extends AbstractTotal
     /**
      * Aggregate item discount information to total data and related properties
      *
-     * @param AbstractItem $item
-     * @param Total $total
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param \Magento\Quote\Model\Quote\Address\Total $total
      * @return $this
      */
     protected function aggregateItemDiscount(
-        AbstractItem $item,
-        Total $total
+        \Magento\Quote\Model\Quote\Item\AbstractItem $item,
+        \Magento\Quote\Model\Quote\Address\Total $total
     ) {
         $total->addTotalAmount($this->getCode(), -$item->getDiscountAmount());
         $total->addBaseTotalAmount($this->getCode(), -$item->getBaseDiscountAmount());
@@ -206,12 +191,10 @@ class Discount extends AbstractTotal
     /**
      * Distribute discount at parent item to children items
      *
-     * @param AbstractItem $item
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
      * @return $this
-     * @deprecated No longer used.
-     * @see \Magento\SalesRule\Model\RulesApplier::applyRule()
      */
-    protected function distributeDiscount(AbstractItem $item)
+    protected function distributeDiscount(\Magento\Quote\Model\Quote\Item\AbstractItem $item)
     {
         $parentBaseRowTotal = $item->getBaseRowTotal();
         $keys = [
@@ -247,12 +230,12 @@ class Discount extends AbstractTotal
     /**
      * Add discount total information to address
      *
-     * @param Quote $quote
-     * @param Total $total
+     * @param \Magento\Quote\Model\Quote $quote
+     * @param \Magento\Quote\Model\Quote\Address\Total $total
      * @return array|null
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fetch(Quote $quote, Total $total)
+    public function fetch(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
     {
         $result = null;
         $amount = $total->getDiscountAmount();
@@ -271,25 +254,25 @@ class Discount extends AbstractTotal
     /**
      * Aggregates discount per rule
      *
-     * @param AbstractItem $item
-     * @param AddressInterface $address
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param \Magento\Quote\Api\Data\AddressInterface $address
      * @param array $addressDiscountAggregator
      * @return void
      */
     private function aggregateDiscountPerRule(
-        AbstractItem $item,
-        AddressInterface $address,
+        \Magento\Quote\Model\Quote\Item\AbstractItem $item,
+        \Magento\Quote\Api\Data\AddressInterface $address,
         array &$addressDiscountAggregator
     ) {
         $discountBreakdown = $item->getExtensionAttributes()->getDiscounts();
         if ($discountBreakdown) {
             foreach ($discountBreakdown as $value) {
-                /* @var DiscountDataInterface $discount */
+                /* @var \Magento\SalesRule\Api\Data\DiscountDataInterface $discount */
                 $discount = $value->getDiscountData();
                 $ruleLabel = $value->getRuleLabel();
                 $ruleID = $value->getRuleID();
                 if (isset($addressDiscountAggregator[$ruleID])) {
-                    /** @var RuleDiscount $cartDiscount */
+                    /** @var \Magento\SalesRule\Model\Data\RuleDiscount $cartDiscount */
                     $cartDiscount = $addressDiscountAggregator[$ruleID];
                     $discountData = $cartDiscount->getDiscountData();
                     $discountData->setBaseAmount($discountData->getBaseAmount()+$discount->getBaseAmount());
@@ -311,12 +294,12 @@ class Discount extends AbstractTotal
                         'rule' => $ruleLabel,
                         'rule_id' => $ruleID,
                     ];
-                    /** @var RuleDiscount $cartDiscount */
+                    /** @var \Magento\SalesRule\Model\Data\RuleDiscount $cartDiscount */
                     $cartDiscount = $this->discountInterfaceFactory->create(['data' => $data]);
                     $addressDiscountAggregator[$ruleID] = $cartDiscount;
                 }
             }
         }
-        $address->getExtensionAttributes()->setDiscounts(array_values($addressDiscountAggregator));
+            $address->getExtensionAttributes()->setDiscounts(array_values($addressDiscountAggregator));
     }
 }

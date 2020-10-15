@@ -19,13 +19,13 @@ class EmailTemplateTest extends \PHPUnit\Framework\TestCase
              * @param string $file
              */
             function ($file) {
-                $this->assertDoesNotMatchRegularExpression(
+                $this->assertNotRegExp(
                     '/\{\{htmlescape.*?\}\}/i',
                     file_get_contents($file),
                     'Directive {{htmlescape}} is obsolete. Use {{var}} instead.'
                 );
 
-                $this->assertDoesNotMatchRegularExpression(
+                $this->assertNotRegExp(
                     '/\{\{escapehtml.*?\}\}/i',
                     file_get_contents($file),
                     'Directive {{escapehtml}} is obsolete. Use {{var}} instead.'

@@ -3,79 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Search\Test\Unit;
 
-use Magento\Framework\Api\Filter;
-use Magento\Framework\Api\Search\FilterGroup;
-use Magento\Framework\Api\Search\SearchCriteriaInterface;
-use Magento\Framework\Api\Search\SearchResult;
-use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\App\ScopeInterface;
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\Search\Request\Builder;
-use Magento\Framework\Search\RequestInterface;
-use Magento\Framework\Search\ResponseInterface;
-use Magento\Framework\Search\Search;
-use Magento\Framework\Search\SearchEngineInterface;
-use Magento\Framework\Search\SearchResponseBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SearchTest extends TestCase
+class SearchTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Search
+     * @var \Magento\Framework\Search\Search
      */
     protected $model;
 
     /**
-     * @var Builder|MockObject
+     * @var \Magento\Framework\Search\Request\Builder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestBuilder;
 
     /**
-     * @var SearchEngineInterface|MockObject
+     * @var \Magento\Framework\Search\SearchEngineInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchEngine;
 
     /**
-     * @var SearchResponseBuilder|MockObject
+     * @var \Magento\Framework\Search\SearchResponseBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResponseBuilder;
 
     /**
-     * @var ScopeResolverInterface|MockObject
+     * @var \Magento\Framework\App\ScopeResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeResolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->requestBuilder = $this->getMockBuilder(Builder::class)
+        $this->requestBuilder = $this->getMockBuilder(\Magento\Framework\Search\Request\Builder::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->searchEngine = $this->getMockBuilder(SearchEngineInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->searchResponseBuilder = $this->getMockBuilder(SearchResponseBuilder::class)
+        $this->searchEngine = $this->getMockBuilder(\Magento\Framework\Search\SearchEngineInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeResolver = $this->getMockBuilder(ScopeResolverInterface::class)
+        $this->searchResponseBuilder = $this->getMockBuilder(\Magento\Framework\Search\SearchResponseBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->scopeResolver = $this->getMockBuilder(\Magento\Framework\App\ScopeResolverInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->model = $objectManager->getObject(
-            Search::class,
+            \Magento\Framework\Search\Search::class,
             [
                 'requestBuilder' => $this->requestBuilder,
                 'searchEngine' => $this->searchEngine,
@@ -97,18 +80,18 @@ class SearchTest extends TestCase
             $this->createFilterMock('range_filter', ['from' => 60, 'to' => 82]),
         ];
 
-        $scope = $this->getMockBuilder(ScopeInterface::class)
+        $scope = $this->getMockBuilder(\Magento\Framework\App\ScopeInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-
-        $filterGroup = $this->getMockBuilder(FilterGroup::class)
+        
+        $filterGroup = $this->getMockBuilder(\Magento\Framework\Api\Search\FilterGroup::class)
             ->disableOriginalConstructor()
             ->getMock();
         $filterGroup->expects($this->once())
             ->method('getFilters')
             ->willReturn($filters);
 
-        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\Search\SearchCriteriaInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $searchCriteria->expects($this->once())
@@ -118,15 +101,15 @@ class SearchTest extends TestCase
             ->method('getFilterGroups')
             ->willReturn([$filterGroup]);
 
-        $searchResult = $this->getMockBuilder(SearchResult::class)
+        $searchResult = $this->getMockBuilder(\Magento\Framework\Api\Search\SearchResult::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $request = $this->getMockBuilder(RequestInterface::class)
+        $request = $this->getMockBuilder(\Magento\Framework\Search\RequestInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $response = $this->getMockBuilder(ResponseInterface::class)
+        $response = $this->getMockBuilder(\Magento\Framework\Search\ResponseInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
@@ -162,17 +145,17 @@ class SearchTest extends TestCase
 
         $searchResult = $this->model->search($searchCriteria);
 
-        $this->assertInstanceOf(SearchResultInterface::class, $searchResult);
+        $this->assertInstanceOf(\Magento\Framework\Api\Search\SearchResultInterface::class, $searchResult);
     }
 
     /**
      * @param $field
      * @param $value
-     * @return Filter|MockObject
+     * @return \Magento\Framework\Api\Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createFilterMock($field, $value)
     {
-        $filter = $this->getMockBuilder(Filter::class)
+        $filter = $this->getMockBuilder(\Magento\Framework\Api\Filter::class)
             ->disableOriginalConstructor()
             ->getMock();
         $filter->expects($this->once())

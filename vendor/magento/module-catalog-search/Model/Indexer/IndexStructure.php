@@ -6,10 +6,10 @@
 
 namespace Magento\CatalogSearch\Model\Indexer;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Search\Request\Dimension;
 use Magento\Framework\Indexer\IndexStructureInterface;
 use Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver;
 use Magento\Framework\Search\Request\IndexScopeResolverInterface;
@@ -23,43 +23,25 @@ use Magento\Framework\Search\Request\IndexScopeResolverInterface;
 class IndexStructure implements IndexStructureInterface
 {
     /**
-     * @var IndexStructureInterface
-     */
-    private $indexStructureEntity;
-
-    /**
-     * @var IndexStructureFactory
-     */
-    private $indexStructureFactory;
-
-    /**
      * @var Resource
-     * @deprecated
-     * @see \Magento\Elasticsearch
      */
     private $resource;
 
     /**
      * @var IndexScopeResolver
-     * @deprecated
-     * @see \Magento\Elasticsearch
      */
     private $indexScopeResolver;
 
     /**
      * @param ResourceConnection $resource
      * @param IndexScopeResolverInterface $indexScopeResolver
-     * @param IndexStructureFactory|null $indexStructureFactory
      */
     public function __construct(
         ResourceConnection $resource,
-        IndexScopeResolverInterface $indexScopeResolver,
-        IndexStructureFactory $indexStructureFactory = null
+        IndexScopeResolverInterface $indexScopeResolver
     ) {
         $this->resource = $resource;
         $this->indexScopeResolver = $indexScopeResolver;
-        $this->indexStructureFactory = $indexStructureFactory ? : ObjectManager::getInstance()
-            ->get(IndexStructureFactory::class);
     }
 
     /**
@@ -67,7 +49,10 @@ class IndexStructure implements IndexStructureInterface
      */
     public function delete($index, array $dimensions = [])
     {
-        return $this->getEntity()->delete($index, $dimensions);
+        $tableName = $this->indexScopeResolver->resolve($index, $dimensions);
+        if ($this->resource->getConnection()->isTableExists($tableName)) {
+            $this->resource->getConnection()->dropTable($tableName);
+        }
     }
 
     /**
@@ -75,20 +60,7 @@ class IndexStructure implements IndexStructureInterface
      */
     public function create($index, array $fields, array $dimensions = [])
     {
-        return $this->getEntity()->create($index, $fields, $dimensions);
-    }
-
-    /**
-     * Get instance of current index structure
-     *
-     * @return IndexStructureInterface
-     */
-    private function getEntity()
-    {
-        if (empty($this->indexStructureEntity)) {
-            $this->indexStructureEntity = $this->indexStructureFactory->create();
-        }
-        return $this->indexStructureEntity;
+        $this->createFulltextIndex($this->indexScopeResolver->resolve($index, $dimensions));
     }
 
     /**
@@ -97,8 +69,6 @@ class IndexStructure implements IndexStructureInterface
      * @param string $tableName
      * @throws \Zend_Db_Exception
      * @return void
-     * @deprecated
-     * @see \Magento\ElasticSearch
      */
     protected function createFulltextIndex($tableName)
     {

@@ -7,17 +7,20 @@ declare(strict_types=1);
 
 namespace Magento\MediaGallery\Test\Unit\Model\Keyword\Command;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Exception\IntegrationException;
 use Magento\MediaGallery\Model\Keyword\Command\GetAssetKeywords;
 use Magento\MediaGalleryApi\Api\Data\KeywordInterface;
 use Magento\MediaGalleryApi\Api\Data\KeywordInterfaceFactory;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\Select;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
+/**
+ * GetAssetKeywordsTest
+ */
 class GetAssetKeywordsTest extends TestCase
 {
     /**
@@ -44,7 +47,7 @@ class GetAssetKeywordsTest extends TestCase
     {
         $this->resourceConnectionStub = $this->createMock(ResourceConnection::class);
         $this->assetKeywordFactoryStub = $this->createMock(KeywordInterfaceFactory::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->sut = new GetAssetKeywords(
             $this->resourceConnectionStub,
@@ -56,7 +59,7 @@ class GetAssetKeywordsTest extends TestCase
     /**
      * Posive test for the main case
      *
-     * @dataProvider casesProvider
+     * @dataProvider casesProvider()
      * @param array $databaseQueryResult
      * @param int $expectedNumberOfFoundKeywords
      */
@@ -81,17 +84,8 @@ class GetAssetKeywordsTest extends TestCase
     {
         return [
             'not_found' => [[],0],
-            'find_one_keyword' => [
-                'result' => [['id' => 1, 'keyword' => 'keywordRawData']],
-                'expectedCount' => 1
-            ],
-            'find_several_keywords' => [
-                'results' => [
-                    ['id' => 1, 'keyword'=> 'keywordRawData'],
-                    ['id' => 2, 'keyword' => 'keywordRawData']
-                ],
-                'expectedCount' => 2
-            ],
+            'find_one_keyword' => [['keywordRawData'],1],
+            'find_several_keywords' => [['keywordRawData', 'keywordRawData'],2],
         ];
     }
 
@@ -133,8 +127,7 @@ class GetAssetKeywordsTest extends TestCase
         $selectStub->method('join')->willReturnSelf();
         $selectStub->method('where')->willReturnSelf();
 
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
-            ->getMock();
+        $connectionMock = $this->getMockBuilder(AdapterInterface::class)->getMock();
         $connectionMock
             ->method('select')
             ->willReturn($selectStub);
@@ -149,8 +142,7 @@ class GetAssetKeywordsTest extends TestCase
 
     private function configureAssetKeywordFactoryStub(): void
     {
-        $keywordStub = $this->getMockBuilder(KeywordInterface::class)
-            ->getMock();
+        $keywordStub = $this->getMockBuilder(KeywordInterface::class)->getMock();
         $this->assetKeywordFactoryStub
             ->method('create')
             ->willReturn($keywordStub);

@@ -26,7 +26,7 @@ class LowestPriceOptionProviderTest extends \PHPUnit\Framework\TestCase
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->storeManager = Bootstrap::getObjectManager()->get(StoreManagerInterface::class);
         $this->productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);

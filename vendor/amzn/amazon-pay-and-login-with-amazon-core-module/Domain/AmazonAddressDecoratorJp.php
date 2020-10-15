@@ -38,7 +38,13 @@ class AmazonAddressDecoratorJp implements AmazonAddressInterface
      */
     public function getLines()
     {
-        return $this->amazonAddress->getLines();
+        $city = $this->amazonAddress->getCity();
+
+        /*
+         * AmazonAddressDecoratorJp->getCity() returns address line 1 when city is empty.
+         * Omit line 1 from the street address in this case.
+         */
+        return array_slice($this->amazonAddress->getLines(), empty($city) ? 1 : 0);
     }
 
     /**
@@ -70,7 +76,7 @@ class AmazonAddressDecoratorJp implements AmazonAddressInterface
      */
     public function getCity()
     {
-        return $this->amazonAddress->getCity() ?? '-';
+        return $this->amazonAddress->getCity() ?? $this->amazonAddress->getLine(1);
     }
 
     /**

@@ -4,17 +4,12 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'order.php';
 /** @var Order $order */
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var OrderInterface $order */
-$order = Bootstrap::getObjectManager()->create(OrderInterface::class)->load('100000001', 'increment_id');
+$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $invoices = [
     [
         'store_id' => 1,

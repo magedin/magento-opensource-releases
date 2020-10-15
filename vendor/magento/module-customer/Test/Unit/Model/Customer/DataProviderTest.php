@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\Customer;
 
@@ -27,15 +26,14 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Ui\Component\Form\Field;
 use Magento\Ui\DataProvider\EavValidationRules;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Unit tests for \Magento\Customer\Model\Customer\DataProvider class.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     const ATTRIBUTE_CODE = 'test-code';
     const OPTIONS_RESULT = 'test-options';
@@ -73,7 +71,7 @@ class DataProviderTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->eavConfigMock = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
@@ -245,7 +243,6 @@ class DataProviderTest extends TestCase
                                             'componentType' => Field::NAME,
                                             'filterBy' => [
                                                 'target' => '${ $.provider }:data.customer.website_id',
-                                                '__disableTmpl' => ['target' => false],
                                                 'field' => 'website_ids',
                                             ],
                                         ],
@@ -511,7 +508,7 @@ class DataProviderTest extends TestCase
         $shareMock = $this->getMockBuilder(Share::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $objectManagerMock = $this->createMock(ObjectManagerInterface::class);
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturnMap(
@@ -991,6 +988,7 @@ class DataProviderTest extends TestCase
      */
     public function testGetDataWithVisibleAttributes()
     {
+
         $firstAttributesBundle = $this->getAttributeMock(
             'customer',
             [
@@ -1282,7 +1280,6 @@ class DataProviderTest extends TestCase
                                     'componentType' => Field::NAME,
                                     'filterBy' => [
                                         'target' => '${ $.provider }:data.customer.website_id',
-                                        '__disableTmpl' => ['target' => false],
                                         'field' => 'website_ids',
                                     ],
                                 ],

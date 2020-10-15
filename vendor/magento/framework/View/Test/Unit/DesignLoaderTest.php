@@ -3,46 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\AreaList;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\State;
-use Magento\Framework\View\DesignLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DesignLoaderTest extends TestCase
+class DesignLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DesignLoader
+     * @var \Magento\Framework\View\DesignLoader
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_areaListMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $appState;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_areaListMock = $this->createMock(AreaList::class);
-        $this->_requestMock = $this->createMock(Http::class);
-        $this->appState = $this->createMock(State::class);
-        $this->_model = new DesignLoader(
+        $this->_areaListMock = $this->createMock(\Magento\Framework\App\AreaList::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->appState = $this->createMock(\Magento\Framework\App\State::class);
+        $this->_model = new \Magento\Framework\View\DesignLoader(
             $this->_requestMock,
             $this->_areaListMock,
             $this->appState
@@ -51,13 +42,13 @@ class DesignLoaderTest extends TestCase
 
     public function testLoad()
     {
-        $area = $this->createMock(Area::class);
-        $this->appState->expects($this->once())->method('getAreaCode')->willReturn('area');
-        $this->_areaListMock->expects($this->once())->method('getArea')->with('area')->willReturn($area);
+        $area = $this->createMock(\Magento\Framework\App\Area::class);
+        $this->appState->expects($this->once())->method('getAreaCode')->will($this->returnValue('area'));
+        $this->_areaListMock->expects($this->once())->method('getArea')->with('area')->will($this->returnValue($area));
         $area->expects($this->at(0))->method('load')
-            ->with(Area::PART_DESIGN)->willReturn($area);
+            ->with(\Magento\Framework\App\Area::PART_DESIGN)->will($this->returnValue($area));
         $area->expects($this->at(1))->method('load')
-            ->with(Area::PART_TRANSLATE)->willReturn($area);
+            ->with(\Magento\Framework\App\Area::PART_TRANSLATE)->will($this->returnValue($area));
         $this->_model->load($this->_requestMock);
     }
 }

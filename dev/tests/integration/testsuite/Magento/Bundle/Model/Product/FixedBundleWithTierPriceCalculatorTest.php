@@ -19,7 +19,7 @@ class FixedBundleWithTierPriceCalculatorTest extends BundlePriceAbstract
     /** @var ProductTierPriceInterfaceFactory */
     private $tierPriceFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->tierPriceFactory = $this->objectManager->create(ProductTierPriceInterfaceFactory::class);

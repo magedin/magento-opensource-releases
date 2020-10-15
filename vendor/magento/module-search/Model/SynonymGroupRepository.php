@@ -7,7 +7,6 @@
 namespace Magento\Search\Model;
 
 use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Phrase;
 use Magento\Search\Api\Data\SynonymGroupInterface;
 use Magento\Search\Api\SynonymGroupRepositoryInterface;
 use Magento\Search\Model\ResourceModel\SynonymGroup as SynonymGroupResourceModel;
@@ -38,7 +37,7 @@ class SynonymGroupRepository implements SynonymGroupRepositoryInterface
      * @param SynonymGroupResourceModel $resourceModel
      */
     public function __construct(
-        SynonymGroupFactory $synonymGroupFactory,
+        \Magento\Search\Model\SynonymGroupFactory $synonymGroupFactory,
         SynonymGroupResourceModel $resourceModel
     ) {
         $this->synonymGroupFactory = $synonymGroupFactory;
@@ -65,8 +64,8 @@ class SynonymGroupRepository implements SynonymGroupRepositoryInterface
      * Deletes a synonym group
      *
      * @param SynonymGroupInterface $synonymGroup
-     * @return bool
      * @throws CouldNotDeleteException
+     * @return bool
      */
     public function delete(SynonymGroupInterface $synonymGroup)
     {
@@ -150,17 +149,17 @@ class SynonymGroupRepository implements SynonymGroupRepositoryInterface
      */
     private function merge(SynonymGroupInterface $synonymGroupToMerge, array $matchingGroupIds)
     {
-        $mergedSynonyms = [[]];
+        $mergedSynonyms = [];
         foreach ($matchingGroupIds as $groupId) {
             /** @var SynonymGroup $synonymGroupModel */
             $synonymGroupModel = $this->synonymGroupFactory->create();
             $synonymGroupModel->load($groupId);
-            $mergedSynonyms[] = explode(',', $synonymGroupModel->getSynonymGroup());
+            $mergedSynonyms = array_merge($mergedSynonyms, explode(',', $synonymGroupModel->getSynonymGroup()));
             $synonymGroupModel->delete();
         }
-        $mergedSynonyms[] = explode(',', $synonymGroupToMerge->getSynonymGroup());
-
-        return array_unique(array_merge(...$mergedSynonyms));
+        $mergedSynonyms = array_merge($mergedSynonyms, explode(',', $synonymGroupToMerge->getSynonymGroup()));
+        $mergedSynonyms = array_unique($mergedSynonyms);
+        return $mergedSynonyms;
     }
 
     /**
@@ -223,7 +222,7 @@ class SynonymGroupRepository implements SynonymGroupRepositoryInterface
      * Gets merge conflict exception message
      *
      * @param string[] $matchingSynonymGroups
-     * @return Phrase
+     * @return \Magento\Framework\Phrase
      */
     private function getExceptionMessage($matchingSynonymGroups)
     {

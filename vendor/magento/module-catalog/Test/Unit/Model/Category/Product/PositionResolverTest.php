@@ -7,34 +7,32 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Category\Product;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Catalog\Model\Category\Product\PositionResolver;
+use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PositionResolverTest extends TestCase
+class PositionResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resources;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $select;
 
@@ -66,7 +64,7 @@ class PositionResolverTest extends TestCase
      */
     private $categoryId = 1;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()

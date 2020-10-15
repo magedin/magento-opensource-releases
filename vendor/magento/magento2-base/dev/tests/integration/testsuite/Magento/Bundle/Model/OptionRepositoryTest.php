@@ -36,7 +36,7 @@ class OptionRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 

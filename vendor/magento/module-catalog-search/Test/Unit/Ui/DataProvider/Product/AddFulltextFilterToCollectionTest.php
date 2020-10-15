@@ -7,22 +7,20 @@ declare(strict_types=1);
 
 namespace Magento\CatalogSearch\Test\Unit\Ui\DataProvider\Product;
 
-use Magento\CatalogSearch\Model\ResourceModel\Search\Collection as SearchCollection;
-use Magento\CatalogSearch\Ui\DataProvider\Product\AddFulltextFilterToCollection;
-use Magento\Framework\Data\Collection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\CatalogSearch\Model\ResourceModel\Search\Collection as SearchCollection;
+use Magento\Framework\Data\Collection;
+use Magento\CatalogSearch\Ui\DataProvider\Product\AddFulltextFilterToCollection;
 
-class AddFulltextFilterToCollectionTest extends TestCase
+class AddFulltextFilterToCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SearchCollection|MockObject
+     * @var SearchCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCollection;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collection;
 
@@ -36,7 +34,7 @@ class AddFulltextFilterToCollectionTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManagerHelper($this);
 

@@ -3,48 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CurrencySymbol\Test\Unit\Block\Adminhtml\System;
 
-use Magento\Backend\Block\Widget\Button;
-use Magento\CurrencySymbol\Block\Adminhtml\System\Currency;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\TestCase;
-
-class CurrencyTest extends TestCase
+class CurrencyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Object manager helper
      *
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->objectManagerHelper);
     }
 
     public function testPrepareLayout()
     {
-        $childBlockMock = $this->getMockBuilder(BlockInterface::class)
-            ->addMethods(['addChild'])
-            ->onlyMethods(['toHtml'])
-            ->getMockForAbstractClass();
+        $childBlockMock = $this->createPartialMock(
+            \Magento\Framework\View\Element\BlockInterface::class,
+            ['addChild', 'toHtml']
+        );
 
-        $blockMock = $this->getMockForAbstractClass(BlockInterface::class);
+        $blockMock = $this->createMock(\Magento\Framework\View\Element\BlockInterface::class);
 
-        /** @var LayoutInterface|MockObject $layoutMock */
+        /** @var $layoutMock \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject */
         $layoutMock = $this->getMockForAbstractClass(
-            LayoutInterface::class,
+            \Magento\Framework\View\LayoutInterface::class,
             [],
             '',
             false,
@@ -60,7 +51,7 @@ class CurrencyTest extends TestCase
             ->method('addChild')
             ->with(
                 'save_button',
-                Button::class,
+                \Magento\Backend\Block\Widget\Button::class,
                 [
                     'label' => __('Save Currency Rates'),
                     'class' => 'save primary save-currency-rates',
@@ -74,7 +65,7 @@ class CurrencyTest extends TestCase
             ->method('addChild')
             ->with(
                 'options_button',
-                Button::class,
+                \Magento\Backend\Block\Widget\Button::class,
                 ['label' => __('Options'), 'onclick' => 'setLocation(\'\')']
             );
 
@@ -82,13 +73,13 @@ class CurrencyTest extends TestCase
             ->method('addChild')
             ->with(
                 'reset_button',
-                Button::class,
+                \Magento\Backend\Block\Widget\Button::class,
                 ['label' => __('Reset'), 'onclick' => 'document.location.reload()', 'class' => 'reset']
             );
 
-        /** @var \Magento\CurrencySymbol\Block\Adminhtml\System\Currency $block */
+        /** @var $block \Magento\CurrencySymbol\Block\Adminhtml\System\Currency */
         $block = $this->objectManagerHelper->getObject(
-            Currency::class,
+            \Magento\CurrencySymbol\Block\Adminhtml\System\Currency::class,
             [
                 'layout' => $layoutMock
             ]

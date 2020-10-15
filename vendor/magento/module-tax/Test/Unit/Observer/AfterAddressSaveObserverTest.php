@@ -3,28 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Observer;
 
-use Magento\Customer\Model\Address;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Module\Manager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\PageCache\Model\Config;
 use Magento\Tax\Api\TaxAddressManagerInterface;
 use Magento\Tax\Helper\Data;
-use Magento\Tax\Observer\AfterAddressSaveObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AfterAddressSaveObserverTest extends TestCase
+class AfterAddressSaveObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Observer|MockObject
+     * @var Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
@@ -36,19 +31,19 @@ class AfterAddressSaveObserverTest extends TestCase
     /**
      * Module manager
      *
-     * @var Manager|MockObject
+     * @var Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $moduleManagerMock;
 
     /**
      * Cache config
      *
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheConfigMock;
 
     /**
-     * @var Data|MockObject
+     * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $taxHelperMock;
 
@@ -58,27 +53,27 @@ class AfterAddressSaveObserverTest extends TestCase
     private $addressManagerMock;
 
     /**
-     * @var AfterAddressSaveObserver
+     * @var \Magento\Tax\Observer\AfterAddressSaveObserver
      */
     private $session;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->observerMock = $this->getMockBuilder(Observer::class)
+        $this->observerMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCustomerAddress'])
             ->getMock();
 
-        $this->moduleManagerMock = $this->getMockBuilder(Manager::class)
+        $this->moduleManagerMock = $this->getMockBuilder(\Magento\Framework\Module\Manager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->cacheConfigMock = $this->getMockBuilder(Config::class)
+        $this->cacheConfigMock = $this->getMockBuilder(\Magento\PageCache\Model\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->taxHelperMock = $this->getMockBuilder(Data::class)
+        $this->taxHelperMock = $this->getMockBuilder(\Magento\Tax\Helper\Data::class)
             ->setMethods(['isCatalogPriceDisplayAffectedByTax'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -86,10 +81,10 @@ class AfterAddressSaveObserverTest extends TestCase
         $this->addressManagerMock = $this->getMockBuilder(TaxAddressManagerInterface::class)
             ->setMethods(['setDefaultAddressAfterSave', 'setDefaultAddressAfterLogIn'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->session = $this->objectManager->getObject(
-            AfterAddressSaveObserver::class,
+            \Magento\Tax\Observer\AfterAddressSaveObserver::class,
             [
                 'taxHelper' => $this->taxHelperMock,
                 'moduleManager' => $this->moduleManagerMock,
@@ -127,8 +122,8 @@ class AfterAddressSaveObserverTest extends TestCase
             ->method('isCatalogPriceDisplayAffectedByTax')
             ->willReturn($isCatalogPriceDisplayAffectedByTax);
 
-        /* @var \Magento\Customer\Model\Address|MockObject $address */
-        $address = $this->getMockBuilder(Address::class)
+        /* @var \Magento\Customer\Model\Address|\PHPUnit_Framework_MockObject_MockObject $address */
+        $address = $this->getMockBuilder(\Magento\Customer\Model\Address::class)
             ->disableOriginalConstructor()
             ->getMock();
 

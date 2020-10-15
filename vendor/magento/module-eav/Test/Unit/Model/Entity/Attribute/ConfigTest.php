@@ -3,59 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
-namespace Magento\Eav\Test\Unit\Model\Entity\Attribute;
-
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\Config;
-use Magento\Eav\Model\Entity\Attribute\Config\Reader;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\Serialize\SerializerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Eav\Model\Entity\Attribute\Config
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConfigTest extends TestCase
+namespace Magento\Eav\Test\Unit\Model\Entity\Attribute;
+
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Eav\Model\Entity\Attribute\Config
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_readerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_cacheMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_cacheId;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_attribute;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_entityType;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_attribute = $this->createMock(Attribute::class);
-        $this->_entityType = $this->createMock(Type::class);
-        $this->_readerMock = $this->createMock(Reader::class);
+        $this->_attribute = $this->createMock(\Magento\Eav\Model\Entity\Attribute::class);
+        $this->_entityType = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
+        $this->_readerMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Config\Reader::class);
         $this->_cacheMock = $this->createMock(\Magento\Framework\App\Cache\Type\Config::class);
         $this->_cacheId = 'eav_attributes';
         $this->_cacheMock->expects($this->once())
@@ -63,11 +53,11 @@ class ConfigTest extends TestCase
             ->with($this->_cacheId)
             ->willReturn('');
 
-        $serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
         $serializerMock->method('unserialize')
             ->willReturn([]);
 
-        $this->_model = new Config(
+        $this->_model = new \Magento\Eav\Model\Entity\Attribute\Config(
             $this->_readerMock,
             $this->_cacheMock,
             $this->_cacheId,
@@ -77,21 +67,21 @@ class ConfigTest extends TestCase
 
     public function testGetLockedFieldsEmpty()
     {
-        $this->_entityType->expects($this->once())->method('getEntityTypeCode')->willReturn('test_code');
+        $this->_entityType->expects($this->once())->method('getEntityTypeCode')->will($this->returnValue('test_code'));
         $this->_attribute->expects(
             $this->once()
         )->method(
             'getEntityType'
-        )->willReturn(
-            $this->_entityType
+        )->will(
+            $this->returnValue($this->_entityType)
         );
 
         $this->_attribute->expects(
             $this->once()
         )->method(
             'getAttributeCode'
-        )->willReturn(
-            'attribute_code'
+        )->will(
+            $this->returnValue('attribute_code')
         );
         $result = $this->_model->getLockedFields($this->_attribute);
         $this->assertEquals([], $result);
@@ -103,18 +93,18 @@ class ConfigTest extends TestCase
             $this->once()
         )->method(
             'getEntityTypeCode'
-        )->willReturn(
-            'test_code1/test_code2'
+        )->will(
+            $this->returnValue('test_code1/test_code2')
         );
         $this->_attribute->expects(
             $this->once()
         )->method(
             'getEntityType'
-        )->willReturn(
-            $this->_entityType
+        )->will(
+            $this->returnValue($this->_entityType)
         );
 
-        $this->_attribute->expects($this->once())->method('getAttributeCode')->willReturn('test_code');
+        $this->_attribute->expects($this->once())->method('getAttributeCode')->will($this->returnValue('test_code'));
         $data = [
             'test_code1' => [
                 'test_code2' => ['attributes' => ['test_code' => ['test_code1' => 'test_code1']]],

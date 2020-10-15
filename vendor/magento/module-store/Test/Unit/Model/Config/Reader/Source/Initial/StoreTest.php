@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Reader\Source\Initial;
 
-use Magento\Framework\App\Config\Initial;
-use Magento\Framework\App\Config\Scope\Converter;
 use Magento\Store\Model\Config\Reader\Source\Initial\Store;
+use Magento\Framework\App\Config\Initial;
 use Magento\Store\Model\Config\Reader\Source\Initial\Website;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\Scope\Converter;
 
-class StoreTest extends TestCase
+class StoreTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
@@ -48,7 +45,7 @@ class StoreTest extends TestCase
             ]);
         $storeManager = $this->getMockBuilder(StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();

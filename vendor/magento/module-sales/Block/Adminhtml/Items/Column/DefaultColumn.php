@@ -68,19 +68,19 @@ class DefaultColumn extends \Magento\Sales\Block\Adminhtml\Items\AbstractItems
      */
     public function getOrderOptions()
     {
-        $result = [[]];
+        $result = [];
         if ($options = $this->getItem()->getProductOptions()) {
             if (isset($options['options'])) {
-                $result[] = $options['options'];
+                $result = array_merge($result, $options['options']);
             }
             if (isset($options['additional_options'])) {
-                $result[] = $options['additional_options'];
+                $result = array_merge($result, $options['additional_options']);
             }
             if (!empty($options['attributes_info'])) {
-                $result[] = $options['attributes_info'];
+                $result = array_merge($options['attributes_info'], $result);
             }
         }
-        return array_merge(...$result);
+        return $result;
     }
 
     /**

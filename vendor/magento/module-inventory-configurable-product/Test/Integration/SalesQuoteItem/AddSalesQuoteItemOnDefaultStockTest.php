@@ -48,7 +48,7 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -60,8 +60,8 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryConfigurableProduct::Test/_files/default_stock_configurable_products.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryConfigurableProduct/Test/_files/default_stock_configurable_products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      */
     public function testAddOutOfStockProductToQuote()
     {
@@ -79,8 +79,8 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryConfigurableProduct::Test/_files/default_stock_configurable_products.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryConfigurableProduct/Test/_files/default_stock_configurable_products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      */
     public function testAddInStockProductToQuote()
     {
@@ -148,7 +148,7 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->cleanupReservations->execute();
     }

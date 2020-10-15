@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Tests Magento\Framework\App\Router\NoRouteHandler
  *
@@ -8,36 +8,30 @@
 
 namespace Magento\Framework\App\Test\Unit\Router;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Router\NoRouteHandler;
-use Magento\Framework\TestFramework\Unit\BaseTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
-
-class NoRouteHandlerTest extends BaseTestCase
+class NoRouteHandlerTest extends \Magento\Framework\TestFramework\Unit\BaseTestCase
 {
     /**
-     * @var NoRouteHandler
+     * @var \Magento\Framework\App\Router\NoRouteHandler
      */
     private $model;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Config\ScopeConfigInterface
      */
     private $configMock;
 
     /**
-     * @var MockObject|Http
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Request\Http
      */
     private $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
-        $this->configMock = $this->basicMock(ScopeConfigInterface::class);
-        $this->requestMock = $this->basicMock(Http::class);
+        $this->configMock = $this->basicMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->requestMock = $this->basicMock(\Magento\Framework\App\Request\Http::class);
         $this->model = $this->objectManager->getObject(
-            NoRouteHandler::class,
+            \Magento\Framework\App\Router\NoRouteHandler::class,
             [
                 'config' => $this->configMock,
             ]

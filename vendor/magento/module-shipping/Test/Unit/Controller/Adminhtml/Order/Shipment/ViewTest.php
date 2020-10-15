@@ -3,84 +3,66 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Shipping\Test\Unit\Controller\Adminhtml\Order\Shipment;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Backend\Model\View\Result\Page;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Shipping\Block\Adminhtml\View;
-use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class ViewTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var ShipmentLoader|MockObject
+     * @var \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipmentLoaderMock;
 
     /**
-     * @var Shipment|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipmentMock;
 
     /**
-     * @var View|MockObject
+     * @var \Magento\Shipping\Block\Adminhtml\View|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $blockMock;
 
     /**
-     * @var PageFactory|MockObject
+     * @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageFactoryMock;
 
     /**
-     * @var Page|MockObject
+     * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageMock;
 
     /**
-     * @var ForwardFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\ForwardFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultForwardFactoryMock;
 
     /**
-     * @var Forward|MockObject
+     * @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultForwardMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfigMock;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageTitleMock;
 
@@ -89,50 +71,49 @@ class ViewTest extends TestCase
      */
     protected $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMock();
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->pageConfigMock = $this->getMockBuilder(Config::class)
+        $this->pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pageTitleMock = $this->getMockBuilder(Title::class)
+        $this->pageTitleMock = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->shipmentLoaderMock = $this->getMockBuilder(ShipmentLoader::class)
-            ->addMethods(['setOrderId', 'setShipmentId', 'setShipment', 'setTracking'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->shipmentLoaderMock = $this->createPartialMock(
+            \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader::class,
+            ['setOrderId', 'setShipmentId', 'setShipment', 'setTracking', 'load']
+        );
         $this->shipmentMock = $this->createPartialMock(
-            Shipment::class,
+            \Magento\Sales\Model\Order\Shipment::class,
             ['getIncrementId', '__wakeup']
         );
-        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+        $this->resultPageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultPageMock = $this->getMockBuilder(Page::class)
+        $this->resultPageMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resultForwardFactoryMock = $this->getMockBuilder(
-            ForwardFactory::class
+            \Magento\Backend\Model\View\Result\ForwardFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultForwardMock = $this->getMockBuilder(Forward::class)
+        $this->resultForwardMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->blockMock = $this->createPartialMock(
-            View::class,
+            \Magento\Shipping\Block\Adminhtml\View::class,
             ['updateBackButtonUrl']
         );
 
-        $objectManager = new ObjectManager($this);
-        $context = $objectManager->getObject(
-            Context::class,
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->context = $objectManager->getObject(
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->requestMock,
                 'objectManager' => $this->objectManagerMock
@@ -141,7 +122,7 @@ class ViewTest extends TestCase
         $this->controller = $objectManager->getObject(
             \Magento\Shipping\Controller\Adminhtml\Order\Shipment\View::class,
             [
-                'context' => $context,
+                'context' => $this->context,
                 'shipmentLoader' => $this->shipmentLoaderMock,
                 'resultPageFactory' => $this->resultPageFactoryMock,
                 'resultForwardFactory' => $this->resultForwardFactoryMock
@@ -167,11 +148,7 @@ class ViewTest extends TestCase
             ->method('create')
             ->willReturn($this->resultPageMock);
 
-        $layoutMock = $this->getMockBuilder(Layout::class)
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['getBlock'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $layoutMock = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['getBlock', '__wakeup']);
         $this->resultPageMock->expects($this->once())
             ->method('getLayout')
             ->willReturn($layoutMock);

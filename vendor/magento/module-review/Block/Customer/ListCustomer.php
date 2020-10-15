@@ -7,15 +7,12 @@ namespace Magento\Review\Block\Customer;
 
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Review\Helper\Data as ReviewHelper;
 
 /**
  * Customer Reviews list block
  *
  * @api
  * @since 100.0.2
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ListCustomer extends \Magento\Customer\Block\Account\Dashboard
 {
@@ -47,7 +44,6 @@ class ListCustomer extends \Magento\Customer\Block\Account\Dashboard
      * @param \Magento\Review\Model\ResourceModel\Review\Product\CollectionFactory $collectionFactory
      * @param \Magento\Customer\Helper\Session\CurrentCustomer $currentCustomer
      * @param array $data
-     * @param ReviewHelper|null $reviewHelper
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -57,11 +53,9 @@ class ListCustomer extends \Magento\Customer\Block\Account\Dashboard
         AccountManagementInterface $customerAccountManagement,
         \Magento\Review\Model\ResourceModel\Review\Product\CollectionFactory $collectionFactory,
         \Magento\Customer\Helper\Session\CurrentCustomer $currentCustomer,
-        array $data = [],
-        ?ReviewHelper $reviewHelper = null
+        array $data = []
     ) {
         $this->_collectionFactory = $collectionFactory;
-        $data['reviewHelper'] = $reviewHelper ?? ObjectManager::getInstance()->get(ReviewHelper::class);
         parent::__construct(
             $context,
             $customerSession,

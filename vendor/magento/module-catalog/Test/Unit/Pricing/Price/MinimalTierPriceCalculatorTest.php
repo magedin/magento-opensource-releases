@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Pricing\Price;
 
-use Magento\Catalog\Pricing\Price\MinimalTierPriceCalculator;
-use Magento\Catalog\Pricing\Price\TierPrice;
-use Magento\Framework\Pricing\Adjustment\CalculatorInterface;
-use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\PriceInfoInterface;
-use Magento\Framework\Pricing\SaleableInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Pricing\Price\MinimalTierPriceCalculator;
+use Magento\Framework\Pricing\SaleableInterface;
+use Magento\Framework\Pricing\PriceInfoInterface;
+use Magento\Catalog\Pricing\Price\TierPrice;
+use Magento\Framework\Pricing\Amount\AmountInterface;
+use Magento\Framework\Pricing\Adjustment\CalculatorInterface;
 
-class MinimalTierPriceCalculatorTest extends TestCase
+class MinimalTierPriceCalculatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -30,26 +27,26 @@ class MinimalTierPriceCalculatorTest extends TestCase
     private $object;
 
     /**
-     * @var SaleableInterface|MockObject
+     * @var SaleableInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $saleable;
 
     /**
-     * @var PriceInfoInterface|MockObject
+     * @var PriceInfoInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $priceInfo;
 
     /**
-     * @var TierPrice|MockObject
+     * @var TierPrice|\PHPUnit_Framework_MockObject_MockObject
      */
     private $price;
 
     /**
-     * @var CalculatorInterface|MockObject
+     * @var CalculatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $calculator;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->price = $this->createMock(TierPrice::class);
         $this->priceInfo = $this->getMockForAbstractClass(PriceInfoInterface::class);

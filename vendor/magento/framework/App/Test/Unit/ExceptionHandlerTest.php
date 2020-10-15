@@ -7,30 +7,29 @@ declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\Bootstrap;
 use Magento\Framework\App\ExceptionHandler;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\Request\Http as RequestHttp;
-use Magento\Framework\App\Response\Http as ResponseHttp;
 use Magento\Framework\App\SetupInfo;
+use Magento\Framework\App\Bootstrap;
 use Magento\Framework\Debug;
 use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Exception\SessionException;
-use Magento\Framework\Exception\State\InitException;
 use Magento\Framework\Filesystem;
+use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Framework\App\Response\Http as ResponseHttp;
+use Magento\Framework\App\Request\Http as RequestHttp;
+use Psr\Log\LoggerInterface;
 use Magento\Framework\Filesystem\Directory\ReadInterface;
+use Magento\Framework\Exception\SessionException;
 use Magento\Framework\Phrase;
 use PHPUnit\Framework\Constraint\StringStartsWith;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Exception\State\InitException;
 
 /**
  * Test for \Magento\Framework\App\ExceptionHandler class
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ExceptionHandlerTest extends TestCase
+class ExceptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExceptionHandler
@@ -62,11 +61,11 @@ class ExceptionHandlerTest extends TestCase
      */
     private $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->encryptorInterfaceMock = $this->getMockForAbstractClass(EncryptorInterface::class);
+        $this->encryptorInterfaceMock = $this->createMock(EncryptorInterface::class);
         $this->filesystemMock = $this->createMock(Filesystem::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->responseMock = $this->createMock(ResponseHttp::class);
         $this->requestMock = $this->getMockBuilder(RequestHttp::class)
             ->disableOriginalConstructor()
@@ -119,7 +118,7 @@ class ExceptionHandlerTest extends TestCase
     {
         $this->filesystemMock->expects($this->once())
             ->method('getDirectoryRead')
-            ->willThrowException(new \Exception('strange error'));
+            ->will($this->throwException(new \Exception('strange error')));
         $this->responseMock->expects($this->once())
             ->method('setHttpResponseCode')
             ->with(500);

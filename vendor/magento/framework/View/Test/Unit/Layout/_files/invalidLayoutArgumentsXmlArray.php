@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 return [
     'options without model attribute' => [
         '<?xml version="1.0"?><page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -121,7 +119,7 @@ return [
         </page>',
         ["Element 'forbidden': This element is not expected.\nLine: 7\n"], ],
     'action with doubled arguments' => [
-        '<?xml version="1.0"?><page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            '<?xml version="1.0"?><page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <body>
                     <block class="Magento\Test\Block" name="test.block">
                         <action method="testAction">

@@ -3,57 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\App\Task;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Module\Di\App\Task\Operation\RepositoryGenerator;
-use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
 use Magento\Setup\Module\Di\Code\Scanner;
-use Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner;
-use Magento\Setup\Module\Di\Code\Scanner\RepositoryScanner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
 
-class RepositoryGeneratorTest extends TestCase
+class RepositoryGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Scanner\RepositoryScanner|MockObject
+     * @var Scanner\RepositoryScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $repositoryScannerMock;
 
     /**
-     * @var ClassesScanner|MockObject
+     * @var ClassesScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classesScannerMock;
 
     /**
-     * @var ConfigurationScanner|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $configurationScannerMock;
 
     /**
-     * @var RepositoryGenerator
+     * @var \Magento\Setup\Module\Di\App\Task\Operation\RepositoryGenerator
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->repositoryScannerMock =
-            $this->getMockBuilder(RepositoryScanner::class)
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->classesScannerMock = $this->getMockBuilder(ClassesScanner::class)
+            $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Scanner\RepositoryScanner::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->classesScannerMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Reader\ClassesScanner::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configurationScannerMock = $this->getMockBuilder(
-            ConfigurationScanner::class
+            \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner::class
         )->disableOriginalConstructor()
             ->getMock();
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            RepositoryGenerator::class,
+            \Magento\Setup\Module\Di\App\Task\Operation\RepositoryGenerator::class,
             [
                 'repositoryScanner' => $this->repositoryScannerMock,
                 'classesScanner' => $this->classesScannerMock,

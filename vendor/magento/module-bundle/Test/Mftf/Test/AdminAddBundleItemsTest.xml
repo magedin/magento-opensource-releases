@@ -14,7 +14,7 @@
             <stories value="Create/Edit bundle product in Admin"/>
             <title value="Admin should be able to add/edit bundle items when creating/editing a bundle product"/>
             <description value="Admin should be able to add/edit bundle items when creating/editing a bundle product"/>
-            <severity value="BLOCKER"/>
+            <severity value="MAJOR"/>
             <testCaseId value="MC-223"/>
             <group value="Bundle"/>
         </annotations>
@@ -25,9 +25,8 @@
             <createData entity="SimpleProduct2" stepKey="simpleProduct1"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct2"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct3"/>
-            <magentoCron stepKey="runCronIndex" groups="index"/>
             <!--Admin login-->
-            <actionGroup stepKey="loginToAdminPanel" ref="AdminLoginActionGroup"/>
+            <actionGroup stepKey="loginToAdminPanel" ref="LoginAsAdmin"/>
         </before>
         <after>
             <!--Deleting data-->
@@ -37,7 +36,7 @@
             <deleteData createDataKey="simpleProduct2" stepKey="deleteSimpleProduct2"/>
             <deleteData createDataKey="simpleProduct3" stepKey="deleteSimpleProduct3"/>
             <!--Logging out-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!--Go to bundle product creation page-->
         <amOnPage url="{{AdminProductCreatePage.url(BundleProduct.set, BundleProduct.type)}}" stepKey="goToBundleProductCreationPage"/>
@@ -52,11 +51,11 @@
         <waitForElementVisible selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="waitForAddProductsToBundle"/>
         <click selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="clickAddProductsToOption"/>
         <waitForPageLoad stepKey="waitForPageLoadAfterBundleProducts"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterBundleProductOptions">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterBundleProductOptions">
             <argument name="product" value="$$simpleProduct0$$"/>
         </actionGroup>
         <checkOption selector="{{AdminAddProductsToOptionPanel.firstCheckbox}}" stepKey="selectFirstGridRow"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterBundleProductOptions2">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterBundleProductOptions2">
             <argument name="product" value="$$simpleProduct1$$"/>
         </actionGroup>
         <checkOption selector="{{AdminAddProductsToOptionPanel.firstCheckbox}}" stepKey="selectFirstGridRow2"/>
@@ -65,7 +64,7 @@
         <fillField selector="{{AdminProductFormBundleSection.bundleOptionXProductYQuantity('0', '1')}}" userInput="{{BundleProduct.defaultQuantity}}" stepKey="fillProductDefaultQty2"/>
 
         <!--Fill out ancillary data on bundle product-->
-        <actionGroup ref="AncillaryPrepBundleProductActionGroup" stepKey="createBundledProductForTwoSimpleProducts">
+        <actionGroup ref="AncillaryPrepBundleProduct" stepKey="createBundledProductForTwoSimpleProducts">
             <argument name="bundleProduct" value="BundleProduct"/>
         </actionGroup>
 
@@ -92,7 +91,7 @@
         <waitForPageLoad stepKey="WaitForPageToLoad"/>
         <conditionalClick selector="{{AdminProductFiltersSection.filtersClear}}" dependentSelector="{{AdminProductFiltersSection.filtersClear}}" visible="true" stepKey="ClickOnButtonToRemoveFiltersIfPresent"/>
         <waitForPageLoad stepKey="WaitForClear"/>
-        <actionGroup ref="FilterProductGridByNameActionGroup" stepKey="filterBundleProductOptionsDownToName">
+        <actionGroup ref="filterProductGridByName" stepKey="filterBundleProductOptionsDownToName">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
         <click selector="{{AdminProductFormBundleSection.addOptions}}" stepKey="clickOnBundleProductToEdit"/>
@@ -104,11 +103,11 @@
         <waitForElementVisible selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="waitForAddProductsToNewBundle"/>
         <click selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="clickAddProductsToNewOption"/>
         <waitForPageLoad stepKey="waitForPageLoadAfterNewBundleProducts"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterNewBundleProductOptions">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterNewBundleProductOptions">
                 <argument name="product" value="$$simpleProduct2$$"/>
         </actionGroup>
         <checkOption selector="//div[@class='admin__data-grid-outer-wrap']//tr[@data-repeat-index='0']//input[@type='checkbox']" stepKey="selectNewFirstGridRow"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterNewBundleProductOptions2">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterNewBundleProductOptions2">
                 <argument name="product" value="$$simpleProduct3$$"/>
         </actionGroup>
         <checkOption selector="{{AdminProductFormBundleSection.firstProductOption}}" stepKey="selectNewFirstGridRow2"/>

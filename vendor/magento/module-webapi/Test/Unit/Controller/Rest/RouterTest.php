@@ -3,56 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Webapi\Test\Unit\Controller\Rest;
 
-use Magento\Framework\App\AreaList;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Webapi\Rest\Request;
-use Magento\Webapi\Controller\Rest\Router;
-use Magento\Webapi\Controller\Rest\Router\Route;
-use Magento\Webapi\Model\Rest\Config;
-use PHPUnit\Framework\TestCase;
-
-class RouterTest extends TestCase
+class RouterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Route */
+    /** @var \Magento\Webapi\Controller\Rest\Router\Route */
     protected $_routeMock;
 
-    /** @var Request */
+    /** @var \Magento\Framework\Webapi\Rest\Request */
     protected $_request;
 
-    /** @var Config */
+    /** @var \Magento\Webapi\Model\Rest\Config */
     protected $_apiConfigMock;
 
-    /** @var Router */
+    /** @var \Magento\Webapi\Controller\Rest\Router */
     protected $_router;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** Prepare mocks for SUT constructor. */
         $this->_apiConfigMock = $this->getMockBuilder(
-            Config::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Webapi\Model\Rest\Config::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->_routeMock = $this->getMockBuilder(
-            Route::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['match']
-            )->getMock();
+            \Magento\Webapi\Controller\Rest\Router\Route::class
+        )->disableOriginalConstructor()->setMethods(
+            ['match']
+        )->getMock();
 
-        $areaListMock = $this->createMock(AreaList::class);
+        $areaListMock = $this->createMock(\Magento\Framework\App\AreaList::class);
 
         $areaListMock->expects($this->once())
             ->method('getFrontName')
-            ->willReturn('rest');
+            ->will($this->returnValue('rest'));
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_request = $objectManager->getObject(
-            Request::class,
+            \Magento\Framework\Webapi\Rest\Request::class,
             [
                 'areaList' => $areaListMock,
             ]
@@ -60,14 +48,14 @@ class RouterTest extends TestCase
 
         /** Initialize SUT. */
         $this->_router = $objectManager->getObject(
-            Router::class,
+            \Magento\Webapi\Controller\Rest\Router::class,
             [
                 'apiConfig' => $this->_apiConfigMock
             ]
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_routeMock);
         unset($this->_request);
@@ -82,8 +70,8 @@ class RouterTest extends TestCase
             $this->once()
         )->method(
             'getRestRoutes'
-        )->willReturn(
-            [$this->_routeMock]
+        )->will(
+            $this->returnValue([$this->_routeMock])
         );
         $this->_routeMock->expects(
             $this->once()
@@ -91,23 +79,25 @@ class RouterTest extends TestCase
             'match'
         )->with(
             $this->_request
-        )->willReturn(
-            []
+        )->will(
+            $this->returnValue([])
         );
 
         $matchedRoute = $this->_router->match($this->_request);
         $this->assertEquals($this->_routeMock, $matchedRoute);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Webapi\Exception
+     */
     public function testNotMatch()
     {
-        $this->expectException('Magento\Framework\Webapi\Exception');
         $this->_apiConfigMock->expects(
             $this->once()
         )->method(
             'getRestRoutes'
-        )->willReturn(
-            [$this->_routeMock]
+        )->will(
+            $this->returnValue([$this->_routeMock])
         );
         $this->_routeMock->expects(
             $this->once()
@@ -115,8 +105,8 @@ class RouterTest extends TestCase
             'match'
         )->with(
             $this->_request
-        )->willReturn(
-            false
+        )->will(
+            $this->returnValue(false)
         );
 
         $this->_router->match($this->_request);

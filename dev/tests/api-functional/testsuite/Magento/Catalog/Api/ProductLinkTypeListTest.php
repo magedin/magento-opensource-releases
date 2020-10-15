@@ -29,7 +29,7 @@ class ProductLinkTypeListTest extends \Magento\TestFramework\TestCase\WebapiAbst
         ];
         $actual = $this->_webApiCall($serviceInfo);
         $expectedItems = ['name' => 'related', 'code' => Link::LINK_TYPE_RELATED];
-        $this->assertContainsEquals($expectedItems, $actual);
+        $this->assertContains($expectedItems, $actual);
     }
 
     public function testGetItemAttributes()

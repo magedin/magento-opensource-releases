@@ -3,38 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Block\Product;
 
-use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\Reports\Block\Product\Compared;
-use Magento\Reports\Model\Product\Index\AbstractIndex;
-use Magento\Reports\Model\Product\Index\Factory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Reports\Block\Product\Compared;
+use \Magento\Reports\Model\Product\Index\Factory;
 
-class ComparedTest extends TestCase
+class ComparedTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var Compared ;
+     * @var \Magento\Reports\Block\Product\Compared;
      */
     private $sut;
 
     /**
-     * @var Factory|MockObject
+     * @var Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $factoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Catalog\Block\Product\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $visibilityMock = $this->getMockBuilder(Visibility::class)
+        $visibilityMock = $this->getMockBuilder(\Magento\Catalog\Model\Product\Visibility::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -48,11 +42,12 @@ class ComparedTest extends TestCase
 
     /**
      * Assert that getModel method throws LocalizedException
+     *
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testGetModelException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->factoryMock->expects($this->once())->method('get')->willThrowException(new \InvalidArgumentException());
+        $this->factoryMock->expects($this->once())->method('get')->willThrowException(new \InvalidArgumentException);
 
         $this->sut->getModel();
     }
@@ -62,7 +57,7 @@ class ComparedTest extends TestCase
      */
     public function testGetModel()
     {
-        $indexMock = $this->getMockBuilder(AbstractIndex::class)
+        $indexMock = $this->getMockBuilder(\Magento\Reports\Model\Product\Index\AbstractIndex::class)
             ->disableOriginalConstructor()
             ->getMock();
 

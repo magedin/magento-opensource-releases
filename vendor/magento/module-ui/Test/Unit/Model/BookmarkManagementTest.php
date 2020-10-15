@@ -3,23 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Ui\Test\Unit\Model;
 
-use Magento\Authorization\Model\UserContextInterface;
 use Magento\Framework\Api\Filter;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Ui\Api\BookmarkRepositoryInterface;
-use Magento\Ui\Api\Data\BookmarkInterface;
-use Magento\Ui\Api\Data\BookmarkSearchResultsInterface;
 use Magento\Ui\Model\BookmarkManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BookmarkManagementTest extends TestCase
+/**
+ * Class BookmarkManagementTest
+ */
+class BookmarkManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BookmarkManagement
@@ -27,37 +20,37 @@ class BookmarkManagementTest extends TestCase
     protected $bookmarkManagement;
 
     /**
-     * @var BookmarkRepositoryInterface|MockObject
+     * @var \Magento\Ui\Api\BookmarkRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $bookmarkRepository;
 
     /**
-     * @var FilterBuilder|MockObject
+     * @var \Magento\Framework\Api\FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filterBuilder;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchCriteriaBuilder;
 
     /**
-     * @var UserContextInterface|MockObject
+     * @var \Magento\Authorization\Model\UserContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $userContext;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->bookmarkRepository = $this->getMockBuilder(BookmarkRepositoryInterface::class)
+        $this->bookmarkRepository = $this->getMockBuilder(\Magento\Ui\Api\BookmarkRepositoryInterface::class)
             ->getMockForAbstractClass();
-        $this->filterBuilder = $this->getMockBuilder(FilterBuilder::class)
+        $this->filterBuilder = $this->getMockBuilder(\Magento\Framework\Api\FilterBuilder::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->searchCriteriaBuilder =$this->getMockBuilder(SearchCriteriaBuilder::class)
+        $this->searchCriteriaBuilder =$this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaBuilder::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->userContext = $this->getMockBuilder(UserContextInterface::class)
+        $this->userContext = $this->getMockBuilder(\Magento\Authorization\Model\UserContextInterface::class)
             ->getMockForAbstractClass();
         $this->bookmarkManagement = new BookmarkManagement(
             $this->bookmarkRepository,
@@ -88,7 +81,7 @@ class BookmarkManagementTest extends TestCase
                 Filter::KEY_CONDITION_TYPE => 'eq'
             ]
         );
-        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaInterface::class)
             ->getMockForAbstractClass();
         $this->filterBuilder->expects($this->at(0))
             ->method('create')
@@ -102,7 +95,7 @@ class BookmarkManagementTest extends TestCase
         $this->searchCriteriaBuilder->expects($this->once())
             ->method('create')
             ->willReturn($searchCriteria);
-        $searchResult = $this->getMockBuilder(BookmarkSearchResultsInterface::class)
+        $searchResult = $this->getMockBuilder(\Magento\Ui\Api\Data\BookmarkSearchResultsInterface::class)
             ->getMockForAbstractClass();
         $this->bookmarkRepository->expects($this->once())
             ->method('getList')
@@ -141,10 +134,9 @@ class BookmarkManagementTest extends TestCase
             ]
         );
         $bookmarkId = 1;
-        $bookmark = $this->getMockBuilder(BookmarkInterface::class)
-            ->getMockForAbstractClass();
+        $bookmark = $this->getMockBuilder(\Magento\Ui\Api\Data\BookmarkInterface::class)->getMockForAbstractClass();
         $bookmark->expects($this->once())->method('getId')->willReturn($bookmarkId);
-        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaInterface::class)
             ->getMockForAbstractClass();
         $this->filterBuilder->expects($this->at(0))
             ->method('create')
@@ -161,7 +153,7 @@ class BookmarkManagementTest extends TestCase
         $this->searchCriteriaBuilder->expects($this->once())
             ->method('create')
             ->willReturn($searchCriteria);
-        $searchResult = $this->getMockBuilder(BookmarkSearchResultsInterface::class)
+        $searchResult = $this->getMockBuilder(\Magento\Ui\Api\Data\BookmarkSearchResultsInterface::class)
             ->getMockForAbstractClass();
         $searchResult->expects($this->once())->method('getTotalCount')->willReturn(1);
         $searchResult->expects($this->once())->method('getItems')->willReturn([$bookmark]);

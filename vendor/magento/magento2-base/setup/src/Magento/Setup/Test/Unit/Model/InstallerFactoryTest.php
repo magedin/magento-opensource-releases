@@ -3,62 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\DeploymentConfig\Reader;
-use Magento\Framework\App\DeploymentConfig\Writer;
-use Magento\Framework\App\MaintenanceMode;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\App\State\CleanupFiles;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\TransactionManager;
-use Magento\Framework\Module\ModuleList;
-use Magento\Framework\Module\ModuleList\Loader;
-use Magento\Framework\Setup\FilePermissions;
 use Magento\Framework\Setup\LoggerInterface;
-use Magento\Framework\Setup\SampleData\State;
 use Magento\Framework\Setup\SchemaPersistor;
-use Magento\Setup\Model\AdminAccountFactory;
-use Magento\Setup\Model\ConfigModel;
 use Magento\Setup\Model\DeclarationInstaller;
-use Magento\Setup\Model\Installer;
 use Magento\Setup\Model\InstallerFactory;
-use Magento\Setup\Model\ObjectManagerProvider;
-use Magento\Setup\Model\PhpReadinessCheck;
-use Magento\Setup\Module\ConnectionFactory;
-use Magento\Setup\Module\DataSetupFactory;
 use Magento\Setup\Module\ResourceFactory;
-use Magento\Setup\Module\SetupFactory;
-use Magento\Setup\Validator\DbValidator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InstallerFactoryTest extends TestCase
+class InstallerFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerProvider|MockObject
+     * @var \Magento\Setup\Model\ObjectManagerProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerProviderMock;
 
     public function testCreate()
     {
-        $this->objectManagerProviderMock = $this->getMockBuilder(ObjectManagerProvider::class)
+        $this->objectManagerProviderMock = $this->getMockBuilder(\Magento\Setup\Model\ObjectManagerProvider::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['get'])
+            ->setMethods(['get'])
             ->getMock();
 
         $objectManagerMock = $this->getMockBuilder(ObjectManager::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['get'])
+            ->setMethods(['get'])
             ->getMock();
         $objectManagerMock->expects($this->any())
             ->method('get')
@@ -71,26 +46,25 @@ class InstallerFactoryTest extends TestCase
         $this->objectManagerProviderMock->expects($this->any())
             ->method('get')
             ->willReturn($objectManagerMock);
-        /** @var ServiceLocatorInterface|MockObject $serviceLocatorMock */
-        $serviceLocatorMock = $this->getMockBuilder(
-            ServiceLocatorInterface::class
-        )->onlyMethods(
+        /** @var ServiceLocatorInterface|\PHPUnit_Framework_MockObject_MockObject $serviceLocatorMock */
+        $serviceLocatorMock = $this->getMockForAbstractClass(
+            ServiceLocatorInterface::class,
             ['get']
-        )->getMockForAbstractClass();
+        );
         $serviceLocatorMock->expects($this->any())->method('get')
-            ->willReturnMap($this->getReturnValueMap());
+            ->will($this->returnValueMap($this->getReturnValueMap()));
 
-        /** @var LoggerInterface|MockObject $log */
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $log */
         $log = $this->getMockForAbstractClass(LoggerInterface::class);
-        /** @var ResourceFactory|MockObject $resourceFactoryMock */
+        /** @var ResourceFactory|\PHPUnit_Framework_MockObject_MockObject $resourceFactoryMock */
         $resourceFactoryMock = $this->createMock(ResourceFactory::class);
         $resourceFactoryMock
             ->expects($this->any())
             ->method('create')
-            ->willReturn($this->createMock(ResourceConnection::class));
+            ->will($this->returnValue($this->createMock(\Magento\Framework\App\ResourceConnection::class)));
         $installerFactory = new InstallerFactory($serviceLocatorMock, $resourceFactoryMock);
         $installer = $installerFactory->create($log);
-        $this->assertInstanceOf(Installer::class, $installer);
+        $this->assertInstanceOf(\Magento\Setup\Model\Installer::class, $installer);
     }
 
     /**
@@ -100,84 +74,84 @@ class InstallerFactoryTest extends TestCase
     {
         return [
             [
-                FilePermissions::class,
-                $this->createMock(FilePermissions::class),
+                \Magento\Framework\Setup\FilePermissions::class,
+                $this->createMock(\Magento\Framework\Setup\FilePermissions::class),
             ],
             [
-                Writer::class,
-                $this->createMock(Writer::class),
+                \Magento\Framework\App\DeploymentConfig\Writer::class,
+                $this->createMock(\Magento\Framework\App\DeploymentConfig\Writer::class),
             ],
             [
-                Reader::class,
-                $this->createMock(Reader::class),
+                \Magento\Framework\App\DeploymentConfig\Reader::class,
+                $this->createMock(\Magento\Framework\App\DeploymentConfig\Reader::class),
             ],
             [
-                DeploymentConfig::class,
-                $this->createMock(DeploymentConfig::class),
+                \Magento\Framework\App\DeploymentConfig::class,
+                $this->createMock(\Magento\Framework\App\DeploymentConfig::class),
             ],
             [
-                ModuleList::class,
-                $this->createMock(ModuleList::class),
+                \Magento\Framework\Module\ModuleList::class,
+                $this->createMock(\Magento\Framework\Module\ModuleList::class),
             ],
             [
-                Loader::class,
-                $this->createMock(Loader::class),
+                \Magento\Framework\Module\ModuleList\Loader::class,
+                $this->createMock(\Magento\Framework\Module\ModuleList\Loader::class),
             ],
             [
-                AdminAccountFactory::class,
-                $this->createMock(AdminAccountFactory::class),
+                \Magento\Setup\Model\AdminAccountFactory::class,
+                $this->createMock(\Magento\Setup\Model\AdminAccountFactory::class),
             ],
             [
-                ConnectionFactory::class,
-                $this->createMock(ConnectionFactory::class),
+                \Magento\Setup\Module\ConnectionFactory::class,
+                $this->createMock(\Magento\Setup\Module\ConnectionFactory::class),
             ],
             [
-                MaintenanceMode::class,
-                $this->createMock(MaintenanceMode::class),
+                \Magento\Framework\App\MaintenanceMode::class,
+                $this->createMock(\Magento\Framework\App\MaintenanceMode::class),
             ],
             [
-                Filesystem::class,
-                $this->createMock(Filesystem::class),
+                \Magento\Framework\Filesystem::class,
+                $this->createMock(\Magento\Framework\Filesystem::class),
             ],
             [
-                ObjectManagerProvider::class,
+                \Magento\Setup\Model\ObjectManagerProvider::class,
                 $this->objectManagerProviderMock
             ],
             [
-                TransactionManager::class,
-                $this->createMock(TransactionManager::class),
+                \Magento\Framework\Model\ResourceModel\Db\TransactionManager::class,
+                $this->createMock(\Magento\Framework\Model\ResourceModel\Db\TransactionManager::class),
             ],
             [
-                ObjectRelationProcessor::class,
-                $this->createMock(ObjectRelationProcessor::class),
+                \Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class,
+                $this->createMock(\Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class),
             ],
             [
-                ConfigModel::class,
-                $this->createMock(ConfigModel::class),
+                \Magento\Setup\Model\ConfigModel::class,
+                $this->createMock(\Magento\Setup\Model\ConfigModel::class),
             ],
             [
-                CleanupFiles::class,
-                $this->createMock(CleanupFiles::class),
+                \Magento\Framework\App\State\CleanupFiles::class,
+                $this->createMock(\Magento\Framework\App\State\CleanupFiles::class),
             ],
             [
-                DbValidator::class,
-                $this->createMock(DbValidator::class),
+                \Magento\Setup\Validator\DbValidator::class,
+                $this->createMock(\Magento\Setup\Validator\DbValidator::class),
             ],
             [
-                SetupFactory::class,
-                $this->createMock(SetupFactory::class),
+                \Magento\Setup\Module\SetupFactory::class,
+                $this->createMock(\Magento\Setup\Module\SetupFactory::class),
             ],
             [
-                DataSetupFactory::class,
-                $this->createMock(DataSetupFactory::class),
+                \Magento\Setup\Module\DataSetupFactory::class,
+                $this->createMock(\Magento\Setup\Module\DataSetupFactory::class),
             ],
             [
-                State::class,
-                $this->createMock(State::class),
+                \Magento\Framework\Setup\SampleData\State::class,
+                $this->createMock(\Magento\Framework\Setup\SampleData\State::class),
             ],
             [
-                PhpReadinessCheck::class,
-                $this->createMock(PhpReadinessCheck::class),
+                \Magento\Setup\Model\PhpReadinessCheck::class,
+                $this->createMock(\Magento\Setup\Model\PhpReadinessCheck::class),
             ],
         ];
     }

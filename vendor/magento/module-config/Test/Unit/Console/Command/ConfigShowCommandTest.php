@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Console\Command;
 
-use Magento\Config\Console\Command\ConfigShow\ValueProcessor;
 use Magento\Config\Console\Command\ConfigShowCommand;
-use Magento\Framework\App\Config\ConfigPathResolver;
 use Magento\Framework\App\Config\ConfigSourceInterface;
-use Magento\Framework\App\Scope\ValidatorInterface;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Magento\Framework\App\Scope\ValidatorInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Framework\App\Config\ConfigPathResolver;
+use Magento\Config\Console\Command\ConfigShow\ValueProcessor;
 
-class ConfigShowCommandTest extends TestCase
+class ConfigShowCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ValidatorInterface|MockObject
@@ -45,7 +42,7 @@ class ConfigShowCommandTest extends TestCase
      */
     private $command;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->valueProcessorMock = $this->getMockBuilder(ValueProcessor::class)
             ->disableOriginalConstructor()
@@ -96,7 +93,7 @@ class ConfigShowCommandTest extends TestCase
             Cli::RETURN_SUCCESS,
             $tester->getStatusCode()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'someProcessedValue',
             $tester->getDisplay()
         );
@@ -119,7 +116,7 @@ class ConfigShowCommandTest extends TestCase
             Cli::RETURN_FAILURE,
             $tester->getStatusCode()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('error message')->render(),
             $tester->getDisplay()
         );
@@ -134,7 +131,7 @@ class ConfigShowCommandTest extends TestCase
             Cli::RETURN_FAILURE,
             $tester->getStatusCode()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Configuration for path: "%1" doesn\'t exist', $configPath)->render(),
             $tester->getDisplay()
         );

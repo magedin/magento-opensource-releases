@@ -3,34 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Multishipping\Test\Unit\Block\Checkout\Billing;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Multishipping\Block\Checkout\Billing\Items;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ItemsTest extends TestCase
+class ItemsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Items
+     * @var \Magento\Multishipping\Block\Checkout\Billing\Items
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $urlBuilderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
         $this->model = $objectManager->getObject(
-            Items::class,
+            \Magento\Multishipping\Block\Checkout\Billing\Items::class,
             [
                 'urlBuilder' => $this->urlBuilderMock
             ]

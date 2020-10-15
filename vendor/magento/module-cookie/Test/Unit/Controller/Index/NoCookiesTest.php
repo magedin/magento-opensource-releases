@@ -3,80 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cookie\Test\Unit\Controller\Index;
 
-use Magento\Cookie\Controller\Index\NoCookies;
-use Magento\Framework\App\Request\Http as HttpRequest;
-use Magento\Framework\App\Response\Http as HttpResponse;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-/**
- * @covers \Magento\Cookie\Controller\Index\NoCookies
- */
-class NoCookiesTest extends TestCase
+class NoCookiesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NoCookies
+     * @var \Magento\Cookie\Controller\Index\NoCookies
      */
     private $controller;
 
     /**
-     * @var MockObject|ManagerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Event\ManagerInterface
      */
     private $eventManagerMock;
 
     /**
-     * @var MockObject|HttpRequest
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Request\Http
      */
     private $requestMock;
 
     /**
-     * @var MockObject|HttpResponse
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Response\Http
      */
     private $responseMock;
 
     /**
-     * @var MockObject|RedirectInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Response\RedirectInterface
      */
     private $redirectResponseMock;
 
     /**
-     * @var MockObject|ViewInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\ViewInterface
      */
-    private $viewMock;
+    protected $viewMock;
 
     const REDIRECT_URL = 'http://www.example.com/redirect';
     const REDIRECT_PATH = '\a\path';
     const REDIRECT_ARGUMENTS = '&arg1key=arg1value';
 
-    /**
-     * @inheritDoc
-     */
-    protected function setup(): void
+    public function setup()
     {
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
-            ->getMock();
-        $this->requestMock = $this->getMockBuilder(HttpRequest::class)
+        $objectManager = new ObjectManager($this);
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)->getMock();
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->responseMock = $this->getMockBuilder(HttpResponse::class)
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->redirectResponseMock = $this->getMockBuilder(RedirectInterface::class)
+        $this->redirectResponseMock = $this->getMockBuilder(\Magento\Framework\App\Response\RedirectInterface::class)
             ->getMock();
-        $this->viewMock = $this->getMockForAbstractClass(ViewInterface::class);
+        $this->viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
 
-        $objectManager = new ObjectManagerHelper($this);
         $this->controller = $objectManager->getObject(
-            NoCookies::class,
+            \Magento\Cookie\Controller\Index\NoCookies::class,
             [
                 'eventManager' => $this->eventManagerMock,
                 'request' => $this->requestMock,
@@ -87,20 +69,17 @@ class NoCookiesTest extends TestCase
         );
     }
 
-    /**
-     * Test execute redirect url
-     */
-    public function testExecuteRedirectUrl(): void
+    public function testExecuteRedirectUrl()
     {
         // redirect is new'ed in the execute function, so need to set the redirect URL in dispatch call
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')
             ->with(
-                'controller_action_nocookies',
+                $this->equalTo('controller_action_nocookies'),
                 $this->callback(
                     function ($dataArray) {
                         $redirect = $dataArray['redirect'];
-                        $this->assertInstanceOf(DataObject::class, $redirect);
+                        $this->assertInstanceOf(\Magento\Framework\DataObject::class, $redirect);
                         $redirect->setRedirectUrl(self::REDIRECT_URL);
                         return true;
                     }
@@ -113,28 +92,23 @@ class NoCookiesTest extends TestCase
             ->with(self::REDIRECT_URL);
 
         // Verify request is set to dispatched
-        $this->requestMock->expects($this->once())
-            ->method('setDispatched')
-            ->with($this->isTrue());
+        $this->requestMock->expects($this->once())->method('setDispatched')->with($this->isTrue());
 
         // Make the call to test
         $this->controller->execute();
     }
 
-    /**
-     * Test execute redirect path
-     */
-    public function testExecuteRedirectPath(): void
+    public function testExecuteRedirectPath()
     {
         // redirect is new'ed in the execute function, so need to set the redirect in dispatch call
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')
             ->with(
-                'controller_action_nocookies',
+                $this->equalTo('controller_action_nocookies'),
                 $this->callback(
                     function ($dataArray) {
                         $redirect = $dataArray['redirect'];
-                        $this->assertInstanceOf(DataObject::class, $redirect);
+                        $this->assertInstanceOf(\Magento\Framework\DataObject::class, $redirect);
                         $redirect->setArguments(self::REDIRECT_ARGUMENTS);
                         $redirect->setPath(self::REDIRECT_PATH);
                         $redirect->setRedirect(self::REDIRECT_URL);
@@ -146,7 +120,7 @@ class NoCookiesTest extends TestCase
         // Verify response is set with redirect, which
         $this->redirectResponseMock->expects($this->once())
             ->method('redirect')
-            ->with($this->responseMock, '\a\path', '&arg1key=arg1value');
+            ->with($this->responseMock, $this->equalTo('\a\path'), $this->equalTo('&arg1key=arg1value'));
 
         // Verify request is set to dispatched
         $this->requestMock->expects($this->once())->method('setDispatched')->with($this->isTrue());
@@ -155,10 +129,7 @@ class NoCookiesTest extends TestCase
         $this->controller->execute();
     }
 
-    /**
-     * Test execute default
-     */
-    public function testExecuteDefault(): void
+    public function testExecuteDefault()
     {
         // Verify view is called to load and render
         $this->viewMock->expects($this->once())->method('loadLayout')->with(['default', 'noCookie']);

@@ -3,22 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Framework\Filesystem\Test\Unit\File;
 
 use Magento\Framework\Filesystem\Filter\ExcludeFilter;
-use PHPUnit\Framework\TestCase;
 
-class ExcludeFilterTest extends TestCase
+/**
+ * Class ExcludeFilterTest
+ */
+class ExcludeFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Iterator
      */
     protected $iterator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->iterator = $this->getFilesIterator();
     }
@@ -36,7 +36,7 @@ class ExcludeFilterTest extends TestCase
             $result[] = $i;
         }
 
-        $this->assertNotContains(BP . '/var/session/', $result, 'Filtered path should not be in array');
+        $this->assertTrue(!in_array(BP . '/var/session/', $result), 'Filtered path should not be in array');
     }
 
     /**

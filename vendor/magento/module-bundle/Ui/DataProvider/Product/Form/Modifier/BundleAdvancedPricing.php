@@ -34,7 +34,7 @@ class BundleAdvancedPricing extends AbstractModifier
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function modifyMeta(array $meta)
     {
@@ -63,7 +63,7 @@ class BundleAdvancedPricing extends AbstractModifier
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function modifyData(array $data)
     {
@@ -88,8 +88,7 @@ class BundleAdvancedPricing extends AbstractModifier
             $meta,
             [
                 'imports' => [
-                    'disabled' => 'ns = ${ $.ns }, index = ' . static::CODE_PRICE_TYPE . ':checked',
-                    '__disableTmpl' => ['disabled' => false],
+                    'disabled' => 'ns = ${ $.ns }, index = ' . static::CODE_PRICE_TYPE . ':checked'
                 ]
             ]
         );
@@ -104,8 +103,7 @@ class BundleAdvancedPricing extends AbstractModifier
             $meta,
             [
                 'imports' => [
-                    'disabled' => 'ns = ${ $.ns }, index = ' . static::CODE_PRICE_TYPE . ':checked',
-                    '__disableTmpl' => ['disabled' => false],
+                    'disabled' => 'ns = ${ $.ns }, index = ' . static::CODE_PRICE_TYPE . ':checked'
                 ]
             ]
         );

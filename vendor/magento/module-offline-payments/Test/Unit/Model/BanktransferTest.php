@@ -3,49 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflinePayments\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflinePayments\Model\Banktransfer;
-use Magento\Payment\Block\Info\Instructions;
-use Magento\Payment\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class BanktransferTest extends TestCase
+class BanktransferTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Banktransfer
+     * @var \Magento\OfflinePayments\Model\Banktransfer
      */
-    private $object;
+    protected $_object;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $scopeConfigMock;
+    protected $_scopeConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
-        $paymentDataMock = $this->createMock(Data::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->object = $objectManagerHelper->getObject(
-            Banktransfer::class,
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $paymentDataMock = $this->createMock(\Magento\Payment\Helper\Data::class);
+        $this->_scopeConfig = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_object = $objectManagerHelper->getObject(
+            \Magento\OfflinePayments\Model\Banktransfer::class,
             [
                 'eventManager' => $eventManager,
                 'paymentData' => $paymentDataMock,
-                'scopeConfig' => $this->scopeConfigMock,
+                'scopeConfig' => $this->_scopeConfig,
             ]
         );
     }
 
     public function testGetInfoBlockType()
     {
-        $this->assertEquals(Instructions::class, $this->object->getInfoBlockType());
+        $this->assertEquals(\Magento\Payment\Block\Info\Instructions::class, $this->_object->getInfoBlockType());
     }
 }

@@ -3,76 +3,57 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Helper;
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\State;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Sales\Helper\Data;
-use Magento\Sales\Model\Order\Email\Container\CreditmemoCommentIdentity;
-use Magento\Sales\Model\Order\Email\Container\CreditmemoIdentity;
-use Magento\Sales\Model\Order\Email\Container\InvoiceCommentIdentity;
-use Magento\Sales\Model\Order\Email\Container\InvoiceIdentity;
-use Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity;
-use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
-use Magento\Sales\Model\Order\Email\Container\ShipmentCommentIdentity;
-use Magento\Sales\Model\Order\Email\Container\ShipmentIdentity;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Sales\Helper\Data
      */
     protected $helper;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfigMock;
 
     /**
-     * @var MockObject|\Magento\Sales\Model\Store
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Sales\Model\Store
      */
     protected $storeMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $contextMock = $this->getMockBuilder(Context::class)
+            ->getMock();
+        $contextMock = $this->getMockBuilder(\Magento\Framework\App\Helper\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->any())
             ->method('getScopeConfig')
             ->willReturn($this->scopeConfigMock);
 
-        $storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $appStateMock = $this->getMockBuilder(State::class)
+        $storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pricingCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $appStateMock = $this->getMockBuilder(\Magento\Framework\App\State::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->helper = new Data(
+        $pricingCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->helper = new \Magento\Sales\Helper\Data(
             $contextMock,
             $storeManagerMock,
             $appStateMock,
@@ -90,7 +71,7 @@ class DataTest extends TestCase
     public function testCanSendNewOrderConfirmationEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            OrderIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\OrderIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -104,7 +85,7 @@ class DataTest extends TestCase
     public function testCanSendNewOrderEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            OrderIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\OrderIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -118,7 +99,7 @@ class DataTest extends TestCase
     public function testCanSendOrderCommentEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            OrderCommentIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -132,7 +113,7 @@ class DataTest extends TestCase
     public function testCanSendNewShipmentEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            ShipmentIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\ShipmentIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -146,7 +127,7 @@ class DataTest extends TestCase
     public function testCanSendShipmentCommentEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            ShipmentCommentIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\ShipmentCommentIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -159,7 +140,7 @@ class DataTest extends TestCase
     public function testCanSendNewInvoiceEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            InvoiceIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\InvoiceIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -172,7 +153,7 @@ class DataTest extends TestCase
     public function testCanSendInvoiceCommentEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            InvoiceCommentIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\InvoiceCommentIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -186,7 +167,7 @@ class DataTest extends TestCase
     public function testCanSendNewCreditmemoEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            CreditmemoIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\CreditmemoIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -200,7 +181,7 @@ class DataTest extends TestCase
     public function testCanSendCreditmemoCommentEmail($scopeConfigValue)
     {
         $this->setupScopeConfigIsSetFlag(
-            CreditmemoCommentIdentity::XML_PATH_EMAIL_ENABLED,
+            \Magento\Sales\Model\Order\Email\Container\CreditmemoCommentIdentity::XML_PATH_EMAIL_ENABLED,
             $scopeConfigValue
         );
 
@@ -220,10 +201,10 @@ class DataTest extends TestCase
             ->method('isSetFlag')
             ->with(
                 $flagName,
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $this->storeMock
             )
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
     }
 
     /**

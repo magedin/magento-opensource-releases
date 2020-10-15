@@ -3,91 +3,70 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Model\Product;
 
-use Magento\Bundle\Model\Product\Price;
-use Magento\Bundle\Model\Product\Type;
-use Magento\Bundle\Model\ResourceModel\Selection\Collection;
 use Magento\Catalog\Api\Data\ProductTierPriceExtensionFactory;
-use Magento\Catalog\Api\Data\ProductTierPriceInterfaceFactory;
-use Magento\Catalog\Helper\Data;
-use Magento\Catalog\Model\Product;
-use Magento\CatalogRule\Model\ResourceModel\RuleFactory;
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RuleFactory|MockObject
+     * @var \Magento\CatalogRule\Model\ResourceModel\RuleFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $ruleFactoryMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $localeDateMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var \Magento\Catalog\Helper\Data|MockObject
+     * @var \Magento\Catalog\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $catalogHelperMock;
 
     /**
-     * @var Store|MockObject
+     * @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var Price
+     * @var \Magento\Bundle\Model\Product\Price
      */
     private $model;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $priceCurrency;
 
     /**
-     * @var GroupManagementInterface|MockObject
+     * @var \Magento\Customer\Api\GroupManagementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupManagement;
 
     /**
      * Serializer interface instance.
      *
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $serializer;
 
@@ -96,39 +75,36 @@ class PriceTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->ruleFactoryMock = $this->createPartialMock(
-            RuleFactory::class,
+            \Magento\CatalogRule\Model\ResourceModel\RuleFactory::class,
             ['create']
         );
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->customerSessionMock = $this->createMock(Session::class);
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->catalogHelperMock = $this->createMock(Data::class);
-        $this->storeMock = $this->getMockBuilder(Store::class)
-            ->addMethods(['roundPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->localeDateMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->catalogHelperMock = $this->createMock(\Magento\Catalog\Helper\Data::class);
+        $this->storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['roundPrice']);
         $this->priceCurrency = $this->getMockBuilder(
-            PriceCurrencyInterface::class
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class
         )->getMock();
-        $this->groupManagement = $this->getMockBuilder(GroupManagementInterface::class)
+        $this->groupManagement = $this->getMockBuilder(\Magento\Customer\Api\GroupManagementInterface::class)
             ->getMockForAbstractClass();
         $tpFactory = $this->createPartialMock(
-            ProductTierPriceInterfaceFactory::class,
+            \Magento\Catalog\Api\Data\ProductTierPriceInterfaceFactory::class,
             ['create']
         );
-        $scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $scopeConfig = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializer->expects($this->any())
             ->method('unserialize')
             ->willReturnCallback(
                 function ($value) {
-                    return json_decode((string)$value, true);
+                    return json_decode($value, true);
                 }
             );
         $tierPriceExtensionFactoryMock = $this->getMockBuilder(ProductTierPriceExtensionFactory::class)
@@ -137,7 +113,7 @@ class PriceTest extends TestCase
             ->getMock();
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            Price::class,
+            \Magento\Bundle\Model\Product\Price::class,
             [
                 'ruleFactory' => $this->ruleFactoryMock,
                 'storeManager' => $this->storeManagerMock,
@@ -172,13 +148,13 @@ class PriceTest extends TestCase
     public function testCalculateSpecialPrice($finalPrice, $specialPrice, $callsNumber, $dateInInterval, $expected)
     {
         $this->localeDateMock->expects($this->exactly($callsNumber))
-            ->method('isScopeDateInInterval')->willReturn($dateInInterval);
+            ->method('isScopeDateInInterval')->will($this->returnValue($dateInInterval));
 
         $this->storeManagerMock->expects($this->any())
-            ->method('getStore')->willReturn($this->storeMock);
+            ->method('getStore')->will($this->returnValue($this->storeMock));
 
         $this->storeMock->expects($this->any())
-            ->method('roundPrice')->willReturnArgument(0);
+            ->method('roundPrice')->will($this->returnArgument(0));
 
         $this->assertEquals(
             $expected,
@@ -210,7 +186,7 @@ class PriceTest extends TestCase
      */
     public function testGetTotalBundleItemsPriceWithNoCustomOptions()
     {
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -230,12 +206,12 @@ class PriceTest extends TestCase
      */
     public function testGetTotalBundleItemsPriceWithEmptyOptions($value)
     {
-        $dataObjectMock = $this->getMockBuilder(DataObject::class)
+        $dataObjectMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -276,20 +252,20 @@ class PriceTest extends TestCase
     {
         $storeId = 1;
 
-        $dataObjectMock = $this->getMockBuilder(DataObject::class)
+        $dataObjectMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $productTypeMock = $this->getMockBuilder(Type::class)
+        $productTypeMock = $this->getMockBuilder(\Magento\Bundle\Model\Product\Type::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $selectionsMock = $this->getMockBuilder(Collection::class)
+        $selectionsMock = $this->getMockBuilder(\Magento\Bundle\Model\ResourceModel\Selection\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

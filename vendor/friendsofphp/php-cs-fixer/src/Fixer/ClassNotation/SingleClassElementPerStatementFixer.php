@@ -45,16 +45,6 @@ final class SingleClassElementPerStatementFixer extends AbstractFixer implements
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before ClassAttributesSeparationFixer.
-     */
-    public function getPriority()
-    {
-        return 56;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function getDefinition()
     {
@@ -97,7 +87,7 @@ final class Example
                 continue; // not in configuration
             }
 
-            $this->fixElement($tokens, $element['type'], $index);
+            $this->fixElement($tokens, $index);
         }
     }
 
@@ -118,10 +108,10 @@ final class Example
     }
 
     /**
-     * @param string $type
+     * @param Tokens $tokens
      * @param int    $index
      */
-    private function fixElement(Tokens $tokens, $type, $index)
+    private function fixElement(Tokens $tokens, $index)
     {
         $tokensAnalyzer = new TokensAnalyzer($tokens);
         $repeatIndex = $index;
@@ -153,18 +143,17 @@ final class Example
         $start = $tokens->getPrevTokenOfKind($index, [';', '{', '}']);
         $this->expandElement(
             $tokens,
-            $type,
             $tokens->getNextMeaningfulToken($start),
             $tokens->getNextTokenOfKind($index, [';'])
         );
     }
 
     /**
-     * @param string $type
+     * @param Tokens $tokens
      * @param int    $startIndex
      * @param int    $endIndex
      */
-    private function expandElement(Tokens $tokens, $type, $startIndex, $endIndex)
+    private function expandElement(Tokens $tokens, $startIndex, $endIndex)
     {
         $divisionContent = null;
         if ($tokens[$startIndex - 1]->isWhitespace()) {
@@ -204,37 +193,32 @@ final class Example
             }
 
             // collect modifiers
-            $sequence = $this->getModifiersSequences($tokens, $type, $startIndex, $endIndex);
+            $sequence = $this->getModifiersSequences($tokens, $startIndex, $endIndex);
             $tokens->insertAt($i + 2, $sequence);
         }
     }
 
     /**
-     * @param string $type
+     * @param Tokens $tokens
      * @param int    $startIndex
      * @param int    $endIndex
      *
      * @return Token[]
      */
-    private function getModifiersSequences(Tokens $tokens, $type, $startIndex, $endIndex)
+    private function getModifiersSequences(Tokens $tokens, $startIndex, $endIndex)
     {
-        if ('property' === $type) {
-            $tokenKinds = [T_PUBLIC, T_PROTECTED, T_PRIVATE, T_STATIC, T_VAR, T_STRING, T_NS_SEPARATOR, CT::T_NULLABLE_TYPE, CT::T_ARRAY_TYPEHINT];
-        } else {
-            $tokenKinds = [T_PUBLIC, T_PROTECTED, T_PRIVATE, T_CONST];
-        }
-
         $sequence = [];
         for ($i = $startIndex; $i < $endIndex - 1; ++$i) {
-            if ($tokens[$i]->isComment()) {
+            if ($tokens[$i]->isWhitespace() || $tokens[$i]->isComment()) {
                 continue;
             }
 
-            if (!$tokens[$i]->isWhitespace() && !$tokens[$i]->isGivenKind($tokenKinds)) {
+            if (!$tokens[$i]->isGivenKind([T_PUBLIC, T_PROTECTED, T_PRIVATE, T_STATIC, T_CONST, T_VAR])) {
                 break;
             }
 
             $sequence[] = clone $tokens[$i];
+            $sequence[] = new Token([T_WHITESPACE, ' ']);
         }
 
         return $sequence;

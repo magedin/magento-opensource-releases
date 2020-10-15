@@ -24,7 +24,8 @@ use PhpCsFixer\Utils;
  *
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
- * @extends \SplFixedArray<Token>
+ * @method Token current()
+ * @method Token offsetGet($index)
  */
 class Tokens extends \SplFixedArray
 {
@@ -161,8 +162,6 @@ class Tokens extends \SplFixedArray
                 return ['type' => $type, 'isStart' => false];
             }
         }
-
-        return null;
     }
 
     /**
@@ -312,7 +311,7 @@ class Tokens extends \SplFixedArray
     {
         $this->blockEndCache = [];
 
-        if (!isset($this[$index]) || !$this[$index]->equals($newval)) {
+        if (!$this[$index] || !$this[$index]->equals($newval)) {
             $this->changed = true;
 
             if (isset($this[$index])) {
@@ -362,9 +361,7 @@ class Tokens extends \SplFixedArray
 
         for ($count = $index; $index < $limit; ++$index) {
             if (!$this->isEmptyAt($index)) {
-                /** @var Token $token */
-                $token = $this[$index];
-                $this[$count++] = $token;
+                $this[$count++] = $this[$index];
             }
         }
 
@@ -803,7 +800,7 @@ class Tokens extends \SplFixedArray
             }
 
             if ($token->isWhitespace() || $token->isComment() || '' === $token->getContent()) {
-                throw new \InvalidArgumentException(sprintf('Non-meaningful token at position: "%s".', $key));
+                throw new \InvalidArgumentException(sprintf('Non-meaningful token at position: %s.', $key));
             }
         }
 
@@ -862,15 +859,13 @@ class Tokens extends \SplFixedArray
                 return $result;
             }
         }
-
-        return null;
     }
 
     /**
      * Insert instances of Token inside collection.
      *
-     * @param int                       $index start inserting index
-     * @param array<Token>|Token|Tokens $items instances of Token to insert
+     * @param int                  $index start inserting index
+     * @param Token|Token[]|Tokens $items instances of Token to insert
      */
     public function insertAt($index, $items)
     {
@@ -962,9 +957,9 @@ class Tokens extends \SplFixedArray
     /**
      * Override tokens at given range.
      *
-     * @param int                 $indexStart start overriding index
-     * @param int                 $indexEnd   end overriding index
-     * @param array<Token>|Tokens $items      tokens to insert
+     * @param int            $indexStart start overriding index
+     * @param int            $indexEnd   end overriding index
+     * @param Token[]|Tokens $items      tokens to insert
      */
     public function overrideRange($indexStart, $indexEnd, $items)
     {
@@ -1085,6 +1080,8 @@ class Tokens extends \SplFixedArray
     /**
      * Check if all token kinds given as argument are found.
      *
+     * @param array $tokenKinds
+     *
      * @return bool
      */
     public function isAllTokenKindsFound(array $tokenKinds)
@@ -1100,6 +1097,8 @@ class Tokens extends \SplFixedArray
 
     /**
      * Check if any token kind given as argument is found.
+     *
+     * @param array $tokenKinds
      *
      * @return bool
      */
@@ -1134,7 +1133,7 @@ class Tokens extends \SplFixedArray
     public function countTokenKind($tokenKind)
     {
         if (self::isLegacyMode()) {
-            throw new \RuntimeException(sprintf('"%s" is not available in legacy mode.', __METHOD__));
+            throw new \RuntimeException(sprintf('%s is not available in legacy mode.', __METHOD__));
         }
 
         return isset($this->foundTokenKinds[$tokenKind]) ? $this->foundTokenKinds[$tokenKind] : 0;
@@ -1277,7 +1276,7 @@ class Tokens extends \SplFixedArray
         $blockEdgeDefinitions = self::getBlockEdgeDefinitions();
 
         if (!isset($blockEdgeDefinitions[$type])) {
-            throw new \InvalidArgumentException(sprintf('Invalid param type: "%s".', $type));
+            throw new \InvalidArgumentException(sprintf('Invalid param type: %s.', $type));
         }
 
         if (!self::isLegacyMode() && isset($this->blockEndCache[$searchIndex])) {
@@ -1297,7 +1296,7 @@ class Tokens extends \SplFixedArray
         }
 
         if (!$this[$startIndex]->equals($startEdge)) {
-            throw new \InvalidArgumentException(sprintf('Invalid param $startIndex - not a proper block "%s".', $findEnd ? 'start' : 'end'));
+            throw new \InvalidArgumentException(sprintf('Invalid param $startIndex - not a proper block %s.', $findEnd ? 'start' : 'end'));
         }
 
         $blockLevel = 0;
@@ -1323,7 +1322,7 @@ class Tokens extends \SplFixedArray
         }
 
         if (!$this[$index]->equals($endEdge)) {
-            throw new \UnexpectedValueException(sprintf('Missing block "%s".', $findEnd ? 'end' : 'start'));
+            throw new \UnexpectedValueException(sprintf('Missing block %s.', $findEnd ? 'end' : 'start'));
         }
 
         $this->blockEndCache[$startIndex] = $index;

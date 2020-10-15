@@ -16,6 +16,7 @@ Before disabling or uninstalling this module, note that the following modules de
 - Magento_ReleaseNotification
 - Magento_Search
 - Magento_Security
+- Magento_Signifyd
 - Magento_Swatches
 - Magento_Ui
 - Magento_User

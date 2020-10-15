@@ -3,42 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Model\Test\Unit\ResourceModel\Db\VersionControl;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RelationCompositeTest extends TestCase
+/**
+ * Class RelationCompositeTest
+ */
+class RelationCompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RelationComposite
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite
      */
     protected $entityRelationComposite;
 
     /**
-     * @var AbstractModel|MockObject
+     * @var \Magento\Framework\Model\AbstractModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $modelMock;
 
     /**
-     * @var RelationInterface
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationInterface
      */
     protected $relationProcessorMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->modelMock = $this->getMockBuilder(AbstractModel::class)
+        $this->modelMock = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -46,18 +41,17 @@ class RelationCompositeTest extends TestCase
                 ]
             )
             ->getMockForAbstractClass();
-        $this->relationProcessorMock = $this->getMockBuilder(AbstractModel::class)
+        $this->relationProcessorMock = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->relationProcessorMock = $this->getMockBuilder(
-            RelationInterface::class
-        )->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationInterface::class
+        )->disableOriginalConstructor()->getMockForAbstractClass();
 
-        $this->entityRelationComposite = new RelationComposite(
+        $this->entityRelationComposite = new \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite(
             $this->eventManagerMock,
             [
                 'default' => $this->relationProcessorMock

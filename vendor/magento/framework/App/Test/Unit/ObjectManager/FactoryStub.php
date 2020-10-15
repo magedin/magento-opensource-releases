@@ -3,24 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\ObjectManager;
 
-use Magento\Framework\ObjectManager\ConfigInterface;
-use Magento\Framework\ObjectManager\DefinitionInterface;
-use Magento\Framework\ObjectManager\FactoryInterface;
 use Magento\Framework\ObjectManagerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
-class FactoryStub implements FactoryInterface
+class FactoryStub implements \Magento\Framework\ObjectManager\FactoryInterface
 {
     /**
-     * @param ConfigInterface $config
+     * @param \Magento\Framework\ObjectManager\ConfigInterface $config
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param DefinitionInterface $definitions
+     * @param \Magento\Framework\ObjectManager\DefinitionInterface $definitions
      * @param array $globalArguments
      * @throws \BadMethodCallException
      */

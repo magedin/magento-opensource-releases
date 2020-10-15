@@ -20,7 +20,7 @@ class RowTest extends \PHPUnit\Framework\TestCase
      */
     protected $_processor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Catalog\Model\Product::class

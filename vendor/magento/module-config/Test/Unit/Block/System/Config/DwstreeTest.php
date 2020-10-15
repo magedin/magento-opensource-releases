@@ -3,74 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Block\System\Config;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Config\Block\System\Config\Dwstree;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DwstreeTest extends TestCase
+class DwstreeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Dwstree
+     * @var \Magento\Config\Block\System\Config\Dwstree
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $websiteMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->websiteMock = $this->getMockBuilder(Website::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->storeMock = $this->getMockBuilder(Store::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $this->websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->context = $objectManager->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             [
                 'request'      => $this->requestMock,
                 'storeManager' => $this->storeManagerMock,
@@ -78,7 +66,7 @@ class DwstreeTest extends TestCase
         );
 
         $this->object = $objectManager->getObject(
-            Dwstree::class,
+            \Magento\Config\Block\System\Config\Dwstree::class,
             ['context' => $this->context]
         );
     }
@@ -93,12 +81,14 @@ class DwstreeTest extends TestCase
     {
         $this->requestMock->expects($this->any())
             ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['section', $section],
-                    ['website', $website['expected']['code']],
-                    ['store', $store['expected']['code']],
-                ]
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['section', $section],
+                        ['website', $website['expected']['code']],
+                        ['store', $store['expected']['code']],
+                    ]
+                )
             );
         $this->storeManagerMock->expects($this->once())
             ->method('getWebsites')
@@ -125,7 +115,7 @@ class DwstreeTest extends TestCase
             [
                 'default',
                 'website_' . $website['actual']['code'],
-                'store_' . $store['actual']['code']
+                'store_'   . $store['actual']['code']
             ],
             $this->object->getTabsIds()
         );

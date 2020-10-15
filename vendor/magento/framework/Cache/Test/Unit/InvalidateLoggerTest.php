@@ -3,28 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * \Magento\Framework\Cache\InvalidateLogger test case
  */
 namespace Magento\Framework\Cache\Test\Unit;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Cache\InvalidateLogger;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class InvalidateLoggerTest extends TestCase
+class InvalidateLoggerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject|Http */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Request\Http */
     protected $requestMock;
 
-    /** @var MockObject|LoggerInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Psr\Log\LoggerInterface */
     protected $loggerMock;
 
-    /** @var MockObject|InvalidateLogger */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Cache\InvalidateLogger */
     protected $invalidateLogger;
 
     /** @var string */
@@ -36,11 +29,11 @@ class InvalidateLoggerTest extends TestCase
     /** @var array */
     protected $params = ['param1', 'param2'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->createMock(Http::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->invalidateLogger = new InvalidateLogger(
+        $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->invalidateLogger = new \Magento\Framework\Cache\InvalidateLogger(
             $this->requestMock,
             $this->loggerMock
         );
@@ -82,7 +75,7 @@ class InvalidateLoggerTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->requestMock);
         unset($this->loggerMock);

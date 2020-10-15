@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Framework\Session;
 
 use Magento\Framework\App\DeploymentConfig;
@@ -26,19 +25,19 @@ class SaveHandlerTest extends \PHPUnit\Framework\TestCase
     private $objectManager;
 
     /**
-     * @var DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject
+     * @var DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfigMock;
 
     /**
-     * @var SaveHandlerFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @var SaveHandlerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $saveHandlerFactoryMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
@@ -50,7 +49,7 @@ class SaveHandlerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->objectManager->removeSharedInstance(DeploymentConfig::class);
         $this->objectManager->removeSharedInstance(SaveHandlerFactory::class);

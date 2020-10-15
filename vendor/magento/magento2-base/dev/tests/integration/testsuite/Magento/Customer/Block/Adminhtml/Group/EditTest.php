@@ -42,7 +42,7 @@ class EditTest extends AbstractController
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->layout = Bootstrap::getObjectManager()->get(\Magento\Framework\View\LayoutInterface::class);
@@ -58,7 +58,7 @@ class EditTest extends AbstractController
     /**
      * Execute per test cleanup.
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->registry->unregister(RegistryConstants::CURRENT_GROUP_ID);
     }
@@ -77,7 +77,7 @@ class EditTest extends AbstractController
         $block = $this->layout->createBlock(\Magento\Customer\Block\Adminhtml\Group\Edit::class, 'block');
         $buttonsHtml = $block->getButtonsHtml();
 
-        $this->assertStringNotContainsString('delete', $buttonsHtml);
+        $this->assertNotContains('delete', $buttonsHtml);
     }
 
     /**
@@ -98,6 +98,6 @@ class EditTest extends AbstractController
         $block = $this->layout->createBlock(\Magento\Customer\Block\Adminhtml\Group\Edit::class, 'block');
         $buttonsHtml = $block->getButtonsHtml();
 
-        $this->assertStringContainsString('delete', $buttonsHtml);
+        $this->assertContains('delete', $buttonsHtml);
     }
 }

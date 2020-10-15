@@ -9,7 +9,7 @@ namespace Magento\Framework\Mail;
 /**
  * Interface MimeInterface used providing constants
  *
- * @see \Laminas\Mime\Mime
+ * @see \Zend\Mime\Mime
  */
 interface MimeInterface
 {

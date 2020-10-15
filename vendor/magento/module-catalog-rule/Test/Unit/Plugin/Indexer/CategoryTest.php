@@ -3,26 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Plugin\Indexer;
 
-use Magento\Catalog\Model\Category;
-use Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ProductRuleProcessor|MockObject
+     * @var \Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productRuleProcessor;
 
     /**
-     * @var Category|MockObject
+     * @var \Magento\Catalog\Model\Category|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
 
@@ -31,16 +25,15 @@ class CategoryTest extends TestCase
      */
     protected $plugin;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRuleProcessor = $this->createMock(
-            ProductRuleProcessor::class
+            \Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor::class
         );
-        $this->subject = $this->getMockBuilder(Category::class)
-            ->addMethods(['getChangedProductIds'])
-            ->onlyMethods(['__wakeUp'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->subject = $this->createPartialMock(
+            \Magento\Catalog\Model\Category::class,
+            ['getChangedProductIds', '__wakeUp']
+        );
 
         $this->plugin = (new ObjectManager($this))->getObject(
             \Magento\CatalogRule\Plugin\Indexer\Category::class,
@@ -54,7 +47,7 @@ class CategoryTest extends TestCase
     {
         $this->subject->expects($this->any())
             ->method('getChangedProductIds')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $this->productRuleProcessor->expects($this->never())
             ->method('reindexList');
@@ -68,7 +61,7 @@ class CategoryTest extends TestCase
 
         $this->subject->expects($this->any())
             ->method('getChangedProductIds')
-            ->willReturn($productIds);
+            ->will($this->returnValue($productIds));
 
         $this->productRuleProcessor->expects($this->once())
             ->method('reindexList')

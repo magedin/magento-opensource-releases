@@ -19,7 +19,7 @@ class ActionTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         /** @var \Magento\Framework\Indexer\IndexerRegistry $indexerRegistry */
         $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
@@ -27,7 +27,7 @@ class ActionTest extends \PHPUnit\Framework\TestCase
         $indexerRegistry->get(Fulltext::INDEXER_ID)->setScheduled(true);
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -152,7 +152,7 @@ class ActionTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         /** @var \Magento\Framework\Indexer\IndexerRegistry $indexerRegistry */
         $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

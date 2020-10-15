@@ -31,7 +31,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
         $editableBlock = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Rule\Block\Editable::class
         );
-        $model->expects($this->any())->method('getValueElementRenderer')->willReturn($editableBlock);
+        $model->expects($this->any())->method('getValueElementRenderer')->will($this->returnValue($editableBlock));
 
         $rule = $this->getMockBuilder(\Magento\Rule\Model\AbstractModel::class)
             ->setMethods(['getForm'])

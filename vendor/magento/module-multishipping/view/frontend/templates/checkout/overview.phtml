@@ -4,15 +4,9 @@
  * See COPYING.txt for license details.
  */
 
-/** @var \Magento\Multishipping\Block\Checkout\Overview $block */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
-?>
+// phpcs:disable Magento2.Templates.ThisInTemplate
 
-<?php
-/** @var \Magento\Tax\Helper\Data $taxHelper */
-$taxHelper = $block->getData('taxHelper');
-/** @var \Magento\Checkout\Helper\Data $checkoutHelper */
-$checkoutHelper = $block->getData('checkoutHelper');
+/** @var \Magento\Multishipping\Block\Checkout\Overview $block */
 ?>
 <?php $errors = $block->getCheckoutData()->getAddressErrors(); ?>
 <?php foreach ($errors as $addressId => $error): ?>
@@ -54,10 +48,10 @@ $checkoutHelper = $block->getData('checkoutHelper');
                 <div class="box-content">
                     <input type="hidden"
                            name="payment[cc_number]"
-                           value="<?= $block->escapeHtml($block->getPayment()->getCcNumber()) ?>" />
+                           value="<?= $block->escapeHtmlAttr($block->getPayment()->getCcNumber()) ?>" />
                     <input type="hidden"
                            name="payment[cc_cid]"
-                           value="<?= $block->escapeHtml($block->getPayment()->getCcCid()) ?>" />
+                           value="<?= $block->escapeHtmlAttr($block->getPayment()->getCcCid()) ?>" />
                     <?= /* @noEscape */ $block->getPaymentHtml() ?>
                 </div>
             </div>
@@ -65,10 +59,10 @@ $checkoutHelper = $block->getData('checkoutHelper');
     </div>
     <div class="block block-shipping">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Shipping Information')); ?></strong></div>
-        <?php $mergedCells = ($taxHelper->displayCartBothPrices() ? 2 : 1); ?>
+        <?php $mergedCells = ($this->helper(Magento\Tax\Helper\Data::class)->displayCartBothPrices() ? 2 : 1); ?>
         <?php foreach ($block->getShippingAddresses() as $index => $address): ?>
             <div class="block-content">
-                <a name="<?= $block->escapeHtml($block->getCheckoutData()
+                <a name="<?= $block->escapeHtmlAttr($block->getCheckoutData()
                     ->getAddressAnchorName($address->getId())); ?>"></a>
                 <div class="title">
                     <strong><?= $block->escapeHtml(__('Address')); ?> <?= $block->escapeHtml($index + 1); ?>
@@ -106,15 +100,16 @@ $checkoutHelper = $block->getData('checkoutHelper');
                             <?php
                             $exclTax = $block->getShippingPriceExclTax($address);
                             $inclTax = $block->getShippingPriceInclTax($address);
-                            $displayBothPrices = $taxHelper->displayShippingBothPrices() && $inclTax !== $exclTax;
+                            $displayBothPrices = $this->helper(Magento\Tax\Helper\Data::class)
+                                ->displayShippingBothPrices() && $inclTax !== $exclTax;
                             ?>
                             <?php if ($displayBothPrices): ?>
                                 <span class="price-including-tax"
-                                      data-label="<?= $block->escapeHtml(__('Incl. Tax')); ?>">
+                                      data-label="<?= $block->escapeHtmlAttr(__('Incl. Tax')); ?>">
                                     <?= /* @noEscape */ $inclTax ?>
                                 </span>
                                 <span class="price-excluding-tax"
-                                      data-label="<?= $block->escapeHtml(__('Excl. Tax')); ?>">
+                                      data-label="<?= $block->escapeHtmlAttr(__('Excl. Tax')); ?>">
                                     <?= /* @noEscape */ $exclTax; ?>
                                 </span>
                             <?php else: ?>
@@ -163,7 +158,7 @@ $checkoutHelper = $block->getData('checkoutHelper');
     <?php if ($block->getQuote()->hasVirtualItems()): ?>
     <div class="block block-other">
         <?php $billingAddress = $block->getQuote()->getBillingAddress(); ?>
-        <a name="<?= $block->escapeHtml($block->getCheckoutData()
+        <a name="<?= $block->escapeHtmlAttr($block->getCheckoutData()
             ->getAddressAnchorName($billingAddress->getId())); ?>"></a>
         <div class="block-title"><strong><?= $block->escapeHtml(__('Other items in your order')); ?></strong></div>
         <?php if ($error = $block->getCheckoutData()->getAddressError($billingAddress)): ?>
@@ -175,7 +170,7 @@ $checkoutHelper = $block->getData('checkoutHelper');
                 <a href="<?= $block->escapeUrl($block->getVirtualProductEditUrl()); ?>"
                    class="action edit"><span><?= $block->escapeHtml(__('Edit Items')); ?></span></a>
             </strong>
-            <?php $mergedCells = ($taxHelper->displayCartBothPrices() ? 2 : 1); ?>
+            <?php $mergedCells = ($this->helper(Magento\Tax\Helper\Data::class)->displayCartBothPrices() ? 2 : 1); ?>
             <div class="order-review-wrapper table-wrapper">
                 <table class="items data table table-order-review" id="virtual-overview-table">
                     <caption class="table-caption"><?= $block->escapeHtml(__('Items')); ?></caption>
@@ -208,11 +203,13 @@ $checkoutHelper = $block->getData('checkoutHelper');
         <div class="grand totals">
             <strong class="mark"><?= $block->escapeHtml(__('Grand Total:')); ?></strong>
             <strong class="amount">
-                <?= /* @noEscape */ $checkoutHelper->formatPrice($block->getTotal()); ?>
+                <?= /* @noEscape */ $this->helper(Magento\Checkout\Helper\Data::class)
+                    ->formatPrice($block->getTotal()); ?>
             </strong>
         </div>
         <div class="actions-toolbar" id="review-buttons-container">
             <div class="primary">
+                <?= $block->getChildHtml('captcha') ?>
                 <button type="submit"
                         class="action primary submit"
                         id="review-button"><span><?= $block->escapeHtml(__('Place Order')); ?></span>
@@ -225,10 +222,10 @@ $checkoutHelper = $block->getData('checkoutHelper');
             </div>
             <span id="review-please-wait"
                   class="please-wait load indicator"
-                  data-text="<?= $block->escapeHtml(__('Submitting order information...')); ?>">
+                  style="display: none;"
+                  data-text="<?= $block->escapeHtmlAttr(__('Submitting order information...')); ?>">
                 <span><?= $block->escapeHtml(__('Submitting order information...')); ?></span>
             </span>
-            <?= /* @noEscape */ $secureRenderer->renderStyleAsTag('display: none;', 'span#review-please-wait') ?>
         </div>
     </div>
 </form>

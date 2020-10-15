@@ -3,89 +3,97 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml\DB\Assembler;
 
-use Magento\Analytics\ReportXml\DB\Assembler\JoinAssembler;
-use Magento\Analytics\ReportXml\DB\ColumnsResolver;
-use Magento\Analytics\ReportXml\DB\ConditionResolver;
-use Magento\Analytics\ReportXml\DB\NameResolver;
-use Magento\Analytics\ReportXml\DB\SelectBuilder;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * A unit test for testing of the 'join' assembler.
  */
-class JoinAssemblerTest extends TestCase
+class JoinAssemblerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var JoinAssembler
+     * @var \Magento\Analytics\ReportXml\DB\Assembler\JoinAssembler
      */
     private $subject;
 
     /**
-     * @var NameResolver|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\NameResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $nameResolverMock;
 
     /**
-     * @var SelectBuilder|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\SelectBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectBuilderMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManagerHelper;
 
     /**
-     * @var ColumnsResolver|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\ColumnsResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $columnsResolverMock;
 
     /**
-     * @var ConditionResolver|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\ConditionResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $conditionResolverMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnection;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->nameResolverMock = $this->createMock(NameResolver::class);
+        $this->nameResolverMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\NameResolver::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->selectBuilderMock = $this->createMock(SelectBuilder::class);
-        $this->selectBuilderMock
+        $this->selectBuilderMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\SelectBuilder::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
+        $this->selectBuilderMock->expects($this->any())
             ->method('getFilters')
             ->willReturn([]);
-        $this->selectBuilderMock
+        $this->selectBuilderMock->expects($this->any())
             ->method('getColumns')
             ->willReturn([]);
-        $this->selectBuilderMock
+        $this->selectBuilderMock->expects($this->any())
             ->method('getJoins')
             ->willReturn([]);
 
-        $this->columnsResolverMock = $this->createMock(ColumnsResolver::class);
+        $this->columnsResolverMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\ColumnsResolver::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->conditionResolverMock = $this->createMock(ConditionResolver::class);
+        $this->conditionResolverMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\ConditionResolver::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->resourceConnection = $this->createMock(ResourceConnection::class);
+        $this->resourceConnection = $this->getMockBuilder(ResourceConnection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper =
-            new ObjectManager($this);
+            new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->subject = $this->objectManagerHelper->getObject(
-            JoinAssembler::class,
+            \Magento\Analytics\ReportXml\DB\Assembler\JoinAssembler::class,
             [
                 'conditionResolver' => $this->conditionResolverMock,
                 'nameResolver' => $this->nameResolverMock,
@@ -145,6 +153,7 @@ class JoinAssemblerTest extends TestCase
             ->willReturn($queryConfigMock['source']['link-source'][0]['name']);
 
         $this->resourceConnection
+            ->expects($this->any())
             ->method('getTableName')
             ->willReturnOnConsecutiveCalls(...array_values($tablesMapping));
 

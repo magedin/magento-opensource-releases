@@ -15,7 +15,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Widget\Model\Widget\Config::class
@@ -50,7 +50,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
             $jsFilename
         );
 
-        $this->assertIsArray($plugins['options']['placeholders']);
+        $this->assertInternalType('array', $plugins['options']['placeholders']);
 
         $this->assertStringStartsWith(
             'http://localhost/index.php/backend/admin/widget/index/key',

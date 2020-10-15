@@ -3,41 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Wishlist\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Wishlist\Model\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Wishlist\Model\Config
      */
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_scopeConfig;
 
     /**
-     * @var \Magento\Catalog\Model\Config|MockObject
+     * @var \Magento\Catalog\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_catalogConfig;
 
     /**
-     * @var \Magento\Catalog\Model\Attribute\Config|MockObject
+     * @var \Magento\Catalog\Model\Attribute\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_attributeConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_scopeConfig = $this->getMockBuilder(
-            ScopeConfigInterface::class
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
         )->getMock();
         $this->_catalogConfig = $this->getMockBuilder(\Magento\Catalog\Model\Config::class)
             ->disableOriginalConstructor()

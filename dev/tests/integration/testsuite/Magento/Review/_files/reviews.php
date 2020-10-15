@@ -4,17 +4,9 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require __DIR__ . '/../../../Magento/Catalog/_files/multiple_products.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/multiple_products.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple1');
-$review = $objectManager->create(
+$review = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Review\Model\Review::class,
     ['data' => ['nickname' => 'Nickname', 'title' => 'Review Summary', 'detail' => 'Review text']]
 );
@@ -25,12 +17,12 @@ $review->setEntityId(
 )->setStatusId(
     \Magento\Review\Model\Review::STATUS_PENDING
 )->setStoreId(
-    $objectManager->get(
+    \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
         \Magento\Store\Model\StoreManagerInterface::class
     )->getStore()->getId()
 )->setStores(
     [
-        $objectManager->get(
+        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Store\Model\StoreManagerInterface::class
         )->getStore()->getId()
     ]

@@ -3,46 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GoogleOptimizer\Test\Unit\Model\Plugin\Catalog\Product\Category;
 
-use Magento\Catalog\Ui\DataProvider\Product\Form\NewCategoryDataProvider;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GoogleOptimizer\Helper\Data;
-use Magento\GoogleOptimizer\Model\Plugin\Catalog\Product\Category\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataProvider
+     * @var \Magento\GoogleOptimizer\Model\Plugin\Catalog\Product\Category\DataProvider
      */
     private $plugin;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\GoogleOptimizer\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helper;
 
     /**
-     * @var NewCategoryDataProvider
+     * @var \Magento\Catalog\Ui\DataProvider\Product\Form\NewCategoryDataProvider
      */
     private $subject;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->helper = $this->getMockBuilder(Data::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->helper = $this->getMockBuilder(\Magento\GoogleOptimizer\Helper\Data::class)
             ->setMethods(['isGoogleExperimentActive'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->subject = $this->createMock(
-            NewCategoryDataProvider::class
+            \Magento\Catalog\Ui\DataProvider\Product\Form\NewCategoryDataProvider::class
         );
         $this->plugin = $objectManager->getObject(
-            DataProvider::class,
+            \Magento\GoogleOptimizer\Model\Plugin\Catalog\Product\Category\DataProvider::class,
             [
                 'helper' => $this->helper
             ]

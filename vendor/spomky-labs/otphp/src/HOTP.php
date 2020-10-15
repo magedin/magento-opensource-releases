@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -17,43 +15,67 @@ use Assert\Assertion;
 
 final class HOTP extends OTP implements HOTPInterface
 {
-    protected function __construct(?string $secret, int $counter, string $digest, int $digits)
+    /**
+     * HOTP constructor.
+     *
+     * @param string|null $label
+     * @param string|null $secret
+     * @param int         $counter
+     * @param string      $digest
+     * @param int         $digits
+     */
+    public function __construct($label = null, $secret = null, $counter = 0, $digest = 'sha1', $digits = 6)
     {
-        parent::__construct($secret, $digest, $digits);
+        parent::__construct($label, $secret, $digest, $digits);
         $this->setCounter($counter);
     }
 
-    public static function create(?string $secret = null, int $counter = 0, string $digest = 'sha1', int $digits = 6): HOTPInterface
+    /**
+     * @param int $counter
+     */
+    private function setCounter($counter)
     {
-        return new self($secret, $counter, $digest, $digits);
-    }
+        Assertion::integer($counter, 'Counter must be at least 0.');
+        Assertion::greaterOrEqualThan($counter, 0, 'Counter must be at least 0.');
 
-    protected function setCounter(int $counter): void
-    {
         $this->setParameter('counter', $counter);
     }
 
-    public function getCounter(): int
+    /**
+     * {@inheritdoc}
+     */
+    public function getCounter()
     {
         return $this->getParameter('counter');
     }
 
-    private function updateCounter(int $counter): void
+    /**
+     * @param int $counter
+     */
+    private function updateCounter($counter)
     {
         $this->setCounter($counter);
     }
 
-    public function getProvisioningUri(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function getProvisioningUri()
     {
         return $this->generateURI('hotp', ['counter' => $this->getCounter()]);
     }
 
     /**
      * If the counter is not provided, the OTP is verified at the actual counter.
+     *
+     * {@inheritdoc}
      */
-    public function verify(string $otp, ?int $counter = null, ?int $window = null): bool
+    public function verify($otp, $counter = null, $window = null)
     {
+        Assertion::string($otp, 'The OTP must be a string');
+        Assertion::nullOrInteger($counter, 'The counter must be null or an integer');
         Assertion::greaterOrEqualThan($counter, 0, 'The counter must be at least 0.');
+        Assertion::nullOrInteger($window, 'The window parameter must be null or an integer');
 
         if (null === $counter) {
             $counter = $this->getCounter();
@@ -64,16 +86,32 @@ final class HOTP extends OTP implements HOTPInterface
         return $this->verifyOtpWithWindow($otp, $counter, $window);
     }
 
-    private function getWindow(?int $window): int
+    /**
+     * @param null|int $window
+     *
+     * @return int
+     */
+    private function getWindow($window)
     {
-        return abs($window ?? 0);
+        if (null === $window) {
+            $window = 0;
+        }
+
+        return abs($window);
     }
 
-    private function verifyOtpWithWindow(string $otp, int $counter, ?int $window): bool
+    /**
+     * @param string $otp
+     * @param int    $counter
+     * @param int    $window
+     *
+     * @return bool
+     */
+    private function verifyOtpWithWindow($otp, $counter, $window)
     {
         $window = $this->getWindow($window);
 
-        for ($i = $counter; $i <= $counter + $window; ++$i) {
+        for ($i = $counter; $i <= $counter + $window; $i++) {
             if ($this->compareOTP($this->at($i), $otp)) {
                 $this->updateCounter($i + 1);
 
@@ -82,22 +120,5 @@ final class HOTP extends OTP implements HOTPInterface
         }
 
         return false;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getParameterMap(): array
-    {
-        $v = array_merge(
-            parent::getParameterMap(),
-            ['counter' => function ($value): int {
-                Assertion::greaterOrEqualThan((int) $value, 0, 'Counter must be at least 0.');
-
-                return (int) $value;
-            }]
-        );
-
-        return $v;
     }
 }

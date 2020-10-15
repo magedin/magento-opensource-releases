@@ -29,7 +29,7 @@ class AddVirtualProductToCartTest extends GraphQlAbstract
      */
     private $getMaskedQuoteIdByReservedOrderId;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->customerTokenService = $objectManager->get(CustomerTokenServiceInterface::class);
@@ -56,12 +56,11 @@ class AddVirtualProductToCartTest extends GraphQlAbstract
 
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @expectedException Exception
+     * @expectedExceptionMessage Required parameter "cart_id" is missing
      */
     public function testAddVirtualProductToCartIfCartIdIsEmpty()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Required parameter "cart_id" is missing');
-
         $query = <<<QUERY
 mutation {
   addSimpleProductsToCart(
@@ -84,12 +83,11 @@ QUERY;
 
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @expectedException Exception
+     * @expectedExceptionMessage Required parameter "cart_items" is missing
      */
     public function testAddVirtualProductToCartIfCartItemsAreEmpty()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Required parameter "cart_items" is missing');
-
         $query = <<<QUERY
 mutation {
   addSimpleProductsToCart(
@@ -114,12 +112,11 @@ QUERY;
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @magentoApiDataFixture Magento/GraphQl/Catalog/_files/virtual_product.php
      *
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not find a cart with ID "non_existent_masked_id"
      */
     public function testAddVirtualToNonExistentCart()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Could not find a cart with ID "non_existent_masked_id"');
-
         $sku = 'virtual_product';
         $qty = 2;
         $nonExistentMaskedQuoteId = 'non_existent_masked_id';
@@ -132,12 +129,11 @@ QUERY;
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/customer/create_empty_cart.php
      *
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not find a product with SKU "virtual_product"
      */
     public function testNonExistentProductToCart()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Could not find a product with SKU "virtual_product"');
-
         $sku = 'virtual_product';
         $qty = 2;
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');

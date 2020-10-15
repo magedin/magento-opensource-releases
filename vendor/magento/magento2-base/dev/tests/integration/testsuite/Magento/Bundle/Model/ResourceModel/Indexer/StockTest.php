@@ -13,7 +13,7 @@ class StockTest extends \PHPUnit\Framework\TestCase
      */
     protected $processor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->processor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\CatalogInventory\Model\Indexer\Stock\Processor::class

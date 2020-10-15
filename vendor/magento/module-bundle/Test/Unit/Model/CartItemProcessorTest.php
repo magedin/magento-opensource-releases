@@ -3,70 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Model;
 
-use Magento\Bundle\Api\Data\BundleOptionInterfaceFactory;
-use Magento\Bundle\Model\BundleOption;
-use Magento\Bundle\Model\CartItemProcessor;
 use Magento\Catalog\Model\Product\Type;
-use Magento\Framework\DataObject;
-use Magento\Framework\DataObject\Factory;
-use Magento\Quote\Api\Data\ProductOptionExtensionFactory;
-use Magento\Quote\Api\Data\ProductOptionExtensionInterface;
-use Magento\Quote\Api\Data\ProductOptionInterfaceFactory;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Quote\Model\Quote\ProductOption;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CartItemProcessorTest extends TestCase
+class CartItemProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productOptionExtensionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $bundleOptionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productOptionFactoryMock;
 
     /**
-     * @var CartItemProcessor
+     * @var \Magento\Bundle\Model\CartItemProcessor
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectFactoryMock = $this->createPartialMock(Factory::class, ['create']);
+        $this->objectFactoryMock = $this->createPartialMock(\Magento\Framework\DataObject\Factory::class, ['create']);
         $this->productOptionExtensionMock = $this->getMockBuilder(
-            ProductOptionExtensionFactory::class
+            \Magento\Quote\Api\Data\ProductOptionExtensionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->bundleOptionFactoryMock = $this->createPartialMock(
-            BundleOptionInterfaceFactory::class,
+            \Magento\Bundle\Api\Data\BundleOptionInterfaceFactory::class,
             ['create']
         );
         $this->productOptionFactoryMock = $this->createPartialMock(
-            ProductOptionInterfaceFactory::class,
+            \Magento\Quote\Api\Data\ProductOptionInterfaceFactory::class,
             ['create']
         );
 
-        $this->model = new CartItemProcessor(
+        $this->model = new \Magento\Bundle\Model\CartItemProcessor(
             $this->objectFactoryMock,
             $this->productOptionExtensionMock,
             $this->bundleOptionFactoryMock,
@@ -80,11 +66,11 @@ class CartItemProcessorTest extends TestCase
         $optionQty = 1;
         $optionId = 4;
 
-        $bundleOptionMock = $this->createMock(BundleOption::class);
-        $cartItemMock = $this->createMock(Item::class);
-        $productOptionMock = $this->createMock(ProductOption::class);
-        $dataObjectMock = $this->createMock(DataObject::class);
-        $optionExtensionMock = $this->getMockBuilder(ProductOptionExtensionInterface::class)
+        $bundleOptionMock = $this->createMock(\Magento\Bundle\Model\BundleOption::class);
+        $cartItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
+        $productOptionMock = $this->createMock(\Magento\Quote\Model\Quote\ProductOption::class);
+        $dataObjectMock = $this->createMock(\Magento\Framework\DataObject::class);
+        $optionExtensionMock = $this->getMockBuilder(\Magento\Quote\Api\Data\ProductOptionExtensionInterface::class)
             ->setMethods(
                 [
                     'getBundleOptions',
@@ -119,7 +105,7 @@ class CartItemProcessorTest extends TestCase
 
     public function testConvertToBuyRequestInvalidData()
     {
-        $cartItemMock = $this->createMock(Item::class);
+        $cartItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $this->assertNull($this->model->convertToBuyRequest($cartItemMock));
     }
 
@@ -131,16 +117,16 @@ class CartItemProcessorTest extends TestCase
         $bundleOption = [$optionId => $optionSelections, 5 => ""];
         $bundleOptionQty = [$optionId => $optionQty];
 
-        $buyRequestMock = new DataObject(
+        $buyRequestMock = new \Magento\Framework\DataObject(
             [
                 'bundle_option' => $bundleOption,
                 'bundle_option_qty' => $bundleOptionQty
             ]
         );
-        $cartItemMock = $this->createMock(Item::class);
-        $bundleOptionMock = $this->createMock(BundleOption::class);
-        $productOptionMock = $this->createMock(ProductOption::class);
-        $optionExtensionMock = $this->getMockBuilder(ProductOptionExtensionInterface::class)
+        $cartItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
+        $bundleOptionMock = $this->createMock(\Magento\Bundle\Model\BundleOption::class);
+        $productOptionMock = $this->createMock(\Magento\Quote\Model\Quote\ProductOption::class);
+        $optionExtensionMock = $this->getMockBuilder(\Magento\Quote\Api\Data\ProductOptionExtensionInterface::class)
             ->setMethods(
                 [
                     'getBundleOptions',
@@ -173,19 +159,19 @@ class CartItemProcessorTest extends TestCase
 
     public function testProcessProductOptionsInvalidType()
     {
-        $cartItemMock = $this->createPartialMock(Item::class, ['getProductType']);
+        $cartItemMock = $this->createPartialMock(\Magento\Quote\Model\Quote\Item::class, ['getProductType']);
         $cartItemMock->expects($this->once())->method('getProductType')->willReturn(Type::TYPE_SIMPLE);
         $this->assertSame($cartItemMock, $this->model->processOptions($cartItemMock));
     }
 
     public function testProcessProductOptionsifBundleOptionsNotExists()
     {
-        $buyRequestMock = new DataObject(
+        $buyRequestMock = new \Magento\Framework\DataObject(
             []
         );
         $methods = ['getProductType', 'getBuyRequest'];
         $cartItemMock = $this->createPartialMock(
-            Item::class,
+            \Magento\Quote\Model\Quote\Item::class,
             $methods
         );
         $cartItemMock->expects($this->once())->method('getProductType')->willReturn(Type::TYPE_BUNDLE);

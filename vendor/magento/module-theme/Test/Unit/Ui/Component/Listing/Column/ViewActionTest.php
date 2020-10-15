@@ -10,18 +10,14 @@ namespace Magento\Theme\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Theme\Ui\Component\Listing\Column\ViewAction;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class ViewActionTest contains unit tests for \Magento\Theme\Ui\Component\Listing\Column\ViewAction class
  *
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class ViewActionTest extends TestCase
+class ViewActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ViewAction
@@ -29,12 +25,12 @@ class ViewActionTest extends TestCase
     protected $model;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilder;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -43,10 +39,10 @@ class ViewActionTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilder = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class);
     }
 
     /**
@@ -66,9 +62,9 @@ class ViewActionTest extends TestCase
         $expectedUrlPath,
         $expectedUrlParam
     ) {
-        $contextMock = $this->getMockBuilder(ContextInterface::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
@@ -116,6 +112,7 @@ class ViewActionTest extends TestCase
                             'view' => [
                                 'href' => 'url',
                                 'label' => __('View'),
+                                '__disableTmpl' => true,
                             ]
                         ],
                         'entity_id' => 1
@@ -142,6 +139,7 @@ class ViewActionTest extends TestCase
                             'view' => [
                                 'href' => 'url',
                                 'label' => __('View'),
+                                '__disableTmpl' => true,
                             ]
                         ],
                         'theme_id' => 2

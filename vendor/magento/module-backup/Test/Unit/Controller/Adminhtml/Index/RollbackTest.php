@@ -3,164 +3,145 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backup\Test\Unit\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Backup\Controller\Adminhtml\Index\Rollback;
-use Magento\Backup\Helper\Data;
-use Magento\Backup\Model\Backup;
-use Magento\Backup\Model\BackupFactory;
-use Magento\Backup\Model\ResourceModel\Db;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Backup\BackupInterface;
-use Magento\Framework\Backup\Factory;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class RollbackTest extends TestCase
+class RollbackTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     private $context;
 
     /**
-     * @var Rollback
+     * @var \Magento\Backup\Controller\Adminhtml\Index\Rollback
      */
     private $rollbackController;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseMock;
 
     /**
-     * @var BackupFactory|MockObject
+     * @var \Magento\Backup\Model\BackupFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupModelFactoryMock;
 
     /**
-     * @var Backup|MockObject
+     * @var \Magento\Backup\Model\Backup|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupModelMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backup\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataHelperMock;
 
     /**
-     * @var FileFactory|MockObject
+     * @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileFactoryMock;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectMock;
 
     /**
-     * @var Forward|MockObject
+     * @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultForwardMock;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Backup\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupFactoryMock;
 
     /**
-     * @var BackupInterface|MockObject
+     * @var \Magento\Framework\Backup\BackupInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupManagerMock;
 
     /**
-     * @var Db|MockObject
+     * @var \Magento\Backup\Model\ResourceModel\Db|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupResourceModelMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods(['initForward', 'setDispatched', 'isAjax'])
             ->getMockForAbstractClass();
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->setMethods(['setRedirect', 'representJson'])
             ->getMockForAbstractClass();
-        $this->backupModelFactoryMock = $this->getMockBuilder(BackupFactory::class)
+        $this->backupModelFactoryMock = $this->getMockBuilder(\Magento\Backup\Model\BackupFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->backupModelMock = $this->getMockBuilder(Backup::class)
+        $this->backupModelMock = $this->getMockBuilder(\Magento\Backup\Model\Backup::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTime', 'exists', 'getSize', 'output', 'validateUserPassword'])
             ->getMock();
-        $this->backupResourceModelMock = $this->getMockBuilder(Db::class)
+        $this->backupResourceModelMock = $this->getMockBuilder(\Magento\Backup\Model\ResourceModel\Db::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dataHelperMock = $this->getMockBuilder(Data::class)
+        $this->dataHelperMock = $this->getMockBuilder(\Magento\Backup\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods(['isRollbackAllowed', 'getBackupsDir', 'invalidateCache'])
             ->getMock();
-        $this->fileFactoryMock = $this->getMockBuilder(FileFactory::class)
+        $this->fileFactoryMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resultRedirectFactoryMock =
-            $this->getMockBuilder(RedirectFactory::class)
-                ->disableOriginalConstructor()
-                ->setMethods(['create'])
-                ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->resultForwardMock = $this->getMockBuilder(Forward::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->backupFactoryMock = $this->getMockBuilder(Factory::class)
+            $this->getMockBuilder(\Magento\Backend\Model\View\Result\RedirectFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->backupManagerMock = $this->getMockBuilder(BackupInterface::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->resultForwardMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->backupFactoryMock = $this->getMockBuilder(\Magento\Framework\Backup\Factory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->backupManagerMock = $this->getMockBuilder(\Magento\Framework\Backup\BackupInterface::class)
             ->setMethods(['setName'])
             ->getMockForAbstractClass();
         $this->objectManager = new ObjectManager($this);
         $this->context = $this->objectManager->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'request' => $this->requestMock,
@@ -169,7 +150,7 @@ class RollbackTest extends TestCase
             ]
         );
         $this->rollbackController = $this->objectManager->getObject(
-            Rollback::class,
+            \Magento\Backup\Controller\Adminhtml\Index\Rollback::class,
             [
                 'context' => $this->context,
                 'backupFactory' => $this->backupFactoryMock,
@@ -188,7 +169,7 @@ class RollbackTest extends TestCase
             ->willReturn($rollbackAllowed);
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Backup\Helper\Data::class)
             ->willReturn($this->dataHelperMock);
 
         $this->assertSame($this->responseMock, $this->rollbackController->execute());
@@ -207,7 +188,7 @@ class RollbackTest extends TestCase
             ->willReturn($rollbackAllowed);
         $this->objectManagerMock->expects($this->atLeastOnce())
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Backup\Helper\Data::class)
             ->willReturn($this->dataHelperMock);
         $this->requestMock->expects($this->once())
             ->method('isAjax')
@@ -248,7 +229,7 @@ class RollbackTest extends TestCase
             ->willReturn($rollbackAllowed);
         $this->objectManagerMock->expects($this->any())
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Backup\Helper\Data::class)
             ->willReturn($this->dataHelperMock);
         $this->requestMock->expects($this->once())
             ->method('isAjax')
@@ -292,11 +273,11 @@ class RollbackTest extends TestCase
             ->willReturn($this->backupManagerMock);
         $this->objectManagerMock->expects($this->at(2))
             ->method('create')
-            ->with(Db::class, [])
+            ->with(\Magento\Backup\Model\ResourceModel\Db::class, [])
             ->willReturn($this->backupResourceModelMock);
         $this->objectManagerMock->expects($this->at(3))
             ->method('create')
-            ->with(Backup::class, [])
+            ->with(\Magento\Backup\Model\Backup::class, [])
             ->willReturn($this->backupModelMock);
         $this->backupModelMock->expects($this->once())
             ->method('validateUserPassword')

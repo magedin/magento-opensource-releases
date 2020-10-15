@@ -5,19 +5,15 @@
  */
 namespace Magento\Framework\Code\Test\Unit\Minifier\Adapter\Css;
 
-use PHPUnit\Framework\TestCase;
-use tubalmartin\CssMin\Minifier;
-use Magento\Framework\Code\Minifier\Adapter\Css\CSSmin;
-
-class CssMinTest extends TestCase
+class CssMinTest extends \PHPUnit\Framework\TestCase
 {
     public function testMinify()
     {
-        $cssMinMock = $this->getMockBuilder(Minifier::class)
+        $cssMinMock = $this->getMockBuilder(\tubalmartin\CssMin\Minifier::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $cssMinAdapter = new CSSmin($cssMinMock);
-        $property = new \ReflectionProperty(CSSmin::class, 'cssMinifier');
+        $cssMinAdapter = new \Magento\Framework\Code\Minifier\Adapter\Css\CSSmin($cssMinMock);
+        $property = new \ReflectionProperty(\Magento\Framework\Code\Minifier\Adapter\Css\CSSmin::class, 'cssMinifier');
         $property->setAccessible(true);
         $property->setValue($cssMinAdapter, $cssMinMock);
 

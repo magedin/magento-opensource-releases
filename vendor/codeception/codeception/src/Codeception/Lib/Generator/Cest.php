@@ -11,11 +11,16 @@ class Cest
     use Namespaces;
 
     protected $template = <<<EOF
-<?php {{namespace}}
+<?php
+{{namespace}}
 
 class {{name}}Cest
 {
     public function _before({{actor}} \$I)
+    {
+    }
+
+    public function _after({{actor}} \$I)
     {
     }
 

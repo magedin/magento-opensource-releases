@@ -3,64 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Category\Flat\System\Config;
 
-use Magento\Catalog\Model\Indexer\Category\Flat\System\Config\Mode;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Indexer\Model\Indexer\State;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ModeTest extends TestCase
+class ModeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Mode
+     * @var \Magento\Catalog\Model\Indexer\Category\Flat\System\Config\Mode
      */
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Indexer\Model\Indexer\State|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerStateMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerRegistry;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var \Magento\Framework\Indexer\IndexerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $flatIndexer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $this->indexerStateMock = $this->createPartialMock(
-            State::class,
-            ['loadByIndexer', 'setStatus', 'save']
+            \Magento\Indexer\Model\Indexer\State::class,
+            ['loadByIndexer', 'setStatus', 'save', '__wakeup']
         );
-        $this->indexerRegistry = $this->getMockBuilder(IndexerRegistry::class)
-            ->addMethods(['load', 'setScheduled'])
-            ->onlyMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->indexerRegistry = $this->createPartialMock(
+            \Magento\Framework\Indexer\IndexerRegistry::class,
+            ['load', 'setScheduled', 'get']
+        );
 
-        $this->flatIndexer = $this->getMockForAbstractClass(IndexerInterface::class);
+        $this->flatIndexer = $this->createMock(\Magento\Framework\Indexer\IndexerInterface::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Mode::class,
+            \Magento\Catalog\Model\Indexer\Category\Flat\System\Config\Mode::class,
             [
                 'config' => $this->configMock,
                 'indexerState' => $this->indexerStateMock,
@@ -91,8 +79,8 @@ class ModeTest extends TestCase
         )->with(
             null,
             'default'
-        )->willReturn(
-            $oldValue
+        )->will(
+            $this->returnValue($oldValue)
         );
 
         $this->model->setValue($value);
@@ -129,8 +117,8 @@ class ModeTest extends TestCase
         )->with(
             null,
             'default'
-        )->willReturn(
-            $oldValue
+        )->will(
+            $this->returnValue($oldValue)
         );
 
         $this->model->setValue($value);
@@ -141,15 +129,19 @@ class ModeTest extends TestCase
             'loadByIndexer'
         )->with(
             'catalog_category_flat'
-        )->willReturnSelf();
+        )->will(
+            $this->returnSelf()
+        );
         $this->indexerStateMock->expects(
             $this->once()
         )->method(
             'setStatus'
         )->with(
             'invalid'
-        )->willReturnSelf();
-        $this->indexerStateMock->expects($this->once())->method('save')->willReturnSelf();
+        )->will(
+            $this->returnSelf()
+        );
+        $this->indexerStateMock->expects($this->once())->method('save')->will($this->returnSelf());
 
         $this->indexerRegistry->expects($this->never())->method('load');
         $this->indexerRegistry->expects($this->never())->method('setScheduled');
@@ -179,8 +171,8 @@ class ModeTest extends TestCase
         )->with(
             null,
             'default'
-        )->willReturn(
-            $oldValue
+        )->will(
+            $this->returnValue($oldValue)
         );
 
         $this->model->setValue($value);

@@ -3,85 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductRenderInterface;
-use Magento\Catalog\Model\Config;
 use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Model\ProductRenderFactory;
-use Magento\Catalog\Model\ProductRenderList;
-use Magento\Catalog\Model\ProductRenderSearchResultsFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Catalog\Ui\DataProvider\Product\ProductRenderCollectorComposite;
 use Magento\Framework\Api\Search\SearchCriteria;
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Data\CollectionModifier;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProductRenderListTest extends TestCase
+class ProductRenderListTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Catalog\Model\ProductRenderRepository */
     private $model;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $collectionFactoryMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $collectionProcessorMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $productRenderCollectorCompositeMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $productRenderSearchResultsFactoryMock;
 
-    /** @var ProductRenderFactory|MockObject */
+    /** @var \Magento\Catalog\Model\ProductRenderFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $productRenderFactoryMock;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\Catalog\Model\Config|\PHPUnit_Framework_MockObject_MockObject */
     private $configMock;
 
-    /** @var Visibility|MockObject */
+    /** @var Visibility|\PHPUnit_Framework_MockObject_MockObject */
     private $productVisibility;
 
-    /** @var CollectionModifier|MockObject */
+    /** @var CollectionModifier|\PHPUnit_Framework_MockObject_MockObject */
     private $collectionModifier;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->collectionFactoryMock = $this
-            ->getMockBuilder(CollectionFactory::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->collectionProcessorMock = $this
-            ->getMockBuilder(CollectionProcessorInterface::class)
+            ->getMockBuilder(\Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->productRenderCollectorCompositeMock = $this
-            ->getMockBuilder(ProductRenderCollectorComposite::class)
+            ->getMockBuilder(\Magento\Catalog\Ui\DataProvider\Product\ProductRenderCollectorComposite::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->productRenderSearchResultsFactoryMock = $this
-            ->getMockBuilder(ProductRenderSearchResultsFactory::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ProductRenderSearchResultsFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->productRenderFactoryMock = $this
-            ->getMockBuilder(ProductRenderFactory::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ProductRenderFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->configMock = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Catalog\Model\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configMock->expects($this->once())
@@ -94,7 +83,7 @@ class ProductRenderListTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->model = new ProductRenderList(
+        $this->model = new \Magento\Catalog\Model\ProductRenderList(
             $this->collectionFactoryMock,
             $this->collectionProcessorMock,
             $this->productRenderCollectorCompositeMock,
@@ -113,14 +102,14 @@ class ProductRenderListTest extends TestCase
 
         $product = $this->getMockBuilder(ProductInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $iterator = new \IteratorIterator(new \ArrayIterator([$product]));
         $productRender = $this->getMockBuilder(ProductRenderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $searchResult = $this->getMockBuilder(SearchResultInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $searchCriteria = $this->getMockBuilder(SearchCriteria::class)
             ->disableOriginalConstructor()
             ->getMock();

@@ -60,7 +60,8 @@ final class TernaryToNullCoalescingFixer extends AbstractFixer
     }
 
     /**
-     * @param int $index of `T_ISSET` token
+     * @param Tokens $tokens
+     * @param int    $index  of `T_ISSET` token
      */
     private function fixIsset(Tokens $tokens, $index)
     {
@@ -116,8 +117,9 @@ final class TernaryToNullCoalescingFixer extends AbstractFixer
     /**
      * Get the sequence of meaningful tokens and returns a new Tokens instance.
      *
-     * @param int $start start index
-     * @param int $end   end index
+     * @param Tokens $tokens
+     * @param int    $start  start index
+     * @param int    $end    end index
      *
      * @return Tokens
      */
@@ -140,6 +142,8 @@ final class TernaryToNullCoalescingFixer extends AbstractFixer
     /**
      * Check if the requested token is an operator computed
      * before the ternary operator along with the `isset()`.
+     *
+     * @param Token $token
      *
      * @return bool
      */
@@ -201,7 +205,6 @@ final class TernaryToNullCoalescingFixer extends AbstractFixer
             T_INC,
             T_STRING,
             T_YIELD,
-            T_YIELD_FROM,
         ];
 
         foreach ($tokens as $token) {

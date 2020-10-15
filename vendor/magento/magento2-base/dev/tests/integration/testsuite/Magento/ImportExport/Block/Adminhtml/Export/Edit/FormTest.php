@@ -36,7 +36,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         'fields_enclosure' => 'fields_enclosure'
     ]];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(

@@ -16,7 +16,7 @@ class ServiceMetadataTest extends \PHPUnit\Framework\TestCase
      */
     private $serviceMetadata;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->serviceMetadata = $objectManager->create(ServiceMetadata::class);

@@ -3,31 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Setup\Console\Command\GenerateFixturesCommand;
 use Magento\Setup\Fixtures\FixtureModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Console\Command\GenerateFixturesCommand;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class GenerateFixturesCommandTest extends TestCase
+class GenerateFixturesCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FixtureModel|MockObject
+     * @var FixtureModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fixtureModel;
 
     /**
-     * @var GenerateFixturesCommand|MockObject
+     * @var GenerateFixturesCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     private $command;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->fixtureModel = $this->createMock(FixtureModel::class);
+        $this->fixtureModel = $this->createMock(\Magento\Setup\Fixtures\FixtureModel::class);
         $this->command = new GenerateFixturesCommand($this->fixtureModel);
     }
 
@@ -41,10 +38,13 @@ class GenerateFixturesCommandTest extends TestCase
         $commandTester->execute(['profile' => 'path_to_profile.xml']);
     }
 
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Not enough arguments
+     */
     public function testExecuteInvalidLanguageArgument()
     {
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Not enough arguments');
+
         $commandTester = new CommandTester($this->command);
         $commandTester->execute([]);
     }

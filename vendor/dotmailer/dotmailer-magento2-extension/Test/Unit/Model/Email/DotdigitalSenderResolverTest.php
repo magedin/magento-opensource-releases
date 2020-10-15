@@ -57,7 +57,7 @@ class DotdigitalSenderResolverTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->senderResolverMock = $this->createMock(SenderResolver::class);
         $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);

@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Model\Import\ErrorProcessing;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProcessingErrorTest extends TestCase
+class ProcessingErrorTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var MockObject|ProcessingError
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError
      */
     protected $model;
 
     /**
      * Preparing mock objects
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            ProcessingError::class
+            \Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError::class
         );
     }
 

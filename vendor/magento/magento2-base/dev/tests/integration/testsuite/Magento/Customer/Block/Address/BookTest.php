@@ -20,9 +20,9 @@ class BookTest extends \PHPUnit\Framework\TestCase
      */
     protected $currentCustomer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        /** @var \PHPUnit\Framework\MockObject\MockObject $blockMock */
+        /** @var \PHPUnit_Framework_MockObject_MockObject $blockMock */
         $blockMock = $this->getMockBuilder(
             \Magento\Framework\View\Element\BlockInterface::class
         )->disableOriginalConstructor()->setMethods(
@@ -43,7 +43,7 @@ class BookTest extends \PHPUnit\Framework\TestCase
             );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var \Magento\Customer\Model\CustomerRegistry $customerRegistry */

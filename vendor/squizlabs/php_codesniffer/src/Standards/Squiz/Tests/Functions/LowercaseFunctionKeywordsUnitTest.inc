@@ -24,5 +24,3 @@ abstract class Bar {
 	ABSTRACT proTECted FUNCTION AbstractProtectedFunction();
 	Final STATIC PUBLIC Function FinalStaticPublicFunction() {}
 }
-
-$a = FN($x) => $x;

@@ -21,7 +21,7 @@ class OrderItemRepositoryTest extends WebapiAbstract
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -50,7 +50,7 @@ class OrderItemRepositoryTest extends WebapiAbstract
 
         $response = $this->_webApiCall($serviceInfo, ['id' => $orderItem->getId()]);
 
-        $this->assertIsArray($response);
+        $this->assertTrue(is_array($response));
         $this->assertOrderItem($orderItem, $response);
     }
 
@@ -92,10 +92,10 @@ class OrderItemRepositoryTest extends WebapiAbstract
 
         $response = $this->_webApiCall($serviceInfo, $requestData);
 
-        $this->assertIsArray($response);
+        $this->assertTrue(is_array($response));
         $this->assertArrayHasKey('items', $response);
         $this->assertCount(1, $response['items']);
-        $this->assertIsArray($response['items'][0]);
+        $this->assertTrue(is_array($response['items'][0]));
         $this->assertOrderItem(current($order->getItems()), $response['items'][0]);
     }
 
@@ -114,8 +114,8 @@ class OrderItemRepositoryTest extends WebapiAbstract
 
         $actualOptions = $response['product_option']['extension_attributes']['configurable_item_options'];
 
-        $this->assertIsArray($actualOptions);
-        $this->assertIsArray($actualOptions[0]);
+        $this->assertTrue(is_array($actualOptions));
+        $this->assertTrue(is_array($actualOptions[0]));
         $this->assertArrayHasKey('option_id', $actualOptions[0]);
         $this->assertArrayHasKey('option_value', $actualOptions[0]);
 

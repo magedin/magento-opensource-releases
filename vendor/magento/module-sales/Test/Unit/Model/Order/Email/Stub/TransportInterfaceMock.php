@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Stub;
 
 use Magento\Framework\Mail\TransportInterface;
@@ -18,6 +16,7 @@ class TransportInterfaceMock implements TransportInterface
      */
     public function sendMessage()
     {
+        return;
     }
 
     /**

@@ -3,73 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Backend\Image;
 
-use Magento\Config\Model\Config\Backend\File\RequestData\RequestDataInterface;
-use Magento\Config\Model\Config\Backend\Image\Logo;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Model\File\Uploader;
-use Magento\MediaStorage\Model\File\UploaderFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LogoTest extends TestCase
+class LogoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Logo
+     * @var \Magento\Config\Model\Config\Backend\Image\Logo
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $uploaderFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $uploaderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $requestDataMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
-        $this->uploaderFactoryMock = $this->getMockBuilder(UploaderFactory::class)
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->uploaderFactoryMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\UploaderFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->uploaderMock = $this->getMockBuilder(Uploader::class)
+        $this->uploaderMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\Uploader::class)
             ->setMethods(['setAllowedExtensions', 'save'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->uploaderFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->uploaderMock);
+            ->will($this->returnValue($this->uploaderMock));
         $this->requestDataMock = $this
-            ->getMockBuilder(RequestDataInterface::class)
+            ->getMockBuilder(\Magento\Config\Model\Config\Backend\File\RequestData\RequestDataInterface::class)
             ->setMethods(['getTmpName'])
             ->getMockForAbstractClass();
-        $mediaDirectoryMock = $this->getMockBuilder(WriteInterface::class)
+        $mediaDirectoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['getDirectoryWrite'])
             ->getMock();
         $filesystemMock->expects($this->once())
             ->method('getDirectoryWrite')
-            ->willReturn($mediaDirectoryMock);
+            ->will($this->returnValue($mediaDirectoryMock));
         $this->model = $helper->getObject(
-            Logo::class,
+            \Magento\Config\Model\Config\Backend\Image\Logo::class,
             [
                 'uploaderFactory' => $this->uploaderFactoryMock,
                 'requestData' => $this->requestDataMock,
@@ -82,14 +70,10 @@ class LogoTest extends TestCase
     {
         $this->requestDataMock->expects($this->once())
             ->method('getTmpName')
-            ->willReturn('/tmp/val');
+            ->will($this->returnValue('/tmp/val'));
         $this->uploaderMock->expects($this->once())
             ->method('setAllowedExtensions')
-            ->with(['jpg', 'jpeg', 'gif', 'png']);
-
-        $this->uploaderMock->method('save')
-            ->willReturn(['file' => 'filename']);
-
+            ->with($this->equalTo(['jpg', 'jpeg', 'gif', 'png']));
         $this->model->beforeSave();
     }
 }

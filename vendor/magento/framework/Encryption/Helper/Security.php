@@ -6,10 +6,10 @@
 
 namespace Magento\Framework\Encryption\Helper;
 
-use Laminas\Crypt\Utils;
+use Zend\Crypt\Utils;
 
 /**
- * Class implements compareString from Laminas\Crypt
+ * Class implements compareString from Zend\Crypt
  *
  * @api
  * @since 100.0.2

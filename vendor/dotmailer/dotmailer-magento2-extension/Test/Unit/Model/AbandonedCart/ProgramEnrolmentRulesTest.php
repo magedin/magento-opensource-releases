@@ -30,7 +30,7 @@ class ProgramEnrolmentRulesTest extends TestCase
      */
     private $model;
 
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->rulesFactoryMock = $this->getMockBuilder(RulesFactory::class)
             ->disableOriginalConstructor()

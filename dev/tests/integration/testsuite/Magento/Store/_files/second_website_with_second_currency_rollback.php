@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager =  \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 /** @var \Magento\Config\Model\ResourceModel\Config $configResource */
@@ -29,4 +28,4 @@ if ($websiteId) {
     );
 }
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_website_with_two_stores_rollback.php');
+require 'second_website_with_two_stores_rollback.php';

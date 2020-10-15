@@ -3,21 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Bundle\Model\Product\Type;
-use Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Bundle\Model\Product\Type;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -25,22 +17,22 @@ class CompositeTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Composite
+     * @var \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite
      */
     protected $composite;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var \Magento\Catalog\Model\Locator\LocatorInterface|MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductInterface|MockObject
      */
     protected $productMock;
 
@@ -62,22 +54,22 @@ class CompositeTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->meta = ['some_meta'];
         $this->modifiedMeta = ['modified_meta'];
         $this->modifierClass = 'SomeClass';
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
-        $this->productMock = $this->getMockForAbstractClass(ProductInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->locatorMock = $this->createMock(\Magento\Catalog\Model\Locator\LocatorInterface::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Api\Data\ProductInterface::class);
 
         $this->locatorMock->expects($this->once())
             ->method('getProduct')
             ->willReturn($this->productMock);
 
         $this->composite = $this->objectManagerHelper->getObject(
-            Composite::class,
+            \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite::class,
             [
                 'locator' => $this->locatorMock,
                 'objectManager' => $this->objectManagerMock,
@@ -92,7 +84,7 @@ class CompositeTest extends TestCase
     public function testModifyMetaWithoutModifiers()
     {
         $this->composite = $this->objectManagerHelper->getObject(
-            Composite::class,
+            \Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\Composite::class,
             [
                 'locator' => $this->locatorMock,
                 'objectManager' => $this->objectManagerMock,
@@ -113,8 +105,8 @@ class CompositeTest extends TestCase
      */
     public function testModifyMetaBundleProduct()
     {
-        /** @var ModifierInterface|MockObject $modifierMock */
-        $modifierMock = $this->getMockForAbstractClass(ModifierInterface::class);
+        /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface|MockObject $modifierMock */
+        $modifierMock = $this->createMock(\Magento\Ui\DataProvider\Modifier\ModifierInterface::class);
         $modifierMock->expects($this->once())
             ->method('modifyMeta')
             ->with($this->meta)
@@ -136,8 +128,8 @@ class CompositeTest extends TestCase
      */
     public function testModifyMetaNonBundleProduct()
     {
-        /** @var ModifierInterface|MockObject $modifierMock */
-        $modifierMock = $this->getMockForAbstractClass(ModifierInterface::class);
+        /** @var \Magento\Ui\DataProvider\Modifier\ModifierInterface|MockObject $modifierMock */
+        $modifierMock = $this->createMock(\Magento\Ui\DataProvider\Modifier\ModifierInterface::class);
         $modifierMock->expects($this->never())
             ->method('modifyMeta');
 
@@ -152,18 +144,14 @@ class CompositeTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Type "SomeClass" is not an instance of
+     * Magento\Ui\DataProvider\Modifier\ModifierInterface
      */
     public function testModifyMetaWithException()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Type "SomeClass" is not an instance of Magento\\Ui\\DataProvider\\Modifier\\ModifierInterface'
-        );
-
         /** @var \Exception|MockObject $modifierMock */
-        $modifierMock = $this->getMockBuilder(\Exception::class)->addMethods(['modifyMeta'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $modifierMock = $this->createPartialMock(\Exception::class, ['modifyMeta']);
         $modifierMock->expects($this->never())
             ->method('modifyMeta');
 

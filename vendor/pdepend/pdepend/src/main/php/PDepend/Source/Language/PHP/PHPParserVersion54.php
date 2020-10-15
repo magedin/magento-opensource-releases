@@ -193,7 +193,6 @@ abstract class PHPParserVersion54 extends PHPParserVersion53
             case Tokens::T_SQUARED_BRACKET_OPEN:
                 return true;
         }
-
         return false;
     }
 
@@ -217,7 +216,6 @@ abstract class PHPParserVersion54 extends PHPParserVersion53
                 parent::parseArray($array, $static);
                 break;
         }
-
         return $array;
     }
 

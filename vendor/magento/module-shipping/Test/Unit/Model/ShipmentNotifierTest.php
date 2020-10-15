@@ -3,31 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Shipping\Test\Unit\Model;
 
 use Magento\Framework\Exception\MailException;
-use Magento\Framework\ObjectManager\ObjectManager;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Email\Sender\ShipmentSender;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Sales\Model\Order\Status\History;
-use Magento\Sales\Model\ResourceModel\Order\Status\History\Collection;
 use Magento\Sales\Model\ResourceModel\Order\Status\History\CollectionFactory;
 use Magento\Shipping\Model\ShipmentNotifier;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
+ * Class ShipmentNotifierTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShipmentNotifierTest extends TestCase
+class ShipmentNotifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $historyCollectionFactory;
 
@@ -37,35 +28,35 @@ class ShipmentNotifierTest extends TestCase
     protected $notifier;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipment;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\ObjectManager\ObjectManager |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipmentSenderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->historyCollectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\Status\History\CollectionFactory::class,
             ['create']
         );
         $this->shipment = $this->createPartialMock(
-            Shipment::class,
+            \Magento\Sales\Model\Order\Shipment::class,
             ['__wakeUp', 'getEmailSent']
         );
         $this->shipmentSenderMock = $this->createPartialMock(
-            ShipmentSender::class,
+            \Magento\Sales\Model\Order\Email\Sender\ShipmentSender::class,
             ['send']
         );
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->notifier = new ShipmentNotifier(
             $this->historyCollectionFactory,
             $this->loggerMock,
@@ -78,13 +69,12 @@ class ShipmentNotifierTest extends TestCase
      */
     public function testNotifySuccess()
     {
-        $historyCollection = $this->getMockBuilder(Collection::class)
-            ->addMethods(['setIsCustomerNotified'])
-            ->onlyMethods(['getUnnotifiedForInstance', 'save'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $historyCollection = $this->createPartialMock(
+            \Magento\Sales\Model\ResourceModel\Order\Status\History\Collection::class,
+            ['getUnnotifiedForInstance', 'save', 'setIsCustomerNotified']
+        );
         $historyItem = $this->createPartialMock(
-            History::class,
+            \Magento\Sales\Model\Order\Status\History::class,
             ['setIsCustomerNotified', 'save', '__wakeUp']
         );
         $historyItem->expects($this->at(0))
@@ -95,17 +85,17 @@ class ShipmentNotifierTest extends TestCase
         $historyCollection->expects($this->once())
             ->method('getUnnotifiedForInstance')
             ->with($this->shipment)
-            ->willReturn($historyItem);
+            ->will($this->returnValue($historyItem));
         $this->shipment->expects($this->once())
             ->method('getEmailSent')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->historyCollectionFactory->expects($this->once())
             ->method('create')
-            ->willReturn($historyCollection);
+            ->will($this->returnValue($historyCollection));
 
         $this->shipmentSenderMock->expects($this->once())
             ->method('send')
-            ->with($this->shipment);
+            ->with($this->equalTo($this->shipment));
 
         $this->assertTrue($this->notifier->notify($this->shipment));
     }
@@ -117,7 +107,7 @@ class ShipmentNotifierTest extends TestCase
     {
         $this->shipment->expects($this->once())
             ->method('getEmailSent')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->assertFalse($this->notifier->notify($this->shipment));
     }
 
@@ -129,11 +119,11 @@ class ShipmentNotifierTest extends TestCase
         $exception = new MailException(__('Email has not been sent'));
         $this->shipmentSenderMock->expects($this->once())
             ->method('send')
-            ->with($this->shipment)
-            ->willThrowException($exception);
+            ->with($this->equalTo($this->shipment))
+            ->will($this->throwException($exception));
         $this->loggerMock->expects($this->once())
             ->method('critical')
-            ->with($exception);
+            ->with($this->equalTo($exception));
         $this->assertFalse($this->notifier->notify($this->shipment));
     }
 }

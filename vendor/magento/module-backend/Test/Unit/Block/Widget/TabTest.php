@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block\Widget;
 
-use Magento\Backend\Block\Widget\Tab;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class TabTest extends TestCase
+class TabTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helper = new ObjectManager($this);
+        $this->helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     /**
@@ -32,9 +26,9 @@ class TabTest extends TestCase
      */
     public function testGetters($method, $field, $value, $expected)
     {
-        /** @var Tab $object */
+        /** @var \Magento\Backend\Block\Widget\Tab $object */
         $object = $this->helper->getObject(
-            Tab::class,
+            \Magento\Backend\Block\Widget\Tab::class,
             ['data' => [$field => $value]]
         );
         $this->assertEquals($expected, $object->{$method}());

@@ -3,102 +3,87 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Newsletter\Test\Unit\Controller\Manage;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Newsletter\Controller\Manage;
-use Magento\Newsletter\Controller\Manage\Save;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Newsletter\Controller\Manage\Save
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Manage
+     * @var \Magento\Newsletter\Controller\Manage
      */
     private $action;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManagerMock;
 
     /**
-     * @var RedirectInterface|MockObject
+     * @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $redirectMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Framework\Data\Form\FormKey\Validator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $formKeyValidatorMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerRepositoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+            ->getMock();
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+            ->getMock();
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->redirectMock = $this->getMockBuilder(RedirectInterface::class)
+            ->getMock();
+        $this->redirectMock = $this->getMockBuilder(\Magento\Framework\App\Response\RedirectInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
+            ->getMock();
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customerSessionMock->expects($this->any())
             ->method('isLoggedIn')
-            ->willReturn(true);
-        $this->formKeyValidatorMock = $this->getMockBuilder(Validator::class)
+            ->will($this->returnValue(true));
+        $this->formKeyValidatorMock = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey\Validator::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customerRepositoryMock =
-            $this->getMockBuilder(CustomerRepositoryInterface::class)
+            $this->getMockBuilder(\Magento\Customer\Api\CustomerRepositoryInterface::class)
                 ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
-        $objectManager = new ObjectManager($this);
+                ->getMock();
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->action = $objectManager->getObject(
-            Save::class,
+            \Magento\Newsletter\Controller\Manage\Save::class,
             [
                 'request' => $this->requestMock,
                 'response' => $this->responseMock,
@@ -115,7 +100,7 @@ class SaveTest extends TestCase
     {
         $this->formKeyValidatorMock->expects($this->once())
             ->method('validate')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->redirectMock->expects($this->once())
             ->method('redirect')
             ->with($this->responseMock, 'customer/account/', []);
@@ -130,10 +115,10 @@ class SaveTest extends TestCase
     {
         $this->formKeyValidatorMock->expects($this->once())
             ->method('validate')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->customerSessionMock->expects($this->any())
             ->method('getCustomerId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->redirectMock->expects($this->once())
             ->method('redirect')
             ->with($this->responseMock, 'customer/account/', []);
@@ -149,17 +134,19 @@ class SaveTest extends TestCase
     {
         $this->formKeyValidatorMock->expects($this->once())
             ->method('validate')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->customerSessionMock->expects($this->any())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $this->customerRepositoryMock->expects($this->any())
             ->method('getById')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'customerId', 'value' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'customerId', 'value' => 'value']
+                        )
                     )
                 )
             );

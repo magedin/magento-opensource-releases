@@ -6,9 +6,6 @@
 
 namespace Vertex\Tax\Test\Integration\Builder;
 
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\State\InputMismatchException;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
@@ -47,9 +44,9 @@ class CustomerBuilder
      *      Should return a CustomerInterface.
      * @return CustomerInterface
      * @throws \TypeError
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\State\InputMismatchException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function createCustomer(callable $customerConfiguration)
     {
@@ -71,9 +68,9 @@ class CustomerBuilder
      * @param callable $customerConfiguration Receives 1 parameter of CustomerInterface.
      *      Should return a CustomerInterface.
      * @return CustomerInterface
-     * @throws InputException
-     * @throws LocalizedException
-     * @throws InputMismatchException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
     public function createExampleCustomer(callable $customerConfiguration = null)
     {

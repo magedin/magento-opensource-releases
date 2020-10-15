@@ -3,26 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Method;
 
 use Magento\Payment\Model\Method\Logger;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class LoggerTest extends TestCase
+class LoggerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Logger|MockObject */
+    /** @var Logger | \PHPUnit_Framework_MockObject_MockObject */
     private $logger;
 
-    /** @var LoggerInterface|MockObject */
+    /** @var LoggerInterface | \PHPUnit_Framework_MockObject_MockObject */
     private $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->getMockForAbstractClass(\Psr\Log\LoggerInterface::class);
         $this->logger = new Logger($this->loggerMock);
     }
 

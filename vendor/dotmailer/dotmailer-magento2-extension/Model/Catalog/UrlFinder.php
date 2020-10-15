@@ -2,6 +2,7 @@
 
 namespace Dotdigitalgroup\Email\Model\Catalog;
 
+use Dotdigitalgroup\Email\Helper\Data;
 use Dotdigitalgroup\Email\Model\Product\ParentFinder;
 use Magento\Catalog\Block\Product\ImageBuilder;
 use Magento\Catalog\Model\Product;
@@ -207,9 +208,7 @@ class UrlFinder
      */
     private function removePub($path)
     {
-        // @codingStandardsIgnoreLine
         $parsed = parse_url($path);
-
         $pathArray = explode('/', $parsed['path']);
 
         foreach ($pathArray as $key => $value) {

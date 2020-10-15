@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\ArrayType;
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\ArrayType;
 
-class ArrayTypeTest extends TestCase
+class ArrayTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|InterpreterInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Data\Argument\InterpreterInterface
      */
     protected $_itemInterpreter;
 
@@ -24,22 +19,22 @@ class ArrayTypeTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_itemInterpreter = $this->getMockForAbstractClass(
-            InterpreterInterface::class
+            \Magento\Framework\Data\Argument\InterpreterInterface::class
         );
         $this->_model = new ArrayType($this->_itemInterpreter);
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Array items are expected
      *
      * @dataProvider evaluateExceptionDataProvider
      */
     public function testEvaluateException($inputData)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Array items are expected');
         $this->_model->evaluate($inputData);
     }
 
@@ -63,9 +58,9 @@ class ArrayTypeTest extends TestCase
     {
         $this->_itemInterpreter->expects($this->any())
             ->method('evaluate')
-            ->willReturnCallback(function ($input) {
+            ->will($this->returnCallback(function ($input) {
                 return '-' . $input['value'] . '-';
-            });
+            }));
         $actual = $this->_model->evaluate($input);
         $this->assertSame($expected, $actual);
     }

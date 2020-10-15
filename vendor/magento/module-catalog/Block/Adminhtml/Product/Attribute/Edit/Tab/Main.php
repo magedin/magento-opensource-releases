@@ -7,60 +7,60 @@
 /**
  * Product attribute add/edit form main tab
  *
- * @author Magento Core Team <core@magentocommerce.com>
+ * @author     Magento Core Team <core@magentocommerce.com>
  */
 namespace Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab;
 
-use Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Apply as HelperApply;
 use Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\Form\Element\Fieldset;
-use Magento\Framework\DataObject;
 
 /**
- * Product attribute add/edit form main tab
- *
  * @api
+ * @SuppressWarnings(PHPMD.DepthOfInheritance)
  * @since 100.0.2
  */
 class Main extends AbstractMain
 {
     /**
-     * @inheritdoc
+     * Adding product form elements for editing attribute
+     *
+     * @return $this
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function _prepareForm()
     {
         parent::_prepareForm();
-
-        $this->removeUnusedFields();
-        $this->processFrontendInputTypes();
-
-        $this->_eventManager->dispatch('product_attribute_form_build_main_tab', ['form' => $this->getForm()]);
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function _getAdditionalElementTypes()
-    {
-        return ['apply' => HelperApply::class];
-    }
-
-    /**
-     * Process frontend input types for product attributes
-     *
-     * @return void
-     */
-    private function processFrontendInputTypes(): void
-    {
+        /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attributeObject */
+        $attributeObject = $this->getAttributeObject();
+        /* @var $form \Magento\Framework\Data\Form */
         $form = $this->getForm();
-        /** @var AbstractElement $frontendInputElm */
-        $frontendInputElm = $form->getElement('frontend_input');
-        $additionalTypes = $this->getAdditionalFrontendInputTypes();
+        /* @var $fieldset \Magento\Framework\Data\Form\Element\Fieldset */
+        $fieldset = $form->getElement('base_fieldset');
+        $fieldsToRemove = ['attribute_code', 'is_unique', 'frontend_class'];
 
-        $response = new DataObject();
+        foreach ($fieldset->getElements() as $element) {
+            /** @var \Magento\Framework\Data\Form\AbstractForm $element  */
+            if (substr($element->getId(), 0, strlen('default_value')) == 'default_value') {
+                $fieldsToRemove[] = $element->getId();
+            }
+        }
+        foreach ($fieldsToRemove as $id) {
+            $fieldset->removeField($id);
+        }
+
+        $frontendInputElm = $form->getElement('frontend_input');
+        $additionalTypes = [
+            ['value' => 'price', 'label' => __('Price')],
+            ['value' => 'media_image', 'label' => __('Media Image')],
+        ];
+        $additionalReadOnlyTypes = ['gallery' => __('Gallery')];
+        if (isset($additionalReadOnlyTypes[$attributeObject->getFrontendInput()])) {
+            $additionalTypes[] = [
+                'value' => $attributeObject->getFrontendInput(),
+                'label' => $additionalReadOnlyTypes[$attributeObject->getFrontendInput()],
+            ];
+        }
+
+        $response = new \Magento\Framework\DataObject();
         $response->setTypes([]);
         $this->_eventManager->dispatch('adminhtml_product_attribute_types', ['response' => $response]);
         $_hiddenFields = [];
@@ -74,51 +74,19 @@ class Main extends AbstractMain
 
         $frontendInputValues = array_merge($frontendInputElm->getValues(), $additionalTypes);
         $frontendInputElm->setValues($frontendInputValues);
+
+        $this->_eventManager->dispatch('product_attribute_form_build_main_tab', ['form' => $form]);
+
+        return $this;
     }
 
     /**
-     * Get additional Frontend Input Types for product attributes
+     * Retrieve additional element types for product attributes
      *
      * @return array
      */
-    private function getAdditionalFrontendInputTypes(): array
+    protected function _getAdditionalElementTypes()
     {
-        $additionalTypes = [
-            ['value' => 'price', 'label' => __('Price')],
-            ['value' => 'media_image', 'label' => __('Media Image')],
-        ];
-
-        $additionalReadOnlyTypes = ['gallery' => __('Gallery')];
-        $attributeObject = $this->getAttributeObject();
-        if (isset($additionalReadOnlyTypes[$attributeObject->getFrontendInput()])) {
-            $additionalTypes[] = [
-                'value' => $attributeObject->getFrontendInput(),
-                'label' => $additionalReadOnlyTypes[$attributeObject->getFrontendInput()],
-            ];
-        }
-
-        return $additionalTypes;
-    }
-
-    /**
-     * Remove unused form fields
-     *
-     * @return void
-     */
-    private function removeUnusedFields(): void
-    {
-        $form = $this->getForm();
-        /* @var $fieldset Fieldset */
-        $fieldset = $form->getElement('base_fieldset');
-        $fieldsToRemove = ['attribute_code', 'is_unique', 'frontend_class'];
-        foreach ($fieldset->getElements() as $element) {
-            /** @var AbstractElement $element */
-            if (substr($element->getId(), 0, strlen('default_value')) === 'default_value') {
-                $fieldsToRemove[] = $element->getId();
-            }
-        }
-        foreach ($fieldsToRemove as $id) {
-            $fieldset->removeField($id);
-        }
+        return ['apply' => \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Apply::class];
     }
 }

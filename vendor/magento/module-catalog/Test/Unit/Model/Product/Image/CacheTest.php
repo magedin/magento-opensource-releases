@@ -3,86 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Image;
 
-use Magento\Catalog\Helper\Image;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Image\Cache;
 use Magento\Framework\App\Area;
-use Magento\Framework\Config\View;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\ConfigInterface;
-use Magento\Theme\Model\ResourceModel\Theme\Collection;
-use Magento\Theme\Model\Theme;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Cache
+     * @var \Magento\Catalog\Model\Product\Image\Cache
      */
     protected $model;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\View\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewConfig;
 
     /**
-     * @var View|MockObject
+     * @var \Magento\Framework\Config\View|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Theme\Model\ResourceModel\Theme\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $themeCollection;
 
     /**
-     * @var Image|MockObject
+     * @var \Magento\Catalog\Helper\Image|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $imageHelper;
 
     /**
-     * @var \Magento\Framework\Data\Collection|MockObject
+     * @var \Magento\Framework\Data\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaGalleryCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->product = $this->getMockBuilder(Product::class)
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->viewConfig = $this->getMockBuilder(ConfigInterface::class)
+        $this->viewConfig = $this->getMockBuilder(\Magento\Framework\View\ConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->config = $this->getMockBuilder(View::class)
+        $this->config = $this->getMockBuilder(\Magento\Framework\Config\View::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->themeCollection = $this->getMockBuilder(Collection::class)
+        $this->themeCollection = $this->getMockBuilder(\Magento\Theme\Model\ResourceModel\Theme\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->imageHelper = $this->getMockBuilder(Image::class)
+        $this->imageHelper = $this->getMockBuilder(\Magento\Catalog\Helper\Image::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -92,7 +80,7 @@ class CacheTest extends TestCase
 
         $this->objectManager = new ObjectManager($this);
         $this->model = $this->objectManager->getObject(
-            Cache::class,
+            \Magento\Catalog\Model\Product\Image\Cache::class,
             [
                 'viewConfig' => $this->viewConfig,
                 'themeCollection' => $this->themeCollection,
@@ -108,7 +96,7 @@ class CacheTest extends TestCase
     {
         $imageFile = 'image.jpg';
         $imageItem = $this->objectManager->getObject(
-            DataObject::class,
+            \Magento\Framework\DataObject::class,
             [
                 'data' => ['file' => $imageFile]
             ]
@@ -127,7 +115,7 @@ class CacheTest extends TestCase
             ->with('Magento_Catalog')
             ->willReturn($data);
 
-        $themeMock = $this->getMockBuilder(Theme::class)
+        $themeMock = $this->getMockBuilder(\Magento\Theme\Model\Theme::class)
             ->disableOriginalConstructor()
             ->getMock();
         $themeMock->expects($this->exactly(3))
@@ -148,7 +136,7 @@ class CacheTest extends TestCase
 
         $this->imageHelper->expects($this->exactly(3))
             ->method('init')
-            ->willReturnMap([
+            ->will($this->returnValueMap([
                 [
                     $this->product,
                     'product_image',
@@ -167,7 +155,7 @@ class CacheTest extends TestCase
                     $this->getImageData('product_thumbnail'),
                     $this->imageHelper
                 ],
-            ]);
+            ]));
         $this->imageHelper->expects($this->exactly(3))
             ->method('setImageFile')
             ->with($imageFile)
@@ -195,7 +183,8 @@ class CacheTest extends TestCase
             ->willReturnSelf();
 
         $this->imageHelper->expects($this->exactly(3))
-            ->method('save')->willReturnSelf();
+            ->method('save')
+            ->will($this->returnSelf());
 
         $this->model->generate($this->product);
     }

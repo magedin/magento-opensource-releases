@@ -24,7 +24,7 @@ class DependencyTest extends \PHPUnit\Framework\TestCase
      */
     protected $builder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fixtureDir = realpath(__DIR__ . '/../_files') . '/';
         $this->sourceFilename = $this->fixtureDir . 'dependencies.csv';
@@ -58,7 +58,7 @@ class DependencyTest extends \PHPUnit\Framework\TestCase
         $this->assertFileEquals($this->fixtureDir . 'expected/without-dependencies.csv', $this->sourceFilename);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         if (file_exists($this->sourceFilename)) {
             unlink($this->sourceFilename);

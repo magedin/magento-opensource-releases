@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor;
 
 use Magento\Eav\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\AttributeSetEntityTypeCodeFilter;
@@ -12,10 +10,8 @@ use Magento\Eav\Model\Config;
 use Magento\Eav\Model\Entity\Type;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
 use Magento\Framework\Api\Filter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AttributeSetEntityTypeCodeFilterTest extends TestCase
+class AttributeSetEntityTypeCodeFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeSetEntityTypeCodeFilter
@@ -23,11 +19,11 @@ class AttributeSetEntityTypeCodeFilterTest extends TestCase
     private $filter;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eavConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->eavConfig = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()

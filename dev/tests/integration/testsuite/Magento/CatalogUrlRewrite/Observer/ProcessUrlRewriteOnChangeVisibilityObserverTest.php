@@ -37,7 +37,7 @@ class ProcessUrlRewriteOnChangeVisibilityObserverTest extends \PHPUnit\Framework
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);

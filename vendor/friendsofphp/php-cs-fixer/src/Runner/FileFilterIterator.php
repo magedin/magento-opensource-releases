@@ -13,9 +13,9 @@
 namespace PhpCsFixer\Runner;
 
 use PhpCsFixer\Cache\CacheManagerInterface;
-use PhpCsFixer\Event\Event;
 use PhpCsFixer\FileReader;
 use PhpCsFixer\FixerFileProcessedEvent;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -41,14 +41,10 @@ final class FileFilterIterator extends \FilterIterator
     private $visitedElements = [];
 
     public function __construct(
-        \Traversable $iterator,
+        \Iterator $iterator,
         EventDispatcherInterface $eventDispatcher = null,
         CacheManagerInterface $cacheManager
     ) {
-        if (!$iterator instanceof \Iterator) {
-            $iterator = new \IteratorIterator($iterator);
-        }
-
         parent::__construct($iterator);
 
         $this->eventDispatcher = $eventDispatcher;
@@ -101,6 +97,7 @@ final class FileFilterIterator extends \FilterIterator
 
     /**
      * @param string $name
+     * @param Event  $event
      */
     private function dispatchEvent($name, Event $event)
     {

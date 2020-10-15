@@ -63,7 +63,7 @@ class CategoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->categoryCollectionFactory = $this->objectManager->create(CollectionFactory::class);

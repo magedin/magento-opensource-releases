@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Autoload\Test\Unit;
 
+use \Magento\Framework\Autoload\Populator;
+
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Autoload\AutoloaderInterface;
-use Magento\Framework\Autoload\Populator;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class PopulatorTest extends TestCase
+class PopulatorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var DirectoryList|MockObject */
+    /** @var \Magento\Framework\App\Filesystem\DirectoryList | \PHPUnit_Framework_MockObject_MockObject */
     protected $mockDirectoryList;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->mockDirectoryList = $this->getMockBuilder(DirectoryList::class)
+        $this->mockDirectoryList = $this->getMockBuilder(\Magento\Framework\App\Filesystem\DirectoryList::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -32,9 +27,9 @@ class PopulatorTest extends TestCase
 
     public function testPopulateMappings()
     {
-        $mockAutoloader = $this->getMockBuilder(AutoloaderInterface::class)
+        $mockAutoloader = $this->getMockBuilder(\Magento\Framework\Autoload\AutoloaderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $mockAutoloader->expects($this->once())
             ->method('addPsr4')

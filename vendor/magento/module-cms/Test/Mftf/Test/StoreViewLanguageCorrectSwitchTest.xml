@@ -20,7 +20,7 @@
             <group value="Cms"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!-- Create Cms Pages -->
             <createData entity="_newDefaultCmsPage" stepKey="createFirstCmsPage"/>
@@ -32,7 +32,7 @@
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreView">
                 <argument name="customStore" value="NewStoreViewData"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create StoreView -->
@@ -41,7 +41,7 @@
         </actionGroup>
 
         <!-- Add StoreView To Cms Page-->
-        <actionGroup ref="AddStoreViewToCmsPageActionGroup" stepKey="gotToCmsPage">
+        <actionGroup ref="AddStoreViewToCmsPage" stepKey="gotToCmsPage">
             <argument name="CMSPage" value="$$createSecondCmsPage$$"/>
             <argument name="storeViewName" value="{{NewStoreViewData.name}}"/>
         </actionGroup>

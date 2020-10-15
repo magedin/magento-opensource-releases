@@ -11,11 +11,14 @@ namespace Magento\Framework\Filter\Test\Unit\DirectiveProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
+/**
+ *
+ */
 class SimpleDirective extends TestCase
 {
     private $regex;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $directive = $objectManager->getObject(\Magento\Framework\Filter\DirectiveProcessor\SimpleDirective::class);

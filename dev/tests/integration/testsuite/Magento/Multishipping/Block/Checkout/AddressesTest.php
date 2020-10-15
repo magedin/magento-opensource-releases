@@ -24,7 +24,7 @@ class AddressesTest extends \PHPUnit\Framework\TestCase
      */
     protected $_objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_objectManager = Bootstrap::getObjectManager();
         /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */

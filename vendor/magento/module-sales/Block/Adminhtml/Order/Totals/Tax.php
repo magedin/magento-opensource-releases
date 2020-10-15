@@ -5,9 +5,6 @@
  */
 namespace Magento\Sales\Block\Adminhtml\Order\Totals;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Math\Random;
-
 /**
  * Adminhtml order tax totals block
  *
@@ -53,7 +50,6 @@ class Tax extends \Magento\Tax\Block\Sales\Order\Tax
      * @param \Magento\Tax\Model\Sales\Order\TaxFactory $taxOrderFactory
      * @param \Magento\Sales\Helper\Admin $salesAdminHelper
      * @param array $data
-     * @param Random $randomHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -62,15 +58,12 @@ class Tax extends \Magento\Tax\Block\Sales\Order\Tax
         \Magento\Tax\Model\Calculation $taxCalculation,
         \Magento\Tax\Model\Sales\Order\TaxFactory $taxOrderFactory,
         \Magento\Sales\Helper\Admin $salesAdminHelper,
-        array $data = [],
-        ?Random $randomHelper = null
+        array $data = []
     ) {
         $this->_taxHelper = $taxHelper;
         $this->_taxCalculation = $taxCalculation;
         $this->_taxOrderFactory = $taxOrderFactory;
         $this->_salesAdminHelper = $salesAdminHelper;
-        $data['taxHelper'] = $this->_taxHelper;
-        $data['randomHelper'] = $randomHelper ?? ObjectManager::getInstance()->get(Random::class);
         parent::__construct($context, $taxConfig, $data);
     }
 

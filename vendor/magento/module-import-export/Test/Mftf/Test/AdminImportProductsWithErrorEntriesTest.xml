@@ -19,15 +19,15 @@
         </annotations>
         <before>
             <!--Login to Admin Page-->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!--Clear products grid filters-->
             <actionGroup ref="AdminClearFiltersActionGroup" stepKey="clearProductsGridFilters"/>
             <!--Delete all imported products-->
-            <actionGroup ref="DeleteProductsIfTheyExistActionGroup" stepKey="deleteAllProducts"/>
+            <actionGroup ref="deleteProductsIfTheyExist" stepKey="deleteAllProducts"/>
             <!--Logout from Admin page-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdminPage"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdminPage"/>
         </after>
 
         <!--Import products with "Skip error entries"-->

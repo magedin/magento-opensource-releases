@@ -19,6 +19,7 @@ namespace PHPMD\Rule\CleanCode;
 
 use PDepend\Source\AST\ASTAssignmentExpression;
 use PDepend\Source\AST\ASTExpression;
+use PDepend\Source\AST\ASTStatement;
 use PHPMD\AbstractNode;
 use PHPMD\AbstractRule;
 use PHPMD\Node\ASTNode;
@@ -40,14 +41,6 @@ use PHPMD\Rule\MethodAware;
 class IfStatementAssignment extends AbstractRule implements MethodAware, FunctionAware
 {
     /**
-     * @var array List of statement types where to forbid assignation.
-     */
-    protected $ifStatements = array(
-        'IfStatement',
-        'ElseIfStatement',
-    );
-
-    /**
      * This method checks if method/function has if clauses
      * that use assignment instead of comparison.
      *
@@ -67,26 +60,31 @@ class IfStatementAssignment extends AbstractRule implements MethodAware, Functio
      * Extracts if and elseif statements from method/function body
      *
      * @param AbstractNode $node An instance of MethodNode or FunctionNode class
-     * @return ASTNode[]
+     * @return ASTStatement[]
      */
     private function getStatements(AbstractNode $node)
     {
-        return call_user_func_array('array_merge', array_map(function ($type) use ($node) {
-            return $node->findChildrenOfType($type);
-        }, $this->ifStatements));
+        $ifStatements = $node->findChildrenOfType('IfStatement');
+        $elseIfStatements = $node->findChildrenOfType('ElseIfStatement');
+
+        return array_merge($ifStatements, $elseIfStatements);
     }
 
     /**
      * Extracts all expression from statements array
      *
-     * @param ASTNode[] $statements Array of if and elseif clauses
+     * @param ASTStatement[] $statements Array of if and elseif clauses
      * @return ASTExpression[]
      */
     private function getExpressions(array $statements)
     {
-        return array_map(function (ASTNode $statement) {
-            return $statement->getFirstChildOfType('Expression');
-        }, $statements);
+        $expressions = array();
+        /** @var ASTNode $statement */
+        foreach ($statements as $statement) {
+            $expressions = array_merge($expressions, $statement->findChildrenOfType('Expression'));
+        }
+
+        return $expressions;
     }
 
     /**
@@ -124,7 +122,7 @@ class IfStatementAssignment extends AbstractRule implements MethodAware, Functio
             $uniqueHash = $assignment->getStartColumn() . ':' . $assignment->getStartLine();
             if (!in_array($uniqueHash, $processesViolations)) {
                 $processesViolations[] = $uniqueHash;
-                $this->addViolation($node, array($assignment->getStartLine(), $assignment->getStartColumn()));
+                $this->addViolation($node, array($assignment->getStartColumn(), $assignment->getStartLine()));
             }
         }
     }

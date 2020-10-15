@@ -60,7 +60,7 @@ class SendmailTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -72,7 +72,7 @@ class SendmailTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
 

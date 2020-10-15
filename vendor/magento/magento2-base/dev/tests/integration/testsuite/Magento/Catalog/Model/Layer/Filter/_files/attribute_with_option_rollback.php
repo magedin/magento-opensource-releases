@@ -32,7 +32,7 @@ foreach ($options as $option) {
         \Magento\Catalog\Model\Product::class
     );
     $product = $product->loadByAttribute('sku', 'simple_product_' . $option->getId());
-    if ($product instanceof \Magento\Catalog\Model\Product && $product->getId()) {
+    if ($product->getId()) {
         $product->delete();
     }
 }

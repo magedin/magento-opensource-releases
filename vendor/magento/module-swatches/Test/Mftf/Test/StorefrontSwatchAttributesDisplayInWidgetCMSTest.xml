@@ -30,17 +30,18 @@
 
         <after>
             <!--delete created configurable product-->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="BaseConfigurableProduct"/>
             </actionGroup>
             <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPage"/>
             <waitForPageLoad stepKey="waitForAdminProductGridLoad"/>
             <conditionalClick selector="{{AdminProductGridFilterSection.clearFilters}}" dependentSelector="{{AdminProductGridFilterSection.clearFilters}}" visible="true" stepKey="clickClearFiltersInitial"/>
-            <actionGroup ref="AdminDeleteProductAttributeByLabelActionGroup" stepKey="deleteAttribute">
-                <argument name="productAttributeLabel" value="{{visualSwatchAttribute.default_label}}"/>
+            <actionGroup ref="deleteProductAttributeByLabel" stepKey="deleteAttribute">
+                <argument name="ProductAttribute" value="visualSwatchAttribute"/>
             </actionGroup>
             <!--delete root category-->
-            <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="navigateToCategoryPage"/>
+            <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPage"/>
+            <waitForPageLoad time="30" stepKey="waitForPageCategoryLoad"/>
             <click selector="{{AdminCategorySidebarTreeSection.categoryInTree('$$createRootCategory.name$$')}}" stepKey="clickOnDefaultRootCategory"/>
             <waitForPageLoad stepKey="waitForPageDefaultCategoryEditLoad" />
             <seeElement selector="{{AdminCategoryMainActionsSection.DeleteButton}}" stepKey="assertDeleteButtonIsPresent1"/>
@@ -50,17 +51,17 @@
             <waitForElementVisible selector="{{AdminCategoryMessagesSection.SuccessMessage}}" stepKey="waitForPageReloadAfterDeleteDefaultCategory"/>
             <magentoCLI command="config:set cms/wysiwyg/enabled enabled" stepKey="enableWYSIWYG"/>
             <!--logout-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
         </after>
         <!--Login-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginToAdmin"/>
          <!--Create a configurable swatch product via the UI -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="goToProductIndex"/>
         <waitForPageLoad stepKey="waitForProductPage"/>
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateProductPage">
+        <actionGroup ref="goToCreateProductPage" stepKey="goToCreateProductPage">
             <argument name="product" value="BaseConfigurableProduct"/>
         </actionGroup>
-        <actionGroup ref="FillMainProductFormActionGroup" stepKey="fillProductForm">
+        <actionGroup ref="fillMainProductForm" stepKey="fillProductForm">
             <argument name="product" value="BaseConfigurableProduct"/>
         </actionGroup>
         <searchAndMultiSelectOption selector="{{AdminProductFormSection.categoriesDropdown}}" parameterArray="[$$createRootCategory.name$$]" stepKey="searchAndSelectCategory"/>
@@ -76,7 +77,7 @@
         <click selector="{{CmsNewPagePageSeoSection.header}}" stepKey="clickToExpandSEOSection"/>
         <scrollTo selector="{{CmsNewPagePageSeoSection.urlKey}}" stepKey="scrollToUrlKey"/>
         <grabValueFrom selector="{{CmsNewPagePageSeoSection.urlKey}}"  stepKey="grabTextFromUrlKey"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+        <actionGroup ref="logout" stepKey="logout"/>
 
         <!--Open Storefront page for the new created page-->
         <amOnPage url="{{StorefrontHomePage.url}}$grabTextFromUrlKey" stepKey="gotToCreatedCmsPage"/>
@@ -85,7 +86,7 @@
         <seeElement selector="{{StorefrontProductInfoMainSection.productSwatch(visualSwatchOption2.default_label)}}" stepKey="assertAddedWidgetM"/>
 
         <!--Login to delete CMS page-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         <actionGroup ref="DeletePageByUrlKeyActionGroup" stepKey="deletePage">
             <argument name="UrlKey" value="$grabTextFromUrlKey"/>
         </actionGroup>

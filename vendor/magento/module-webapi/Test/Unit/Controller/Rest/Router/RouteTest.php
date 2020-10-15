@@ -5,18 +5,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Webapi\Test\Unit\Controller\Rest\Router;
+
+use \Magento\Webapi\Controller\Rest\Router\Route;
 
 use Magento\Framework\App\RequestInterface as Request;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Webapi\Controller\Rest\Router\Route;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RouteTest extends TestCase
+class RouteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -24,11 +20,11 @@ class RouteTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var Request|MockObject
+     * @var Request|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -46,7 +42,7 @@ class RouteTest extends TestCase
     {
         /** @var Route $model */
         $model = $this->objectManager->getObject(
-            Route::class,
+            \Magento\Webapi\Controller\Rest\Router\Route::class,
             ['route' => '/V1/one']
         );
 
@@ -70,7 +66,7 @@ class RouteTest extends TestCase
     {
         /** @var Route $model */
         $model = $this->objectManager->getObject(
-            Route::class,
+            \Magento\Webapi\Controller\Rest\Router\Route::class,
             ['route' => $route]
         );
 

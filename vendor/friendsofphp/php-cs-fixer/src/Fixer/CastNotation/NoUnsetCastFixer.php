@@ -55,7 +55,8 @@ final class NoUnsetCastFixer extends AbstractFixer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixUnsetCast(Tokens $tokens, $index)
     {

@@ -73,7 +73,7 @@ class ASTInterface extends AbstractASTClassOrInterface
     /**
      * Sets a reference onto the parent class of this class node.
      *
-     * @param  \PDepend\Source\AST\ASTClassReference $classReference
+     * @param  \PDepend\Source\AST\ASTClassReference
      * @return void
      * @throws \BadMethodCallException
      * @since  0.9.5

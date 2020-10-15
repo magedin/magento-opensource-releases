@@ -19,17 +19,18 @@
         </annotations>
         <before>
             <!--Login as Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
             <!--Create Parent Category -->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
         </before>
         <after>
             <!--Delete created data-->
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!--Open Category Page-->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="openAdminCategoryIndexPage"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="openAdminCategoryIndexPage"/>
+        <waitForPageLoad stepKey="waitForPageToLoaded"/>
         <!--Create subcategory under parent category -->
         <click selector="{{AdminCategorySidebarTreeSection.expandAll}}" stepKey="clickOnExpandTree"/>
         <waitForPageLoad stepKey="waitForCategoryToLoad"/>

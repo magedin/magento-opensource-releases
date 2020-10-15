@@ -24,7 +24,7 @@ class CircularTest extends \PHPUnit\Framework\TestCase
      */
     protected $builder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fixtureDir = realpath(__DIR__ . '/../_files') . '/';
         $this->sourceFilename = $this->fixtureDir . 'circular-dependencies.csv';
@@ -61,7 +61,7 @@ class CircularTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         if (file_exists($this->sourceFilename)) {
             unlink($this->sourceFilename);

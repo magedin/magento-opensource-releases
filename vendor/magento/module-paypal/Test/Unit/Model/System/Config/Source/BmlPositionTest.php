@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\System\Config\Source;
 
 use Magento\Paypal\Model\System\Config\Source\BmlPosition;
-use PHPUnit\Framework\TestCase;
 
-class BmlPositionTest extends TestCase
+class BmlPositionTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  BmlPosition */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new BmlPosition();
     }

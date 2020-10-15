@@ -16,48 +16,46 @@ use Magento\Newsletter\Model\Queue;
 use Magento\Newsletter\Model\ResourceModel\Problem as ProblemResource;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Newsletter\Model\SubscriberFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Newsletter\Model\Problem
+ * Class ProblemTest
  */
-class ProblemTest extends TestCase
+class ProblemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $registryMock;
 
     /**
-     * @var SubscriberFactory|MockObject
+     * @var SubscriberFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subscriberFactoryMock;
 
     /**
-     * @var Subscriber|MockObject
+     * @var Subscriber|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subscriberMock;
 
     /**
-     * @var ProblemResource|MockObject
+     * @var ProblemResource|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceModelMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractDbMock;
 
     /**
      * @var ObjectManager
      */
-    private $objectManager;
+    protected $objectManager;
 
     /**
      * @var ProblemModel
@@ -67,7 +65,7 @@ class ProblemTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
@@ -182,7 +180,7 @@ class ProblemTest extends TestCase
     {
         $this->subscriberMock->expects($this->never())
             ->method('__call')
-            ->with('setSubscriberStatus');
+            ->with($this->equalTo('setSubscriberStatus'));
 
         $result = $this->problemModel->unsubscribe();
 
@@ -197,11 +195,11 @@ class ProblemTest extends TestCase
         $this->setSubscriber();
         $this->subscriberMock->expects($this->at(1))
             ->method('__call')
-            ->with('setSubscriberStatus', [Subscriber::STATUS_UNSUBSCRIBED])
+            ->with($this->equalTo('setSubscriberStatus'), $this->equalTo([Subscriber::STATUS_UNSUBSCRIBED]))
             ->willReturnSelf();
         $this->subscriberMock->expects($this->at(2))
             ->method('__call')
-            ->with('setIsStatusChanged')
+            ->with($this->equalTo('setIsStatusChanged'))
             ->willReturnSelf();
         $this->subscriberMock->expects($this->once())
             ->method('save');

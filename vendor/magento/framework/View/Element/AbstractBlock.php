@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Element;
 
@@ -824,7 +823,7 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
         $showTime = false,
         $timezone = null
     ) {
-        $date = $date instanceof \DateTimeInterface ? $date : new \DateTime($date ?? 'now');
+        $date = $date instanceof \DateTimeInterface ? $date : new \DateTime($date);
         return $this->_localeDate->formatDateTime(
             $date,
             $format,
@@ -847,7 +846,7 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
         $format = \IntlDateFormatter::SHORT,
         $showDate = false
     ) {
-        $time = $time instanceof \DateTimeInterface ? $time : new \DateTime($time ?? 'now');
+        $time = $time instanceof \DateTimeInterface ? $time : new \DateTime($time);
         return $this->_localeDate->formatDateTime(
             $time,
             $showDate ? $format : \IntlDateFormatter::NONE,
@@ -876,14 +875,10 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      */
     public static function extractModuleName($className)
     {
-        if (!$className) {
-            return '';
-        }
-
         $namespace = substr(
             $className,
             0,
-            (int)strpos($className, '\\' . 'Block' . '\\')
+            strpos($className, '\\' . 'Block' . '\\')
         );
         return str_replace('\\', '_', $namespace);
     }
@@ -894,7 +889,6 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      * @param string|array $data
      * @param array|null $allowedTags
      * @return string
-     * @deprecated 103.0.0 Use $escaper directly in templates and in blocks.
      */
     public function escapeHtml($data, $allowedTags = null)
     {
@@ -907,7 +901,6 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      * @param string $string
      * @return string
      * @since 101.0.0
-     * @deprecated 103.0.0 Use $escaper directly in templates and in blocks.
      */
     public function escapeJs($string)
     {
@@ -921,7 +914,6 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      * @param boolean $escapeSingleQuote
      * @return string
      * @since 101.0.0
-     * @deprecated 103.0.0 Use $escaper directly in templates and in blocks.
      */
     public function escapeHtmlAttr($string, $escapeSingleQuote = true)
     {
@@ -934,7 +926,6 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      * @param string $string
      * @return string
      * @since 101.0.0
-     * @deprecated 103.0.0 Use $escaper directly in templates and in blocks.
      */
     public function escapeCss($string)
     {
@@ -962,7 +953,6 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
      *
      * @param string $string
      * @return string
-     * @deprecated 103.0.0 Use $escaper directly in templates and in blocks.
      */
     public function escapeUrl($string)
     {
@@ -997,11 +987,10 @@ abstract class AbstractBlock extends \Magento\Framework\DataObject implements Bl
     }
 
     /**
-     * Escape single quotes/apostrophes ('), or other specified $quote character in javascript
+     * Escape quotes in java scripts
      *
-     * @param string|string[]|array $data
+     * @param string|array $data
      * @param string $quote
-     *
      * @return string|array
      * @deprecated 101.0.0
      */

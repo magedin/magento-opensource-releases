@@ -3,19 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\CopyConstructor;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CopyConstructor\Related;
-use Magento\Catalog\Model\Product\Link;
-use Magento\Catalog\Model\ResourceModel\Product\Link\Collection;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RelatedTest extends TestCase
+class RelatedTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \\Magento\Catalog\Model\Product\CopyConstructor\Related
@@ -23,88 +13,87 @@ class RelatedTest extends TestCase
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_duplicateMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_linkMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_linkCollectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Related();
+        $this->_model = new \Magento\Catalog\Model\Product\CopyConstructor\Related();
 
-        $this->_productMock = $this->createMock(Product::class);
+        $this->_productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
 
-        $this->_duplicateMock = $this->getMockBuilder(Product::class)
-            ->addMethods(['setRelatedLinkData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_duplicateMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            ['setRelatedLinkData', '__wakeup']
+        );
 
-        $this->_linkMock = $this->getMockBuilder(Link::class)
-            ->addMethods(['getRelatedLinkCollection'])
-            ->onlyMethods([ 'getAttributes', 'useRelatedLinks'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_linkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Link::class,
+            ['__wakeup', 'getAttributes', 'getRelatedLinkCollection', 'useRelatedLinks']
+        );
 
         $this->_productMock->expects(
             $this->any()
         )->method(
             'getLinkInstance'
-        )->willReturn(
-            $this->_linkMock
+        )->will(
+            $this->returnValue($this->_linkMock)
         );
     }
 
     public function testBuild()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $expectedData = ['100500' => ['some' => 'data']];
 
         $attributes = ['attributeOne' => ['code' => 'one'], 'attributeTwo' => ['code' => 'two']];
 
         $this->_linkMock->expects($this->once())->method('useRelatedLinks');
 
-        $this->_linkMock->expects($this->once())->method('getAttributes')->willReturn($attributes);
+        $this->_linkMock->expects($this->once())->method('getAttributes')->will($this->returnValue($attributes));
 
-        $productLinkMock = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Link::class)
-            ->addMethods(['getLinkedProductId', 'toArray'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $productLinkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Product\Link::class,
+            ['__wakeup', 'getLinkedProductId', 'toArray']
+        );
 
-        $productLinkMock->expects($this->once())->method('getLinkedProductId')->willReturn('100500');
+        $productLinkMock->expects($this->once())->method('getLinkedProductId')->will($this->returnValue('100500'));
         $productLinkMock->expects(
             $this->once()
         )->method(
             'toArray'
         )->with(
             ['one', 'two']
-        )->willReturn(
-            ['some' => 'data']
+        )->will(
+            $this->returnValue(['some' => 'data'])
         );
 
         $collectionMock = $helper->getCollectionMock(
-            Collection::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Collection::class,
             [$productLinkMock]
         );
         $this->_productMock->expects(
             $this->once()
         )->method(
             'getRelatedLinkCollection'
-        )->willReturn(
-            $collectionMock
+        )->will(
+            $this->returnValue($collectionMock)
         );
 
         $this->_duplicateMock->expects($this->once())->method('setRelatedLinkData')->with($expectedData);

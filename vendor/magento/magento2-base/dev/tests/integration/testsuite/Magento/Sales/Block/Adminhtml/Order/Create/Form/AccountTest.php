@@ -51,7 +51,7 @@ class AccountTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         parent::setUp();
@@ -94,26 +94,26 @@ class AccountTest extends TestCase
 
         $expectedFields = ['group_id', 'email'];
         $form = $this->accountBlock->getForm();
-        $this->assertEquals(1, $form->getElements()->count(), "Form has invalid number of fieldsets");
+        self::assertEquals(1, $form->getElements()->count(), "Form has invalid number of fieldsets");
         $fieldset = $form->getElements()[0];
         $content = $form->toHtml();
 
-        $this->assertEquals(count($expectedFields), $fieldset->getElements()->count());
+        self::assertEquals(count($expectedFields), $fieldset->getElements()->count());
 
         foreach ($fieldset->getElements() as $element) {
-            $this->assertTrue(
+            self::assertTrue(
                 in_array($element->getId(), $expectedFields),
                 sprintf('Unexpected field "%s" in form.', $element->getId())
             );
         }
 
-        self::assertRegExp(
-            '/<option value="'.$customerGroup.'".*?selected="selected"\>Wholesale\<\/option\>/is',
+        self::assertContains(
+            '<option value="'.$customerGroup.'" selected="selected">Wholesale</option>',
             $content,
             'The Customer Group specified for the chosen customer should be selected.'
         );
 
-        self::assertStringContainsString(
+        self::assertContains(
             'value="'.$customer->getEmail().'"',
             $content,
             'The Customer Email specified for the chosen customer should be input '
@@ -150,14 +150,14 @@ class AccountTest extends TestCase
         $form->setUseContainer(true);
         $content = $form->toHtml();
 
-        self::assertRegExp(
-            '/\<option value="1".*?selected="selected"\>Yes\<\/option\>/is',
+        self::assertContains(
+            '<option value="1" selected="selected">Yes</option>',
             $content,
             'Default value for user defined custom attribute should be selected.'
         );
 
-        self::assertRegExp(
-            '/<option value="3".*?selected="selected"\>Retailer\<\/option\>/is',
+        self::assertContains(
+            '<option value="3" selected="selected">Retailer</option>',
             $content,
             'The Customer Group specified for the chosen store should be selected.'
         );

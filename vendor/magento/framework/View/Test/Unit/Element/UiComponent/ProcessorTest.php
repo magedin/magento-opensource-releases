@@ -3,28 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test for view Messages model
  */
 namespace Magento\Framework\View\Test\Unit\Element\UiComponent;
 
-use Magento\Framework\View\Element\UiComponent\ObserverInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Framework\View\Element\UiComponentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\ObserverInterface;
 
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UiComponentInterface|MockObject
+     * @var UiComponentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $component;
 
     /**
-     * @var ObserverInterface|MockObject
+     * @var ObserverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $observer;
 
@@ -33,11 +30,11 @@ class ProcessorTest extends TestCase
      */
     protected $processor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->component = $this->getMockBuilder(UiComponentInterface::class)
+        $this->component = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->getMockForAbstractClass();
-        $this->observer = $this->getMockBuilder(ObserverInterface::class)
+        $this->observer = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ObserverInterface::class)
             ->getMockForAbstractClass();
         $this->processor = new Processor();
     }
@@ -59,7 +56,7 @@ class ProcessorTest extends TestCase
             ->method('update')
             ->with($this->component);
         /** @var UiComponentInterface $component2 */
-        $component2 = $this->getMockBuilder(UiComponentInterface::class)
+        $component2 = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->getMockForAbstractClass();
         $component2->expects($this->any())
             ->method('getComponentName')

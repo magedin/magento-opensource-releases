@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\MessageQueue\Test\Unit;
 
@@ -19,13 +18,11 @@ use Magento\Framework\MessageQueue\Publisher\Config\PublisherConnection;
 use Magento\Framework\MessageQueue\Publisher\ConfigInterface as PublisherConfig;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\MysqlMq\Model\Driver\Exchange;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/** @covers \Magento\Framework\MessageQueue\Publisher
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+/**
+ * Class PublisherTest @covers \Magento\Framework\MessageQueue\Publisher
  */
-class PublisherTest extends TestCase
+class PublisherTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test subject.
@@ -37,49 +34,49 @@ class PublisherTest extends TestCase
     /**
      * Publisher config mock.
      *
-     * @var PublisherConfig|MockObject
+     * @var PublisherConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $publisherConfig;
 
     /**
      * Amqp config mock.
      *
-     * @var AmqpConfig|MockObject
+     * @var AmqpConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $amqpConfig;
 
     /**
      * Message validator mock.
      *
-     * @var MessageValidator|MockObject
+     * @var MessageValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageValidator;
 
     /**
      * Message encoder mock.
      *
-     * @var MessageEncoder|MockObject
+     * @var MessageEncoder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageEncoder;
 
     /**
      * Exchange repository mock.
      *
-     * @var ExchangeRepository|MockObject
+     * @var ExchangeRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $exchangeRepository;
 
     /**
      * Envelope factory mock.
      *
-     * @var EnvelopeFactory|MockObject
+     * @var EnvelopeFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $envelopeFactory;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->publisherConfig = $this->getMockBuilder(PublisherConfig::class)
             ->disableOriginalConstructor()

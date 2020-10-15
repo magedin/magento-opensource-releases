@@ -3,32 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit;
 
-use Magento\Framework\MessageQueue\ConsumerConfigurationInterface;
-use Magento\Framework\MessageQueue\EnvelopeInterface;
-use Magento\Framework\MessageQueue\MergedMessageInterface;
-use Magento\Framework\MessageQueue\MergedMessageProcessor;
-use Magento\Framework\MessageQueue\MessageStatusProcessor;
-use Magento\Framework\MessageQueue\QueueInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for MergedMessageProcessor.
  */
-class MergedMessageProcessorTest extends TestCase
+class MergedMessageProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MessageStatusProcessor|MockObject
+     * @var \Magento\Framework\MessageQueue\MessageStatusProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageStatusProcessor;
 
     /**
-     * @var MergedMessageProcessor
+     * @var \Magento\Framework\MessageQueue\MergedMessageProcessor
      */
     private $mergedMessageProcessor;
 
@@ -37,16 +27,16 @@ class MergedMessageProcessorTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->messageStatusProcessor = $this
-            ->getMockBuilder(MessageStatusProcessor::class)
+            ->getMockBuilder(\Magento\Framework\MessageQueue\MessageStatusProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->mergedMessageProcessor = $objectManagerHelper->getObject(
-            MergedMessageProcessor::class,
+            \Magento\Framework\MessageQueue\MergedMessageProcessor::class,
             [
                 'messageStatusProcessor' => $this->messageStatusProcessor
             ]
@@ -63,18 +53,18 @@ class MergedMessageProcessorTest extends TestCase
         $topicName = 'topic';
         $messageId = 1;
         $messagesToAcknowledge = [];
-        $queue = $this->getMockBuilder(QueueInterface::class)
+        $queue = $this->getMockBuilder(\Magento\Framework\MessageQueue\QueueInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $configuration = $this->getMockBuilder(ConsumerConfigurationInterface::class)
+        $configuration = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerConfigurationInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $configuration->expects($this->atLeastOnce())->method('getHandlers')->willReturn([]);
         $this->messageStatusProcessor->expects($this->exactly(2))->method('acknowledgeMessages');
-        $originalMessage = $this->getMockBuilder(EnvelopeInterface::class)
+        $originalMessage = $this->getMockBuilder(\Magento\Framework\MessageQueue\EnvelopeInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $mergedMessage = $this->getMockBuilder(MergedMessageInterface::class)
+        $mergedMessage = $this->getMockBuilder(\Magento\Framework\MessageQueue\MergedMessageInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $mergedMessage->expects($this->atLeastOnce())->method('getOriginalMessagesIds')->willReturn([$messageId]);
@@ -102,20 +92,20 @@ class MergedMessageProcessorTest extends TestCase
         $topicName = 'topic';
         $messageId = 1;
         $messagesToAcknowledge = [];
-        $queue = $this->getMockBuilder(QueueInterface::class)
+        $queue = $this->getMockBuilder(\Magento\Framework\MessageQueue\QueueInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $configuration = $this->getMockBuilder(ConsumerConfigurationInterface::class)
+        $configuration = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerConfigurationInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->messageStatusProcessor->expects($this->once())->method('acknowledgeMessages');
         $exception = new \Exception();
         $configuration->expects($this->atLeastOnce())->method('getHandlers')->willThrowException($exception);
         $this->messageStatusProcessor->expects($this->atLeastOnce())->method('rejectMessages');
-        $originalMessage = $this->getMockBuilder(EnvelopeInterface::class)
+        $originalMessage = $this->getMockBuilder(\Magento\Framework\MessageQueue\EnvelopeInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $mergedMessage = $this->getMockBuilder(MergedMessageInterface::class)
+        $mergedMessage = $this->getMockBuilder(\Magento\Framework\MessageQueue\MergedMessageInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $mergedMessages = [

@@ -3,22 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Directory\Test\Unit\Model;
 
-use Magento\Directory\Model\Currency;
-use Magento\Directory\Model\CurrencyFactory;
 use Magento\Directory\Model\PriceCurrency;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PriceCurrencyTest extends TestCase
+class PriceCurrencyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PriceCurrency
@@ -26,29 +16,32 @@ class PriceCurrencyTest extends TestCase
     protected $priceCurrency;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManager;
 
     /**
-     * @var CurrencyFactory|MockObject
+     * @var \Magento\Directory\Model\CurrencyFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $currencyFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManager = $this->getMockBuilder(StoreManager::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->currencyFactory = $this->getMockBuilder(CurrencyFactory::class)
+        $this->currencyFactory = $this->getMockBuilder(\Magento\Directory\Model\CurrencyFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $this->logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
+            ->getMock();
+
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->priceCurrency = $objectManager->getObject(
-            PriceCurrency::class,
+            \Magento\Directory\Model\PriceCurrency::class,
             [
                 'storeManager' => $this->storeManager,
                 'currencyFactory' => $this->currencyFactory
@@ -81,7 +74,7 @@ class PriceCurrencyTest extends TestCase
         $this->storeManager->expects($this->once())
             ->method('getStore')
             ->with($storeCode)
-            ->willReturn($store);
+            ->will($this->returnValue($store));
 
         $this->assertEquals($convertedAmount, $this->priceCurrency->convert($amount, $storeCode, $currency));
     }
@@ -95,17 +88,18 @@ class PriceCurrencyTest extends TestCase
         $currentCurrency = $this->getCurrentCurrencyMock();
         $currentCurrency->expects($this->once())
             ->method('load')
-            ->with($currency)->willReturnSelf();
+            ->with($currency)
+            ->will($this->returnSelf());
 
         $this->currencyFactory->expects($this->once())
             ->method('create')
-            ->willReturn($currentCurrency);
+            ->will($this->returnValue($currentCurrency));
 
         $baseCurrency = $this->getBaseCurrencyMock($amount, $convertedAmount, $currentCurrency);
         $baseCurrency->expects($this->once())
             ->method('getRate')
             ->with($currentCurrency)
-            ->willReturn(1.2);
+            ->will($this->returnValue(1.2));
         $store = $this->getStoreMock($baseCurrency);
 
         $this->assertEquals($convertedAmount, $this->priceCurrency->convert($amount, $store, $currency));
@@ -122,7 +116,7 @@ class PriceCurrencyTest extends TestCase
         $store = $this->getStoreMock($baseCurrency);
         $store->expects($this->atLeastOnce())
             ->method('getCurrentCurrency')
-            ->willReturn($currentCurrency);
+            ->will($this->returnValue($currentCurrency));
 
         $this->assertEquals($convertedAmount, $this->priceCurrency->convert($amount, $store, $currency));
     }
@@ -130,7 +124,7 @@ class PriceCurrencyTest extends TestCase
     public function testFormat()
     {
         $amount = 5.6;
-        $precision = PriceCurrencyInterface::DEFAULT_PRECISION;
+        $precision = \Magento\Framework\Pricing\PriceCurrencyInterface::DEFAULT_PRECISION;
         $includeContainer = false;
         $store = null;
         $formattedAmount = '5.6 grn';
@@ -139,7 +133,7 @@ class PriceCurrencyTest extends TestCase
         $currency->expects($this->once())
             ->method('formatPrecision')
             ->with($amount, $precision, [], $includeContainer)
-            ->willReturn($formattedAmount);
+            ->will($this->returnValue($formattedAmount));
 
         $this->assertEquals($formattedAmount, $this->priceCurrency->format(
             $amount,
@@ -153,7 +147,7 @@ class PriceCurrencyTest extends TestCase
     public function testConvertAndFormat()
     {
         $amount = 5.6;
-        $precision = PriceCurrencyInterface::DEFAULT_PRECISION;
+        $precision = \Magento\Framework\Pricing\PriceCurrencyInterface::DEFAULT_PRECISION;
         $includeContainer = false;
         $store = null;
         $convertedAmount = 9.3;
@@ -166,7 +160,7 @@ class PriceCurrencyTest extends TestCase
         $currency->expects($this->once())
             ->method('formatPrecision')
             ->with($convertedAmount, $precision, [], $includeContainer)
-            ->willReturn($formattedAmount);
+            ->will($this->returnValue($formattedAmount));
 
         $this->assertEquals($formattedAmount, $this->priceCurrency->convertAndFormat(
             $amount,
@@ -190,11 +184,11 @@ class PriceCurrencyTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getCurrentCurrencyMock()
     {
-        $currency = $this->getMockBuilder(Currency::class)
+        $currency = $this->getMockBuilder(\Magento\Directory\Model\Currency::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -203,17 +197,17 @@ class PriceCurrencyTest extends TestCase
 
     /**
      * @param $baseCurrency
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getStoreMock($baseCurrency)
     {
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $store->expects($this->atLeastOnce())
             ->method('getBaseCurrency')
-            ->willReturn($baseCurrency);
+            ->will($this->returnValue($baseCurrency));
 
         return $store;
     }
@@ -222,18 +216,18 @@ class PriceCurrencyTest extends TestCase
      * @param $amount
      * @param $convertedAmount
      * @param $currency
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getBaseCurrencyMock($amount, $convertedAmount, $currency)
     {
-        $baseCurrency = $this->getMockBuilder(Currency::class)
+        $baseCurrency = $this->getMockBuilder(\Magento\Directory\Model\Currency::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $baseCurrency->expects($this->once())
             ->method('convert')
             ->with($amount, $currency)
-            ->willReturn($convertedAmount);
+            ->will($this->returnValue($convertedAmount));
 
         return $baseCurrency;
     }
@@ -252,7 +246,7 @@ class PriceCurrencyTest extends TestCase
         $this->storeManager->expects($this->once())
             ->method('getStore')
             ->with($storeCode)
-            ->willReturn($store);
+            ->will($this->returnValue($store));
 
         $this->assertEquals(
             $roundedConvertedAmount,

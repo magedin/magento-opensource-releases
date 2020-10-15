@@ -3,33 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Model\Test\Unit\EntitySnapshot;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\EntitySnapshot\AttributeProvider;
 use Magento\Framework\Model\EntitySnapshot\AttributeProviderInterface;
+use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\ObjectManagerInterface as ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AttributeProviderTest extends TestCase
+/**
+ * Class AttributeProviderTest
+ */
+class AttributeProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $concreteAttributeProviderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
@@ -38,7 +38,7 @@ class AttributeProviderTest extends TestCase
      */
     protected $attributeProvider;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->concreteAttributeProviderMock = $this->getMockBuilder(
             AttributeProviderInterface::class
@@ -67,8 +67,7 @@ class AttributeProviderTest extends TestCase
             ->getMock();
         $attributes = ['test' => 1];
         $this->metadataPoolMock->expects($this->atLeastOnce())->method('getMetadata')->willReturn($metadata);
-        $connection = $this->getMockBuilder(AdapterInterface::class)
-            ->getMockForAbstractClass();
+        $connection = $this->getMockBuilder(AdapterInterface::class)->getMockForAbstractClass();
         $metadata->expects($this->once())->method('getEntityConnection')->willReturn($connection);
         $metadata->expects($this->once())->method('getEntityTable')->willReturn($entityTable);
         $metadata->expects($this->exactly(2))->method('getLinkField')->willReturn($linkField);

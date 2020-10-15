@@ -3,46 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset;
 
-use Magento\Framework\View\Asset\AssetInterface;
-use Magento\Framework\View\Asset\GroupedCollection;
-use Magento\Framework\View\Asset\MergeableInterface;
-use Magento\Framework\View\Asset\PropertyGroup;
-use Magento\Framework\View\Asset\PropertyGroupFactory;
-use Magento\Framework\View\Asset\Remote;
-use PHPUnit\Framework\TestCase;
-
-class GroupedCollectionTest extends TestCase
+class GroupedCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GroupedCollection
+     * @var \Magento\Framework\View\Asset\GroupedCollection
      */
     protected $_object;
 
     /**
-     * @var AssetInterface
+     * @var \Magento\Framework\View\Asset\AssetInterface
      */
     protected $_asset;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factory = $this->createMock(PropertyGroupFactory::class);
+        $factory = $this->createMock(\Magento\Framework\View\Asset\PropertyGroupFactory::class);
         $factory->expects(
             $this->any()
         )->method(
             'create'
-        )->willReturnCallback(
-            [$this, 'createAssetGroup']
+        )->will(
+            $this->returnCallback([$this, 'createAssetGroup'])
         );
-        $this->_object = new GroupedCollection($factory);
-        $this->_asset = new Remote('http://127.0.0.1/magento/test.css');
+        $this->_object = new \Magento\Framework\View\Asset\GroupedCollection($factory);
+        $this->_asset = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/magento/test.css');
         $this->_object->add('asset', $this->_asset);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_object = null;
         $this->_asset = null;
@@ -52,11 +42,11 @@ class GroupedCollectionTest extends TestCase
      * Return newly created asset group. Used as a stub for object manger's creation operation.
      *
      * @param array $arguments
-     * @return PropertyGroup
+     * @return \Magento\Framework\View\Asset\PropertyGroup
      */
     public function createAssetGroup(array $arguments)
     {
-        return new PropertyGroup($arguments['properties']);
+        return new \Magento\Framework\View\Asset\PropertyGroup($arguments['properties']);
     }
 
     /**
@@ -67,11 +57,11 @@ class GroupedCollectionTest extends TestCase
      */
     protected function _assertGroups(array $expectedGroups, array $actualGroupObjects)
     {
-        $this->assertIsArray($actualGroupObjects);
+        $this->assertInternalType('array', $actualGroupObjects);
         $actualGroups = [];
-        /** @var \Magento\Framework\View\Asset\PropertyGroup $actualGroup */
+        /** @var $actualGroup \Magento\Framework\View\Asset\PropertyGroup */
         foreach ($actualGroupObjects as $actualGroup) {
-            $this->assertInstanceOf(PropertyGroup::class, $actualGroup);
+            $this->assertInstanceOf(\Magento\Framework\View\Asset\PropertyGroup::class, $actualGroup);
             $actualGroups[] = ['properties' => $actualGroup->getProperties(), 'assets' => $actualGroup->getAll()];
         }
         $this->assertEquals($expectedGroups, $actualGroups);
@@ -79,7 +69,7 @@ class GroupedCollectionTest extends TestCase
 
     public function testAdd()
     {
-        $assetNew = new Remote('http://127.0.0.1/magento/test_new.css');
+        $assetNew = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/magento/test_new.css');
         $this->_object->add('asset_new', $assetNew, ['test_property' => 'test_value']);
         $this->assertEquals(['asset' => $this->_asset, 'asset_new' => $assetNew], $this->_object->getAll());
     }
@@ -92,10 +82,10 @@ class GroupedCollectionTest extends TestCase
 
     public function testGetGroups()
     {
-        $cssAsset = new Remote('http://127.0.0.1/style.css', 'css');
-        $jsAsset = new Remote('http://127.0.0.1/script.js', 'js');
-        $jsAssetAllowingMerge = $this->getMockForAbstractClass(MergeableInterface::class);
-        $jsAssetAllowingMerge->expects($this->any())->method('getContentType')->willReturn('js');
+        $cssAsset = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/style.css', 'css');
+        $jsAsset = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/script.js', 'js');
+        $jsAssetAllowingMerge = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\MergeableInterface::class);
+        $jsAssetAllowingMerge->expects($this->any())->method('getContentType')->will($this->returnValue('js'));
 
         // assets with identical properties should be grouped together
         $this->_object->add('css_asset_one', $cssAsset, ['property' => 'test_value']);

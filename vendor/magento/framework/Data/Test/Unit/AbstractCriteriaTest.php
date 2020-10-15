@@ -3,20 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit;
 
 use Magento\Framework\Api\CriteriaInterface;
-use Magento\Framework\Data\Test\Unit\Criteria\Sample;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class AbstractCriteriaTest extends TestCase
+/**
+ * Class AbstractCriteriaTest
+ */
+class AbstractCriteriaTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Sample
+     * @var \Magento\Framework\Data\Test\Unit\Criteria\Sample
      */
     protected $criteria;
 
@@ -25,10 +22,10 @@ class AbstractCriteriaTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->criteria = $objectManager->getObject(Sample::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->criteria = $objectManager->getObject(\Magento\Framework\Data\Test\Unit\Criteria\Sample::class);
     }
 
     /**
@@ -370,7 +367,7 @@ class AbstractCriteriaTest extends TestCase
      */
     public function dataProviderAddFilter()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         return [
             [
                 'name' => 'test-filter-name',
@@ -379,7 +376,7 @@ class AbstractCriteriaTest extends TestCase
                 'type' => 'test-type',
                 'result' => [
                     'test-filter-name' => $objectManager->getObject(
-                        DataObject::class,
+                        \Magento\Framework\DataObject::class,
                         [
                             'data' => [
                                 'name' => 'test-filter-name',

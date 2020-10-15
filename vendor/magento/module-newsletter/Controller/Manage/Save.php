@@ -12,7 +12,6 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Newsletter\Model\Subscriber;
-use Magento\Newsletter\Model\SubscriptionManagerInterface;
 
 /**
  * Customers newsletter subscription save controller
@@ -35,9 +34,9 @@ class Save extends \Magento\Newsletter\Controller\Manage implements HttpPostActi
     protected $customerRepository;
 
     /**
-     * @var SubscriptionManagerInterface
+     * @var \Magento\Newsletter\Model\SubscriberFactory
      */
-    private $subscriptionManager;
+    protected $subscriberFactory;
 
     /**
      * Initialize dependencies.
@@ -47,7 +46,7 @@ class Save extends \Magento\Newsletter\Controller\Manage implements HttpPostActi
      * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param CustomerRepository $customerRepository
-     * @param SubscriptionManagerInterface $subscriptionManager
+     * @param \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -55,13 +54,13 @@ class Save extends \Magento\Newsletter\Controller\Manage implements HttpPostActi
         \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         CustomerRepository $customerRepository,
-        SubscriptionManagerInterface $subscriptionManager
+        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
     ) {
         $this->storeManager = $storeManager;
         $this->formKeyValidator = $formKeyValidator;
         $this->customerRepository = $customerRepository;
+        $this->subscriberFactory = $subscriberFactory;
         parent::__construct($context, $customerSession);
-        $this->subscriptionManager = $subscriptionManager;
     }
 
     /**
@@ -81,24 +80,28 @@ class Save extends \Magento\Newsletter\Controller\Manage implements HttpPostActi
         } else {
             try {
                 $customer = $this->customerRepository->getById($customerId);
-                $storeId = (int)$this->storeManager->getStore()->getId();
+                $storeId = $this->storeManager->getStore()->getId();
                 $customer->setStoreId($storeId);
-                $isSubscribedState = $customer->getExtensionAttributes()->getIsSubscribed();
-                $isSubscribedParam = (boolean)$this->getRequest()->getParam('is_subscribed', false);
+                $isSubscribedState = $customer->getExtensionAttributes()
+                    ->getIsSubscribed();
+                $isSubscribedParam = (boolean)$this->getRequest()
+                    ->getParam('is_subscribed', false);
                 if ($isSubscribedParam !== $isSubscribedState) {
                     // No need to validate customer and customer address while saving subscription preferences
                     $this->setIgnoreValidationFlag($customer);
                     $this->customerRepository->save($customer);
                     if ($isSubscribedParam) {
-                        $subscribeModel = $this->subscriptionManager->subscribeCustomer((int)$customerId, $storeId);
-                        $subscribeStatus = (int)$subscribeModel->getStatus();
-                        if ($subscribeStatus === Subscriber::STATUS_SUBSCRIBED) {
+                        $subscribeModel = $this->subscriberFactory->create()
+                            ->subscribeCustomerById($customerId);
+                        $subscribeStatus = $subscribeModel->getStatus();
+                        if ($subscribeStatus == Subscriber::STATUS_SUBSCRIBED) {
                             $this->messageManager->addSuccess(__('We have saved your subscription.'));
                         } else {
                             $this->messageManager->addSuccess(__('A confirmation request has been sent.'));
                         }
                     } else {
-                        $this->subscriptionManager->unsubscribeCustomer((int)$customerId, $storeId);
+                        $this->subscriberFactory->create()
+                            ->unsubscribeCustomerById($customerId);
                         $this->messageManager->addSuccess(__('We have removed your newsletter subscription.'));
                     }
                 } else {

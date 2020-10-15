@@ -15,18 +15,14 @@ define([
         blockContentLoadingClass = '_block-content-loading',
         blockLoader,
         blockLoaderClass,
-        blockLoaderElement = $.Deferred(),
-        loaderImageHref = $.Deferred();
+        loaderImageHref;
 
     templateLoader.loadTemplate(blockLoaderTemplatePath).done(function (blockLoaderTemplate) {
-        loaderImageHref.done(function (loaderHref) {
-            blockLoader = template($.trim(blockLoaderTemplate), {
-                loaderImageHref: loaderHref
-            });
-            blockLoader = $(blockLoader);
-            blockLoaderClass = '.' + blockLoader.attr('class');
-            blockLoaderElement.resolve();
+        blockLoader = template($.trim(blockLoaderTemplate), {
+            loaderImageHref: loaderImageHref
         });
+        blockLoader = $(blockLoader);
+        blockLoaderClass = '.' + blockLoader.attr('class');
     });
 
     /**
@@ -74,7 +70,7 @@ define([
     }
 
     return function (loaderHref) {
-        loaderImageHref.resolve(loaderHref);
+        loaderImageHref = loaderHref;
         ko.bindingHandlers.blockLoader = {
             /**
              * Process loader for block
@@ -85,9 +81,9 @@ define([
                 element = $(element);
 
                 if (ko.unwrap(displayBlockLoader())) {
-                    blockLoaderElement.done(addBlockLoader(element));
+                    addBlockLoader(element);
                 } else {
-                    blockLoaderElement.done(removeBlockLoader(element));
+                    removeBlockLoader(element);
                 }
             }
         };

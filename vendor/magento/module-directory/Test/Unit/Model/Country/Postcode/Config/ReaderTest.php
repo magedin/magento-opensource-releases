@@ -3,18 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Country\Postcode\Config;
 
-use Magento\Directory\Model\Country\Postcode\Config\Converter;
-use Magento\Directory\Model\Country\Postcode\Config\Reader as PostcodeReader;
-use Magento\Directory\Model\Country\Postcode\Config\SchemaLocator;
-use Magento\Framework\App\Config\FileResolver;
-use Magento\Framework\Config\ValidationStateInterface;
-use PHPUnit\Framework\TestCase;
-
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Sales\Model\Config\Reader
@@ -24,25 +15,21 @@ class ReaderTest extends TestCase
     /**
      * Prepare parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $fileResolver = $this->getMockBuilder(
-            FileResolver::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\App\Config\FileResolver::class
+        )->disableOriginalConstructor()->getMock();
         $converter = $this->getMockBuilder(
-            Converter::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Directory\Model\Country\Postcode\Config\Converter::class
+        )->disableOriginalConstructor()->getMock();
         $schema = $this->getMockBuilder(
-            SchemaLocator::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Directory\Model\Country\Postcode\Config\SchemaLocator::class
+        )->disableOriginalConstructor()->getMock();
         $validator = $this->getMockBuilder(
-            ValidationStateInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->reader = new PostcodeReader(
+            \Magento\Framework\Config\ValidationStateInterface::class
+        )->disableOriginalConstructor()->getMock();
+        $this->reader = new \Magento\Directory\Model\Country\Postcode\Config\Reader(
             $fileResolver,
             $converter,
             $schema,
@@ -55,6 +42,6 @@ class ReaderTest extends TestCase
      */
     public function testInstanceof()
     {
-        $this->assertInstanceOf(PostcodeReader::class, $this->reader);
+        $this->assertInstanceOf(\Magento\Directory\Model\Country\Postcode\Config\Reader::class, $this->reader);
     }
 }

@@ -24,7 +24,7 @@ class SearchTest extends WebapiAbstract
      */
     private $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $productSku = 'simple';
 
@@ -63,7 +63,7 @@ class SearchTest extends WebapiAbstract
 
         self::assertArrayHasKey('search_criteria', $response);
         self::assertArrayHasKey('items', $response);
-        self::assertCount(0, $response['items']);
+        self::assertEquals(0, count($response['items']));
     }
 
     /**

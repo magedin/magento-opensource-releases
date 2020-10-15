@@ -3,98 +3,81 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Cron;
 
-use Magento\Catalog\Cron\RefreshSpecialPrices;
-use Magento\Catalog\Model\Indexer\Product\Price\Processor;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadata;
 use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Stdlib\DateTime;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Indexer\Model\Indexer;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RefreshSpecialPricesTest extends TestCase
+class RefreshSpecialPricesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectManager;
 
     /**
-     * @var RefreshSpecialPrices
+     * @var \Magento\Catalog\Cron\RefreshSpecialPrices
      */
     protected $_model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_storeManagerMock;
 
     /**
-     * @var Resource|MockObject
+     * @var Resource|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_resourceMock;
 
     /**
-     * @var DateTime|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_dateTimeMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_localeDateMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_eavConfigMock;
 
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Price\Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_priceProcessorMock;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPool;
 
     /**
-     * @var EntityMetadata|MockObject
+     * @var \Magento\Framework\EntityManager\EntityMetadata|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = new ObjectManager($this);
+        $this->_objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->_storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->_resourceMock = $this->createMock(ResourceConnection::class);
-        $this->_dateTimeMock = $this->createMock(DateTime::class);
-        $this->_localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->_eavConfigMock = $this->createMock(Config::class);
-        $this->_priceProcessorMock = $this->createMock(Processor::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->_resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->_dateTimeMock = $this->createMock(\Magento\Framework\Stdlib\DateTime::class);
+        $this->_localeDateMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->_eavConfigMock = $this->createMock(\Magento\Eav\Model\Config::class);
+        $this->_priceProcessorMock = $this->createMock(\Magento\Catalog\Model\Indexer\Product\Price\Processor::class);
 
-        $this->metadataMock = $this->createMock(EntityMetadata::class);
+        $this->metadataMock = $this->createMock(\Magento\Framework\EntityManager\EntityMetadata::class);
 
         $this->_model = $this->_objectManager->getObject(
-            RefreshSpecialPrices::class,
+            \Magento\Catalog\Cron\RefreshSpecialPrices::class,
             [
                 'storeManager' => $this->_storeManagerMock,
                 'resource' => $this->_resourceMock,
@@ -125,39 +108,39 @@ class RefreshSpecialPricesTest extends TestCase
 
         $this->metadataMock->expects($this->atLeastOnce())->method('getIdentifierField')->willReturn('entity_id');
 
-        $selectMock = $this->createMock(Select::class);
-        $selectMock->expects($this->any())->method('from')->willReturnSelf();
-        $selectMock->expects($this->any())->method('joinLeft')->willReturnSelf();
-        $selectMock->expects($this->any())->method('where')->willReturnSelf();
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
+        $selectMock->expects($this->any())->method('from')->will($this->returnSelf());
+        $selectMock->expects($this->any())->method('joinLeft')->will($this->returnSelf());
+        $selectMock->expects($this->any())->method('where')->will($this->returnSelf());
 
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
-        $connectionMock->expects($this->any())->method('select')->willReturn($selectMock);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
+        $connectionMock->expects($this->any())->method('select')->will($this->returnValue($selectMock));
         $connectionMock->expects(
             $this->any()
         )->method(
             'fetchCol'
-        )->willReturn(
-            $idsToProcess
+        )->will(
+            $this->returnValue($idsToProcess)
         );
 
         $this->_resourceMock->expects(
             $this->once()
         )->method(
             'getConnection'
-        )->willReturn(
-            $connectionMock
+        )->will(
+            $this->returnValue($connectionMock)
         );
 
         $this->_resourceMock->expects(
             $this->any()
         )->method(
             'getTableName'
-        )->willReturn(
-            'category'
+        )->will(
+            $this->returnValue('category')
         );
 
-        $storeMock = $this->createMock(Store::class);
-        $storeMock->expects($this->any())->method('getId')->willReturn(1);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
+        $storeMock->expects($this->any())->method('getId')->will($this->returnValue(1));
 
         $this->_storeManagerMock->expects(
             $this->once()
@@ -165,8 +148,8 @@ class RefreshSpecialPricesTest extends TestCase
             'getStores'
         )->with(
             true
-        )->willReturn(
-            [$storeMock]
+        )->will(
+            $this->returnValue([$storeMock])
         );
 
         $this->_localeDateMock->expects(
@@ -175,33 +158,33 @@ class RefreshSpecialPricesTest extends TestCase
             'scopeTimeStamp'
         )->with(
             $storeMock
-        )->willReturn(
-            32000
+        )->will(
+            $this->returnValue(32000)
         );
 
-        $indexerMock = $this->createMock(Indexer::class);
+        $indexerMock = $this->createMock(\Magento\Indexer\Model\Indexer::class);
         $indexerMock->expects($this->exactly(2))->method('reindexList');
 
         $this->_priceProcessorMock->expects(
             $this->exactly(2)
         )->method(
             'getIndexer'
-        )->willReturn(
-            $indexerMock
+        )->will(
+            $this->returnValue($indexerMock)
         );
 
         $attributeMock = $this->getMockForAbstractClass(
-            AbstractAttribute::class,
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
             [],
             '',
             false,
             true,
             true,
-            [ 'getAttributeId']
+            ['__wakeup', 'getAttributeId']
         );
-        $attributeMock->expects($this->any())->method('getAttributeId')->willReturn(1);
+        $attributeMock->expects($this->any())->method('getAttributeId')->will($this->returnValue(1));
 
-        $this->_eavConfigMock->expects($this->any())->method('getAttribute')->willReturn($attributeMock);
+        $this->_eavConfigMock->expects($this->any())->method('getAttribute')->will($this->returnValue($attributeMock));
 
         $this->_model->execute();
     }

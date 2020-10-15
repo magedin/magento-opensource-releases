@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Theme\Test\Unit\Model\Theme;
 
-use Magento\Theme\Model\Theme;
-use Magento\Theme\Model\Theme\Data\Collection;
 use Magento\Theme\Model\Theme\ThemeDependencyChecker;
-use Magento\Theme\Model\Theme\ThemePackageInfo;
-use Magento\Theme\Model\Theme\ThemeProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ThemeDependencyCheckerTest extends TestCase
+class ThemeDependencyCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ThemeDependencyChecker
@@ -23,25 +16,25 @@ class ThemeDependencyCheckerTest extends TestCase
     private $themeDependencyChecker;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Theme\Model\Theme\Data\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $themeCollection;
 
     /**
-     * @var ThemeProvider|MockObject
+     * @var \Magento\Theme\Model\Theme\ThemeProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $themeProvider;
 
     /**
-     * @var ThemePackageInfo|MockObject
+     * @var \Magento\Theme\Model\Theme\ThemePackageInfo|\PHPUnit_Framework_MockObject_MockObject
      */
     private $themePackageInfo;
 
-    protected function setup(): void
+    public function setup()
     {
-        $this->themePackageInfo = $this->createMock(ThemePackageInfo::class);
-        $this->themeCollection = $this->createMock(Collection::class);
-        $this->themeProvider = $this->createMock(ThemeProvider::class);
+        $this->themePackageInfo = $this->createMock(\Magento\Theme\Model\Theme\ThemePackageInfo::class);
+        $this->themeCollection = $this->createMock(\Magento\Theme\Model\Theme\Data\Collection::class);
+        $this->themeProvider = $this->createMock(\Magento\Theme\Model\Theme\ThemeProvider::class);
 
         $this->themeDependencyChecker = new ThemeDependencyChecker(
             $this->themeCollection,
@@ -70,15 +63,15 @@ class ThemeDependencyCheckerTest extends TestCase
      */
     public function testExecuteFailedChildThemeCheck($hasVirtual, $hasPhysical, array $input, $expected)
     {
-        $theme = $this->createMock(Theme::class);
+        $theme = $this->createMock(\Magento\Theme\Model\Theme::class);
         $theme->expects($this->any())->method('hasChildThemes')->willReturn($hasVirtual);
-        $parentThemeA = $this->createMock(Theme::class);
+        $parentThemeA = $this->createMock(\Magento\Theme\Model\Theme::class);
         $parentThemeA->expects($this->any())->method('getFullPath')->willReturn('frontend/Magento/a');
-        $parentThemeB = $this->createMock(Theme::class);
+        $parentThemeB = $this->createMock(\Magento\Theme\Model\Theme::class);
         $parentThemeB->expects($this->any())->method('getFullPath')->willReturn('frontend/Magento/b');
-        $childThemeC = $this->createMock(Theme::class);
+        $childThemeC = $this->createMock(\Magento\Theme\Model\Theme::class);
         $childThemeC->expects($this->any())->method('getFullPath')->willReturn('frontend/Magento/c');
-        $childThemeD = $this->createMock(Theme::class);
+        $childThemeD = $this->createMock(\Magento\Theme\Model\Theme::class);
         $childThemeD->expects($this->any())->method('getFullPath')->willReturn('frontend/Magento/d');
 
         if ($hasPhysical) {
@@ -131,7 +124,7 @@ class ThemeDependencyCheckerTest extends TestCase
                 true,
                 ['frontend/Magento/a'],
                 ['frontend/Magento/a is a parent of virtual theme. Parent themes cannot be uninstalled.',
-                    'frontend/Magento/a is a parent of physical theme. Parent themes cannot be uninstalled.']
+                'frontend/Magento/a is a parent of physical theme. Parent themes cannot be uninstalled.']
             ],
             [
                 true,
@@ -139,8 +132,8 @@ class ThemeDependencyCheckerTest extends TestCase
                 ['frontend/Magento/a', 'frontend/Magento/b'],
                 ['frontend/Magento/a, frontend/Magento/b are parents of virtual theme.'
                 . ' Parent themes cannot be uninstalled.',
-                    'frontend/Magento/a, frontend/Magento/b are parents of physical theme.'
-                    . ' Parent themes cannot be uninstalled.']
+                'frontend/Magento/a, frontend/Magento/b are parents of physical theme.'
+                . ' Parent themes cannot be uninstalled.']
             ],
         ];
     }

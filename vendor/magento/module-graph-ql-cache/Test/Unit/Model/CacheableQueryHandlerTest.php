@@ -8,11 +8,12 @@ declare(strict_types=1);
 namespace Magento\GraphQlCache\Test\Unit\Model;
 
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\Resolver\IdentityInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GraphQlCache\Model\CacheableQuery;
 use Magento\GraphQlCache\Model\CacheableQueryHandler;
 use Magento\GraphQlCache\Model\Resolver\IdentityPool;
+use Magento\GraphQlCache\Model\CacheableQuery;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CacheableQueryHandlerTest extends TestCase
 {
+
     private $cacheableQueryHandler;
 
     private $cacheableQueryMock;

@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\DateTime;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Setup\Model\DateTime\TimeZoneProvider;
 use Magento\Setup\Model\ObjectManagerProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TimeZoneProviderTest extends TestCase
+class TimeZoneProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
-        $timeZone = $this->createMock(Timezone::class);
+        $timeZone = $this->createMock(\Magento\Framework\Stdlib\DateTime\Timezone::class);
         $objectManager = $this->getMockForAbstractClass(
-            ObjectManagerInterface::class,
+            \Magento\Framework\ObjectManagerInterface::class,
             [],
             '',
             false
@@ -29,12 +23,12 @@ class TimeZoneProviderTest extends TestCase
         $objectManager->expects($this->once())
             ->method('create')
             ->with(
-                Timezone::class,
+                \Magento\Framework\Stdlib\DateTime\Timezone::class,
                 ['scopeType' => ScopeConfigInterface::SCOPE_TYPE_DEFAULT]
             )
             ->willReturn($timeZone);
-        /** @var ObjectManagerProvider|MockObject $objectManagerProvider */
-        $objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        /** @var ObjectManagerProvider|\PHPUnit_Framework_MockObject_MockObject $objectManagerProvider */
+        $objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $objectManagerProvider->expects($this->any())
             ->method('get')
             ->willReturn($objectManager);

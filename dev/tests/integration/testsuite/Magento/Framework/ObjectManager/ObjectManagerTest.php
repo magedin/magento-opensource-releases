@@ -5,8 +5,6 @@
  */
 namespace Magento\Framework\ObjectManager;
 
-use ReflectionClass;
-
 class ObjectManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
@@ -76,7 +74,7 @@ class ObjectManagerTest extends \PHPUnit\Framework\TestCase
         10 => '_ten',
     ];
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $config = new \Magento\Framework\ObjectManager\Config\Config();
         $factory = new Factory\Dynamic\Developer($config);
@@ -88,7 +86,7 @@ class ObjectManagerTest extends \PHPUnit\Framework\TestCase
         $factory->setObjectManager(self::$_objectManager);
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         self::$_objectManager = null;
     }
@@ -138,15 +136,10 @@ class ObjectManagerTest extends \PHPUnit\Framework\TestCase
 
         $testObject = self::$_objectManager->create($actualClassName);
         $this->assertInstanceOf($expectedClassName, $testObject);
-        $object = new ReflectionClass($actualClassName);
+
         if ($properties) {
             foreach ($properties as $propertyName => $propertyClass) {
-                $this->assertClassHasAttribute($propertyName, $actualClassName);
-                $attribute = $object->getProperty($propertyName);
-                $attribute->setAccessible(true);
-                $propertyObject = $attribute->getValue($testObject);
-                $attribute->setAccessible(false);
-                $this->assertInstanceOf($propertyClass, $propertyObject);
+                $this->assertAttributeInstanceOf($propertyClass, $propertyName, $testObject);
             }
         }
     }
@@ -154,12 +147,11 @@ class ObjectManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * Test creating an object and passing incorrect type of arguments to the constructor.
      *
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     * @expectedExceptionMessage Error occurred when creating object
      */
     public function testNewInstanceWithTypeError()
     {
-        $this->expectException(\Magento\Framework\Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Error occurred when creating object');
-
         self::$_objectManager->create(self::TEST_CLASS_WITH_TYPE_ERROR, [
             'testArgument' => new \stdClass()
         ]);

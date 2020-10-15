@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Message;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Model\Group;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Magento\Store\Model\Message\EmptyGroupCategory;
+use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ResourceModel\Group\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Group;
 
-class EmptyGroupCategoryTest extends TestCase
+class EmptyGroupCategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -40,7 +37,7 @@ class EmptyGroupCategoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManagerHelper = new ObjectManager($this);
 

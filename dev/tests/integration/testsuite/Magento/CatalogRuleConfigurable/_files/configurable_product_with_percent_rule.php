@@ -15,14 +15,10 @@ use Magento\Framework\App\Area;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture(
-    'Magento/ConfigurableProduct/_files/configurable_product_with_custom_option_and_simple_tier_price.php'
-);
+require __DIR__ . '/../../ConfigurableProduct/_files/configurable_product_with_custom_option_and_simple_tier_price.php';
 Bootstrap::getInstance()->loadArea(Area::AREA_ADMINHTML);
 
-$objectManager = Bootstrap::getObjectManager();
 /** @var StoreManagerInterface $storeManager */
 $storeManager = $objectManager->get(StoreManagerInterface::class);
 /** @var WebsiteRepositoryInterface $websiteRepository */

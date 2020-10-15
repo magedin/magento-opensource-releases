@@ -9,13 +9,12 @@ namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Directory\Model\Currency;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Sales\Ui\Component\Listing\Column\Price;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PriceTest extends TestCase
+/**
+ * Class PriceTest
+ */
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Price
@@ -23,25 +22,25 @@ class PriceTest extends TestCase
     protected $model;
 
     /**
-     * @var Currency|MockObject
+     * @var Currency|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $currencyMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $contextMock = $this->getMockBuilder(ContextInterface::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->currencyMock = $this->getMockBuilder(Currency::class)
+        $this->currencyMock = $this->getMockBuilder(\Magento\Directory\Model\Currency::class)
             ->setMethods(['load', 'format'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->model = $objectManager->getObject(
-            Price::class,
+            \Magento\Sales\Ui\Component\Listing\Column\Price::class,
             ['currency' => $this->currencyMock, 'context' => $contextMock]
         );
     }

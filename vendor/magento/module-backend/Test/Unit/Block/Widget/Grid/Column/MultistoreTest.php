@@ -3,46 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Column;
 
-use Magento\Backend\Block\Widget\Grid\Column\Multistore;
-use Magento\Backend\Model\Url;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class MultistoreTest extends TestCase
+class MultistoreTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Multistore
+     * @var \Magento\Backend\Block\Widget\Grid\Column\Multistore
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_storeManagerMock = $this->createMock(StoreManager::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
 
         $arguments = [
             'storeManager' => $this->_storeManagerMock,
-            'urlBuilder' => $this->createMock(Url::class),
+            'urlBuilder' => $this->createMock(\Magento\Backend\Model\Url::class),
         ];
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $objectManagerHelper->getObject(
-            Multistore::class,
+            \Magento\Backend\Block\Widget\Grid\Column\Multistore::class,
             $arguments
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
         unset($this->_storeManagerMock);
@@ -50,13 +41,13 @@ class MultistoreTest extends TestCase
 
     public function testIsDisplayedReturnsTrueInMultiStoreMode()
     {
-        $this->_storeManagerMock->expects($this->once())->method('isSingleStoreMode')->willReturn(false);
+        $this->_storeManagerMock->expects($this->once())->method('isSingleStoreMode')->will($this->returnValue(false));
         $this->assertTrue($this->_model->isDisplayed());
     }
 
     public function testIsDisplayedReturnsFalseInSingleStoreMode()
     {
-        $this->_storeManagerMock->expects($this->once())->method('isSingleStoreMode')->willReturn(true);
+        $this->_storeManagerMock->expects($this->once())->method('isSingleStoreMode')->will($this->returnValue(true));
         $this->assertFalse($this->_model->isDisplayed());
     }
 }

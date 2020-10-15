@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Model\DeploymentConfig\Hash;
 
 use Magento\Deploy\Model\DeploymentConfig\Hash\Generator;
 use Magento\Framework\Serialize\SerializerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends TestCase
+class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
@@ -27,7 +23,7 @@ class GeneratorTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->serializerMock = $this->getMockBuilder(SerializerInterface::class)
             ->getMockForAbstractClass();

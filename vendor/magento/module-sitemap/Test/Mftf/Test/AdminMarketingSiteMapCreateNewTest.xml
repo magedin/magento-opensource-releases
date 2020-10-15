@@ -18,14 +18,14 @@
             <group value="sitemap"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
         </before>
         <after>
             <actionGroup ref="AdminMarketingSiteDeleteByNameActionGroup" stepKey="deleteSiteMap">
                 <argument name="filename" value="{{DefaultSiteMap.filename}}" />
             </actionGroup>
             <actionGroup ref="AssertSiteMapDeleteSuccessActionGroup" stepKey="assertDeleteSuccessMessage"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <actionGroup ref="AdminMarketingSiteMapNavigateNewActionGroup" stepKey="navigateNewSiteMap"/>
         <actionGroup ref="AdminMarketingSiteMapFillFormActionGroup" stepKey="fillSiteMapForm">

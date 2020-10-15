@@ -28,7 +28,7 @@
             <group value="Klarna_KP_Order_Credit"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminCreateCartPriceRuleWithCouponCodeActionGroup" stepKey="createCartPriceRule">
+            <actionGroup ref="AdminCreateCartPriceRuleWithCouponCode" stepKey="createCartPriceRule">
                 <argument name="ruleName" value="CatPriceRule"/>
             </actionGroup>
         </before>

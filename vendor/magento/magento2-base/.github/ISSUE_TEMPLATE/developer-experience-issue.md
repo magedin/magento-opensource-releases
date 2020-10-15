@@ -1,7 +1,6 @@
 ---
 name: Developer experience issue
 about: Issues related to customization, extensibility, modularity
-labels: 'Triage: Dev.Experience'
 
 ---
 

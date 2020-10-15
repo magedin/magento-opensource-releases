@@ -3,85 +3,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Block\LayeredNavigation;
-
-use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
-use Magento\Catalog\Model\Layer\Filter\Item;
-use Magento\Catalog\Model\ResourceModel\Layer\Filter\AttributeFactory;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\Option;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Url;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Swatches\Block\LayeredNavigation\RenderLayered;
-use Magento\Swatches\Helper\Data;
-use Magento\Swatches\Helper\Media;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class RenderLayered Render Swatches at Layered Navigation
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RenderLayeredTest extends TestCase
+class RenderLayeredTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $requestMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $eavAttributeMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $layerAttributeFactoryMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $layerAttributeMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $swatchHelperMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $mediaHelperMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $filterMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->urlBuilder = $this->createPartialMock(
-            Url::class,
+            \Magento\Framework\Url::class,
             ['getCurrentUrl', 'getRedirectUrl', 'getUrl']
         );
         $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->requestMock);
         $this->contextMock->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilder);
-        $this->eavAttributeMock = $this->createMock(Attribute::class);
+        $this->eavAttributeMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute::class);
         $this->layerAttributeFactoryMock = $this->createPartialMock(
-            AttributeFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Layer\Filter\AttributeFactory::class,
             ['create']
         );
         $this->layerAttributeMock = $this->createPartialMock(
             \Magento\Catalog\Model\ResourceModel\Layer\Filter\Attribute::class,
             ['getCount']
         );
-        $this->swatchHelperMock = $this->createMock(Data::class);
-        $this->mediaHelperMock = $this->createMock(Media::class);
-        $this->filterMock = $this->createMock(AbstractFilter::class);
+        $this->swatchHelperMock = $this->createMock(\Magento\Swatches\Helper\Data::class);
+        $this->mediaHelperMock = $this->createMock(\Magento\Swatches\Helper\Media::class);
+        $this->filterMock = $this->createMock(\Magento\Catalog\Model\Layer\Filter\AbstractFilter::class);
 
-        $this->block = $this->getMockBuilder(RenderLayered::class)
+        $this->block = $this->getMockBuilder(\Magento\Swatches\Block\LayeredNavigation\RenderLayered::class)
             ->setMethods(['filter', 'eavAttribute'])
             ->setConstructorArgs(
                 [
@@ -108,11 +92,11 @@ class RenderLayeredTest extends TestCase
 
     public function testGetSwatchData()
     {
-        /** @var MockObject $item */
-        $item1 = $this->createMock(Item::class);
-        $item2 = $this->createMock(Item::class);
-        $item3 = $this->createMock(Item::class);
-        $item4 = $this->createMock(Item::class);
+        /** @var \PHPUnit_Framework_MockObject_MockObject $item */
+        $item1 = $this->createMock(\Magento\Catalog\Model\Layer\Filter\Item::class);
+        $item2 = $this->createMock(\Magento\Catalog\Model\Layer\Filter\Item::class);
+        $item3 = $this->createMock(\Magento\Catalog\Model\Layer\Filter\Item::class);
+        $item4 = $this->createMock(\Magento\Catalog\Model\Layer\Filter\Item::class);
 
         $item1->expects($this->any())->method('__call')->withConsecutive(
             ['getValue'],
@@ -161,16 +145,16 @@ class RenderLayeredTest extends TestCase
 
         $this->block->method('filter')->willReturn($this->filterMock);
 
-        $option1 = $this->createMock(Option::class);
+        $option1 = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Option::class);
         $option1->expects($this->any())->method('getValue')->willReturn('yellow');
 
-        $option2 = $this->createMock(Option::class);
+        $option2 = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Option::class);
         $option2->expects($this->any())->method('getValue')->willReturn(null);
 
-        $option3 = $this->createMock(Option::class);
+        $option3 = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Option::class);
         $option3->expects($this->any())->method('getValue')->willReturn('red');
 
-        $option4 = $this->createMock(Option::class);
+        $option4 = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Option::class);
         $option4->expects($this->any())->method('getValue')->willReturn('green');
 
         $eavAttribute = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);

@@ -35,7 +35,7 @@ class CreditmemoFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->creditmemoFactory = $this->objectManager->create(CreditmemoFactory::class);

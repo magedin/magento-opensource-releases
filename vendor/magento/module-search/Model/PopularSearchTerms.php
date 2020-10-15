@@ -7,7 +7,7 @@
 namespace Magento\Search\Model;
 
 /**
- * Finds top search results in search
+ * Popular search terms
  */
 class PopularSearchTerms
 {
@@ -29,7 +29,7 @@ class PopularSearchTerms
 
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Search\Model\ResourceModel\Query\Collection $queryCollection
+     * @param \Magento\Search\Model\ResourceModel\Query\Collection
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -48,8 +48,13 @@ class PopularSearchTerms
      */
     public function isCacheable(string $term, int $storeId)
     {
-        $maxCountCacheableSearchTerms = $this->getMaxCountCacheableSearchTerms($storeId);
-        return $this->queryCollection->isTopSearchResult($term, $storeId, $maxCountCacheableSearchTerms);
+        $terms = $this->queryCollection
+            ->setPopularQueryFilter($storeId)
+            ->setPageSize($this->getMaxCountCacheableSearchTerms($storeId))
+            ->load()
+            ->getColumnValues('query_text');
+
+        return in_array($term, $terms);
     }
 
     /**

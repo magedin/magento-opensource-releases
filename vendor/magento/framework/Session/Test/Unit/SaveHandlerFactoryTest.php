@@ -3,17 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Session\Test\Unit;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\ObjectManager\ObjectManager;
-use Magento\Framework\Session\SaveHandler\Native;
-use Magento\Framework\Session\SaveHandlerFactory;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Session\SaveHandlerFactory;
 
-class SaveHandlerFactoryTest extends TestCase
+class SaveHandlerFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider createDataProvider
@@ -21,21 +15,21 @@ class SaveHandlerFactoryTest extends TestCase
     public function testCreate($handlers, $saveClass, $saveMethod)
     {
         $saveHandler = $this->createMock($saveClass);
-        $objectManager = $this->createPartialMock(ObjectManager::class, ['create']);
+        $objectManager = $this->createPartialMock(\Magento\Framework\ObjectManager\ObjectManager::class, ['create']);
         $objectManager->expects(
             $this->once()
         )->method(
             'create'
         )->with(
-            $saveClass,
-            []
-        )->willReturn(
-            $saveHandler
+            $this->equalTo($saveClass),
+            $this->equalTo([])
+        )->will(
+            $this->returnValue($saveHandler)
         );
         $model = new SaveHandlerFactory($objectManager, $handlers);
         $result = $model->create($saveMethod);
         $this->assertInstanceOf($saveClass, $result);
-        $this->assertInstanceOf(Native::class, $result);
+        $this->assertInstanceOf(\Magento\Framework\Session\SaveHandler\Native::class, $result);
         $this->assertInstanceOf('\SessionHandlerInterface', $result);
     }
 
@@ -44,17 +38,17 @@ class SaveHandlerFactoryTest extends TestCase
      */
     public function createDataProvider()
     {
-        return [[[], Native::class, 'files']];
+        return [[[], \Magento\Framework\Session\SaveHandler\Native::class, 'files']];
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Magento\Framework\Session\SaveHandler\Native doesn't implement \SessionHandlerInterface
+     */
     public function testCreateInvalid()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage(
-            'Magento\Framework\Session\SaveHandler\Native doesn\'t implement \SessionHandlerInterface'
-        );
-        $invalidSaveHandler = new DataObject();
-        $objectManager = $this->getMockBuilder(ObjectManager::class)
+        $invalidSaveHandler = new \Magento\Framework\DataObject();
+        $objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManager\ObjectManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $objectManager->expects($this->once())

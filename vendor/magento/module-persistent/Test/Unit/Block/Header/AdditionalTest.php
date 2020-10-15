@@ -3,65 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Persistent\Test\Unit\Block\Header;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Helper\View;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Persistent\Block\Header\Additional;
-use Magento\Persistent\Helper\Data;
-use Magento\Persistent\Helper\Session;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class AdditionalTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AdditionalTest extends TestCase
+class AdditionalTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var View|MockObject
+     * @var \Magento\Customer\Helper\View|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerViewHelperMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Persistent\Helper\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $persistentSessionHelperMock;
 
     /**
      * Customer repository
      *
-     * @var CustomerRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerRepositoryMock;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Json|MockObject
+     * @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $jsonSerializerMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Persistent\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $persistentHelperMock;
 
     /**
-     * @var Additional
+     * @var \Magento\Persistent\Block\Header\Additional
      */
     protected $additional;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -71,18 +59,18 @@ class AdditionalTest extends TestCase
      * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->contextMock = $this->createPartialMock(Context::class, []);
-        $this->customerViewHelperMock = $this->createMock(View::class);
+        $this->contextMock = $this->createPartialMock(\Magento\Framework\View\Element\Template\Context::class, []);
+        $this->customerViewHelperMock = $this->createMock(\Magento\Customer\Helper\View::class);
         $this->persistentSessionHelperMock = $this->createPartialMock(
-            Session::class,
+            \Magento\Persistent\Helper\Session::class,
             ['getSession']
         );
         $this->customerRepositoryMock = $this->getMockForAbstractClass(
-            CustomerRepositoryInterface::class,
+            \Magento\Customer\Api\CustomerRepositoryInterface::class,
             [],
             '',
             false,
@@ -92,16 +80,16 @@ class AdditionalTest extends TestCase
         );
 
         $this->jsonSerializerMock = $this->createPartialMock(
-            Json::class,
+            \Magento\Framework\Serialize\Serializer\Json::class,
             ['serialize']
         );
         $this->persistentHelperMock = $this->createPartialMock(
-            Data::class,
+            \Magento\Persistent\Helper\Data::class,
             ['getLifeTime']
         );
 
         $this->additional = $this->objectManager->getObject(
-            Additional::class,
+            \Magento\Persistent\Block\Header\Additional::class,
             [
                 'context' => $this->contextMock,
                 'customerViewHelper' => $this->customerViewHelperMock,
@@ -120,10 +108,8 @@ class AdditionalTest extends TestCase
     public function testGetCustomerId(): void
     {
         $customerId = 1;
-        /** @var \Magento\Persistent\Model\Session|MockObject $sessionMock */
-        $sessionMock = $this->getMockBuilder(\Magento\Persistent\Model\Session::class)->addMethods(['getCustomerId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var \Magento\Persistent\Model\Session|\PHPUnit_Framework_MockObject_MockObject $sessionMock */
+        $sessionMock = $this->createPartialMock(\Magento\Persistent\Model\Session::class, ['getCustomerId']);
         $sessionMock->expects($this->once())
             ->method('getCustomerId')
             ->willReturn($customerId);

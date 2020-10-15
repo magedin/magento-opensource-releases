@@ -21,7 +21,7 @@ class UserTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     {
         $this->dispatch('backend/admin/user/index');
         $response = $this->getResponse()->getBody();
-        $this->assertStringContainsString('Users', $response);
+        $this->assertContains('Users', $response);
         $this->assertEquals(
             1,
             \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(
@@ -214,7 +214,6 @@ class UserTest extends \Magento\TestFramework\TestCase\AbstractBackendController
             ];
             $data[] = [$postData, $passwordPair['is_correct']];
         }
-
         return $data;
     }
 
@@ -253,8 +252,8 @@ class UserTest extends \Magento\TestFramework\TestCase\AbstractBackendController
         $this->dispatch('backend/admin/user/edit');
         $response = $this->getResponse()->getBody();
         //check "User Information" header and fieldset
-        $this->assertStringContainsString('data-ui-id="adminhtml-user-edit-tabs-title"', $response);
-        $this->assertStringContainsString('User Information', $response);
+        $this->assertContains('data-ui-id="adminhtml-user-edit-tabs-title"', $response);
+        $this->assertContains('User Information', $response);
         $this->assertEquals(
             1,
             \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(
@@ -327,10 +326,7 @@ class UserTest extends \Magento\TestFramework\TestCase\AbstractBackendController
         $this->dispatch('backend/admin/user/validate');
         $body = $this->getResponse()->getBody();
 
-        $this->assertStringContainsString('{"error":1,"html_message":', $body);
-        $this->assertStringContainsString(
-            "'-domain.cim' is not a valid hostname for email address 'example@-domain.cim",
-            $body
-        );
+        $this->assertContains('{"error":1,"html_message":', $body);
+        $this->assertContains("'-domain.cim' is not a valid hostname for email address 'example@-domain.cim", $body);
     }
 }

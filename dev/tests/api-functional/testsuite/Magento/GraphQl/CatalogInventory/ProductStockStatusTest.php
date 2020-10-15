@@ -22,7 +22,7 @@ class ProductStockStatusTest extends GraphQlAbstract
      */
     private $stockRegistry;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stockRegistry = Bootstrap::getObjectManager()->create(StockRegistryInterface::class);
     }

@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Url\Test\Unit;
 
-use Magento\Framework\Url\Decoder;
-use Magento\Framework\Url\Encoder;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Url\Decoder;
+use \Magento\Framework\Url\Encoder;
 
-class DecoderTest extends TestCase
+class DecoderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \Magento\Framework\Url\Encoder::encode
@@ -21,8 +16,8 @@ class DecoderTest extends TestCase
      */
     public function testDecode()
     {
-        $urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
-        /** @var UrlInterface|MockObject $urlBuilderMock */
+        $urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        /** @var $urlBuilderMock \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
         $decoder = new Decoder($urlBuilderMock);
         $encoder = new Encoder();
 
@@ -30,12 +25,12 @@ class DecoderTest extends TestCase
         $result = $encoder->encode($data);
         $urlBuilderMock->expects($this->once())
             ->method('sessionUrlVar')
-            ->with($data)
-            ->willReturn($result);
-        $this->assertStringNotContainsString('&', $result);
-        $this->assertStringNotContainsString('%', $result);
-        $this->assertStringNotContainsString('+', $result);
-        $this->assertStringNotContainsString('=', $result);
+            ->with($this->equalTo($data))
+            ->will($this->returnValue($result));
+        $this->assertNotContains('&', $result);
+        $this->assertNotContains('%', $result);
+        $this->assertNotContains('+', $result);
+        $this->assertNotContains('=', $result);
         $this->assertEquals($result, $decoder->decode($result));
     }
 }

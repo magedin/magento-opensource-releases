@@ -105,7 +105,7 @@ define(
             },
 
             /**
-             * Return state of place order button.
+             * Returns state of place order button.
              *
              * @return {Boolean}
              */

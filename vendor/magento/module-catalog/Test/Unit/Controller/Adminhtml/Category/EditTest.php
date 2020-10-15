@@ -3,106 +3,86 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Category;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Catalog\Controller\Adminhtml\Category\Edit;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\Page as ResultPage;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class EditTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EditTest extends TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirectFactoryMock;
 
     /**
-     * @var \Magento\Backend\Model\View\Result\PageFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageFactoryMock;
 
     /**
-     * @var \Magento\Backend\Model\View\Result\Page|MockObject
+     * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageMock;
 
     /**
-     * @var JsonFactory|MockObject
+     * @var \Magento\Framework\Controller\Result\JsonFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultJsonFactoryMock;
 
     /**
-     * @var LayoutFactory|MockObject
+     * @var \Magento\Framework\View\LayoutFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerInterfaceMock;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $titleMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $responseMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Edit
+     * @var \Magento\Catalog\Controller\Adminhtml\Category\Edit
      */
     protected $edit;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var Category|MockObject
+     * @var \Magento\Catalog\Model\Category|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryMock;
 
@@ -112,12 +92,12 @@ class EditTest extends TestCase
      * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->categoryMock = $this->createPartialMock(
-            Category::class,
+            \Magento\Catalog\Model\Category::class,
             [
                 'getPath',
                 'addData',
@@ -129,39 +109,38 @@ class EditTest extends TestCase
             ]
         );
 
-        $this->contextMock = $this->getMockBuilder(Context::class)
-            ->addMethods(['getTitle'])
-            ->onlyMethods(
-                [
-                    'getRequest',
-                    'getObjectManager',
-                    'getEventManager',
-                    'getResponse',
-                    'getMessageManager',
-                    'getResultRedirectFactory',
-                    'getSession'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->contextMock = $this->createPartialMock(
+            \Magento\Backend\App\Action\Context::class,
+            [
+                'getTitle',
+                'getRequest',
+                'getObjectManager',
+                'getEventManager',
+                'getResponse',
+                'getMessageManager',
+                'getResultRedirectFactory',
+                'getSession'
+            ]
+        );
 
         $this->resultRedirectFactoryMock = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Backend\Model\View\Result\RedirectFactory::class,
             ['create']
         );
 
-        $this->resultPageMock = $this->getMockBuilder(ResultPage::class)
-            ->addMethods(['setActiveMenu', 'addBreadcrumb', 'getBlock', 'getTitle', 'prepend'])
-            ->onlyMethods(['getConfig', 'getLayout'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resultPageMock = $this->createPartialMock(
+            \Magento\Framework\View\Result\Page::class,
+            ['setActiveMenu', 'getConfig', 'addBreadcrumb', 'getLayout', 'getBlock', 'getTitle', 'prepend']
+        );
         $this->resultPageMock->expects($this->any())
-            ->method('getConfig')->willReturnSelf();
+            ->method('getConfig')
+            ->will($this->returnSelf());
         $this->resultPageMock->expects($this->any())
-            ->method('getTitle')->willReturnSelf();
+            ->method('getTitle')
+            ->will($this->returnSelf());
 
         $this->resultPageFactoryMock = $this->createPartialMock(
-            PageFactory::class,
+            \Magento\Framework\View\Result\PageFactory::class,
             ['create']
         );
         $this->resultPageFactoryMock->expects($this->any())
@@ -169,11 +148,11 @@ class EditTest extends TestCase
             ->willReturn($this->resultPageMock);
 
         $this->resultJsonFactoryMock = $this->createPartialMock(
-            JsonFactory::class,
+            \Magento\Framework\Controller\Result\JsonFactory::class,
             ['create']
         );
         $this->storeManagerInterfaceMock = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false,
@@ -182,7 +161,7 @@ class EditTest extends TestCase
             ['getStore', 'getDefaultStoreView', 'getRootCategoryId', 'getCode']
         );
         $this->requestMock = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
@@ -190,11 +169,11 @@ class EditTest extends TestCase
             true,
             ['getParam', 'getPost', 'getPostValue', 'getQuery', 'setParam']
         );
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->eventManagerMock = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Event\ManagerInterface::class,
             [],
             '',
             false,
@@ -202,7 +181,7 @@ class EditTest extends TestCase
             true,
             ['dispatch']
         );
-        $this->sessionMock = $this->createPartialMock(Session::class, ['__call']);
+        $this->sessionMock = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['__call']);
 
         $this->contextMock->expects($this->any())->method('getTitle')->willReturn($this->titleMock);
         $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->requestMock);
@@ -215,7 +194,7 @@ class EditTest extends TestCase
             ->willReturn($this->resultRedirectFactoryMock);
 
         $this->edit = $this->objectManager->getObject(
-            Edit::class,
+            \Magento\Catalog\Controller\Adminhtml\Category\Edit::class,
             [
                 'context' => $this->contextMock,
                 'resultPageFactory' => $this->resultPageFactoryMock,
@@ -241,46 +220,50 @@ class EditTest extends TestCase
 
         $this->requestMock->expects($this->atLeastOnce())
             ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['id', false, $categoryId],
-                    ['store', null, $storeId],
-                ]
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['id', false, $categoryId],
+                        ['store', null, $storeId],
+                    ]
+                )
             );
         $this->requestMock->expects($this->atLeastOnce())
             ->method('getQuery')
             ->with('isAjax')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->mockInitCategoryCall();
 
         $this->sessionMock->expects($this->once())
             ->method('__call')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $this->storeManagerInterfaceMock->expects($this->any())
             ->method('getStore')
-            ->with($storeId)->willReturnSelf();
+            ->with($storeId)
+            ->will($this->returnSelf());
 
         if (!$categoryId) {
             if (!$storeId) {
                 $this->storeManagerInterfaceMock->expects($this->once())
-                    ->method('getDefaultStoreView')->willReturnSelf();
+                    ->method('getDefaultStoreView')
+                    ->will($this->returnSelf());
             }
             $this->storeManagerInterfaceMock->expects($this->once())
                 ->method('getRootCategoryId')
-                ->willReturn($rootCategoryId);
+                ->will($this->returnValue($rootCategoryId));
             $categoryId = $rootCategoryId;
         }
 
         $this->requestMock->expects($this->atLeastOnce())
             ->method('setParam')
             ->with('id', $categoryId)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->categoryMock->expects($this->atLeastOnce())
             ->method('getId')
-            ->willReturn($categoryId);
+            ->will($this->returnValue($categoryId));
 
         $this->edit->execute();
     }
@@ -311,6 +294,6 @@ class EditTest extends TestCase
     {
         $this->objectManagerMock->expects($this->atLeastOnce())
             ->method('create')
-            ->willReturn($this->categoryMock);
+            ->will($this->returnValue($this->categoryMock));
     }
 }

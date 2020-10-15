@@ -3,35 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit;
 
-use Magento\Framework\MessageQueue\EnvelopeInterface;
-use Magento\Framework\MessageQueue\MergedMessageInterface;
-use Magento\Framework\MessageQueue\MessageProcessorInterface;
-use Magento\Framework\MessageQueue\MessageProcessorLoader;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for MessageProcessorLoader.
  */
-class MessageProcessorLoaderTest extends TestCase
+class MessageProcessorLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MessageProcessorInterface|MockObject
+     * @var \Magento\Framework\MessageQueue\MessageProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $mergedMessageProcessor;
 
     /**
-     * @var MessageProcessorInterface|MockObject
+     * @var \Magento\Framework\MessageQueue\MessageProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $defaultMessageProcessor;
 
     /**
-     * @var MessageProcessorLoader
+     * @var \Magento\Framework\MessageQueue\MessageProcessorLoader
      */
     private $messageProcessorLoader;
 
@@ -40,20 +32,20 @@ class MessageProcessorLoaderTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->mergedMessageProcessor = $this
-            ->getMockBuilder(MessageProcessorInterface::class)
+            ->getMockBuilder(\Magento\Framework\MessageQueue\MessageProcessorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->defaultMessageProcessor = $this
-            ->getMockBuilder(MessageProcessorInterface::class)
+            ->getMockBuilder(\Magento\Framework\MessageQueue\MessageProcessorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->messageProcessorLoader = $objectManagerHelper->getObject(
-            MessageProcessorLoader::class,
+            \Magento\Framework\MessageQueue\MessageProcessorLoader::class,
             [
                 'mergedMessageProcessor' => $this->mergedMessageProcessor,
                 'defaultMessageProcessor' => $this->defaultMessageProcessor
@@ -75,7 +67,7 @@ class MessageProcessorLoaderTest extends TestCase
         ];
 
         $this->assertInstanceOf(
-            MessageProcessorInterface::class,
+            \Magento\Framework\MessageQueue\MessageProcessorInterface::class,
             $this->messageProcessorLoader->load($messages)
         );
     }
@@ -87,10 +79,10 @@ class MessageProcessorLoaderTest extends TestCase
      */
     public function loadDataProvider()
     {
-        $mergedMessage = $this->getMockBuilder(MergedMessageInterface::class)
+        $mergedMessage = $this->getMockBuilder(\Magento\Framework\MessageQueue\MergedMessageInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $message = $this->getMockBuilder(EnvelopeInterface::class)
+        $message = $this->getMockBuilder(\Magento\Framework\MessageQueue\EnvelopeInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 

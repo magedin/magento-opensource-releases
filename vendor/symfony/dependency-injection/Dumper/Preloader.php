@@ -13,31 +13,12 @@ namespace Symfony\Component\DependencyInjection\Dumper;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
+ *
+ * @internal
  */
-final class Preloader
+class Preloader
 {
-    public static function append(string $file, array $list): void
-    {
-        if (!file_exists($file)) {
-            throw new \LogicException(sprintf('File "%s" does not exist.', $file));
-        }
-
-        $cacheDir = \dirname($file);
-        $classes = [];
-
-        foreach ($list as $item) {
-            if (0 === strpos($item, $cacheDir)) {
-                file_put_contents($file, sprintf("require_once __DIR__.%s;\n", var_export(substr($item, \strlen($cacheDir)), true)), FILE_APPEND);
-                continue;
-            }
-
-            $classes[] = sprintf("\$classes[] = %s;\n", var_export($item, true));
-        }
-
-        file_put_contents($file, sprintf("\n\$classes = [];\n%sPreloader::preload(\$classes);\n", implode('', $classes)), FILE_APPEND);
-    }
-
-    public static function preload(array $classes): void
+    public static function preload(array $classes)
     {
         set_error_handler(function ($t, $m, $f, $l) {
             if (error_reporting() & $t) {
@@ -67,7 +48,7 @@ final class Preloader
         }
     }
 
-    private static function doPreload(string $class, array &$preloaded)
+    private static function doPreload(string $class, array &$preloaded): void
     {
         if (isset($preloaded[$class]) || \in_array($class, ['self', 'static', 'parent'], true)) {
             return;
@@ -87,9 +68,7 @@ final class Preloader
 
             if (\PHP_VERSION_ID >= 70400) {
                 foreach ($r->getProperties(\ReflectionProperty::IS_PUBLIC) as $p) {
-                    if (($t = $p->getType()) && !$t->isBuiltin()) {
-                        self::doPreload($t->getName(), $preloaded);
-                    }
+                    self::preloadType($p->getType(), $preloaded);
                 }
             }
 
@@ -103,17 +82,26 @@ final class Preloader
                         }
                     }
 
-                    if (($t = $p->getType()) && !$t->isBuiltin()) {
-                        self::doPreload($t->getName(), $preloaded);
-                    }
+                    self::preloadType($p->getType(), $preloaded);
                 }
 
-                if (($t = $m->getReturnType()) && !$t->isBuiltin()) {
-                    self::doPreload($t->getName(), $preloaded);
-                }
+                self::preloadType($m->getReturnType(), $preloaded);
             }
         } catch (\ReflectionException $e) {
             // ignore missing classes
+        }
+    }
+
+    private static function preloadType(?\ReflectionType $t, array &$preloaded): void
+    {
+        if (!$t || $t->isBuiltin()) {
+            return;
+        }
+
+        foreach ($t instanceof \ReflectionUnionType ? $t->getTypes() : [$t] as $t) {
+            if (!$t->isBuiltin()) {
+                self::doPreload($t instanceof \ReflectionNamedType ? $t->getName() : $t, $preloaded);
+            }
         }
     }
 }

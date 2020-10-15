@@ -15,10 +15,9 @@ use Magento\Catalog\Model\ProductFactory;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Bundle\Model\PrepareBundleLinks;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_duplicated.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/second_product_simple.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_duplicated.php';
+require __DIR__ . '/../../../Magento/Catalog/_files/second_product_simple.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var WebsiteRepositoryInterface $websiteRepository */
@@ -27,15 +26,13 @@ $baseWebsiteId = $websiteRepository->get('base')->getId();
 /** @var ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
 $productRepository->cleanCache();
-$product = $productRepository->get('simple-1');
-$product2 = $productRepository->get('simple2');
 /** @var PrepareBundleLinks $prepareBundleLinks */
 $prepareBundleLinks = $objectManager->get(PrepareBundleLinks::class);
 /** @var ProductFactory $productFactory */
 $productFactory = $objectManager->get(ProductFactory::class);
 $bundleProduct = $productFactory->create();
 $bundleProduct->setTypeId(Type::TYPE_BUNDLE)
-    ->setAttributeSetId($bundleProduct->getDefaultAttributeSetId())
+    ->setAttributeSetId($product->getDefaultAttributeSetId())
     ->setWebsiteIds([$baseWebsiteId])
     ->setName('Bundle Product Dropdown Required options')
     ->setSku('bundle-product-dropdown-required-options')
@@ -60,14 +57,14 @@ $bundleOptionsData = [
 ];
 $bundleSelectionsData = [
     [
-        'sku' => 'simple-1',
+        'sku' => $product->getSku(),
         'selection_qty' => 1,
         'selection_price_value' => 0,
         'selection_can_change_qty' => 1,
         'delete' => '',
     ],
     [
-        'sku' => 'simple2',
+        'sku' => $product2->getSku(),
         'selection_qty' => 1,
         'selection_price_value' => 0,
         'selection_can_change_qty' => 1,

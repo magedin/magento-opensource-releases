@@ -17,8 +17,6 @@ use Magento\Framework\Setup\Declaration\Schema\Dto\ElementInterface;
 class OnUpdate implements DbDefinitionProcessorInterface
 {
     /**
-     * Get definition for given column.
-     *
      * @param \Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Timestamp $column
      * @inheritdoc
      */
@@ -38,7 +36,7 @@ class OnUpdate implements DbDefinitionProcessorInterface
     public function fromDefinition(array $data)
     {
         $matches = [];
-        if (preg_match('/(?:on update)\s([\_\-\s\w\d]+)/', $data['extra'], $matches)) {
+        if (preg_match('/^(?:on update)\s([\_\-\s\w\d]+)/', $data['extra'], $matches)) {
             $data['on_update'] = true;
         }
 

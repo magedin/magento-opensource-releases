@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Model\System\Message\Notification;
 
+use Magento\Tax\Model\Config as TaxConfig;
+use Magento\Tax\Model\System\Message\Notification\DiscountErrors as DiscountErrorsNotification;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Tax\Model\Config as TaxConfig;
-use Magento\Tax\Model\System\Message\Notification\DiscountErrors as DiscountErrorsNotification;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for @see \Magento\Tax\Model\System\Message\Notification\DiscountErrors
  */
-class DiscountErrorsTest extends TestCase
+class DiscountErrorsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DiscountErrorsNotification
@@ -28,25 +24,25 @@ class DiscountErrorsTest extends TestCase
     private $discountErrorsNotification;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var TaxConfig|MockObject
+     * @var TaxConfig | \PHPUnit_Framework_MockObject_MockObject
      */
     private $taxConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $websiteMock = $this->getMockForAbstractClass(WebsiteInterface::class);
+        $websiteMock = $this->createMock(WebsiteInterface::class);
         $websiteMock->expects($this->any())->method('getName')->willReturn('testWebsiteName');
         $storeMock = $this->getMockForAbstractClass(
             StoreInterface::class,
@@ -59,10 +55,10 @@ class DiscountErrorsTest extends TestCase
         );
         $storeMock->expects($this->any())->method('getName')->willReturn('testStoreName');
         $storeMock->expects($this->any())->method('getWebsite')->willReturn($websiteMock);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock = $this->createMock(StoreManagerInterface::class);
         $this->storeManagerMock->expects($this->any())->method('getStores')->willReturn([$storeMock]);
 
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilderMock = $this->createMock(UrlInterface::class);
         $this->taxConfigMock = $this->createMock(TaxConfig::class);
         $this->discountErrorsNotification = (new ObjectManager($this))->getObject(
             DiscountErrorsNotification::class,

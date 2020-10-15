@@ -57,7 +57,7 @@ class ProductPageViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -355,7 +355,7 @@ class ProductPageViewTest extends TestCase
             $this->assertEquals($expectedData[$currentType]['additional_data'], $actualDataItem['additional_data']);
             unset($actualDataItem['additional_data']);
             foreach ($actualDataItem as $item) {
-                $this->assertContainsEquals($item, $expectedData[$currentType]);
+                $this->assertContains($item, $expectedData[$currentType]);
             }
         }
     }

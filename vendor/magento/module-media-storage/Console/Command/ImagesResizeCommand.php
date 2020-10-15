@@ -8,37 +8,26 @@ declare(strict_types=1);
 namespace Magento\MediaStorage\Console\Command;
 
 use Magento\Framework\App\Area;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\State;
-use Magento\Framework\Console\Cli;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\MediaStorage\Service\ImageResize;
-use Magento\MediaStorage\Service\ImageResizeScheduler;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\ProgressBarFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
-use Magento\Catalog\Model\ResourceModel\Product\Image as ProductImage;
 
 /**
  * Resizes product images according to theme view definitions.
+ *
+ * @package Magento\MediaStorage\Console\Command
  */
-class ImagesResizeCommand extends Command
+class ImagesResizeCommand extends \Symfony\Component\Console\Command\Command
 {
-    /**
-     * Asynchronous image resize mode
-     */
-    const ASYNC_RESIZE = 'async';
-
-    /**
-     * @var ImageResizeScheduler
-     */
-    private $imageResizeScheduler;
-
     /**
      * @var ImageResize
      */
-    private $imageResize;
+    private $resize;
 
     /**
      * @var State
@@ -51,31 +40,23 @@ class ImagesResizeCommand extends Command
     private $progressBarFactory;
 
     /**
-     * @var ProductImage
-     */
-    private $productImage;
-
-    /**
      * @param State $appState
-     * @param ImageResize $imageResize
-     * @param ImageResizeScheduler $imageResizeScheduler
+     * @param ImageResize $resize
+     * @param ObjectManagerInterface $objectManager
      * @param ProgressBarFactory $progressBarFactory
-     * @param ProductImage $productImage
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
         State $appState,
-        ImageResize $imageResize,
-        ImageResizeScheduler $imageResizeScheduler,
-        ProgressBarFactory $progressBarFactory,
-        ProductImage $productImage
+        ImageResize $resize,
+        ObjectManagerInterface $objectManager,
+        ProgressBarFactory $progressBarFactory = null
     ) {
         parent::__construct();
+        $this->resize = $resize;
         $this->appState = $appState;
-        $this->imageResize = $imageResize;
-        $this->imageResizeScheduler = $imageResizeScheduler;
-        $this->progressBarFactory = $progressBarFactory;
-        $this->productImage = $productImage;
+        $this->progressBarFactory = $progressBarFactory
+            ?: ObjectManager::getInstance()->get(ProgressBarFactory::class);
     }
 
     /**
@@ -84,25 +65,7 @@ class ImagesResizeCommand extends Command
     protected function configure()
     {
         $this->setName('catalog:images:resize')
-            ->setDescription('Creates resized product images')
-            ->setDefinition($this->getOptionsList());
-    }
-
-    /**
-     * Image resize command options list
-     *
-     * @return array
-     */
-    private function getOptionsList() : array
-    {
-        return [
-            new InputOption(
-                self::ASYNC_RESIZE,
-                'a',
-                InputOption::VALUE_NONE,
-                'Resize image in asynchronous mode'
-            ),
-        ];
+            ->setDescription('Creates resized product images');
     }
 
     /**
@@ -112,24 +75,10 @@ class ImagesResizeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $result = $input->getOption(self::ASYNC_RESIZE) ?
-            $this->executeAsync($output) : $this->executeSync($output);
-
-        return $result;
-    }
-
-    /**
-     * Run resize in synchronous mode
-     *
-     * @param OutputInterface $output
-     * @return int
-     */
-    private function executeSync(OutputInterface $output): int
-    {
         try {
             $errors = [];
             $this->appState->setAreaCode(Area::AREA_GLOBAL);
-            $generator = $this->imageResize->resizeFromThemes();
+            $generator = $this->resize->resizeFromThemes();
 
             /** @var ProgressBar $progress */
             $progress = $this->progressBarFactory->create(
@@ -162,7 +111,7 @@ class ImagesResizeCommand extends Command
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
             // we must have an exit code higher than zero to indicate something was wrong
-            return Cli::RETURN_FAILURE;
+            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
 
         $output->write(PHP_EOL);
@@ -175,62 +124,6 @@ class ImagesResizeCommand extends Command
             $output->writeln("<info>Product images resized successfully</info>");
         }
 
-        return Cli::RETURN_SUCCESS;
-    }
-
-    /**
-     * Schedule asynchronous image resizing
-     *
-     * @param OutputInterface $output
-     * @return int
-     */
-    private function executeAsync(OutputInterface $output): int
-    {
-        try {
-            $errors = [];
-            $this->appState->setAreaCode(Area::AREA_GLOBAL);
-
-            /** @var ProgressBar $progress */
-            $progress = $this->progressBarFactory->create(
-                [
-                    'output' => $output,
-                    'max' => $this->productImage->getCountUsedProductImages()
-                ]
-            );
-            $progress->setFormat(
-                "%current%/%max% [%bar%] %percent:3s%% %elapsed% %memory:6s% \t| <info>%message%</info>"
-            );
-
-            if ($output->getVerbosity() !== OutputInterface::VERBOSITY_NORMAL) {
-                $progress->setOverwrite(false);
-            }
-
-            $productImages = $this->productImage->getUsedProductImages();
-            foreach ($productImages as $image) {
-                $result = $this->imageResizeScheduler->schedule($image['filepath']);
-
-                if (!$result) {
-                    $errors[$image['filepath']] = 'Error image scheduling: ' . $image['filepath'];
-                }
-                $progress->setMessage($image['filepath']);
-                $progress->advance();
-            }
-        } catch (\Exception $e) {
-            $output->writeln("<error>{$e->getMessage()}</error>");
-            // we must have an exit code higher than zero to indicate something was wrong
-            return Cli::RETURN_FAILURE;
-        }
-
-        $output->write(PHP_EOL);
-        if (count($errors)) {
-            $output->writeln("<info>Product images resized with errors:</info>");
-            foreach ($errors as $error) {
-                $output->writeln("<error>{$error}</error>");
-            }
-        } else {
-            $output->writeln("<info>Product images scheduled successfully</info>");
-        }
-
-        return Cli::RETURN_SUCCESS;
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }

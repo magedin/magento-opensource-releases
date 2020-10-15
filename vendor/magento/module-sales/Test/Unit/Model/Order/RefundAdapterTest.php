@@ -3,67 +3,57 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order;
-
-use Magento\Sales\Api\Data\CreditmemoInterface;
-use Magento\Sales\Api\Data\InvoiceInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Creditmemo\RefundOperation;
-use Magento\Sales\Model\Order\RefundAdapter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for refund adapter.
  */
-class RefundAdapterTest extends TestCase
+class RefundAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RefundAdapter
+     * @var \Magento\Sales\Model\Order\RefundAdapter
      */
     private $subject;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var CreditmemoInterface|MockObject
+     * @var \Magento\Sales\Api\Data\CreditmemoInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoMock;
 
     /**
-     * @var RefundOperation|MockObject
+     * @var \Magento\Sales\Model\Order\Creditmemo\RefundOperation|\PHPUnit_Framework_MockObject_MockObject
      */
     private $refundOperationMock;
 
     /**
-     * @var InvoiceInterface|MockObject
+     * @var \Magento\Sales\Api\Data\InvoiceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $invoiceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->orderMock = $this->getMockBuilder(OrderInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->creditmemoMock = $this->getMockBuilder(CreditmemoInterface::class)
+        $this->creditmemoMock = $this->getMockBuilder(\Magento\Sales\Api\Data\CreditmemoInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->refundOperationMock = $this->getMockBuilder(RefundOperation::class)
+        $this->refundOperationMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Creditmemo\RefundOperation::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->invoiceMock = $this->getMockBuilder(InvoiceInterface::class)
+        $this->invoiceMock = $this->getMockBuilder(\Magento\Sales\Api\Data\InvoiceInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->subject = new RefundAdapter(
+        $this->subject = new \Magento\Sales\Model\Order\RefundAdapter(
             $this->refundOperationMock
         );
     }

@@ -4,66 +4,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogInventory\Test\Unit\Model\Plugin;
 
-use Magento\Catalog\Api\Data\ProductExtensionFactory;
-use Magento\Catalog\Api\Data\ProductExtensionInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Product;
-use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Api\StockRegistryInterface;
-use Magento\CatalogInventory\Model\Plugin\AfterProductLoad;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AfterProductLoadTest extends TestCase
+class AfterProductLoadTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AfterProductLoad
+     * @var \Magento\CatalogInventory\Model\Plugin\AfterProductLoad
      */
     protected $plugin;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var ProductExtensionFactory|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductExtensionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productExtensionFactoryMock;
 
     /**
-     * @var ProductExtensionInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productExtensionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $stockRegistryMock = $this->getMockForAbstractClass(StockRegistryInterface::class);
+        $stockRegistryMock = $this->createMock(\Magento\CatalogInventory\Api\StockRegistryInterface::class);
         $this->productExtensionFactoryMock = $this->getMockBuilder(
-            ProductExtensionFactory::class
+            \Magento\Catalog\Api\Data\ProductExtensionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->plugin = new AfterProductLoad(
+        $this->plugin = new \Magento\CatalogInventory\Model\Plugin\AfterProductLoad(
             $stockRegistryMock,
             $this->productExtensionFactoryMock
         );
 
         $productId = 5494;
-        $stockItemMock = $this->getMockForAbstractClass(StockItemInterface::class);
+        $stockItemMock = $this->createMock(\Magento\CatalogInventory\Api\Data\StockItemInterface::class);
 
         $stockRegistryMock->expects($this->once())
             ->method('getStockItem')
             ->with($productId)
             ->willReturn($stockItemMock);
 
-        $this->productExtensionMock = $this->getMockBuilder(ProductExtensionInterface::class)
+        $this->productExtensionMock = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductExtensionInterface::class)
             ->setMethods(['setStockItem'])
             ->getMockForAbstractClass();
         $this->productExtensionMock->expects($this->once())
@@ -71,7 +60,7 @@ class AfterProductLoadTest extends TestCase
             ->with($stockItemMock)
             ->willReturnSelf();
 
-        $this->productMock = $this->getMockBuilder(Product::class)
+        $this->productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->productMock->expects($this->once())
@@ -80,7 +69,7 @@ class AfterProductLoadTest extends TestCase
             ->willReturnSelf();
         $this->productMock->expects(($this->once()))
             ->method('getId')
-            ->willReturn($productId);
+            ->will($this->returnValue($productId));
     }
 
     public function testAfterLoad()

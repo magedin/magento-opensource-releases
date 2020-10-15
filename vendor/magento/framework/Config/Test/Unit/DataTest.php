@@ -3,39 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Config\Test\Unit;
 
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Config\Data;
-use Magento\Framework\Config\ReaderInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReaderInterface|MockObject
+     * @var \Magento\Framework\Config\ReaderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readerMock;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Config\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->readerMock = $this->getMockForAbstractClass(ReaderInterface::class);
-        $this->cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->readerMock = $this->createMock(\Magento\Framework\Config\ReaderInterface::class);
+        $this->cacheMock = $this->createMock(\Magento\Framework\Config\CacheInterface::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
     }
 
     public function testGetConfigNotCached()
@@ -51,7 +43,7 @@ class DataTest extends TestCase
         $this->serializerMock->expects($this->once())
             ->method('serialize')
             ->with($data);
-        $config = new Data(
+        $config = new \Magento\Framework\Config\Data(
             $this->readerMock,
             $this->cacheMock,
             $cacheId,
@@ -59,7 +51,7 @@ class DataTest extends TestCase
         );
         $this->assertEquals($data, $config->get());
         $this->assertEquals('b', $config->get('a'));
-        $this->assertNull($config->get('a/b'));
+        $this->assertEquals(null, $config->get('a/b'));
         $this->assertEquals(33, $config->get('a/b', 33));
     }
 
@@ -77,7 +69,7 @@ class DataTest extends TestCase
             ->method('unserialize')
             ->with($serializedData)
             ->willReturn($data);
-        $config = new Data(
+        $config = new \Magento\Framework\Config\Data(
             $this->readerMock,
             $this->cacheMock,
             $cacheId,
@@ -101,7 +93,7 @@ class DataTest extends TestCase
         $this->cacheMock->expects($this->once())
             ->method('remove')
             ->with($cacheId);
-        $config = new Data(
+        $config = new \Magento\Framework\Config\Data(
             $this->readerMock,
             $this->cacheMock,
             $cacheId,

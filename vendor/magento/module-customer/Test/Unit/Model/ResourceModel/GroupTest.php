@@ -3,55 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\ResourceModel;
 
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
-use Magento\Customer\Model\ResourceModel\Group;
-use Magento\Customer\Model\Vat;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GroupTest extends TestCase
+class GroupTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Group */
+    /** @var \Magento\Customer\Model\ResourceModel\Group */
     protected $groupResourceModel;
 
-    /** @var ResourceConnection|MockObject */
+    /** @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject */
     protected $resource;
 
-    /** @var Vat|MockObject */
+    /** @var \Magento\Customer\Model\Vat|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerVat;
 
-    /** @var \Magento\Customer\Model\Group|MockObject */
+    /** @var \Magento\Customer\Model\Group|\PHPUnit_Framework_MockObject_MockObject */
     protected $groupModel;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $customersFactory;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $groupManagement;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $relationProcessorMock;
 
     /**
-     * @var Snapshot|MockObject
+     * @var Snapshot|\PHPUnit_Framework_MockObject_MockObject
      */
     private $snapshotMock;
 
@@ -60,39 +45,38 @@ class GroupTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resource = $this->createMock(ResourceConnection::class);
-        $this->customerVat = $this->createMock(Vat::class);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->customerVat = $this->createMock(\Magento\Customer\Model\Vat::class);
         $this->customersFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory::class,
             ['create']
         );
-        $this->groupManagement = $this->getMockBuilder(GroupManagementInterface::class)
-            ->onlyMethods(
-                ['isReadOnly', 'getDefaultGroup', 'getNotLoggedInGroup', 'getLoggedInGroups', 'getAllCustomersGroup']
-            )
-            ->getMockForAbstractClass();
+        $this->groupManagement = $this->createPartialMock(
+            \Magento\Customer\Api\GroupManagementInterface::class,
+            ['getDefaultGroup', 'getNotLoggedInGroup', 'isReadOnly', 'getLoggedInGroups', 'getAllCustomersGroup']
+        );
 
         $this->groupModel = $this->createMock(\Magento\Customer\Model\Group::class);
 
-        $contextMock = $this->createMock(Context::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
         $contextMock->expects($this->once())->method('getResources')->willReturn($this->resource);
 
         $this->relationProcessorMock = $this->createMock(
-            ObjectRelationProcessor::class
+            \Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class
         );
 
         $this->snapshotMock = $this->createMock(
-            Snapshot::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class
         );
 
         $transactionManagerMock = $this->createMock(
-            TransactionManagerInterface::class
+            \Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface::class
         );
         $transactionManagerMock->expects($this->any())
             ->method('start')
-            ->willReturn($this->getMockForAbstractClass(AdapterInterface::class));
+            ->willReturn($this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class));
         $contextMock->expects($this->once())
             ->method('getTransactionManager')
             ->willReturn($transactionManagerMock);
@@ -101,7 +85,7 @@ class GroupTest extends TestCase
             ->willReturn($this->relationProcessorMock);
 
         $this->groupResourceModel = (new ObjectManagerHelper($this))->getObject(
-            Group::class,
+            \Magento\Customer\Model\ResourceModel\Group::class,
             [
                 'context' => $contextMock,
                 'groupManagement' => $this->groupManagement,
@@ -132,7 +116,7 @@ class GroupTest extends TestCase
         $this->groupModel->expects($this->once())->method('setId')
             ->with($expectedId);
 
-        $dbAdapter = $this->getMockBuilder(AdapterInterface::class)
+        $dbAdapter = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -146,7 +130,7 @@ class GroupTest extends TestCase
         $dbAdapter->expects($this->any())->method('describeTable')->willReturn(['customer_group_id' => []]);
         $dbAdapter->expects($this->any())->method('update')->willReturnSelf();
         $dbAdapter->expects($this->once())->method('lastInsertId')->willReturn($expectedId);
-        $selectMock = $this->getMockBuilder(Select::class)
+        $selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dbAdapter->expects($this->any())->method('select')->willReturn($selectMock);
@@ -163,28 +147,27 @@ class GroupTest extends TestCase
      */
     public function testDelete()
     {
-        $dbAdapter = $this->getMockForAbstractClass(AdapterInterface::class);
-        $this->resource->expects($this->any())->method('getConnection')->willReturn($dbAdapter);
+        $dbAdapter = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
+        $this->resource->expects($this->any())->method('getConnection')->will($this->returnValue($dbAdapter));
 
-        $customer = $this->getMockBuilder(Customer::class)
-            ->addMethods(['getStoreId', 'setGroupId'])
-            ->onlyMethods(['__wakeup', 'load', 'getId', 'save'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $customer = $this->createPartialMock(
+            \Magento\Customer\Model\Customer::class,
+            ['__wakeup', 'load', 'getId', 'getStoreId', 'setGroupId', 'save']
+        );
         $customerId = 1;
-        $customer->expects($this->once())->method('getId')->willReturn($customerId);
-        $customer->expects($this->once())->method('load')->with($customerId)->willReturnSelf();
+        $customer->expects($this->once())->method('getId')->will($this->returnValue($customerId));
+        $customer->expects($this->once())->method('load')->with($customerId)->will($this->returnSelf());
         $defaultCustomerGroup = $this->createPartialMock(\Magento\Customer\Model\Group::class, ['getId']);
         $this->groupManagement->expects($this->once())->method('getDefaultGroup')
-            ->willReturn($defaultCustomerGroup);
+            ->will($this->returnValue($defaultCustomerGroup));
         $defaultCustomerGroup->expects($this->once())->method('getId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $customer->expects($this->once())->method('setGroupId')->with(1);
-        $customerCollection = $this->createMock(Collection::class);
-        $customerCollection->expects($this->once())->method('addAttributeToFilter')->willReturnSelf();
-        $customerCollection->expects($this->once())->method('load')->willReturn([$customer]);
+        $customerCollection = $this->createMock(\Magento\Customer\Model\ResourceModel\Customer\Collection::class);
+        $customerCollection->expects($this->once())->method('addAttributeToFilter')->will($this->returnSelf());
+        $customerCollection->expects($this->once())->method('load')->will($this->returnValue([$customer]));
         $this->customersFactory->expects($this->once())->method('create')
-            ->willReturn($customerCollection);
+            ->will($this->returnValue($customerCollection));
 
         $this->relationProcessorMock->expects($this->once())->method('delete');
         $this->groupModel->expects($this->any())->method('getData')->willReturn(['data' => 'value']);

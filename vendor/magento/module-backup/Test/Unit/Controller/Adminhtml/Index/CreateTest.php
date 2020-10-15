@@ -3,103 +3,87 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backup\Test\Unit\Controller\Adminhtml\Index;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Backup\Controller\Adminhtml\Index\Create;
-use Magento\Backup\Model\Backup;
-use Magento\Framework\App\MaintenanceMode;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Backup\Factory;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests \Magento\Backup\Controller\Adminhtml\Index\Create class.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CreateTest extends TestCase
+class CreateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     private $context;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseMock;
 
     /**
-     * @var Backup|MockObject
+     * @var \Magento\Backup\Model\Backup|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupModelMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backend\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataBackendHelperMock;
 
     /**
-     * @var \Magento\Backup\Helper\Data|MockObject
+     * @var \Magento\Backup\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataBackupHelperMock;
 
     /**
-     * @var FileFactory|MockObject
+     * @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileFactoryMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sessionMock;
 
     /**
-     * @var MaintenanceMode|MockObject
+     * @var \Magento\Framework\App\MaintenanceMode|\PHPUnit_Framework_MockObject_MockObject
      */
     private $maintenanceModeMock;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Backup\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupFactoryMock;
 
     /**
-     * @var Create
+     * @var \Magento\Backup\Controller\Adminhtml\Index\Create
      */
     private $createController;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->setMethods(['isAjax', 'isPost', 'getParam'])
             ->getMock();
@@ -107,18 +91,18 @@ class CreateTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['representJson', 'setRedirect'])
             ->getMock();
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->sessionMock = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->backupFactoryMock = $this->getMockBuilder(Factory::class)
+        $this->backupFactoryMock = $this->getMockBuilder(\Magento\Framework\Backup\Factory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->backupModelMock = $this->getMockBuilder(Backup::class)
+        $this->backupModelMock = $this->getMockBuilder(\Magento\Backup\Model\Backup::class)
             ->disableOriginalConstructor()
             ->setMethods(['setBackupExtension', 'setTime', 'setBackupsDir', 'setName', 'create'])
             ->getMock();
-        $this->dataBackendHelperMock = $this->getMockBuilder(Data::class)
+        $this->dataBackendHelperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods(['getUrl'])
             ->getMock();
@@ -126,16 +110,16 @@ class CreateTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getExtensionByType', 'getBackupsDir'])
             ->getMock();
-        $this->maintenanceModeMock = $this->getMockBuilder(MaintenanceMode::class)
+        $this->maintenanceModeMock = $this->getMockBuilder(\Magento\Framework\App\MaintenanceMode::class)
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
-        $this->fileFactoryMock = $this->getMockBuilder(FileFactory::class)
+        $this->fileFactoryMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManager = new ObjectManager($this);
         $this->context = $this->objectManager->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'request' => $this->requestMock,
@@ -146,7 +130,7 @@ class CreateTest extends TestCase
             ]
         );
         $this->createController = $this->objectManager->getObject(
-            Create::class,
+            \Magento\Backup\Controller\Adminhtml\Index\Create::class,
             [
                 'context' => $this->context,
                 'backupFactory' => $this->backupFactoryMock,

@@ -11,17 +11,16 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemCriteriaInterfaceFactory;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 class IsAnySourceItemInStockConditionTest extends TestCase
 {
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
+    private $isProductSalable;
 
     /**
      * @var ProductRepositoryInterface
@@ -38,22 +37,11 @@ class IsAnySourceItemInStockConditionTest extends TestCase
      */
     private $stockItemRepository;
 
-    /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestFactory;
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
-        $this->areProductsSalableForRequestedQty = $objectManager->get(
-            AreProductsSalableForRequestedQtyInterface::class
-        );
-        $this->isProductSalableForRequestedQtyRequestFactory = $objectManager->get(
-            IsProductSalableForRequestedQtyRequestInterfaceFactory::class
+        $this->isProductSalable = $objectManager->get(
+            IsProductSalableForRequestedQtyInterface::class
         );
         $this->productRepository = $objectManager->get(ProductRepositoryInterface::class);
         $this->stockItemCriteriaFactory = $objectManager->get(StockItemCriteriaInterfaceFactory::class);
@@ -61,11 +49,11 @@ class IsAnySourceItemInStockConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
      *
      * @dataProvider sourceItemsStockData
      *
@@ -91,15 +79,7 @@ class IsAnySourceItemInStockConditionTest extends TestCase
         $legacyStockItem->setBackorders(1);
         $legacyStockItem->setUseConfigBackorders(0);
         $this->stockItemRepository->save($legacyStockItem);
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => 1,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-        $this->assertEquals($expected, $result->isSalable());
+        $this->assertEquals($expected, $this->isProductSalable->execute($sku, $stockId, 1)->isSalable());
     }
 
     /**

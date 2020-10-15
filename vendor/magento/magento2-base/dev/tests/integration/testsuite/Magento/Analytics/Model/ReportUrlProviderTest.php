@@ -29,7 +29,7 @@ class ReportUrlProviderTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->reportUrlProvider = $objectManager->get(ReportUrlProvider::class);

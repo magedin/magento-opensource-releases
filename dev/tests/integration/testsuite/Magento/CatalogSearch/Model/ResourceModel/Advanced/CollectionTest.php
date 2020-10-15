@@ -20,7 +20,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     private $advancedCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $advanced = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\CatalogSearch\Model\Search\ItemCollectionProvider::class);

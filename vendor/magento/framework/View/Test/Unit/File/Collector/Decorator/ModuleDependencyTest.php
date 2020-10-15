@@ -3,43 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\File\Collector\Decorator;
 
-use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File;
-use Magento\Framework\View\File\Collector\Decorator\ModuleDependency;
-use Magento\Framework\View\File\CollectorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ModuleDependencyTest extends TestCase
+class ModuleDependencyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ModuleDependency
+     * @var \Magento\Framework\View\File\Collector\Decorator\ModuleDependency
      */
     private $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $_fileSource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $_moduleListMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_fileSource = $this->getMockForAbstractClass(CollectorInterface::class);
-        $this->_moduleListMock = $this->getMockForAbstractClass(ModuleListInterface::class);
+        $this->_fileSource = $this->getMockForAbstractClass(\Magento\Framework\View\File\CollectorInterface::class);
+        $this->_moduleListMock = $this->createMock(\Magento\Framework\Module\ModuleListInterface::class);
         $this->_moduleListMock->expects($this->any())
             ->method('getNames')
-            ->willReturn(['Fixture_ModuleB', 'Fixture_ModuleA']);
-        $this->_model = new ModuleDependency(
+            ->will($this->returnValue(['Fixture_ModuleB', 'Fixture_ModuleA']));
+        $this->_model = new \Magento\Framework\View\File\Collector\Decorator\ModuleDependency(
             $this->_fileSource,
             $this->_moduleListMock
         );
@@ -53,12 +44,12 @@ class ModuleDependencyTest extends TestCase
      */
     public function testGetFiles(array $fixtureFiles, array $expectedFiles, $message)
     {
-        $theme = $this->getMockForAbstractClass(ThemeInterface::class);
+        $theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
         $this->_fileSource
             ->expects($this->once())
             ->method('getFiles')
             ->with($theme, '*.xml')
-            ->willReturn($fixtureFiles);
+            ->will($this->returnValue($fixtureFiles));
         $this->assertSame($expectedFiles, $this->_model->getFiles($theme, '*.xml'), $message);
     }
 
@@ -67,12 +58,12 @@ class ModuleDependencyTest extends TestCase
      */
     public function getFilesDataProvider()
     {
-        $fileOne = new File('b.xml', 'Fixture_ModuleB');
-        $fileTwo = new File('a.xml', 'Fixture_ModuleA');
-        $fileThree = new File('b.xml', 'Fixture_ModuleA');
+        $fileOne = new \Magento\Framework\View\File('b.xml', 'Fixture_ModuleB');
+        $fileTwo = new \Magento\Framework\View\File('a.xml', 'Fixture_ModuleA');
+        $fileThree = new \Magento\Framework\View\File('b.xml', 'Fixture_ModuleA');
 
-        $unknownFileOne = new File('b.xml', 'Unknown_ModuleA');
-        $unknownFileTwo = new File('a.xml', 'Unknown_ModuleB');
+        $unknownFileOne = new \Magento\Framework\View\File('b.xml', 'Unknown_ModuleA');
+        $unknownFileTwo = new \Magento\Framework\View\File('a.xml', 'Unknown_ModuleB');
         return [
             'same module' => [
                 [$fileThree, $fileTwo],

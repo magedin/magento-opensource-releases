@@ -19,7 +19,7 @@ class AnnotationExtractorTest extends TestCase
      * Before test functionality
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         TestLoggingUtil::getInstance()->setMockLoggingUtil();
     }
@@ -209,7 +209,7 @@ class AnnotationExtractorTest extends TestCase
      * After class functionality
      * @return void
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         TestLoggingUtil::getInstance()->clearMockLoggingUtil();
     }

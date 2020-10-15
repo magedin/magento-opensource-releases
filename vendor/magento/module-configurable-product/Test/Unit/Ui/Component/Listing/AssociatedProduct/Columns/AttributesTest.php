@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Ui\Component\Listing\AssociatedProduct\Columns;
 
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Api\Data\ProductAttributeSearchResultsInterface;
-use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\ConfigurableProduct\Ui\Component\Listing\AssociatedProduct\Columns\Attributes as AttributesColumn;
-use Magento\Eav\Api\Data\AttributeOptionInterface;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\View\Element\UiComponent\Processor as UiElementProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Catalog\Api\Data\ProductAttributeSearchResultsInterface;
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
+use Magento\Eav\Api\Data\AttributeOptionInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AttributesTest extends TestCase
+class AttributesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributesColumn
@@ -36,36 +32,36 @@ class AttributesTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var ProductAttributeRepositoryInterface|MockObject
+     * @var ProductAttributeRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeRepositoryMock;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaBuilderMock;
 
     /**
-     * @var UiElementProcessor|MockObject
+     * @var UiElementProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $uiElementProcessorMock;
 
     /**
-     * @var SearchCriteria|MockObject
+     * @var SearchCriteria|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaMock;
 
     /**
-     * @var ProductAttributeSearchResultsInterface|MockObject
+     * @var ProductAttributeSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchResultsMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockBuilder(ContextInterface::class)
             ->getMockForAbstractClass();
@@ -196,7 +192,7 @@ class AttributesTest extends TestCase
      * @param string $attributeCode
      * @param string $defaultFrontendLabel
      * @param array $options
-     * @return ProductAttributeInterface|MockObject
+     * @return ProductAttributeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createAttributeMock($attributeCode, $defaultFrontendLabel, array $options = [])
     {
@@ -221,7 +217,7 @@ class AttributesTest extends TestCase
      *
      * @param string $value
      * @param string $label
-     * @return AttributeOptionInterface|MockObject
+     * @return AttributeOptionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createAttributeOptionMock($value, $label)
     {

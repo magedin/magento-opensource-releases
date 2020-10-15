@@ -3,61 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Helper;
 
 use Magento\Framework\DataObject as MagentoObject;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Tax\Api\Data\OrderTaxDetailsAppliedTaxInterface;
-use Magento\Tax\Api\Data\OrderTaxDetailsInterface;
-use Magento\Tax\Api\Data\OrderTaxDetailsItemInterface;
-use Magento\Tax\Api\OrderTaxManagementInterface;
-use Magento\Tax\Helper\Data;
-use Magento\Tax\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class DataTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Tax\Helper\Data
      */
     protected $helper;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $orderTaxManagementMock;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $priceCurrencyMock;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $taxConfigMock;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->orderTaxManagementMock = $this->getMockBuilder(OrderTaxManagementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->priceCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->taxConfigMock = $this->getMockBuilder(Config::class)
+        $this->orderTaxManagementMock = $this->getMockBuilder(\Magento\Tax\Api\OrderTaxManagementInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->priceCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->taxConfigMock = $this->getMockBuilder(\Magento\Tax\Model\Config::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializer->expects($this->any())
@@ -76,7 +64,7 @@ class DataTest extends TestCase
                 }
             );
         $this->helper = $objectManager->getObject(
-            Data::class,
+            \Magento\Tax\Helper\Data::class,
             [
                 'orderTaxManagement' => $this->orderTaxManagementMock,
                 'priceCurrency' => $this->priceCurrencyMock,
@@ -104,9 +92,9 @@ class DataTest extends TestCase
         $expectedAmount = $itemAmount + 1;
         $expectedBaseAmount = $itemBaseAmount + 1;
 
-        $orderDetailsItem = $this->getMockBuilder(OrderTaxDetailsAppliedTaxInterface::class)
+        $orderDetailsItem = $this->getMockBuilder(\Magento\Tax\Api\Data\OrderTaxDetailsAppliedTaxInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $orderDetailsItem->expects($this->once())
             ->method('getCode')
             ->willReturn($itemCode);
@@ -129,13 +117,13 @@ class DataTest extends TestCase
         ];
         $this->priceCurrencyMock->expects($this->exactly(2))
             ->method('round')
-            ->willReturnMap($roundValues);
+            ->will($this->returnValueMap($roundValues));
 
         $appliedTaxes = [$orderDetailsItem];
 
-        $orderDetails = $this->getMockBuilder(OrderTaxDetailsInterface::class)
+        $orderDetails = $this->getMockBuilder(\Magento\Tax\Api\Data\OrderTaxDetailsInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $orderDetails->expects($this->once())
             ->method('getAppliedTaxes')
             ->willReturn($appliedTaxes);
@@ -144,7 +132,7 @@ class DataTest extends TestCase
             ->with($orderId)
             ->willReturn($orderDetails);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
         $orderMock->expects($this->once())
@@ -163,12 +151,12 @@ class DataTest extends TestCase
      * Create OrderTaxDetails mock from array of data
      *
      * @param $inputArray
-     * @return MockObject|OrderTaxDetailsInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Tax\Api\Data\OrderTaxDetailsInterface
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function mapOrderTaxItemDetail($inputArray)
     {
-        $orderTaxItemDetailsMock = $this->getMockBuilder(OrderTaxDetailsInterface::class)
+        $orderTaxItemDetailsMock = $this->getMockBuilder(\Magento\Tax\Api\Data\OrderTaxDetailsInterface::class)
             ->getMock();
         $itemMocks = [];
         foreach ($inputArray['items'] as $orderTaxDetailsItemData) {
@@ -181,45 +169,45 @@ class DataTest extends TestCase
             $appliedTaxesMocks = [];
             foreach ($appliedTaxesData as $appliedTaxData) {
                 $appliedTaxesMock = $this->getMockBuilder(
-                    OrderTaxDetailsAppliedTaxInterface::class
+                    \Magento\Tax\Api\Data\OrderTaxDetailsAppliedTaxInterface::class
                 )->getMock();
                 $appliedTaxesMock->expects($this->any())
                     ->method('getAmount')
-                    ->willReturn($appliedTaxData['amount']);
+                    ->will($this->returnValue($appliedTaxData['amount']));
                 $appliedTaxesMock->expects($this->any())
                     ->method('getBaseAmount')
-                    ->willReturn($appliedTaxData['base_amount']);
+                    ->will($this->returnValue($appliedTaxData['base_amount']));
                 $appliedTaxesMock->expects($this->any())
                     ->method('getCode')
-                    ->willReturn($appliedTaxData['code']);
+                    ->will($this->returnValue($appliedTaxData['code']));
                 $appliedTaxesMock->expects($this->any())
                     ->method('getTitle')
-                    ->willReturn($appliedTaxData['title']);
+                    ->will($this->returnValue($appliedTaxData['title']));
                 $appliedTaxesMock->expects($this->any())
                     ->method('getPercent')
-                    ->willReturn($appliedTaxData['percent']);
+                    ->will($this->returnValue($appliedTaxData['percent']));
                 $appliedTaxesMocks[] = $appliedTaxesMock;
             }
-            $orderTaxDetailsItemMock = $this->getMockBuilder(OrderTaxDetailsItemInterface::class)
+            $orderTaxDetailsItemMock = $this->getMockBuilder(\Magento\Tax\Api\Data\OrderTaxDetailsItemInterface::class)
                 ->getMock();
             $orderTaxDetailsItemMock->expects($this->any())
                 ->method('getItemId')
-                ->willReturn($itemId);
+                ->will($this->returnValue($itemId));
             $orderTaxDetailsItemMock->expects($this->any())
                 ->method('getAssociatedItemId')
-                ->willReturn($associatedItemId);
+                ->will($this->returnValue($associatedItemId));
             $orderTaxDetailsItemMock->expects($this->any())
                 ->method('getType')
-                ->willReturn($itemType);
+                ->will($this->returnValue($itemType));
             $orderTaxDetailsItemMock->expects($this->any())
                 ->method('getAppliedTaxes')
-                ->willReturn($appliedTaxesMocks);
+                ->will($this->returnValue($appliedTaxesMocks));
 
             $itemMocks[] = $orderTaxDetailsItemMock;
         }
         $orderTaxItemDetailsMock->expects($this->any())
             ->method('getItems')
-            ->willReturn($itemMocks);
+            ->will($this->returnValue($itemMocks));
 
         return $orderTaxItemDetailsMock;
     }
@@ -233,8 +221,8 @@ class DataTest extends TestCase
         $orderShippingTaxAmount = isset($orderData['shipping_tax_amount']) ? $orderData['shipping_tax_amount'] : 0;
         $orderTaxDetails = $orderData['order_tax_details'];
 
-        /** @var MockObject|Order $orderMock */
-        $orderMock = $this->getMockBuilder(Order::class)
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Sales\Model\Order $orderMock */
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
         $orderMock->expects($this->once())
@@ -248,13 +236,13 @@ class DataTest extends TestCase
         $this->orderTaxManagementMock->expects($this->any())
             ->method('getOrderTaxDetails')
             ->with($orderId)
-            ->willReturn($orderTaxDetailsMock);
+            ->will($this->returnValue($orderTaxDetailsMock));
 
         $invoiceShippingTaxAmount =
             isset($invoiceData['shipping_tax_amount']) ? $invoiceData['shipping_tax_amount'] : 0;
         $invoiceItems = $invoiceData['invoice_items'];
-        /** @var MockObject|Invoice $source */
-        $source = $this->getMockBuilder(Invoice::class)
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Sales\Model\Order\Invoice $source */
+        $source = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->getMock();
         $source->expects($this->once())
@@ -269,17 +257,19 @@ class DataTest extends TestCase
 
         $this->priceCurrencyMock->expects($this->any())
             ->method('round')
-            ->willReturnCallback(
-                function ($arg) {
-                    return round($arg, 2);
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($arg) {
+                        return round($arg, 2);
+                    }
+                )
             );
 
         $result = $this->helper->getCalculatedTaxes($source);
         foreach ($result as $index => $appliedTax) {
             $expectedTax = $expectedResults[$index];
             foreach ($appliedTax as $attr => $value) {
-                $this->assertEquals($expectedTax[$attr], $value, "The " . $attr . " of tax does not match");
+                $this->assertEquals($expectedTax[$attr], $value, "The ".$attr." of tax does not match");
             }
         }
     }
@@ -297,21 +287,21 @@ class DataTest extends TestCase
                     'order_id' => 1,
                     'shipping_tax_amount' => 0,
                     'order_tax_details' => [
-                        'items' => [
-                            'itemTax1' => [
-                                'item_id' => 1,
-                                'applied_taxes' => [
-                                    [
-                                        'amount' => 5.0,
-                                        'base_amount' => 5.0,
-                                        'code' => 'US-CA',
-                                        'title' => 'US-CA-Sales-Tax',
-                                        'percent' => 20.0,
+                            'items' => [
+                                'itemTax1' => [
+                                    'item_id' => 1,
+                                    'applied_taxes' => [
+                                        [
+                                            'amount' => 5.0,
+                                            'base_amount' => 5.0,
+                                            'code' => 'US-CA',
+                                            'title' => 'US-CA-Sales-Tax',
+                                            'percent' => 20.0,
+                                        ],
                                     ],
                                 ],
                             ],
                         ],
-                    ],
                 ],
                 'invoice' => [
                     'invoice_items' => [
@@ -354,34 +344,34 @@ class DataTest extends TestCase
                     'order_id' => 1,
                     'shipping_tax_amount' => 0,
                     'order_tax_details' => [
-                        'items' => [
-                            'itemTax1' => [
-                                'item_id' => 1,
-                                'applied_taxes' => [
-                                    [
-                                        'amount' => 5.0,
-                                        'base_amount' => 5.0,
-                                        'code' => 'US-CA',
-                                        'title' => 'US-CA-Sales-Tax',
-                                        'percent' => 20.0,
+                            'items' => [
+                                'itemTax1' => [
+                                    'item_id' => 1,
+                                    'applied_taxes' => [
+                                        [
+                                            'amount' => 5.0,
+                                            'base_amount' => 5.0,
+                                            'code' => 'US-CA',
+                                            'title' => 'US-CA-Sales-Tax',
+                                            'percent' => 20.0,
+                                        ],
                                     ],
                                 ],
-                            ],
-                            'weeeTax1' => [
-                                'associated_item_id' => 1,
-                                'type' => 'weee',
-                                'applied_taxes' => [
-                                    [
-                                        'amount' => 3.0,
-                                        'base_amount' => 3.0,
-                                        'code' => 'US-CA',
-                                        'title' => 'US-CA-Sales-Tax',
-                                        'percent' => 20.0,
+                                'weeeTax1' => [
+                                    'associated_item_id' => 1,
+                                    'type' => 'weee',
+                                    'applied_taxes' => [
+                                        [
+                                            'amount' => 3.0,
+                                            'base_amount' => 3.0,
+                                            'code' => 'US-CA',
+                                            'title' => 'US-CA-Sales-Tax',
+                                            'percent' => 20.0,
+                                        ],
                                     ],
                                 ],
                             ],
                         ],
-                    ],
                 ],
                 'invoice' => [
                     'invoice_items' => [

@@ -3,58 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Composer\Test\Unit;
 
 use Composer\Composer;
-use Composer\Package\CompletePackageInterface;
 use Composer\Package\Locker;
-use Composer\Package\RootPackageInterface;
-use Composer\Repository\RepositoryInterface;
-use Magento\Framework\Composer\ComposerInformation;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ComposerInformationTest extends TestCase
+class ComposerInformationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ComposerInformation
+     * @var \Magento\Framework\Composer\ComposerInformation
      */
     private $composerInformation;
 
     /**
-     * @var Composer|MockObject
+     * @var Composer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $composerMock;
 
     /**
-     * @var Locker|MockObject
+     * @var Locker|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lockerMock;
 
     /**
-     * @var RepositoryInterface|InvocationMocker
+     * @var \Composer\Repository\RepositoryInterface|\PHPUnit\Framework\MockObject\Builder\InvocationMocker
      */
     private $lockerRepositoryMock;
 
     /**
-     * @var CompletePackageInterface|InvocationMocker
+     * @var \Composer\Package\CompletePackageInterface|\PHPUnit\Framework\MockObject\Builder\InvocationMocker
      */
     private $packageMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->composerMock = $this->getMockBuilder(Composer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->lockerMock = $this->getMockBuilder(Locker::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->lockerRepositoryMock = $this->getMockForAbstractClass(RepositoryInterface::class);
-        $this->packageMock = $this->getMockForAbstractClass(CompletePackageInterface::class);
+        $this->composerMock = $this->getMockBuilder(Composer::class)->disableOriginalConstructor()->getMock();
+        $this->lockerMock = $this->getMockBuilder(Locker::class)->disableOriginalConstructor()->getMock();
+        $this->lockerRepositoryMock = $this->getMockForAbstractClass(\Composer\Repository\RepositoryInterface::class);
+        $this->packageMock = $this->getMockForAbstractClass(\Composer\Package\CompletePackageInterface::class);
         $this->lockerMock->method('getLockedRepository')->willReturn($this->lockerRepositoryMock);
         $this->packageMock->method('getType')->willReturn('metapackage');
         $this->packageMock->method('getPrettyName')->willReturn('magento/product-test-package-name');
@@ -64,7 +51,7 @@ class ComposerInformationTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->composerInformation = $objectManager->getObject(
-            ComposerInformation::class,
+            \Magento\Framework\Composer\ComposerInformation::class,
             [
                 'composer' => $this->composerMock,
                 'locker' => $this->lockerMock
@@ -86,7 +73,7 @@ class ComposerInformationTest extends TestCase
 
     public function testGetRootPackage()
     {
-        $rootPackageMock = $this->getMockForAbstractClass(RootPackageInterface::class);
+        $rootPackageMock = $this->getMockForAbstractClass(\Composer\Package\RootPackageInterface::class);
         $this->composerMock->expects($this->once())->method('getPackage')->willReturn($rootPackageMock);
         $this->assertEquals($rootPackageMock, $this->composerInformation->getRootPackage());
     }
@@ -98,7 +85,7 @@ class ComposerInformationTest extends TestCase
      */
     public function testIsMagentoRoot($packageName, $expected)
     {
-        $rootPackageMock = $this->getMockForAbstractClass(RootPackageInterface::class);
+        $rootPackageMock = $this->getMockForAbstractClass(\Composer\Package\RootPackageInterface::class);
         $this->composerMock->expects($this->once())->method('getPackage')->willReturn($rootPackageMock);
         $rootPackageMock->method('getName')->willReturn($packageName);
         $this->assertEquals($expected, $this->composerInformation->isMagentoRoot());

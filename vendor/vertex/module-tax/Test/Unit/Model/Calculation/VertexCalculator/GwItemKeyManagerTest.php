@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -6,35 +6,34 @@
 
 namespace Vertex\Tax\Test\Unit\Model\Calculation\VertexCalculator;
 
-use Magento\GiftWrapping\Model\Total\Quote\Tax\Giftwrapping;
-use Magento\Quote\Model\Quote\Address\Item;
-use Magento\Tax\Api\Data\QuoteDetailsItemInterface;
-use PHPUnit\Framework\MockObject\MockObject;
+use Vertex\Tax\Test\Unit\TestCase;
 use Vertex\Tax\Model\Calculation\VertexCalculator\GwItemKeyManager;
 use Vertex\Tax\Model\TaxRegistry;
-use Vertex\Tax\Test\Unit\TestCase;
+use Magento\Tax\Api\Data\QuoteDetailsItemInterface;
+use Magento\Quote\Model\Quote\Address\Item;
+use Magento\GiftWrapping\Model\Total\Quote\Tax\Giftwrapping;
 
 /**
  * Test gift wrapping item key management storage using the registry.
  */
 class GwItemKeyManagerTest extends TestCase
 {
-    /** @var MockObject|GwItemKeyManager */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|GwItemKeyManager */
     private $gwItemKeyManagerMock;
 
-    /** @var MockObject|QuoteDetailsItemInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|QuoteDetailsItemInterface */
     private $quoteDetailsItemMock;
 
-    /** @var MockObject|Item */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Item */
     private $quoteItemMock;
 
-    /** @var MockObject|TaxRegistry */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|TaxRegistry */
     private $taxRegistryMock;
 
     /**
      * Setup test environment.
      */
-    public function setUp(): void
+    public function setUp()
     {
         if (!class_exists(Giftwrapping::class)) {
             $this->markTestSkipped('Test only applicable to Magento 2 Commerce');

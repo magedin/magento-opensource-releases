@@ -15,12 +15,18 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface;
 
 /**
- * Verify, default source cannot be disabled via API.
+ * @inheritDoc
  */
 class PreventDefaultSourceDisablingTest extends WebapiAbstract
 {
+    /**
+     * Resource path
+     */
     const RESOURCE_PATH = '/V1/inventory/sources';
 
+    /**
+     * Service name
+     */
     const SERVICE_NAME = 'inventoryApiSourceRepositoryV1';
 
     /**
@@ -38,9 +44,7 @@ class PreventDefaultSourceDisablingTest extends WebapiAbstract
     }
 
     /**
-     * Verify, default source cannot be disabled via API call.
-     *
-     * @return void
+     * @throws \Exception
      */
     public function testPreventDefaultSourceDisabling(): void
     {
@@ -77,8 +81,6 @@ class PreventDefaultSourceDisablingTest extends WebapiAbstract
     }
 
     /**
-     * Perform API request for test.
-     *
      * @param array $serviceInfo
      * @param array $data
      * @param array $expectedErrorData
@@ -101,6 +103,7 @@ class PreventDefaultSourceDisablingTest extends WebapiAbstract
                     // @see \Magento\TestFramework\TestCase\WebapiAbstract::getActualWrappedErrors()
                     $expectedWrappedErrors[] = [
                         'message' => $error['message'],
+                        'params' => $error['parameters'],
                     ];
                 }
                 $this->checkSoapFault($e, $expectedErrorData['message'], 'env:Sender', [], $expectedWrappedErrors);

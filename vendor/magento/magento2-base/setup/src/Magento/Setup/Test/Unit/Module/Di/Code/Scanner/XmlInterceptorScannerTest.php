@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Scanner;
 
-use Magento\Setup\Module\Di\Code\Scanner\XmlInterceptorScanner;
-use PHPUnit\Framework\TestCase;
-
-class XmlInterceptorScannerTest extends TestCase
+class XmlInterceptorScannerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var XmlInterceptorScanner
+     * @var \Magento\Setup\Module\Di\Code\Scanner\XmlInterceptorScanner
      */
     protected $_model;
 
@@ -27,9 +22,9 @@ class XmlInterceptorScannerTest extends TestCase
      */
     protected $_testFiles = [];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new XmlInterceptorScanner();
+        $this->_model = new \Magento\Setup\Module\Di\Code\Scanner\XmlInterceptorScanner();
         $this->_testDir = str_replace('\\', '/', realpath(__DIR__ . '/../../') . '/_files');
         $this->_testFiles = [
             $this->_testDir . '/app/code/Magento/SomeModule/etc/di.xml',

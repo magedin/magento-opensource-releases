@@ -3,68 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Block;
 
-use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
-use Magento\Checkout\Block\Onepage;
-use Magento\Checkout\Model\CompositeConfigProvider;
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\Serialize\Serializer\JsonHexTag;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class OnepageTest extends TestCase
+class OnepageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Onepage
+     * @var \Magento\Checkout\Block\Onepage
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $configProviderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $formKeyMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutProcessorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $contextMock = $this->createMock(Context::class);
-        $this->formKeyMock = $this->createMock(FormKey::class);
-        $this->configProviderMock = $this->createMock(CompositeConfigProvider::class);
+        $contextMock = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->formKeyMock = $this->createMock(\Magento\Framework\Data\Form\FormKey::class);
+        $this->configProviderMock = $this->createMock(\Magento\Checkout\Model\CompositeConfigProvider::class);
 
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
         $contextMock->expects($this->once())->method('getStoreManager')->willReturn($this->storeManagerMock);
         $this->layoutProcessorMock = $this->createMock(
-            LayoutProcessorInterface::class
+            \Magento\Checkout\Block\Checkout\LayoutProcessorInterface::class
         );
 
-        $this->serializerMock = $this->createMock(JsonHexTag::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\Serializer\JsonHexTag::class);
 
-        $this->model = new Onepage(
+        $this->model = new \Magento\Checkout\Block\Onepage(
             $contextMock,
             $this->formKeyMock,
             $this->configProviderMock,
@@ -78,7 +65,7 @@ class OnepageTest extends TestCase
     public function testGetBaseUrl()
     {
         $baseUrl = 'http://magento.com';
-        $storeMock = $this->createMock(Store::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
 
         $storeMock->expects($this->once())->method('getBaseUrl')->willReturn($baseUrl);
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);

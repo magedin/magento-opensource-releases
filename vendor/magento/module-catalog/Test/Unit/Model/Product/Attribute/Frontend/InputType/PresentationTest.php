@@ -7,27 +7,22 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Frontend\InputType;
 
-use Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PresentationTest extends TestCase
+class PresentationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Presentation
+     * @var \Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation
      */
     private $presentation;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute| \PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->presentation = new Presentation();
-        $this->attributeMock = $this->getMockBuilder(Attribute::class)
+        $this->presentation = new \Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation();
+        $this->attributeMock = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

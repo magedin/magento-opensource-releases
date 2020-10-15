@@ -3,107 +3,71 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
-namespace Magento\Test\Annotation;
-
-use Magento\TestFramework\Annotation\AdminConfigFixture;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\TestFramework\Annotation\AdminConfigFixture.
  */
-class AdminConfigFixtureTest extends TestCase
+namespace Magento\Test\Annotation;
+
+class AdminConfigFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AdminConfigFixture|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Annotation\AdminConfigFixture|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $object;
+    protected $_object;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->object = $this->createPartialMock(
-            AdminConfigFixture::class,
+        $this->_object = $this->createPartialMock(
+            \Magento\TestFramework\Annotation\AdminConfigFixture::class,
             ['_getConfigValue', '_setConfigValue']
         );
     }
 
     /**
      * @magentoAdminConfigFixture any_config some_value
-     *
-     * @return void
      */
-    public function testConfig(): void
+    public function testConfig()
     {
-        $this->createResolverMock();
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
             'any_config'
-        )->willReturn(
-            'some_value'
+        )->will(
+            $this->returnValue('some_value')
         );
-        $this->object->expects($this->at(1))->method('_setConfigValue')->with('any_config', 'some_value');
-        $this->object->startTest($this);
+        $this->_object->expects($this->at(1))->method('_setConfigValue')->with('any_config', 'some_value');
+        $this->_object->startTest($this);
 
-        $this->object->expects($this->once())->method('_setConfigValue')->with('any_config', 'some_value');
-        $this->object->endTest($this);
+        $this->_object->expects($this->once())->method('_setConfigValue')->with('any_config', 'some_value');
+        $this->_object->endTest($this);
     }
 
-    /**
-     * @return void
-     */
-    public function testInitStoreAfterOfScope(): void
+    public function testInitStoreAfterOfScope()
     {
-        $this->object->expects($this->never())->method('_getConfigValue');
-        $this->object->expects($this->never())->method('_setConfigValue');
-        $this->object->initStoreAfter();
+        $this->_object->expects($this->never())->method('_getConfigValue');
+        $this->_object->expects($this->never())->method('_setConfigValue');
+        $this->_object->initStoreAfter();
     }
 
     /**
      * @magentoAdminConfigFixture any_config some_value
-     *
-     * @return void
      */
-    public function testInitStoreAfter(): void
+    public function testInitStoreAfter()
     {
-        $this->createResolverMock();
-        $this->object->startTest($this);
-        $this->object->expects(
+        $this->_object->startTest($this);
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
             'any_config'
-        )->willReturn(
-            'some_value'
+        )->will(
+            $this->returnValue('some_value')
         );
-        $this->object->expects($this->at(1))->method('_setConfigValue')->with('any_config', 'some_value');
-        $this->object->initStoreAfter();
-    }
-
-    /**
-     * Create mock for Resolver object
-     *
-     * @return void
-     */
-    private function createResolverMock(): void
-    {
-        $mock = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['applyConfigFixtures'])
-            ->getMock();
-        $mock->method('applyConfigFixtures')
-            ->willReturn($this->getAnnotations()['method'][$this->object::ANNOTATION]);
-        $reflection = new \ReflectionClass(Resolver::class);
-        $reflectionProperty = $reflection->getProperty('instance');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue(Resolver::class, $mock);
+        $this->_object->expects($this->at(1))->method('_setConfigValue')->with('any_config', 'some_value');
+        $this->_object->initStoreAfter();
     }
 }

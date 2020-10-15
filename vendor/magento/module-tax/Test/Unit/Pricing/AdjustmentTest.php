@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Pricing;
 
+use \Magento\Tax\Pricing\Adjustment;
+
 use Magento\Framework\Pricing\SaleableInterface;
-use Magento\Tax\Helper\Data;
-use Magento\Tax\Pricing\Adjustment;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class AdjustmentTest extends TestCase
+class AdjustmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Adjustment
@@ -22,12 +18,12 @@ class AdjustmentTest extends TestCase
     protected $adjustment;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Tax\Helper\Data | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $taxHelper;
 
     /**
-     * @var \Magento\Catalog\Helper\Data|MockObject
+     * @var \Magento\Catalog\Helper\Data | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $catalogHelper;
 
@@ -36,9 +32,9 @@ class AdjustmentTest extends TestCase
      */
     protected $sortOrder = 5;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->taxHelper = $this->createMock(Data::class);
+        $this->taxHelper = $this->createMock(\Magento\Tax\Helper\Data::class);
         $this->catalogHelper = $this->createMock(\Magento\Catalog\Helper\Data::class);
         $this->adjustment = new Adjustment($this->taxHelper, $this->catalogHelper, $this->sortOrder);
     }
@@ -56,7 +52,7 @@ class AdjustmentTest extends TestCase
     {
         $this->taxHelper->expects($this->once())
             ->method('priceIncludesTax')
-            ->willReturn($expectedResult);
+            ->will($this->returnValue($expectedResult));
         $this->assertEquals($expectedResult, $this->adjustment->isIncludedInBasePrice());
     }
 
@@ -75,11 +71,11 @@ class AdjustmentTest extends TestCase
     {
         $this->taxHelper->expects($this->once())
             ->method('displayPriceIncludingTax')
-            ->willReturn($displayPriceIncludingTax);
+            ->will($this->returnValue($displayPriceIncludingTax));
         if (!$displayPriceIncludingTax) {
             $this->taxHelper->expects($this->once())
                 ->method('displayBothPrices')
-                ->willReturn($displayBothPrices);
+                ->will($this->returnValue($displayBothPrices));
         }
 
         $this->assertEquals($expectedResult, $this->adjustment->isIncludedInDisplayPrice());
@@ -107,15 +103,15 @@ class AdjustmentTest extends TestCase
      */
     public function testExtractAdjustment($isPriceIncludesTax, $amount, $price, $expectedResult)
     {
-        $object = $this->getMockForAbstractClass(SaleableInterface::class);
+        $object = $this->getMockForAbstractClass(\Magento\Framework\Pricing\SaleableInterface::class);
 
         $this->taxHelper->expects($this->any())
             ->method('priceIncludesTax')
-            ->willReturn($isPriceIncludesTax);
+            ->will($this->returnValue($isPriceIncludesTax));
         $this->catalogHelper->expects($this->any())
             ->method('getTaxPrice')
             ->with($object, $amount)
-            ->willReturn($price);
+            ->will($this->returnValue($price));
 
         $this->assertEquals($expectedResult, $this->adjustment->extractAdjustment($amount, $object));
     }
@@ -142,13 +138,12 @@ class AdjustmentTest extends TestCase
      */
     public function testApplyAdjustment($amount, $price, $expectedResult)
     {
-        $object = $this->getMockBuilder(SaleableInterface::class)
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Framework\Pricing\SaleableInterface::class)->getMock();
 
         $this->catalogHelper->expects($this->any())
             ->method('getTaxPrice')
             ->with($object, $amount, true)
-            ->willReturn($price);
+            ->will($this->returnValue($price));
 
         $this->assertEquals($expectedResult, $this->adjustment->applyAdjustment($amount, $object));
     }

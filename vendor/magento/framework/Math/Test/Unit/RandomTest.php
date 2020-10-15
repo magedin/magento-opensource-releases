@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test \Magento\Framework\Math\Random
  *
@@ -7,10 +7,7 @@
  */
 namespace Magento\Framework\Math\Test\Unit;
 
-use Magento\Framework\Math\Random;
-use PHPUnit\Framework\TestCase;
-
-class RandomTest extends TestCase
+class RandomTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param int    $length
@@ -20,7 +17,7 @@ class RandomTest extends TestCase
      */
     public function testGetRandomString($length, $chars = null)
     {
-        $mathRandom = new Random();
+        $mathRandom = new \Magento\Framework\Math\Random();
         $string = $mathRandom->getRandomString($length, $chars);
 
         $this->assertEquals($length, strlen($string));
@@ -37,25 +34,25 @@ class RandomTest extends TestCase
         return [
             [0],
             [10],
-            [10, Random::CHARS_LOWERS],
-            [10, Random::CHARS_UPPERS],
-            [10, Random::CHARS_DIGITS],
+            [10, \Magento\Framework\Math\Random::CHARS_LOWERS],
+            [10, \Magento\Framework\Math\Random::CHARS_UPPERS],
+            [10, \Magento\Framework\Math\Random::CHARS_DIGITS],
             [
                 20,
-                Random::CHARS_LOWERS .
-                Random::CHARS_UPPERS .
-                Random::CHARS_DIGITS
+                \Magento\Framework\Math\Random::CHARS_LOWERS .
+                \Magento\Framework\Math\Random::CHARS_UPPERS .
+                \Magento\Framework\Math\Random::CHARS_DIGITS
             ]
         ];
     }
 
     public function testGetUniqueHash()
     {
-        $mathRandom = new Random();
+        $mathRandom = new \Magento\Framework\Math\Random();
         $hashOne = $mathRandom->getUniqueHash();
         $hashTwo = $mathRandom->getUniqueHash();
-        $this->assertIsString($hashOne);
-        $this->assertIsString($hashTwo);
+        $this->assertTrue(is_string($hashOne));
+        $this->assertTrue(is_string($hashTwo));
         $this->assertNotEquals($hashOne, $hashTwo);
     }
 
@@ -78,7 +75,7 @@ class RandomTest extends TestCase
      */
     public function testGetRandomNumber($min, $max)
     {
-        $number = Random::getRandomNumber($min, $max);
+        $number = \Magento\Framework\Math\Random::getRandomNumber($min, $max);
         $this->assertLessThanOrEqual($max, $number);
         $this->assertGreaterThanOrEqual($min, $number);
     }

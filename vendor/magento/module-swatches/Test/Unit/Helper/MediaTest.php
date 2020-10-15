@@ -3,90 +3,73 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Helper;
-
-use Magento\Catalog\Model\Product\Media\Config;
-use Magento\Framework\Config\View;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Image;
-use Magento\Framework\Image\Factory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Swatches\Helper\Media;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Helper to move images from tmp to catalog directory
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class MediaTest extends TestCase
+class MediaTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject|Config */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Product\Media\Config */
     protected $mediaConfigMock;
 
-    /** @var MockObject|Filesystem */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem */
     protected $fileSystemMock;
 
-    /** @var MockObject|WriteInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem\Directory\WriteInterface */
     protected $writeInstanceMock;
 
-    /** @var MockObject|Database */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\MediaStorage\Helper\File\Storage\Database */
     protected $fileStorageDbMock;
 
-    /** @var MockObject|StoreManager */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Store\Model\StoreManager */
     protected $storeManagerMock;
 
-    /** @var MockObject|Factory */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Image\Factory */
     protected $imageFactoryMock;
 
-    /** @var MockObject|\Magento\Framework\View\Config */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Config */
     protected $viewConfigMock;
 
-    /** @var MockObject|Write */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem\Directory\Write */
     protected $mediaDirectoryMock;
 
-    /** @var MockObject|Store */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Store\Model\Store */
     protected $storeMock;
 
-    /** @var Media|ObjectManager */
+    /** @var \Magento\Swatches\Helper\Media|\Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     protected $mediaHelperObject;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->mediaConfigMock = $this->createMock(Config::class);
-        $this->writeInstanceMock = $this->getMockForAbstractClass(WriteInterface::class);
+        $this->mediaConfigMock = $this->createMock(\Magento\Catalog\Model\Product\Media\Config::class);
+        $this->writeInstanceMock = $this->createMock(\Magento\Framework\Filesystem\Directory\WriteInterface::class);
         $this->fileStorageDbMock = $this->createPartialMock(
-            Database::class,
+            \Magento\MediaStorage\Helper\File\Storage\Database::class,
             ['checkDbUsage', 'getUniqueFilename', 'renameFile']
         );
 
-        $this->storeManagerMock = $this->createPartialMock(StoreManager::class, ['getStore']);
+        $this->storeManagerMock = $this->createPartialMock(\Magento\Store\Model\StoreManager::class, ['getStore']);
 
-        $this->imageFactoryMock = $this->createMock(Factory::class);
+        $this->imageFactoryMock = $this->createMock(\Magento\Framework\Image\Factory::class);
 
         $this->viewConfigMock = $this->createMock(\Magento\Framework\View\Config::class);
 
-        $this->storeMock = $this->createPartialMock(Store::class, ['getBaseUrl']);
+        $this->storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getBaseUrl']);
 
-        $this->mediaDirectoryMock = $this->createMock(Write::class);
-        $this->fileSystemMock = $this->createPartialMock(Filesystem::class, ['getDirectoryWrite']);
+        $this->mediaDirectoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
+        $this->fileSystemMock = $this->createPartialMock(\Magento\Framework\Filesystem::class, ['getDirectoryWrite']);
         $this->fileSystemMock
             ->expects($this->any())
             ->method('getDirectoryWrite')
-            ->willReturn($this->mediaDirectoryMock);
+            ->will($this->returnValue($this->mediaDirectoryMock));
 
         $this->mediaHelperObject = $objectManager->getObject(
-            Media::class,
+            \Magento\Swatches\Helper\Media::class,
             [
                 'mediaConfig' => $this->mediaConfigMock,
                 'filesystem' => $this->fileSystemMock,
@@ -144,15 +127,15 @@ class MediaTest extends TestCase
     {
         $this->fileStorageDbMock->method('checkDbUsage')->willReturn(1);
         $this->fileStorageDbMock->expects($this->atLeastOnce())->method('getUniqueFilename')->willReturn('file___1');
-        $this->fileStorageDbMock->method('renameFile')->willReturnSelf();
-        $this->mediaDirectoryMock->expects($this->exactly(2))->method('delete')->willReturnSelf();
+        $this->fileStorageDbMock->method('renameFile')->will($this->returnSelf());
+        $this->mediaDirectoryMock->expects($this->exactly(2))->method('delete')->will($this->returnSelf());
         $this->mediaHelperObject->moveImageFromTmp('file.tmp');
     }
 
     public function testMoveImageFromTmpNoDb()
     {
         $this->fileStorageDbMock->method('checkDbUsage')->willReturn(false);
-        $this->fileStorageDbMock->method('renameFile')->willReturnSelf();
+        $this->fileStorageDbMock->method('renameFile')->will($this->returnSelf());
         $result = $this->mediaHelperObject->moveImageFromTmp('file.tmp');
         $this->assertNotNull($result);
     }
@@ -164,27 +147,27 @@ class MediaTest extends TestCase
             ->method('getAbsolutePath')
             ->willReturn('attribute/swatch/e/a/earth.png');
 
-        $image = $this->createPartialMock(Image::class, [
-            'resize',
-            'save',
-            'keepTransparency',
-            'constrainOnly',
-            'keepFrame',
-            'keepAspectRatio',
-            'backgroundColor',
-            'quality'
-        ]);
+        $image = $this->createPartialMock(\Magento\Framework\Image::class, [
+                'resize',
+                'save',
+                'keepTransparency',
+                'constrainOnly',
+                'keepFrame',
+                'keepAspectRatio',
+                'backgroundColor',
+                'quality'
+            ]);
 
         $this->imageFactoryMock->expects($this->any())->method('create')->willReturn($image);
         $this->generateImageConfig();
-        $image->expects($this->any())->method('resize')->willReturnSelf();
+        $image->expects($this->any())->method('resize')->will($this->returnSelf());
         $image->expects($this->atLeastOnce())->method('backgroundColor')->with([255, 255, 255])->willReturnSelf();
         $this->mediaHelperObject->generateSwatchVariations('/e/a/earth.png');
     }
 
     public function testGetSwatchMediaUrl()
     {
-        $storeMock = $this->createPartialMock(Store::class, ['getBaseUrl']);
+        $storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getBaseUrl']);
 
         $this->storeManagerMock
             ->expects($this->once())
@@ -264,7 +247,7 @@ class MediaTest extends TestCase
 
     protected function generateImageConfig()
     {
-        $configMock = $this->createMock(View::class);
+        $configMock = $this->createMock(\Magento\Framework\Config\View::class);
 
         $this->viewConfigMock
             ->expects($this->atLeastOnce())

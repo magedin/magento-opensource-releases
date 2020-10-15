@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Design\Config;
 
 use Magento\Config\Model\Config\Reader\Source\Deployed\SettingChecker;
 use Magento\Framework\App\Config\ScopeCodeResolver;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Theme\Model\Design\Config\DataLoader;
 use Magento\Theme\Model\Design\Config\DataProvider;
-use Magento\Theme\Model\Design\Config\DataProvider\DataLoader as ConfigDataLoader;
-use Magento\Theme\Model\Design\Config\DataProvider\MetadataLoader as ConfigMetadataLoader;
+use Magento\Theme\Model\Design\Config\MetadataLoader;
 use Magento\Theme\Model\ResourceModel\Design\Config\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataProvider
@@ -29,17 +25,17 @@ class DataProviderTest extends TestCase
     protected $model;
 
     /**
-     * @var DataProvider\DataLoader|MockObject
+     * @var DataProvider\DataLoader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataLoader;
 
     /**
-     * @var DataProvider\MetadataLoader|MockObject
+     * @var DataProvider\MetadataLoader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataLoader;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collection;
 
@@ -49,50 +45,48 @@ class DataProviderTest extends TestCase
     private $objectManager;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ScopeCodeResolver|MockObject
+     * @var ScopeCodeResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeCodeResolverMock;
 
     /**
-     * @var SettingChecker|MockObject
+     * @var SettingChecker|\PHPUnit_Framework_MockObject_MockObject
      */
     private $settingCheckerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->dataLoader = $this->getMockBuilder(ConfigDataLoader::class)
+        $this->dataLoader = $this->getMockBuilder(\Magento\Theme\Model\Design\Config\DataProvider\DataLoader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->metadataLoader = $this->getMockBuilder(
-            ConfigMetadataLoader::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Theme\Model\Design\Config\DataProvider\MetadataLoader::class
+        )->disableOriginalConstructor()->getMock();
         $this->metadataLoader->expects($this->once())
             ->method('getData')
             ->willReturn([]);
 
-        $this->collection = $this->getMockBuilder(Collection::class)
+        $this->collection = $this->getMockBuilder(\Magento\Theme\Model\ResourceModel\Design\Config\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $collectionFactory = $this->getMockBuilder(
             \Magento\Theme\Model\ResourceModel\Design\Config\CollectionFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(['create'])->getMock();
+        )->disableOriginalConstructor()->setMethods(['create'])->getMock();
         $collectionFactory->expects($this->once())
             ->method('create')
             ->willReturn($this->collection);
 
         $this->requestMock = $this->getMockBuilder(RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->scopeCodeResolverMock = $this->getMockBuilder(ScopeCodeResolver::class)
             ->disableOriginalConstructor()
             ->getMock();

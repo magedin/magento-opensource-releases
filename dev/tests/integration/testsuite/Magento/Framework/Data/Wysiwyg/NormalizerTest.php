@@ -12,7 +12,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
      */
     private $normalizer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->normalizer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Framework\Data\Wysiwyg\Normalizer::class

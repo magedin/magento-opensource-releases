@@ -3,49 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Plugin\Catalog;
 
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Swatches\Helper\Data;
-use Magento\Swatches\Plugin\Catalog\CacheInvalidate;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CacheInvalidateTest extends TestCase
+class CacheInvalidateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TypeListInterface|MockObject
+     * @var \Magento\Framework\App\Cache\TypeListInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $typeList;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Swatches\Helper\Data | \PHPUnit_Framework_MockObject_MockObject
      */
     private $swatchHelper;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute | \PHPUnit_Framework_MockObject_MockObject
      */
     private $attribute;
 
     /**
-     * @var CacheInvalidate
+     * @var \Magento\Swatches\Plugin\Catalog\CacheInvalidate
      */
     private $cacheInvalidate;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->typeList = $this->getMockForAbstractClass(TypeListInterface::class);
-        $this->swatchHelper = $this->createMock(Data::class);
-        $this->attribute = $this->createMock(Attribute::class);
+        $this->typeList = $this->createMock(\Magento\Framework\App\Cache\TypeListInterface::class);
+        $this->swatchHelper = $this->createMock(\Magento\Swatches\Helper\Data::class);
+        $this->attribute = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->cacheInvalidate = $objectManager->getObject(
-            CacheInvalidate::class,
+            \Magento\Swatches\Plugin\Catalog\CacheInvalidate::class,
             [
                 'typeList' => $this->typeList,
                 'swatchHelper' => $this->swatchHelper

@@ -3,9 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
+require __DIR__ . '/product_simple.php';
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -49,7 +48,6 @@ foreach ($productOptions as $option) {
 /** @var \Magento\Sales\Model\Order\Item $orderItem */
 $orderItem = $objectManager->create(\Magento\Sales\Model\Order\Item::class);
 $orderItem->setProductId($product->getId());
-$orderItem->setSku($product->getSku());
 $orderItem->setQtyOrdered(1);
 $orderItem->setBasePrice($product->getPrice());
 $orderItem->setPrice($product->getPrice());

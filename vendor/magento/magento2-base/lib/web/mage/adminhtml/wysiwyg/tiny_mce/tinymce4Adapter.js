@@ -608,6 +608,7 @@ define([
             }
 
             this.addContentEditableAttributeBackToNonEditableNodes();
+            this.fixRangeSelection(editor);
 
             content = editor.getContent();
             content = this.decodeContent(content);

@@ -6,9 +6,6 @@
 
 namespace Magento\Catalog\Model\ResourceModel\Product;
 
-/**
- * Collect Select object for list of products
- */
 class LinkedProductSelectBuilderComposite implements LinkedProductSelectBuilderInterface
 {
     /**
@@ -25,15 +22,14 @@ class LinkedProductSelectBuilderComposite implements LinkedProductSelectBuilderI
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function build(int $productId, int $storeId) : array
+    public function build($productId)
     {
         $selects = [];
         foreach ($this->linkedProductSelectBuilder as $productSelectBuilder) {
-            $selects[] = $productSelectBuilder->build($productId, $storeId);
+            $selects = array_merge($selects, $productSelectBuilder->build($productId));
         }
-        $selects = array_merge(...$selects);
 
         return $selects;
     }

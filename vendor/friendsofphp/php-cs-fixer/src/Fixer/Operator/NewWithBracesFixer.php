@@ -141,7 +141,8 @@ final class NewWithBracesFixer extends AbstractFixer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function insertBracesAfter(Tokens $tokens, $index)
     {

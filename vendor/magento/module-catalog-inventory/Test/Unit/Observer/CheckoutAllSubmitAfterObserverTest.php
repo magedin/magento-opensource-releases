@@ -3,21 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Observer;
 
 use Magento\CatalogInventory\Observer\CheckoutAllSubmitAfterObserver;
-use Magento\CatalogInventory\Observer\ReindexQuoteInventoryObserver;
-use Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CheckoutAllSubmitAfterObserverTest extends TestCase
+class CheckoutAllSubmitAfterObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CheckoutAllSubmitAfterObserver
@@ -25,51 +15,51 @@ class CheckoutAllSubmitAfterObserverTest extends TestCase
     protected $observer;
 
     /**
-     * @var SubtractQuoteInventoryObserver|MockObject
+     * @var \Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subtractQuoteInventoryObserver;
 
     /**
-     * @var ReindexQuoteInventoryObserver|MockObject
+     * @var \Magento\CatalogInventory\Observer\ReindexQuoteInventoryObserver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $reindexQuoteInventoryObserver;
 
     /**
-     * @var Event|MockObject
+     * @var \Magento\Framework\Event|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $event;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventObserver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->subtractQuoteInventoryObserver = $this->createMock(
-            SubtractQuoteInventoryObserver::class
+            \Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver::class
         );
 
         $this->reindexQuoteInventoryObserver = $this->createMock(
-            ReindexQuoteInventoryObserver::class
+            \Magento\CatalogInventory\Observer\ReindexQuoteInventoryObserver::class
         );
 
-        $this->event = $this->getMockBuilder(Event::class)
+        $this->event = $this->getMockBuilder(\Magento\Framework\Event::class)
             ->disableOriginalConstructor()
             ->setMethods(['getProduct', 'getCollection', 'getCreditmemo', 'getQuote', 'getWebsite'])
             ->getMock();
 
-        $this->eventObserver = $this->getMockBuilder(Observer::class)
+        $this->eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEvent'])
             ->getMock();
 
         $this->eventObserver->expects($this->atLeastOnce())
             ->method('getEvent')
-            ->willReturn($this->event);
+            ->will($this->returnValue($this->event));
 
-        $this->observer = (new ObjectManager($this))->getObject(
-            CheckoutAllSubmitAfterObserver::class,
+        $this->observer = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
+            \Magento\CatalogInventory\Observer\CheckoutAllSubmitAfterObserver::class,
             [
                 'subtractQuoteInventoryObserver' => $this->subtractQuoteInventoryObserver,
                 'reindexQuoteInventoryObserver' => $this->reindexQuoteInventoryObserver,
@@ -79,17 +69,14 @@ class CheckoutAllSubmitAfterObserverTest extends TestCase
 
     public function testCheckoutAllSubmitAfter()
     {
-        $quote = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getInventoryProcessed'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quote = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getInventoryProcessed']);
         $quote->expects($this->once())
             ->method('getInventoryProcessed')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->event->expects($this->once())
             ->method('getQuote')
-            ->willReturn($quote);
+            ->will($this->returnValue($quote));
 
         $this->subtractQuoteInventoryObserver->expects($this->once())
             ->method('execute')

@@ -44,7 +44,7 @@ class DiffOldSchemaTest extends SetupTestCase
      */
     private $schemaConfig;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->moduleManager = $objectManager->get(TestModuleManager::class);
@@ -156,7 +156,7 @@ class DiffOldSchemaTest extends SetupTestCase
         return [
             'type' => 'bigint',
             'nullable' => true,
-            'padding' => null,
+            'padding' => 20,
             'unsigned' => false,
             'identity' => false,
             'default' => 0,
@@ -172,7 +172,7 @@ class DiffOldSchemaTest extends SetupTestCase
         return [
             'type' => 'bigint',
             'nullable' => true,
-            'padding' => null,
+            'padding' => 20,
             'unsigned' => false,
             'identity' => false,
             'default' => 1,

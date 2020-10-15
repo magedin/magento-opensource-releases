@@ -12,20 +12,26 @@ use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection\SearchResultAp
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection\TotalRecordsResolverFactory;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection\SearchResultApplierInterface;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection\TotalRecordsResolverInterface;
+use Magento\CatalogSearch\Test\Unit\Model\ResourceModel\BaseCollection;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Search\Adapter\Mysql\TemporaryStorageFactory;
 
 /**
  * Test class for Fulltext Collection
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends BaseCollection
 {
     /**
      * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
+
+    /**
+     * @var \Magento\Framework\Search\Adapter\Mysql\TemporaryStorage|MockObject
+     */
+    private $temporaryStorage;
 
     /**
      * @var \Magento\Search\Api\SearchInterface|MockObject
@@ -75,7 +81,7 @@ class CollectionTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->storeManager = $this->getStoreManager();
@@ -94,6 +100,16 @@ class CollectionTest extends TestCase
         $productLimitationFactoryMock->method('create')
             ->willReturn($productLimitationMock);
 
+        $this->temporaryStorage = $this->getMockBuilder(\Magento\Framework\Search\Adapter\Mysql\TemporaryStorage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $temporaryStorageFactory = $this->getMockBuilder(TemporaryStorageFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $temporaryStorageFactory->expects($this->any())
+            ->method('create')
+            ->willReturn($this->temporaryStorage);
         $searchCriteriaResolver = $this->getMockBuilder(SearchCriteriaResolverInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['resolve'])
@@ -129,6 +145,7 @@ class CollectionTest extends TestCase
                 'storeManager' => $this->storeManager,
                 'universalFactory' => $this->universalFactory,
                 'scopeConfig' => $this->scopeConfig,
+                'temporaryStorageFactory' => $temporaryStorageFactory,
                 'productLimitationFactory' => $productLimitationFactoryMock,
                 'searchCriteriaResolverFactory' => $searchCriteriaResolverFactory,
                 'searchResultApplierFactory' => $this->searchResultApplierFactory,
@@ -147,7 +164,7 @@ class CollectionTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $reflectionProperty = new \ReflectionProperty(\Magento\Framework\App\ObjectManager::class, '_instance');
         $reflectionProperty->setAccessible(true);
@@ -275,75 +292,5 @@ class CollectionTest extends TestCase
             ->getMock();
 
         return $filter;
-    }
-
-    /**
-     * Get Mocks for StoreManager so Collection can be used.
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getStoreManager()
-    {
-        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
-            ->setMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $store->expects($this->once())
-            ->method('getId')
-            ->willReturn(1);
-
-        $storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
-            ->setMethods(['getStore'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $storeManager->expects($this->once())
-            ->method('getStore')
-            ->willReturn($store);
-
-        return $storeManager;
-    }
-
-    /**
-     * Get mock for UniversalFactory so Collection can be used.
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getUniversalFactory()
-    {
-        $connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['select'])
-            ->getMockForAbstractClass();
-        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $connection->expects($this->any())->method('select')->willReturn($select);
-
-        $entity = $this->getMockBuilder(\Magento\Eav\Model\Entity\AbstractEntity::class)
-            ->setMethods(['getConnection', 'getTable', 'getDefaultAttributes', 'getEntityTable'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $entity->expects($this->once())
-            ->method('getConnection')
-            ->willReturn($connection);
-        $entity->expects($this->exactly(2))
-            ->method('getTable')
-            ->willReturnArgument(0);
-        $entity->expects($this->once())
-            ->method('getDefaultAttributes')
-            ->willReturn(['attr1', 'attr2']);
-        $entity->expects($this->once())
-            ->method('getEntityTable')
-            ->willReturn('table');
-
-        $universalFactory = $this->getMockBuilder(\Magento\Framework\Validator\UniversalFactory::class)
-            ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $universalFactory->expects($this->once())
-            ->method('create')
-            ->willReturn($entity);
-
-        return $universalFactory;
     }
 }

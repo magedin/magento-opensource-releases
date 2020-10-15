@@ -52,7 +52,7 @@ class DbRule implements \Magento\TestFramework\Dependency\RuleInterface
                 }
                 if (strtolower($currentModule) !== strtolower($this->_moduleTableMap[$table])) {
                     $dependenciesInfo[] = [
-                        'modules' => [$this->_moduleTableMap[$table]],
+                        'module' => $this->_moduleTableMap[$table],
                         'type' => \Magento\TestFramework\Dependency\RuleInterface::TYPE_HARD,
                         'source' => $table,
                     ];
@@ -61,7 +61,7 @@ class DbRule implements \Magento\TestFramework\Dependency\RuleInterface
         }
         foreach ($unKnowTables as $tables) {
             foreach ($tables as $table) {
-                $dependenciesInfo[] = ['modules' => ['Unknown'], 'source' => $table];
+                $dependenciesInfo[] = ['module' => 'Unknown', 'source' => $table];
             }
         }
         return $dependenciesInfo;

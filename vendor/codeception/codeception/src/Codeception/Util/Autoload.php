@@ -65,8 +65,24 @@ class Autoload
         if ($prepend) {
             array_unshift(self::$map[$prefix], $base_dir);
         } else {
-            self::$map[$prefix][] = $base_dir;
+            array_push(self::$map[$prefix], $base_dir);
         }
+    }
+
+    /**
+     * @deprecated Use self::addNamespace() instead.
+     */
+    public static function register($namespace, $suffix, $path)
+    {
+        self::addNamespace($namespace, $path);
+    }
+
+    /**
+     * @deprecated Use self::addNamespace() instead.
+     */
+    public static function registerSuffix($suffix, $path)
+    {
+        self::addNamespace('', $path);
     }
 
     public static function load($class)

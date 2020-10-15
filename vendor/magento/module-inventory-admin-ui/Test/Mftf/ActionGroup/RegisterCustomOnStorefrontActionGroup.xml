@@ -16,7 +16,7 @@
             <argument name="storeCode"/>
         </arguments>
         <remove keyForRemoval="amOnStorefrontPage"/>
-        <amOnPage url="{{StorefrontHomePage.url}}/{{storeCode}}" stepKey="navigateToStorefront" before="waitForCreateAccountLink"/>
+        <amOnPage url="{{StorefrontHomePage.url}}/{{storeCode}}" stepKey="navigateToStorefront" before="clickOnCreateAccountLink"/>
         <remove keyForRemoval="seeThankYouMessage"/>
     </actionGroup>
 </actionGroups>

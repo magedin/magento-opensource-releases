@@ -9,12 +9,10 @@ namespace Magento\InventoryGroupedProductAdminUi\Plugin\Catalog\Model\Product\Li
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Link;
-use Magento\Framework\Exception\InputException;
 use Magento\GroupedProduct\Model\Product\Type\Grouped as GroupedProductType;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
 use Magento\InventoryApi\Api\GetSourceItemsBySkuInterface;
-use Magento\InventoryCatalogApi\Model\SourceItemsProcessorInterface;
-use Psr\Log\LoggerInterface;
+use Magento\InventoryCatalogAdminUi\Observer\SourceItemsProcessor;
 
 /**
  * After save source links process child source items for reindex grouped product inventory.
@@ -27,33 +25,23 @@ class ProcessSourceItemsAfterSaveAssociatedLinks
     private $getSourceItemsBySku;
 
     /**
-     * @var SourceItemsProcessorInterface
+     * @var SourceItemsProcessor
      */
     private $sourceItemsProcessor;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param GetSourceItemsBySkuInterface $getSourceItemsBySku
-     * @param SourceItemsProcessorInterface $sourceItemsProcessor
-     * @param LoggerInterface $logger
+     * @param SourceItemsProcessor $sourceItemsProcessor
      */
     public function __construct(
         GetSourceItemsBySkuInterface $getSourceItemsBySku,
-        SourceItemsProcessorInterface $sourceItemsProcessor,
-        LoggerInterface $logger
+        SourceItemsProcessor $sourceItemsProcessor
     ) {
         $this->getSourceItemsBySku = $getSourceItemsBySku;
         $this->sourceItemsProcessor = $sourceItemsProcessor;
-        $this->logger = $logger;
     }
 
     /**
-     * Process source items for 'associated' linked products.
-     *
      * @param Link $subject
      * @param Link $result
      * @param ProductInterface $product
@@ -92,16 +80,12 @@ class ProcessSourceItemsAfterSaveAssociatedLinks
             $processData[] = [
                 SourceItemInterface::SOURCE_CODE => $sourceItem->getSourceCode(),
                 SourceItemInterface::QUANTITY => $sourceItem->getQuantity(),
-                SourceItemInterface::STATUS => $sourceItem->getStatus(),
+                SourceItemInterface::STATUS => $sourceItem->getStatus()
             ];
         }
 
         if (!empty($processData)) {
-            try {
-                $this->sourceItemsProcessor->execute((string)$sku, $processData);
-            } catch (InputException $e) {
-                $this->logger->error($e->getLogMessage());
-            }
+            $this->sourceItemsProcessor->process($sku, $processData);
         }
     }
 }

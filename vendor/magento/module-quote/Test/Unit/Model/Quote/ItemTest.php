@@ -3,80 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\Quote;
-
-use Magento\Catalog\Api\Data\ProductExtensionInterface;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type\AbstractType;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Locale\FormatInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Quote\Model\Quote\Item\Compare;
-use Magento\Quote\Model\Quote\Item\Option;
-use Magento\Quote\Model\Quote\Item\OptionFactory;
-use Magento\Sales\Model\Status\ListFactory;
-use Magento\Sales\Model\Status\ListStatus;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ItemTest extends TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Item
+     * @var \Magento\Quote\Model\Quote\Item
      */
     private $model;
 
     /**
-     * @var FormatInterface
+     * @var \Magento\Framework\Locale\FormatInterface
      */
     private $localeFormat;
 
     /**
-     * @var Context
+     * @var \Magento\Framework\Model\Context
      */
     private $modelContext;
 
     /**
-     * @var ManagerInterface
+     * @var \Magento\Framework\Event\ManagerInterface
      */
     private $eventDispatcher;
 
     /**
-     * @var ListStatus
+     * @var \Magento\Sales\Model\Status\ListStatus
      */
     private $errorInfos;
 
     /**
-     * @var OptionFactory
+     * @var \Magento\Quote\Model\Quote\Item\OptionFactory
      */
     private $itemOptionFactory;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManagerHelper;
 
     /**
-     * @var Compare|MockObject
+     * @var \Magento\Quote\Model\Quote\Item\Compare|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $compareHelper;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $stockItemMock;
 
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $serializer;
 
@@ -88,60 +67,60 @@ class ItemTest extends TestCase
     const PRODUCT_TAX_CLASS_ID = 3;
     const PRODUCT_COST = '9.00';
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->localeFormat = $this->getMockBuilder(FormatInterface::class)
+        $this->localeFormat = $this->getMockBuilder(\Magento\Framework\Locale\FormatInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->modelContext = $this->getMockBuilder(Context::class)
+        $this->modelContext = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEventDispatcher'])
             ->getMock();
 
-        $this->eventDispatcher = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventDispatcher = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['dispatch'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->modelContext->expects($this->any())
             ->method('getEventDispatcher')
-            ->willReturn($this->eventDispatcher);
+            ->will($this->returnValue($this->eventDispatcher));
 
-        $this->errorInfos = $this->getMockBuilder(ListStatus::class)
+        $this->errorInfos = $this->getMockBuilder(\Magento\Sales\Model\Status\ListStatus::class)
             ->disableOriginalConstructor()
             ->setMethods(['clear', 'addItem', 'getItems', 'removeItemsByParams'])
             ->getMock();
 
-        $statusListFactory = $this->getMockBuilder(ListFactory::class)
+        $statusListFactory = $this->getMockBuilder(\Magento\Sales\Model\Status\ListFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $statusListFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->errorInfos);
+            ->will($this->returnValue($this->errorInfos));
 
-        $this->itemOptionFactory = $this->getMockBuilder(OptionFactory::class)
+        $this->itemOptionFactory = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\OptionFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->compareHelper = $this->createMock(Compare::class);
+        $this->compareHelper = $this->createMock(\Magento\Quote\Model\Quote\Item\Compare::class);
 
         $this->stockItemMock = $this->createPartialMock(
             \Magento\CatalogInventory\Model\Stock\Item::class,
             ['getIsQtyDecimal', '__wakeup']
         );
 
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->setMethods(['unserialize'])
             ->getMockForAbstractClass();
 
         $this->model = $this->objectManagerHelper->getObject(
-            Item::class,
+            \Magento\Quote\Model\Quote\Item::class,
             [
                 'localeFormat' => $this->localeFormat,
                 'context' => $this->modelContext,
@@ -155,7 +134,7 @@ class ItemTest extends TestCase
 
     public function testGetAddress()
     {
-        $quote = $this->getMockBuilder(Quote::class)
+        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->setMethods(['getShippingAddress', 'getBillingAddress', 'getStoreId', '__wakeup', 'isVirtual'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -181,16 +160,16 @@ class ItemTest extends TestCase
     {
         $idValue = "id_value";
 
-        $quote = $this->getMockBuilder(Quote::class)
+        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->setMethods(['getId', 'getStoreId', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
         $quote->expects($this->once())
             ->method('getId')
-            ->willReturn($idValue);
+            ->will($this->returnValue($idValue));
         $quote->expects($this->any())
             ->method('getStoreId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->model->setQuote($quote);
 
@@ -212,12 +191,12 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->at(0))
             ->method('getNumber')
             ->with($quantityToAdd)
-            ->willReturn($preparedQuantityToAdd);
+            ->will($this->returnValue($preparedQuantityToAdd));
 
         $this->localeFormat->expects($this->at(1))
             ->method('getNumber')
             ->with($preparedQuantityToAdd + $existingQuantity)
-            ->willReturn($preparedQuantityToAdd + $existingQuantity);
+            ->will($this->returnValue($preparedQuantityToAdd + $existingQuantity));
 
         $this->model->addQty($quantityToAdd);
         $this->assertEquals($preparedQuantityToAdd, $this->model->getQtyToAdd());
@@ -232,7 +211,7 @@ class ItemTest extends TestCase
         $existingQuantity = 2;
         $quantityToAdd = 3;
 
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->setMethods(['addChild', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -255,7 +234,7 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->once())
             ->method('getNumber')
             ->with($quantityToAdd)
-            ->willReturn($preparedQuantityToAdd);
+            ->will($this->returnValue($preparedQuantityToAdd));
 
         $this->model->setData('qty', $existingQuantity);
 
@@ -276,18 +255,18 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->once())
             ->method('getNumber')
             ->with($quantityToAdd)
-            ->willReturn($preparedQuantityToAdd);
+            ->will($this->returnValue($preparedQuantityToAdd));
 
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIgnoreOldQty', 'getStoreId', '__wakeup'])
             ->getMock();
         $quoteMock->expects($this->once())
             ->method('getIgnoreOldQty')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $quoteMock->expects($this->any())
             ->method('getStoreId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->model->setQuote($quoteMock);
 
@@ -310,7 +289,7 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->once())
             ->method('getNumber')
             ->with($quantityToAdd)
-            ->willReturn($preparedQuantityToAdd);
+            ->will($this->returnValue($preparedQuantityToAdd));
 
         $this->model->setData('qty', $existingQuantity);
         $this->model->setUseOldQty(true);
@@ -378,20 +357,20 @@ class ItemTest extends TestCase
         $isQtyDecimal = true;
         $this->stockItemMock->expects($this->once())
             ->method('getIsQtyDecimal')
-            ->willReturn($isQtyDecimal);
+            ->will($this->returnValue($isQtyDecimal));
 
         $storeId = 15;
         $customerGroupId = 11;
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStoreId', 'getCustomerGroupId', '__wakeup'])
             ->getMock();
         $quoteMock->expects($this->any())
             ->method('getStoreId')
-            ->willReturn($storeId);
+            ->will($this->returnValue($storeId));
         $quoteMock->expects($this->once())
             ->method('getCustomerGroupId')
-            ->willReturn($customerGroupId);
+            ->will($this->returnValue($customerGroupId));
         $this->model->setQuote($quoteMock);
 
         $productMock->expects($this->once())
@@ -424,7 +403,7 @@ class ItemTest extends TestCase
      * @param string $productWeight
      * @param int $productTaxClassId
      * @param float $productCost
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function generateProductMock(
         $productId,
@@ -435,7 +414,7 @@ class ItemTest extends TestCase
         $productTaxClassId,
         $productCost
     ) {
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -461,40 +440,40 @@ class ItemTest extends TestCase
 
         $productMock->expects($this->any())
             ->method('getId')
-            ->willReturn($productId);
+            ->will($this->returnValue($productId));
         $productMock->expects($this->any())
             ->method('getTypeId')
-            ->willReturn($productType);
+            ->will($this->returnValue($productType));
         $productMock->expects($this->any())
             ->method('getSku')
-            ->willReturn($productSku);
+            ->will($this->returnValue($productSku));
         $productMock->expects($this->any())
             ->method('getName')
-            ->willReturn($productName);
+            ->will($this->returnValue($productName));
         $productMock->expects($this->any())
             ->method('getWeight')
-            ->willReturn($productWeight);
+            ->will($this->returnValue($productWeight));
         $productMock->expects($this->any())
             ->method('getTaxClassId')
-            ->willReturn($productTaxClassId);
+            ->will($this->returnValue($productTaxClassId));
         $productMock->expects($this->any())
             ->method('getCost')
-            ->willReturn($productCost);
-        $store = $this->createPartialMock(Store::class, ['getWebsiteId']);
+            ->will($this->returnValue($productCost));
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getWebsiteId']);
         $store->expects($this->any())
             ->method('getWebsiteId')
-            ->willReturn(10);
+            ->will($this->returnValue(10));
 
         $productMock->expects($this->any())
             ->method('getStore')
-            ->willReturn($store);
-        $extensionAttribute = $this->getMockBuilder(ProductExtensionInterface::class)
+            ->will($this->returnValue($store));
+        $extensionAttribute = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductExtensionInterface::class)
             ->setMethods(['getStockItem'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $extensionAttribute->expects($this->atLeastOnce())
             ->method('getStockItem')
-            ->willReturn($this->stockItemMock);
+            ->will($this->returnValue($this->stockItemMock));
         $productMock->expects($this->atLeastOnce())->method('getExtensionAttributes')->willReturn($extensionAttribute);
         return $productMock;
     }
@@ -528,7 +507,7 @@ class ItemTest extends TestCase
             self::PRODUCT_COST
         );
 
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->setMethods(['addChild', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -538,7 +517,7 @@ class ItemTest extends TestCase
 
         $productMock->expects($this->once())
             ->method('getStickWithinParent')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->assertFalse($this->model->representProduct($productMock));
     }
@@ -555,7 +534,7 @@ class ItemTest extends TestCase
             self::PRODUCT_COST
         );
 
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->setMethods(['addChild', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -567,21 +546,21 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 7890;
         $optionMock2 = $this->createOptionMock($optionCode2);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(7890);
+            ->will($this->returnValue(7890));
         $this->model->setOptions([$optionMock1, $optionMock2]);
 
         $productMock->expects($this->once())
             ->method('getStickWithinParent')
-            ->willReturn($parentItemMock);
+            ->will($this->returnValue($parentItemMock));
         $productMock->expects($this->once())
             ->method('getCustomOptions')
-            ->willReturn([$optionCode1 => $optionMock1]);
+            ->will($this->returnValue([$optionCode1 => $optionMock1]));
 
         $this->assertFalse($this->model->representProduct($productMock));
     }
@@ -598,7 +577,7 @@ class ItemTest extends TestCase
             self::PRODUCT_COST
         );
 
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->setMethods(['addChild', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -610,21 +589,21 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 7890;
         $optionMock2 = $this->createOptionMock($optionCode2);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(7890);
+            ->will($this->returnValue(7890));
         $this->model->setOptions([$optionMock1]);
 
         $productMock->expects($this->once())
             ->method('getStickWithinParent')
-            ->willReturn($parentItemMock);
+            ->will($this->returnValue($parentItemMock));
         $productMock->expects($this->once())
             ->method('getCustomOptions')
-            ->willReturn([$optionCode1 => $optionMock1, $optionCode2 => $optionMock2]);
+            ->will($this->returnValue([$optionCode1 => $optionMock1, $optionCode2 => $optionMock2]));
 
         $this->assertFalse($this->model->representProduct($productMock));
     }
@@ -641,7 +620,7 @@ class ItemTest extends TestCase
             self::PRODUCT_COST
         );
 
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->setMethods(['addChild', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -653,21 +632,21 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 7890;
         $optionMock2 = $this->createOptionMock($optionCode2);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(7890);
+            ->will($this->returnValue(7890));
         $this->model->setOptions([$optionMock1, $optionMock2]);
 
         $productMock->expects($this->once())
             ->method('getStickWithinParent')
-            ->willReturn($parentItemMock);
+            ->will($this->returnValue($parentItemMock));
         $productMock->expects($this->once())
             ->method('getCustomOptions')
-            ->willReturn([$optionCode1 => $optionMock1, $optionCode2 => $optionMock2]);
+            ->will($this->returnValue([$optionCode1 => $optionMock1, $optionCode2 => $optionMock2]));
 
         $this->assertTrue($this->model->representProduct($productMock));
     }
@@ -677,11 +656,11 @@ class ItemTest extends TestCase
      */
     public function testCompare()
     {
-        $itemMock = $this->createMock(Item::class);
+        $itemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $this->compareHelper->expects($this->once())
             ->method('compare')
-            ->with($this->model, $itemMock)
-            ->willReturn(true);
+            ->with($this->equalTo($this->model), $this->equalTo($itemMock))
+            ->will($this->returnValue(true));
         $this->assertTrue($this->model->compare($itemMock));
     }
 
@@ -691,7 +670,7 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $this->assertTrue(
             $this->model->compareOptions([$optionCode1 => $optionMock1], [$optionCode1 => $optionMock1])
@@ -704,13 +683,13 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 1234;
         $optionMock2 = $this->createOptionMock($optionCode1);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(7890);
+            ->will($this->returnValue(7890));
 
         $this->assertFalse(
             $this->model->compareOptions([$optionCode1 => $optionMock1], [$optionCode2 => $optionMock2])
@@ -723,13 +702,13 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 1234;
         $optionMock2 = $this->createOptionMock($optionCode1);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
 
         $this->assertFalse(
             $this->model->compareOptions([$optionCode1 => $optionMock1], [$optionCode2 => $optionMock2])
@@ -742,13 +721,13 @@ class ItemTest extends TestCase
         $optionMock1 = $this->createOptionMock($optionCode1);
         $optionMock1->expects($this->any())
             ->method('getValue')
-            ->willReturn(1234);
+            ->will($this->returnValue(1234));
 
         $optionCode2 = 7890;
         $optionMock2 = $this->createOptionMock($optionCode1);
         $optionMock2->expects($this->any())
             ->method('getValue')
-            ->willReturn(7890);
+            ->will($this->returnValue(7890));
 
         $this->assertFalse(
             $this->model->compareOptions(
@@ -773,7 +752,7 @@ class ItemTest extends TestCase
         );
         $optionMock1->expects($this->any())
             ->method('getProduct')
-            ->willReturn($productMock);
+            ->will($this->returnValue($productMock));
 
         $optionCode2 = 'product_qty_' . self::PRODUCT_ID;
         $optionMock2 = $this->createOptionMock($optionCode2);
@@ -812,7 +791,7 @@ class ItemTest extends TestCase
         $toArrayValue = ['a' => 'b'];
         $productMock->expects($this->once())
             ->method('toArray')
-            ->willReturn($toArrayValue);
+            ->will($this->returnValue($toArrayValue));
 
         $data = $this->model->toArray();
         $this->assertEquals($toArrayValue, $data['product']);
@@ -825,7 +804,7 @@ class ItemTest extends TestCase
         $optionMock = $this->createOptionMock($optionProductType);
         $optionMock->expects($this->once())
             ->method('getValue')
-            ->willReturn($optionProductTypeValue);
+            ->will($this->returnValue($optionProductTypeValue));
         $this->model->addOption($optionMock);
 
         $this->assertEquals($optionProductTypeValue, $this->model->getProductType());
@@ -868,11 +847,11 @@ class ItemTest extends TestCase
     /**
      * @param $optionCode
      * @param array $optionData
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function createOptionMock($optionCode, $optionData = [])
     {
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(
                 [
                     'setData',
@@ -892,14 +871,14 @@ class ItemTest extends TestCase
         $optionMock->expects($this->any())
             ->method('setData')
             ->with($optionData)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->any())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->any())
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
 
         return $optionMock;
     }
@@ -909,25 +888,25 @@ class ItemTest extends TestCase
         $optionCode = 1234;
         $optionData = ['product' => 'test', 'code' => $optionCode];
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(['setData', 'setItem', 'getCode', '__wakeup', 'isDeleted'])
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
             ->method('setData')
             ->with($optionData)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->once())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->exactly(3))
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
 
         $this->itemOptionFactory->expects($this->at(0))
             ->method('create')
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
 
         $this->model->addOption($optionData);
         $this->assertEquals([$optionMock], $this->model->getOptions());
@@ -948,7 +927,7 @@ class ItemTest extends TestCase
         );
 
         $typeInstanceMock = $this->getMockForAbstractClass(
-            AbstractType::class,
+            \Magento\Catalog\Model\Product\Type\AbstractType::class,
             [],
             '',
             false,
@@ -958,15 +937,15 @@ class ItemTest extends TestCase
         );
         $productMock->expects($this->once())
             ->method('getTypeInstance')
-            ->willReturn($typeInstanceMock);
+            ->will($this->returnValue($typeInstanceMock));
 
-        $optionMock = $this->getMockBuilder(DataObject::class)
+        $optionMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->setMethods(['getProduct'])
             ->getMock();
         $optionMock->expects($this->once())
             ->method('getProduct')
-            ->willReturn($productMock);
+            ->will($this->returnValue($productMock));
 
         $quantityValue = 12;
 
@@ -981,23 +960,23 @@ class ItemTest extends TestCase
     {
         $optionCode = 1234;
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(['setItem', 'getCode', '__wakeup', 'isDeleted'])
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->exactly(3))
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
         $optionMock->expects($this->at(0))
             ->method('isDeleted')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $optionMock->expects($this->at(1))
             ->method('isDeleted')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->model->addOption($optionMock);
 
@@ -1018,20 +997,20 @@ class ItemTest extends TestCase
     {
         $optionCode = 1234;
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(['setItem', 'getCode', '__wakeup', 'isDeleted'])
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->exactly(3))
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
         $optionMock->expects($this->once())
             ->method('isDeleted')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->model->addOption($optionMock);
 
@@ -1042,20 +1021,20 @@ class ItemTest extends TestCase
     {
         $optionCode = 1234;
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(['setItem', 'getCode', '__wakeup', 'isDeleted'])
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->exactly(3))
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
         $optionMock->expects($this->once())
             ->method('isDeleted')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->model->addOption($optionMock);
 
@@ -1068,7 +1047,7 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->at(0))
             ->method('getNumber')
             ->with($quantity)
-            ->willReturn($quantity);
+            ->will($this->returnValue($quantity));
         $this->model->setQty($quantity);
         $this->assertEquals($quantity, $this->model->getQty());
         $buyRequest = $this->model->getBuyRequest();
@@ -1080,20 +1059,20 @@ class ItemTest extends TestCase
     {
         $optionCode = "info_buyRequest";
         $buyRequestQuantity = 23;
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->setMethods(['setItem', 'getCode', '__wakeup', 'getValue'])
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
             ->method('setItem')
             ->with($this->model)
-            ->willReturn($optionMock);
+            ->will($this->returnValue($optionMock));
         $optionMock->expects($this->exactly(3))
             ->method('getCode')
-            ->willReturn($optionCode);
+            ->will($this->returnValue($optionCode));
         $optionMock->expects($this->any())
             ->method('getValue')
-            ->willReturn('{"qty":23}');
+            ->will($this->returnValue('{"qty":23}'));
 
         $this->model->addOption($optionMock);
 
@@ -1101,7 +1080,7 @@ class ItemTest extends TestCase
         $this->localeFormat->expects($this->at(0))
             ->method('getNumber')
             ->with($quantity)
-            ->willReturn($quantity);
+            ->will($this->returnValue($quantity));
         $this->model->setQty($quantity);
         $this->assertEquals($quantity, $this->model->getQty());
         $this->serializer->expects($this->any())
@@ -1139,7 +1118,7 @@ class ItemTest extends TestCase
         $origin = 'origin';
         $code = 1;
         $message = "message";
-        $additionalData = new DataObject();
+        $additionalData = new \Magento\Framework\DataObject();
         $additionalData->setTemp(true);
 
         $this->errorInfos->expects($this->once())
@@ -1158,7 +1137,7 @@ class ItemTest extends TestCase
 
         $this->errorInfos->expects($this->once())
             ->method('getItems')
-            ->willReturn($retValue);
+            ->will($this->returnValue($retValue));
 
         $this->assertEquals($retValue, $this->model->getErrorInfos());
     }
@@ -1184,11 +1163,11 @@ class ItemTest extends TestCase
         $this->errorInfos->expects($this->once())
             ->method('removeItemsByParams')
             ->with($params)
-            ->willReturn($removedItems);
+            ->will($this->returnValue($removedItems));
 
         $this->errorInfos->expects($this->once())
             ->method('getItems')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->assertEquals($this->model, $this->model->removeErrorInfosByParams($params));
         $this->assertEquals($message2, $this->model->getMessage());
@@ -1215,11 +1194,11 @@ class ItemTest extends TestCase
         $this->errorInfos->expects($this->once())
             ->method('removeItemsByParams')
             ->with($params)
-            ->willReturn($removedItems);
+            ->will($this->returnValue($removedItems));
 
         $this->errorInfos->expects($this->once())
             ->method('getItems')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $this->assertEquals($this->model, $this->model->removeErrorInfosByParams($params));
         $this->assertFalse($this->model->getHasError());
@@ -1237,7 +1216,7 @@ class ItemTest extends TestCase
 
         $optionMock1 = $this->createOptionMock(200);
         $optionMock1->expects(self::once())->method('isDeleted')->willReturn(false);
-        $quoteItemMock1 = $this->createPartialMock(Item::class, ['getId']);
+        $quoteItemMock1 = $this->createPartialMock(\Magento\Quote\Model\Quote\Item::class, ['getId']);
         $quoteItemMock1->expects(self::once())->method('getId')->willReturn(null);
         $optionMock1->expects(self::exactly(2))->method('getItem')->willReturn($quoteItemMock1);
         $optionMock1->expects(self::exactly(2))->method('setItem')->with($this->model);
@@ -1245,7 +1224,7 @@ class ItemTest extends TestCase
 
         $optionMock2 = $this->createOptionMock(300);
         $optionMock2->expects(self::once())->method('isDeleted')->willReturn(false);
-        $quoteItemMock2 = $this->createPartialMock(Item::class, ['getId']);
+        $quoteItemMock2 = $this->createPartialMock(\Magento\Quote\Model\Quote\Item::class, ['getId']);
         $quoteItemMock2->expects(self::once())->method('getId')->willReturn(11);
         $optionMock2->expects(self::exactly(2))->method('getItem')->willReturn($quoteItemMock2);
         $optionMock2->expects(self::once())->method('setItem')->with($this->model);

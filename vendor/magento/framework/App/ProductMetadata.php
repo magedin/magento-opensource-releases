@@ -13,7 +13,9 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Composer\ComposerInformation;
 
 /**
- * Magento application product metadata
+ * Class ProductMetadata
+ *
+ * @package Magento\Framework\App
  */
 class ProductMetadata implements ProductMetadataInterface
 {
@@ -83,8 +85,8 @@ class ProductMetadata implements ProductMetadataInterface
                 } else {
                     $this->version = 'UNKNOWN';
                 }
+                $this->cache->save($this->version, self::VERSION_CACHE_KEY, [Config::CACHE_TAG]);
             }
-            $this->cache->save($this->version, self::VERSION_CACHE_KEY, [Config::CACHE_TAG]);
         }
         return $this->version;
     }

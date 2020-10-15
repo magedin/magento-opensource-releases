@@ -9,9 +9,11 @@ namespace Magento\CardinalCommerce\Test\Unit\Model\Response;
 
 use Magento\CardinalCommerce\Model\Response\JwtPayloadValidator;
 use Magento\Framework\Intl\DateTimeFactory;
-use PHPUnit\Framework\TestCase;
 
-class JwtPayloadValidatorTest extends TestCase
+/**
+ * Class JwtPayloadValidatorTest
+ */
+class JwtPayloadValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var JwtPayloadValidator
@@ -21,7 +23,7 @@ class JwtPayloadValidatorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new JwtPayloadValidator(new DateTimeFactory());
     }

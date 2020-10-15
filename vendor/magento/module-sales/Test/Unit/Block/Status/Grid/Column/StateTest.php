@@ -3,54 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Block\Status\Grid\Column;
 
-use Magento\Backend\Block\Widget\Grid\Column;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Block\Status\Grid\Column\State;
-use Magento\Sales\Model\Order\Config;
-use Magento\Sales\Model\Order\Status;
-use Magento\Sales\Model\ResourceModel\Order\Status\Collection;
-use Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StateTest extends TestCase
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var  State
+     * @var  \Magento\Sales\Block\Status\Grid\Column\State
      */
     private $stateColumn;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderStatusCollectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->orderStatusCollectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory::class,
             ['create']
         );
         $this->configMock = $helper->getObject(
-            Config::class,
+            \Magento\Sales\Model\Order\Config::class,
             [
                 'orderStatusCollectionFactory' => $this->orderStatusCollectionFactoryMock
             ]
         );
         $this->stateColumn = $helper
             ->getObject(
-                State::class,
+                \Magento\Sales\Block\Status\Grid\Column\State::class,
                 [
                     'config' => $this->configMock,
                 ]
@@ -59,43 +47,37 @@ class StateTest extends TestCase
 
     public function testDecorateState()
     {
-        $rowMock = $this->getMockBuilder(Status::class)
-            ->addMethods(['getStatus'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $rowMock = $this->createPartialMock(\Magento\Sales\Model\Order\Status::class, ['getStatus']);
         $rowMock->expects($this->any())->method('getStatus')->willReturn('fraud');
-        $columnMock = $this->createMock(Column::class);
+        $columnMock = $this->createMock(\Magento\Backend\Block\Widget\Grid\Column::class);
         $statuses = [
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
                     'status' => 'fraud',
                     'state' => 'processing',
-                    'is_default' => '0',
                     'label' => 'Suspected Fraud',
                 ]
             ),
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
                     'status' => 'processing',
                     'state' => 'processing',
-                    'is_default' => '1',
                     'label' => 'Processing',
                 ]
             )
         ];
-        $collectionMock = $this->getMockBuilder(Collection::class)
-            ->addMethods(['create'])
-            ->onlyMethods(['joinStates'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $collectionMock = $this->createPartialMock(
+            \Magento\Sales\Model\ResourceModel\Order\Status\Collection::class,
+            ['create', 'joinStates']
+        );
         $this->orderStatusCollectionFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($collectionMock);
+            ->will($this->returnValue($collectionMock));
         $collectionMock->expects($this->once())
             ->method('joinStates')
-            ->willReturn($statuses);
+            ->will($this->returnValue($statuses));
 
         $result = $this->stateColumn->decorateState('processing', $rowMock, $columnMock, false);
-        $this->assertSame('processing[Processing]', $result);
+        $this->assertSame('processing[Suspected Fraud]', $result);
     }
 }

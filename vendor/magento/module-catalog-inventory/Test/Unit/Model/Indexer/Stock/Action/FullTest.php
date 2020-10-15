@@ -6,29 +6,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogInventory\Test\Unit\Model\Indexer\Stock\Action;
 
-use Magento\Catalog\Model\Product\Type;
-use Magento\CatalogInventory\Model\Indexer\Stock\Action\Full;
-use Magento\CatalogInventory\Model\ResourceModel\Indexer\StockFactory;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class FullTest extends TestCase
+class FullTest extends \PHPUnit\Framework\TestCase
 {
     public function testExecuteWithAdapterErrorThrowsException()
     {
         $indexerFactoryMock = $this->createMock(
-            StockFactory::class
+            \Magento\CatalogInventory\Model\ResourceModel\Indexer\StockFactory::class
         );
-        $resourceMock = $this->createMock(ResourceConnection::class);
-        $productTypeMock = $this->createMock(Type::class);
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $productTypeMock = $this->createMock(\Magento\Catalog\Model\Product\Type::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
 
         $productTypeMock
             ->method('getTypesByPriority')
@@ -38,23 +28,23 @@ class FullTest extends TestCase
 
         $resourceMock->expects($this->any())
             ->method('getConnection')
-            ->willReturn($connectionMock);
+            ->will($this->returnValue($connectionMock));
 
         $resourceMock->expects($this->any())
             ->method('getTableName')
-            ->willThrowException(new \Exception($exceptionMessage));
+            ->will($this->throwException(new \Exception($exceptionMessage)));
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $model = $objectManager->getObject(
-            Full::class,
+            \Magento\CatalogInventory\Model\Indexer\Stock\Action\Full::class,
             [
-                'resource' => $resourceMock,
-                'indexerFactory' => $indexerFactoryMock,
-                'catalogProductType' => $productTypeMock,
+               'resource' => $resourceMock,
+               'indexerFactory' => $indexerFactoryMock,
+               'catalogProductType' => $productTypeMock,
             ]
         );
 
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $model->execute();

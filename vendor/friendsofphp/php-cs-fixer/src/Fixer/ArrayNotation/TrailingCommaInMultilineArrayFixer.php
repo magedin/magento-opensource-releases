@@ -13,25 +13,18 @@
 namespace PhpCsFixer\Fixer\ArrayNotation;
 
 use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use PhpCsFixer\FixerConfiguration\InvalidOptionsForEnvException;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\FixerDefinition\VersionSpecification;
-use PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
 use PhpCsFixer\Tokenizer\CT;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use PhpCsFixer\Tokenizer\TokensAnalyzer;
-use Symfony\Component\OptionsResolver\Options;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class TrailingCommaInMultilineArrayFixer extends AbstractFixer implements ConfigurationDefinitionFixerInterface
+final class TrailingCommaInMultilineArrayFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
@@ -40,35 +33,8 @@ final class TrailingCommaInMultilineArrayFixer extends AbstractFixer implements 
     {
         return new FixerDefinition(
             'PHP multi-line arrays should have a trailing comma.',
-            [
-                new CodeSample("<?php\narray(\n    1,\n    2\n);\n"),
-                new VersionSpecificCodeSample(
-                    <<<'SAMPLE'
-<?php
-    $x = [
-        'foo',
-        <<<EOD
-            bar
-            EOD
-    ];
-
-SAMPLE
-                    ,
-                    new VersionSpecification(70300),
-                    ['after_heredoc' => true]
-                ),
-            ]
+            [new CodeSample("<?php\narray(\n    1,\n    2\n);\n")]
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Must run after NoMultilineWhitespaceAroundDoubleArrowFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
     }
 
     /**
@@ -94,27 +60,8 @@ SAMPLE
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function createConfigurationDefinition()
-    {
-        return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('after_heredoc', 'Whether a trailing comma should also be placed after heredoc end.'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->setNormalizer(static function (Options $options, $value) {
-                    if (\PHP_VERSION_ID < 70300 && $value) {
-                        throw new InvalidOptionsForEnvException('"after_heredoc" option can only be enabled with PHP 7.3+.');
-                    }
-
-                    return $value;
-                })
-                ->getOption(),
-        ]);
-    }
-
-    /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixArray(Tokens $tokens, $index)
     {
@@ -131,10 +78,7 @@ SAMPLE
         $beforeEndToken = $tokens[$beforeEndIndex];
 
         // if there is some item between braces then add `,` after it
-        if (
-            $startIndex !== $beforeEndIndex && !$beforeEndToken->equals(',') &&
-            ($this->configuration['after_heredoc'] || !$beforeEndToken->isGivenKind(T_END_HEREDOC))
-        ) {
+        if ($startIndex !== $beforeEndIndex && !$beforeEndToken->equalsAny([',', [T_END_HEREDOC]])) {
             $tokens->insertAt($beforeEndIndex + 1, new Token(','));
 
             $endToken = $tokens[$endIndex];

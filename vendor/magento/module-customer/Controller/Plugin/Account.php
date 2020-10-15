@@ -3,31 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Controller\Plugin;
 
-use Closure;
-use Magento\Customer\Controller\AccountInterface;
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\Action\AbstractAction;
 use Magento\Framework\Controller\ResultInterface;
 
-/**
- * Plugin verifies permissions using Action Name against injected (`fontend/di.xml`) rules
- */
 class Account
 {
     /**
      * @var Session
      */
-    private $session;
-
-    /**
-     * @var RequestInterface
-     */
-    private $request;
+    protected $session;
 
     /**
      * @var array
@@ -35,46 +25,50 @@ class Account
     private $allowedActions = [];
 
     /**
-     * @param RequestInterface $request
      * @param Session $customerSession
      * @param array $allowedActions List of actions that are allowed for not authorized users
      */
     public function __construct(
-        RequestInterface $request,
         Session $customerSession,
         array $allowedActions = []
     ) {
-        $this->request = $request;
         $this->session = $customerSession;
         $this->allowedActions = $allowedActions;
     }
 
     /**
-     * Executes original method if allowed, otherwise - redirects to log in
+     * Dispatch actions allowed for not authorized users
      *
-     * @param AccountInterface $controllerAction
-     * @param Closure $proceed
-     * @return ResultInterface|ResponseInterface|void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param AbstractAction $subject
+     * @param RequestInterface $request
+     * @return void
      */
-    public function aroundExecute(AccountInterface $controllerAction, Closure $proceed)
+    public function beforeDispatch(AbstractAction $subject, RequestInterface $request)
     {
-        /** @FIXME Move Authentication and redirect out of Session model */
-        if ($this->isActionAllowed() || $this->session->authenticate()) {
-            return $proceed();
+        $action = strtolower($request->getActionName());
+        $pattern = '/^(' . implode('|', $this->allowedActions) . ')$/i';
+
+        if (!preg_match($pattern, $action)) {
+            if (!$this->session->authenticate()) {
+                $subject->getActionFlag()->set('', ActionInterface::FLAG_NO_DISPATCH, true);
+            }
+        } else {
+            $this->session->setNoReferer(true);
         }
     }
 
     /**
-     * Validates whether currently requested action is one of the allowed
+     * Remove No-referer flag from customer session
      *
-     * @return bool
+     * @param AbstractAction $subject
+     * @param ResponseInterface|ResultInterface $result
+     * @param RequestInterface $request
+     * @return ResponseInterface|ResultInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function isActionAllowed(): bool
+    public function afterDispatch(AbstractAction $subject, $result, RequestInterface $request)
     {
-        $action = strtolower($this->request->getActionName());
-        $pattern = '/^(' . implode('|', $this->allowedActions) . ')$/i';
-
-        return (bool)preg_match($pattern, $action);
+        $this->session->unsNoReferer(false);
+        return $result;
     }
 }

@@ -50,11 +50,12 @@ final class ReportSummary
     private $time;
 
     /**
-     * @param int  $time              duration in milliseconds
-     * @param int  $memory            memory usage in bytes
-     * @param bool $addAppliedFixers
-     * @param bool $isDryRun
-     * @param bool $isDecoratedOutput
+     * @param array $changed
+     * @param int   $time              duration in milliseconds
+     * @param int   $memory            memory usage in bytes
+     * @param bool  $addAppliedFixers
+     * @param bool  $isDryRun
+     * @param bool  $isDecoratedOutput
      */
     public function __construct(
         array $changed,

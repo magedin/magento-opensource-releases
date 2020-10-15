@@ -104,11 +104,10 @@ final class MyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoEmptyPhpdocFixer, PhpUnitExpectationFixer.
      */
     public function getPriority()
     {
+        // should be run before the PhpUnitExpectationFixer, NoEmptyPhpdocFixer
         return 10;
     }
 
@@ -158,7 +157,8 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return string
      */
@@ -174,8 +174,9 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function fixPhpUnitClass(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -244,10 +245,9 @@ final class MyTest extends \PHPUnit_Framework_TestCase
             $tokens[$docBlockIndex] = new Token([T_DOC_COMMENT, $doc->getContent()]);
             $tokens->insertAt($braceIndex + 1, $newMethods);
 
-            $whitespaceIndex = $braceIndex + $newMethods->getSize() + 1;
-            $tokens[$whitespaceIndex] = new Token([
+            $tokens[$braceIndex + $newMethods->getSize() + 1] = new Token([
                 T_WHITESPACE,
-                $this->whitespacesConfig->getLineEnding().$tokens[$whitespaceIndex]->getContent(),
+                $this->whitespacesConfig->getLineEnding().$tokens[$braceIndex + $newMethods->getSize() + 1]->getContent(),
             ]);
 
             $i = $docBlockIndex;
@@ -255,18 +255,16 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param Annotation $annotation
+     *
      * @return string
      */
     private function extractContentFromAnnotation(Annotation $annotation)
     {
         $tag = $annotation->getTag()->getName();
 
-        if (1 !== Preg::match('/@'.$tag.'\s+(.+)$/s', $annotation->getContent(), $matches)) {
-            return '';
-        }
-
+        Preg::match('/@'.$tag.'\s+(.+)$/s', $annotation->getContent(), $matches);
         $content = $matches[1];
-
         if (Preg::match('/\R/u', $content)) {
             $content = Preg::replace('/\s*\R+\s*\*\s*/u', ' ', $content);
         }
@@ -277,10 +275,10 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     private function annotationsToParamList(array $annotations)
     {
         $params = [];
-        $exceptionClass = ltrim($annotations['expectedException'], '\\');
+        $exceptionClass = '\\'.ltrim($annotations['expectedException'], '\\');
 
         if ($this->configuration['use_class_const']) {
-            $params[] = "\\{$exceptionClass}::class";
+            $params[] = $exceptionClass.'::class';
         } else {
             $params[] = "'{$exceptionClass}'";
         }

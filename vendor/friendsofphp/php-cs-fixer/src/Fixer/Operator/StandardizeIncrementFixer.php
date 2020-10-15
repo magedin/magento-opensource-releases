@@ -54,11 +54,11 @@ final class StandardizeIncrementFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before IncrementStyleFixer.
      */
     public function getPriority()
     {
+        // Must be run before IncrementStyleFixer in case user wants to
+        // post-increment instead
         return 1;
     }
 
@@ -111,7 +111,8 @@ final class StandardizeIncrementFixer extends AbstractFixer
     /**
      * Find the start of a reference.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */
@@ -145,8 +146,9 @@ final class StandardizeIncrementFixer extends AbstractFixer
     /**
      * Clear tokens in the given range unless they are comments.
      *
-     * @param int $indexStart
-     * @param int $indexEnd
+     * @param Tokens $tokens
+     * @param int    $indexStart
+     * @param int    $indexEnd
      */
     private function clearRangeLeaveComments(Tokens $tokens, $indexStart, $indexEnd)
     {

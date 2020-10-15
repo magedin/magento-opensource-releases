@@ -31,7 +31,7 @@ class ForgotPasswordPostTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -79,7 +79,7 @@ class ForgotPasswordPostTest extends AbstractController
         $this->assertRedirect($this->stringContains('customer/account/'));
         $this->assertSuccessSessionMessage($email);
         $subject = $this->transportBuilderMock->getSentMessage()->getSubject();
-        $this->assertStringContainsString('Test special\' characters', $subject);
+        $this->assertContains('Test special\' characters', $subject);
     }
 
     /**

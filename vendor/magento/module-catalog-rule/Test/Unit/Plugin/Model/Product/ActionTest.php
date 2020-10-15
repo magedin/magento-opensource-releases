@@ -3,31 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Plugin\Model\Product;
 
-use Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor;
-use Magento\CatalogRule\Plugin\Model\Product\Action;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\CatalogRule\Plugin\Model\Product\Action;
 
-class ActionTest extends TestCase
+class ActionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Action */
+    /** @var \Magento\CatalogRule\Plugin\Model\Product\Action */
     protected $action;
 
-    /** @var ProductRuleProcessor|MockObject */
+    /** @var \Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor|\PHPUnit_Framework_MockObject_MockObject */
     protected $productRuleProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRuleProcessor = $this->getMockBuilder(
-            ProductRuleProcessor::class
+            \Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor::class
         )->disableOriginalConstructor()
-            ->setMethods(['reindexList'])
-            ->getMock();
+        ->setMethods(['reindexList'])
+        ->getMock();
 
         $this->action = new Action($this->productRuleProcessor);
     }

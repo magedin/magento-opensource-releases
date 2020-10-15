@@ -52,12 +52,11 @@ EOT
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoUselessReturnFixer, VoidReturnFixer.
      */
     public function getPriority()
     {
-        return 16;
+        // should be run before NoUselessReturnFixer
+        return -17;
     }
 
     /**
@@ -87,7 +86,8 @@ EOT
     /**
      * Clear the return statement located at a given index.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function clear(Tokens $tokens, $index)
     {
@@ -101,7 +101,8 @@ EOT
     /**
      * Does the return statement located at a given index need fixing?
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -126,7 +127,8 @@ EOT
     /**
      * Is the return within a function with a non-void or nullable return type?
      *
-     * @param int $returnIndex Current return token index
+     * @param Tokens $tokens
+     * @param int    $returnIndex Current return token index
      *
      * @return bool
      */
@@ -157,7 +159,8 @@ EOT
      * If the token is a comment, or is whitespace that is immediately before a
      * comment, then we'll leave it alone.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */

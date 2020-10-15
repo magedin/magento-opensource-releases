@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Block\Adminhtml\Product\Edit\Button;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\ConfigurableProduct\Block\Adminhtml\Product\Edit\Button\Save as SaveButton;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Registry;
+use Magento\Catalog\Api\Data\ProductInterface;
 
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SaveButton
@@ -27,16 +23,16 @@ class SaveTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $registryMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->registryMock = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()

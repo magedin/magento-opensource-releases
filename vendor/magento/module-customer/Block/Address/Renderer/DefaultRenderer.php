@@ -8,7 +8,6 @@ namespace Magento\Customer\Block\Address\Renderer;
 use Magento\Customer\Model\Address\AddressModelInterface;
 use Magento\Customer\Model\Address\Mapper;
 use Magento\Customer\Model\Metadata\ElementFactory;
-use Magento\Directory\Model\Country\Format;
 use Magento\Framework\View\Element\AbstractBlock;
 
 /**
@@ -92,8 +91,6 @@ class DefaultRenderer extends AbstractBlock implements RendererInterface
     }
 
     /**
-     * Get the format of the address
-     *
      * @param AddressModelInterface|null $address
      * @return string
      * All new code should use renderArray based on Metadata service
@@ -109,11 +106,8 @@ class DefaultRenderer extends AbstractBlock implements RendererInterface
     }
 
     /**
-     * Render address
+     * {@inheritdoc}
      *
-     * @param AddressModelInterface $address
-     * @param string|null $format
-     * @return mixed
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -124,7 +118,7 @@ class DefaultRenderer extends AbstractBlock implements RendererInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getFormatArray($addressAttributes = null)
     {
@@ -139,11 +133,8 @@ class DefaultRenderer extends AbstractBlock implements RendererInterface
     }
 
     /**
-     * Render address by attribute array
+     * {@inheritdoc}
      *
-     * @param array $addressAttributes
-     * @param Format|null $format
-     * @return string
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -176,7 +167,7 @@ class DefaultRenderer extends AbstractBlock implements RendererInterface
                     $addressAttributes['country_id']
                 )->getName();
             } elseif ($attributeCode == 'region' && isset($addressAttributes['region'])) {
-                $data['region'] = (string)__($addressAttributes['region']);
+                $data['region'] = __($addressAttributes['region']);
             } elseif (isset($addressAttributes[$attributeCode])) {
                 $value = $addressAttributes[$attributeCode];
                 $dataModel = $this->_elementFactory->create($attributeMetadata, $value, 'customer_address');

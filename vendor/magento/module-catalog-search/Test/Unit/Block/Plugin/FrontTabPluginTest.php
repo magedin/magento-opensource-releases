@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Block\Plugin;
 
-use Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab\Front as ProductAttributeFrontTabBlock;
 use Magento\CatalogSearch\Block\Plugin\FrontTabPlugin;
-use Magento\CatalogSearch\Model\Source\Weight as WeightSource;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\Form\Element\Fieldset;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\CatalogSearch\Model\Source\Weight as WeightSource;
+use Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab\Front as ProductAttributeFrontTabBlock;
+use Magento\Framework\Data\Form;
+use Magento\Framework\Data\Form\Element\Fieldset;
+use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\View\Element\AbstractBlock;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FrontTabPluginTest extends TestCase
+class FrontTabPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FrontTabPlugin
@@ -34,36 +30,36 @@ class FrontTabPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var WeightSource|MockObject
+     * @var WeightSource|\PHPUnit_Framework_MockObject_MockObject
      */
     private $weightSourceMock;
 
     /**
-     * @var ProductAttributeFrontTabBlock|MockObject
+     * @var ProductAttributeFrontTabBlock|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
     /**
-     * @var Form|MockObject
+     * @var Form|\PHPUnit_Framework_MockObject_MockObject
      */
     private $formMock;
 
     /**
-     * @var Fieldset|MockObject
+     * @var Fieldset|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fieldsetMock;
 
     /**
-     * @var AbstractElement|MockObject
+     * @var AbstractElement|\PHPUnit_Framework_MockObject_MockObject
      */
     private $childElementMock;
 
     /**
-     * @var AbstractBlock|MockObject
+     * @var AbstractBlock|\PHPUnit_Framework_MockObject_MockObject
      */
     private $childBlockMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->weightSourceMock = $this->getMockBuilder(WeightSource::class)
             ->disableOriginalConstructor()

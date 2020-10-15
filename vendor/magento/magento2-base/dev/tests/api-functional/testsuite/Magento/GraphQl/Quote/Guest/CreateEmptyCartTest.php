@@ -39,7 +39,7 @@ class CreateEmptyCartTest extends GraphQlAbstract
      */
     private $quoteIdMaskFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->guestCartRepository = $objectManager->get(GuestCartRepositoryInterface::class);
@@ -108,12 +108,11 @@ QUERY;
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Cart with ID "572cda51902b5b517c0e1a2b2fd004b4" already exists.
      */
     public function testCreateEmptyCartIfPredefinedCartIdAlreadyExists()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Cart with ID "572cda51902b5b517c0e1a2b2fd004b4" already exists.');
-
         $predefinedCartId = '572cda51902b5b517c0e1a2b2fd004b4';
 
         $query = <<<QUERY
@@ -128,12 +127,11 @@ QUERY;
     /**
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Cart ID length should to be 32 symbols.
      */
     public function testCreateEmptyCartWithWrongPredefinedCartId()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Cart ID length should to be 32 symbols.');
-
         $predefinedCartId = '572';
 
         $query = <<<QUERY
@@ -156,7 +154,7 @@ mutation {
 QUERY;
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $quoteCollection = $this->quoteCollectionFactory->create();
         foreach ($quoteCollection as $quote) {

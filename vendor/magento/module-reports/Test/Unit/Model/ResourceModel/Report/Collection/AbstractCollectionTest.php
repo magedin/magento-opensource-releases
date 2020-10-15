@@ -3,43 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Model\ResourceModel\Report\Collection;
 
-use Magento\Framework\Data\Collection\Db\FetchStrategy\Query;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Reports\Model\ResourceModel\Report\Collection\AbstractCollection;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class AbstractCollectionTest extends TestCase
+class AbstractCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tested collection
      *
-     * @var AbstractCollection
+     * @var \Magento\Reports\Model\ResourceModel\Report\Collection\AbstractCollection
      */
     protected $collection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $entityFactory = $this->createMock(EntityFactory::class);
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $fetchStrategy = $this->createMock(Query::class);
-        $eventManager = $this->createMock(Manager::class);
-        $connection = $this->createMock(Mysql::class);
+        $entityFactory = $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $fetchStrategy = $this->createMock(\Magento\Framework\Data\Collection\Db\FetchStrategy\Query::class);
+        $eventManager = $this->createMock(\Magento\Framework\Event\Manager::class);
+        $connection = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
 
-        $resource = $this->getMockBuilder(AbstractDb::class)
+        $resource = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection'])
             ->getMockForAbstractClass();
         $resource->method('getConnection')->willReturn($connection);
 
-        $this->collection = new AbstractCollection(
+        $this->collection = new \Magento\Reports\Model\ResourceModel\Report\Collection\AbstractCollection(
             $entityFactory,
             $logger,
             $fetchStrategy,

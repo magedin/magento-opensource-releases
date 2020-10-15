@@ -3,40 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Adapter\Query\Preprocessor;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Search\Adapter\Query\Preprocessor\Synonyms;
-use Magento\Search\Api\SynonymAnalyzerInterface;
-use Magento\Search\Model\SynonymAnalyzer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SynonymsTest extends TestCase
+class SynonymsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SynonymAnalyzerInterface|MockObject
+     * @var \Magento\Search\Api\SynonymAnalyzerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $synonymAnalyzer;
 
     /**
-     * @var Synonyms
+     * @var \Magento\Search\Adapter\Query\Preprocessor\Synonyms
      */
     private $synonymPreprocessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->synonymAnalyzer = $this->getMockBuilder(SynonymAnalyzer::class)
+        $this->synonymAnalyzer = $this->getMockBuilder(\Magento\Search\Model\SynonymAnalyzer::class)
             ->setMethods(['getSynonymsForPhrase'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->synonymPreprocessor = $objectManager->getObject(
-            Synonyms::class,
+            \Magento\Search\Adapter\Query\Preprocessor\Synonyms::class,
             [
                 'synonymsAnalyzer' => $this->synonymAnalyzer
             ]
@@ -78,8 +71,8 @@ class SynonymsTest extends TestCase
     {
         $this->synonymAnalyzer->expects($this->once())
             ->method('getSynonymsForPhrase')
-            ->with($query)
-            ->willReturn($result);
+            ->with($this->equalTo($query))
+            ->will($this->returnValue($result));
 
         $result = $this->synonymPreprocessor->process($query);
         $this->assertEquals($result, $newQuery);

@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Link;
 
 use Magento\Catalog\Model\Product\Link\Resolver;
-use Magento\Framework\App\RequestInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ResolverTest extends TestCase
+class ResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
@@ -24,9 +19,9 @@ class ResolverTest extends TestCase
      */
     protected $resolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMockForAbstractClass();
 
         $this->resolver = new Resolver($this->requestMock);

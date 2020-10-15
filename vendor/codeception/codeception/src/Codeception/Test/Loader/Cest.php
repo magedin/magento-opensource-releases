@@ -63,9 +63,8 @@ class Cest implements LoaderInterface
                 if (!empty($dataMethod)) {
                     try {
                         $data = ReflectionHelper::invokePrivateMethod($unit, $dataMethod);
-                        foreach ($data as $example) {
-                            $examples[] = $example;
-                        }
+                        // allow to mix example and dataprovider annotations
+                        $examples = array_merge($examples, $data);
                     } catch (\ReflectionException $e) {
                         throw new TestParseException(
                             $file,

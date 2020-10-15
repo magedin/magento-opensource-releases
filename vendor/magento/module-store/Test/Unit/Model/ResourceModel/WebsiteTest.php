@@ -3,42 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Store\Test\Unit\Model\ResourceModel;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ResourceModel\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WebsiteTest extends TestCase
+class WebsiteTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Website */
     protected $model;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
-    /** @var  Select|MockObject */
+    /** @var  Select | \PHPUnit_Framework_MockObject_MockObject */
     protected $select;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connectionMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManagerHelper = new ObjectManager($this);
-        $this->select =  $this->createMock(Select::class);
+        $this->select =  $this->createMock(\Magento\Framework\DB\Select::class);
         $this->resourceMock = $this->createPartialMock(
             ResourceConnection::class,
             [
@@ -46,17 +40,25 @@ class WebsiteTest extends TestCase
                 'getTableName'
             ]
         );
-        $this->connectionMock = $this->getMockBuilder(Mysql::class)
-            ->addMethods(['from', 'joinLeft', 'where'])
-            ->onlyMethods(['isTableExists', 'select', 'fetchAll', 'fetchOne', 'getCheckSql'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $contextMock = $this->createMock(Context::class);
+        $this->connectionMock = $this->createPartialMock(
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
+            [
+                'isTableExists',
+                'select',
+                'fetchAll',
+                'fetchOne',
+                'from',
+                'getCheckSql',
+                'joinLeft',
+                'where'
+            ]
+        );
+        $contextMock = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
         $contextMock->expects($this->once())->method('getResources')->willReturn($this->resourceMock);
         $this->model = $objectManagerHelper->getObject(
             Website::class,
             [
-                'context' => $contextMock
+            'context' => $contextMock
             ]
         );
     }

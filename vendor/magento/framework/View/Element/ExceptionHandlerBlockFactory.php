@@ -6,7 +6,8 @@
 namespace Magento\Framework\View\Element;
 
 /**
- * Factory for BlockInterface
+ * Class ExceptionHandlerBlockFactory
+ * @package Magento\Framework\View\Element
  */
 class ExceptionHandlerBlockFactory
 {

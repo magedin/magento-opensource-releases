@@ -67,7 +67,7 @@ class ThemePackageInfo
             if ($themeFile) {
                 $rawData = $this->serializer->unserialize($themeFile);
             }
-            return $rawData['name'] ?? '';
+            return isset($rawData['name']) ? $rawData['name'] : '';
         }
         return '';
     }
@@ -83,7 +83,8 @@ class ThemePackageInfo
         if (empty($this->packageNameToFullPathMap)) {
             $this->initializeMap();
         }
-        return $this->packageNameToFullPathMap[$packageName] ?? '';
+        return isset($this->packageNameToFullPathMap[$packageName])
+            ? $this->packageNameToFullPathMap[$packageName] : '';
     }
 
     /**

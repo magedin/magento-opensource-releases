@@ -3,37 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Backend;
 
 use Magento\Config\Model\Config\Backend\Serialized;
-use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class SerializedTest extends TestCase
+/**
+ * Class SerializedTest
+ */
+class SerializedTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Serialized */
+    /** @var \Magento\Config\Model\Config\Backend\Serialized */
     private $serializedConfig;
 
-    /** @var Json|MockObject */
+    /** @var Json|\PHPUnit_Framework_MockObject_MockObject */
     private $serializerMock;
 
-    /** @var LoggerInterface|MockObject */
+    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->serializerMock = $this->createMock(Json::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $contextMock = $this->createMock(Context::class);
-        $eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
         $contextMock->method('getEventDispatcher')
             ->willReturn($eventManagerMock);
         $contextMock->method('getLogger')

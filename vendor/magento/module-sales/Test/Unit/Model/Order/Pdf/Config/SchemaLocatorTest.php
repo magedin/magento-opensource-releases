@@ -3,24 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Pdf\Config;
 
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Sales\Model\Order\Pdf\Config\SchemaLocator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Sales\Model\Order\Pdf\Config\SchemaLocator
      */
     protected $_model;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleReader;
 
@@ -29,9 +22,9 @@ class SchemaLocatorTest extends TestCase
      */
     protected $_xsdDir = 'schema_dir';
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_moduleReader = $this->createPartialMock(Reader::class, ['getModuleDir']);
+        $this->_moduleReader = $this->createPartialMock(\Magento\Framework\Module\Dir\Reader::class, ['getModuleDir']);
         $this->_moduleReader->expects(
             $this->once()
         )->method(
@@ -39,11 +32,11 @@ class SchemaLocatorTest extends TestCase
         )->with(
             'etc',
             'Magento_Sales'
-        )->willReturn(
-            $this->_xsdDir
+        )->will(
+            $this->returnValue($this->_xsdDir)
         );
 
-        $this->_model = new SchemaLocator($this->_moduleReader);
+        $this->_model = new \Magento\Sales\Model\Order\Pdf\Config\SchemaLocator($this->_moduleReader);
     }
 
     public function testGetSchema()

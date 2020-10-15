@@ -3,50 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Model;
 
-use Magento\Checkout\Api\Data\PaymentDetailsInterface;
-use Magento\Checkout\Api\Data\ShippingInformationInterface;
-use Magento\Checkout\Api\ShippingInformationManagementInterface;
-use Magento\Checkout\Model\GuestShippingInformationManagement;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Model\QuoteIdMaskFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestShippingInformationManagementTest extends TestCase
+class GuestShippingInformationManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $shippingInformationManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var GuestShippingInformationManagement
+     * @var \Magento\Checkout\Model\GuestShippingInformationManagement
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->quoteIdMaskFactoryMock = $this->createPartialMock(
-            QuoteIdMaskFactory::class,
+            \Magento\Quote\Model\QuoteIdMaskFactory::class,
             ['create']
         );
         $this->shippingInformationManagementMock = $this->createMock(
-            ShippingInformationManagementInterface::class
+            \Magento\Checkout\Api\ShippingInformationManagementInterface::class
         );
 
         $this->model = $objectManager->getObject(
-            GuestShippingInformationManagement::class,
+            \Magento\Checkout\Model\GuestShippingInformationManagement::class,
             [
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,
                 'shippingInformationManagement' => $this->shippingInformationManagementMock
@@ -58,19 +46,15 @@ class GuestShippingInformationManagementTest extends TestCase
     {
         $cartId = 'masked_id';
         $quoteId = 100;
-        $addressInformationMock = $this->getMockForAbstractClass(ShippingInformationInterface::class);
+        $addressInformationMock = $this->createMock(\Magento\Checkout\Api\Data\ShippingInformationInterface::class);
 
-        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
-            ->addMethods(['getQuoteId'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteIdMaskMock = $this->createPartialMock(\Magento\Quote\Model\QuoteIdMask::class, ['load', 'getQuoteId']);
         $this->quoteIdMaskFactoryMock->expects($this->once())->method('create')->willReturn($quoteIdMaskMock);
 
         $quoteIdMaskMock->expects($this->once())->method('load')->with($cartId, 'masked_id')->willReturnSelf();
         $quoteIdMaskMock->expects($this->once())->method('getQuoteId')->willReturn($quoteId);
 
-        $paymentInformationMock = $this->getMockForAbstractClass(PaymentDetailsInterface::class);
+        $paymentInformationMock = $this->createMock(\Magento\Checkout\Api\Data\PaymentDetailsInterface::class);
         $this->shippingInformationManagementMock->expects($this->once())
             ->method('saveAddressInformation')
             ->with($quoteId, $addressInformationMock)

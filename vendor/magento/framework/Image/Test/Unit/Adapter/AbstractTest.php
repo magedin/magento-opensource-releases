@@ -3,68 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Framework\Image\Adapter\AbstractAdapter.
  */
 namespace Magento\Framework\Image\Test\Unit\Adapter;
 
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Image\Adapter\AbstractAdapter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class AbstractTest extends TestCase
+class AbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractAdapter
+     * @var \Magento\Framework\Image\Adapter\AbstractAdapter
      */
     protected $_model;
 
     /**
-     * @var MockObject|Write
+     * @var \PHPUnit_Framework_MockObject_MockObject |\Magento\Framework\Filesystem\Directory\Write
      */
     protected $directoryWriteMock;
 
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit_Framework_MockObject_MockObject |\Magento\Framework\Filesystem
      */
     protected $filesystemMock;
 
     /**
-     * @var MockObject|LoggerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject |\Psr\Log\LoggerInterface
      */
     protected $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->directoryWriteMock = $this->createMock(Write::class);
+        $this->directoryWriteMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
         $this->filesystemMock =
-            $this->getMockBuilder(Filesystem::class)
-                ->addMethods(['createDirectory'])
-                ->onlyMethods(['getDirectoryWrite'])
-                ->disableOriginalConstructor()
-                ->getMock();
+            $this->createPartialMock(\Magento\Framework\Filesystem::class, ['getDirectoryWrite', 'createDirectory']);
         $this->filesystemMock->expects(
             $this->once()
         )->method(
             'getDirectoryWrite'
-        )->willReturn(
-            $this->directoryWriteMock
+        )->will(
+            $this->returnValue($this->directoryWriteMock)
         );
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->getMock();
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
 
         $this->_model = $this->getMockForAbstractClass(
-            AbstractAdapter::class,
+            \Magento\Framework\Image\Adapter\AbstractAdapter::class,
             [$this->filesystemMock, $this->loggerMock]
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->directoryWriteMock = null;
         $this->_model = null;

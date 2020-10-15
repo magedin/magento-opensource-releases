@@ -25,7 +25,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = Bootstrap::getObjectManager();
@@ -57,7 +57,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      * Get an instance of an object using the ObjectManager.
      *
      * @param string $className
-     * @return object
+     * @return mixed
      */
     protected function getObject($className)
     {
@@ -69,7 +69,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @param string $className
      * @param array $arguments
-     * @return object
+     * @return mixed
      */
     protected function createObject($className, array $arguments = [])
     {
@@ -87,6 +87,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
         if ($factory instanceof SoapFactoryMock) {
             return $factory;
         }
-        throw new \RuntimeException('SoapClientFactory was not mock. Misconfiguration occurred.');
+        throw new \RuntimeException('SoapClientFactory was not mock.  Misconfiguration occurred.');
     }
 }

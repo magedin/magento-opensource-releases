@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Query;
 
-use Magento\Elasticsearch\Model\Config;
 use Magento\Elasticsearch\SearchAdapter\Query\Builder;
-use Magento\Elasticsearch\SearchAdapter\Query\Builder\Aggregation as AggregationBuilder;
-use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
-use Magento\Framework\App\ScopeInterface;
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\Search\Request\Dimension;
 use Magento\Framework\Search\RequestInterface;
+use Magento\Elasticsearch\Model\Config;
+use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
+use Magento\Elasticsearch\SearchAdapter\Query\Builder\Aggregation as AggregationBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Builder
@@ -30,32 +23,32 @@ class BuilderTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $clientConfig;
 
     /**
-     * @var SearchIndexNameResolver|MockObject
+     * @var SearchIndexNameResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchIndexNameResolver;
 
     /**
-     * @var AggregationBuilder|MockObject
+     * @var AggregationBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $aggregationBuilder;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ScopeResolverInterface|MockObject
+     * @var \Magento\Framework\App\ScopeResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeResolver;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var \Magento\Framework\App\ScopeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeInterface;
 
@@ -63,14 +56,14 @@ class BuilderTest extends TestCase
      * Setup method
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->clientConfig = $this->getMockBuilder(Config::class)
+        $this->clientConfig = $this->getMockBuilder(\Magento\Elasticsearch\Model\Config::class)
             ->setMethods(['getEntityType'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->searchIndexNameResolver = $this
-            ->getMockBuilder(SearchIndexNameResolver::class)
+            ->getMockBuilder(\Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver::class)
             ->setMethods(['getIndexName'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -79,17 +72,17 @@ class BuilderTest extends TestCase
             ->setMethods(['build'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request = $this->getMockBuilder(RequestInterface::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\Search\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->scopeResolver = $this->getMockForAbstractClass(
-            ScopeResolverInterface::class,
+            \Magento\Framework\App\ScopeResolverInterface::class,
             [],
             '',
             false
         );
         $this->scopeInterface = $this->getMockForAbstractClass(
-            ScopeInterface::class,
+            \Magento\Framework\App\ScopeInterface::class,
             [],
             '',
             false
@@ -97,7 +90,7 @@ class BuilderTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            Builder::class,
+            \Magento\Elasticsearch\SearchAdapter\Query\Builder::class,
             [
                 'clientConfig' => $this->clientConfig,
                 'searchIndexNameResolver' => $this->searchIndexNameResolver,
@@ -113,7 +106,7 @@ class BuilderTest extends TestCase
     public function testInitQuery()
     {
         $dimensionValue = 1;
-        $dimension = $this->getMockBuilder(Dimension::class)
+        $dimension = $this->getMockBuilder(\Magento\Framework\Search\Request\Dimension::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();

@@ -14,7 +14,7 @@ class SourceArgumentsReaderTest extends \PHPUnit\Framework\TestCase
      */
     protected $sourceArgumentsReader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->sourceArgumentsReader = new \Magento\Framework\Code\Reader\SourceArgumentsReader();
     }

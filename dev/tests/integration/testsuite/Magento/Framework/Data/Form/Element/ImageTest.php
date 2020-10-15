@@ -15,7 +15,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageElement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var $elementFactory \Magento\Framework\Data\Form\ElementFactory */
@@ -31,6 +31,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageElement->setValue($filePath);
         $html = $this->imageElement->getElementHtml();
 
-        $this->assertStringContainsString('media/' . $filePath, $html);
+        $this->assertContains('media/' . $filePath, $html);
     }
 }

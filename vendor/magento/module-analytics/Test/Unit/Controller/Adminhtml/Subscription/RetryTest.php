@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Analytics\Test\Unit\Controller\Adminhtml\Subscription;
 
@@ -15,28 +14,26 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RetryTest extends TestCase
+class RetryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectMock;
 
     /**
-     * @var SubscriptionHandler|MockObject
+     * @var SubscriptionHandler|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subscriptionHandlerMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManagerMock;
 
@@ -53,15 +50,23 @@ class RetryTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resultFactoryMock = $this->createMock(ResultFactory::class);
+        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->resultRedirectMock = $this->createMock(Redirect::class);
+        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->subscriptionHandlerMock = $this->createMock(SubscriptionHandler::class);
+        $this->subscriptionHandlerMock = $this->getMockBuilder(SubscriptionHandler::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

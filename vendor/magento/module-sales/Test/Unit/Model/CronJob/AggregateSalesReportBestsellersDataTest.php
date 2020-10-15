@@ -3,57 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\CronJob;
 
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Sales\Model\CronJob\AggregateSalesReportBestsellersData;
-use Magento\Sales\Model\ResourceModel\Report\Bestsellers;
-use Magento\Sales\Model\ResourceModel\Report\BestsellersFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Sales\Model\CronJob\AggregateSalesReportBestsellersData;
 
 /**
  * Tests Magento\Sales\Model\CronJob\AggregateSalesReportBestsellersDataTest
  */
-class AggregateSalesReportBestsellersDataTest extends TestCase
+class AggregateSalesReportBestsellersDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeResolverMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeDateMock;
 
     /**
-     * @var BestsellersFactory|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Report\BestsellersFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $bestsellersFactoryMock;
 
     /**
-     * @var AggregateSalesReportBestsellersData
+     * @var \Magento\Sales\Model\CronJob\AggregateSalesReportBestsellersData
      */
     protected $observer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->localeResolverMock = $this->getMockBuilder(ResolverInterface::class)
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->bestsellersFactoryMock =
-            $this->getMockBuilder(BestsellersFactory::class)
-                ->disableOriginalConstructor()
-                ->setMethods(['create'])
-                ->getMock();
-        $this->localeDateMock = $this->getMockBuilder(TimezoneInterface::class)
+            $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Report\BestsellersFactory::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->setMethods(['create'])
+            ->getMock();
+        $this->localeDateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->observer = new AggregateSalesReportBestsellersData(
             $this->localeResolverMock,
@@ -65,7 +57,7 @@ class AggregateSalesReportBestsellersDataTest extends TestCase
     public function testExecute()
     {
         $date = $this->setupAggregate();
-        $bestsellersMock = $this->getMockBuilder(Bestsellers::class)
+        $bestsellersMock = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Report\Bestsellers::class)
             ->disableOriginalConstructor()
             ->getMock();
         $bestsellersMock->expects($this->once())
@@ -73,7 +65,7 @@ class AggregateSalesReportBestsellersDataTest extends TestCase
             ->with($date);
         $this->bestsellersFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($bestsellersMock);
+            ->will($this->returnValue($bestsellersMock));
         $this->observer->execute();
     }
 
@@ -93,7 +85,7 @@ class AggregateSalesReportBestsellersDataTest extends TestCase
         $date = (new \DateTime())->sub(new \DateInterval('PT25H'));
         $this->localeDateMock->expects($this->once())
             ->method('date')
-            ->willReturn($date);
+            ->will($this->returnValue($date));
 
         return $date;
     }

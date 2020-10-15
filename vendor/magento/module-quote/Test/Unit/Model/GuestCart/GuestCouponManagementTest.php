@@ -4,35 +4,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\CouponManagementInterface;
-use Magento\Quote\Model\GuestCart\GuestCouponManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestCouponManagementTest extends TestCase
+class GuestCouponManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GuestCouponManagement
+     * @var \Magento\Quote\Model\GuestCart\GuestCouponManagement
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $couponManagementMock;
 
@@ -51,10 +43,10 @@ class GuestCouponManagementTest extends TestCase
      */
     protected $couponCode;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->couponManagementMock = $this->getMockForAbstractClass(CouponManagementInterface::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->couponManagementMock = $this->createMock(\Magento\Quote\Api\CouponManagementInterface::class);
 
         $this->couponCode = 'test_coupon_code';
         $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
@@ -67,7 +59,7 @@ class GuestCouponManagementTest extends TestCase
         );
 
         $this->model = $objectManager->getObject(
-            GuestCouponManagement::class,
+            \Magento\Quote\Model\GuestCart\GuestCouponManagement::class,
             [
                 'couponManagement' => $this->couponManagementMock,
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock

@@ -62,7 +62,7 @@ class CheckoutEndToEndTest extends GraphQlAbstract
      */
     private $headers = [];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -466,7 +466,7 @@ QUERY;
         self::assertArrayHasKey('grand_total', $order);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->deleteCustomer();
         $this->deleteQuote();

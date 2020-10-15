@@ -9,17 +9,16 @@ namespace Magento\InventoryShippingAdminUi\Controller\Adminhtml\SourceSelection;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 
-class Validate extends Action implements HttpPostActionInterface
+class Validate extends Action
 {
     /**
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magento_Sales::ship';
+    const ADMIN_RESOURCE = 'Magento_InventoryApi::source';
 
     /**
      * @var JsonFactory

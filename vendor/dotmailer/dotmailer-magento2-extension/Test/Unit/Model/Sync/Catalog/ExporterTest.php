@@ -37,7 +37,7 @@ class ExporterTest extends TestCase
      */
     private $collectionMock;
 
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->collectionFactoryMock = $this->createMock(CollectionFactory::class);
         $this->productFactoryMock = $this->createMock(ProductFactory::class);

@@ -3,75 +3,64 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\View\Tab;
-
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Registry;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Block\Adminhtml\Order\View\Tab\History;
-use Magento\Sales\Helper\Admin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Order History tab test
  */
-class HistoryTest extends TestCase
+class HistoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Admin|MockObject
+     * @var \Magento\Sales\Helper\Admin|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $adminHelperMock;
 
     /**
-     * @var History
+     * @var \Magento\Sales\Block\Adminhtml\Order\View\Tab\History
      */
     protected $commentsHistory;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $coreRegistryMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeDateMock;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\Block\Template\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->coreRegistryMock = $this->createMock(Registry::class);
-        $this->adminHelperMock = $this->createMock(Admin::class);
+        $this->coreRegistryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->adminHelperMock = $this->createMock(\Magento\Sales\Helper\Admin::class);
 
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\Block\Template\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getLocaleDate'])
             ->getMock();
 
-        $this->localeDateMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->localeDateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->getMock();
 
-        $this->contextMock->expects($this->any())->method('getLocaleDate')->willReturn(
-            $this->localeDateMock
+        $this->contextMock->expects($this->any())->method('getLocaleDate')->will(
+            $this->returnValue($this->localeDateMock)
         );
 
         $this->commentsHistory = $this->objectManager->getObject(
-            History::class,
+            \Magento\Sales\Block\Adminhtml\Order\View\Tab\History::class,
             [
                 'adminHelper' => $this->adminHelperMock,
                 'registry' => $this->coreRegistryMock,
@@ -101,7 +90,7 @@ class HistoryTest extends TestCase
 
     public function testGetItemCreatedAtDate()
     {
-        $date = new \DateTime();
+        $date = new \DateTime;
         $item = ['created_at' => $date ];
 
         $this->localeDateMock->expects($this->once())
@@ -114,7 +103,7 @@ class HistoryTest extends TestCase
 
     public function testGetItemCreatedAtTime()
     {
-        $date = new \DateTime();
+        $date = new \DateTime;
         $item = ['created_at' => $date ];
 
         $this->localeDateMock->expects($this->once())

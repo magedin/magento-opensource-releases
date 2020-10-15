@@ -3,92 +3,75 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Block\Adminhtml\Block\Widget;
-
-use Magento\Backend\Block\Template\Context;
-use Magento\Cms\Block\Adminhtml\Block\Widget\Chooser;
-use Magento\Cms\Model\Block;
-use Magento\Cms\Model\BlockFactory;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Escaper;
-use Magento\Framework\Math\Random;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Cms\Block\Adminhtml\Block\Widget\Chooser
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ChooserTest extends TestCase
+class ChooserTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Chooser
+     * @var \Magento\Cms\Block\Adminhtml\Block\Widget\Chooser
      */
     protected $this;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\Block\Template\Context
      */
     protected $context;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var Random|MockObject
+     * @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mathRandomMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaper;
 
     /**
-     * @var BlockFactory|MockObject
+     * @var \Magento\Cms\Model\BlockFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $blockFactoryMock;
 
     /**
-     * @var AbstractElement|MockObject
+     * @var \Magento\Framework\Data\Form\Element\AbstractElement|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $elementMock;
 
     /**
-     * @var Block|MockObject
+     * @var \Magento\Cms\Model\Block|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $modelBlockMock;
 
     /**
-     * @var BlockInterface|MockObject
+     * @var \Magento\Framework\View\Element\BlockInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $chooserMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->mathRandomMock = $this->getMockBuilder(Random::class)
+        $this->layoutMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->urlBuilderMock = $this->getMockBuilder(UrlInterface::class)
+        $this->mathRandomMock = $this->getMockBuilder(\Magento\Framework\Math\Random::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->escaper = $this->getMockBuilder(Escaper::class)
+            ->getMock();
+        $this->urlBuilderMock = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -96,7 +79,7 @@ class ChooserTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->blockFactoryMock = $this->getMockBuilder(BlockFactory::class)
+        $this->blockFactoryMock = $this->getMockBuilder(\Magento\Cms\Model\BlockFactory::class)
             ->setMethods(
                 [
                     'create',
@@ -104,7 +87,7 @@ class ChooserTest extends TestCase
             )
             ->disableOriginalConstructor()
             ->getMock();
-        $this->elementMock = $this->getMockBuilder(AbstractElement::class)
+        $this->elementMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\AbstractElement::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -114,7 +97,7 @@ class ChooserTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->modelBlockMock = $this->getMockBuilder(Block::class)
+        $this->modelBlockMock = $this->getMockBuilder(\Magento\Cms\Model\Block::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -124,7 +107,7 @@ class ChooserTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->chooserMock = $this->getMockBuilder(BlockInterface::class)
+        $this->chooserMock = $this->getMockBuilder(\Magento\Framework\View\Element\BlockInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -137,11 +120,11 @@ class ChooserTest extends TestCase
                     'toHtml',
                 ]
             )
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->context = $objectManager->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             [
                 'layout'     => $this->layoutMock,
                 'mathRandom' => $this->mathRandomMock,
@@ -150,7 +133,7 @@ class ChooserTest extends TestCase
             ]
         );
         $this->this = $objectManager->getObject(
-            Chooser::class,
+            \Magento\Cms\Block\Adminhtml\Block\Widget\Chooser::class,
             [
                 'context'      => $this->context,
                 'blockFactory' => $this->blockFactoryMock

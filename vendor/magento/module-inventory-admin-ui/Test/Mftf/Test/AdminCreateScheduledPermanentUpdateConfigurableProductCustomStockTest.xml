@@ -70,7 +70,7 @@
             <deleteData createDataKey="stock" stepKey="deleteStock" before="amOnLogoutPage"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!--Assign source to configurable product.-->

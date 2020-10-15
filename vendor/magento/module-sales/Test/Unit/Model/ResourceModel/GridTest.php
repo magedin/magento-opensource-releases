@@ -7,18 +7,15 @@ declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\ResourceModel;
 
-use Magento\Framework\DB\Adapter\AdapterInterface as ConnectionAdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\ResourceModel\Grid;
 use Magento\Sales\Model\ResourceModel\Provider\NotSyncedDataProviderInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Adapter\AdapterInterface as ConnectionAdapterInterface;
+use Magento\Sales\Model\ResourceModel\Grid;
 
 /**
  * Unit tests for \Magento\Sales\Model\ResourceModel\Grid class
  */
-class GridTest extends TestCase
+class GridTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Grid
@@ -26,12 +23,12 @@ class GridTest extends TestCase
     private $grid;
 
     /**
-     * @var NotSyncedDataProviderInterface|MockObject
+     * @var NotSyncedDataProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $notSyncedDataProvider;
 
     /**
-     * @var ConnectionAdapterInterface|MockObject
+     * @var ConnectionAdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
@@ -56,7 +53,7 @@ class GridTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->notSyncedDataProvider = $this->getMockBuilder(NotSyncedDataProviderInterface::class)
@@ -69,7 +66,7 @@ class GridTest extends TestCase
             ->getMockForAbstractClass();
 
         $this->grid = $objectManager->getObject(
-            Grid::class,
+            \Magento\Sales\Model\ResourceModel\Grid::class,
             [
                 'notSyncedDataProvider' => $this->notSyncedDataProvider,
                 'mainTableName' => $this->mainTable,
@@ -90,7 +87,7 @@ class GridTest extends TestCase
         $fetchResult = ['column_1' => '1', 'column_2' => '2'];
 
         $this->notSyncedDataProvider->expects($this->atLeastOnce())->method('getIds')->willReturn($notSyncedIds);
-        $select = $this->getMockBuilder(Select::class)
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->setMethods(['from', 'columns', 'where'])
             ->getMock();

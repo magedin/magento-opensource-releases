@@ -3,19 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\Component\Listing\Columns;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\Processor;
 
-abstract class AbstractColumnTest extends TestCase
+/**
+ * Class AbstractColumnTest
+ */
+abstract class AbstractColumnTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Column
@@ -23,17 +22,17 @@ abstract class AbstractColumnTest extends TestCase
     protected $model;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var UiComponentFactory|MockObject
+     * @var UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $uiComponentFactoryMock;
 
     /**
-     * @var Processor|MockObject
+     * @var Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorMock;
 
@@ -42,7 +41,7 @@ abstract class AbstractColumnTest extends TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 

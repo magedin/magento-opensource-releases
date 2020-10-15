@@ -3,52 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\User\Test\Unit\Helper;
-
-use Magento\Backend\App\ConfigInterface;
-use Magento\Framework\Math\Random;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\User\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\User\Helper\Data testing
  */
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\User\Helper\Data
      */
     protected $model;
 
     /**
-     * @var Random|MockObject
+     * @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mathRandomMock;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Backend\App\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->mathRandomMock = $this->getMockBuilder(Random::class)
+        $this->mathRandomMock = $this->getMockBuilder(\Magento\Framework\Math\Random::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->configMock = $this->getMockBuilder(ConfigInterface::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Backend\App\ConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Data::class,
+            \Magento\User\Helper\Data::class,
             [
                 'config' => $this->configMock,
                 'mathRandom' => $this->mathRandomMock
@@ -68,7 +60,7 @@ class DataTest extends TestCase
         $value = '123';
         $this->configMock->expects($this->once())
             ->method('getValue')
-            ->with(Data::XML_PATH_ADMIN_RESET_PASSWORD_LINK_EXPIRATION_PERIOD)
+            ->with(\Magento\User\Helper\Data::XML_PATH_ADMIN_RESET_PASSWORD_LINK_EXPIRATION_PERIOD)
             ->willReturn($value);
         $this->assertEquals((int) $value, $this->model->getResetPasswordLinkExpirationPeriod());
     }

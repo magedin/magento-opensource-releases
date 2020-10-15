@@ -9,7 +9,6 @@ use Magento\Cms\Api\Data\PageInterface;
 use Magento\Cms\Api\PageRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 
@@ -26,4 +25,5 @@ foreach ($result->getItems() as $item) {
     $pageRepository->delete($item);
 }
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_store_rollback.php');
+// phpcs:ignore Magento2.Security.IncludeFile
+require __DIR__ . '/../../../Magento/Store/_files/second_store_rollback.php';

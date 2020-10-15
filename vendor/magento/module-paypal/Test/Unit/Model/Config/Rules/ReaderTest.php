@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Config\Rules;
 
 use Magento\Framework\Config\FileResolverInterface;
@@ -13,27 +11,25 @@ use Magento\Framework\Config\ValidationStateInterface;
 use Magento\Paypal\Helper\Backend;
 use Magento\Paypal\Model\Config\Rules\Converter;
 use Magento\Paypal\Model\Config\Rules\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Reader */
     protected $reader;
 
-    /** @var  FileResolverInterface|MockObject */
+    /** @var  FileResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $fileResolver;
 
-    /** @var  Converter|MockObject */
+    /** @var  Converter|\PHPUnit_Framework_MockObject_MockObject */
     protected $converter;
 
-    /** @var  SchemaLocatorInterface|MockObject */
+    /** @var  SchemaLocatorInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $schemaLocator;
 
-    /** @var  ValidationStateInterface|MockObject */
+    /** @var  ValidationStateInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $validationState;
 
-    /** @var Backend|MockObject */
+    /** @var Backend|\PHPUnit_Framework_MockObject_MockObject */
     protected $helper;
 
     /**
@@ -41,19 +37,19 @@ class ReaderTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fileResolver = $this->getMockForAbstractClass(
-            FileResolverInterface::class
+            \Magento\Framework\Config\FileResolverInterface::class
         );
-        $this->converter = $this->createMock(Converter::class);
+        $this->converter = $this->createMock(\Magento\Paypal\Model\Config\Rules\Converter::class);
         $this->schemaLocator = $this->getMockForAbstractClass(
-            SchemaLocatorInterface::class
+            \Magento\Framework\Config\SchemaLocatorInterface::class
         );
         $this->validationState = $this->getMockForAbstractClass(
-            ValidationStateInterface::class
+            \Magento\Framework\Config\ValidationStateInterface::class
         );
-        $this->helper = $this->createMock(Backend::class);
+        $this->helper = $this->createMock(\Magento\Paypal\Helper\Backend::class);
     }
 
     /**
@@ -70,10 +66,10 @@ class ReaderTest extends TestCase
 
         $this->fileResolver->expects($this->once())
             ->method('get')
-            ->with($expected)
+            ->with($this->equalTo($expected))
             ->willReturn($xml);
 
-        $this->reader = new Reader(
+        $this->reader = new \Magento\Paypal\Model\Config\Rules\Reader(
             $this->fileResolver,
             $this->converter,
             $this->schemaLocator,
@@ -101,7 +97,7 @@ class ReaderTest extends TestCase
             ->willReturn([]);
         $this->fileResolver->expects($this->at(1))
             ->method('get')
-            ->with($expected)
+            ->with($this->equalTo($expected))
             ->willReturn($xml);
 
         $this->reader = new Reader(

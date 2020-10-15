@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Component\Test\Unit;
 
-use Magento\Framework\Component\ComponentFile;
-use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Component\DirSearch;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
 use Magento\Framework\Filesystem\DriverPool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DirSearchTest extends TestCase
+class DirSearchTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReadInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dir;
 
     /**
-     * @var ComponentRegistrarInterface|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrarInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $registrar;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readFactory;
 
@@ -38,13 +30,13 @@ class DirSearchTest extends TestCase
      */
     private $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->registrar = $this->getMockForAbstractClass(
-            ComponentRegistrarInterface::class
+            \Magento\Framework\Component\ComponentRegistrarInterface::class
         );
-        $this->readFactory = $this->createMock(ReadFactory::class);
-        $this->dir = $this->getMockForAbstractClass(ReadInterface::class);
+        $this->readFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
+        $this->dir = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\Directory\ReadInterface::class);
         $this->dir->expects($this->any())
             ->method('getAbsolutePath')
             ->willReturnArgument(0);
@@ -106,9 +98,9 @@ class DirSearchTest extends TestCase
             ->willReturnOnConsecutiveCalls(['one/file.xml'], ['two/file.xml']);
         $actualFiles = $this->object->collectFilesWithContext($componentType, $pattern);
         $this->assertNotEmpty($actualFiles);
-        /** @var ComponentFile $file */
+        /** @var \Magento\Framework\Component\ComponentFile $file */
         foreach ($actualFiles as $file) {
-            $this->assertInstanceOf(ComponentFile::class, $file);
+            $this->assertInstanceOf(\Magento\Framework\Component\ComponentFile::class, $file);
             $this->assertSame($componentType, $file->getComponentType());
         }
         $this->assertCount(2, $actualFiles);

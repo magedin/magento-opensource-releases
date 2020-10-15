@@ -3,38 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Config\Source\Product\Options;
 
-use Magento\Catalog\Model\Config\Source\Product\Options\Type;
-use Magento\Catalog\Model\ProductOptions\ConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TypeTest extends TestCase
+class TypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Type
+     * @var \Magento\Catalog\Model\Config\Source\Product\Options\Type
      */
     private $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Catalog\Model\ProductOptions\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productOptionConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->productOptionConfig = $this->getMockBuilder(ConfigInterface::class)
+        $this->productOptionConfig = $this->getMockBuilder(\Magento\Catalog\Model\ProductOptions\ConfigInterface::class)
             ->setMethods(['getAll'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            Type::class,
+            \Magento\Catalog\Model\Config\Source\Product\Options\Type::class,
             ['productOptionConfig' => $this->productOptionConfig]
         );
     }
@@ -64,7 +58,7 @@ class TypeTest extends TestCase
             ],
         ];
 
-        $this->productOptionConfig->expects($this->any())->method('getAll')->willReturn($allOptions);
+        $this->productOptionConfig->expects($this->any())->method('getAll')->will($this->returnValue($allOptions));
 
         $this->assertEquals($expect, $this->model->toOptionArray());
     }

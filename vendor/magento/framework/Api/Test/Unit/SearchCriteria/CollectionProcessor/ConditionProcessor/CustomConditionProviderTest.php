@@ -7,19 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\Framework\Api\Test\Unit\SearchCriteria\CollectionProcessor\ConditionProcessor;
 
-use Magento\Framework\Api\SearchCriteria\CollectionProcessor\ConditionProcessor\CustomConditionInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessor\ConditionProcessor\CustomConditionProvider;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessor\ConditionProcessor\CustomConditionInterface;
 
-class CustomConditionProviderTest extends TestCase
+class CustomConditionProviderTest extends \PHPUnit\Framework\TestCase
 {
     private $customConditionProcessorBuilder;
     private $customConditionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->customConditionMock = $this->getMockBuilder(CustomConditionInterface::class)
             ->disableOriginalConstructor()
@@ -64,22 +62,23 @@ class CustomConditionProviderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage Custom processor for field "unknown-field" is absent.
+     */
     public function testNegativeGetProcessorByFieldExceptionFieldIsAbsent()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
-        $this->expectExceptionMessage('Custom processor for field "unknown-field" is absent.');
         $testField = 'unknown-field';
         $this->customConditionProcessorBuilder->getProcessorByField($testField);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage Custom processor must implement "Magento\Framework\Api\SearchCriteria\CollectionProcessor\ConditionProcessor\CustomConditionInterface".
+     */
     public function testNegativeGetProcessorByFieldExceptionWrongClass()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
-        $this->expectExceptionMessage(
-            'Custom processor must implement '
-            . '"Magento\Framework\Api\SearchCriteria\CollectionProcessor\ConditionProcessor\CustomConditionInterface".'
-        );
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->customConditionProcessorBuilder = $objectManagerHelper
             ->getObject(
                 CustomConditionProvider::class,

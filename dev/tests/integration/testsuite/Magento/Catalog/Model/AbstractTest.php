@@ -24,7 +24,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
      */
     protected static $_isStubClass = false;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!self::$_isStubClass) {
             $this->getMockForAbstractClass(

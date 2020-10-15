@@ -3,12 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Model;
 
-use Magento\Config\Console\Command\ConfigSet\ProcessorFacade;
 use Magento\Config\Console\Command\ConfigSet\ProcessorFacadeFactory;
+use Magento\Config\Console\Command\ConfigSet\ProcessorFacade;
 use Magento\Config\Console\Command\EmulatedAdminhtmlAreaProcessor;
 use Magento\Deploy\App\Mode\ConfigProvider;
 use Magento\Deploy\Model\Filesystem;
@@ -19,18 +17,17 @@ use Magento\Framework\App\DeploymentConfig\Reader;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\App\MaintenanceMode;
 use Magento\Framework\App\State;
-use Magento\Framework\Config\File\ConfigFilePool;
-use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Framework\Config\File\ConfigFilePool;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * @inheritdoc
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ModeTest extends TestCase
+class ModeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Mode
@@ -87,7 +84,7 @@ class ModeTest extends TestCase
      */
     private $emulatedAreaProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->inputMock = $this->getMockBuilder(InputInterface::class)
             ->getMockForAbstractClass();
@@ -142,7 +139,7 @@ class ModeTest extends TestCase
                 [State::PARAM_MODE => State::MODE_DEVELOPER]
             );
 
-        $this->assertNull($this->model->getMode());
+        $this->assertSame(null, $this->model->getMode());
         $this->assertSame(State::MODE_DEVELOPER, $this->model->getMode());
     }
 
@@ -184,10 +181,11 @@ class ModeTest extends TestCase
     /**
      * Test that previous mode will be enabled after error during static generation call.
      * We need this to be sure that mode will be reverted to it previous tate.
+     *
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testEnableDeveloperModeOnFail()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
         $mode = State::MODE_DEVELOPER;
         $dataStorage = [
             ConfigFilePool::APP_ENV => [

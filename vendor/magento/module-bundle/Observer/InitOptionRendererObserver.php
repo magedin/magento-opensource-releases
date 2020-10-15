@@ -5,25 +5,20 @@
  */
 namespace Magento\Bundle\Observer;
 
-use Magento\Bundle\Helper\Catalog\Product\Configuration;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
-/**
- * Initiates render options
- */
 class InitOptionRendererObserver implements ObserverInterface
 {
     /**
      * Initialize product options renderer with bundle specific params
      *
-     * @param Observer $observer
+     * @param \Magento\Framework\Event\Observer $observer
      * @return $this
      */
-    public function execute(Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $block = $observer->getBlock();
-        $block->addOptionsRenderCfg('bundle', Configuration::class);
+        $block->addOptionsRenderCfg('bundle', \Magento\Bundle\Helper\Catalog\Product\Configuration::class);
         return $this;
     }
 }

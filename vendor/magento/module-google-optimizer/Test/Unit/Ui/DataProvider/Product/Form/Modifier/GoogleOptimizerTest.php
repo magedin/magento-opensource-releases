@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GoogleOptimizer\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Catalog\Model\Product;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\GoogleOptimizer\Helper\Code;
-use Magento\GoogleOptimizer\Helper\Data;
 use Magento\GoogleOptimizer\Ui\DataProvider\Product\Form\Modifier\GoogleOptimizer;
 use Magento\Ui\Component\Form\Element\DataType\Text;
 use Magento\Ui\Component\Form\Element\Input;
 use Magento\Ui\Component\Form\Element\Textarea;
 use Magento\Ui\Component\Form\Field;
 use Magento\Ui\Component\Form\Fieldset;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * Class GoogleOptimizerTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GoogleOptimizerTest extends TestCase
+class GoogleOptimizerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -37,7 +33,7 @@ class GoogleOptimizerTest extends TestCase
     protected $locatorMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\GoogleOptimizer\Helper\Data|MockObject
      */
     protected $dataHelperMock;
 
@@ -47,7 +43,7 @@ class GoogleOptimizerTest extends TestCase
     protected $codeHelperMock;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|MockObject
      */
     protected $productMock;
 
@@ -59,17 +55,17 @@ class GoogleOptimizerTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->productMock = $this->createMock(Product::class);
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->locatorMock = $this->createMock(\Magento\Catalog\Model\Locator\LocatorInterface::class);
         $this->locatorMock->expects($this->any())
             ->method('getProduct')
             ->willReturn($this->productMock);
-        $this->dataHelperMock = $this->createMock(Data::class);
-        $this->codeHelperMock = $this->createMock(Code::class);
+        $this->dataHelperMock = $this->createMock(\Magento\GoogleOptimizer\Helper\Data::class);
+        $this->codeHelperMock = $this->createMock(\Magento\GoogleOptimizer\Helper\Code::class);
 
         $this->googleOptimizer = $this->objectManagerHelper->getObject(
             GoogleOptimizer::class,
@@ -124,10 +120,10 @@ class GoogleOptimizerTest extends TestCase
         $this->canShowPanel(true);
 
         /** @var \Magento\GoogleOptimizer\Model\Code|MockObject $codeModelMock */
-        $codeModelMock = $this->getMockBuilder(\Magento\GoogleOptimizer\Model\Code::class)
-            ->addMethods(['getExperimentScript', 'getCodeId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $codeModelMock = $this->createPartialMock(
+            \Magento\GoogleOptimizer\Model\Code::class,
+            ['getExperimentScript', 'getCodeId']
+        );
         $codeModelMock->expects($this->exactly($expectedCalls))
             ->method('getExperimentScript')
             ->willReturn($experimentScript);
@@ -171,7 +167,7 @@ class GoogleOptimizerTest extends TestCase
      */
     public function testGetMetaGoogleExperimentEnabled()
     {
-        $expectedResult[GoogleOptimizer::GROUP_CODE] = [
+        $expectedResult[\Magento\GoogleOptimizer\Ui\DataProvider\Product\Form\Modifier\GoogleOptimizer::GROUP_CODE] = [
             'arguments' => [
                 'data' => [
                     'config' => [

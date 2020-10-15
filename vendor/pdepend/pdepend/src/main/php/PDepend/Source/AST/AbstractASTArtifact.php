@@ -81,7 +81,7 @@ abstract class AbstractASTArtifact implements ASTArtifact
     /**
      * The source file for this item.
      *
-     * @var \PDepend\Source\AST\ASTCompilationUnit|null
+     * @var \PDepend\Source\AST\ASTCompilationUnit
      */
     protected $compilationUnit = null;
 
@@ -145,7 +145,7 @@ abstract class AbstractASTArtifact implements ASTArtifact
     public function getId()
     {
         if ($this->id === null) {
-            $this->id = md5(uniqid('', true));
+            $this->id = md5(uniqid('', TRUE));
         }
         return $this->id;
     }
@@ -165,7 +165,7 @@ abstract class AbstractASTArtifact implements ASTArtifact
     /**
      * Returns the source file for this item.
      *
-     * @return \PDepend\Source\AST\ASTCompilationUnit|null
+     * @return \PDepend\Source\AST\ASTCompilationUnit
      */
     public function getCompilationUnit()
     {

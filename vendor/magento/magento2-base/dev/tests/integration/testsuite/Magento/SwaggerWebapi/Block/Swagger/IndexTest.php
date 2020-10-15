@@ -15,7 +15,7 @@ class IndexTest extends \PHPUnit\Framework\TestCase
      */
     private $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\App\State::class)
             ->setAreaCode('frontend');

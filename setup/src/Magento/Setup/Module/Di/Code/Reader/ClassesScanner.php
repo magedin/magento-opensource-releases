@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Module\Di\Code\Reader;
 
@@ -13,6 +12,8 @@ use Magento\Framework\Exception\FileSystemException;
 
 /**
  * Class ClassesScanner
+ *
+ * @package Magento\Setup\Module\Di\Code\Reader
  */
 class ClassesScanner implements ClassesScannerInterface
 {
@@ -99,7 +100,7 @@ class ClassesScanner implements ClassesScannerInterface
      */
     private function extract(\RecursiveIteratorIterator $recursiveIterator)
     {
-        $classes = [];
+        $classes = [[]];
         foreach ($recursiveIterator as $fileItem) {
             /** @var $fileItem \SplFileInfo */
             if ($fileItem->isDir() || $fileItem->getExtension() !== 'php' || $fileItem->getBasename()[0] == '.') {
@@ -112,29 +113,28 @@ class ClassesScanner implements ClassesScannerInterface
                 }
             }
             $fileScanner = new FileClassScanner($fileItemPath);
-            $className = $fileScanner->getClassName();
-            if (!empty($className)) {
-                $this->includeClass($className, $fileItemPath);
-                $classes[] = $className;
-            }
+            $classNames = $fileScanner->getClassNames();
+            $this->includeClasses($classNames, $fileItemPath);
+            $classes [] = $classNames;
         }
-
-        return $classes;
+        return array_merge(...$classes);
     }
 
     /**
-     * Include class from file path.
+     * Include classes from file path
      *
-     * @param string $className
+     * @param array $classNames
      * @param string $fileItemPath
      * @return bool Whether the class is included or not
      */
-    private function includeClass(string $className, string $fileItemPath): bool
+    private function includeClasses(array $classNames, $fileItemPath)
     {
-        if (!class_exists($className)) {
-            // phpcs:ignore
-            require_once $fileItemPath;
-            return true;
+        foreach ($classNames as $className) {
+            if (!class_exists($className)) {
+                // phpcs:ignore
+                require_once $fileItemPath;
+                return true;
+            }
         }
         return false;
     }

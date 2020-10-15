@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Cache\Tag\Strategy;
 
-use Magento\Framework\App\Cache\Tag\Strategy\Identifier;
-use Magento\Framework\DataObject\IdentityInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Cache\Tag\Strategy\Identifier;
 
-class IdentifierTest extends TestCase
+class IdentifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Identifier
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new Identifier();
+        $this->model = new Identifier;
     }
 
     public function testGetWithScalar()
@@ -32,12 +29,12 @@ class IdentifierTest extends TestCase
 
     public function testGetTagsWithObject()
     {
-        $this->assertEquals([], $this->model->getTags(new \stdClass()));
+        $this->assertEquals([], $this->model->getTags(new \stdClass));
     }
 
     public function testGetTagsWithIdentityInterface()
     {
-        $object = $this->getMockForAbstractClass(IdentityInterface::class);
+        $object = $this->getMockForAbstractClass(\Magento\Framework\DataObject\IdentityInterface::class);
 
         $identities = ['id1', 'id2'];
 

@@ -29,7 +29,7 @@ abstract class AbstractFactoryTestCase extends \PHPUnit\Framework\TestCase
     protected $instanceClassName;
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface | \PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
@@ -41,7 +41,7 @@ abstract class AbstractFactoryTestCase extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new Helper\ObjectManager($this);
         $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
@@ -63,7 +63,7 @@ abstract class AbstractFactoryTestCase extends \PHPUnit\Framework\TestCase
             ->getMock();
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->willReturn($instanceMock);
+            ->will($this->returnValue($instanceMock));
         $this->assertSame($instanceMock, $this->factory->create());
     }
 }

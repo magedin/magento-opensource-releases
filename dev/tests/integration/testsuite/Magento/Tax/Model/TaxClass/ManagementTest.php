@@ -38,7 +38,7 @@ class ManagementTest extends \PHPUnit\Framework\TestCase
      */
     private $dataObjectHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->taxClassRepository = $this->objectManager->create(\Magento\Tax\Api\TaxClassRepositoryInterface::class);
@@ -87,7 +87,8 @@ class ManagementTest extends \PHPUnit\Framework\TestCase
             $this->taxClassManagement->getTaxClassId($taxClassKeyTypeId, TaxClassManagementInterface::TYPE_CUSTOMER)
         );
         $this->assertNull($this->taxClassManagement->getTaxClassId(null));
-        $this->assertNull(
+        $this->assertEquals(
+            null,
             $this->taxClassManagement->getTaxClassId($taxClassKeyTypeName, TaxClassManagementInterface::TYPE_PRODUCT)
         );
     }

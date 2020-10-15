@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Customer;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Reports\Controller\Adminhtml\Report\Customer\ExportAccountsCsv;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
 
-class ExportAccountsCsvTest extends AbstractControllerTest
+class ExportAccountsCsvTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportAccountsCsv
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Customer\ExportAccountsCsv
      */
     protected $exportAccountsCsv;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -47,7 +44,7 @@ class ExportAccountsCsvTest extends AbstractControllerTest
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with('new_accounts.csv', ['export'], DirectoryList::VAR_DIR);
+            ->with('new_accounts.csv', ['export'], \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
         $this->exportAccountsCsv->execute();
     }
 }

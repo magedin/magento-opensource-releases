@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema;
 
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Setup\Declaration\Schema\Sharding;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ShardingTest extends TestCase
+class ShardingTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Sharding */
+    /** @var \Magento\Framework\Setup\Declaration\Schema\Sharding */
     private $model;
 
     /** @var ObjectManagerHelper */
     private $objectManagerHelper;
 
-    /** @var DeploymentConfig|MockObject */
+    /** @var DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject */
     private $deploymentConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()
@@ -32,7 +28,7 @@ class ShardingTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            Sharding::class,
+            \Magento\Framework\Setup\Declaration\Schema\Sharding::class,
             [
                 'deploymentConfig' => $this->deploymentConfigMock,
                 'resources' => ['default', 'checkout', 'sales']

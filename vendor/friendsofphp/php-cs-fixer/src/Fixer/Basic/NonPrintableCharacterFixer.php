@@ -141,7 +141,6 @@ final class NonPrintableCharacterFixer extends AbstractFixer implements Configur
 
                 $previousToken = $tokens[$index - 1];
                 $stringTypeChanged = false;
-                $swapQuotes = false;
 
                 if ($previousToken->isGivenKind(T_START_HEREDOC)) {
                     $previousTokenContent = $previousToken->getContent();
@@ -151,20 +150,12 @@ final class NonPrintableCharacterFixer extends AbstractFixer implements Configur
                         $stringTypeChanged = true;
                     }
                 } elseif ("'" === $content[0]) {
+                    $content = Preg::replace('/^\'(.*)\'$/', '"$1"', $content);
                     $stringTypeChanged = true;
-                    $swapQuotes = true;
                 }
 
-                if ($swapQuotes) {
-                    $content = str_replace("\\'", "'", $content);
-                }
                 if ($stringTypeChanged) {
-                    $content = Preg::replace('/(\\\\{1,2})/', '\\\\\\\\', $content);
-                    $content = str_replace('$', '\$', $content);
-                }
-                if ($swapQuotes) {
-                    $content = str_replace('"', '\"', $content);
-                    $content = Preg::replace('/^\'(.*)\'$/', '"$1"', $content);
+                    $content = Preg::replace('/([\\\\$])/', '\\\\$1', $content);
                 }
 
                 $tokens[$index] = new Token([$token->getId(), strtr($content, $escapeSequences)]);

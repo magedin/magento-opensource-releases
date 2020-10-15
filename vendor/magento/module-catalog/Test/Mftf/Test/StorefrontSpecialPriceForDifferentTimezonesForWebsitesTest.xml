@@ -14,13 +14,13 @@
             <stories value="Special price"/>
             <title value="Check that special price displayed when 'default config' scope timezone does not match 'website' scope timezone"/>
             <description value="Check that special price displayed when 'default config' scope timezone does not match 'website' scope timezone"/>
-            <severity value="BLOCKER"/>
+            <severity value="MAJOR"/>
             <testCaseId value="MAGETWO-97508"/>
             <useCaseId value="MAGETWO-96847"/>
             <group value="Catalog"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
 
             <!--Create product-->
             <createData entity="SimpleProduct2" stepKey="createProduct"/>
@@ -33,7 +33,7 @@
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
 
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Set timezone for default config-->
@@ -57,13 +57,11 @@
         <click selector="{{AdminMainActionsSection.save}}" stepKey="saveConfig1"/>
 
         <!--Set special price to created product-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="openAdminEditPage">
-            <argument name="productId" value="$$createProduct.id$$"/>
-        </actionGroup>
+        <amOnPage url="{{AdminProductEditPage.url($$createProduct.id$$)}}" stepKey="openAdminEditPage"/>
         <actionGroup ref="AddSpecialPriceToProductActionGroup" stepKey="setSpecialPriceToCreatedProduct">
             <argument name="price" value="15"/>
         </actionGroup>
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProductForm"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProductForm"/>
 
         <!--Login to storefront from customer and check price-->
         <actionGroup ref="LoginToStorefrontActionGroup" stepKey="logInFromCustomer">
@@ -74,10 +72,7 @@
         <amOnPage url="{{StorefrontProductPage.url($$createProduct.name$$)}}" stepKey="amOnSimpleProductPage"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>
         <grabTextFrom selector="{{StorefrontProductInfoMainSection.specialPriceValue}}" stepKey="grabSpecialPrice"/>
-        <assertEquals stepKey="assertSpecialPrice">
-			<actualResult type="const">$grabSpecialPrice</actualResult>
-			<expectedResult type="string">$15.00</expectedResult>
-        </assertEquals>
+        <assertEquals expected='$15.00' expectedType="string" actual="$grabSpecialPrice" stepKey="assertSpecialPrice"/>
 
         <!--Reset timezone-->
         <amOnPage url="{{GeneralConfigurationPage.url}}" stepKey="goToGeneralConfigReset"/>

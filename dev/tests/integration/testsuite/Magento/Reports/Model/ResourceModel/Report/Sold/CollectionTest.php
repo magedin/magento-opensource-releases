@@ -15,7 +15,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     private $collection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /**
          * @var \Magento\Reports\Model\ResourceModel\Product\Sold\Collection
@@ -31,7 +31,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public function testFilterByProductTypeException()
     {
         $items = $this->collection->addOrderedQty()->getItems();
-        $this->assertCount(1, $items);
+        $this->assertEquals(1, count($items));
         $orderItem = array_shift($items);
         $this->assertEquals('1.0000', $orderItem['ordered_qty']);
         $this->assertEquals('Configurable Product', $orderItem['order_items_name']);

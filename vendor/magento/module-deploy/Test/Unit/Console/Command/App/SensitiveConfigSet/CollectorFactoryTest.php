@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Console\Command\App\SensitiveConfigSet;
 
@@ -12,11 +11,10 @@ use Magento\Deploy\Console\Command\App\SensitiveConfigSet\CollectorInterface;
 use Magento\Deploy\Console\Command\App\SensitiveConfigSet\InteractiveCollector;
 use Magento\Deploy\Console\Command\App\SensitiveConfigSet\SimpleCollector;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use stdClass;
 
-class CollectorFactoryTest extends TestCase
+class CollectorFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerInterface|MockObject
@@ -31,7 +29,7 @@ class CollectorFactoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->getMockForAbstractClass();
@@ -61,19 +59,21 @@ class CollectorFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The class for "dummyType" type wasn't declared. Enter the class and try again.
+     */
     public function testCreateNonExisted()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage(
-            'The class for "dummyType" type wasn\'t declared. Enter the class and try again.'
-        );
         $this->model->create('dummyType');
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage stdClass does not implement
+     */
     public function testCreateWrongImplementation()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('stdClass does not implement');
         $type = 'wrongType';
         $this->objectManagerMock->expects($this->once())
             ->method('create')

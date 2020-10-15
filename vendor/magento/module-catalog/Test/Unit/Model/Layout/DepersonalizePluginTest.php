@@ -12,11 +12,10 @@ use Magento\Catalog\Model\Session as CatalogSession;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\DepersonalizeChecker;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for \Magento\Catalog\Model\Layout\DepersonalizePlugin class.
+ * Tests Magento\Catalog\Model\Layout\DepersonalizePlugin.
  */
 class DepersonalizePluginTest extends TestCase
 {
@@ -26,24 +25,24 @@ class DepersonalizePluginTest extends TestCase
     private $plugin;
 
     /**
-     * @var CatalogSession|MockObject
+     * @var CatalogSession|\PHPUnit_Framework_MockObject_MockObject
      */
     private $catalogSessionMock;
 
     /**
-     * @var DepersonalizeChecker|MockObject
+     * @var DepersonalizeChecker|\PHPUnit_Framework_MockObject_MockObject
      */
     private $depersonalizeCheckerMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $layoutMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
         $this->catalogSessionMock = $this->createPartialMock(CatalogSession::class, ['clearStorage']);
@@ -59,7 +58,7 @@ class DepersonalizePluginTest extends TestCase
     }
 
     /**
-     * Test afterGenerateElements method when depersonalization is needed.
+     * Tests afterGenerateElements method when depersonalization is needed.
      *
      * @return void
      */
@@ -71,7 +70,7 @@ class DepersonalizePluginTest extends TestCase
     }
 
     /**
-     * Test afterGenerateElements method when depersonalization is not needed.
+     * Tests afterGenerateElements method when depersonalization is not needed.
      *
      * @return void
      */

@@ -41,7 +41,7 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -52,9 +52,9 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/source_items_on_default_source.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/source_items_on_default_source.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      */
     public function testAddOutOfStockProductToQuote()
     {
@@ -71,9 +71,9 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/source_items_on_default_source.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/source_items_on_default_source.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      */
     public function testAddInStockProductToQuote()
     {
@@ -92,9 +92,9 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/source_items_on_default_source.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/source_items_on_default_source.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      */
     public function testAddProductToQuoteMultipleTimes()
     {
@@ -157,7 +157,7 @@ class AddSalesQuoteItemOnDefaultStockTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->cleanupReservations->execute();
     }

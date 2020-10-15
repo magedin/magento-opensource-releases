@@ -3,26 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\App\Config\Source;
 
 use Magento\Config\App\Config\Source\EnvironmentConfigSource;
 use Magento\Config\Model\Placeholder\PlaceholderFactory;
 use Magento\Config\Model\Placeholder\PlaceholderInterface;
 use Magento\Framework\Stdlib\ArrayManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class EnvironmentConfigSourceTest extends TestCase
+class EnvironmentConfigSourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ArrayManager|MockObject
+     * @var ArrayManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $arrayManagerMock;
 
     /**
-     * @var PlaceholderInterface|MockObject
+     * @var PlaceholderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $placeholderMock;
 
@@ -31,7 +27,7 @@ class EnvironmentConfigSourceTest extends TestCase
      */
     private $source;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->arrayManagerMock = $this->getMockBuilder(ArrayManager::class)
             ->disableOriginalConstructor()
@@ -39,7 +35,7 @@ class EnvironmentConfigSourceTest extends TestCase
         $this->placeholderMock = $this->getMockBuilder(PlaceholderInterface::class)
             ->getMockForAbstractClass();
 
-        /** @var PlaceholderFactory|MockObject $placeholderFactoryMock */
+        /** @var PlaceholderFactory|\PHPUnit_Framework_MockObject_MockObject $placeholderFactoryMock */
         $placeholderFactoryMock = $this->getMockBuilder(PlaceholderFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -110,7 +106,7 @@ class EnvironmentConfigSourceTest extends TestCase
         $this->assertSame($expectedArray, $this->source->get());
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($_ENV['CONFIG__UNIT__TEST__VALUE']);
     }

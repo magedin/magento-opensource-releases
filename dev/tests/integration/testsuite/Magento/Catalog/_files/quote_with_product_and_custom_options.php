@@ -3,10 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/active_quote.php');
+require __DIR__ . '/product_simple.php';
+require __DIR__ . '/../../../Magento/Checkout/_files/active_quote.php';
 
 $optionValue = [
     'field' => 'Test value',

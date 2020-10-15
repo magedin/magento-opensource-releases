@@ -8,21 +8,23 @@ declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Console;
 
-use InvalidArgumentException;
-use Magento\Deploy\Console\DeployStaticOptions as Options;
-use Magento\Deploy\Console\InputValidator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Validator\Locale;
 use Magento\Framework\Validator\Regex;
 use Magento\Framework\Validator\RegexFactory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
+use Magento\Deploy\Console\InputValidator;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Deploy\Console\DeployStaticOptions as Options;
+use Magento\Framework\Validator\Locale;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\ArrayInput;
+use InvalidArgumentException;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class InputValidatorTest
+ * @package Magento\Deploy\Test\Unit\Console
+ *  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class InputValidatorTest extends TestCase
 {
@@ -44,7 +46,7 @@ class InputValidatorTest extends TestCase
     /**
      * @throws \Zend_Validate_Exception
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -58,14 +60,13 @@ class InputValidatorTest extends TestCase
         $regexFactoryMock->expects($this->any())->method('create')
             ->willReturn($regexObject);
 
-        $localeObjectMock = $this->getMockBuilder(Locale::class)
-            ->setMethods(['isValid'])
+        $localeObjectMock = $this->getMockBuilder(Locale::class)->setMethods(['isValid'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $localeObjectMock->expects($this->any())->method('isValid')
             ->with('en_US')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->inputValidator = $this->objectManagerHelper->getObject(
             InputValidator::class,
@@ -121,10 +122,7 @@ class InputValidatorTest extends TestCase
                 new ArrayInput([], $inputDefinition)
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
-                '--area (-a) and --exclude-area cannot be used at the same time',
-                $e->getMessage()
-            );
+            $this->assertContains('--area (-a) and --exclude-area cannot be used at the same time', $e->getMessage());
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
         }
     }
@@ -148,10 +146,7 @@ class InputValidatorTest extends TestCase
                 new ArrayInput([], $inputDefinition)
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
-                '--theme (-t) and --exclude-theme cannot be used at the same time',
-                $e->getMessage()
-            );
+            $this->assertContains('--theme (-t) and --exclude-theme cannot be used at the same time', $e->getMessage());
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
         }
     }
@@ -174,7 +169,7 @@ class InputValidatorTest extends TestCase
                 new ArrayInput([], $inputDefinition)
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 '--language (-l) and --exclude-language cannot be used at the same time',
                 $e->getMessage()
             );
@@ -202,7 +197,7 @@ class InputValidatorTest extends TestCase
                 new ArrayInput([], $inputDefinition)
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 'Argument "' .
                 Options::CONTENT_VERSION
                 . '" has invalid value, content version should contain only characters, digits and dots',

@@ -3,38 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model\ConfigOptionsList;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Setup\Option\SelectConfigOption;
-use Magento\Framework\Setup\Option\TextConfigOption;
 use Magento\Setup\Model\ConfigOptionsList\PageCache;
+use Magento\Framework\Setup\Option\TextConfigOption;
+use Magento\Framework\Setup\Option\SelectConfigOption;
 use Magento\Setup\Validator\RedisConnectionValidator;
-use PHPUnit\Framework\TestCase;
 
-class PageCacheTest extends TestCase
+class PageCacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PageCache
+     * @var \Magento\Setup\Model\ConfigOptionsList\PageCache
      */
     private $configList;
 
     /**
-     * @var RedisConnectionValidator
+     * @var \Magento\Setup\Validator\RedisConnectionValidator
      */
     private $validatorMock;
 
     /**
-     * @var DeploymentConfig
+     * @var \Magento\Framework\App\DeploymentConfig
      */
     private $deploymentConfigMock;
 
-    protected function setUp(): void
+    /**
+     * Test setup
+     */
+    protected function setUp()
     {
-        $this->validatorMock = $this->createMock(RedisConnectionValidator::class);
-        $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
+        $this->validatorMock = $this->createMock(RedisConnectionValidator::class, [], [], '', false);
+        $this->deploymentConfigMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
 
         $this->configList = new PageCache($this->validatorMock);
     }

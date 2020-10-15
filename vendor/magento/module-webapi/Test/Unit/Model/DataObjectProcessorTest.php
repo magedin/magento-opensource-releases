@@ -3,23 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Webapi\Test\Unit\Model;
 
-use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Framework\Reflection\FieldNamer;
-use Magento\Framework\Reflection\MethodsMap;
-use Magento\Framework\Reflection\Test\Unit\TestDataInterface;
-use Magento\Framework\Reflection\Test\Unit\TestDataObject;
-use Magento\Framework\Reflection\TypeCaster;
-use Magento\Framework\Reflection\TypeProcessor;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Webapi\Model\Config as ModelConfig;
-use PHPUnit\Framework\TestCase;
 
-class DataObjectProcessorTest extends TestCase
+class DataObjectProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataObjectProcessor
@@ -31,17 +22,17 @@ class DataObjectProcessorTest extends TestCase
      */
     protected $config;
 
-    protected function setup(): void
+    protected function setup()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $methodsMapProcessor = $objectManager->getObject(
-            MethodsMap::class,
+            \Magento\Framework\Reflection\MethodsMap::class,
             [
-                'fieldNamer' => $objectManager->getObject(FieldNamer::class),
-                'typeProcessor' => $objectManager->getObject(TypeProcessor::class),
+                'fieldNamer' => $objectManager->getObject(\Magento\Framework\Reflection\FieldNamer::class),
+                'typeProcessor' => $objectManager->getObject(\Magento\Framework\Reflection\TypeProcessor::class),
             ]
         );
-        $serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $serializerMock = $this->createMock(SerializerInterface::class);
         $serializerMock->method('serialize')
             ->willReturn('serializedData');
         $serializerMock->method('unserialize')
@@ -53,11 +44,11 @@ class DataObjectProcessorTest extends TestCase
             $serializerMock
         );
         $this->dataObjectProcessor = $objectManager->getObject(
-            DataObjectProcessor::class,
+            \Magento\Framework\Reflection\DataObjectProcessor::class,
             [
                 'methodsMapProcessor' => $methodsMapProcessor,
-                'typeCaster' => $objectManager->getObject(TypeCaster::class),
-                'fieldNamer' => $objectManager->getObject(FieldNamer::class),
+                'typeCaster' => $objectManager->getObject(\Magento\Framework\Reflection\TypeCaster::class),
+                'fieldNamer' => $objectManager->getObject(\Magento\Framework\Reflection\FieldNamer::class),
             ]
         );
         parent::setUp();
@@ -65,9 +56,9 @@ class DataObjectProcessorTest extends TestCase
 
     public function testDataObjectProcessor()
     {
-        $objectManager =  new ObjectManager($this);
-        /** @var TestDataObject $testDataObject */
-        $testDataObject = $objectManager->getObject(TestDataObject::class);
+        $objectManager =  new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Framework\Reflection\Test\Unit\TestDataObject $testDataObject */
+        $testDataObject = $objectManager->getObject(\Magento\Framework\Reflection\Test\Unit\TestDataObject::class);
 
         $expectedOutputDataArray = [
             'id' => '1',
@@ -76,7 +67,7 @@ class DataObjectProcessorTest extends TestCase
             'required_billing' => 'false',
         ];
 
-        $testDataObjectType = TestDataInterface::class;
+        $testDataObjectType = \Magento\Framework\Reflection\Test\Unit\TestDataInterface::class;
         $outputData = $this->dataObjectProcessor->buildOutputDataArray($testDataObject, $testDataObjectType);
         $this->assertEquals($expectedOutputDataArray, $outputData);
     }

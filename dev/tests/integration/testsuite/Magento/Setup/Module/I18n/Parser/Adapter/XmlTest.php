@@ -16,7 +16,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
      */
     protected $xmlPhraseCollector;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->xmlPhraseCollector = $objectManager->create(

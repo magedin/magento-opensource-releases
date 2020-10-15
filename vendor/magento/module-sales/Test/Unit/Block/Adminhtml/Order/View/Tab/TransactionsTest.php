@@ -3,67 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\View\Tab;
-
-use Magento\Framework\Authorization;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflinePayments\Model\Banktransfer;
-use Magento\OfflinePayments\Model\Cashondelivery;
-use Magento\OfflinePayments\Model\Checkmo;
-use Magento\OfflinePayments\Model\Purchaseorder;
-use Magento\Sales\Block\Adminhtml\Order\View\Tab\Transactions;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Test\Unit\Block\Adminhtml\Order\View\Tab\Stub\OnlineMethod;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Order transactions tab test
  */
-class TransactionsTest extends TestCase
+class TransactionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Transactions
+     * @var \Magento\Sales\Block\Adminhtml\Order\View\Tab\Transactions
      */
     protected $transactionsTab;
 
     /**
-     * @var Authorization|MockObject
+     * @var \Magento\Framework\Authorization|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $authorizationMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $coreRegistryMock;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderMock;
 
     /**
-     * @var Payment|MockObject
+     * @var \Magento\Sales\Model\Order\Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $paymentMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->authorizationMock = $this->createMock(Authorization::class);
-        $this->coreRegistryMock = $this->createMock(Registry::class);
-        $this->orderMock = $this->createMock(Order::class);
-        $this->paymentMock = $this->createMock(Payment::class);
+        $this->authorizationMock = $this->createMock(\Magento\Framework\Authorization::class);
+        $this->coreRegistryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->orderMock = $this->createMock(\Magento\Sales\Model\Order::class);
+        $this->paymentMock = $this->createMock(\Magento\Sales\Model\Order\Payment::class);
 
         $this->coreRegistryMock->expects($this->any())
             ->method('registry')
@@ -75,7 +59,7 @@ class TransactionsTest extends TestCase
             ->willReturn($this->paymentMock);
 
         $this->transactionsTab = $this->objectManager->getObject(
-            Transactions::class,
+            \Magento\Sales\Block\Adminhtml\Order\View\Tab\Transactions::class,
             [
                 'authorization' => $this->authorizationMock,
                 'registry' => $this->coreRegistryMock
@@ -85,7 +69,7 @@ class TransactionsTest extends TestCase
 
     public function testGetOrder()
     {
-        $this->assertInstanceOf(Order::class, $this->transactionsTab->getOrder());
+        $this->assertInstanceOf(\Magento\Sales\Model\Order::class, $this->transactionsTab->getOrder());
     }
 
     /**
@@ -110,11 +94,11 @@ class TransactionsTest extends TestCase
     public function canShowTabDataProvider()
     {
         return [
-            [OnlineMethod::class, true],
-            [Cashondelivery::class, false],
-            [Checkmo::class, false],
-            [Banktransfer::class, false],
-            [Purchaseorder::class, false]
+            [\Magento\Sales\Test\Unit\Block\Adminhtml\Order\View\Tab\Stub\OnlineMethod::class, true],
+            [\Magento\OfflinePayments\Model\Cashondelivery::class, false],
+            [\Magento\OfflinePayments\Model\Checkmo::class, false],
+            [\Magento\OfflinePayments\Model\Banktransfer::class, false],
+            [\Magento\OfflinePayments\Model\Purchaseorder::class, false]
         ];
     }
 

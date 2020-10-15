@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Adminhtml AdminNotification Severity Renderer
  *
@@ -9,13 +7,7 @@ declare(strict_types=1);
  */
 namespace Magento\AdminNotification\Block\Grid\Renderer;
 
-use Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer;
-use Magento\Framework\DataObject;
-
-/**
- * Renderer class for notice in the admin notifications grid
- */
-class Notice extends AbstractRenderer
+class Notice extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer
 {
     /**
      * Renders grid column
@@ -23,7 +15,7 @@ class Notice extends AbstractRenderer
      * @param   \Magento\Framework\DataObject $row
      * @return  string
      */
-    public function render(DataObject $row)
+    public function render(\Magento\Framework\DataObject $row)
     {
         return '<span class="grid-row-title">' .
             $this->escapeHtml($row->getTitle()) .

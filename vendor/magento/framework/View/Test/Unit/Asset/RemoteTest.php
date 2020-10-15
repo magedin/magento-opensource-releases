@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset;
 
-use Magento\Framework\View\Asset\Remote;
-use PHPUnit\Framework\TestCase;
-
-class RemoteTest extends TestCase
+class RemoteTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Remote
+     * @var \Magento\Framework\View\Asset\Remote
      */
     protected $_object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_object = new Remote('https://127.0.0.1/magento/test/style.css', 'css');
+        $this->_object = new \Magento\Framework\View\Asset\Remote('https://127.0.0.1/magento/test/style.css', 'css');
     }
 
     public function testGetUrl()

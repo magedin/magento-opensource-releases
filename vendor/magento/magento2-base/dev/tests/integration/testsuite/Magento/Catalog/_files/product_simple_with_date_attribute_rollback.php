@@ -7,7 +7,6 @@
 declare(strict_types=1);
 
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 \Magento\TestFramework\Helper\Bootstrap::getInstance()->getInstance()->reinitialize();
 
@@ -42,4 +41,4 @@ try {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_date_attribute_rollback.php');
+include __DIR__ . '/product_date_attribute_rollback.php';

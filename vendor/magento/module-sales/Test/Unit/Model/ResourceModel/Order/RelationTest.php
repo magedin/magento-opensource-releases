@@ -3,96 +3,87 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order;
 
-use Magento\Sales\Api\OrderItemRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Item;
-use Magento\Sales\Model\ResourceModel\Order\Handler\Address;
-use Magento\Sales\Model\ResourceModel\Order\Payment;
-use Magento\Sales\Model\ResourceModel\Order\Relation;
-use Magento\Sales\Model\ResourceModel\Order\Status\History;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RelationTest extends TestCase
+/**
+ * Class RelationTest
+ */
+class RelationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Relation
+     * @var \Magento\Sales\Model\ResourceModel\Order\Relation
      */
     protected $relationProcessor;
 
     /**
-     * @var Address|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Handler\Address|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $addressHandlerMock;
 
     /**
-     * @var OrderItemRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\OrderItemRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderItemRepositoryMock;
 
     /**
-     * @var Payment|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderPaymentResourceMock;
 
     /**
-     * @var History|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Status\History|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $statusHistoryResource;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderMock;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderItemMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Payment|MockObject
+     * @var \Magento\Sales\Model\Order\Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderPaymentMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Status\History|MockObject
+     * @var \Magento\Sales\Model\Order\Status\History|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderStatusHistoryMock;
 
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderInvoiceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->addressHandlerMock = $this->getMockBuilder(
-            Address::class
+            \Magento\Sales\Model\ResourceModel\Order\Handler\Address::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['removeEmptyAddresses', 'process'])
             ->getMock();
-        $this->orderItemRepositoryMock = $this->getMockBuilder(OrderItemRepositoryInterface::class)
+        $this->orderItemRepositoryMock = $this->getMockBuilder(\Magento\Sales\Api\OrderItemRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['save'])
             ->getMockForAbstractClass();
-        $this->orderPaymentResourceMock = $this->getMockBuilder(Payment::class)
+        $this->orderPaymentResourceMock = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Payment::class)
             ->disableOriginalConstructor()
             ->setMethods(['save'])
             ->getMock();
         $this->statusHistoryResource = $this->getMockBuilder(
-            History::class
+            \Magento\Sales\Model\ResourceModel\Order\Status\History::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['save'])
             ->getMock();
-        $this->orderMock = $this->getMockBuilder(Order::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -104,7 +95,7 @@ class RelationTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->orderItemMock = $this->getMockBuilder(Item::class)
+        $this->orderItemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['setOrderId', 'setOrder'])
             ->getMock();
@@ -112,7 +103,7 @@ class RelationTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['setParentId', 'setOrder'])
             ->getMock();
-        $this->orderStatusHistoryMock = $this->getMockBuilder(Item::class)
+        $this->orderStatusHistoryMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['setParentId', 'setOrder'])
             ->getMock();
@@ -120,11 +111,11 @@ class RelationTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['setParentId', 'setOrder'])
             ->getMock();
-        $this->orderInvoiceMock = $this->getMockBuilder(Invoice::class)
+        $this->orderInvoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods(['setOrder', 'save'])
             ->getMock();
-        $this->relationProcessor = new Relation(
+        $this->relationProcessor = new \Magento\Sales\Model\ResourceModel\Order\Relation(
             $this->addressHandlerMock,
             $this->orderItemRepositoryMock,
             $this->orderPaymentResourceMock,

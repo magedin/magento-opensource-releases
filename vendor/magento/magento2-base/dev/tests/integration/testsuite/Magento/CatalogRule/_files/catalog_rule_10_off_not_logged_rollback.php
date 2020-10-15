@@ -26,4 +26,3 @@ try {
 /** @var \Magento\CatalogRule\Model\Indexer\IndexBuilder $indexBuilder */
 $indexBuilder = $objectManager->get(\Magento\CatalogRule\Model\Indexer\IndexBuilder::class);
 $indexBuilder->reindexFull();
-sleep(1);

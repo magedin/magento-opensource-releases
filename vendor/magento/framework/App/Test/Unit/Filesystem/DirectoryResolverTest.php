@@ -7,48 +7,40 @@ declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Filesystem;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\Filesystem\DirectoryResolver;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Filesystem\DriverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit tests for the \Magento\Framework\App\Filesystem\DirectoryResolver class.
  */
-class DirectoryResolverTest extends TestCase
+class DirectoryResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DirectoryList|MockObject
+     * @var \Magento\Framework\App\Filesystem\DirectoryList|\PHPUnit_Framework_MockObject_MockObject
      */
     private $directoryList;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystem;
 
     /**
-     * @var DirectoryResolver
+     * @var \Magento\Framework\App\Filesystem\DirectoryResolver
      */
     private $directoryResolver;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->directoryList = $this->getMockBuilder(DirectoryList::class)
+        $this->directoryList = $this->getMockBuilder(\Magento\Framework\App\Filesystem\DirectoryList::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->directoryResolver = new DirectoryResolver(
+        $this->directoryResolver = new \Magento\Framework\App\Filesystem\DirectoryResolver(
             $this->directoryList,
             $this->filesystem
         );
@@ -64,10 +56,10 @@ class DirectoryResolverTest extends TestCase
     {
         $rootPath = '/path/root';
         $directoryConfig = 'directory_config';
-        $directory = $this->getMockBuilder(WriteInterface::class)
+        $directory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->setMethods(['getDriver'])
             ->getMockForAbstractClass();
-        $driver = $this->getMockBuilder(DriverInterface::class)
+        $driver = $this->getMockBuilder(\Magento\Framework\Filesystem\DriverInterface::class)
             ->setMethods(['getRealPathSafety'])
             ->getMockForAbstractClass();
         $directory->expects($this->atLeastOnce())->method('getDriver')->willReturn($driver);

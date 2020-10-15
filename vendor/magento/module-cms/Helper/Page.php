@@ -8,20 +8,17 @@ namespace Magento\Cms\Helper;
 use Magento\Cms\Model\Page\CustomLayoutManagerInterface;
 use Magento\Cms\Model\Page\CustomLayoutRepositoryInterface;
 use Magento\Cms\Model\Page\IdentityMap;
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\View\Result\Page as ResultPage;
 
 /**
  * CMS Page Helper
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  * @SuppressWarnings(PHPMD.NPathComplexity)
  */
-class Page extends AbstractHelper
+class Page extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
      * CMS no-route config path
@@ -149,14 +146,14 @@ class Page extends AbstractHelper
     /**
      * Return result CMS page
      *
-     * @param ActionInterface $action
+     * @param Action $action
      * @param int $pageId
-     * @return ResultPage|bool
+     * @return \Magento\Framework\View\Result\Page|bool
      */
-    public function prepareResultPage(ActionInterface $action, $pageId = null)
+    public function prepareResultPage(Action $action, $pageId = null)
     {
         if ($pageId !== null && $pageId !== $this->_page->getId()) {
-            $delimiterPosition = strrpos((string)$pageId, '|');
+            $delimiterPosition = strrpos($pageId, '|');
             if ($delimiterPosition) {
                 $pageId = substr($pageId, 0, $delimiterPosition);
             }
@@ -183,7 +180,7 @@ class Page extends AbstractHelper
                 $this->_design->setDesignTheme($this->_page->getCustomTheme());
             }
         }
-        /** @var ResultPage $resultPage */
+        /** @var \Magento\Framework\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $this->setLayoutType($inRange, $resultPage);
         $resultPage->addHandle('cms_page_view');
@@ -250,8 +247,8 @@ class Page extends AbstractHelper
      * Set layout type
      *
      * @param bool $inRange
-     * @param ResultPage $resultPage
-     * @return ResultPage
+     * @param \Magento\Framework\View\Result\Page $resultPage
+     * @return \Magento\Framework\View\Result\Page
      */
     protected function setLayoutType($inRange, $resultPage)
     {

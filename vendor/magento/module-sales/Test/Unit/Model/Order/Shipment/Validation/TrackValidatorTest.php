@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment\Validation;
 
+use Magento\Sales\Model\Order\Shipment\Validation\TrackValidator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentTrackInterface;
-use Magento\Sales\Model\Order\Shipment\Validation\TrackValidator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TrackValidatorTest extends TestCase
+/**
+ * Class TrackValidatorTest
+ */
+class TrackValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TrackValidator
@@ -22,16 +21,16 @@ class TrackValidatorTest extends TestCase
     private $validator;
 
     /**
-     * @var ShipmentInterface|MockObject
+     * @var ShipmentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentMock;
 
     /**
-     * @var ShipmentTrackInterface|MockObject
+     * @var ShipmentTrackInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentTrackMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManager($this);
         $this->shipmentMock = $this->getMockBuilder(ShipmentInterface::class)

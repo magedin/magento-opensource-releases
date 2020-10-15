@@ -21,7 +21,7 @@ class ProfilerTest extends \PHPUnit\Framework\TestCase
      */
     protected $_driver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->expectOutputString('');
         $this->_driver =
@@ -29,7 +29,7 @@ class ProfilerTest extends \PHPUnit\Framework\TestCase
         $this->_object = new \Magento\TestFramework\Bootstrap\Profiler($this->_driver);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_driver = null;
         $this->_object = null;

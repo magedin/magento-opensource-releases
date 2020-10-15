@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command\App\SensitiveConfigSet;
 
 use Magento\Deploy\Console\Command\App\SensitiveConfigSet\CollectorFactory;
@@ -19,15 +17,14 @@ use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SensitiveConfigSetFacadeTest extends TestCase
+class SensitiveConfigSetFacadeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConfigFilePool|MockObject
@@ -72,7 +69,7 @@ class SensitiveConfigSetFacadeTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->configFilePoolMock = $this->getMockBuilder(ConfigFilePool::class)
             ->disableOriginalConstructor()
@@ -101,10 +98,12 @@ class SensitiveConfigSetFacadeTest extends TestCase
         );
     }
 
+    /**
+     * @expectedExceptionMessage File app/etc/config.php can't be read.
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     */
     public function testConfigFileNotExist()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
-        $this->expectExceptionMessage('File app/etc/config.php can\'t be read.');
         $this->inputMock->expects($this->any())
             ->method('getOption')
             ->with()
@@ -129,10 +128,12 @@ class SensitiveConfigSetFacadeTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Some exception
+     */
     public function testWriterException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Some exception');
         $exceptionMessage = 'Some exception';
         $this->inputMock->expects($this->any())
             ->method('getOption')
@@ -169,10 +170,12 @@ class SensitiveConfigSetFacadeTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     * @expectedExceptionMessage There are no sensitive configurations to fill
+     */
     public function testEmptyConfigPaths()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
-        $this->expectExceptionMessage('There are no sensitive configurations to fill');
         $this->inputMock->expects($this->any())
             ->method('getOption')
             ->with()

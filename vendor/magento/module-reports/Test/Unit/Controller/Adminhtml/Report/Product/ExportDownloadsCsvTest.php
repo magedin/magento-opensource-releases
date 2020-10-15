@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Product;
 
-use Magento\Framework\Stdlib\DateTime\Filter\Date;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Block\Adminhtml\Product\Downloads\Grid;
 use Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsCsv;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ExportDownloadsCsvTest extends AbstractControllerTest
+class ExportDownloadsCsvTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportDownloadsCsv
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsCsv
      */
     protected $exportDownloadsCsv;
 
     /**
-     * @var Date|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\Filter\Date|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $this->dateMock = $this->getMockBuilder(Date::class)
+        $this->dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exportDownloadsCsv = $objectManager->getObject(
-            ExportDownloadsCsv::class,
+            \Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsCsv::class,
             [
                 'context' => $this->contextMock,
                 'fileFactory' => $this->fileFactoryMock,
@@ -68,7 +62,7 @@ class ExportDownloadsCsvTest extends AbstractControllerTest
         $this->layoutMock
             ->expects($this->once())
             ->method('createBlock')
-            ->with(Grid::class)
+            ->with(\Magento\Reports\Block\Adminhtml\Product\Downloads\Grid::class)
             ->willReturn($this->abstractBlockMock);
 
         $this->fileFactoryMock

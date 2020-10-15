@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Catalog\Model\Entity\Attribute\Set
  */
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\AbstractResource;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class AbstractTest extends TestCase
+class AbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Get attribute list
@@ -29,16 +23,15 @@ class AbstractTest extends TestCase
         $attributes = [];
         $codes = ['entity_type_id', 'attribute_set_id', 'created_at', 'updated_at', 'parent_id', 'increment_id'];
         foreach ($codes as $code) {
-            $mock = $this->getMockBuilder(AbstractAttribute::class)
-                ->addMethods(['getApplyTo'])
-                ->onlyMethods(['isInSet', 'getBackend'])
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
+            $mock = $this->createPartialMock(
+                \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
+                ['isInSet', 'getApplyTo', 'getBackend', '__wakeup']
+            );
 
             $mock->setAttributeId($code);
             $mock->setAttributeCode($code);
 
-            $mock->expects($this->once())->method('isInSet')->willReturn(false);
+            $mock->expects($this->once())->method('isInSet')->will($this->returnValue(false));
 
             $attributes[$code] = $mock;
         }
@@ -53,13 +46,13 @@ class AbstractTest extends TestCase
         $set = 10;
         $storeId = 100;
 
-        $object = $this->createPartialMock(Product::class, ['__wakeup']);
+        $object = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['__wakeup']);
 
         $object->setData('test_attr', 'test_attr');
         $object->setData('attribute_set_id', $set);
         $object->setData('store_id', $storeId);
 
-        $entityType = new DataObject();
+        $entityType = new \Magento\Framework\DataObject();
         $entityType->setEntityTypeCode('test');
         $entityType->setEntityTypeId(0);
         $entityType->setEntityTable('table');
@@ -67,8 +60,8 @@ class AbstractTest extends TestCase
         $attributes = $this->_getAttributes();
 
         $attribute = $this->createPartialMock(
-            AbstractAttribute::class,
-            ['isInSet', 'getBackend']
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
+            ['isInSet', 'getBackend', '__wakeup']
         );
         $attribute->setAttributeId($code);
         $attribute->setAttributeCode($code);
@@ -78,23 +71,23 @@ class AbstractTest extends TestCase
         )->method(
             'isInSet'
         )->with(
-            $set
-        )->willReturn(
-            false
+            $this->equalTo($set)
+        )->will(
+            $this->returnValue(false)
         );
 
         $attributes[$code] = $attribute;
 
-        /** @var AbstractResource $model */
+        /** @var $model \Magento\Catalog\Model\ResourceModel\AbstractResource */
         $arguments = $objectManager->getConstructArguments(
-            AbstractResource::class
+            \Magento\Catalog\Model\ResourceModel\AbstractResource::class
         );
-        $model = $this->getMockBuilder(AbstractResource::class)
+        $model = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\AbstractResource::class)
             ->setMethods(['getAttributesByCode'])
             ->setConstructorArgs($arguments)
             ->getMock();
 
-        $model->expects($this->once())->method('getAttributesByCode')->willReturn($attributes);
+        $model->expects($this->once())->method('getAttributesByCode')->will($this->returnValue($attributes));
 
         $model->walkAttributes('backend/afterSave', [$object]);
     }

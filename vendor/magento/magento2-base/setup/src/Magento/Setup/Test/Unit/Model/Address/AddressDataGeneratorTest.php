@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\Address;
 
-use Magento\Setup\Model\Address\AddressDataGenerator;
-use PHPUnit\Framework\TestCase;
-
-class AddressDataGeneratorTest extends TestCase
+class AddressDataGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -20,22 +15,20 @@ class AddressDataGeneratorTest extends TestCase
     ];
 
     /**
-     * @var AddressDataGenerator
+     * @var \Magento\Setup\Model\Address\AddressDataGenerator
      */
     private $addressGenerator;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->addressGenerator = new AddressDataGenerator();
+        $this->addressGenerator = new \Magento\Setup\Model\Address\AddressDataGenerator();
     }
 
     public function testPostcode()
     {
-        // phpcs:ignore
         mt_srand(42);
         $address1 = $this->addressGenerator->generateAddress();
 
-        // phpcs:ignore
         mt_srand(66);
         $address2 = $this->addressGenerator->generateAddress();
 
@@ -47,7 +40,7 @@ class AddressDataGeneratorTest extends TestCase
         $address = $this->addressGenerator->generateAddress();
 
         foreach ($this->addressStructure as $addressField) {
-            $this->assertArrayHasKey($addressField, $address);
+            $this->assertTrue(array_key_exists($addressField, $address));
         }
     }
 }

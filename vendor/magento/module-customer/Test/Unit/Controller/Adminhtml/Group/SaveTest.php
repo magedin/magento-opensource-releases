@@ -3,105 +3,91 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Controller\Adminhtml\Group;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Customer\Api\Data\GroupInterfaceFactory;
-use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Customer\Controller\Adminhtml\Group\Save;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Framework\Registry;
-use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Save */
     protected $controller;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $registryMock;
 
-    /** @var GroupRepositoryInterface|MockObject */
+    /** @var \Magento\Customer\Api\GroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $groupRepositoryMock;
 
-    /** @var GroupInterfaceFactory|MockObject */
+    /** @var GroupInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $groupInterfaceFactoryMock;
 
-    /** @var ForwardFactory|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\ForwardFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $forwardFactoryMock;
 
-    /** @var PageFactory|MockObject */
+    /** @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $pageFactoryMock;
 
-    /** @var DataObjectProcessor|MockObject */
+    /** @var DataObjectProcessor|\PHPUnit_Framework_MockObject_MockObject */
     protected $dataObjectProcessorMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var RedirectFactory|MockObject */
+    /** @var RedirectFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirectFactory;
 
-    /** @var Redirect|MockObject */
+    /** @var Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirect;
 
-    /** @var GroupInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\GroupInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerGroup;
 
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $messageManager;
 
-    /** @var Forward|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultForward;
 
-    /** @var GroupInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\GroupInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $group;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $session;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->getMockForAbstractClass();
-        $this->groupRepositoryMock = $this->getMockBuilder(GroupRepositoryInterface::class)
+        $this->groupRepositoryMock = $this->getMockBuilder(\Magento\Customer\Api\GroupRepositoryInterface::class)
             ->getMockForAbstractClass();
         $this->groupInterfaceFactoryMock = $this->getMockBuilder(GroupInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->forwardFactoryMock = $this->getMockBuilder(ForwardFactory::class)
+        $this->forwardFactoryMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\ForwardFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->pageFactoryMock = $this->getMockBuilder(PageFactory::class)
+        $this->pageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request = $this->getMockBuilder(RequestInterface::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMockForAbstractClass();
         $this->resultRedirectFactory = $this->getMockBuilder(RedirectFactory::class)
             ->disableOriginalConstructor()
@@ -109,16 +95,16 @@ class SaveTest extends TestCase
         $this->resultRedirect = $this->getMockBuilder(Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customerGroup = $this->getMockBuilder(GroupInterface::class)
+        $this->customerGroup = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->getMockForAbstractClass();
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMockForAbstractClass();
-        $this->resultForward = $this->getMockBuilder(Forward::class)
+        $this->resultForward = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->group = $this->getMockBuilder(GroupInterface::class)
+        $this->group = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->getMockForAbstractClass();
-        $this->session = $this->getMockBuilder(Session::class)
+        $this->session = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['setCustomerGroupData'])
             ->getMock();
@@ -193,7 +179,7 @@ class SaveTest extends TestCase
             ->with('Exception');
         $this->dataObjectProcessorMock->expects($this->once())
             ->method('buildOutputDataArray')
-            ->with($this->group, GroupInterface::class)
+            ->with($this->group, \Magento\Customer\Api\Data\GroupInterface::class)
             ->willReturn(['code' => $code]);
         $this->session->expects($this->once())
             ->method('setCustomerGroupData')

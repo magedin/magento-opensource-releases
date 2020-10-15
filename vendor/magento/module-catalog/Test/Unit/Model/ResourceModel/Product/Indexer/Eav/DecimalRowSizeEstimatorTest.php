@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Eav;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal;
 use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\DecimalRowSizeEstimator;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal;
 use Magento\Store\Api\StoreManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
+use Magento\Framework\DB\Select;
 
-class DecimalRowSizeEstimatorTest extends TestCase
+class DecimalRowSizeEstimatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DecimalRowSizeEstimator
@@ -26,31 +23,31 @@ class DecimalRowSizeEstimatorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerResourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connectionMock = $this->createMock(AdapterInterface::class);
         $this->indexerResourceMock = $this->createMock(Decimal::class);
         $this->indexerResourceMock->expects($this->any())->method('getConnection')->willReturn($this->connectionMock);
-        $this->storeManagementMock = $this->getMockForAbstractClass(StoreManagementInterface::class);
+        $this->storeManagementMock = $this->createMock(StoreManagementInterface::class);
         $this->metadataPoolMock = $this->createMock(MetadataPool::class);
 
         $this->model = new DecimalRowSizeEstimator(
@@ -62,7 +59,7 @@ class DecimalRowSizeEstimatorTest extends TestCase
 
     public function testEstimateRowSize()
     {
-        $entityMetadataMock = $this->getMockForAbstractClass(EntityMetadataInterface::class);
+        $entityMetadataMock = $this->createMock(EntityMetadataInterface::class);
         $this->metadataPoolMock->expects($this->any())
             ->method('getMetadata')
             ->with(ProductInterface::class)

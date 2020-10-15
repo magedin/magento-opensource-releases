@@ -3,105 +3,91 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Controller\Store;
 
 use Magento\Framework\App\Http\Context as HttpContext;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\StoreCookieManagerInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
-use Magento\Store\Controller\Store\SwitchAction;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\StoreResolver;
 use Magento\Store\Model\StoreSwitcher;
 use Magento\Store\Model\StoreSwitcherInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Store\Controller\Store\SwitchAction
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SwitchActionTest extends TestCase
+class SwitchActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SwitchAction
+     * @var \Magento\Store\Controller\Store\SwitchAction
      */
     private $model;
 
     /**
-     * @var StoreCookieManagerInterface|MockObject
+     * @var StoreCookieManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeCookieManagerMock;
 
     /**
-     * @var HttpContext|MockObject
+     * @var HttpContext|\PHPUnit_Framework_MockObject_MockObject
      */
     private $httpContextMock;
 
     /**
-     * @var StoreRepositoryInterface|MockObject
+     * @var StoreRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeRepositoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseMock;
 
     /**
-     * @var RedirectInterface|MockObject
+     * @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $redirectMock;
 
-    /** @var StoreSwitcherInterface|MockObject */
+    /** @var StoreSwitcherInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $storeSwitcher;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
-            ->getMock();
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)->getMock();
         $this->storeCookieManagerMock =
-            $this->getMockBuilder(StoreCookieManagerInterface::class)
-                ->getMock();
+            $this->getMockBuilder(\Magento\Store\Api\StoreCookieManagerInterface::class)->getMock();
         $this->storeRepositoryMock =
-            $this->getMockBuilder(StoreRepositoryInterface::class)
-                ->getMock();
+            $this->getMockBuilder(\Magento\Store\Api\StoreRepositoryInterface::class)->getMock();
         $this->httpContextMock = $this->getMockBuilder(\Magento\Framework\App\Http\Context::class)->getMock();
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['setRedirect'])
             ->getMockForAbstractClass();
         $this->redirectMock =
-            $this->getMockBuilder(RedirectInterface::class)
-                ->getMock();
+            $this->getMockBuilder(\Magento\Framework\App\Response\RedirectInterface::class)->getMock();
         $this->storeSwitcher = $this->getMockBuilder(StoreSwitcher::class)
             ->disableOriginalConstructor()
             ->setMethods(['switch'])
             ->getMock();
 
         $this->model = (new ObjectManager($this))->getObject(
-            SwitchAction::class,
+            \Magento\Store\Controller\Store\SwitchAction::class,
             [
                 'storeCookieManager' => $this->storeCookieManagerMock,
                 'httpContext' => $this->httpContextMock,
@@ -123,9 +109,8 @@ class SwitchActionTest extends TestCase
         $storeToSwitchToCode = 'sv2';
         $defaultStoreViewCode = 'default';
         $expectedRedirectUrl = "magento.com/{$storeToSwitchToCode}";
-        $defaultStoreViewMock = $this->getMockBuilder(StoreInterface::class)
-            ->getMock();
-        $storeToSwitchToMock = $this->getMockBuilder(StoreInterface::class)
+        $defaultStoreViewMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)->getMock();
+        $storeToSwitchToMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['isUseStoreInUrl'])
             ->getMockForAbstractClass();

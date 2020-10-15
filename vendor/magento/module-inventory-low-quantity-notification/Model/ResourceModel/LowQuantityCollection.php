@@ -29,6 +29,8 @@ use Magento\Store\Model\Store;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Low quantity report collection.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class LowQuantityCollection extends AbstractCollection
@@ -135,7 +137,6 @@ class LowQuantityCollection extends AbstractCollection
             $this->addNotifyStockQtyFilter();
             $this->addEnabledSourceFilter();
             $this->addSourceItemInStockFilter();
-            $this->addSourceItemStoreFilter();
         }
         return parent::_renderFilters();
     }
@@ -299,40 +300,9 @@ class LowQuantityCollection extends AbstractCollection
      */
     private function addSourceItemInStockFilter(): void
     {
-        $this->addFieldToFilter('main_table.status', SourceItemInterface::STATUS_IN_STOCK);
-    }
-
-    /**
-     * Filter source items by store if provided.
-     *
-     * @return void
-     */
-    private function addSourceItemStoreFilter(): void
-    {
-        if ($this->filterStoreId === null) {
-            return;
-        }
-
-        $this->getSelect()->joinInner(
-            ['source_stock_link' => $this->getTable('inventory_source_stock_link')],
-            'source_stock_link.source_code = inventory_source.source_code',
-            []
-        )->joinInner(
-            ['stock' => $this->getTable('inventory_stock')],
-            'stock.stock_id = source_stock_link.stock_id',
-            []
-        )->joinInner(
-            ['sales_channel' => $this->getTable('inventory_stock_sales_channel')],
-            'sales_channel.stock_id = stock.stock_id',
-            []
-        )->joinInner(
-            ['website' => $this->getTable('store_website')],
-            'website.code = sales_channel.code and sales_channel.type = "website"',
-            []
-        )->joinInner(
-            ['store' => $this->getTable('store')],
-            'store.website_id = website.website_id and store.store_id = ' . $this->filterStoreId,
-            []
-        );
+        $condition = '(' . SourceItemInterface::QUANTITY . ' > 0 AND main_table.status = ' .
+            SourceItemInterface::STATUS_IN_STOCK . ') OR
+            (' . SourceItemInterface::QUANTITY . ' = 0)';
+        $this->getSelect()->where($condition);
     }
 }

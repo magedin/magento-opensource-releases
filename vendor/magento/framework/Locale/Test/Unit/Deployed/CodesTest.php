@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Locale\Test\Unit\Deployed;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -13,15 +11,14 @@ use Magento\Framework\Filesystem\Directory\ReadInterface;
 use Magento\Framework\Locale\Deployed\Codes;
 use Magento\Framework\View\Design\Theme\FlyweightFactory;
 use Magento\Framework\View\Design\ThemeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test for Codes class.
  *
  * @see Codes
  */
-class CodesTest extends TestCase
+class CodesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Filesystem|MockObject
@@ -41,7 +38,7 @@ class CodesTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fileSystemMock = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()

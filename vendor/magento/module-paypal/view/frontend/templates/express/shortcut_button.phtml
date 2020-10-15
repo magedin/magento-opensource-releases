@@ -4,7 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-// phpcs:disable Magento2.Templates.ThisInTemplate
 /**
  * @var \Magento\Paypal\Block\Express\InContext\SmartButton $block
  */
@@ -13,5 +12,4 @@ $widgetConfig = $this->helper(\Magento\Framework\Json\Helper\Data::class)->jsonE
     $widget['Magento_Paypal/js/in-context/product-express-checkout']
 );
 ?>
-<div id ="paypal-smart-button" data-mage-init='{"Magento_Paypal/js/in-context/product-express-checkout"
-:<?= /* @noEscape */ $widgetConfig ?>}'></div>
+<div data-mage-init='{"Magento_Paypal/js/in-context/product-express-checkout":<?= /* @noEscape */ $widgetConfig ?>}'></div>

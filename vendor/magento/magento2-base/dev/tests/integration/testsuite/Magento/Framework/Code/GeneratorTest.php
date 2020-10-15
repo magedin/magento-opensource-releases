@@ -53,7 +53,7 @@ class GeneratorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         /** @var Filesystem $filesystem */
@@ -81,7 +81,7 @@ class GeneratorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_generator = null;
         if ($this->generatedDirectory->isExist($this->testRelativePath)) {
@@ -182,7 +182,7 @@ class GeneratorTest extends TestCase
             . 'because the \'generated\' directory permission is read-only.';
         $regexpMsgPart = preg_quote($msgPart);
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessageMatches("/.*$regexpMsgPart.*/");
+        $this->expectExceptionMessageRegExp("/.*$regexpMsgPart.*/");
         $this->generatedDirectory->create($this->testRelativePath);
         $this->generatedDirectory->changePermissionsRecursively($this->testRelativePath, 0555, 0444);
         $generatorResult = $this->_generator->generateClass($factoryClassName);

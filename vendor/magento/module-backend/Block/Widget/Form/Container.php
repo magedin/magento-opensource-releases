@@ -5,10 +5,6 @@
  */
 namespace Magento\Backend\Block\Widget\Form;
 
-use Magento\Backend\Block\Widget\Context;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
 /**
  * Backend form container block
  *
@@ -43,7 +39,7 @@ class Container extends \Magento\Backend\Block\Widget\Container
      * @var string
      */
     protected $_blockGroup = 'Magento_Backend';
-
+    
     /**
      *  @var string
      */
@@ -58,25 +54,6 @@ class Container extends \Magento\Backend\Block\Widget\Container
      * @var string
      */
     protected $_template = 'Magento_Backend::widget/form/container.phtml';
-
-    /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
-     * @param Context $context
-     * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
-     */
-    public function __construct(
-        Context $context,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
-    ) {
-        $this->secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-        parent::__construct($context, $data);
-    }
 
     /**
      * Initialize form.
@@ -228,14 +205,8 @@ class Container extends \Magento\Backend\Block\Widget\Container
     public function getFormInitScripts()
     {
         if (!empty($this->_formInitScripts) && is_array($this->_formInitScripts)) {
-            return $this->secureRenderer->renderTag(
-                'script',
-                [],
-                implode("\n", $this->_formInitScripts),
-                false
-            );
+            return '<script>' . implode("\n", $this->_formInitScripts) . '</script>';
         }
-
         return '';
     }
 
@@ -247,14 +218,8 @@ class Container extends \Magento\Backend\Block\Widget\Container
     public function getFormScripts()
     {
         if (!empty($this->_formScripts) && is_array($this->_formScripts)) {
-            return $this->secureRenderer->renderTag(
-                'script',
-                [],
-                implode("\n", $this->_formScripts),
-                false
-            );
+            return '<script>' . implode("\n", $this->_formScripts) . '</script>';
         }
-
         return '';
     }
 

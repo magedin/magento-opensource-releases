@@ -5,28 +5,20 @@
  */
 namespace Magento\Captcha\Observer;
 
-use Magento\Captcha\Model\ResourceModel\Log;
-use Magento\Captcha\Model\ResourceModel\LogFactory;
-use Magento\Customer\Model\Customer;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Reset captcha attempts for Frontend
- */
 class ResetAttemptForFrontendObserver implements ObserverInterface
 {
     /**
-     * @var LogFactory
+     * @var \Magento\Captcha\Model\ResourceModel\LogFactory
      */
     public $resLogFactory;
 
     /**
-     * @param LogFactory $resLogFactory
+     * @param \Magento\Captcha\Model\ResourceModel\LogFactory $resLogFactory
      */
     public function __construct(
-        LogFactory $resLogFactory
+        \Magento\Captcha\Model\ResourceModel\LogFactory $resLogFactory
     ) {
         $this->resLogFactory = $resLogFactory;
     }
@@ -34,13 +26,12 @@ class ResetAttemptForFrontendObserver implements ObserverInterface
     /**
      * Reset Attempts For Frontend
      *
-     * @param Observer $observer
-     * @return Log
-     * @throws LocalizedException
+     * @param \Magento\Framework\Event\Observer $observer
+     * @return \Magento\Captcha\Observer\ResetAttemptForFrontendObserver
      */
-    public function execute(Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        /** @var Customer $model */
+        /** @var \Magento\Customer\Model\Customer $model */
         $model = $observer->getModel();
 
         return $this->resLogFactory->create()->deleteUserAttempts($model->getEmail());

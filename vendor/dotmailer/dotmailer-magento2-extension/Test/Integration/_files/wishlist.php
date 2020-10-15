@@ -1,5 +1,7 @@
 <?php
 
+// @codingStandardsIgnoreFile
+
 require __DIR__ . '/customer.php';
 require __DIR__ . '/../_files/products.php';
 

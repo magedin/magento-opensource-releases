@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model\Connector;
 
 use Magento\Analytics\Model\AnalyticsToken;
@@ -12,15 +10,12 @@ use Magento\Analytics\Model\Connector\Http\ClientInterface;
 use Magento\Analytics\Model\Connector\Http\ResponseResolver;
 use Magento\Analytics\Model\Connector\OTPRequest;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\HTTP\ZendClient;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
  * A unit test for testing of the representation of a 'OTP' request.
  */
-class OTPRequestTest extends TestCase
+class OTPRequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OTPRequest
@@ -28,45 +23,55 @@ class OTPRequestTest extends TestCase
     private $subject;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var ClientInterface|MockObject
+     * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $httpClientMock;
 
     /**
-     * @var AnalyticsToken|MockObject
+     * @var AnalyticsToken|\PHPUnit_Framework_MockObject_MockObject
      */
     private $analyticsTokenMock;
 
     /**
-     * @var ResponseResolver|MockObject
+     * @var ResponseResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseResolverMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->configMock = $this->getMockBuilder(ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->httpClientMock = $this->getMockForAbstractClass(ClientInterface::class);
+        $this->httpClientMock = $this->getMockBuilder(ClientInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->analyticsTokenMock = $this->createMock(AnalyticsToken::class);
+        $this->analyticsTokenMock = $this->getMockBuilder(AnalyticsToken::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->responseResolverMock = $this->createMock(ResponseResolver::class);
-
+        $this->responseResolverMock = $this->getMockBuilder(ResponseResolver::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        
         $this->subject = new OTPRequest(
             $this->analyticsTokenMock,
             $this->httpClientMock,
@@ -87,7 +92,7 @@ class OTPRequestTest extends TestCase
             'otp' => 'thisisotp',
             'url' => 'http://www.mystore.com',
             'access-token' => 'thisisaccesstoken',
-            'method' => ZendClient::POST,
+            'method' => \Magento\Framework\HTTP\ZendClient::POST,
             'body'=> ['access-token' => 'thisisaccesstoken','url' => 'http://www.mystore.com'],
         ];
     }
@@ -106,7 +111,7 @@ class OTPRequestTest extends TestCase
             ->method('getToken')
             ->willReturn($data['access-token']);
 
-        $this->configMock
+        $this->configMock->expects($this->any())
             ->method('getValue')
             ->willReturn($data['url']);
 
@@ -157,7 +162,7 @@ class OTPRequestTest extends TestCase
             ->method('getToken')
             ->willReturn($data['access-token']);
 
-        $this->configMock
+        $this->configMock->expects($this->any())
             ->method('getValue')
             ->willReturn($data['url']);
 

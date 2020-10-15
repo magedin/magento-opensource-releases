@@ -3,18 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Observer;
 
 use Magento\Customer\Model\AuthenticationInterface;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Observer\CustomerLoginSuccessObserver;
-use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Observer\CustomerLoginSuccessObserver;
 
-class CustomerLoginSuccessObserverTest extends TestCase
+/**
+ * Class CustomerLoginSuccessObserverTest
+ */
+class CustomerLoginSuccessObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Authentication
@@ -24,7 +22,7 @@ class CustomerLoginSuccessObserverTest extends TestCase
     protected $authenticationMock;
 
     /**
-     * @var Customer
+     * @var \Magento\Customer\Model\Customer
      */
     protected $customerModelMock;
 
@@ -36,11 +34,11 @@ class CustomerLoginSuccessObserverTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->authenticationMock = $this->getMockForAbstractClass(AuthenticationInterface::class);
+        $this->authenticationMock = $this->createMock(AuthenticationInterface::class);
 
-        $this->customerModelMock = $this->createPartialMock(Customer::class, ['getId']);
+        $this->customerModelMock = $this->createPartialMock(\Magento\Customer\Model\Customer::class, ['getId']);
         $this->customerLoginSuccessObserver = new CustomerLoginSuccessObserver(
             $this->authenticationMock
         );
@@ -52,8 +50,8 @@ class CustomerLoginSuccessObserverTest extends TestCase
     public function testExecute()
     {
         $customerId = 1;
-        $observerMock = $this->createMock(Observer::class);
-        $eventMock = $this->createPartialMock(Event::class, ['getData']);
+        $observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getData']);
         $observerMock->expects($this->once())
             ->method('getEvent')
             ->willReturn($eventMock);

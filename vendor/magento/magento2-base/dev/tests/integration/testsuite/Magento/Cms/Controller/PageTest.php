@@ -15,24 +15,10 @@ use Magento\TestFramework\Helper\Bootstrap;
 
 class PageTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        Bootstrap::getObjectManager()->configure([
-            'preferences' => [
-                \Magento\Cms\Model\Page\CustomLayoutManagerInterface::class =>
-                    \Magento\TestFramework\Cms\Model\CustomLayoutManager::class
-            ]
-        ]);
-        parent::setUp();
-    }
-
     public function testViewAction()
     {
         $this->dispatch('/enable-cookies');
-        $this->assertStringContainsString('What are Cookies?', $this->getResponse()->getBody());
+        $this->assertContains('What are Cookies?', $this->getResponse()->getBody());
     }
 
     public function testViewRedirectWithTrailingSlash()
@@ -55,7 +41,7 @@ class PageTest extends \Magento\TestFramework\TestCase\AbstractController
             \Magento\Framework\View\LayoutInterface::class
         );
         $breadcrumbsBlock = $layout->getBlock('breadcrumbs');
-        $this->assertStringContainsString($breadcrumbsBlock->toHtml(), $this->getResponse()->getBody());
+        $this->assertContains($breadcrumbsBlock->toHtml(), $this->getResponse()->getBody());
     }
 
     /**
@@ -65,7 +51,7 @@ class PageTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->dispatch('/shipping');
         $content = $this->getResponse()->getBody();
-        $this->assertStringContainsString('Shipping Test Page', $content);
+        $this->assertContains('Shipping Test Page', $content);
     }
 
     public static function cmsPageWithSystemRouteFixture()
@@ -98,21 +84,5 @@ class PageTest extends \Magento\TestFramework\TestCase\AbstractController
         $layout = Bootstrap::getObjectManager()->get(LayoutInterface::class);
         $handles = $layout->getUpdate()->getHandles();
         $this->assertContains('cms_page_view_selectable_test_custom_layout_page_3_test_selected', $handles);
-    }
-
-    /**
-     * Check home page custom handle is applied when rendering a page.
-     *
-     * @return void
-     * @throws \Throwable
-     * @magentoDataFixture Magento/Cms/_files/home_with_custom_handle.php
-     */
-    public function testHomePageCustomHandles(): void
-    {
-        $this->dispatch('/');
-        /** @var LayoutInterface $layout */
-        $layout = Bootstrap::getObjectManager()->get(LayoutInterface::class);
-        $handles = $layout->getUpdate()->getHandles();
-        $this->assertContains('cms_page_view_selectable_home_page_custom_layout', $handles);
     }
 }

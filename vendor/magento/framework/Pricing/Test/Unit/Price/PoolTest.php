@@ -3,20 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Pricing\Test\Unit\Price;
 
-use Magento\Framework\Pricing\Price\Pool;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\Price\Pool;
 
 /**
  * Test for Pool
  */
-class PoolTest extends TestCase
+class PoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Pool
+     * @var \Magento\Framework\Pricing\Price\Pool
      */
     protected $pool;
 
@@ -38,7 +36,7 @@ class PoolTest extends TestCase
     /**
      * Test setUp
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->prices = [
             'regular_price' => 'RegularPrice',
@@ -81,9 +79,9 @@ class PoolTest extends TestCase
         $this->assertEquals('SpecialPrice', $this->pool['special_price']);
         $this->pool['fake_price'] = 'FakePrice';
         $this->assertEquals('FakePrice', $this->pool['fake_price']);
-        $this->assertArrayHasKey('fake_price', $this->pool);
+        $this->assertTrue(isset($this->pool['fake_price']));
         unset($this->pool['fake_price']);
-        $this->assertArrayNotHasKey('fake_price', $this->pool);
+        $this->assertFalse(isset($this->pool['fake_price']));
         $this->assertNull($this->pool['fake_price']);
     }
 

@@ -10,8 +10,6 @@ namespace Magento\CatalogSearch\Model\Indexer;
  *
  * @api
  * @since 100.2.0
- * @deprecated mysql search engine has been removed
- * @see \Magento\Elasticsearch
  */
 interface IndexSwitcherInterface
 {

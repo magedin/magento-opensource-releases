@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Vault\Test\Unit\Observer;
 
@@ -12,19 +11,19 @@ use Magento\Framework\Encryption\Encryptor;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Math\Random;
 use Magento\Sales\Api\Data\OrderPaymentExtension;
+use Magento\Sales\Api\Data\OrderPaymentExtensionFactory;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Vault\Model\PaymentToken;
 use Magento\Vault\Model\PaymentTokenManagement;
 use Magento\Vault\Model\Ui\VaultConfigProvider;
 use Magento\Vault\Observer\AfterPaymentSaveObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test for payment observer.
  */
-class AfterPaymentSaveObserverTest extends TestCase
+class AfterPaymentSaveObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\Event\Observer|MockObject
@@ -32,27 +31,27 @@ class AfterPaymentSaveObserverTest extends TestCase
     protected $eventObserverArgMock;
 
     /**
-     * @var AfterPaymentSaveObserver
+     * @var \Magento\Vault\Observer\AfterPaymentSaveObserver
      */
     protected $observer;
 
     /**
-     * @var Encryptor
+     * @var \Magento\Framework\Encryption\Encryptor
      */
     protected $encryptorModel;
 
     /**
-     * @var OrderPaymentExtension|MockObject paymentExtension
+     * @var \Magento\Sales\Api\Data\OrderPaymentExtension|MockObject paymentExtension
      */
     protected $paymentExtension;
 
     /**
-     * @var PaymentTokenManagement|MockObject paymentTokenManagementMock
+     * @var \Magento\Vault\Model\PaymentTokenManagement|MockObject paymentTokenManagementMock
      */
     protected $paymentTokenManagementMock;
 
     /**
-     * @var PaymentToken|MockObject paymentTokenMock
+     * @var \Magento\Vault\Model\PaymentToken|MockObject paymentTokenMock
      */
     protected $paymentTokenMock;
 
@@ -69,7 +68,7 @@ class AfterPaymentSaveObserverTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var Random|MockObject $encryptorRandomGenerator */
         $encryptorRandomGenerator = $this->createMock(Random::class);

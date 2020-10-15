@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
-
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Label;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Label
  */
-class LabelTest extends TestCase
+class LabelTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
     /**
-     * @var Label
+     * @var \Magento\Framework\Data\Form\Element\Label
      */
     protected $_label;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $this->objectManager = new ObjectManager($this);
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $escaper = $this->objectManager->getObject(
-            Escaper::class
+            \Magento\Framework\Escaper::class
         );
-        $this->_label = new Label(
+        $this->_label = new \Magento\Framework\Data\Form\Element\Label(
             $factoryMock,
             $collectionFactoryMock,
             $escaper
@@ -57,9 +48,9 @@ class LabelTest extends TestCase
     {
         $this->_label->setValue('Label Text');
         $html = $this->_label->getElementHtml();
-        $this->assertStringContainsString("<div class=\"control-value\">Label Text", $html);
+        $this->assertContains("<div class=\"control-value\">Label Text", $html);
         $this->_label->setBold(true);
         $html = $this->_label->getElementHtml();
-        $this->assertStringContainsString("<div class=\"control-value special\">Label Text", $html);
+        $this->assertContains("<div class=\"control-value special\">Label Text", $html);
     }
 }

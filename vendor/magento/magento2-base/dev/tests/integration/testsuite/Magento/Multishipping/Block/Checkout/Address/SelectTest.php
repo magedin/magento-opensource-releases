@@ -16,7 +16,7 @@ class SelectTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Multishipping\Block\Checkout\Address\Select */
     protected $_selectBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_selectBlock = Bootstrap::getObjectManager()->create(
             \Magento\Multishipping\Block\Checkout\Address\Select::class

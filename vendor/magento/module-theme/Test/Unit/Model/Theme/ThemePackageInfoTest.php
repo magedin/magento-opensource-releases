@@ -3,22 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Theme;
 
-use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Theme\Model\Theme\ThemePackageInfo;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ThemePackageInfoTest extends TestCase
+class ThemePackageInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Read|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Read|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dirRead;
 
@@ -28,25 +20,25 @@ class ThemePackageInfoTest extends TestCase
     private $themePackageInfo;
 
     /**
-     * @var ComponentRegistrar|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrar|\PHPUnit_Framework_MockObject_MockObject
      */
     private $componentRegistrar;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dirReadFactory;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit_Framework_MockObject_MockObject */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->componentRegistrar = $this->createMock(ComponentRegistrar::class);
-        $this->dirRead = $this->createMock(Read::class);
-        $this->dirReadFactory = $this->createMock(ReadFactory::class);
+        $this->componentRegistrar = $this->createMock(\Magento\Framework\Component\ComponentRegistrar::class);
+        $this->dirRead = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
+        $this->dirReadFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
         $this->dirReadFactory->expects($this->any())->method('create')->willReturn($this->dirRead);
-        $this->serializerMock = $this->getMockBuilder(Json::class)
+        $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->getMock();
         $this->themePackageInfo = new ThemePackageInfo(
             $this->componentRegistrar,

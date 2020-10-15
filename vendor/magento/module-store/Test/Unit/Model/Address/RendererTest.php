@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Store\Test\Unit\Model\Address;
 
 use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Filter\FilterManager;
 use Magento\Store\Model\Address\Renderer;
-use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Renderer
@@ -25,16 +21,16 @@ class RendererTest extends TestCase
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $eventManager = $this->getMockBuilder(ManagerInterface::class)
+        $eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['dispatch'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $eventManager->expects($this->once())->method('dispatch')->with('store_address_format');
 
-        $filterManager = $this->getMockBuilder(FilterManager::class)
+        $filterManager = $this->getMockBuilder(\Magento\Framework\Filter\FilterManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['template'])
             ->getMock();

@@ -18,7 +18,7 @@ class ItemRepositoryTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Framework\Api\SearchCriteriaBuilder */
     private $searchCriteriaBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

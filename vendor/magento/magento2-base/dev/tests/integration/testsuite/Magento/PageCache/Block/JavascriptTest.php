@@ -7,7 +7,7 @@
 namespace Magento\PageCache\Block;
 
 /**
- * Test for \Magento\PageCache\Block\Javascript
+ * Class JavascriptTest
  */
 class JavascriptTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +21,7 @@ class JavascriptTest extends \PHPUnit\Framework\TestCase
      */
     protected $request;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -35,6 +35,6 @@ class JavascriptTest extends \PHPUnit\Framework\TestCase
     public function testGetScriptOptions()
     {
         $this->request->getQuery()->set('getparameter', 1);
-        $this->assertStringContainsString('?getparameter=1', $this->javascript->getScriptOptions());
+        $this->assertContains('?getparameter=1', $this->javascript->getScriptOptions());
     }
 }

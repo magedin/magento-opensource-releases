@@ -3,42 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Webapi\Test\Unit\Model\Authorization;
 
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Webapi\Model\Authorization\GuestUserContext;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\Webapi\Model\Authorization\GuestUserContext
  */
-class GuestUserContextTest extends TestCase
+class GuestUserContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var GuestUserContext
+     * @var \Magento\Webapi\Model\Authorization\GuestUserContext
      */
     protected $guestUserContext;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->guestUserContext = $this->objectManager->getObject(
-            GuestUserContext::class
+            \Magento\Webapi\Model\Authorization\GuestUserContext::class
         );
     }
 
     public function testGetUserId()
     {
-        $this->assertSame(0, $this->guestUserContext->getUserId());
+        $this->assertEquals(null, $this->guestUserContext->getUserId());
     }
 
     public function testGetUserType()

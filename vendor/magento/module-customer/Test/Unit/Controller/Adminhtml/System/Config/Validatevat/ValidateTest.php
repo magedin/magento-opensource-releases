@@ -3,70 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Controller\Adminhtml\System\Config\Validatevat;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Customer\Controller\Adminhtml\System\Config\Validatevat\Validate;
-use Magento\Customer\Model\Vat;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidateTest extends TestCase
+class ValidateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validate
+     * @var \Magento\Customer\Controller\Adminhtml\System\Config\Validatevat\Validate
      */
     protected $controller;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     protected $context;
 
     /**
-     * @var Json|MockObject
+     * @var \Magento\Framework\Controller\Result\Json | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultJson;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $resultJsonFactory = $this->mockResultJson();
 
-        $this->request = $this->getMockBuilder(Http::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->context = $objectManager->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->request,
                 'objectManager' => $this->objectManager,
             ]
         );
         $this->controller = $objectManager->getObject(
-            Validate::class,
+            \Magento\Customer\Controller\Adminhtml\System\Config\Validatevat\Validate::class,
             [
                 'context' => $this->context,
                 'resultJsonFactory' => $resultJsonFactory,
@@ -84,7 +70,7 @@ class ValidateTest extends TestCase
 
         $json = '{"valid":' . (int)$isValid . ',"message":"' . $requestMessage . '"}';
 
-        $gatewayResponse = new DataObject([
+        $gatewayResponse = new \Magento\Framework\DataObject([
             'is_valid' => $isValid,
             'request_message' => $requestMessage,
         ]);
@@ -96,7 +82,7 @@ class ValidateTest extends TestCase
                 ['vat', null, $vat],
             ]);
 
-        $vatMock = $this->getMockBuilder(Vat::class)
+        $vatMock = $this->getMockBuilder(\Magento\Customer\Model\Vat::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -107,7 +93,7 @@ class ValidateTest extends TestCase
 
         $this->objectManager->expects($this->once())
             ->method('get')
-            ->with(Vat::class)
+            ->with(\Magento\Customer\Model\Vat::class)
             ->willReturn($vatMock);
 
         $this->resultJson->expects($this->once())
@@ -122,15 +108,15 @@ class ValidateTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function mockResultJson()
     {
-        $this->resultJson = $this->getMockBuilder(Json::class)
+        $this->resultJson = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $resultJsonFactory = $this->getMockBuilder(JsonFactory::class)
+        $resultJsonFactory = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();

@@ -17,11 +17,11 @@ class PhpUnitTest extends \PHPUnit\Framework\TestCase
     protected $_object;
 
     /**
-     * @var \Magento\TestFramework\EventManager|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\EventManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_eventManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_eventManager = $this->getMockBuilder(\Magento\TestFramework\EventManager::class)
             ->setMethods(['fireEvent'])
@@ -30,7 +30,7 @@ class PhpUnitTest extends \PHPUnit\Framework\TestCase
         $this->_object = new \Magento\TestFramework\Event\PhpUnit($this->_eventManager);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         \Magento\TestFramework\Event\PhpUnit::setDefaultEventManager(null);
     }
@@ -43,11 +43,10 @@ class PhpUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testConstructorException()
     {
-        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         new \Magento\TestFramework\Event\Magento();
     }
 

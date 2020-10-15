@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model;
 
 use Magento\Payment\Helper\Data;
 use Magento\Payment\Model\CcConfig;
 use Magento\Payment\Model\CcGenericConfigProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CcGenericConfigProviderTest extends TestCase
+class CcGenericConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var CcGenericConfigProvider */
     protected $model;
 
-    /** @var CcConfig|MockObject */
+    /** @var CcConfig|\PHPUnit_Framework_MockObject_MockObject */
     protected $ccConfigMock;
 
-    /** @var Data|MockObject */
+    /** @var Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $paymentHelperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->ccConfigMock = $this->createMock(CcConfig::class);
-        $this->paymentHelperMock = $this->createMock(Data::class);
+        $this->ccConfigMock = $this->createMock(\Magento\Payment\Model\CcConfig::class);
+        $this->paymentHelperMock = $this->createMock(\Magento\Payment\Helper\Data::class);
 
         $this->model = new CcGenericConfigProvider(
             $this->ccConfigMock,

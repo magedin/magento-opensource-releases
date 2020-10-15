@@ -204,10 +204,11 @@ class LoginPost extends AbstractAccount implements CsrfAwareActionInterface, Htt
                         return $resultRedirect;
                     }
                 } catch (EmailNotConfirmedException $e) {
-                    $this->messageManager->addComplexErrorMessage(
-                        'confirmAccountErrorMessage',
-                        ['url' => $this->customerUrl->getEmailConfirmationUrl($login['username'])]
-                    );
+                    $value = $this->customerUrl->getEmailConfirmationUrl($login['username']);
+                    $this->messageManager->addError(__(
+                        'This account is not confirmed. <a href="%1">Click here</a> to resend confirmation email.',
+                        $value
+                    ));
                     $this->session->setUsername($login['username']);
                 } catch (AuthenticationException $e) {
                     $message = __(

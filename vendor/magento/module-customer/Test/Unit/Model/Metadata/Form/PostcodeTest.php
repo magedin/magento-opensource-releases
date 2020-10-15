@@ -3,22 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
 
-use Magento\Customer\Model\Metadata\Form\Postcode;
 use Magento\Directory\Helper\Data as DirectoryHelper;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Customer\Model\Metadata\Form\Postcode;
 
 class PostcodeTest extends AbstractFormTestCase
 {
     /**
-     * @var DirectoryHelper|MockObject
+     * @var DirectoryHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directoryHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -35,7 +33,7 @@ class PostcodeTest extends AbstractFormTestCase
      */
     protected function getClass($value)
     {
-        return new Postcode(
+        return new \Magento\Customer\Model\Metadata\Form\Postcode(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,

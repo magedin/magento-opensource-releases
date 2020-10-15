@@ -13,15 +13,11 @@ use Magento\Ui\Model\UiComponentTypeResolver;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Escaper;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\ResultInterface;
 
 /**
  * Render a component.
  *
  * @SuppressWarnings(PHPMD.AllPurposeAction)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Render extends AbstractAction
 {
@@ -72,9 +68,7 @@ class Render extends AbstractAction
     }
 
     /**
-     * Render a component
-     *
-     * @return ResponseInterface|Json|ResultInterface|void
+     * @inheritdoc
      */
     public function execute()
     {
@@ -96,8 +90,8 @@ class Render extends AbstractAction
                 /** @var \Magento\Framework\Controller\Result\Json $resultJson */
                 $resultJson = $this->resultJsonFactory->create();
                 $resultJson->setStatusHeader(
-                    \Laminas\Http\Response::STATUS_CODE_403,
-                    \Laminas\Http\AbstractMessage::VERSION_11,
+                    \Zend\Http\Response::STATUS_CODE_403,
+                    \Zend\Http\AbstractMessage::VERSION_11,
                     'Forbidden'
                 );
                 return $resultJson->setData([
@@ -114,8 +108,8 @@ class Render extends AbstractAction
             /** @var \Magento\Framework\Controller\Result\Json $resultJson */
             $resultJson = $this->resultJsonFactory->create();
             $resultJson->setStatusHeader(
-                \Laminas\Http\Response::STATUS_CODE_400,
-                \Laminas\Http\AbstractMessage::VERSION_11,
+                \Zend\Http\Response::STATUS_CODE_400,
+                \Zend\Http\AbstractMessage::VERSION_11,
                 'Bad Request'
             );
 
@@ -129,8 +123,8 @@ class Render extends AbstractAction
             /** @var \Magento\Framework\Controller\Result\Json $resultJson */
             $resultJson = $this->resultJsonFactory->create();
             $resultJson->setStatusHeader(
-                \Laminas\Http\Response::STATUS_CODE_400,
-                \Laminas\Http\AbstractMessage::VERSION_11,
+                \Zend\Http\Response::STATUS_CODE_400,
+                \Zend\Http\AbstractMessage::VERSION_11,
                 'Bad Request'
             );
 

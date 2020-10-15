@@ -22,7 +22,7 @@ class AdminTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helper = Bootstrap::getObjectManager()->create(Admin::class);
     }

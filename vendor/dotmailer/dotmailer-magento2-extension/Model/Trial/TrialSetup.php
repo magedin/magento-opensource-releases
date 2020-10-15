@@ -413,7 +413,6 @@ class TrialSetup
 
         $store = $this->helper->storeManager->getStore();
         $baseUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_WEB, $store->isCurrentlySecure());
-        // @codingStandardsIgnoreLine
         $baseUrlParsed = parse_url($baseUrl);
         $magentoHost = sprintf(
             '%s://%s%s',
@@ -424,15 +423,15 @@ class TrialSetup
 
         // get the magento edition
         switch ($this->productMetadata->getEdition()) {
-            case 'B2B':
+            case 'B2B' :
                 $magentoEdition = self::EDITION_EE_B2B;
                 break;
 
-            case 'Enterprise':
+            case 'Enterprise' :
                 $magentoEdition = self::EDITION_EE;
                 break;
 
-            default:
+            default :
                 $magentoEdition = self::EDITION_CE;
         }
 
@@ -472,7 +471,6 @@ class TrialSetup
      */
     public function getTrialSignupHostAndScheme()
     {
-        // @codingStandardsIgnoreLine
         $url = parse_url($this->getTrialSignupBaseUrl());
         return sprintf(
             '%s://%s%s',

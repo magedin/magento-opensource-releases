@@ -34,7 +34,7 @@ class DeleteAttributeControllerErrorTest extends AbstractDeleteAttributeControll
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->escaper = $this->_objectManager->get(Escaper::class);

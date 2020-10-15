@@ -14,6 +14,5 @@
         </annotations>
 
         <waitForElementVisible selector="{{AdminHeaderSection.adminUserAccountText}}" stepKey="waitForAdminAccountTextVisible"/>
-        <seeElement selector="{{AdminHeaderSection.adminUserAccountText}}" stepKey="assertAdminAccountTextElement"/>
     </actionGroup>
 </actionGroups>

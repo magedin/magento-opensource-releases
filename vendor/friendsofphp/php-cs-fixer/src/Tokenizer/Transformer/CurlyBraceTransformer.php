@@ -82,7 +82,9 @@ final class CurlyBraceTransformer extends AbstractTransformer
      *
      * This should be done at very beginning of curly braces transformations.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param Token  $token
+     * @param int    $index
      */
     private function transformIntoCurlyCloseBrace(Tokens $tokens, Token $token, $index)
     {

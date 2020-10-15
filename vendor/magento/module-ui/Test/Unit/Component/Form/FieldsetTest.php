@@ -1,24 +1,20 @@
 <?php
-
+declare(strict_types=1);
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form;
 
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Ui\Component\Form\Fieldset;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
 /**
  * Class FieldTest
  *
  * Test for class \Magento\Ui\Component\Form\Fieldset
  */
-class FieldsetTest extends TestCase
+class FieldsetTest extends \PHPUnit\Framework\TestCase
 {
     const NAME = 'fieldset';
 
@@ -28,7 +24,7 @@ class FieldsetTest extends TestCase
     protected $fieldset;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
@@ -37,9 +33,9 @@ class FieldsetTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
 
         $this->fieldset = new Fieldset(

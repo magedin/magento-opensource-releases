@@ -3,45 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CmsUrlRewrite\Test\Unit\Plugin\Cms\Model\ResourceModel;
 
-use Magento\CmsUrlRewrite\Model\CmsPageUrlRewriteGenerator;
-use Magento\CmsUrlRewrite\Plugin\Cms\Model\ResourceModel\Page;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\UrlRewrite\Model\UrlPersistInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\CmsUrlRewrite\Model\CmsPageUrlRewriteGenerator;
 
-class PageTest extends TestCase
+class PageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Page
+     * @var \Magento\CmsUrlRewrite\Plugin\Cms\Model\ResourceModel\Page
      */
     protected $pageObject;
 
     /**
-     * @var UrlPersistInterface|MockObject
+     * @var \Magento\UrlRewrite\Model\UrlPersistInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlPersistMock;
 
     /**
-     * @var \Magento\Cms\Model\Page|MockObject
+     * @var \Magento\Cms\Model\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cmsPageMock;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Page|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cmsPageResourceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->urlPersistMock = $this->getMockBuilder(UrlPersistInterface::class)
+        $this->urlPersistMock = $this->getMockBuilder(\Magento\UrlRewrite\Model\UrlPersistInterface::class)
             ->getMockForAbstractClass();
 
         $this->cmsPageMock = $this->getMockBuilder(\Magento\Cms\Model\Page::class)
@@ -53,7 +46,7 @@ class PageTest extends TestCase
             ->getMock();
 
         $this->pageObject = $objectManager->getObject(
-            Page::class,
+            \Magento\CmsUrlRewrite\Plugin\Cms\Model\ResourceModel\Page::class,
             [
                 'urlPersist' => $this->urlPersistMock
             ]

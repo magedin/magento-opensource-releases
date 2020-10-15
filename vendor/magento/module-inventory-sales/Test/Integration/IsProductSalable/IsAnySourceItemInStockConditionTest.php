@@ -11,16 +11,16 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockItemCriteriaInterfaceFactory;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 class IsAnySourceItemInStockConditionTest extends TestCase
 {
     /**
-     * @var AreProductsSalableInterface
+     * @var IsProductSalableInterface
      */
-    private $areProductsSalable;
+    private $isProductSalable;
 
     /**
      * @var ProductRepositoryInterface
@@ -37,24 +37,23 @@ class IsAnySourceItemInStockConditionTest extends TestCase
      */
     private $stockItemRepository;
 
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
-        $this->areProductsSalable = $objectManager->get(AreProductsSalableInterface::class);
+        $this->isProductSalable = $objectManager->get(
+            IsProductSalableInterface::class
+        );
         $this->productRepository = $objectManager->get(ProductRepositoryInterface::class);
         $this->stockItemCriteriaFactory = $objectManager->get(StockItemCriteriaInterfaceFactory::class);
         $this->stockItemRepository = $objectManager->get(StockItemRepositoryInterface::class);
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
      *
      * @dataProvider sourceItemsStockData
      *
@@ -79,9 +78,7 @@ class IsAnySourceItemInStockConditionTest extends TestCase
         $legacyStockItem->setBackorders(1);
         $legacyStockItem->setUseConfigBackorders(0);
         $this->stockItemRepository->save($legacyStockItem);
-        $result = $this->areProductsSalable->execute([$sku], $stockId);
-        $result = current($result);
-        $this->assertEquals($expected, $result->isSalable());
+        $this->assertEquals($expected, $this->isProductSalable->execute($sku, $stockId));
     }
 
     /**

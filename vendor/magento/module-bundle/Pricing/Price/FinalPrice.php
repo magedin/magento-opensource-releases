@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Pricing\Price;
 
-use Magento\Bundle\Model\Product\Price;
-use Magento\Catalog\Api\ProductCustomOptionRepositoryInterface;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Pricing\Price\CustomOptionPrice;
 use Magento\Framework\Pricing\Adjustment\CalculatorInterface;
-use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Catalog\Pricing\Price\CustomOptionPrice;
+use Magento\Bundle\Model\Product\Price;
+use Magento\Framework\App\ObjectManager;
+use Magento\Catalog\Api\ProductCustomOptionRepositoryInterface;
 
 /**
  * Final price model
@@ -21,27 +19,27 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements FinalPriceInterface
 {
     /**
-     * @var AmountInterface
+     * @var \Magento\Framework\Pricing\Amount\AmountInterface
      */
     protected $maximalPrice;
 
     /**
-     * @var AmountInterface
+     * @var \Magento\Framework\Pricing\Amount\AmountInterface
      */
     protected $minimalPrice;
 
     /**
-     * @var AmountInterface
+     * @var \Magento\Framework\Pricing\Amount\AmountInterface
      */
     protected $priceWithoutOption;
 
     /**
-     * @var BundleOptionPrice
+     * @var \Magento\Bundle\Pricing\Price\BundleOptionPrice
      */
     protected $bundleOptionPrice;
 
     /**
-     * @var ProductCustomOptionRepositoryInterface
+     * @var \Magento\Catalog\Api\ProductCustomOptionRepositoryInterface
      */
     private $productOptionRepository;
 
@@ -49,18 +47,15 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
      * @param Product $saleableItem
      * @param float $quantity
      * @param CalculatorInterface $calculator
-     * @param PriceCurrencyInterface $priceCurrency
-     * @param ProductCustomOptionRepositoryInterface $productOptionRepository
+     * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
      */
     public function __construct(
         Product $saleableItem,
         $quantity,
         CalculatorInterface $calculator,
-        PriceCurrencyInterface $priceCurrency,
-        ProductCustomOptionRepositoryInterface $productOptionRepository
+        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
     ) {
         parent::__construct($saleableItem, $quantity, $calculator, $priceCurrency);
-        $this->productOptionRepository = $productOptionRepository;
     }
 
     /**
@@ -70,33 +65,49 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
      */
     public function getValue()
     {
-        return parent::getValue() + $this->getBundleOptionPrice()->getValue();
+        return parent::getValue() +
+            $this->getBundleOptionPrice()->getValue();
     }
 
     /**
      * Returns max price
      *
-     * @return AmountInterface
+     * @return \Magento\Framework\Pricing\Amount\AmountInterface
      */
     public function getMaximalPrice()
     {
         if (!$this->maximalPrice) {
             $price = $this->getBasePrice()->getValue();
             if ($this->product->getPriceType() == Price::PRICE_TYPE_FIXED) {
-                /** @var CustomOptionPrice $customOptionPrice */
+                /** @var \Magento\Catalog\Pricing\Price\CustomOptionPrice $customOptionPrice */
                 $customOptionPrice = $this->priceInfo->getPrice(CustomOptionPrice::PRICE_CODE);
                 $price += $customOptionPrice->getCustomOptionRange(false);
             }
             $this->maximalPrice = $this->calculator->getMaxAmount($price, $this->product);
         }
-
         return $this->maximalPrice;
+    }
+
+    /**
+     * Return ProductCustomOptionRepository
+     *
+     * @return ProductCustomOptionRepositoryInterface
+     * @deprecated 100.1.0
+     */
+    private function getProductOptionRepository()
+    {
+        if (!$this->productOptionRepository) {
+            $this->productOptionRepository = ObjectManager::getInstance()->get(
+                ProductCustomOptionRepositoryInterface::class
+            );
+        }
+        return $this->productOptionRepository;
     }
 
     /**
      * Returns min price
      *
-     * @return AmountInterface
+     * @return \Magento\Framework\Pricing\Amount\AmountInterface
      */
     public function getMinimalPrice()
     {
@@ -106,7 +117,7 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
     /**
      * Returns price amount
      *
-     * @return AmountInterface
+     * @return \Magento\Framework\Pricing\Amount\AmountInterface
      */
     public function getAmount()
     {
@@ -114,7 +125,7 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
             $price = parent::getValue();
             if ($this->product->getPriceType() == Price::PRICE_TYPE_FIXED) {
                 $this->loadProductCustomOptions();
-                /** @var CustomOptionPrice $customOptionPrice */
+                /** @var \Magento\Catalog\Pricing\Price\CustomOptionPrice $customOptionPrice */
                 $customOptionPrice = $this->priceInfo->getPrice(CustomOptionPrice::PRICE_CODE);
                 $price += $customOptionPrice->getCustomOptionRange(true);
             }
@@ -132,7 +143,7 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
     {
         if (!$this->product->getOptions()) {
             $options = [];
-            foreach ($this->productOptionRepository->getProductOptions($this->product) as $option) {
+            foreach ($this->getProductOptionRepository()->getProductOptions($this->product) as $option) {
                 $option->setProduct($this->product);
                 $options[] = $option;
             }
@@ -141,9 +152,9 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
     }
 
     /**
-     * Get bundle product price without any option
+     * get bundle product price without any option
      *
-     * @return AmountInterface
+     * @return \Magento\Framework\Pricing\Amount\AmountInterface
      */
     public function getPriceWithoutOption()
     {
@@ -156,7 +167,7 @@ class FinalPrice extends \Magento\Catalog\Pricing\Price\FinalPrice implements Fi
     /**
      * Returns option price
      *
-     * @return BundleOptionPrice
+     * @return \Magento\Bundle\Pricing\Price\BundleOptionPrice
      */
     protected function getBundleOptionPrice()
     {

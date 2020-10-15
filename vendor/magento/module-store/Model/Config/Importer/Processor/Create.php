@@ -160,7 +160,6 @@ class Create implements ProcessorInterface
      * @param array $items Groups to create
      * @param array $data The all available data
      * @return void
-     * @throws NotFoundException
      */
     private function createGroups(array $items, array $data)
     {
@@ -200,7 +199,6 @@ class Create implements ProcessorInterface
      * @param array $items Stores to create
      * @param array $data The all available data
      * @return void
-     * @throws NotFoundException
      */
     private function createStores(array $items, array $data)
     {

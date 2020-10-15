@@ -30,7 +30,7 @@ class ProgramEnrolmentSaverTest extends TestCase
      */
     private $model;
 
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->automationFactoryMock = $this->getMockBuilder(AutomationFactory::class)
             ->disableOriginalConstructor()

@@ -12,10 +12,11 @@ use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\OsInfo;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WindowsSmtpConfigTest extends TestCase
+/**
+ *  WindowsSmtpConfigTest
+ */
+class WindowsSmtpConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WindowsSmtpConfig
@@ -23,12 +24,12 @@ class WindowsSmtpConfigTest extends TestCase
     private $windowsSmtpConfig;
 
     /**
-     * @var OsInfo|MockObject
+     * @var OsInfo|\PHPUnit_Framework_MockObject_MockObject
      */
     private $osInfoMock;
 
     /**
-     * @var ReinitableConfigInterface|MockObject
+     * @var ReinitableConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
@@ -42,13 +43,13 @@ class WindowsSmtpConfigTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp(): void
     {
         $objectManager = new ObjectManager($this);
 
         $this->osInfoMock = $this->createMock(OsInfo::class);
-        $this->configMock = $this->getMockForAbstractClass(ReinitableConfigInterface::class);
-        $this->transportMock = $this->getMockForAbstractClass(TransportInterface::class);
+        $this->configMock = $this->createMock(ReinitableConfigInterface::class);
+        $this->transportMock = $this->createMock(TransportInterface::class);
 
         $this->windowsSmtpConfig = $objectManager->getObject(
             WindowsSmtpConfig::class,

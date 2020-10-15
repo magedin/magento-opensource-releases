@@ -3,12 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture(
-    'Magento/Catalog/_files/multiselect_attribute_with_source_model_rollback.php'
-);
+require __DIR__ . '/multiselect_attribute_with_source_model_rollback.php';
+
+use Magento\Framework\Indexer\IndexerRegistry;
+
 /**
  * Remove all products as strategy of isolation process
  */

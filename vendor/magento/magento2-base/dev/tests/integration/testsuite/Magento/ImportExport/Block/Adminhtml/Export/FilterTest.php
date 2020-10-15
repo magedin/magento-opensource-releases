@@ -50,7 +50,7 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         );
         $pieces = array_filter(explode('<strong>', $html));
         foreach ($pieces as $piece) {
-            $this->assertStringContainsString('dateFormat: "' . $dateFormat . '",', $piece);
+            $this->assertContains('dateFormat: "' . $dateFormat . '",', $piece);
         }
     }
 }

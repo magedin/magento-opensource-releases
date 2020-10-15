@@ -3,71 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Model\Plugin;
 
-use Magento\Catalog\Block\Product\AbstractProduct;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
-use Magento\Eav\Model\Config;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Swatches\Helper\Data;
-use Magento\Swatches\Model\Plugin\ProductImage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProductImageTest extends TestCase
+/**
+ * Class ProductImage replace original configurable product with first child
+ */
+class ProductImageTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Data|MockObject */
+    /** @var \Magento\Swatches\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $swatchesHelperMock;
 
-    /** @var AttributeFactory|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeFactoryMock;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\Eav\Model\Config|\PHPUnit_Framework_MockObject_MockObject */
     protected $eavConfigMock;
 
-    /** @var Attribute|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeMock;
 
-    /** @var Http|MockObject */
+    /** @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestMock;
 
-    /** @var Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject */
     protected $productMock;
 
-    /** @var ProductImage|ObjectManager */
+    /** @var \Magento\Swatches\Model\Plugin\ProductImage|\Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     protected $pluginModel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->swatchesHelperMock = $this->createPartialMock(
-            Data::class,
+            \Magento\Swatches\Helper\Data::class,
             ['loadVariationByFallback', 'isSwatchAttribute', 'isProductHasSwatch']
         );
 
         $this->attributeFactoryMock = $this->createPartialMock(
-            AttributeFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory::class,
             ['create']
         );
 
-        $this->eavConfigMock = $this->createMock(Config::class);
+        $this->eavConfigMock = $this->createMock(\Magento\Eav\Model\Config::class);
 
         $this->attributeMock = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
             ['loadByCode', 'getId', 'getUsedInProductListing', 'getIsFilterable', 'getData']
         );
 
-        $this->requestMock = $this->createPartialMock(Http::class, ['getParams']);
-        $this->productMock = $this->createMock(Product::class);
+        $this->requestMock = $this->createPartialMock(\Magento\Framework\App\Request\Http::class, ['getParams']);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->pluginModel = $objectManager->getObject(
-            ProductImage::class,
+            \Magento\Swatches\Model\Plugin\ProductImage::class,
             [
                 'swatchesHelperData' => $this->swatchesHelperMock,
                 'eavConfig' => $this->eavConfigMock,
@@ -103,7 +92,7 @@ class ProductImageTest extends TestCase
             ->with($this->productMock)
             ->willReturn(false);
 
-        $productImageMock = $this->createMock(AbstractProduct::class);
+        $productImageMock = $this->createMock(\Magento\Catalog\Block\Product\AbstractProduct::class);
 
         $result = $this->pluginModel->beforeGetImage($productImageMock, $this->productMock, $expected['page_handle']);
         $this->assertEquals([$this->productMock, $expected['page_handle'], []], $result);
@@ -165,7 +154,7 @@ class ProductImageTest extends TestCase
      */
     public function dataForTest()
     {
-        $productMock = $this->createMock(Product::class);
+        $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $productMock->expects($this->any())->method('getImage')->willReturn(false);
 
         return [

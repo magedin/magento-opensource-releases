@@ -3,22 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\ResourceModel\Report;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\SelectRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Model\FlagFactory;
-use Magento\SalesRule\Model\ResourceModel\Report\Rule;
-use Magento\SalesRule\Model\ResourceModel\Report\Rule\CreatedatFactory;
-use Magento\SalesRule\Model\ResourceModel\Report\Rule\UpdatedatFactory;
-use PHPUnit\Framework\TestCase;
-
-class RuleTest extends TestCase
+class RuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test table name
@@ -38,7 +25,7 @@ class RuleTest extends TestCase
 
     public function testGetUniqRulesNamesList()
     {
-        $dbAdapterMock = $this->getMockBuilder(Mysql::class)
+        $dbAdapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->setMethods(['_connect', 'quote'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -51,10 +38,10 @@ class RuleTest extends TestCase
                 }
             );
 
-        $selectRenderer = $this->getMockBuilder(SelectRenderer::class)
+        $selectRenderer = $this->getMockBuilder(\Magento\Framework\DB\Select\SelectRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $select = $this->getMockBuilder(Select::class)
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->setMethods(['from'])
             ->setConstructorArgs([$dbAdapterMock, $selectRenderer])
             ->getMock();
@@ -65,42 +52,42 @@ class RuleTest extends TestCase
         )->with(
             self::TABLE_NAME,
             $this->isInstanceOf('Zend_Db_Expr')
-        )->willReturn(
-            $select
+        )->will(
+            $this->returnValue($select)
         );
 
         $connectionMock = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['select', 'fetchAll']
         );
-        $connectionMock->expects($this->once())->method('select')->willReturn($select);
+        $connectionMock->expects($this->once())->method('select')->will($this->returnValue($select));
         $connectionMock->expects(
             $this->once()
         )->method(
             'fetchAll'
         )->with(
             $select
-        )->willReturnCallback(
-            [$this, 'fetchAllCallback']
+        )->will(
+            $this->returnCallback([$this, 'fetchAllCallback'])
         );
 
-        $resourceMock = $this->createMock(ResourceConnection::class);
-        $resourceMock->expects($this->any())->method('getConnection')->willReturn($connectionMock);
-        $resourceMock->expects($this->once())->method('getTableName')->willReturn(self::TABLE_NAME);
+        $resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $resourceMock->expects($this->any())->method('getConnection')->will($this->returnValue($connectionMock));
+        $resourceMock->expects($this->once())->method('getTableName')->will($this->returnValue(self::TABLE_NAME));
 
-        $flagFactory = $this->createMock(FlagFactory::class);
+        $flagFactory = $this->createMock(\Magento\Reports\Model\FlagFactory::class);
         $createdatFactoryMock = $this->createPartialMock(
-            CreatedatFactory::class,
+            \Magento\SalesRule\Model\ResourceModel\Report\Rule\CreatedatFactory::class,
             ['create']
         );
         $updatedatFactoryMock = $this->createPartialMock(
-            UpdatedatFactory::class,
+            \Magento\SalesRule\Model\ResourceModel\Report\Rule\UpdatedatFactory::class,
             ['create']
         );
 
-        $objectHelper = new ObjectManager($this);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $model = $objectHelper->getObject(
-            Rule::class,
+            \Magento\SalesRule\Model\ResourceModel\Report\Rule::class,
             [
                 'resource' => $resourceMock,
                 'reportsFlagFactory' => $flagFactory,
@@ -119,17 +106,17 @@ class RuleTest extends TestCase
     /**
      * Check structure of sql query
      *
-     * @param Select $select
+     * @param \Magento\Framework\DB\Select $select
      * @return array
      */
-    public function fetchAllCallback(Select $select)
+    public function fetchAllCallback(\Magento\Framework\DB\Select $select)
     {
-        $whereParts = $select->getPart(Select::WHERE);
+        $whereParts = $select->getPart(\Magento\Framework\DB\Select::WHERE);
         $this->assertCount(2, $whereParts);
-        $this->assertStringContainsString("rule_name IS NOT NULL", $whereParts[0]);
-        $this->assertStringContainsString("rule_name <> ''", $whereParts[1]);
+        $this->assertContains("rule_name IS NOT NULL", $whereParts[0]);
+        $this->assertContains("rule_name <> ''", $whereParts[1]);
 
-        $orderParts = $select->getPart(Select::ORDER);
+        $orderParts = $select->getPart(\Magento\Framework\DB\Select::ORDER);
         $this->assertCount(1, $orderParts);
         $expectedOrderParts = ['rule_name', 'ASC'];
         $this->assertEquals($expectedOrderParts, $orderParts[0]);

@@ -3,30 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Response\Validator;
 
-use Magento\Framework\DataObject;
 use Magento\Paypal\Model\Payflow\Service\Response\Validator\SecureToken;
 use Magento\Paypal\Model\Payflow\Transparent;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class SecureTokenTest
  *
  * Test class for \Magento\Paypal\Model\Payflow\Service\Response\Validator\SecureToken
  */
-class SecureTokenTest extends TestCase
+class SecureTokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SecureToken
+     * @var \Magento\Paypal\Model\Payflow\Service\Response\Validator\SecureToken
      */
     protected $validator;
 
     /**
-     * @var Transparent|MockObject
+     * @var Transparent| \PHPUnit_Framework_MockObject_MockObject
      */
     protected $payflowFacade;
 
@@ -35,9 +30,9 @@ class SecureTokenTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->validator = new SecureToken();
+        $this->validator = new \Magento\Paypal\Model\Payflow\Service\Response\Validator\SecureToken();
         $this->payflowFacade = $this->getMockBuilder(Transparent::class)
             ->disableOriginalConstructor()
             ->setMethods([])
@@ -46,11 +41,11 @@ class SecureTokenTest extends TestCase
 
     /**
      * @param bool $result
-     * @param DataObject $response
+     * @param \Magento\Framework\DataObject $response
      *
      * @dataProvider validationDataProvider
      */
-    public function testValidation($result, DataObject $response)
+    public function testValidation($result, \Magento\Framework\DataObject $response)
     {
         $this->assertEquals($result, $this->validator->validate($response, $this->payflowFacade));
     }
@@ -63,7 +58,7 @@ class SecureTokenTest extends TestCase
         return [
             [
                 'result' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => 'kcsakc;lsakc;lksa;kcsa;',
                         'result' => 0 // - good code
@@ -72,7 +67,7 @@ class SecureTokenTest extends TestCase
             ],
             [
                 'result' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => 'kcsakc;lsakc;lksa;kcsa;',
                         'result' => SecureToken::ST_ALREADY_USED
@@ -81,7 +76,7 @@ class SecureTokenTest extends TestCase
             ],
             [
                 'result' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => 'kcsakc;lsakc;lksa;kcsa;',
                         'result' => SecureToken::ST_EXPIRED
@@ -90,7 +85,7 @@ class SecureTokenTest extends TestCase
             ],
             [
                 'result' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => 'kcsakc;lsakc;lksa;kcsa;',
                         'result' => SecureToken::ST_TRANSACTION_IN_PROCESS
@@ -99,7 +94,7 @@ class SecureTokenTest extends TestCase
             ],
             [
                 'result' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => 'kcsakc;lsakc;lksa;kcsa;',
                         'result' => 'BAD_CODE'
@@ -108,7 +103,7 @@ class SecureTokenTest extends TestCase
             ],
             [
                 'result' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'securetoken' => null, // -
                         'result' => SecureToken::ST_TRANSACTION_IN_PROCESS

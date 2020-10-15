@@ -24,7 +24,7 @@ class TemplateDirectiveTest extends TestCase
      */
     private $filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = ObjectManager::getInstance();
         $this->filter = $objectManager->create(Template::class);

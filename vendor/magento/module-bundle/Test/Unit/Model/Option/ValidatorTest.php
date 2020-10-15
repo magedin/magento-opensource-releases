@@ -3,34 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Model\Option;
 
-use Magento\Bundle\Model\Option;
-use Magento\Bundle\Model\Option\Validator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Validator\NotEmpty;
-use Magento\Framework\Validator\NotEmptyFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Bundle\Model\Option\Validator
      */
     private $validator;
 
     /**
      * SetUp method for unit test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
-        $validate = $helper->getObject(NotEmpty::class, ['options' => NotEmpty::ALL]);
+        $validate = $helper->getObject(\Magento\Framework\Validator\NotEmpty::class, ['options' => NotEmpty::ALL]);
 
-        $validateFactory = $this->getMockBuilder(NotEmptyFactory::class)
+        $validateFactory = $this->getMockBuilder(\Magento\Framework\Validator\NotEmptyFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -39,7 +33,7 @@ class ValidatorTest extends TestCase
             ->willReturn($validate);
 
         $this->validator = $helper->getObject(
-            Validator::class,
+            \Magento\Bundle\Model\Option\Validator::class,
             ['notEmptyFactory' => $validateFactory]
         );
     }
@@ -55,8 +49,8 @@ class ValidatorTest extends TestCase
      */
     public function testIsValid($title, $type, $isValid, $expectedMessages)
     {
-        /** @var MockObject|Option $option */
-        $option = $this->getMockBuilder(Option::class)
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Bundle\Model\Option $option */
+        $option = $this->getMockBuilder(\Magento\Bundle\Model\Option::class)
             ->setMethods(['getTitle', 'getType'])
             ->disableOriginalConstructor()
             ->getMock();

@@ -167,7 +167,6 @@ class ConfigurablePanel extends AbstractModifier
                                         'imports' => [
                                             'visible' => '!ns = ${ $.ns }, index = '
                                                 . ConfigurablePanel::CONFIGURABLE_MATRIX . ':isEmpty',
-                                            '__disableTmpl' => ['visible' => false],
                                         ],
                                     ],
                                 ],
@@ -186,7 +185,6 @@ class ConfigurablePanel extends AbstractModifier
                                         'imports' => [
                                             'visible' => 'ns = ${ $.ns }, index = '
                                                 . ConfigurablePanel::CONFIGURABLE_MATRIX . ':isEmpty',
-                                            '__disableTmpl' => ['visible' => false],
                                         ],
                                     ],
                                 ],
@@ -286,7 +284,6 @@ class ConfigurablePanel extends AbstractModifier
                         ),
                         'template' => 'ui/form/components/complex',
                         'createConfigurableButton' => 'ns = ${ $.ns }, index = create_configurable_products_button',
-                        '__disableTmpl' => ['createConfigurableButton' => false],
                     ],
                 ],
             ],
@@ -317,7 +314,6 @@ class ConfigurablePanel extends AbstractModifier
                                 'imports' => [
                                     'visible' => 'ns = ${ $.ns }, index = '
                                         . ConfigurablePanel::CONFIGURABLE_MATRIX . ':isShowAddProductButton',
-                                    '__disableTmpl' => ['visible' => false],
                                 ],
                             ],
                         ],
@@ -396,11 +392,6 @@ class ConfigurablePanel extends AbstractModifier
                             'insertDataFromGrid' => '${$.provider}:${$.dataProviderFromGrid}',
                             'insertDataFromWizard' => '${$.provider}:${$.dataProviderFromWizard}',
                             'changeDataFromGrid' => '${$.provider}:${$.dataProviderChangeFromGrid}',
-                            '__disableTmpl' => [
-                                'insertDataFromGrid' => false,
-                                'insertDataFromWizard' => false,
-                                'changeDataFromGrid' => false
-                            ],
                         ],
                         'sortOrder' => 20,
                         'columnsHeader' => false,
@@ -454,11 +445,6 @@ class ConfigurablePanel extends AbstractModifier
                                 'thumbnailUrl' => '${$.provider}:${$.parentScope}.thumbnail_image',
                                 'thumbnail' => '${$.provider}:${$.parentScope}.thumbnail',
                                 'smallImage' => '${$.provider}:${$.parentScope}.small_image',
-                                '__disableTmpl' => [
-                                    'thumbnailUrl' => false,
-                                    'thumbnail' => false,
-                                    'smallImage' => false
-                                ],
                             ],
                             'uploaderConfig' => [
                                 'url' => $this->urlBuilder->getUrl(
@@ -496,10 +482,7 @@ class ConfigurablePanel extends AbstractModifier
                         'price',
                         __('Price'),
                         [
-                            'imports' => [
-                                'addbefore' => '${$.provider}:${$.parentScope}.price_currency',
-                                '__disableTmpl' => ['addbefore' => false],
-                            ],
+                            'imports' => ['addbefore' => '${$.provider}:${$.parentScope}.price_currency'],
                             'validation' => ['validate-zero-or-greater' => true]
                         ],
                         ['dataScope' => 'price_string']
@@ -581,8 +564,7 @@ class ConfigurablePanel extends AbstractModifier
             'fit' => true,
             'visibleIfCanEdit' => true,
             'imports' => [
-                'visible' => '${$.provider}:${$.parentScope}.canEdit',
-                '__disableTmpl' => ['visible' => false],
+                'visible' => '${$.provider}:${$.parentScope}.canEdit'
             ],
         ];
         $fieldText['arguments']['data']['config'] = [
@@ -594,8 +576,7 @@ class ConfigurablePanel extends AbstractModifier
             'visibleIfCanEdit' => false,
             'labelVisible' => false,
             'imports' => [
-                'visible' => '!${$.provider}:${$.parentScope}.canEdit',
-                '__disableTmpl' => ['visible' => false],
+                'visible' => '!${$.provider}:${$.parentScope}.canEdit'
             ],
         ];
         $fieldEdit['arguments']['data']['config'] = array_replace_recursive(

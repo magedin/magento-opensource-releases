@@ -25,7 +25,7 @@ class AddConfigurableProductToCartTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -144,12 +144,11 @@ QUERY;
      * @magentoApiDataFixture Magento/Catalog/_files/configurable_products_with_custom_attribute_layered_navigation.php
      * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
      *
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not find specified product.
      */
     public function testAddVariationFromAnotherConfigurableProductWithTheSameSuperAttributeToCart()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Could not find specified product.');
-
         $searchResponse = $this->graphQlQuery($this->getFetchProductQuery('configurable_12345'));
         $product = current($searchResponse['products']['items']);
 
@@ -173,12 +172,11 @@ QUERY;
      * @magentoApiDataFixture Magento/ConfigurableProduct/_files/configurable_products_with_different_super_attribute.php
      * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
      *
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not find specified product.
      */
     public function testAddVariationFromAnotherConfigurableProductWithDifferentSuperAttributeToCart()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Could not find specified product.');
-
         $searchResponse = $this->graphQlQuery($this->getFetchProductQuery('configurable_12345'));
         $product = current($searchResponse['products']['items']);
 
@@ -201,12 +199,11 @@ QUERY;
     /**
      * @magentoApiDataFixture Magento/ConfigurableProduct/_files/product_configurable_sku.php
      * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
+     * @expectedException Exception
+     * @expectedExceptionMessage The requested qty is not available
      */
     public function testAddProductIfQuantityIsNotAvailable()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The requested qty is not available');
-
         $searchResponse = $this->graphQlQuery($this->getFetchProductQuery('configurable'));
         $product = current($searchResponse['products']['items']);
 
@@ -227,12 +224,11 @@ QUERY;
     /**
      * @magentoApiDataFixture Magento/ConfigurableProduct/_files/product_configurable_sku.php
      * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not find a product with SKU "configurable_no_exist"
      */
     public function testAddNonExistentConfigurableProductParentToCart()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Could not find a product with SKU "configurable_no_exist"');
-
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_order_1');
         $parentSku = 'configurable_no_exist';
         $sku = 'simple_20';

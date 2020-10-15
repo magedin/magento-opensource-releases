@@ -10,20 +10,21 @@ namespace Magento\Email\Test\Unit\Block\Adminhtml\Template\Render;
 
 use Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Sender;
 use Magento\Framework\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SenderTest extends TestCase
+/**
+ * Class \Magento\Email\Test\Unit\Block\Adminhtml\Template\Render\SenderTest
+ */
+class SenderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Sender
+     * @var \PHPUnit_Framework_MockObject_MockObject|Sender
      */
     protected $block;
 
     /**
      * Setup environment
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->block = $this->getMockBuilder(Sender::class)
             ->disableOriginalConstructor()

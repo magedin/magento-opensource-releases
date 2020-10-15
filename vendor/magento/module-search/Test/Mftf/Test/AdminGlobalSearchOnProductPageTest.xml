@@ -20,40 +20,40 @@
         </annotations>
         <before>
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Delete product -->
-            <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductBySku" stepKey="deleteProduct">
                 <argument name="sku" value="{{SimpleProduct.sku}}"/>
             </actionGroup>
 
             <!-- Delete category -->
-            <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCreatedNewRootCategory">
+            <actionGroup ref="DeleteCategory" stepKey="deleteCreatedNewRootCategory">
                 <argument name="categoryEntity" value="_defaultCategory"/>
             </actionGroup>
 
             <!-- Logout -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create Simple Product -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="adminProductIndexPageAdd"/>
         <waitForPageLoad stepKey="waitForProductIndexPageLoad"/>
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateProductPage">
+        <actionGroup ref="goToCreateProductPage" stepKey="goToCreateProductPage">
             <argument name="product" value="SimpleProduct"/>
         </actionGroup>
-        <actionGroup ref="FillMainProductFormActionGroup" stepKey="fillProductForm">
+        <actionGroup ref="fillMainProductForm" stepKey="fillProductForm">
             <argument name="product" value="SimpleProduct"/>
         </actionGroup>
 
         <!-- Create new category for product -->
-        <actionGroup ref="FillNewProductCategoryActionGroup" stepKey="FillNewProductCategory">
+        <actionGroup ref="FillNewProductCategory" stepKey="FillNewProductCategory">
             <argument name="categoryName" value="{{_defaultCategory.name}}"/>
         </actionGroup>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProductForm"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProductForm"/>
 
         <!-- Click on the magnifying glass to start searching -->
         <click selector="{{AdminGlobalSearchSection.globalSearch}}" stepKey="clickSearchBtn"/>

@@ -11,7 +11,7 @@ namespace Magento\Framework\Interception;
  */
 class GeneralTest extends AbstractPlugin
 {
-    protected function setUp(): void
+    public function setUp()
     {
         $this->setUpInterceptionConfig(
             [\Magento\Framework\Interception\Fixture\InterceptedInterface::class =>

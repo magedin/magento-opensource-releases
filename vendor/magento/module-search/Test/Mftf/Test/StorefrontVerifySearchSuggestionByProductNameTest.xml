@@ -20,18 +20,14 @@
 
         <before>
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!--Create Simple Product -->
             <createData entity="defaultSimpleProduct" stepKey="simpleProduct"/>
 
             <!-- Perform reindex and flush cache -->
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value=""/>
-            </actionGroup>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <!-- Delete create product -->
@@ -42,12 +38,12 @@
             <waitForPageLoad stepKey="waitForAdminCatalogSearchTermIndexPageLoad"/>
 
             <!--Filter the search term -->
-            <actionGroup ref="AdminSearchTermFilterBySearchQueryActionGroup" stepKey="filterByThirdSearchQuery">
+            <actionGroup ref="searchTermFilterBySearchQuery" stepKey="filterByThirdSearchQuery">
                 <argument name="searchQuery" value="$$simpleProduct.name$$"/>
             </actionGroup>
             <!-- Delete created below search terms -->
-            <actionGroup ref="AdminDeleteSearchTermActionGroup" stepKey="deleteSearchTerms"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="deleteSearchTerm" stepKey="deleteSearchTerms"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Go to storefront home page -->

@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\ResourceModel\Address\Attribute\Backend;
 
 use Magento\Customer\Model\ResourceModel\Address\Attribute\Backend\Region;
-use Magento\Directory\Model\RegionFactory;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RegionTest extends TestCase
+class RegionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RegionFactory|MockObject */
+    /** @var \Magento\Directory\Model\RegionFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $regionFactory;
 
     /** @var Region */
     protected $model;
 
-    /** @var DataObject|MockObject */
+    /** @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject */
     protected $object;
 
-    /** @var \Magento\Directory\Model\Region|MockObject */
+    /** @var \Magento\Directory\Model\Region|\PHPUnit_Framework_MockObject_MockObject */
     protected $region;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->regionFactory = $this->createPartialMock(RegionFactory::class, ['create']);
-        $this->region = $this->getMockBuilder(\Magento\Directory\Model\Region::class)->addMethods(['getCountryId'])
-            ->onlyMethods(['load', 'getId', 'getName'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->regionFactory = $this->createPartialMock(\Magento\Directory\Model\RegionFactory::class, ['create']);
+        $this->region = $this->createPartialMock(
+            \Magento\Directory\Model\Region::class,
+            ['load', 'getId', 'getCountryId', 'getName']
+        );
         $this->model = new Region($this->regionFactory);
-        $this->object = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getCountryId', 'setRegionId', 'setRegion'])
-            ->onlyMethods(['getData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->object = $this->createPartialMock(
+            \Magento\Framework\DataObject::class,
+            ['getData', 'getCountryId', 'setRegionId', 'setRegion']
+        );
     }
 
     public function testBeforeSave()

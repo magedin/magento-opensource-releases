@@ -3,66 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Model\Oauth\Token;
 
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\Oauth\ConsumerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Integration\Model\Oauth\ConsumerFactory;
 use Magento\Integration\Model\Oauth\Token;
-use Magento\Integration\Model\Oauth\Token\Provider;
-use Magento\Integration\Model\Oauth\TokenFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
  * Unit test for \Magento\Integration\Model\Oauth\Token\Provider
  */
-class ProviderTest extends TestCase
+class ProviderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Provider */
+    /** @var \Magento\Integration\Model\Oauth\Token\Provider */
     protected $tokenProvider;
 
-    /** @var ConsumerFactory|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\ConsumerFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $consumerFactoryMock;
 
-    /** @var TokenFactory|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\TokenFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $tokenFactoryMock;
 
-    /** @var LoggerInterface|MockObject */
+    /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $loggerMock;
 
-    /** @var ConsumerInterface|MockObject */
+    /** @var \Magento\Framework\Oauth\ConsumerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $consumerMock;
 
-    /** @var Token|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\Token|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestTokenMock;
 
-    /** @var Token|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\Token|\PHPUnit_Framework_MockObject_MockObject */
     protected $accessTokenMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->consumerFactoryMock = $this->getMockBuilder(ConsumerFactory::class)
+        $this->consumerFactoryMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\ConsumerFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->tokenFactoryMock = $this->getMockBuilder(TokenFactory::class)
+        $this->tokenFactoryMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\TokenFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->consumerMock = $this->getMockBuilder(ConsumerInterface::class)
+        $this->consumerMock = $this->getMockBuilder(\Magento\Framework\Oauth\ConsumerInterface::class)
             ->setMethods(
                 [
                     'load',
@@ -77,9 +69,9 @@ class ProviderTest extends TestCase
                 ]
             )
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->requestTokenMock = $this->getMockBuilder(Token::class)
+        $this->requestTokenMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Token::class)
             ->setMethods(
                 [
                     'loadByConsumerIdAndUserType',
@@ -97,7 +89,7 @@ class ProviderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->accessTokenMock = $this->getMockBuilder(Token::class)
+        $this->accessTokenMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Token::class)
             ->setMethods(
                 [
                     'getToken',
@@ -113,7 +105,7 @@ class ProviderTest extends TestCase
             ->getMock();
 
         $this->tokenProvider = $objectManagerHelper->getObject(
-            Provider::class,
+            \Magento\Integration\Model\Oauth\Token\Provider::class,
             [
                 'consumerFactory' => $this->consumerFactoryMock,
                 'tokenFactory' => $this->tokenFactoryMock,
@@ -125,13 +117,15 @@ class ProviderTest extends TestCase
     public function testValidateConsumer()
     {
         $this->consumerMock->expects($this->once())->method('isValidForTokenExchange')->willReturn(true);
-        $this->assertTrue($this->tokenProvider->validateConsumer($this->consumerMock));
+        $this->assertEquals(true, $this->tokenProvider->validateConsumer($this->consumerMock));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Consumer key has expired
+     */
     public function testValidateConsumerException()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Consumer key has expired');
         $this->consumerMock->expects($this->once())->method('isValidForTokenExchange')->willReturn(false);
         $this->tokenProvider->validateConsumer($this->consumerMock);
     }
@@ -152,10 +146,12 @@ class ProviderTest extends TestCase
         $this->assertEquals($this->requestTokenMock, $actualToken);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage A token with consumer ID 1 does not exist
+     */
     public function testGetIntegrationTokenByConsumerIdException()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('A token with consumer ID 1 does not exist');
         $consumerId = 1;
         $tokenId = false;
 
@@ -176,7 +172,7 @@ class ProviderTest extends TestCase
         $tokenString = '12345678901234567890123456789012';
         $secret = 'secret';
 
-        $tokenMock = $this->getMockBuilder(Token::class)
+        $tokenMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Token::class)
             ->setMethods(
                 [
                     'loadByConsumerIdAndUserType',
@@ -212,14 +208,16 @@ class ProviderTest extends TestCase
         $this->assertEquals($secret, $response['oauth_token_secret']);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Cannot create request token because consumer token is not a verifier token
+     */
     public function testCreateRequestTokenIncorrectType()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Cannot create request token because consumer token is not a verifier token');
         $consumerId = 1;
         $tokenId = 1;
 
-        $tokenMock = $this->getMockBuilder(Token::class)
+        $tokenMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Token::class)
             ->setMethods(
                 [
                     'loadByConsumerIdAndUserType',
@@ -271,10 +269,12 @@ class ProviderTest extends TestCase
         $this->assertEquals($secret, $response['oauth_token_secret']);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Cannot get access token because consumer token is not a request token
+     */
     public function testGetAccessTokenIsNotRequestToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Cannot get access token because consumer token is not a request token');
         $consumerId = 1;
         $tokenId = 1;
 
@@ -319,10 +319,12 @@ class ProviderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Specified token does not exist
+     */
     public function testValidateRequestTokenNotExistentToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Specified token does not exist');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = '12345678901234567890123456789012';
 
@@ -336,20 +338,24 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage The token length is invalid. Check the length and try again.
+     */
     public function testValidateRequestTokenIncorrectLengthToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('The token length is invalid. Check the length and try again.');
         $requestTokenString = '123';
         $oauthVerifier = '12345678901234567890123456789012';
 
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Verifier is invalid
+     */
     public function testValidateRequestTokenInvalidVerifier()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Verifier is invalid');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = 1;
         $consumerId = 1;
@@ -371,10 +377,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Verifier is not the correct length
+     */
     public function testValidateRequestTokenIncorrectLengthVerifier()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Verifier is not the correct length');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = '123';
         $consumerId = 1;
@@ -396,10 +404,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Token verifier and verifier token do not match
+     */
     public function testValidateRequestTokenNotMatchedVerifier()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Token verifier and verifier token do not match');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = '12345678901234567890123456789012';
         $notMatchedVerifier = '123';
@@ -422,10 +432,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Request token is not associated with the specified consumer
+     */
     public function testValidateRequestTokenNotAssociatedToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Request token is not associated with the specified consumer');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = '12345678901234567890123456789012';
         $consumerId = 1;
@@ -445,10 +457,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateRequestToken($requestTokenString, $this->consumerMock, $oauthVerifier);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Token is already being used
+     */
     public function testValidateRequestTokenAlreadyUsedToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Token is already being used');
         $requestTokenString = '12345678901234567890123456789012';
         $oauthVerifier = '12345678901234567890123456789012';
         $consumerId = 1;
@@ -497,10 +511,12 @@ class ProviderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Token is not associated with the specified consumer
+     */
     public function testValidateAccessTokenRequestNotAssociatedToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Token is not associated with the specified consumer');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -519,10 +535,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateAccessTokenRequest($accessTokenString, $this->consumerMock);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Token is not an access token
+     */
     public function testValidateAccessTokenRequestNotAccessToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Token is not an access token');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -542,10 +560,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateAccessTokenRequest($accessTokenString, $this->consumerMock);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Access token has been revoked
+     */
     public function testValidateAccessTokenRequestRevokedToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Access token has been revoked');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -593,10 +613,12 @@ class ProviderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage A consumer with the ID 1 does not exist
+     */
     public function testValidateAccessTokenNotExistentConsumer()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('A consumer with the ID 1 does not exist');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -617,10 +639,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateAccessToken($accessTokenString);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Token is not an access token
+     */
     public function testValidateAccessTokenNotAccessToken()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Token is not an access token');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -642,10 +666,12 @@ class ProviderTest extends TestCase
         $this->tokenProvider->validateAccessToken($accessTokenString);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Access token has been revoked
+     */
     public function testValidateAccessTokenRevoked()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Access token has been revoked');
         $accessTokenString = '12345678901234567890123456789012';
         $tokenId = 1;
         $consumerId = 1;
@@ -687,18 +713,22 @@ class ProviderTest extends TestCase
         $this->assertEquals($this->consumerMock, $this->tokenProvider->getConsumerByKey($consumerKeyString));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Consumer key is not the correct length
+     */
     public function testGetConsumerByKeyWrongConsumerKey()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Consumer key is not the correct length');
         $consumerKeyString = '123';
         $this->tokenProvider->getConsumerByKey($consumerKeyString);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage A consumer having the specified key does not exist
+     */
     public function testGetConsumerByKeyNonExistentConsumer()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('A consumer having the specified key does not exist');
         $consumerKeyString = '12345678901234567890123456789012';
         $consumerId = null;
 

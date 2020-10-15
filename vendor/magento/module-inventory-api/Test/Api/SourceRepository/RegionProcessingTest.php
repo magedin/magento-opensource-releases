@@ -86,7 +86,7 @@ class RegionProcessingTest extends WebapiAbstract
         self::assertEquals($regionName, $sourceData[SourceInterface::REGION]);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var ResourceConnection $connection */
         $connection = Bootstrap::getObjectManager()->get(ResourceConnection::class);

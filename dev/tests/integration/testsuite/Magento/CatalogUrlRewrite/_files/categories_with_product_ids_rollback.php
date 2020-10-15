@@ -5,8 +5,6 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 $registry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\Registry::class);
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', true);
@@ -34,4 +32,4 @@ foreach ($productSkuList as $sku) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/CatalogUrlRewrite/_files/categories_rollback.php');
+require __DIR__ . '/categories_rollback.php';

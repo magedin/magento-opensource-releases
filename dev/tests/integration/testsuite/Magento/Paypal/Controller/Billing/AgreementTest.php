@@ -19,7 +19,6 @@ class AgreementTest extends \Magento\TestFramework\TestCase\AbstractController
      *
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDbIsolation enabled
-     * @magentoAppArea frontend
      */
     public function testReturnWizardAction()
     {
@@ -34,13 +33,13 @@ class AgreementTest extends \Magento\TestFramework\TestCase\AbstractController
         $requestMock
             ->expects($this->any())
             ->method('getParam')
-            ->willReturnMap(
-                
+            ->will(
+                $this->returnValueMap(
                     [
                         ['payment_method', null, $paymentMethod],
                         ['token', null, $token],
                     ]
-                
+                )
             );
 
         /**
@@ -52,14 +51,14 @@ class AgreementTest extends \Magento\TestFramework\TestCase\AbstractController
             \Magento\Paypal\Model\Express::class,
             ['getTitle', 'setStore', 'placeBillingAgreement']
         );
-        $paymentMethodMock->expects($this->any())->method('placeBillingAgreement')->willReturnSelf();
-        $paymentMethodMock->expects($this->any())->method('getTitle')->willReturn($paymentMethod);
+        $paymentMethodMock->expects($this->any())->method('placeBillingAgreement')->will($this->returnSelf());
+        $paymentMethodMock->expects($this->any())->method('getTitle')->will($this->returnValue($paymentMethod));
 
         $paymentHelperMock = $this->createPartialMock(\Magento\Payment\Helper\Data::class, ['getMethodInstance']);
         $paymentHelperMock
             ->expects($this->any())
             ->method('getMethodInstance')
-            ->willReturn($paymentMethodMock);
+            ->will($this->returnValue($paymentMethodMock));
         $billingAgreement = $objectManager->create(
             \Magento\Paypal\Model\Billing\Agreement::class,
             ['paymentData' => $paymentHelperMock]
@@ -70,19 +69,19 @@ class AgreementTest extends \Magento\TestFramework\TestCase\AbstractController
             ->expects($this->once())
             ->method('create')
             ->with(\Magento\Paypal\Model\Billing\Agreement::class, [])
-            ->willReturn($billingAgreement);
+            ->will($this->returnValue($billingAgreement));
         $storeManager = $objectManager->get(\Magento\Store\Model\StoreManager::class);
         $customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
         $objectManagerMock
             ->expects($this->any())
             ->method('get')
-            ->willReturnMap(
-                
+            ->will(
+                $this->returnValueMap(
                     [
                         [\Magento\Store\Model\StoreManager::class, $storeManager],
                         [\Magento\Customer\Model\Session::class, $customerSession],
                     ]
-                
+                )
             );
         $contextMock = $objectManager->create(
             \Magento\Framework\App\Action\Context::class,

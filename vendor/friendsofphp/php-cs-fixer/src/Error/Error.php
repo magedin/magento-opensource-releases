@@ -65,6 +65,7 @@ final class Error
      * @param int             $type
      * @param string          $filePath
      * @param null|\Throwable $source
+     * @param array           $appliedFixers
      * @param null|string     $diff
      */
     public function __construct($type, $filePath, $source = null, array $appliedFixers = [], $diff = null)

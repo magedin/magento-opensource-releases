@@ -3,26 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Model;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ResourceConnection;
 use Magento\AsynchronousOperations\Api\Data\BulkSummaryInterface;
 use Magento\AsynchronousOperations\Api\Data\BulkSummaryInterfaceFactory;
 use Magento\AsynchronousOperations\Api\Data\OperationInterface;
-use Magento\AsynchronousOperations\Model\ResourceModel\Operation\CollectionFactory;
-use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\Bulk\BulkManagementInterface;
+use Magento\Framework\MessageQueue\BulkPublisherInterface;
 use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\MessageQueue\BulkPublisherInterface;
-use Psr\Log\LoggerInterface;
+use Magento\AsynchronousOperations\Model\ResourceModel\Operation\CollectionFactory;
+use Magento\Authorization\Model\UserContextInterface;
 
 /**
- * Asynchronous Bulk Management
+ * Class BulkManagement
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class BulkManagement implements BulkManagementInterface
+class BulkManagement implements \Magento\Framework\Bulk\BulkManagementInterface
 {
     /**
      * @var EntityManager
@@ -55,12 +54,12 @@ class BulkManagement implements BulkManagementInterface
     private $resourceConnection;
 
     /**
-     * @var UserContextInterface
+     * @var \Magento\Authorization\Model\UserContextInterface
      */
     private $userContext;
 
     /**
-     * @var LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
@@ -72,7 +71,7 @@ class BulkManagement implements BulkManagementInterface
      * @param BulkPublisherInterface $publisher
      * @param MetadataPool $metadataPool
      * @param ResourceConnection $resourceConnection
-     * @param LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface $logger
      * @param UserContextInterface $userContext
      */
     public function __construct(
@@ -82,8 +81,8 @@ class BulkManagement implements BulkManagementInterface
         BulkPublisherInterface $publisher,
         MetadataPool $metadataPool,
         ResourceConnection $resourceConnection,
-        LoggerInterface $logger,
-        UserContextInterface $userContext
+        \Psr\Log\LoggerInterface $logger,
+        UserContextInterface $userContext = null
     ) {
         $this->entityManager = $entityManager;
         $this->bulkSummaryFactory= $bulkSummaryFactory;
@@ -92,7 +91,7 @@ class BulkManagement implements BulkManagementInterface
         $this->resourceConnection = $resourceConnection;
         $this->publisher = $publisher;
         $this->logger = $logger;
-        $this->userContext = $userContext;
+        $this->userContext = $userContext ?: ObjectManager::getInstance()->get(UserContextInterface::class);
     }
 
     /**
@@ -117,6 +116,7 @@ class BulkManagement implements BulkManagementInterface
             $bulkSummary->setUserId($userId);
             $bulkSummary->setUserType($userType);
             $bulkSummary->setOperationCount((int)$bulkSummary->getOperationCount() + count($operations));
+
             $this->entityManager->save($bulkSummary);
 
             $connection->commit();
@@ -140,8 +140,8 @@ class BulkManagement implements BulkManagementInterface
     public function retryBulk($bulkUuid, array $errorCodes)
     {
         $metadata = $this->metadataPool->getMetadata(BulkSummaryInterface::class);
-
         $connection = $this->resourceConnection->getConnectionByName($metadata->getEntityConnectionName());
+
         /** @var \Magento\AsynchronousOperations\Model\ResourceModel\Operation[] $retriablyFailedOperations */
         $retriablyFailedOperations = $this->operationCollectionFactory->create()
             ->addFieldToFilter('error_code', ['in' => $errorCodes])
@@ -157,27 +157,23 @@ class BulkManagement implements BulkManagementInterface
             /** @var OperationInterface $operation */
             foreach ($retriablyFailedOperations as $operation) {
                 if ($currentBatchSize === $maxBatchSize) {
-                    $whereCondition = $connection->quoteInto('operation_key IN (?)', $operationIds)
-                        . " AND "
-                        . $connection->quoteInto('bulk_uuid = ?', $bulkUuid);
                     $connection->delete(
                         $this->resourceConnection->getTableName('magento_operation'),
-                        $whereCondition
+                        $connection->quoteInto('id IN (?)', $operationIds)
                     );
                     $operationIds = [];
                     $currentBatchSize = 0;
                 }
                 $currentBatchSize++;
                 $operationIds[] = $operation->getId();
+                // Rescheduled operations must be put in queue in 'open' state (i.e. without ID)
+                $operation->setId(null);
             }
             // remove operations from the last batch
             if (!empty($operationIds)) {
-                $whereCondition = $connection->quoteInto('operation_key IN (?)', $operationIds)
-                    . " AND "
-                    . $connection->quoteInto('bulk_uuid = ?', $bulkUuid);
                 $connection->delete(
                     $this->resourceConnection->getTableName('magento_operation'),
-                    $whereCondition
+                    $connection->quoteInto('id IN (?)', $operationIds)
                 );
             }
 

@@ -18,27 +18,25 @@
             <testCaseId value="MC-6325"/>
             <useCaseId value="MAGETWO-58764"/>
             <group value="CatalogSearch"/>
-            <group value="SearchEngineElasticsearch"/>
-
+            <group value="SearchEngineMysql"/>
         </annotations>
         <before>
             <createData entity="ApiCategory" stepKey="createCategory"/>
-            <createData entity="productAlphabeticalB" stepKey="createProduct">
+            <createData entity="ApiSimpleProduct" stepKey="createProduct">
                 <requiredEntity createDataKey="createCategory"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
             <createData entity="SetMinQueryLengthToDefault" stepKey="setMinimumQueryLengthToDefault"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <actionGroup ref="SetMinimalQueryLengthActionGroup" stepKey="setMinQueryLength"/>
         <comment userInput="Go to Storefront and search for product" stepKey="searchProdUsingMinQueryLength"/>
         <amOnPage url="{{StorefrontHomePage.url}}" stepKey="goToHomePage"/>
-        <comment userInput="Quick search by single character and avoid using ES stopwords" stepKey="commentQuickSearch"/>
-        <fillField selector="{{StorefrontQuickSearchResultsSection.searchTextBox}}" userInput="B" stepKey="fillAttribute"/>
+        <fillField selector="{{StorefrontQuickSearchResultsSection.searchTextBox}}" userInput="s" stepKey="fillAttribute"/>
         <waitForPageLoad stepKey="waitForSearchTextBox"/>
         <click selector="{{StorefrontQuickSearchResultsSection.searchTextBoxButton}}" stepKey="clickSearchTextBoxButton"/>
         <waitForPageLoad stepKey="waitForSearch"/>

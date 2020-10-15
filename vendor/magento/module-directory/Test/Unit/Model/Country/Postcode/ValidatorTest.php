@@ -3,30 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Country\Postcode;
 
-use Magento\Directory\Model\Country\Postcode\Config;
-use Magento\Directory\Model\Country\Postcode\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $postcodesConfigMock;
 
     /**
-     * @var Validator
+     * @var \Magento\Directory\Model\Country\Postcode\Validator
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->postcodesConfigMock = $this->createMock(Config::class);
+        $this->postcodesConfigMock = $this->createMock(\Magento\Directory\Model\Country\Postcode\Config::class);
         $postCodes = [
             'US' => [
                 'pattern_1' => ['pattern' => '^[0-9]{5}\-[0-9]{4}$'],
@@ -34,7 +27,7 @@ class ValidatorTest extends TestCase
             ]
         ];
         $this->postcodesConfigMock->expects($this->once())->method('getPostCodes')->willReturn($postCodes);
-        $this->model = new Validator($this->postcodesConfigMock);
+        $this->model = new \Magento\Directory\Model\Country\Postcode\Validator($this->postcodesConfigMock);
     }
 
     public function testValidatePositive()
@@ -51,10 +44,12 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->model->validate($postcode, $countryId));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Provided countryId does not exist.
+     */
     public function testValidateThrowExceptionIfCountryDoesNotExist()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Provided countryId does not exist.');
         $postcode = '12345-6789';
         $countryId = 'QQ';
         $this->assertFalse($this->model->validate($postcode, $countryId));

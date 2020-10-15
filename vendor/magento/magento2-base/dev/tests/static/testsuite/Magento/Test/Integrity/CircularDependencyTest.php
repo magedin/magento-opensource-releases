@@ -26,7 +26,7 @@ class CircularDependencyTest extends \PHPUnit\Framework\TestCase
      */
     protected $circularModuleDependencies = [];
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->buildModulesDependencies();
         $this->buildCircularModulesDependencies();

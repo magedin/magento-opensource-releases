@@ -3,33 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\ResourceModel\Address;
 
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Customer\Model\ResourceModel\Address\DeleteRelation;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DeleteRelationTest extends TestCase
+/**
+ * Class AddressTest
+ */
+class DeleteRelationTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  DeleteRelation */
+    /** @var  \Magento\Customer\Model\ResourceModel\Address\DeleteRelation */
     protected $relation;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customerFactoryMock = $this->createPartialMock(
-            CustomerFactory::class,
+            \Magento\Customer\Model\CustomerFactory::class,
             ['create']
         );
         $this->relation = (new ObjectManagerHelper($this))->getObject(
-            DeleteRelation::class
+            \Magento\Customer\Model\ResourceModel\Address\DeleteRelation::class
         );
     }
 
@@ -41,19 +35,19 @@ class DeleteRelationTest extends TestCase
      */
     public function testDeleteRelation($addressId, $isDefaultBilling, $isDefaultShipping)
     {
-        /** @var AbstractModel|MockObject $addressModel  */
-        $addressModel = $this->getMockBuilder(AbstractModel::class)
+        /** @var AbstractModel | \PHPUnit_Framework_MockObject_MockObject $addressModel  */
+        $addressModel = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIsCustomerSaveTransaction', 'getId', 'getResource'])
             ->getMock();
-        /** @var Customer|MockObject $customerModel */
-        $customerModel = $this->getMockBuilder(Customer::class)
+        /** @var \Magento\Customer\Model\Customer | \PHPUnit_Framework_MockObject_MockObject $customerModel */
+        $customerModel = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getDefaultBilling', 'getDefaultShipping', 'getId'])
             ->getMock();
 
         $addressResource = $this->getMockForAbstractClass(
-            AbstractDb::class,
+            \Magento\Framework\Model\ResourceModel\Db\AbstractDb::class,
             [],
             '',
             false,
@@ -62,7 +56,7 @@ class DeleteRelationTest extends TestCase
             ['getConnection', 'getTable']
         );
         $connectionMock = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,

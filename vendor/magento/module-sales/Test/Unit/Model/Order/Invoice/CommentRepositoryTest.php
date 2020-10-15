@@ -8,42 +8,40 @@ declare(strict_types=1);
 namespace Magento\Sales\Test\Unit\Model\Order\Invoice;
 
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Sales\Api\InvoiceRepositoryInterface;
 use Magento\Sales\Api\Data\InvoiceCommentInterfaceFactory;
 use Magento\Sales\Api\Data\InvoiceCommentSearchResultInterfaceFactory;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Model\Order\Email\Sender\InvoiceCommentSender;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Invoice\Comment;
 use Magento\Sales\Model\Order\Invoice\CommentRepository;
+use Magento\Sales\Model\Order\Email\Sender\InvoiceCommentSender;
 use Magento\Sales\Model\Spi\InvoiceCommentResourceInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Class CommentRepositoryTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CommentRepositoryTest extends TestCase
+class CommentRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|InvoiceCommentResourceInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|InvoiceCommentResourceInterface
      */
     private $commentResource;
 
     /**
-     * @var MockObject|InvoiceCommentInterfaceFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|InvoiceCommentInterfaceFactory
      */
     private $commentFactory;
 
     /**
-     * @var MockObject|InvoiceCommentSearchResultInterfaceFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|InvoiceCommentSearchResultInterfaceFactory
      */
     private $searchResultFactory;
 
     /**
-     * @var MockObject|CollectionProcessorInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|CollectionProcessorInterface
      */
     private $collectionProcessor;
 
@@ -53,35 +51,35 @@ class CommentRepositoryTest extends TestCase
     private $commentRepository;
 
     /**
-     * @var MockObject|InvoiceCommentSender
+     * @var \PHPUnit_Framework_MockObject_MockObject|InvoiceCommentSender
      */
     private $invoiceCommentSender;
 
     /**
-     * @var MockObject|InvoiceRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|InvoiceRepositoryInterface
      */
     private $invoiceRepositoryMock;
 
     /**
-     * @var MockObject|Invoice
+     * @var \PHPUnit_Framework_MockObject_MockObject|Invoice
      */
     private $invoiceMock;
 
     /**
-     * @var MockObject|Comment
+     * @var \PHPUnit_Framework_MockObject_MockObject|Comment
      */
     private $commentMock;
 
     /**
-     * @var MockObject|LoggerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|LoggerInterface
      */
     private $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->commentResource = $this->getMockBuilder(InvoiceCommentResourceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->commentFactory = $this->getMockBuilder(InvoiceCommentInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -90,23 +88,17 @@ class CommentRepositoryTest extends TestCase
             ->getMock();
         $this->collectionProcessor = $this->getMockBuilder(CollectionProcessorInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->invoiceRepositoryMock = $this->getMockBuilder(InvoiceRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->invoiceCommentSender = $this->getMockBuilder(InvoiceCommentSender::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMock();
 
-        $this->invoiceMock = $this->getMockBuilder(Invoice::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->commentMock = $this->getMockBuilder(Comment::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->invoiceMock = $this->getMockBuilder(Invoice::class)->disableOriginalConstructor()->getMock();
+        $this->commentMock = $this->getMockBuilder(Comment::class)->disableOriginalConstructor()->getMock();
 
         $this->commentRepository = new CommentRepository(
             $this->commentResource,
@@ -148,15 +140,17 @@ class CommentRepositoryTest extends TestCase
         $this->commentRepository->save($this->commentMock);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     * @expectedExceptionMessage Could not save the invoice comment.
+     */
     public function testSaveWithException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
-        $this->expectExceptionMessage('Could not save the invoice comment.');
         $this->commentResource->expects($this->once())
             ->method('save')
             ->with($this->commentMock)
             ->willThrowException(
-                new CouldNotSaveException(__('Could not save the invoice comment.'))
+                new \Magento\Framework\Exception\CouldNotSaveException(__('Could not save the invoice comment.'))
             );
 
         $this->commentRepository->save($this->commentMock);

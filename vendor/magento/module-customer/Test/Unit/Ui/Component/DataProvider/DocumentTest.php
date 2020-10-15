@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\DataProvider;
 
 use Magento\Customer\Api\CustomerMetadataInterface;
@@ -19,14 +17,14 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Phrase;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * Class DocumentTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DocumentTest extends TestCase
+class DocumentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GroupRepositoryInterface|MockObject
@@ -58,7 +56,7 @@ class DocumentTest extends TestCase
      */
     private $document;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->initAttributeValueFactoryMock();
 

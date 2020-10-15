@@ -11,7 +11,7 @@ use Magento\Tax\Model\Rate\Provider;
 
 class SourceTest extends \Magento\TestFramework\Indexer\TestCase
 {
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $db = Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -59,7 +59,7 @@ class SourceTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * teardown
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         parent::tearDown();
     }

@@ -18,19 +18,19 @@ class ReimportBunchTest extends TestCase
      * @var Observer
      */
     private $observerMock;
-
+    
     /**
      * @var ReimportBunch
      */
     private $reimportBunch;
 
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->bulkUpdater = $this->createMock(UpdateCatalogBulk::class);
         $this->observerMock = $this->getMockBuilder(Observer::class)
-            ->setMethods(['getBunch'])
-            ->disableOriginalConstructor()
-            ->getMock();
+                                    ->setMethods(['getBunch'])
+                                    ->disableOriginalConstructor()
+                                    ->getMock();
 
         $this->reimportBunch = new ReimportBunch(
             $this->bulkUpdater

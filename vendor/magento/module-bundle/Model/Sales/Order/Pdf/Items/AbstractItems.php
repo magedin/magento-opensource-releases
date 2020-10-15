@@ -6,14 +6,8 @@
 namespace Magento\Bundle\Model\Sales\Order\Pdf\Items;
 
 use Magento\Catalog\Model\Product\Type\AbstractType;
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filter\FilterManager;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Tax\Helper\Data;
 
 /**
  * Order pdf items renderer
@@ -30,28 +24,30 @@ abstract class AbstractItems extends \Magento\Sales\Model\Order\Pdf\Items\Abstra
     private $serializer;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param Data $taxData
-     * @param Filesystem $filesystem
-     * @param FilterManager $filterManager
-     * @param Json $serializer
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
+     * Constructor
+     *
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Tax\Helper\Data $taxData
+     * @param \Magento\Framework\Filesystem $filesystem
+     * @param \Magento\Framework\Filter\FilterManager $filterManager
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
+     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
      */
     public function __construct(
-        Context $context,
-        Registry $registry,
-        Data $taxData,
-        Filesystem $filesystem,
-        FilterManager $filterManager,
-        Json $serializer,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
-        array $data = []
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Tax\Helper\Data $taxData,
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\Framework\Filter\FilterManager $filterManager,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = [],
+        Json $serializer = null
     ) {
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
         parent::__construct(
             $context,
             $registry,

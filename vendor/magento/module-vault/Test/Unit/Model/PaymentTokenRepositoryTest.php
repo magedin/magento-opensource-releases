@@ -3,13 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Vault\Test\Unit\Model;
 
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchResults;
 use Magento\Vault\Api\Data\PaymentTokenSearchResultsInterfaceFactory;
@@ -19,18 +16,19 @@ use Magento\Vault\Model\PaymentTokenRepository;
 use Magento\Vault\Model\ResourceModel\PaymentToken as PaymentTokenResourceModel;
 use Magento\Vault\Model\ResourceModel\PaymentToken\Collection;
 use Magento\Vault\Model\ResourceModel\PaymentToken\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * Class PaymentTokenRepositoryTest
+ * @package Magento\Vault\Test\Unit\Model
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PaymentTokenRepositoryTest extends TestCase
+class PaymentTokenRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     const PUBLIC_HASH = 'hash';
 
     /**
-     * @var PaymentTokenRepository|MockObject resourceModelMock
+     * @var \Magento\Vault\Model\PaymentTokenRepository|MockObject resourceModelMock
      */
     protected $repositoryModel;
 
@@ -40,7 +38,7 @@ class PaymentTokenRepositoryTest extends TestCase
     protected $resourceModelMock;
 
     /**
-     * @var PaymentTokenFactory|MockObject paymentTokenFactoryMock
+     * @var \Magento\Vault\Model\PaymentTokenFactory|MockObject paymentTokenFactoryMock
      */
     protected $paymentTokenFactoryMock;
 
@@ -50,49 +48,49 @@ class PaymentTokenRepositoryTest extends TestCase
     protected $paymentTokenMock;
 
     /**
-     * @var FilterBuilder|MockObject filterBuilderMock
+     * @var \Magento\Framework\Api\FilterBuilder|MockObject filterBuilderMock
      */
     protected $filterBuilderMock;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject searchCriteriaBuilder
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder|MockObject searchCriteriaBuilder
      */
     protected $searchCriteriaBuilderMock;
 
     /**
-     * @var SearchCriteria|MockObject searchCriteriaMock
+     * @var \Magento\Framework\Api\SearchCriteria|MockObject searchCriteriaMock
      */
     protected $searchCriteriaMock;
 
     /**
-     * @var PaymentTokenSearchResultsInterfaceFactory|MockObject searchResultsFactoryMock
+     * @var \Magento\Vault\Api\Data\PaymentTokenSearchResultsInterfaceFactory|MockObject searchResultsFactoryMock
      */
     protected $searchResultsFactoryMock;
 
     /**
-     * @var SearchResults searchResults
+     * @var \Magento\Framework\Api\SearchResults searchResults
      */
     protected $searchResults;
 
     /**
-     * @var CollectionFactory|MockObject collectionFactoryMock
+     * @var \Magento\Vault\Model\ResourceModel\PaymentToken\CollectionFactory|MockObject collectionFactoryMock
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject collection
+     * @var \Magento\Vault\Model\ResourceModel\PaymentToken\Collection|MockObject collection
      */
     protected $collectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionProcessor;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->resourceModelMock = $this->getMockBuilder(PaymentTokenResourceModel::class)
             ->disableOriginalConstructor()
@@ -137,7 +135,7 @@ class PaymentTokenRepositoryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->collectionProcessor = $this->createMock(
-            CollectionProcessorInterface::class
+            \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
         );
         $this->repositoryModel = $this->getMockBuilder(PaymentTokenRepository::class)
             ->setConstructorArgs([
@@ -153,6 +151,8 @@ class PaymentTokenRepositoryTest extends TestCase
             ->getMock();
     }
 
+    /**
+     */
     public function testRepositoryGetList()
     {
         $this->collectionMock->expects($this->once())
@@ -177,6 +177,8 @@ class PaymentTokenRepositoryTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testRepositoryGetById()
     {
         $this->paymentTokenFactoryMock->expects($this->once())
@@ -189,6 +191,8 @@ class PaymentTokenRepositoryTest extends TestCase
         $this->assertSame($this->paymentTokenMock, $this->repositoryModel->getById(10));
     }
 
+    /**
+     */
     public function testRepositoryDelete()
     {
         $this->paymentTokenFactoryMock->expects($this->exactly(2))
@@ -205,6 +209,8 @@ class PaymentTokenRepositoryTest extends TestCase
         $this->assertFalse($this->paymentTokenMock->getIsActive());
     }
 
+    /**
+     */
     public function testRepositorySave()
     {
         $this->resourceModelMock->expects($this->once())

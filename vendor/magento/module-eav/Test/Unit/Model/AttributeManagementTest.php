@@ -1,34 +1,26 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Eav\Test\Unit\Model;
 
-use Magento\Eav\Api\AttributeGroupRepositoryInterface;
-use Magento\Eav\Api\AttributeRepositoryInterface;
-use Magento\Eav\Api\AttributeSetRepositoryInterface;
-use Magento\Eav\Api\Data\AttributeGroupInterface;
-use Magento\Eav\Api\Data\AttributeSetInterface;
 use Magento\Eav\Model\AttributeManagement;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory;
+use Magento\Eav\Api\AttributeSetRepositoryInterface;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Model\ConfigFactory;
-use Magento\Eav\Model\Entity\Type;
+use Magento\Eav\Api\AttributeGroupRepositoryInterface;
+use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AttributeManagementTest extends TestCase
+class AttributeManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeManagement
@@ -36,59 +28,59 @@ class AttributeManagementTest extends TestCase
     private $attributeManagement;
 
     /**
-     * @var AttributeSetRepositoryInterface|MockObject
+     * @var AttributeSetRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $setRepositoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeCollectionMock;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eavConfigMock;
 
     /**
-     * @var ConfigFactory|MockObject
+     * @var ConfigFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityTypeFactoryMock;
 
     /**
-     * @var AttributeGroupRepositoryInterface|MockObject
+     * @var AttributeGroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupRepositoryMock;
 
     /**
-     * @var AttributeRepositoryInterface|MockObject
+     * @var AttributeRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeRepositoryMock;
 
     /**
-     * @var Attribute|MockObject
+     * @var Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeResourceMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeCollectionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->setRepositoryMock =
-            $this->getMockForAbstractClass(AttributeSetRepositoryInterface::class);
+            $this->createMock(AttributeSetRepositoryInterface::class);
         $this->attributeCollectionMock =
             $this->createMock(Collection::class);
         $this->eavConfigMock =
             $this->createMock(Config::class);
         $this->entityTypeFactoryMock =
-            $this->createPartialMock(ConfigFactory::class, ['create']);
+            $this->createPartialMock(ConfigFactory::class, ['create', '__wakeup']);
         $this->groupRepositoryMock =
-            $this->getMockForAbstractClass(AttributeGroupRepositoryInterface::class);
+            $this->createMock(AttributeGroupRepositoryInterface::class);
         $this->attributeRepositoryMock =
-            $this->getMockForAbstractClass(AttributeRepositoryInterface::class);
+            $this->createMock(AttributeRepositoryInterface::class);
         $this->attributeResourceMock =
             $this->createMock(Attribute::class);
         $this->attributeCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
@@ -107,12 +99,13 @@ class AttributeManagementTest extends TestCase
         );
     }
 
+    /**
+     *
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage The AttributeSet with a "2" ID doesn't exist. Verify the attributeSet and try again.
+     */
     public function testAssignNoSuchEntityException()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
-        $this->expectExceptionMessage(
-            'The AttributeSet with a "2" ID doesn\'t exist. Verify the attributeSet and try again.'
-        );
         $entityTypeCode = 1;
         $attributeSetId = 2;
         $attributeGroupId = 3;
@@ -122,7 +115,7 @@ class AttributeManagementTest extends TestCase
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
-            ->willThrowException(new NoSuchEntityException());
+            ->will($this->throwException(new \Magento\Framework\Exception\NoSuchEntityException()));
 
         $this->attributeManagement->assign(
             $entityTypeCode,
@@ -133,23 +126,26 @@ class AttributeManagementTest extends TestCase
         );
     }
 
+    /**
+     *
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage The attribute set ID is incorrect. Verify the ID and try again.
+     */
     public function testAssignInputException()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
-        $this->expectExceptionMessage('The attribute set ID is incorrect. Verify the ID and try again.');
         $entityTypeCode = 1;
         $attributeSetId = 2;
         $attributeGroupId = 3;
         $attributeCode = 4;
         $sortOrder = 5;
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn($entityTypeCode+1);
 
@@ -162,27 +158,30 @@ class AttributeManagementTest extends TestCase
         );
     }
 
+    /**
+     *
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage The attribute group doesn't belong to the attribute set.
+     */
     public function testAssignInputExceptionGroupInSet()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
-        $this->expectExceptionMessage('The attribute group doesn\'t belong to the attribute set.');
         $entityTypeCode = 1;
         $attributeSetId = 2;
         $attributeGroupId = 3;
         $attributeCode = 4;
         $sortOrder = 5;
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn($entityTypeCode);
 
-        $attributeGroup = $this->getMockBuilder(AttributeGroupInterface::class)
+        $attributeGroup = $this->getMockBuilder(\Magento\Eav\Api\Data\AttributeGroupInterface::class)
             ->setMethods(['getAttributeSetId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -206,14 +205,14 @@ class AttributeManagementTest extends TestCase
         $attributeGroupId = 3;
         $attributeCode = 4;
         $sortOrder = 5;
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn($entityTypeCode);
         $attributeMock = $this->createMock(\Magento\Eav\Model\Attribute::class);
@@ -235,7 +234,7 @@ class AttributeManagementTest extends TestCase
         $attributeMock->expects($this->once())->method('loadEntityAttributeIdBySet')->willReturnSelf();
         $attributeMock->expects($this->once())->method('getData')->with('entity_attribute_id')->willReturnSelf();
 
-        $attributeGroup = $this->getMockBuilder(AttributeGroupInterface::class)
+        $attributeGroup = $this->getMockBuilder(\Magento\Eav\Api\Data\AttributeGroupInterface::class)
             ->setMethods(['getAttributeSetId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -260,22 +259,26 @@ class AttributeManagementTest extends TestCase
         $attributeSetId = 1;
         $attributeCode = 'code';
 
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
-        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
-            ->addMethods(['getEntityAttributeId'])
-            ->onlyMethods(
-                ['setAttributeSetId', 'loadEntityAttributeIdBySet', 'getIsUserDefined', 'deleteEntity']
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $attributeMock = $this->createPartialMock(
+            \Magento\Eav\Model\Entity\Attribute::class,
+            [
+                'getEntityAttributeId',
+                'setAttributeSetId',
+                'loadEntityAttributeIdBySet',
+                'getIsUserDefined',
+                'deleteEntity',
+                '__wakeup'
+            ]
+        );
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn('entity type code');
         $this->attributeRepositoryMock->expects($this->once())
             ->method('get')
@@ -291,28 +294,34 @@ class AttributeManagementTest extends TestCase
         $this->assertTrue($this->attributeManagement->unassign($attributeSetId, $attributeCode));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\InputException
+     */
     public function testUnassignInputException()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
         $attributeSetId = 1;
         $attributeCode = 'code';
 
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
-        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
-            ->addMethods(['getEntityAttributeId'])
-            ->onlyMethods(
-                ['setAttributeSetId', 'loadEntityAttributeIdBySet', 'getIsUserDefined', 'deleteEntity']
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $attributeMock = $this->createPartialMock(
+            \Magento\Eav\Model\Entity\Attribute::class,
+            [
+                'getEntityAttributeId',
+                'setAttributeSetId',
+                'loadEntityAttributeIdBySet',
+                'getIsUserDefined',
+                'deleteEntity',
+                '__wakeup'
+            ]
+        );
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn('entity type code');
         $this->attributeRepositoryMock->expects($this->once())
             ->method('get')
@@ -332,10 +341,12 @@ class AttributeManagementTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage The "1234567" attribute set wasn't found. Verify and try again.
+     */
     public function testUnassignWithWrongAttributeSet()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
-        $this->expectExceptionMessage('The "1234567" attribute set wasn\'t found. Verify and try again.');
         $attributeSetId = 1234567;
         $attributeCode = 'code';
 
@@ -347,29 +358,35 @@ class AttributeManagementTest extends TestCase
         $this->attributeManagement->unassign($attributeSetId, $attributeCode);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\StateException
+     * @expectedExceptionMessage The system attribute can't be deleted.
+     */
     public function testUnassignStateException()
     {
-        $this->expectException('Magento\Framework\Exception\StateException');
-        $this->expectExceptionMessage('The system attribute can\'t be deleted.');
         $attributeSetId = 1;
         $attributeCode = 'code';
 
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
         $this->entityTypeFactoryMock->expects($this->once())->method('create')->willReturn($this->eavConfigMock);
         $attributeSetMock->expects($this->once())->method('getEntityTypeId')->willReturn(66);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())->method('getEntityType')->with(66)->willReturn($entityTypeMock);
-        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
-            ->addMethods(['getEntityAttributeId'])
-            ->onlyMethods(
-                ['setAttributeSetId', 'loadEntityAttributeIdBySet', 'getIsUserDefined', 'deleteEntity']
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $attributeMock = $this->createPartialMock(
+            \Magento\Eav\Model\Entity\Attribute::class,
+            [
+                'getEntityAttributeId',
+                'setAttributeSetId',
+                'loadEntityAttributeIdBySet',
+                'getIsUserDefined',
+                'deleteEntity',
+                '__wakeup'
+            ]
+        );
         $entityTypeMock->expects($this->once())->method('getEntityTypeCode')->willReturn('entity type code');
         $this->attributeRepositoryMock->expects($this->once())
             ->method('get')
@@ -391,26 +408,26 @@ class AttributeManagementTest extends TestCase
         $attributeSetId = 148;
 
         $attributeCollectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory::class,
             ['create']
         );
         $attributeCollectionFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->attributeCollectionMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $objectManager->setBackwardCompatibleProperty(
             $this->attributeManagement,
             'attributeCollectionFactory',
             $attributeCollectionFactoryMock
         );
 
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())
             ->method('getEntityType')
             ->with($entityType)
@@ -429,19 +446,21 @@ class AttributeManagementTest extends TestCase
         $this->assertEquals([$attributeMock], $this->attributeManagement->getAttributes($entityType, $attributeSetId));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage No such entity with attributeSetId = 148
+     */
     public function testGetAttributesNoSuchEntityException()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
-        $this->expectExceptionMessage('No such entity with attributeSetId = 148');
         $entityType = 'type';
         $attributeSetId = 148;
 
-        $attributeSetMock = $this->getMockForAbstractClass(AttributeSetInterface::class);
+        $attributeSetMock = $this->createMock(\Magento\Eav\Api\Data\AttributeSetInterface::class);
         $this->setRepositoryMock->expects($this->once())
             ->method('get')
             ->with($attributeSetId)
             ->willReturn($attributeSetMock);
-        $entityTypeMock = $this->createMock(Type::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
         $this->eavConfigMock->expects($this->once())
             ->method('getEntityType')
             ->with($entityType)

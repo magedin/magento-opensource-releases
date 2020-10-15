@@ -64,10 +64,9 @@ class GeneratePageObject extends Command
 
         if (!$res) {
             $output->writeln("<error>PageObject $filename already exists</error>");
-            return 1;
+            exit;
         }
         $output->writeln("<info>PageObject was created in $filename</info>");
-        return 0;
     }
 
     protected function pathToPageObject($class, $suite)

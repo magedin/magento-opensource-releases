@@ -3,24 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\Model\Inline;
 
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\State;
+use Magento\Translation\Model\Inline\Parser;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Translate\InlineInterface;
-use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Translation\Model\Inline\CacheManager;
-use Magento\Translation\Model\Inline\Parser;
-use Magento\Translation\Model\ResourceModel\StringUtils;
+use Magento\Store\Api\Data\StoreInterface;
 use Magento\Translation\Model\ResourceModel\StringUtilsFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Translation\Model\ResourceModel\StringUtils;
+use Magento\Translation\Model\Inline\CacheManager;
 
-class ParserTest extends TestCase
+/**
+ * Class ParserTest to test \Magento\Translation\Model\Inline\Parser
+ */
+class ParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Parser
@@ -33,97 +31,85 @@ class ParserTest extends TestCase
     private $objectManager;
 
     /**
-     * @var InlineInterface|MockObject
+     * @var InlineInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $translateInlineMock;
 
     /**
-     * @var TypeListInterface|MockObject
+     * @var TypeListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appCacheMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var \Zend_Filter_Interface|MockObject
+     * @var \Zend_Filter_Interface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $inputFilterMock;
 
     /**
-     * @var StringUtilsFactory|MockObject
+     * @var StringUtilsFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceFactoryMock;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appStateMock;
 
     /**
-     * @var StringUtils|MockObject
+     * @var StringUtils|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceMock;
 
     /**
-     * @var CacheManager|MockObject
+     * @var CacheManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->translateInlineMock =
-            $this->getMockForAbstractClass(InlineInterface::class);
-        $this->appCacheMock = $this->getMockForAbstractClass(TypeListInterface::class);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->storeMock = $this->getMockForAbstractClass(StoreInterface::class);
-        $this->storeManagerMock->method('getStore')
+            $this->getMockForAbstractClass(\Magento\Framework\Translate\InlineInterface::class);
+        $this->appCacheMock = $this->getMockForAbstractClass(\Magento\Framework\App\Cache\TypeListInterface::class);
+        $this->storeManagerMock = $this->getMockForAbstractClass(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->storeMock = $this->getMockForAbstractClass(\Magento\Store\Api\Data\StoreInterface::class);
+        $this->storeManagerMock->expects($this->any())
+            ->method('getStore')
             ->willReturn($this->storeMock);
         $this->resourceFactoryMock = $this->getMockBuilder(
-            StringUtilsFactory::class
+            \Magento\Translation\Model\ResourceModel\StringUtilsFactory::class
         )
             ->disableOriginalConstructor()
-            ->setMethods(['create'])
             ->getMock();
-        $this->resourceMock = $this->getMockBuilder(StringUtils::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Translation\Model\ResourceModel\StringUtils::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->inputFilterMock = $this->getMockForAbstractClass('Zend_Filter_Interface');
+        $this->inputFilterMock = $this->getMockBuilder('Zend_Filter_Interface');
 
-        $this->resourceFactoryMock->method('create')
+        $this->resourceFactoryMock->expects($this->any())
+            ->method('create')
             ->willReturn($this->resourceMock);
-        $this->cacheManagerMock = $this->getMockBuilder(CacheManager::class)
+        $this->cacheManagerMock = $this->getMockBuilder(\Magento\Translation\Model\Inline\CacheManager::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->appStateMock = $this->getMockBuilder(State::class)
+        $this->appStateMock = $this->getMockBuilder(\Magento\Framework\App\State::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-
-        $this->model = $this->objectManager->getObject(
-            Parser::class,
-            [
-                'resource' => $this->resourceFactoryMock,
-                'storeManager' => $this->storeManagerMock,
-                'inputFilter' => $this->inputFilterMock,
-                'appState' => $this->appStateMock,
-                'appCache' => $this->appCacheMock,
-                'translateInline' => $this->translateInlineMock,
-                'cacheManager' => $this->cacheManagerMock,
-            ]
-        );
     }
 
     public function testProcessAjaxPostNotAllowed()
@@ -132,6 +118,10 @@ class ParserTest extends TestCase
         $this->translateInlineMock->expects($this->once())
             ->method('isAllowed')
             ->willReturn(false);
+        $this->model = $this->objectManager->getObject(
+            Parser::class,
+            ['translateInline' => $this->translateInlineMock]
+        );
         $this->assertEquals($expected, $this->model->processAjaxPost([]));
     }
 
@@ -140,6 +130,15 @@ class ParserTest extends TestCase
         $this->translateInlineMock->expects($this->once())
             ->method('isAllowed')
             ->willReturn(true);
+        $this->model = $this->objectManager->getObject(
+            Parser::class,
+            [
+                'cacheManager' => $this->cacheManagerMock,
+                'resource' => $this->resourceFactoryMock,
+                'storeManager' => $this->storeManagerMock,
+                'translateInline' => $this->translateInlineMock
+            ]
+        );
         $this->model->processAjaxPost([]);
     }
 
@@ -154,15 +153,26 @@ class ParserTest extends TestCase
             "data-translate=\"[{'shown':'Password','translated':'Password','original':'Password',"
             . "'location':'Tag attribute (ALT, TITLE, etc.)'}]\""
         ];
-        $this->translateInlineMock->method('getAdditionalHtmlAttribute')->willReturn(null);
+        $this->translateInlineMock->expects($this->any())->method('getAdditionalHtmlAttribute')->willReturn(null);
+
+        $this->model = $this->objectManager->getObject(
+            Parser::class,
+            [
+                'cacheManager' => $this->cacheManagerMock,
+                'resource' => $this->resourceFactoryMock,
+                'storeManager' => $this->storeManagerMock,
+                'translateInline' => $this->translateInlineMock,
+                '_resourceFactory' => $this->resourceMock,
+                '_inputFilter' => $this->inputFilterMock,
+                '_appState' => $this->appStateMock,
+                '_appCache' => $this->appCacheMock,
+                '_translateInline' => $this->translateInlineMock
+            ]
+        );
 
         $processedContent = $this->model->processResponseBodyString($testContent);
         foreach ($processedAttributes as $attribute) {
-            $this->assertStringContainsString(
-                $attribute,
-                $processedContent,
-                'data-translate attribute not processed correctly'
-            );
+            $this->assertContains($attribute, $processedContent, "data-translate attribute not processed correctly");
         }
     }
 }

@@ -3,19 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Sales\Block\Adminhtml\Order\Invoice\View
  */
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\Invoice;
 
-use Magento\Sales\Block\Adminhtml\Order\Invoice\View;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param bool $canReviewPayment
@@ -26,37 +20,33 @@ class ViewTest extends TestCase
     public function testIsPaymentReview($canReviewPayment, $canFetchUpdate, $expectedResult)
     {
         // Create order mock
-        $order = $this->getMockBuilder(Order::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $order->expects($this->any())->method('canReviewPayment')->willReturn($canReviewPayment);
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)->disableOriginalConstructor()->getMock();
+        $order->expects($this->any())->method('canReviewPayment')->will($this->returnValue($canReviewPayment));
         $order->expects(
             $this->any()
         )->method(
             'canFetchPaymentReviewUpdate'
-        )->willReturn(
-            $canFetchUpdate
+        )->will(
+            $this->returnValue($canFetchUpdate)
         );
 
         // Create invoice mock
         $invoice = $this->getMockBuilder(
-            Invoice::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getOrder']
-            )->getMock();
-        $invoice->expects($this->once())->method('getOrder')->willReturn($order);
+            \Magento\Sales\Model\Order\Invoice::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getOrder', '__wakeup']
+        )->getMock();
+        $invoice->expects($this->once())->method('getOrder')->will($this->returnValue($order));
 
         // Prepare block to test protected method
         $block = $this->getMockBuilder(
-            View::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getInvoice']
-            )->getMock();
-        $block->expects($this->once())->method('getInvoice')->willReturn($invoice);
+            \Magento\Sales\Block\Adminhtml\Order\Invoice\View::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getInvoice']
+        )->getMock();
+        $block->expects($this->once())->method('getInvoice')->will($this->returnValue($invoice));
         $testMethod = new \ReflectionMethod(
-            View::class,
+            \Magento\Sales\Block\Adminhtml\Order\Invoice\View::class,
             '_isPaymentReview'
         );
         $testMethod->setAccessible(true);

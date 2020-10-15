@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Ui\Component\MassAction;
 
@@ -108,7 +107,7 @@ class Filter
             $filterIds = array_unique(array_merge($filterIds, $selected));
         }
         $collection->addFieldToFilter(
-            $collection->getResource()->getIdFieldName(),
+            $collection->getIdFieldName(),
             ['in' => $filterIds]
         );
 
@@ -164,9 +163,9 @@ class Filter
 
         try {
             if (is_array($excluded) && !empty($excluded)) {
-                $collection->addFieldToFilter($collection->getResource()->getIdFieldName(), ['nin' => $excluded]);
+                $collection->addFieldToFilter($collection->getIdFieldName(), ['nin' => $excluded]);
             } elseif (is_array($selected) && !empty($selected)) {
-                $collection->addFieldToFilter($collection->getResource()->getIdFieldName(), ['in' => $selected]);
+                $collection->addFieldToFilter($collection->getIdFieldName(), ['in' => $selected]);
             } else {
                 throw new LocalizedException(__('An item needs to be selected. Select and try again.'));
             }

@@ -7,14 +7,14 @@ declare(strict_types=1);
 
 namespace Magento\MediaGallery\Test\Unit\Model\Asset\Command;
 
+use Magento\MediaGallery\Model\Asset\Command\Save;
+use Magento\MediaGalleryApi\Api\Data\AssetInterface;
+use Magento\MediaGalleryApi\Model\DataExtractorInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaGallery\Model\Asset\Command\Save;
-use Magento\MediaGalleryApi\Api\Data\AssetInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -24,6 +24,7 @@ use Psr\Log\LoggerInterface;
  */
 class SaveTest extends TestCase
 {
+
     /**
      * Constant for tablename of media gallery assets
      */
@@ -48,14 +49,12 @@ class SaveTest extends TestCase
      * Constant for image data
      */
     private const IMAGE_DATA = [
-        'id' => null,
         'path' => '/test/path',
         'title' => 'Test Title',
         'source' => 'Adobe Stock',
         'content_type' => 'image/jpeg',
         'height' => 4863,
-        'width' => 12129,
-        'size' => 300,
+        'width' => 12129
     ];
 
     /**
@@ -64,14 +63,14 @@ class SaveTest extends TestCase
     private $resourceConnectionMock;
 
     /**
-     * @var MockObject | LoggerInterface
+     * @var MockObject | DataExtractorInterface
      */
     private $loggerMock;
 
     /**
-     * @var MockObject | DataObjectProcessor
+     * @var MockObject | LoggerInterface
      */
-    private $objectProcessor;
+    private $extractorMock;
 
     /**
      * @var MockObject | AdapterInterface
@@ -95,11 +94,11 @@ class SaveTest extends TestCase
     {
         /* Intermediary mocks */
         $this->adapterMock = $this->createMock(Mysql::class);
-        $this->mediaAssetMock = $this->getMockForAbstractClass(AssetInterface::class);
+        $this->mediaAssetMock = $this->createMock(AssetInterface::class);
 
         /* Save constructor mocks */
-        $this->objectProcessor = $this->createMock(DataObjectProcessor::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->extractorMock = $this->createMock(DataExtractorInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->resourceConnectionMock = $this->createConfiguredMock(
             ResourceConnection::class,
             [
@@ -113,7 +112,7 @@ class SaveTest extends TestCase
             Save::class,
             [
                 'resourceConnection' => $this->resourceConnectionMock,
-                'objectProcessor'    => $this->objectProcessor,
+                'extractor'          => $this->extractorMock,
                 'logger'             => $this->loggerMock
             ]
         );
@@ -127,16 +126,11 @@ class SaveTest extends TestCase
         $this->resourceConnectionMock->expects(self::once())->method('getConnection');
         $this->resourceConnectionMock->expects(self::once())->method('getTableName');
 
-        $this->mediaAssetMock->expects(self::once())->method('getId')->willReturn(self::IMAGE_DATA['id']);
-        $this->mediaAssetMock->expects(self::once())->method('getPath')->willReturn(self::IMAGE_DATA['path']);
-        $this->mediaAssetMock->expects(self::once())->method('getTitle')->willReturn(self::IMAGE_DATA['title']);
-        $this->mediaAssetMock->expects(self::once())->method('getSource')->willReturn(self::IMAGE_DATA['source']);
-        $this->mediaAssetMock->expects(self::once())->method('getWidth')->willReturn(self::IMAGE_DATA['width']);
-        $this->mediaAssetMock->expects(self::once())->method('getHeight')->willReturn(self::IMAGE_DATA['height']);
-        $this->mediaAssetMock->expects(self::once())->method('getSize')->willReturn(self::IMAGE_DATA['size']);
-        $this->mediaAssetMock->expects(self::once())
-            ->method('getContentType')
-            ->willReturn(self::IMAGE_DATA['content_type']);
+        $this->extractorMock
+            ->expects(self::once())
+            ->method('extract')
+            ->with($this->mediaAssetMock, AssetInterface::class)
+            ->willReturn(self::IMAGE_DATA);
 
         $this->adapterMock
             ->expects(self::once())
@@ -161,16 +155,11 @@ class SaveTest extends TestCase
         $this->resourceConnectionMock->expects(self::once())->method('getConnection');
         $this->resourceConnectionMock->expects(self::once())->method('getTableName');
 
-        $this->mediaAssetMock->expects(self::once())->method('getId')->willReturn(self::IMAGE_DATA['id']);
-        $this->mediaAssetMock->expects(self::once())->method('getPath')->willReturn(self::IMAGE_DATA['path']);
-        $this->mediaAssetMock->expects(self::once())->method('getTitle')->willReturn(self::IMAGE_DATA['title']);
-        $this->mediaAssetMock->expects(self::once())->method('getSource')->willReturn(self::IMAGE_DATA['source']);
-        $this->mediaAssetMock->expects(self::once())->method('getWidth')->willReturn(self::IMAGE_DATA['width']);
-        $this->mediaAssetMock->expects(self::once())->method('getHeight')->willReturn(self::IMAGE_DATA['height']);
-        $this->mediaAssetMock->expects(self::once())->method('getSize')->willReturn(self::IMAGE_DATA['size']);
-        $this->mediaAssetMock->expects(self::once())
-            ->method('getContentType')
-            ->willReturn(self::IMAGE_DATA['content_type']);
+        $this->extractorMock
+            ->expects(self::once())
+            ->method('extract')
+            ->with($this->mediaAssetMock, AssetInterface::class)
+            ->willReturn(self::IMAGE_DATA);
 
         $this->adapterMock
             ->expects(self::once())

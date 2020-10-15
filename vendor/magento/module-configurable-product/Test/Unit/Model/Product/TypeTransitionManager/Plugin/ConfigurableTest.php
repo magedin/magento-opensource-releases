@@ -3,52 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Product\TypeTransitionManager\Plugin;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\TypeTransitionManager;
-use Magento\ConfigurableProduct\Model\Product\TypeTransitionManager\Plugin\Configurable;
-use Magento\Framework\App\Request\Http;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigurableTest extends TestCase
+class ConfigurableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $closureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var Configurable
+     * @var \Magento\ConfigurableProduct\Model\Product\TypeTransitionManager\Plugin\Configurable
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->createMock(Http::class);
-        $this->model = new Configurable(
+        $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->model = new \Magento\ConfigurableProduct\Model\Product\TypeTransitionManager\Plugin\Configurable(
             $this->requestMock
         );
-        $this->productMock = $this->createPartialMock(Product::class, ['setTypeId']);
-        $this->subjectMock = $this->createMock(TypeTransitionManager::class);
+        $this->productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['setTypeId', '__wakeup']);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Model\Product\TypeTransitionManager::class);
         $this->closureMock = function () {
             return 'Expected';
         };
@@ -62,8 +53,8 @@ class ConfigurableTest extends TestCase
             'getParam'
         )->with(
             'attributes'
-        )->willReturn(
-            'not_empty_attribute_data'
+        )->will(
+            $this->returnValue('not_empty_attribute_data')
         );
         $this->productMock->expects(
             $this->once()
@@ -83,8 +74,8 @@ class ConfigurableTest extends TestCase
             'getParam'
         )->with(
             'attributes'
-        )->willReturn(
-            null
+        )->will(
+            $this->returnValue(null)
         );
         $this->productMock->expects($this->never())->method('setTypeId');
         $this->model->aroundProcessProduct($this->subjectMock, $this->closureMock, $this->productMock);

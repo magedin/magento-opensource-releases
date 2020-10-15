@@ -6,57 +6,84 @@
 
 namespace Magento\Customer\Controller\Adminhtml;
 
-use Magento\Backend\Model\Session;
-use Magento\Customer\Api\CustomerNameGenerationInterface;
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\EmailNotification;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Framework\App\Request\Http as HttpRequest;
-use Magento\TestFramework\TestCase\AbstractBackendController;
 
 /**
  * @magentoAppArea adminhtml
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends AbstractBackendController
+class IndexTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
     /**
      * Base controller URL
      *
      * @var string
      */
-    private $baseControllerUrl = 'backend/customer/index/';
+    protected $_baseControllerUrl;
 
     /** @var CustomerRepositoryInterface */
-    private $customerRepository;
+    protected $customerRepository;
 
-    /** @var CustomerNameGenerationInterface */
-    private $customerViewHelper;
+    /** @var AddressRepositoryInterface */
+    protected $addressRepository;
+
+    /** @var AccountManagementInterface */
+    protected $accountManagement;
+
+    /** @var \Magento\Framework\Data\Form\FormKey */
+    protected $formKey;
+
+    /**@var \Magento\Customer\Helper\View */
+    protected $customerViewHelper;
+
+    /** @var \Magento\TestFramework\ObjectManager */
+    protected $objectManager;
 
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
-        $this->customerRepository = $this->_objectManager->get(CustomerRepositoryInterface::class);
-        $this->customerViewHelper = $this->_objectManager->get(CustomerNameGenerationInterface::class);
+        $this->_baseControllerUrl = 'http://localhost/index.php/backend/customer/index/';
+        $this->customerRepository = Bootstrap::getObjectManager()->get(
+            \Magento\Customer\Api\CustomerRepositoryInterface::class
+        );
+        $this->addressRepository = Bootstrap::getObjectManager()->get(
+            \Magento\Customer\Api\AddressRepositoryInterface::class
+        );
+        $this->accountManagement = Bootstrap::getObjectManager()->get(
+            \Magento\Customer\Api\AccountManagementInterface::class
+        );
+        $this->formKey = Bootstrap::getObjectManager()->get(
+            \Magento\Framework\Data\Form\FormKey::class
+        );
+
+        $this->objectManager = Bootstrap::getObjectManager();
+        $this->customerViewHelper = $this->objectManager->get(
+            \Magento\Customer\Helper\View::class
+        );
     }
 
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /**
          * Unset customer data
          */
-        $this->_objectManager->get(Session::class)->setCustomerData(null);
+        Bootstrap::getObjectManager()->get(\Magento\Backend\Model\Session::class)->setCustomerData(null);
 
         /**
          * Unset messages
          */
-        $this->_objectManager->get(Session::class)->getMessages(true);
+        Bootstrap::getObjectManager()->get(\Magento\Backend\Model\Session::class)->getMessages(true);
     }
 
     /**
@@ -115,7 +142,7 @@ class IndexTest extends AbstractBackendController
         $body = $this->getResponse()->getBody();
 
         // verify
-        $this->assertStringContainsString('<h1 class="page-title">test firstname test lastname</h1>', $body);
+        $this->assertContains('<h1 class="page-title">test firstname test lastname</h1>', $body);
     }
 
     /**
@@ -127,7 +154,7 @@ class IndexTest extends AbstractBackendController
         $body = $this->getResponse()->getBody();
 
         // verify
-        $this->assertStringContainsString('<h1 class="page-title">New Customer</h1>', $body);
+        $this->assertContains('<h1 class="page-title">New Customer</h1>', $body);
     }
 
     /**
@@ -156,12 +183,12 @@ class IndexTest extends AbstractBackendController
     /**
      * @magentoDataFixture Magento/Customer/_files/customer_sample.php
      */
-    public function testCartAction()
+    public function testProductReviewsAction()
     {
-        $this->getRequest()->setParam('id', 1)->setParam('website_id', 1)->setPostValue('delete', 1);
-        $this->dispatch('backend/customer/index/cart');
+        $this->getRequest()->setParam('id', 1);
+        $this->dispatch('backend/customer/index/productReviews');
         $body = $this->getResponse()->getBody();
-        $this->assertStringContainsString('<div id="customer_cart_grid"', $body);
+        $this->assertContains('<div id="reviwGrid"', $body);
     }
 
     /**
@@ -172,7 +199,7 @@ class IndexTest extends AbstractBackendController
         // No customer ID in post, will just get redirected to base
         $this->getRequest()->setMethod(HttpRequest::METHOD_GET);
         $this->dispatch('backend/customer/index/resetPassword');
-        $this->assertRedirect($this->stringContains($this->baseControllerUrl));
+        $this->assertRedirect($this->stringStartsWith($this->_baseControllerUrl));
     }
 
     /**
@@ -184,7 +211,7 @@ class IndexTest extends AbstractBackendController
         $this->getRequest()->setMethod(HttpRequest::METHOD_GET);
         $this->getRequest()->setPostValue(['customer_id' => '789']);
         $this->dispatch('backend/customer/index/resetPassword');
-        $this->assertRedirect($this->stringContains($this->baseControllerUrl));
+        $this->assertRedirect($this->stringStartsWith($this->_baseControllerUrl));
     }
 
     /**
@@ -199,7 +226,7 @@ class IndexTest extends AbstractBackendController
             $this->equalTo(['The customer will receive an email with a link to reset password.']),
             \Magento\Framework\Message\MessageInterface::TYPE_SUCCESS
         );
-        $this->assertRedirect($this->stringContains($this->baseControllerUrl . 'edit'));
+        $this->assertRedirect($this->stringStartsWith($this->_baseControllerUrl . 'edit'));
     }
 
     /**
@@ -210,7 +237,7 @@ class IndexTest extends AbstractBackendController
      * @param array $sender
      * @param int $customerId
      * @param string|null $newEmail
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      * @magentoDataFixture Magento/Customer/_files/customer.php
      */
     protected function prepareEmailMock(
@@ -219,7 +246,7 @@ class IndexTest extends AbstractBackendController
         array $sender,
         int $customerId,
         $newEmail = null
-    ) : \PHPUnit\Framework\MockObject\MockObject {
+    ) : \PHPUnit_Framework_MockObject_MockObject {
         $area = \Magento\Framework\App\Area::AREA_FRONTEND;
         $customer = $this->customerRepository->getById($customerId);
         $storeId = $customer->getStoreId();
@@ -265,11 +292,11 @@ class IndexTest extends AbstractBackendController
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject $transportBuilderMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $transportBuilderMock
      * @param string $className
      */
     protected function addEmailMockToClass(
-        \PHPUnit\Framework\MockObject\MockObject $transportBuilderMock,
+        \PHPUnit_Framework_MockObject_MockObject $transportBuilderMock,
         $className
     ) {
         $mocked = $this->_objectManager->create(

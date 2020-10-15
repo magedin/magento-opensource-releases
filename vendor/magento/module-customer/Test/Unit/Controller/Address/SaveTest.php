@@ -1,101 +1,89 @@
 <?php
+declare(strict_types=1);
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Controller\Address;
 
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Customer\Api\Data\AddressInterfaceFactory;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Controller\Adminhtml\Address\Save;
-use Magento\Customer\Model\Metadata\Form;
-use Magento\Customer\Model\Metadata\FormFactory;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Save
+     * @var \Magento\Customer\Controller\Adminhtml\Address\Save
      */
     private $model;
 
     /**
-     * @var AddressRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\AddressRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressRepositoryMock;
 
     /**
-     * @var FormFactory|MockObject
+     * @var \Magento\Customer\Model\Metadata\FormFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $formFactoryMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerRepositoryMock;
 
     /**
-     * @var DataObjectHelper|MockObject
+     * @var \Magento\Framework\Api\DataObjectHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataObjectHelperMock;
 
     /**
-     * @var AddressInterfaceFactory|MockObject
+     * @var \Magento\Customer\Api\Data\AddressInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressDataFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var AddressInterface|MockObject
+     * @var AddressInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $address;
 
     /**
-     * @var JsonFactory|MockObject
+     * @var JsonFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultJsonFactory;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $json;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->addressRepositoryMock = $this->getMockForAbstractClass(AddressRepositoryInterface::class);
-        $this->formFactoryMock = $this->createMock(FormFactory::class);
-        $this->customerRepositoryMock = $this->getMockForAbstractClass(CustomerRepositoryInterface::class);
-        $this->dataObjectHelperMock = $this->createMock(DataObjectHelper ::class);
-        $this->addressDataFactoryMock = $this->createMock(AddressInterfaceFactory::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->addressRepositoryMock = $this->createMock(\Magento\Customer\Api\AddressRepositoryInterface::class);
+        $this->formFactoryMock = $this->createMock(\Magento\Customer\Model\Metadata\FormFactory::class);
+        $this->customerRepositoryMock = $this->createMock(\Magento\Customer\Api\CustomerRepositoryInterface::class);
+        $this->dataObjectHelperMock = $this->createMock(\Magento\Framework\Api\DataObjectHelper ::class);
+        $this->addressDataFactoryMock = $this->createMock(\Magento\Customer\Api\Data\AddressInterfaceFactory::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->address = $this->getMockBuilder(AddressInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -110,7 +98,7 @@ class SaveTest extends TestCase
         $objectManager = new ObjectManagerHelper($this);
 
         $this->model = $objectManager->getObject(
-            Save::class,
+            \Magento\Customer\Controller\Adminhtml\Address\Save::class,
             [
                 'addressRepository'     => $this->addressRepositoryMock,
                 'formFactory'           => $this->formFactoryMock,
@@ -164,16 +152,16 @@ class SaveTest extends TestCase
             ->withConsecutive(['parent_id'], ['entity_id'])
             ->willReturnOnConsecutiveCalls(22, 1);
 
-        $customerMock = $this->getMockBuilder(CustomerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $customerMock = $this->getMockBuilder(
+            \Magento\Customer\Api\Data\CustomerInterface::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->customerRepositoryMock->expects($this->atLeastOnce())
             ->method('getById')
             ->with($customerId)
             ->willReturn($customerMock);
 
-        $customerAddressFormMock = $this->createMock(Form::class);
+        $customerAddressFormMock = $this->createMock(\Magento\Customer\Model\Metadata\Form::class);
         $customerAddressFormMock->expects($this->atLeastOnce())
             ->method('extractData')
             ->with($this->requestMock)
@@ -189,7 +177,7 @@ class SaveTest extends TestCase
 
         $addressMock = $this->getMockBuilder(AddressInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->addressDataFactoryMock->expects($this->once())->method('create')->willReturn($addressMock);
 

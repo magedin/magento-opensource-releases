@@ -4,14 +4,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Model;
 
-use Magento\Wishlist\Model\AuthenticationState;
-use PHPUnit\Framework\TestCase;
+use \Magento\Wishlist\Model\AuthenticationState;
 
-class AuthenticationStateTest extends TestCase
+class AuthenticationStateTest extends \PHPUnit\Framework\TestCase
 {
     public function testIsEnabled()
     {

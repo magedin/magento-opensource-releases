@@ -3,68 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Layout\ScheduledStructure;
 
+use Magento\Framework\View\Layout;
 use Magento\Framework\App\State;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout\Data\Structure;
-use Magento\Framework\View\Layout\Element;
-use Magento\Framework\View\Layout\ScheduledStructure;
-use Magento\Framework\View\Layout\ScheduledStructure\Helper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
+ * Class HelperTest
  * @covers \Magento\Framework\View\Layout\ScheduledStructure\Helper
  */
-class HelperTest extends TestCase
+class HelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScheduledStructure|MockObject
+     * @var \Magento\Framework\View\Layout\ScheduledStructure|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scheduledStructureMock;
 
     /**
-     * @var Structure|MockObject
+     * @var \Magento\Framework\View\Layout\Data\Structure|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataStructureMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stateMock;
 
     /**
-     * @var Helper
+     * @var \Magento\Framework\View\Layout\ScheduledStructure\Helper
      */
     protected $helper;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scheduledStructureMock = $this->getMockBuilder(ScheduledStructure::class)
+        $this->scheduledStructureMock = $this->getMockBuilder(\Magento\Framework\View\Layout\ScheduledStructure::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dataStructureMock = $this->getMockBuilder(Structure::class)
+        $this->dataStructureMock = $this->getMockBuilder(\Magento\Framework\View\Layout\Data\Structure::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->stateMock = $this->createMock(State::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->stateMock = $this->createMock(\Magento\Framework\App\State::class);
 
-        $helperObjectManager = new ObjectManager($this);
+        $helperObjectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->helper = $helperObjectManager->getObject(
-            Helper::class,
+            \Magento\Framework\View\Layout\ScheduledStructure\Helper::class,
             [
                 'logger' => $this->loggerMock,
                 'state' => $this->stateMock
@@ -96,30 +88,30 @@ class HelperTest extends TestCase
 
         $this->scheduledStructureMock->expects($this->once())->method('hasPath')
             ->with($parentNodeName)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->scheduledStructureMock->expects($this->any())->method('hasStructureElement')
             ->with($actualNodeName)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->scheduledStructureMock->expects($this->once())->method('setPathElement')
             ->with($actualNodeName, $testPath . '/' . $actualNodeName)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->scheduledStructureMock->expects($this->once())->method('setStructureElement')
             ->with($actualNodeName, [$block, $currentNodeAs, $parentNodeName, $after, true]);
         $this->scheduledStructureMock->expects($this->once())->method('getPath')
             ->with($parentNodeName)
-            ->willReturn('test_path');
+            ->will($this->returnValue('test_path'));
         $this->scheduledStructureMock->expects($this->once())->method('getPaths')
-            ->willReturn([$potentialChild => $testPath . '/' . $currentNodeName . '/']);
+            ->will($this->returnValue([$potentialChild => $testPath . '/' . $currentNodeName . '/']));
         $this->scheduledStructureMock->expects($this->exactly($unsetPathElementCount))->method('unsetPathElement')
             ->with($potentialChild);
         $this->scheduledStructureMock->expects($this->exactly($unsetStructureElementCount))
             ->method('unsetStructureElement')
             ->with($potentialChild);
 
-        $currentNode = new Element(
+        $currentNode = new \Magento\Framework\View\Layout\Element(
             '<' . $block . ' name="' . $currentNodeName . '" as="' . $currentNodeAs . '" after="' . $after . '"/>'
         );
-        $parentNode = new Element('<' . $block . ' name="' . $parentNodeName . '"/>');
+        $parentNode = new \Magento\Framework\View\Layout\Element('<' . $block . ' name="' . $parentNodeName . '"/>');
 
         $result = $this->helper->scheduleStructure($this->scheduledStructureMock, $currentNode, $parentNode);
         $this->assertEquals($actualNodeName, $result);
@@ -152,7 +144,7 @@ class HelperTest extends TestCase
     }
 
     /**
-     * @param InvokedCount $loggerExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $loggerExpects
      * @param string $stateMode
      * @return void
      * @dataProvider scheduleElementLogDataProvider
@@ -170,11 +162,11 @@ class HelperTest extends TestCase
             ->method('getStructureElement')
             ->willReturn(
                 [
-                    Helper::SCHEDULED_STRUCTURE_INDEX_TYPE => $block,
-                    Helper::SCHEDULED_STRUCTURE_INDEX_ALIAS => $alias,
-                    Helper::SCHEDULED_STRUCTURE_INDEX_PARENT_NAME => $parentName,
-                    Helper::SCHEDULED_STRUCTURE_INDEX_SIBLING_NAME => $siblingName,
-                    Helper::SCHEDULED_STRUCTURE_INDEX_IS_AFTER => $isAfter
+                    Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_TYPE => $block,
+                    Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_ALIAS => $alias,
+                    Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_PARENT_NAME => $parentName,
+                    Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_SIBLING_NAME => $siblingName,
+                    Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_IS_AFTER => $isAfter
                 ]
             );
         $this->scheduledStructureMock->expects($this->once())
@@ -245,11 +237,11 @@ class HelperTest extends TestCase
                     $key,
                     null,
                     [
-                        Helper::SCHEDULED_STRUCTURE_INDEX_TYPE => $block,
-                        Helper::SCHEDULED_STRUCTURE_INDEX_ALIAS => $alias,
-                        Helper::SCHEDULED_STRUCTURE_INDEX_PARENT_NAME => $parentName,
-                        Helper::SCHEDULED_STRUCTURE_INDEX_SIBLING_NAME => $siblingName,
-                        Helper::SCHEDULED_STRUCTURE_INDEX_IS_AFTER => $isAfter,
+                        Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_TYPE => $block,
+                        Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_ALIAS => $alias,
+                        Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_PARENT_NAME => $parentName,
+                        Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_SIBLING_NAME => $siblingName,
+                        Layout\ScheduledStructure\Helper::SCHEDULED_STRUCTURE_INDEX_IS_AFTER => $isAfter,
                     ],
                 ],
                 [$parentName, null, []],

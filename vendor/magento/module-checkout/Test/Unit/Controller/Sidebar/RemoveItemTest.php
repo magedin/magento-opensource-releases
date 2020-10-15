@@ -3,105 +3,88 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Controller\Sidebar;
 
-use Magento\Checkout\Controller\Sidebar\RemoveItem;
-use Magento\Checkout\Model\Sidebar;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Json as ResultJson;
-use Magento\Framework\Controller\Result\JsonFactory as ResultJsonFactory;
-use Magento\Framework\Controller\Result\Redirect as ResultRedirect;
-use Magento\Framework\Controller\Result\RedirectFactory as ResultRedirectFactory;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RemoveItemTest extends TestCase
+class RemoveItemTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var RemoveItem
-     */
-    private $action;
+    /** @var \Magento\Checkout\Controller\Sidebar\RemoveItem */
+    protected $removeItem;
+
+    /** @var ObjectManagerHelper */
+    protected $objectManagerHelper;
+
+    /** @var \Magento\Checkout\Model\Sidebar|\PHPUnit_Framework_MockObject_MockObject */
+    protected $sidebarMock;
+
+    /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $loggerMock;
+
+    /** @var \Magento\Framework\Json\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
+    protected $jsonHelperMock;
+
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $requestMock;
+
+    /** @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $responseMock;
+
+    /** @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject */
+    protected $resultPageFactoryMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\Controller\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $requestMock;
+    private $resultRedirectFactory;
 
-    /**
-     * @var ResultJsonFactory|MockObject
-     */
-    private $resultJsonFactoryMock;
-
-    /**
-     * @var ResultRedirectFactory|MockObject
-     */
-    private $resultRedirectFactoryMock;
-
-    /**
-     * @var Sidebar|MockObject
-     */
-    private $sidebarMock;
-
-    /**
-     * @var Validator|MockObject
-     */
-    private $formKeyValidatorMock;
-
-    /**
-     * @var LoggerInterface|MockObject
-     */
-    private $loggerMock;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->resultJsonFactoryMock = $this->createPartialMock(
-            ResultJsonFactory::class,
+        $this->sidebarMock = $this->createMock(\Magento\Checkout\Model\Sidebar::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->jsonHelperMock = $this->createMock(\Magento\Framework\Json\Helper\Data::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->responseMock = $this->getMockForAbstractClass(
+            \Magento\Framework\App\ResponseInterface::class,
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['representJson']
+        );
+        $this->resultPageFactoryMock = $this->createMock(\Magento\Framework\View\Result\PageFactory::class);
+        $this->resultRedirectFactory = $this->createPartialMock(
+            \Magento\Framework\Controller\Result\RedirectFactory::class,
             ['create']
         );
-        $this->resultRedirectFactoryMock = $this->createPartialMock(
-            ResultRedirectFactory::class,
-            ['create']
-        );
-        $this->sidebarMock = $this->createMock(Sidebar::class);
-        $this->formKeyValidatorMock = $this->createMock(Validator::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
 
-        $objectManager = new ObjectManager($this);
-        $this->action = $objectManager->getObject(
-            RemoveItem::class,
+        $this->objectManagerHelper = new ObjectManagerHelper($this);
+        $this->removeItem = $this->objectManagerHelper->getObject(
+            \Magento\Checkout\Controller\Sidebar\RemoveItem::class,
             [
-                'request' => $this->requestMock,
-                'resultJsonFactory' => $this->resultJsonFactoryMock,
-                'resultRedirectFactory' => $this->resultRedirectFactoryMock,
                 'sidebar' => $this->sidebarMock,
-                'formKeyValidator' => $this->formKeyValidatorMock,
-                'logger' => $this->loggerMock
+                'logger' => $this->loggerMock,
+                'jsonHelper' => $this->jsonHelperMock,
+                'request' => $this->requestMock,
+                'response' => $this->responseMock,
+                'resultPageFactory' => $this->resultPageFactoryMock,
+                'resultRedirectFactory' => $this->resultRedirectFactory
+
             ]
         );
+        $formKeyValidatorMock = $this->createMock(\Magento\Framework\Data\Form\FormKey\Validator::class);
+        $this->setPropertyValue($this->removeItem, 'formKeyValidator', $formKeyValidatorMock);
     }
 
     public function testExecute()
     {
-        $responseData = [
-            'cleanup' => true,
-            'data' => [
-                'summary_qty' => 0,
-                'summary_text' => __(' items'),
-                'subtotal' => 0,
-            ],
-        ];
-
-        $this->formKeyValidatorMock->expects($this->once())
+        $this->getPropertyValue($this->removeItem, 'formKeyValidator')
+            ->expects($this->once())
             ->method('validate')
             ->with($this->requestMock)
             ->willReturn(true);
@@ -118,33 +101,46 @@ class RemoveItemTest extends TestCase
             ->method('removeQuoteItem')
             ->with(1)
             ->willReturnSelf();
-
         $this->sidebarMock->expects($this->once())
             ->method('getResponseData')
             ->with('')
-            ->willReturn($responseData);
+            ->willReturn(
+                [
+                    'cleanup' => true,
+                    'data' => [
+                        'summary_qty' => 0,
+                        'summary_text' => __(' items'),
+                        'subtotal' => 0,
+                    ],
+                ]
+            );
 
-        $resultJson = $this->createMock(ResultJson::class);
-        $resultJson->expects($this->once())
-            ->method('setData')
-            ->with($responseData)
-            ->willReturnSelf();
-        $this->resultJsonFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($resultJson);
+        $this->jsonHelperMock->expects($this->once())
+            ->method('jsonEncode')
+            ->with(
+                [
+                    'cleanup' => true,
+                    'data' => [
+                        'summary_qty' => 0,
+                        'summary_text' => __(' items'),
+                        'subtotal' => 0,
+                    ],
+                ]
+            )
+            ->willReturn('json encoded');
 
-        $this->assertEquals($resultJson, $this->action->execute());
+        $this->responseMock->expects($this->once())
+            ->method('representJson')
+            ->with('json encoded')
+            ->willReturn('json represented');
+
+        $this->assertEquals('json represented', $this->removeItem->execute());
     }
 
     public function testExecuteWithLocalizedException()
     {
-        $errorMessage = 'Error message!';
-        $responseData = [
-            'success' => false,
-            'error_message' => $errorMessage
-        ];
-
-        $this->formKeyValidatorMock->expects($this->once())
+        $this->getPropertyValue($this->removeItem, 'formKeyValidator')
+            ->expects($this->once())
             ->method('validate')
             ->with($this->requestMock)
             ->willReturn(true);
@@ -156,34 +152,40 @@ class RemoveItemTest extends TestCase
         $this->sidebarMock->expects($this->once())
             ->method('checkQuoteItem')
             ->with(1)
-            ->willThrowException(new LocalizedException(__($errorMessage)));
+            ->willThrowException(new LocalizedException(__('Error message!')));
 
         $this->sidebarMock->expects($this->once())
             ->method('getResponseData')
-            ->with($errorMessage)
-            ->willReturn($responseData);
+            ->with('Error message!')
+            ->willReturn(
+                [
+                    'success' => false,
+                    'error_message' => 'Error message!',
+                ]
+            );
 
-        $resultJson = $this->createMock(ResultJson::class);
-        $resultJson->expects($this->once())
-            ->method('setData')
-            ->with($responseData)
-            ->willReturnSelf();
-        $this->resultJsonFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($resultJson);
+        $this->jsonHelperMock->expects($this->once())
+            ->method('jsonEncode')
+            ->with(
+                [
+                    'success' => false,
+                    'error_message' => 'Error message!',
+                ]
+            )
+            ->willReturn('json encoded');
 
-        $this->assertEquals($resultJson, $this->action->execute());
+        $this->responseMock->expects($this->once())
+            ->method('representJson')
+            ->with('json encoded')
+            ->willReturn('json represented');
+
+        $this->assertEquals('json represented', $this->removeItem->execute());
     }
 
     public function testExecuteWithException()
     {
-        $errorMessage = 'Error message!';
-        $responseData = [
-            'success' => false,
-            'error_message' => $errorMessage
-        ];
-
-        $this->formKeyValidatorMock->expects($this->once())
+        $this->getPropertyValue($this->removeItem, 'formKeyValidator')
+            ->expects($this->once())
             ->method('validate')
             ->with($this->requestMock)
             ->willReturn(true);
@@ -192,7 +194,7 @@ class RemoveItemTest extends TestCase
             ->with('item_id', null)
             ->willReturn('1');
 
-        $exception = new \Exception($errorMessage);
+        $exception = new \Exception('Error message!');
 
         $this->sidebarMock->expects($this->once())
             ->method('checkQuoteItem')
@@ -206,19 +208,30 @@ class RemoveItemTest extends TestCase
 
         $this->sidebarMock->expects($this->once())
             ->method('getResponseData')
-            ->with($errorMessage)
-            ->willReturn($responseData);
+            ->with('Error message!')
+            ->willReturn(
+                [
+                    'success' => false,
+                    'error_message' => 'Error message!',
+                ]
+            );
 
-        $resultJson = $this->createMock(ResultJson::class);
-        $resultJson->expects($this->once())
-            ->method('setData')
-            ->with($responseData)
-            ->willReturnSelf();
-        $this->resultJsonFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($resultJson);
+        $this->jsonHelperMock->expects($this->once())
+            ->method('jsonEncode')
+            ->with(
+                [
+                    'success' => false,
+                    'error_message' => 'Error message!',
+                ]
+            )
+            ->willReturn('json encoded');
 
-        $this->assertEquals($resultJson, $this->action->execute());
+        $this->responseMock->expects($this->once())
+            ->method('representJson')
+            ->with('json encoded')
+            ->willReturn('json represented');
+
+        $this->assertEquals('json represented', $this->removeItem->execute());
     }
 
     /**
@@ -231,20 +244,17 @@ class RemoveItemTest extends TestCase
         $itemId = 1;
         $dbError = 'Error';
         $message = __('An unspecified error occurred. Please contact us for assistance.');
-        $responseData = [
+        $response = [
             'success' => false,
             'error_message' => $message,
         ];
 
-        $this->formKeyValidatorMock
+        $this->getPropertyValue($this->removeItem, 'formKeyValidator')
             ->expects($this->once())
             ->method('validate')
             ->with($this->requestMock)
             ->willReturn(true);
-        $this->requestMock->expects($this->once())
-            ->method('getParam')
-            ->with('item_id')
-            ->willReturn($itemId);
+        $this->requestMock->expects($this->once())->method('getParam')->with('item_id')->willReturn($itemId);
 
         $exception = new \Zend_Db_Exception($dbError);
 
@@ -255,38 +265,66 @@ class RemoveItemTest extends TestCase
 
         $this->loggerMock->expects($this->once())->method('critical')->with($exception);
 
-        $this->sidebarMock->expects($this->once())
-            ->method('getResponseData')
-            ->with($message)
-            ->willReturn($responseData);
+        $this->sidebarMock->expects($this->once())->method('getResponseData')->with($message)->willReturn($response);
+        $encodedResponse = json_encode($response);
+        $this->jsonHelperMock->expects($this->once())
+            ->method('jsonEncode')
+            ->with($response)
+            ->willReturn($encodedResponse);
 
-        $resultJson = $this->createMock(ResultJson::class);
-        $resultJson->expects($this->once())
-            ->method('setData')
-            ->with($responseData)
-            ->willReturnSelf();
-        $this->resultJsonFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($resultJson);
+        $this->responseMock->expects($this->once())
+            ->method('representJson')
+            ->with($encodedResponse)
+            ->willReturn($this->responseMock);
 
-        $this->action->execute();
+        $this->removeItem->execute();
     }
 
     public function testExecuteWhenFormKeyValidationFailed()
     {
-        $resultRedirect = $this->createMock(ResultRedirect::class);
-        $resultRedirect->expects($this->once())
-            ->method('setPath')
-            ->with('*/cart/')
-            ->willReturnSelf();
-        $this->resultRedirectFactoryMock->expects($this->once())
-            ->method('create')
-            ->willReturn($resultRedirect);
-        $this->formKeyValidatorMock->expects($this->once())
+        $resultRedirect = $this->createMock(\Magento\Framework\Controller\Result\Redirect::class);
+        $resultRedirect->expects($this->once())->method('setPath')->with('*/cart/')->willReturnSelf();
+        $this->resultRedirectFactory->expects($this->once())->method('create')->willReturn($resultRedirect);
+        $this->getPropertyValue($this->removeItem, 'formKeyValidator')
+            ->expects($this->once())
             ->method('validate')
             ->with($this->requestMock)
             ->willReturn(false);
+        $this->assertEquals($resultRedirect, $this->removeItem->execute());
+    }
 
-        $this->assertEquals($resultRedirect, $this->action->execute());
+    /**
+     * Get any object property value.
+     *
+     * @param $object
+     * @param $property
+     * @return mixed
+     * @deprecated
+     */
+    protected function getPropertyValue($object, $property)
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $reflectionProperty = $reflection->getProperty($property);
+        $reflectionProperty->setAccessible(true);
+
+        return $reflectionProperty->getValue($object);
+    }
+
+    /**
+     * Set object property value.
+     *
+     * @param $object
+     * @param $property
+     * @param $value
+     * @deprecated
+     */
+    protected function setPropertyValue(&$object, $property, $value)
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $reflectionProperty = $reflection->getProperty($property);
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($object, $value);
+
+        return $object;
     }
 }

@@ -55,14 +55,12 @@ class AnnotationExtractor extends BaseObjectExtractor
      * This method trims away irrelevant tags and returns annotations used in the array passed. The annotations
      * can be found in both Tests and their child element tests.
      *
-     * @param array   $testAnnotations
-     * @param string  $filename
-     * @param boolean $validateAnnotations
+     * @param array  $testAnnotations
+     * @param string $filename
      * @return array
      * @throws XmlException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function extractAnnotations($testAnnotations, $filename, $validateAnnotations = true)
+    public function extractAnnotations($testAnnotations, $filename)
     {
         $annotationObjects = [];
         $annotations = $this->stripDescriptorTags($testAnnotations, self::NODE_NAME);
@@ -84,22 +82,25 @@ class AnnotationExtractor extends BaseObjectExtractor
 
             if ($annotationKey == "skip") {
                 $annotationData = $annotationData['issueId'];
-                if ($validateAnnotations) {
-                    $this->validateSkippedIssues($annotationData, $filename);
-                }
+                $this->validateSkippedIssues($annotationData, $filename);
             }
 
             foreach ($annotationData as $annotationValue) {
                 $annotationValues[] = $annotationValue[self::ANNOTATION_VALUE];
+            }
+            // TODO deprecation|deprecate MFTF 3.0.0
+            if ($annotationKey == "group" && in_array("skip", $annotationValues)) {
+                LoggingUtil::getInstance()->getLogger(AnnotationExtractor::class)->warning(
+                    "Use of group skip will be deprecated in MFTF 3.0.0. Please update tests to use skip tags.",
+                    ["test" => $filename]
+                );
             }
 
             $annotationObjects[$annotationKey] = $annotationValues;
         }
 
         $this->addTestCaseIdToTitle($annotationObjects, $filename);
-        if ($validateAnnotations) {
-            $this->validateMissingAnnotations($annotationObjects, $filename);
-        }
+        $this->validateMissingAnnotations($annotationObjects, $filename);
         $this->addStoryTitleToMap($annotationObjects, $filename);
 
         return $annotationObjects;

@@ -3,37 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Helper\Product;
 
-use Magento\Catalog\Model\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Registry;
-use Magento\Store\Model\ScopeInterface;
-
 /**
- * Returns data for toolbars of Sorting and Pagination
+ * Class ProductList
  *
  * @api
  * @since 100.0.2
  */
 class ProductList
 {
-    public const XML_PATH_LIST_MODE = 'catalog/frontend/list_mode';
-    public const DEFAULT_SORT_DIRECTION = 'asc';
+    /**
+     * List mode configuration path
+     */
+    const XML_PATH_LIST_MODE = 'catalog/frontend/list_mode';
 
     const VIEW_MODE_LIST = 'list';
     const VIEW_MODE_GRID = 'grid';
 
+    const DEFAULT_SORT_DIRECTION = 'asc';
     /**
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @var Registry
+     * @var \Magento\Framework\Registry
      */
     private $coreRegistry;
 
@@ -42,18 +38,20 @@ class ProductList
      *
      * @var array
      */
-    protected $_defaultAvailableLimit = [10 => 10, 20 => 20, 50 => 50];
+    protected $_defaultAvailableLimit  = [10 => 10,20 => 20,50 => 50];
 
     /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Registry $coreRegistry
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Framework\Registry $coreRegistry
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        Registry $coreRegistry = null
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Registry $coreRegistry = null
     ) {
         $this->scopeConfig = $scopeConfig;
-        $this->coreRegistry = $coreRegistry ?? ObjectManager::getInstance()->get(Registry::class);
+        $this->coreRegistry = $coreRegistry ?: \Magento\Framework\App\ObjectManager::getInstance()->get(
+            \Magento\Framework\Registry::class
+        );
     }
 
     /**
@@ -63,23 +61,31 @@ class ProductList
      */
     public function getAvailableViewMode()
     {
-        $value = $this->scopeConfig->getValue(self::XML_PATH_LIST_MODE, ScopeInterface::SCOPE_STORE);
-
+        $value = $this->scopeConfig->getValue(
+            self::XML_PATH_LIST_MODE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
         switch ($value) {
             case 'grid':
-                return ['grid' => __('Grid')];
+                $availableMode = ['grid' => __('Grid')];
+                break;
 
             case 'list':
-                return ['list' => __('List')];
+                $availableMode = ['list' => __('List')];
+                break;
 
             case 'grid-list':
-                return ['grid' => __('Grid'), 'list' => __('List')];
+                $availableMode = ['grid' => __('Grid'), 'list' =>  __('List')];
+                break;
 
             case 'list-grid':
-                return ['list' => __('List'), 'grid' => __('Grid')];
+                $availableMode = ['list' => __('List'), 'grid' => __('Grid')];
+                break;
+            default:
+                $availableMode = null;
+                break;
         }
-
-        return null;
+        return $availableMode;
     }
 
     /**
@@ -93,14 +99,12 @@ class ProductList
         if (empty($options)) {
             $options = $this->getAvailableViewMode();
         }
-
         return current(array_keys($options));
     }
 
     /**
      * Get default sort field
      *
-     * @FIXME Helper should be context-independent
      * @return null|string
      */
     public function getDefaultSortField()
@@ -110,28 +114,34 @@ class ProductList
             return $currentCategory->getDefaultSortBy();
         }
 
-        return $this->scopeConfig->getValue(Config::XML_PATH_LIST_DEFAULT_SORT_BY, ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(
+            \Magento\Catalog\Model\Config::XML_PATH_LIST_DEFAULT_SORT_BY,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
      * Retrieve available limits for specified view mode
      *
-     * @param string $viewMode
+     * @param string $mode
      * @return array
      */
-    public function getAvailableLimit($viewMode): array
+    public function getAvailableLimit($mode)
     {
-        $availableViewModes = $this->getAvailableViewMode();
-
-        if (!isset($availableViewModes[$viewMode])) {
+        if (!in_array($mode, [self::VIEW_MODE_GRID, self::VIEW_MODE_LIST])) {
             return $this->_defaultAvailableLimit;
         }
-
-        $perPageConfigPath = 'catalog/frontend/' . $viewMode . '_per_page_values';
-        $perPageValues = (string)$this->scopeConfig->getValue($perPageConfigPath, ScopeInterface::SCOPE_STORE);
+        $perPageConfigKey = 'catalog/frontend/' . $mode . '_per_page_values';
+        $perPageValues = (string)$this->scopeConfig->getValue(
+            $perPageConfigKey,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
         $perPageValues = explode(',', $perPageValues);
         $perPageValues = array_combine($perPageValues, $perPageValues);
-        if ($this->scopeConfig->isSetFlag('catalog/frontend/list_allow_all', ScopeInterface::SCOPE_STORE)) {
+        if ($this->scopeConfig->isSetFlag(
+            'catalog/frontend/list_allow_all',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        )) {
             return ($perPageValues + ['all' => __('All')]);
         } else {
             return $perPageValues;
@@ -139,17 +149,24 @@ class ProductList
     }
 
     /**
-     * Returns default value of `per_page` for view mode provided
+     * Retrieve default per page values
      *
      * @param string $viewMode
-     * @return int
+     * @return string (comma separated)
      */
-    public function getDefaultLimitPerPageValue($viewMode): int
+    public function getDefaultLimitPerPageValue($viewMode)
     {
-        $xmlConfigPath = sprintf('catalog/frontend/%s_per_page', $viewMode);
-        $defaultLimit = $this->scopeConfig->getValue($xmlConfigPath, ScopeInterface::SCOPE_STORE);
-
-        $availableLimits = $this->getAvailableLimit($viewMode);
-        return (int)($availableLimits[$defaultLimit] ?? current($availableLimits));
+        if ($viewMode == self::VIEW_MODE_LIST) {
+            return $this->scopeConfig->getValue(
+                'catalog/frontend/list_per_page',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
+        } elseif ($viewMode == self::VIEW_MODE_GRID) {
+            return $this->scopeConfig->getValue(
+                'catalog/frontend/grid_per_page',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            );
+        }
+        return 0;
     }
 }

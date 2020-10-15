@@ -3,77 +3,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order;
 
-use Magento\Eav\Model\Config;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\ResourceModel\Order\Status;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StatusTest extends TestCase
+/**
+ * Class StatusTest
+ *
+ * @package Magento\Sales\Model\ResourceModel
+ */
+class StatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Status
+     * @var \Magento\Sales\Model\ResourceModel\Order\Status
      */
     protected $model;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var Mysql|MockObject
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Select
+     * @var \Magento\Framework\DB\Select
      */
     protected $selectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->selectMock = $this->createMock(Select::class);
-        $this->selectMock->expects($this->any())->method('from')->willReturnSelf();
+        $this->selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
+        $this->selectMock->expects($this->any())->method('from')->will($this->returnSelf());
         $this->selectMock->expects($this->any())->method('where');
 
         $this->connectionMock = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['update', 'insertOnDuplicate', 'select']
         );
-        $this->connectionMock->expects($this->any())->method('select')->willReturn($this->selectMock);
+        $this->connectionMock->expects($this->any())->method('select')->will($this->returnValue($this->selectMock));
 
-        $this->resourceMock = $this->createMock(ResourceConnection::class);
+        $this->resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $tableName = 'sales_order_status_state';
         $this->resourceMock->expects($this->at(1))
             ->method('getTableName')
-            ->with($tableName)
-            ->willReturn($tableName);
+            ->with($this->equalTo($tableName))
+            ->will($this->returnValue($tableName));
         $this->resourceMock->expects($this->any())
             ->method('getConnection')
-            ->willReturn(
-                $this->connectionMock
+            ->will(
+                $this->returnValue($this->connectionMock)
             );
 
-        $this->configMock = $this->getMockBuilder(Config::class)
-            ->addMethods(['getConnectionName'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $objectManager = new ObjectManager($this);
+        $this->configMock = $this->createPartialMock(\Magento\Eav\Model\Config::class, ['getConnectionName']);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Status::class,
+            \Magento\Sales\Model\ResourceModel\Order\Status::class,
             ['resource' => $this->resourceMock]
         );
     }
@@ -88,20 +80,22 @@ class StatusTest extends TestCase
         $this->connectionMock->expects($this->once())
             ->method('update')
             ->with(
-                $tableName,
-                ['is_default' => 0],
-                ['state = ?' => $state]
+                $this->equalTo($tableName),
+                $this->equalTo(['is_default' => 0]),
+                $this->equalTo(['state = ?' => $state])
             );
         $this->connectionMock->expects($this->once())
             ->method('insertOnDuplicate')
             ->with(
-                $tableName,
-                [
-                    'status' => $status,
-                    'state' => $state,
-                    'is_default' => $isDefault,
-                    'visible_on_front' => $visibleOnFront,
-                ]
+                $this->equalTo($tableName),
+                $this->equalTo(
+                    [
+                        'status' => $status,
+                        'state' => $state,
+                        'is_default' => $isDefault,
+                        'visible_on_front' => $visibleOnFront,
+                    ]
+                )
             );
         $this->model->assignState($status, $state, $isDefault, $visibleOnFront);
     }

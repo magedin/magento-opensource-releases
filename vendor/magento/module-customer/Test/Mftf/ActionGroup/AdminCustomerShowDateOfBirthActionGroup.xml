@@ -18,7 +18,6 @@
         <amOnPage url="{{AdminCustomerConfigPage.url('#customer_address-link')}}" stepKey="openCustomerConfigPage"/>
         <waitForPageLoad stepKey="waitCustomerConfigPage"/>
         <scrollTo selector="{{AdminCustomerConfigSection.showDateOfBirth}}" x="0" y="-100" stepKey="scrollToShowDateOfBirth"/>
-        <uncheckOption selector="{{AdminCustomerConfigSection.showDateOfBirthInherit}}" stepKey="uncheckUseSystem"/>
         <selectOption selector="{{AdminCustomerConfigSection.showDateOfBirth}}" userInput="{{value}}" stepKey="fillShowDateOfBirth"/>
         <click selector="{{AdminMainActionsSection.save}}" stepKey="clickSave"/>
         <seeElement selector="{{AdminMessagesSection.success}}" stepKey="seeSuccessMessage"/>

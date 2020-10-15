@@ -20,7 +20,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Framework\ObjectManagerInterface */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         \Magento\TestFramework\Helper\Bootstrap::getInstance()

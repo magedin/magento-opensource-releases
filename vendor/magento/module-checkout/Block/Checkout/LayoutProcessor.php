@@ -3,30 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Block\Checkout;
 
 use Magento\Checkout\Helper\Data;
-use Magento\Customer\Model\AttributeMetadataDataProvider;
-use Magento\Customer\Model\Options;
-use Magento\Eav\Api\Data\AttributeInterface;
-use Magento\Shipping\Model\Config;
+use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Ui\Component\Form\AttributeMapper;
 
 /**
- * Checkout Layout Processor
+ * Class LayoutProcessor
  */
-class LayoutProcessor implements LayoutProcessorInterface
+class LayoutProcessor implements \Magento\Checkout\Block\Checkout\LayoutProcessorInterface
 {
     /**
-     * @var AttributeMetadataDataProvider
+     * @var \Magento\Customer\Model\AttributeMetadataDataProvider
      */
     private $attributeMetadataDataProvider;
 
     /**
-     * @var AttributeMapper
+     * @var \Magento\Ui\Component\Form\AttributeMapper
      */
     protected $attributeMapper;
 
@@ -36,7 +30,7 @@ class LayoutProcessor implements LayoutProcessorInterface
     protected $merger;
 
     /**
-     * @var Options
+     * @var \Magento\Customer\Model\Options
      */
     private $options;
 
@@ -51,35 +45,39 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $storeManager;
 
     /**
-     * @var Config
+     * @var \Magento\Shipping\Model\Config
      */
     private $shippingConfig;
 
     /**
-     * @param AttributeMetadataDataProvider $attributeMetadataDataProvider
-     * @param AttributeMapper $attributeMapper
+     * @param \Magento\Customer\Model\AttributeMetadataDataProvider $attributeMetadataDataProvider
+     * @param \Magento\Ui\Component\Form\AttributeMapper $attributeMapper
      * @param AttributeMerger $merger
-     * @param Options $options
-     * @param Data $checkoutDataHelper
-     * @param Config $shippingConfig
-     * @param StoreManagerInterface $storeManager
+     * @param \Magento\Customer\Model\Options|null $options
+     * @param Data|null $checkoutDataHelper
+     * @param \Magento\Shipping\Model\Config|null $shippingConfig
+     * @param StoreManagerInterface|null $storeManager
      */
     public function __construct(
-        AttributeMetadataDataProvider $attributeMetadataDataProvider,
-        AttributeMapper $attributeMapper,
+        \Magento\Customer\Model\AttributeMetadataDataProvider $attributeMetadataDataProvider,
+        \Magento\Ui\Component\Form\AttributeMapper $attributeMapper,
         AttributeMerger $merger,
-        Options $options,
-        Data $checkoutDataHelper,
-        Config $shippingConfig,
-        StoreManagerInterface $storeManager
+        \Magento\Customer\Model\Options $options = null,
+        Data $checkoutDataHelper = null,
+        \Magento\Shipping\Model\Config $shippingConfig = null,
+        StoreManagerInterface $storeManager = null
     ) {
         $this->attributeMetadataDataProvider = $attributeMetadataDataProvider;
         $this->attributeMapper = $attributeMapper;
         $this->merger = $merger;
-        $this->options = $options;
-        $this->checkoutDataHelper = $checkoutDataHelper;
-        $this->shippingConfig = $shippingConfig;
-        $this->storeManager = $storeManager;
+        $this->options = $options ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Magento\Customer\Model\Options::class);
+        $this->checkoutDataHelper = $checkoutDataHelper ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(Data::class);
+        $this->shippingConfig = $shippingConfig ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Magento\Shipping\Model\Config::class);
+        $this->storeManager = $storeManager ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(StoreManagerInterface::class);
     }
 
     /**
@@ -89,7 +87,7 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private function getAddressAttributes()
     {
-        /** @var AttributeInterface[] $attributes */
+        /** @var \Magento\Eav\Api\Data\AttributeInterface[] $attributes */
         $attributes = $this->attributeMetadataDataProvider->loadAttributesCollection(
             'customer_address',
             'customer_register_address'
@@ -159,10 +157,8 @@ class LayoutProcessor implements LayoutProcessorInterface
         $elements = $this->getAddressAttributes();
         $elements = $this->convertElementsToSelect($elements, $attributesToConvert);
         // The following code is a workaround for custom address attributes
-        if (isset(
-            $jsLayout['components']['checkout']['children']['steps']['children']['billing-step']['children']['payment']
-            ['children']
-        )) {
+        if (isset($jsLayout['components']['checkout']['children']['steps']['children']['billing-step']['children']
+            ['payment']['children'])) {
             $jsLayout['components']['checkout']['children']['steps']['children']['billing-step']['children']
             ['payment']['children'] = $this->processPaymentChildrenComponents(
                 $jsLayout['components']['checkout']['children']['steps']['children']['billing-step']['children']
@@ -170,11 +166,8 @@ class LayoutProcessor implements LayoutProcessorInterface
                 $elements
             );
         }
-
-        if (isset(
-            $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']['children']
-            ['step-config']['children']['shipping-rates-validation']['children']
-        )) {
+        if (isset($jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']['children']
+            ['step-config']['children']['shipping-rates-validation']['children'])) {
             $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']['children']
             ['step-config']['children']['shipping-rates-validation']['children'] =
                 $this->processShippingChildrenComponents(
@@ -183,10 +176,8 @@ class LayoutProcessor implements LayoutProcessorInterface
                 );
         }
 
-        if (isset(
-            $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']['children']
-            ['shippingAddress']['children']['shipping-address-fieldset']['children']
-        )) {
+        if (isset($jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
+            ['children']['shippingAddress']['children']['shipping-address-fieldset']['children'])) {
             $fields = $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
             ['children']['shippingAddress']['children']['shipping-address-fieldset']['children'];
             $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
@@ -197,7 +188,6 @@ class LayoutProcessor implements LayoutProcessorInterface
                 $fields
             );
         }
-
         return $jsLayout;
     }
 
@@ -299,7 +289,6 @@ class LayoutProcessor implements LayoutProcessorInterface
             'deps' => 'checkoutProvider',
             'dataScopePrefix' => 'billingAddress' . $paymentCode,
             'billingAddressListProvider' => '${$.name}.billingAddressList',
-            '__disableTmpl' => ['billingAddressListProvider' => false],
             'sortOrder' => 1,
             'children' => [
                 'billingAddressList' => [
@@ -315,6 +304,9 @@ class LayoutProcessor implements LayoutProcessorInterface
                         'checkoutProvider',
                         'billingAddress' . $paymentCode,
                         [
+                            'country_id' => [
+                                'sortOrder' => 115,
+                            ],
                             'region' => [
                                 'visible' => false,
                             ],
@@ -330,7 +322,6 @@ class LayoutProcessor implements LayoutProcessorInterface
                                 ],
                                 'filterBy' => [
                                     'target' => '${ $.provider }:${ $.parentScope }.country_id',
-                                    '__disableTmpl' => ['target' => false],
                                     'field' => 'country_id',
                                 ],
                             ],

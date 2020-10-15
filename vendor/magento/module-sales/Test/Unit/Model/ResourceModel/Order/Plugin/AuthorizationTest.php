@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Plugin;
 
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order as ResourceOrder;
+use Magento\Sales\Model\Order;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Model\ResourceModel\Order\Plugin\Authorization;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AuthorizationTest extends TestCase
+class AuthorizationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -23,17 +19,17 @@ class AuthorizationTest extends TestCase
     private $objectManager;
 
     /**
-     * @var UserContextInterface|MockObject
+     * @var UserContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $userContextMock;
 
     /**
-     * @var ResourceOrder|MockObject
+     * @var ResourceOrder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
     /**
-     * @var Order|MockObject
+     * @var Order|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
@@ -42,7 +38,7 @@ class AuthorizationTest extends TestCase
      */
     private $plugin;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->userContextMock = $this->getMockBuilder(UserContextInterface::class)
@@ -72,10 +68,12 @@ class AuthorizationTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage No such entity with orderId = 1
+     */
     public function testAfterLoadWithException()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
-        $this->expectExceptionMessage('No such entity with orderId = 1');
         $this->userContextMock->expects($this->once())
             ->method('getUserType')
             ->willReturn(UserContextInterface::USER_TYPE_CUSTOMER);

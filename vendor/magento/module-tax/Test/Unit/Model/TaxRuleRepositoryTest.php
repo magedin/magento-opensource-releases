@@ -3,108 +3,96 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Model;
 
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessor;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Api\Data\TaxRuleSearchResultsInterface;
-use Magento\Tax\Api\Data\TaxRuleSearchResultsInterfaceFactory;
-use Magento\Tax\Model\Calculation\RuleFactory;
-use Magento\Tax\Model\Calculation\TaxRuleRegistry;
-use Magento\Tax\Model\ResourceModel\Calculation\Rule;
-use Magento\Tax\Model\ResourceModel\Calculation\Rule\Collection;
-use Magento\Tax\Model\ResourceModel\Calculation\Rule\CollectionFactory;
-use Magento\Tax\Model\TaxRuleRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Tax\Model\TaxRuleRepository;
 
 /**
+ * Class TaxRuleRepositoryTest
+ * @package Magento\Tax\Test\Unit\Model
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TaxRuleRepositoryTest extends TestCase
+class TaxRuleRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TaxRuleRepository
+     * @var \Magento\Tax\Model\TaxRuleRepository
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $taxRuleRegistry;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResultFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResultsMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $extensionAttributesJoinProcessorMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var CollectionProcessorInterface|MockObject
+     * @var \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface |
+     * \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->taxRuleRegistry =
-            $this->createMock(TaxRuleRegistry::class);
-        $this->taxRuleRegistry = $this->createMock(TaxRuleRegistry::class);
+            $this->createMock(\Magento\Tax\Model\Calculation\TaxRuleRegistry::class);
+        $this->taxRuleRegistry = $this->createMock(\Magento\Tax\Model\Calculation\TaxRuleRegistry::class);
         $this->searchResultFactory = $this->createPartialMock(
-            TaxRuleSearchResultsInterfaceFactory::class,
+            \Magento\Tax\Api\Data\TaxRuleSearchResultsInterfaceFactory::class,
             ['create']
         );
-        $this->searchResultsMock = $this->getMockForAbstractClass(TaxRuleSearchResultsInterface::class);
-        $this->ruleFactory = $this->createMock(RuleFactory::class);
+        $this->searchResultsMock = $this->createMock(\Magento\Tax\Api\Data\TaxRuleSearchResultsInterface::class);
+        $this->ruleFactory = $this->createMock(\Magento\Tax\Model\Calculation\RuleFactory::class);
         $this->collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Tax\Model\ResourceModel\Calculation\Rule\CollectionFactory::class,
             ['create']
         );
-        $this->resource = $this->createMock(Rule::class);
+        $this->resource = $this->createMock(\Magento\Tax\Model\ResourceModel\Calculation\Rule::class);
         $this->extensionAttributesJoinProcessorMock = $this->createPartialMock(
-            JoinProcessor::class,
+            \Magento\Framework\Api\ExtensionAttribute\JoinProcessor::class,
             ['process']
         );
         $this->collectionProcessor = $this->createMock(
-            CollectionProcessorInterface::class
+            \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
         );
         $this->model = new TaxRuleRepository(
             $this->taxRuleRegistry,
@@ -162,7 +150,7 @@ class TaxRuleRepositoryTest extends TestCase
      * @param $exceptionMessage
      * @throws \Exception
      * @throws CouldNotSaveException
-     * @throws InputException
+     * @throws \Magento\Framework\Exception\InputException
      * @throws NoSuchEntityException
      */
     public function testSaveWithExceptions($exceptionObject, $exceptionName, $exceptionMessage)
@@ -201,10 +189,10 @@ class TaxRuleRepositoryTest extends TestCase
 
     public function testGetList()
     {
-        $searchCriteriaMock = $this->createMock(SearchCriteria::class);
+        $searchCriteriaMock = $this->createMock(\Magento\Framework\Api\SearchCriteria::class);
         $collectionMock =
-            $this->createMock(Collection::class);
-        $this->createMock(Collection::class);
+            $this->createMock(\Magento\Tax\Model\ResourceModel\Calculation\Rule\Collection::class);
+        $this->createMock(\Magento\Tax\Model\ResourceModel\Calculation\Rule\Collection::class);
 
         $this->extensionAttributesJoinProcessorMock->expects($this->once())
             ->method('process')

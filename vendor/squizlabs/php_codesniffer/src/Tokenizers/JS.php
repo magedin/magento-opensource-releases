@@ -9,12 +9,13 @@
 
 namespace PHP_CodeSniffer\Tokenizers;
 
-use PHP_CodeSniffer\Config;
-use PHP_CodeSniffer\Exceptions\TokenizerException;
 use PHP_CodeSniffer\Util;
+use PHP_CodeSniffer\Exceptions\TokenizerException;
+use PHP_CodeSniffer\Config;
 
 class JS extends Tokenizer
 {
+
 
     /**
      * A list of tokens that are allowed to open a scope.

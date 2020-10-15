@@ -64,7 +64,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return Finder
+     * {@inheritdoc}
      */
     public function getFinder()
     {

@@ -53,11 +53,10 @@ final class PowToExponentiationFixer extends AbstractFunctionReferenceFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before BinaryOperatorSpacesFixer, MethodArgumentSpaceFixer, NativeFunctionCasingFixer, NoSpacesAfterFunctionNameFixer, NoSpacesInsideParenthesisFixer.
      */
     public function getPriority()
     {
+        // must be run before BinaryOperatorSpacesFixer
         return 3;
     }
 
@@ -99,6 +98,8 @@ final class PowToExponentiationFixer extends AbstractFunctionReferenceFixer
     }
 
     /**
+     * @param Tokens $tokens
+     *
      * @return array[]
      */
     private function findPowCalls(Tokens $tokens)
@@ -123,6 +124,7 @@ final class PowToExponentiationFixer extends AbstractFunctionReferenceFixer
     }
 
     /**
+     * @param Tokens         $tokens
      * @param int            $functionNameIndex
      * @param int            $openParenthesisIndex
      * @param int            $closeParenthesisIndex
@@ -166,8 +168,9 @@ final class PowToExponentiationFixer extends AbstractFunctionReferenceFixer
     }
 
     /**
-     * @param int $argumentStartIndex
-     * @param int $argumentEndIndex
+     * @param Tokens $tokens
+     * @param int    $argumentStartIndex
+     * @param int    $argumentEndIndex
      *
      * @return bool
      */

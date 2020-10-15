@@ -62,8 +62,6 @@ final class PhpdocAlignFixer extends AbstractFixer implements ConfigurationDefin
     private static $alignableTags = [
         'param',
         'property',
-        'property-read',
-        'property-write',
         'return',
         'throws',
         'type',
@@ -145,8 +143,6 @@ EOF;
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after CommentToPhpdocFixer, CommentToPhpdocFixer, GeneralPhpdocAnnotationRemoveFixer, NoBlankLinesAfterPhpdocFixer, NoEmptyPhpdocFixer, NoSuperfluousPhpdocTagsFixer, PhpdocAddMissingParamAnnotationFixer, PhpdocAddMissingParamAnnotationFixer, PhpdocAnnotationWithoutDotFixer, PhpdocIndentFixer, PhpdocIndentFixer, PhpdocInlineTagFixer, PhpdocLineSpanFixer, PhpdocNoAccessFixer, PhpdocNoAliasTagFixer, PhpdocNoEmptyReturnFixer, PhpdocNoPackageFixer, PhpdocNoUselessInheritdocFixer, PhpdocOrderFixer, PhpdocReturnSelfReferenceFixer, PhpdocScalarFixer, PhpdocScalarFixer, PhpdocSeparationFixer, PhpdocSingleLineVarSpacingFixer, PhpdocSummaryFixer, PhpdocToCommentFixer, PhpdocToCommentFixer, PhpdocToParamTypeFixer, PhpdocToReturnTypeFixer, PhpdocTrimConsecutiveBlankLineSeparationFixer, PhpdocTrimFixer, PhpdocTypesFixer, PhpdocTypesFixer, PhpdocTypesOrderFixer, PhpdocVarAnnotationCorrectOrderFixer, PhpdocVarWithoutNameFixer.
      */
     public function getPriority()
     {
@@ -220,6 +216,9 @@ EOF;
         return new FixerConfigurationResolver([$tags->getOption(), $align->getOption()]);
     }
 
+    /**
+     * @param DocBlock $docBlock
+     */
     private function fixDocBlock(DocBlock $docBlock)
     {
         $lineEnding = $this->whitespacesConfig->getLineEnding();
@@ -333,7 +332,7 @@ EOF;
      * @param string $line
      * @param bool   $matchCommentOnly
      *
-     * @return null|array<string, null|string>
+     * @return null|string[]
      */
     private function getMatches($line, $matchCommentOnly = false)
     {
@@ -364,8 +363,6 @@ EOF;
 
             return $matches;
         }
-
-        return null;
     }
 
     /**

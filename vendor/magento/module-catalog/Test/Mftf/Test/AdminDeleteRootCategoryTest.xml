@@ -13,20 +13,21 @@
             <title value="Can delete a root category not assigned to any store"/>
             <description value="Login as admin and delete a root category not assigned to any store"/>
             <testCaseId value="MC-6048"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <group value="Catalog"/>
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
             <createData entity="NewRootCategory" stepKey="rootCategory" />
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Verify Created root Category-->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="openAdminCategoryIndexPage"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="openAdminCategoryIndexPage"/>
+        <waitForPageLoad stepKey="waitForCategoryIndexPageToBeLoaded"/>
         <click selector="{{AdminCategorySidebarTreeSection.expandAll}}" stepKey="expandToSeeAllCategories"/>
         <waitForPageLoad stepKey="waitForPageToLoad"/>
         <seeElement selector="{{AdminCategoryBasicFieldSection.CategoryNameInput(NewRootCategory.name)}}" stepKey="seeRootCategory"/>
@@ -35,7 +36,8 @@
         <deleteData createDataKey="rootCategory" stepKey="deleteRootCategory"/>
 
         <!--Verify Root Category is not listed in backend-->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="openAdminCategoryIndexPage1"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="openAdminCategoryIndexPage1"/>
+        <waitForPageLoad stepKey="waitForCategoryIndexPageToBeLoaded1"/>
         <click selector="{{AdminCategorySidebarTreeSection.expandAll}}" stepKey="expandToSeeAllCategories1"/>
         <dontSee selector="{{AdminCategoryBasicFieldSection.CategoryNameInput}}" userInput="{{NewRootCategory.name}}" stepKey="dontSeeRootCategory"/>
     </test>

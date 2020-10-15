@@ -3,20 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\ValidationRules;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\Setup\Declaration\Schema\Declaration\ValidationRules\CheckReferenceColumnHasIndex;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Real;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Constraints\Reference;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Schema;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Table;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CheckReferenceColumnHasIndexTest extends TestCase
+class CheckReferenceColumnHasIndexTest extends \PHPUnit\Framework\TestCase
 {
     /** @var CheckReferenceColumnHasIndex */
     private $model;
@@ -24,7 +21,7 @@ class CheckReferenceColumnHasIndexTest extends TestCase
     /** @var ObjectManagerHelper */
     private $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
@@ -73,7 +70,7 @@ class CheckReferenceColumnHasIndexTest extends TestCase
         $table->addColumns([$column]);
         $refTable->addColumns([$refColumn]);
         $table->addConstraints([$reference]);
-        /** @var Schema|MockObject $schemaMock */
+        /** @var Schema|\PHPUnit_Framework_MockObject_MockObject $schemaMock */
         $schemaMock = $this->getMockBuilder(Schema::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -83,8 +80,8 @@ class CheckReferenceColumnHasIndexTest extends TestCase
         self::assertEquals(
             [
                 [
-                    'column' => 'ref_decimal',
-                    'message' => 'Reference column ref_decimal in reference table ref_table do not have index',
+                        'column' => 'ref_decimal',
+                        'message' => 'Reference column ref_decimal in reference table ref_table do not have index',
                 ],
             ],
             $this->model->validate($schemaMock)

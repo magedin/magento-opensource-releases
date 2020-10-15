@@ -3,41 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\SendFriend\Test\Unit\Block\Plugin\Catalog\Product;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\SendFriend\Block\Plugin\Catalog\Product\View;
-use Magento\SendFriend\Model\SendFriend;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var View */
+    /** @var \Magento\SendFriend\Block\Plugin\Catalog\Product\View */
     protected $view;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var SendFriend|MockObject */
+    /** @var \Magento\SendFriend\Model\SendFriend|\PHPUnit_Framework_MockObject_MockObject */
     protected $sendfriendModel;
 
-    /** @var \Magento\Catalog\Block\Product\View|MockObject */
+    /** @var \Magento\Catalog\Block\Product\View|\PHPUnit_Framework_MockObject_MockObject */
     protected $productView;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->sendfriendModel = $this->createPartialMock(
-            SendFriend::class,
+            \Magento\SendFriend\Model\SendFriend::class,
             ['__wakeup', 'canEmailToFriend']
         );
         $this->productView = $this->createMock(\Magento\Catalog\Block\Product\View::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->view = $this->objectManagerHelper->getObject(
-            View::class,
+            \Magento\SendFriend\Block\Plugin\Catalog\Product\View::class,
             [
                 'sendfriend' => $this->sendfriendModel
             ]
@@ -52,7 +47,7 @@ class ViewTest extends TestCase
     public function testAfterCanEmailToFriend($result, $callSendfriend)
     {
         $this->sendfriendModel->expects($this->$callSendfriend())->method('canEmailToFriend')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->assertTrue($this->view->afterCanEmailToFriend($this->productView, $result));
     }

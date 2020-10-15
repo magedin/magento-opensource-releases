@@ -29,7 +29,6 @@ class DocBlock
 
     /**
      * Activate custom DocBlock annotations along with more-or-less permanent workarounds
-     *
      * @param Application $application
      */
     public function registerAnnotations(Application $application)
@@ -57,23 +56,22 @@ class DocBlock
             new \Magento\TestFramework\Workaround\Cleanup\StaticProperties(),
             new \Magento\TestFramework\Isolation\WorkingDirectory(),
             new \Magento\TestFramework\Isolation\DeploymentConfig(),
-            new \Magento\TestFramework\Workaround\Override\Fixture\Resolver\TestSetter(),
             new \Magento\TestFramework\Annotation\AppIsolation($application),
-            new \Magento\TestFramework\Annotation\IndexerDimensionMode(),
+            new \Magento\TestFramework\Annotation\IndexerDimensionMode($application),
             new \Magento\TestFramework\Isolation\AppConfig(),
             new \Magento\TestFramework\Annotation\ConfigFixture(),
-            new \Magento\TestFramework\Annotation\DataFixtureBeforeTransaction(),
+            new \Magento\TestFramework\Annotation\DataFixtureBeforeTransaction($this->_fixturesBaseDir),
             new \Magento\TestFramework\Event\Transaction(
                 new \Magento\TestFramework\EventManager(
                     [
                         new \Magento\TestFramework\Annotation\DbIsolation(),
-                        new \Magento\TestFramework\Annotation\DataFixture(),
+                        new \Magento\TestFramework\Annotation\DataFixture($this->_fixturesBaseDir),
                     ]
                 )
             ),
             new \Magento\TestFramework\Annotation\ComponentRegistrarFixture($this->_fixturesBaseDir),
             new \Magento\TestFramework\Annotation\AppArea($application),
-            new \Magento\TestFramework\Annotation\Cache(),
+            new \Magento\TestFramework\Annotation\Cache($application),
             new \Magento\TestFramework\Annotation\AdminConfigFixture(),
             new \Magento\TestFramework\Annotation\ConfigFixture(),
         ];

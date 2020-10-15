@@ -59,10 +59,10 @@ class GetGeoNameDataByAddress
             ->limit(1);
 
         $row = $connection->fetchRow($qry);
-        if (!$row && $address->getCity()) {
+        if (!$row) {
             $qry = $connection->select()->from($tableName)
                 ->where('country_code = ?', $address->getCountry())
-                ->where('city like ?', $address->getCity() . '%')
+                ->where('city = ?', $address->getCity())
                 ->limit(1);
 
             $row = $connection->fetchRow($qry);

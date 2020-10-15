@@ -18,7 +18,7 @@ use Magento\Framework\Model\AbstractExtensibleModel;
 use Magento\Framework\Url\ScopeInterface as UrlScopeInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
-use Laminas\Uri\UriFactory;
+use Zend\Uri\UriFactory;
 
 /**
  * Store model

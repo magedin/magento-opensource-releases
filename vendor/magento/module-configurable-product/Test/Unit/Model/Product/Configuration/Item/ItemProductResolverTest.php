@@ -35,13 +35,13 @@ class ItemProductResolverTest extends TestCase
     /**
      * Set up method
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
         $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->parentProduct = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
@@ -67,7 +67,7 @@ class ItemProductResolverTest extends TestCase
 
         $this->item = $this->getMockBuilder(ItemInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->item
             ->expects($this->once())

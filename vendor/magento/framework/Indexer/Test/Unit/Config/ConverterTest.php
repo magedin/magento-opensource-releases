@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Indexer\Test\Unit\Config;
 
 use Magento\Framework\Exception\ConfigurationMismatchException;
-use Magento\Framework\Indexer\Config\Converter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Converter|MockObject
+     * @var \Magento\Framework\Indexer\Config\Converter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Converter();
+        $this->_model = new \Magento\Framework\Indexer\Config\Converter();
     }
 
     public function testConvert()
@@ -53,7 +48,8 @@ class ConverterTest extends TestCase
     {
         return [
             [
-                'xml' => <<<XML
+                'xml' =>
+                    <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <indexer id="indexer_1" view_id="view_one" class="Index\Class\Name\One">

@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/simple_product.php');
+require __DIR__ . '/../../Checkout/_files/simple_product.php';
 
 /** @var $bundleProduct \Magento\Catalog\Model\Product */
 $bundleProduct = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -101,4 +99,4 @@ $requestInfo = new \Magento\Framework\DataObject(
 );
 $product->setSkipCheckRequiredOption(true);
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/cart.php');
+require __DIR__ . '/../../Checkout/_files/cart.php';

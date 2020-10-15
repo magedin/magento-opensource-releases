@@ -16,8 +16,7 @@ use Magento\InventoryIndexer\Model\ResourceModel\UpdateIsSalable;
 use Magento\InventoryMultiDimensionalIndexerApi\Model\Alias;
 use Magento\InventoryMultiDimensionalIndexerApi\Model\IndexNameBuilder;
 use Magento\InventoryMultiDimensionalIndexerApi\Model\IndexStructureInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableResultInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 use Magento\InventorySalesApi\Model\GetStockItemDataInterface;
 
 /**
@@ -36,9 +35,9 @@ class IndexProcessor
     private $indexStructure;
 
     /**
-     * @var AreProductsSalableInterface
+     * @var IsProductSalableInterface
      */
-    private $areProductsSalable;
+    private $isProductSalable;
 
     /**
      * @var GetStockItemDataInterface
@@ -53,20 +52,20 @@ class IndexProcessor
     /**
      * @param IndexNameBuilder $indexNameBuilder
      * @param IndexStructureInterface $indexStructure
-     * @param AreProductsSalableInterface $areProductsSalable
      * @param GetStockItemDataInterface $getStockItemData
      * @param UpdateIsSalable $updateIsSalable
+     * @param IsProductSalableInterface $isProductSalable
      */
     public function __construct(
         IndexNameBuilder $indexNameBuilder,
         IndexStructureInterface $indexStructure,
-        AreProductsSalableInterface $areProductsSalable,
         GetStockItemDataInterface $getStockItemData,
-        UpdateIsSalable $updateIsSalable
+        UpdateIsSalable $updateIsSalable,
+        IsProductSalableInterface $isProductSalable
     ) {
         $this->indexNameBuilder = $indexNameBuilder;
         $this->indexStructure = $indexStructure;
-        $this->areProductsSalable = $areProductsSalable;
+        $this->isProductSalable = $isProductSalable;
         $this->getStockItemData = $getStockItemData;
         $this->updateIsSalable = $updateIsSalable;
     }
@@ -89,10 +88,11 @@ class IndexProcessor
         if (!$this->indexStructure->isExist($mainIndexName, ResourceConnection::DEFAULT_CONNECTION)) {
             $this->indexStructure->create($mainIndexName, ResourceConnection::DEFAULT_CONNECTION);
         }
-        $salabilityData = $this->areProductsSalable->execute(
-            $reservationData->getSkus(),
-            $reservationData->getStock()
-        );
+
+        $salabilityData = [];
+        foreach ($reservationData->getSkus() as $sku) {
+            $salabilityData[$sku] = $this->isProductSalable->execute($sku, $reservationData->getStock());
+        }
 
         $dataForUpdate = $this->getDataForUpdate($salabilityData, $stockId);
         $this->updateIsSalable->execute(
@@ -107,7 +107,7 @@ class IndexProcessor
     /**
      * Build data for index update.
      *
-     * @param IsProductSalableResultInterface[] $salabilityData
+     * @param array $salabilityData
      * @param int $stockId
      *
      * @return bool[] - ['sku' => bool]
@@ -115,10 +115,10 @@ class IndexProcessor
     private function getDataForUpdate(array $salabilityData, int $stockId): array
     {
         $data = [];
-        foreach ($salabilityData as $isProductSalableResult) {
-            $currentStatus = $this->getIndexSalabilityStatus($isProductSalableResult->getSku(), $stockId);
-            if ($isProductSalableResult->isSalable() != $currentStatus && $currentStatus !== null) {
-                $data[$isProductSalableResult->getSku()] = $isProductSalableResult->isSalable();
+        foreach ($salabilityData as $sku => $isSalable) {
+            $currentStatus = $this->getIndexSalabilityStatus($sku, $stockId);
+            if ($isSalable != $currentStatus && $currentStatus !== null) {
+                $data[$sku] = $isSalable;
             }
         }
 

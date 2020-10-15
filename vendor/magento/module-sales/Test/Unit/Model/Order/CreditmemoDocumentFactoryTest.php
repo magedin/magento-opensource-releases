@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order;
 
-use Magento\Framework\EntityManager\HydratorInterface;
-use Magento\Framework\EntityManager\HydratorPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\Data\CreditmemoCommentCreationInterface;
-use Magento\Sales\Api\Data\CreditmemoCommentInterface;
 use Magento\Sales\Api\Data\CreditmemoCommentInterfaceFactory;
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
-use Magento\Sales\Api\Data\CreditmemoItemCreationInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\CreditmemoDocumentFactory;
-use Magento\Sales\Model\Order\CreditmemoFactory;
+use Magento\Sales\Api\Data\CreditmemoCommentInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Sales\Api\Data\CreditmemoItemCreationInterface;
+use Magento\Sales\Api\Data\CreditmemoCommentCreationInterface;
+use Magento\Framework\EntityManager\HydratorPool;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
+use Magento\Sales\Model\Order\CreditmemoFactory;
+use Magento\Framework\EntityManager\HydratorInterface;
 
 /**
+ * Class CreditmemoDocumentFactoryTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CreditmemoDocumentFactoryTest extends TestCase
+class CreditmemoDocumentFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -35,71 +31,71 @@ class CreditmemoDocumentFactoryTest extends TestCase
     private $objectManager;
 
     /**
-     * @var CreditmemoDocumentFactory|MockObject
+     * @var CreditmemoDocumentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $factory;
 
     /**
-     * @var CreditmemoFactory|MockObject
+     * @var CreditmemoFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoFactoryMock;
 
     /**
-     * @var CreditmemoCommentInterfaceFactory|MockObject
+     * @var CreditmemoCommentInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentFactoryMock;
 
     /**
-     * @var HydratorPool|MockObject
+     * @var HydratorPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hydratorPoolMock;
 
     /**
-     * @var HydratorInterface|MockObject
+     * @var HydratorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hydratorMock;
 
     /**
-     * @var \Magento\Sales\Model\Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     private $invoiceMock;
 
     /**
-     * @var CreditmemoItemCreationInterface|MockObject
+     * @var CreditmemoItemCreationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoItemCreationMock;
 
     /**
-     * @var CreditmemoCommentCreationInterface|MockObject
+     * @var CreditmemoCommentCreationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentCreationMock;
 
     /**
-     * @var CreditmemoCreationArgumentsInterface|MockObject
+     * @var CreditmemoCreationArgumentsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentCreationArgumentsMock;
 
     /**
-     * @var Order\Creditmemo|MockObject
+     * @var Order\Creditmemo|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoMock;
 
     /**
-     * @var CreditmemoCommentInterface|MockObject
+     * @var CreditmemoCommentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentMock;
 
     /**
-     * @var OrderRepositoryInterface|MockObject
+     * @var OrderRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderRepositoryMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->creditmemoFactoryMock = $this->getMockBuilder(CreditmemoFactory::class)
@@ -114,7 +110,7 @@ class CreditmemoDocumentFactoryTest extends TestCase
             ->getMock();
         $this->orderRepositoryMock = $this->getMockBuilder(OrderRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->orderMock = $this->getMockBuilder(Order::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -123,19 +119,19 @@ class CreditmemoDocumentFactoryTest extends TestCase
             ->getMock();
         $this->creditmemoItemCreationMock = $this->getMockBuilder(CreditmemoItemCreationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->creditmemoMock = $this->getMockBuilder(Creditmemo::class)
+            ->getMock();
+        $this->creditmemoMock = $this->getMockBuilder(Order\Creditmemo::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->hydratorMock = $this->getMockBuilder(HydratorInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->commentCreationArgumentsMock = $this->getMockBuilder(CreditmemoCreationArgumentsInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->commentCreationMock = $this->getMockBuilder(CreditmemoCommentCreationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->creditmemoMock->expects($this->once())
             ->method('getEntityId')
             ->willReturn(11);

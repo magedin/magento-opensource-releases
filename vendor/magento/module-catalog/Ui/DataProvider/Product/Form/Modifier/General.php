@@ -228,8 +228,7 @@ class General extends AbstractModifier
                     'addafter' => $this->locator->getStore()->getConfig('general/locale/weight_unit'),
                     'imports' => $disabled ? [] : [
                         'disabled' => '!${$.provider}:' . self::DATA_SCOPE_PRODUCT
-                            . '.product_has_weight:value',
-                        '__disableTmpl' => ['disabled' => false],
+                            . '.product_has_weight:value'
                     ]
                 ]
             );

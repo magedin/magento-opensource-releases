@@ -12,7 +12,6 @@ use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
 use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
-use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
 
 /**
  * MFTF section.xml configuration XML DOM utility
@@ -28,12 +27,6 @@ class SectionDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @var DuplicateNodeValidationUtil
      */
     private $validationUtil;
-
-    /** SingleNodePerFileValidationUtil
-     *
-     * @var SingleNodePerFileValidationUtil
-     */
-    private $singleNodePerFileValidationUtil;
 
     /**
      * Entity Dom constructor.
@@ -55,7 +48,6 @@ class SectionDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
         $errorFormat = self::ERROR_FORMAT_DEFAULT
     ) {
         $this->validationUtil = new DuplicateNodeValidationUtil('name', $exceptionCollector);
-        $this->singleNodePerFileValidationUtil = new SingleNodePerFileValidationUtil($exceptionCollector);
         parent::__construct(
             $xml,
             $filename,
@@ -77,26 +69,15 @@ class SectionDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
     public function initDom($xml, $filename = null)
     {
         $dom = parent::initDom($xml, $filename);
-
-        if ($dom->getElementsByTagName('sections')->length > 0) {
-            // Validate single section node per file
-            $this->singleNodePerFileValidationUtil->validateSingleNodeForTag(
-                $dom,
-                'section',
-                $filename
+        $sectionNodes = $dom->getElementsByTagName('section');
+        foreach ($sectionNodes as $sectionNode) {
+            $sectionNode->setAttribute(self::SECTION_META_FILENAME_ATTRIBUTE, $filename);
+            $this->validationUtil->validateChildUniqueness(
+                $sectionNode,
+                $filename,
+                $sectionNode->getAttribute(self::SECTION_META_NAME_ATTRIBUTE)
             );
-            if ($dom->getElementsByTagName('section')->length > 0) {
-                /** @var \DOMElement $sectionNode */
-                $sectionNode = $dom->getElementsByTagName('section')[0];
-                $sectionNode->setAttribute(self::SECTION_META_FILENAME_ATTRIBUTE, $filename);
-                $this->validationUtil->validateChildUniqueness(
-                    $sectionNode,
-                    $filename,
-                    $sectionNode->getAttribute(self::SECTION_META_NAME_ATTRIBUTE)
-                );
-            }
         }
-
         return $dom;
     }
 }

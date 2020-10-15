@@ -12,15 +12,32 @@ use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Range;
 use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term;
 use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Wildcard;
 
-/**
- * Class Builder to build Elasticsearch filter
- */
 class Builder implements BuilderInterface
 {
     /**
+     * Text flag for Elasticsearch filter query condition types
+     *
+     * @deprecated
+     * @see BuilderInterface::FILTER_QUERY_CONDITION_MUST
+     */
+    const QUERY_CONDITION_MUST = 'must';
+
+    /**
+     * @deprecated
+     * @see BuilderInterface::FILTER_QUERY_CONDITION_SHOULD
+     */
+    const QUERY_CONDITION_SHOULD = 'should';
+
+    /**
+     * @deprecated
+     * @see BuilderInterface::FILTER_QUERY_CONDITION_MUST_NOT
+     */
+    const QUERY_CONDITION_MUST_NOT = 'must_not';
+
+    /**
      * @var FilterInterface[]
      */
-    private $filters;
+    protected $filters;
 
     /**
      * @param Range $range
@@ -40,7 +57,7 @@ class Builder implements BuilderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build(RequestFilterInterface $filter, $conditionType)
     {
@@ -48,13 +65,11 @@ class Builder implements BuilderInterface
     }
 
     /**
-     * Processes filter object
-     *
      * @param RequestFilterInterface $filter
      * @param string $conditionType
      * @return array
      */
-    private function processFilter(RequestFilterInterface $filter, $conditionType)
+    protected function processFilter(RequestFilterInterface $filter, $conditionType)
     {
         if (RequestFilterInterface::TYPE_BOOL == $filter->getType()) {
             $query = $this->processBoolFilter($filter, $this->isNegation($conditionType));
@@ -73,8 +88,6 @@ class Builder implements BuilderInterface
     }
 
     /**
-     * Processes filter
-     *
      * @param RequestFilterInterface|BoolExpression $filter
      * @param bool $isNegation
      * @return array
@@ -83,12 +96,12 @@ class Builder implements BuilderInterface
     {
         $must = $this->buildFilters(
             $filter->getMust(),
-            $this->mapConditionType(BuilderInterface::FILTER_QUERY_CONDITION_MUST, $isNegation)
+            $this->mapConditionType(self::QUERY_CONDITION_MUST, $isNegation)
         );
-        $should = $this->buildFilters($filter->getShould(), BuilderInterface::FILTER_QUERY_CONDITION_SHOULD);
+        $should = $this->buildFilters($filter->getShould(), self::QUERY_CONDITION_SHOULD);
         $mustNot = $this->buildFilters(
             $filter->getMustNot(),
-            $this->mapConditionType(BuilderInterface::FILTER_QUERY_CONDITION_MUST_NOT, $isNegation)
+            $this->mapConditionType(self::QUERY_CONDITION_MUST_NOT, $isNegation)
         );
 
         $queries = [
@@ -103,8 +116,6 @@ class Builder implements BuilderInterface
     }
 
     /**
-     * Build filters
-     *
      * @param RequestFilterInterface[] $filters
      * @param string $conditionType
      * @return string
@@ -115,31 +126,25 @@ class Builder implements BuilderInterface
         foreach ($filters as $filter) {
             $filterQuery = $this->processFilter($filter, $conditionType);
             if (isset($filterQuery['bool'][$conditionType])) {
-                // phpcs:ignore Magento2.Performance.ForeachArrayMerge
                 $queries['bool'][$conditionType] = array_merge(
                     isset($queries['bool'][$conditionType]) ? $queries['bool'][$conditionType] : [],
                     $filterQuery['bool'][$conditionType]
                 );
             }
         }
-
         return $queries;
     }
 
     /**
-     * Returns is condition type navigation
-     *
      * @param string $conditionType
      * @return bool
      */
-    private function isNegation($conditionType)
+    protected function isNegation($conditionType)
     {
-        return BuilderInterface::FILTER_QUERY_CONDITION_MUST_NOT === $conditionType;
+        return self::QUERY_CONDITION_MUST_NOT === $conditionType;
     }
 
     /**
-     * Maps condition type
-     *
      * @param string $conditionType
      * @param bool $isNegation
      * @return string
@@ -147,10 +152,10 @@ class Builder implements BuilderInterface
     private function mapConditionType($conditionType, $isNegation)
     {
         if ($isNegation) {
-            if ($conditionType == BuilderInterface::FILTER_QUERY_CONDITION_MUST) {
-                $conditionType = BuilderInterface::FILTER_QUERY_CONDITION_MUST_NOT;
-            } elseif ($conditionType == BuilderInterface::FILTER_QUERY_CONDITION_MUST_NOT) {
-                $conditionType = BuilderInterface::FILTER_QUERY_CONDITION_MUST;
+            if ($conditionType == self::QUERY_CONDITION_MUST) {
+                $conditionType = self::QUERY_CONDITION_MUST_NOT;
+            } elseif ($conditionType == self::QUERY_CONDITION_MUST_NOT) {
+                $conditionType = self::QUERY_CONDITION_MUST;
             }
         }
         return $conditionType;

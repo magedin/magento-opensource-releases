@@ -3,72 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test design config indexer model
  */
 namespace Magento\Theme\Test\Unit\Model\Indexer\Design;
 
-use Magento\Framework\Data\Collection;
-use Magento\Framework\Indexer\FieldsetInterface;
-use Magento\Framework\Indexer\FieldsetPool;
-use Magento\Framework\Indexer\HandlerInterface;
-use Magento\Framework\Indexer\HandlerPool;
-use Magento\Framework\Indexer\IndexStructureInterface;
-use Magento\Framework\Indexer\SaveHandler\IndexerInterface;
-use Magento\Framework\Indexer\SaveHandlerFactory;
-use Magento\Framework\Indexer\StructureFactory;
 use Magento\Theme\Model\Indexer\Design\Config;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Config */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $indexerStructure = $this->getMockBuilder(IndexStructureInterface::class)
+        $indexerStructure = $this->getMockBuilder(\Magento\Framework\Indexer\IndexStructureInterface::class)
             ->getMockForAbstractClass();
-        $structureFactory = $this->getMockBuilder(StructureFactory::class)
+        $structureFactory = $this->getMockBuilder(\Magento\Framework\Indexer\StructureFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $structureFactory->expects($this->any())
             ->method('create')
             ->willReturn($indexerStructure);
 
-        $indexer = $this->getMockBuilder(IndexerInterface::class)
+        $indexer = $this->getMockBuilder(\Magento\Framework\Indexer\SaveHandler\IndexerInterface::class)
             ->getMockForAbstractClass();
-        $saveHandlerFactory = $this->getMockBuilder(SaveHandlerFactory::class)
+        $saveHandlerFactory = $this->getMockBuilder(\Magento\Framework\Indexer\SaveHandlerFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $saveHandlerFactory->expects($this->any())
             ->method('create')
             ->willReturn($indexer);
 
-        $indexerFieldset = $this->getMockBuilder(FieldsetInterface::class)
+        $indexerFieldset = $this->getMockBuilder(\Magento\Framework\Indexer\FieldsetInterface::class)
             ->getMockForAbstractClass();
         $indexerFieldset->expects($this->any())
             ->method('addDynamicData')
             ->willReturnArgument(0);
-        $fieldsetPool = $this->getMockBuilder(FieldsetPool::class)
+        $fieldsetPool = $this->getMockBuilder(\Magento\Framework\Indexer\FieldsetPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $fieldsetPool->expects($this->any())
             ->method('get')
             ->willReturn($indexerFieldset);
 
-        $indexerHandler = $this->getMockBuilder(HandlerInterface::class)
+        $indexerHandler = $this->getMockBuilder(\Magento\Framework\Indexer\HandlerInterface::class)
             ->getMockForAbstractClass();
-        $handlerPool = $this->getMockBuilder(HandlerPool::class)
+        $handlerPool = $this->getMockBuilder(\Magento\Framework\Indexer\HandlerPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $handlerPool->expects($this->any())
             ->method('get')
             ->willReturn($indexerHandler);
 
-        $collection = $this->getMockBuilder(Collection::class)
+        $collection = $this->getMockBuilder(\Magento\Framework\Data\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $collectionFactory =
@@ -87,23 +76,24 @@ class ConfigTest extends TestCase
             $handlerPool,
             $collectionFactory,
             [
-                'fieldsets' => ['test_fieldset' => [
-                    'fields' => [
-                        'first_field' => [
-                            'name' => 'firstField',
-                            'origin' => null,
-                            'type' => 'filterable',
-                            'handler' => null,
+                'fieldsets' => ['test_fieldset' =>
+                    [
+                        'fields' => [
+                            'first_field' => [
+                                'name' => 'firstField',
+                                'origin' => null,
+                                'type' => 'filterable',
+                                'handler' => null,
+                            ],
+                            'second_field' => [
+                                'name' => 'secondField',
+                                'origin' => null,
+                                'type' => 'searchable',
+                                'handler' => null,
+                            ],
                         ],
-                        'second_field' => [
-                            'name' => 'secondField',
-                            'origin' => null,
-                            'type' => 'searchable',
-                            'handler' => null,
-                        ],
-                    ],
-                    'provider' => $indexerFieldset,
-                ]
+                        'provider' => $indexerFieldset,
+                    ]
                 ],
                 'saveHandler' => 'saveHandlerClass',
                 'structure' => 'structureClass',

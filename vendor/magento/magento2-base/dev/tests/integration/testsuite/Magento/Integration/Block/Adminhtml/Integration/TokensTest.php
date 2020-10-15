@@ -21,7 +21,7 @@ class TokensTest extends \PHPUnit\Framework\TestCase
      */
     protected $tokensBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->tokensBlock = Bootstrap::getObjectManager()
             ->create(\Magento\Integration\Block\Adminhtml\Integration\Tokens::class);
@@ -70,29 +70,29 @@ class TokensTest extends \PHPUnit\Framework\TestCase
     {
         $htmlContent = $this->tokensBlock->toHtml();
 
-        $this->assertStringContainsString('name="consumer_key"', $htmlContent);
-        $this->assertStringContainsString(
+        $this->assertContains('name="consumer_key"', $htmlContent);
+        $this->assertContains(
             '<span>Consumer Key</span>',
             $htmlContent,
             "HTML content of token block should contain information about 'Consumer Key'."
         );
 
-        $this->assertStringContainsString('name="consumer_secret"', $htmlContent);
-        $this->assertStringContainsString(
+        $this->assertContains('name="consumer_secret"', $htmlContent);
+        $this->assertContains(
             '<span>Consumer Secret</span>',
             $htmlContent,
             "HTML content of token block should contain information about 'Consumer Secret'."
         );
 
-        $this->assertStringContainsString('name="token"', $htmlContent);
-        $this->assertStringContainsString(
+        $this->assertContains('name="token"', $htmlContent);
+        $this->assertContains(
             '<span>Access Token</span>',
             $htmlContent,
             "HTML content of token block should contain information about 'Access Token'."
         );
 
-        $this->assertStringContainsString('name="token_secret"', $htmlContent);
-        $this->assertStringContainsString(
+        $this->assertContains('name="token_secret"', $htmlContent);
+        $this->assertContains(
             '<span>Access Token Secret</span>',
             $htmlContent,
             "HTML content of token block should contain information about 'Access Token Secret'."

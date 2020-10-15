@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
 use Magento\Framework\App\DocRootLocator;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Framework\App\DocRootLocator class.
  */
-class DocRootLocatorTest extends TestCase
+class DocRootLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider isPubDataProvider
@@ -28,13 +22,13 @@ class DocRootLocatorTest extends TestCase
      */
     public function testIsPub($path, $isExist, $result)
     {
-        $request = $this->createMock(Http::class);
+        $request = $this->createMock(\Magento\Framework\App\Request\Http::class);
         $request->expects($this->once())->method('getServer')->willReturn($path);
 
-        $readFactory = $this->createMock(ReadFactory::class);
+        $readFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
 
-        $reader = $this->createMock(Read::class);
-        $filesystem = $this->createMock(Filesystem::class);
+        $reader = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
+        $filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $filesystem->expects($this->once())->method('getDirectoryRead')->willReturn($reader);
         $reader->expects($this->any())->method('isExist')->willReturn($isExist);
 

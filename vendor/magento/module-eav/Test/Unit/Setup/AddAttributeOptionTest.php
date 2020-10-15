@@ -31,13 +31,13 @@ class AddAttributeOptionTest extends TestCase
      */
     private $connectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $setupMock = $this->getMockForAbstractClass(ModuleDataSetupInterface::class);
+        $setupMock = $this->createMock(ModuleDataSetupInterface::class);
         $this->connectionMock = $this->createMock(Mysql::class);
         $this->connectionMock->method('select')
-            ->willReturn($objectManager->getObject(Select::class));
+                             ->willReturn($objectManager->getObject(Select::class));
 
         $setupMock->method('getTable')->willReturn('some_table');
         $setupMock->method('getConnection')->willReturn($this->connectionMock);
@@ -150,10 +150,12 @@ class AddAttributeOptionTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The default option isn't defined. Set the option and try again.
+     */
     public function testAddNewOptionWithoutDefaultValue()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The default option isn\'t defined. Set the option and try again.');
         $this->operation->execute(
             [
                 'attribute_id' => 1,

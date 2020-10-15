@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Columns;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Unsigned;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Integer as IntegerColumnDto;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UnsignedTest extends TestCase
+class UnsignedTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -25,7 +21,7 @@ class UnsignedTest extends TestCase
      */
     private $unsigned;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->unsigned = $this->objectManager->getObject(
@@ -38,7 +34,7 @@ class UnsignedTest extends TestCase
      */
     public function testToDefinition()
     {
-        /** @var IntegerColumnDto|MockObject $column */
+        /** @var IntegerColumnDto|\PHPUnit_Framework_MockObject_MockObject $column */
         $column = $this->getMockBuilder(IntegerColumnDto::class)
             ->disableOriginalConstructor()
             ->setMethods(['isUnsigned'])
@@ -57,7 +53,7 @@ class UnsignedTest extends TestCase
      */
     public function testToDefinitionNotUnsigned()
     {
-        /** @var IntegerColumnDto|MockObject $column */
+        /** @var IntegerColumnDto|\PHPUnit_Framework_MockObject_MockObject $column */
         $column = $this->getMockBuilder(IntegerColumnDto::class)
             ->disableOriginalConstructor()
             ->setMethods(['isUnsigned'])

@@ -30,7 +30,7 @@ class AttributeTest extends AbstractBackendController
     private $publisherConsumerController;
     private $consumers = ['product_action_attribute.update'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -55,7 +55,7 @@ class AttributeTest extends AbstractBackendController
         }
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->publisherConsumerController->stopConsumers();
         parent::tearDown();

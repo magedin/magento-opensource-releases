@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CheckoutAgreements\Test\Unit\Model;
 
-use Magento\CheckoutAgreements\Model\AgreementsProviderInterface;
 use Magento\CheckoutAgreements\Model\AgreementsValidator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\TestCase;
 
-class AgreementsValidatorTest extends TestCase
+class AgreementsValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var AgreementsValidator */
     protected $object;
@@ -20,7 +16,7 @@ class AgreementsValidatorTest extends TestCase
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
     }
@@ -44,7 +40,7 @@ class AgreementsValidatorTest extends TestCase
     public function testIsValid($data, $result)
     {
         $this->object = $this->objectManagerHelper->getObject(
-            AgreementsValidator::class,
+            \Magento\CheckoutAgreements\Model\AgreementsValidator::class,
             []
         );
         $this->assertEquals($result, $this->object->isValid($data));
@@ -73,14 +69,14 @@ class AgreementsValidatorTest extends TestCase
     public function testNotIsValid($data, $result)
     {
         $provider = $this->getMockForAbstractClass(
-            AgreementsProviderInterface::class
+            \Magento\CheckoutAgreements\Model\AgreementsProviderInterface::class
         );
         $provider->expects($this->once())
             ->method('getRequiredAgreementIds')
-            ->willReturn([1, 3, '4']);
+            ->will($this->returnValue([1, 3, '4']));
 
         $this->object = $this->objectManagerHelper->getObject(
-            AgreementsValidator::class,
+            \Magento\CheckoutAgreements\Model\AgreementsValidator::class,
             ['list' => [$provider]]
         );
         $this->assertEquals($result, $this->object->isValid($data));

@@ -3,67 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model;
-
-use Magento\Customer\Model\Log;
-use Magento\Customer\Model\LogFactory;
-use Magento\Customer\Model\Logger;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Customer log data logger test.
  */
-class LoggerTest extends TestCase
+class LoggerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Customer log data logger.
      *
-     * @var Logger
+     * @var \Magento\Customer\Model\Logger
      */
     protected $logger;
 
     /**
-     * @var LogFactory|MockObject
+     * @var \Magento\Customer\Model\LogFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $logFactory;
 
     /**
      * Resource instance.
      *
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
     /**
      * DB connection instance.
      *
-     * @var Mysql|MockObject
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->connection = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['select', 'insertOnDuplicate', 'fetchRow']
         );
-        $this->resource = $this->createMock(ResourceConnection::class);
-        $this->logFactory = $this->createPartialMock(LogFactory::class, ['create']);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->logFactory = $this->createPartialMock(\Magento\Customer\Model\LogFactory::class, ['create']);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->logger = $objectManagerHelper->getObject(
-            Logger::class,
+            \Magento\Customer\Model\Logger::class,
             [
                 'resource' => $this->resource,
                 'logFactory' => $this->logFactory
@@ -129,7 +117,7 @@ class LoggerTest extends TestCase
             'lastVisitAt' => $data['last_visit_at']
         ];
 
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
 
         $select->expects($this->any())->method('from')->willReturnSelf();
         $select->expects($this->any())->method('joinLeft')->willReturnSelf();
@@ -149,7 +137,7 @@ class LoggerTest extends TestCase
             ->with($select)
             ->willReturn($data);
 
-        $log = $this->getMockBuilder(Log::class)
+        $log = $this->getMockBuilder(\Magento\Customer\Model\Log::class)
             ->setConstructorArgs($logArguments)
             ->getMock();
 

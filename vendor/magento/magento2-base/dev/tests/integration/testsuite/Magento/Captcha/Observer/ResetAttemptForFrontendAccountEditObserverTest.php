@@ -24,7 +24,7 @@ class ResetAttemptForFrontendAccountEditObserverTest extends \PHPUnit\Framework\
      */
     private $objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }

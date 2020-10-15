@@ -3,50 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\DataConverter\DataConverterInterface;
-use Magento\Framework\DB\FieldDataConverter;
-use Magento\Framework\DB\Query\Generator;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\QueryModifierInterface;
 use Magento\Framework\DB\SelectFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Query\Generator;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\FieldDataConverter;
+use Magento\Framework\DB\DataConverter\DataConverterInterface;
+use Magento\Framework\DB\Select;
+use Magento\Framework\DB\Select\QueryModifierInterface;
 
-class FieldDataConverterTest extends TestCase
+class FieldDataConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
     /**
-     * @var Generator|MockObject
+     * @var Generator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryGeneratorMock;
 
     /**
-     * @var DataConverterInterface|MockObject
+     * @var DataConverterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataConverterMock;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectMock;
 
     /**
-     * @var QueryModifierInterface|MockObject
+     * @var QueryModifierInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryModifierMock;
 
     /**
-     * @var SelectFactory|MockObject
+     * @var SelectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectFactoryMock;
 
@@ -60,14 +56,14 @@ class FieldDataConverterTest extends TestCase
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connectionMock = $this->createMock(AdapterInterface::class);
         $this->queryGeneratorMock = $this->createMock(Generator::class);
-        $this->dataConverterMock = $this->getMockForAbstractClass(DataConverterInterface::class);
+        $this->dataConverterMock = $this->createMock(DataConverterInterface::class);
         $this->selectMock = $this->createMock(Select::class);
-        $this->queryModifierMock = $this->getMockForAbstractClass(QueryModifierInterface::class);
+        $this->queryModifierMock = $this->createMock(QueryModifierInterface::class);
         $this->selectFactoryMock = $this->getMockBuilder(SelectFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -147,7 +143,7 @@ class FieldDataConverterTest extends TestCase
     public function convertDataProvider()
     {
         return [
-            [false, 0],
+            [false, 0, ],
             [true, 1]
         ];
     }
@@ -211,17 +207,14 @@ class FieldDataConverterTest extends TestCase
 
     /**
      * @param string|int $batchSize
+     * @expectedException \InvalidArgumentException
      * @codingStandardsIgnoreStart
+     * @expectedExceptionMessage Invalid value for environment variable DATA_CONVERTER_BATCH_SIZE. Should be integer, >= 1 and < value of PHP_INT_MAX
      * @codingStandardsIgnoreEnd
      * @dataProvider convertBatchSizeFromEnvInvalidDataProvider
      */
     public function testConvertBatchSizeFromEnvInvalid($batchSize)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage(
-            'Invalid value for environment variable DATA_CONVERTER_BATCH_SIZE. '
-            . 'Should be integer, >= 1 and < value of PHP_INT_MAX'
-        );
         $table = 'table';
         $identifier = 'id';
         $field = 'field';
@@ -265,7 +258,7 @@ class FieldDataConverterTest extends TestCase
     {
         return [
             ['value'],
-            [bcadd((string)PHP_INT_MAX, (string)1)],
+            [bcadd(PHP_INT_MAX, 1)],
         ];
     }
 }

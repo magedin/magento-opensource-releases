@@ -7,7 +7,6 @@
 namespace Vertex\Tax\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Sales\Model\Order\Shipment;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Tax\Model\Config as TaxConfig;
 use Vertex\Tax\Model\Config\DeliveryTerm;
@@ -17,6 +16,11 @@ use Vertex\Tax\Model\Config\DeliveryTerm;
  */
 class Config
 {
+    /**
+     * @var string
+     * @deprecated This will be removed in the near future as we stop using a calculation method to determine if enabled
+     */
+    const CALC_UNIT_VERTEX = 'VERTEX_UNIT_BASE_CALCULATION';
     const CONFIG_XML_PATH_DEFAULT_CUSTOMER_CODE = 'tax/classes/default_customer_code';
     const CONFIG_XML_PATH_DEFAULT_TAX_CALCULATION_ADDRESS_TYPE = 'tax/calculation/based_on';
     const CONFIG_XML_PATH_ENABLE_TAX_CALCULATION = 'tax/vertex_settings/use_for_calculation';
@@ -47,7 +51,6 @@ class Config
     const CONFIG_XML_PATH_VERTEX_LOG_ROTATION_RUNTIME = 'tax/vertex_logging/rotation_runtime';
     const CONFIG_XML_PATH_VERTEX_POSTAL_CODE = 'tax/vertex_seller_info/postalCode';
     const CONFIG_XML_PATH_VERTEX_REGION = 'tax/vertex_seller_info/region_id';
-    const CONFIG_XML_PATH_VERTEX_SHIPPING_ORIGIN_SOURCE = 'tax/vertex_seller_info/shipping_origin_source';
     const CONFIG_XML_PATH_VERTEX_STREET1 = 'tax/vertex_seller_info/streetAddress1';
     const CONFIG_XML_PATH_VERTEX_STREET2 = 'tax/vertex_seller_info/streetAddress2';
     const CRON_STRING_PATH = 'crontab/default/jobs/vertex_log_rotation/schedule/cron_expr';
@@ -124,9 +127,6 @@ class Config
      */
     public function getCompanyCity($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            return $this->getConfigValue(Shipment::XML_PATH_STORE_CITY, $store, $scope);
-        }
         return $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_CITY, $store, $scope);
     }
 
@@ -151,13 +151,9 @@ class Config
      */
     public function getCompanyCountry($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            $country = $this->getConfigValue(Shipment::XML_PATH_STORE_COUNTRY_ID, $store, $scope);
-        } else {
-            $country = $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_COUNTRY, $store, $scope);
-        }
+        $country = $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_COUNTRY, $store, $scope);
 
-        return $country ?? false;
+        return $country !== null ? $country : false;
     }
 
     /**
@@ -169,9 +165,6 @@ class Config
      */
     public function getCompanyPostalCode($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            return $this->getConfigValue(Shipment::XML_PATH_STORE_ZIP, $store, $scope);
-        }
         return $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_POSTAL_CODE, $store, $scope);
     }
 
@@ -184,13 +177,9 @@ class Config
      */
     public function getCompanyRegionId($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            $region = $this->getConfigValue(Shipment::XML_PATH_STORE_REGION_ID, $store, $scope);
-        } else {
-            $region = $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_REGION, $store, $scope);
-        }
+        $region = $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_REGION, $store, $scope);
 
-        return $region ?? false;
+        return $region !== null ? $region : false;
     }
 
     /**
@@ -202,9 +191,6 @@ class Config
      */
     public function getCompanyStreet1($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            return $this->getConfigValue(Shipment::XML_PATH_STORE_ADDRESS1, $store, $scope);
-        }
         return $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_STREET1, $store, $scope);
     }
 
@@ -217,9 +203,6 @@ class Config
      */
     public function getCompanyStreet2($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        if ($this->isShippingOriginSourceEnabled($store, $scope)) {
-            return $this->getConfigValue(Shipment::XML_PATH_STORE_ADDRESS2, $store, $scope);
-        }
         return $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_STREET2, $store, $scope);
     }
 
@@ -535,9 +518,9 @@ class Config
      *
      * @param string|null $store
      * @param string $scope
-     * @return string|null
+     * @return float|null
      */
-    public function getTrustedId($store = null, $scope = ScopeInterface::SCOPE_STORE): ?string
+    public function getTrustedId($store = null, $scope = ScopeInterface::SCOPE_STORE)
     {
         return $this->getConfigValue(self::CONFIG_XML_PATH_VERTEX_API_TRUSTED_ID, $store, $scope);
     }
@@ -740,10 +723,5 @@ class Config
         );
 
         return array_filter($attributes);
-    }
-
-    private function isShippingOriginSourceEnabled($scopeId = null, $scope = ScopeInterface::SCOPE_STORE): bool
-    {
-        return $this->scopeConfig->isSetFlag(self::CONFIG_XML_PATH_VERTEX_SHIPPING_ORIGIN_SOURCE, $scope, $scopeId);
     }
 }

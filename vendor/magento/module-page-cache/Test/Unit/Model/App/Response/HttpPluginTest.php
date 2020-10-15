@@ -3,63 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\PageCache\Test\Unit\Model\App\Response;
 
-use Magento\Framework\App\Response\Http as HttpResponse;
-use Magento\MediaStorage\Model\File\Storage\Response as FileResponse;
 use Magento\PageCache\Model\App\Response\HttpPlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * Tests \Magento\PageCache\Model\App\Response\HttpPlugin.
- */
-class HttpPluginTest extends TestCase
+class HttpPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var HttpPlugin
-     */
-    private $httpPlugin;
-
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->httpPlugin = new HttpPlugin();
-    }
-
-    /**
-     * @param string $responseClass
-     * @param bool $headersSent
+     * @param \Magento\Framework\App\Response\FileInterface $responseInstanceClass
      * @param int $sendVaryCalled
-     * @return void
      *
      * @dataProvider beforeSendResponseDataProvider
      */
-    public function testBeforeSendResponse(string $responseClass, bool $headersSent, int $sendVaryCalled): void
+    public function testBeforeSendResponse($responseInstanceClass, $sendVaryCalled)
     {
-        /** @var HttpResponse|MockObject $responseMock */
-        $responseMock = $this->createMock($responseClass);
-        $responseMock->expects($this->any())->method('headersSent')->willReturn($headersSent);
-        $responseMock->expects($this->exactly($sendVaryCalled))->method('sendVary');
-
-        $this->httpPlugin->beforeSendResponse($responseMock);
+        /** @var \Magento\Framework\App\Response\Http | \PHPUnit_Framework_MockObject_MockObject $responseMock */
+        $responseMock = $this->createMock($responseInstanceClass);
+        $responseMock->expects($this->exactly($sendVaryCalled))
+            ->method('sendVary');
+        $plugin = new HttpPlugin();
+        $plugin->beforeSendResponse($responseMock);
     }
 
     /**
      * @return array
      */
-    public function beforeSendResponseDataProvider(): array
+    public function beforeSendResponseDataProvider()
     {
         return [
-            'http_response_headers_not_sent' => [HttpResponse::class, false, 1],
-            'http_response_headers_sent' => [HttpResponse::class, true, 0],
-            'file_response_headers_not_sent' => [FileResponse::class, false, 0],
-            'file_response_headers_sent' => [FileResponse::class, true, 0],
+            [\Magento\Framework\App\Response\Http::class, 1],
+            [\Magento\MediaStorage\Model\File\Storage\Response::class, 0]
         ];
     }
 }

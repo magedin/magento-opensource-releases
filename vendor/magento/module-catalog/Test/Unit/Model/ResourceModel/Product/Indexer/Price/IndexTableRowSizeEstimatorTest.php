@@ -3,42 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Price;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableRowSizeEstimator;
-use Magento\Customer\Model\ResourceModel\Group\Collection;
-use Magento\Customer\Model\ResourceModel\Group\CollectionFactory;
-use Magento\Store\Api\WebsiteManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IndexTableRowSizeEstimatorTest extends TestCase
+class IndexTableRowSizeEstimatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var IndexTableRowSizeEstimator
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableRowSizeEstimator
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $websiteManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->websiteManagementMock = $this->getMockForAbstractClass(WebsiteManagementInterface::class);
+        $this->websiteManagementMock = $this->createMock(\Magento\Store\Api\WebsiteManagementInterface::class);
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Customer\Model\ResourceModel\Group\CollectionFactory::class,
             ['create']
         );
-        $this->model = new IndexTableRowSizeEstimator(
+        $this->model = new \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableRowSizeEstimator(
             $this->websiteManagementMock,
             $this->collectionFactoryMock
         );
@@ -49,7 +41,7 @@ class IndexTableRowSizeEstimatorTest extends TestCase
         $expectedValue = 4000000;
 
         $this->websiteManagementMock->expects($this->once())->method('getCount')->willReturn(100);
-        $collectionMock = $this->createMock(Collection::class);
+        $collectionMock = $this->createMock(\Magento\Customer\Model\ResourceModel\Group\Collection::class);
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($collectionMock);
         $collectionMock->expects($this->once())->method('getSize')->willReturn(200);
 

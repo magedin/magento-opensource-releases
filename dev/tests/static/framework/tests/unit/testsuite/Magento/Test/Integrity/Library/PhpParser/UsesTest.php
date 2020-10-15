@@ -19,7 +19,7 @@ class UsesTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->uses = new Uses();
     }

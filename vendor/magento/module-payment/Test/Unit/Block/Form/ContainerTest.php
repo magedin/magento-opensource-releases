@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Payment\Block\Form\Container
  */
 namespace Magento\Payment\Test\Unit\Block\Form;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template;
-use Magento\Payment\Block\Form\Container;
-use PHPUnit\Framework\TestCase;
-
-class ContainerTest extends TestCase
+class ContainerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \Magento\Payment\Block\Form\Container::getChildBlock
      */
     public function testSetMethodFormTemplate()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $childBlockA = $objectManagerHelper->getObject(Template::class);
-        $childBlockB = $objectManagerHelper->getObject(Template::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $childBlockA = $objectManagerHelper->getObject(\Magento\Framework\View\Element\Template::class);
+        $childBlockB = $objectManagerHelper->getObject(\Magento\Framework\View\Element\Template::class);
 
         $func = function ($blockName) use ($childBlockA, $childBlockB) {
             switch ($blockName) {
@@ -35,8 +29,8 @@ class ContainerTest extends TestCase
             }
             return null;
         };
-        $block = $this->createPartialMock(Container::class, ['getChildBlock']);
-        $block->expects($this->atLeastOnce())->method('getChildBlock')->willReturnCallback($func);
+        $block = $this->createPartialMock(\Magento\Payment\Block\Form\Container::class, ['getChildBlock']);
+        $block->expects($this->atLeastOnce())->method('getChildBlock')->will($this->returnCallback($func));
 
         $template = 'any_template.phtml';
         $this->assertNotEquals($template, $childBlockA->getTemplate());

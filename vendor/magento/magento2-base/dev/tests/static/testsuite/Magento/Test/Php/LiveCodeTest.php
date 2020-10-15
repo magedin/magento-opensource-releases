@@ -36,7 +36,7 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         self::$pathToSource = BP;
         self::$reportDir = self::$pathToSource . '/dev/tests/static/report';
@@ -430,9 +430,9 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
             }
         }
 
-        $this->assertCount(
+        $this->assertEquals(
             0,
-            $filesMissingStrictTyping,
+            count($filesMissingStrictTyping),
             "Following files are missing strict type declaration:"
             . PHP_EOL
             . implode(PHP_EOL, $filesMissingStrictTyping)
@@ -500,36 +500,5 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
         $errorMessage = empty($report) ?
             'PHPStan command run failed.' : 'PHPStan detected violation(s):' . PHP_EOL . $report;
         $this->assertEquals(0, $exitCode, $errorMessage);
-    }
-
-    /**
-     * Tests whitelisted fixtures for reuse other fixtures.
-     */
-    public function testFixtureReuse()
-    {
-        $changedFiles =  self::getWhitelist(['php']);
-        $toBeTestedFiles = self::filterFiles($changedFiles, ['php'], []);
-
-        $filesWithIncorrectReuse = [];
-        foreach ($toBeTestedFiles as $fileName) {
-            //check only _files and Fixtures directory
-            if (!preg_match('/integration.+\/(_files|Fixtures)/', $fileName)) {
-                continue;
-            }
-            $file = str_replace(["\n", "\r"], '', file_get_contents($fileName));
-            if (preg_match('/(?<![\=\s*])\b(require|require_once|include)\b/', $file)) {
-                $filesWithIncorrectReuse[] = $fileName;
-            }
-        }
-
-        $this->assertEquals(
-            0,
-            count($filesWithIncorrectReuse),
-            "The following files incorrectly reuse fixtures:"
-            . PHP_EOL
-            . implode(PHP_EOL, $filesWithIncorrectReuse)
-            . PHP_EOL
-            . 'Please use Magento\TestFramework\Workaround\Override\Fixture\Resolver::requireDataFixture'
-        );
     }
 }

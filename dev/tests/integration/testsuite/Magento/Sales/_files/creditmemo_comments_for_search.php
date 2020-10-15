@@ -9,10 +9,9 @@ use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\Creditmemo\Comment;
 use Magento\Sales\Model\Order\CreditmemoFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'default_rollback.php';
+require __DIR__ . '/order.php';
 
 /** @var Order $order */
 $order = Bootstrap::getObjectManager()->create(Order::class);

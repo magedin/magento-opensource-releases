@@ -9,7 +9,7 @@ use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 
 /**
- * @inheritdoc
+ * Class AddressAdapter
  */
 class AddressAdapter implements AddressAdapterInterface
 {
@@ -54,7 +54,7 @@ class AddressAdapter implements AddressAdapterInterface
     public function getStreetLine1()
     {
         $street = $this->address->getStreet();
-        return $street[0] ?? '';
+        return isset($street[0]) ? $street[0]: '';
     }
 
     /**
@@ -65,7 +65,7 @@ class AddressAdapter implements AddressAdapterInterface
     public function getStreetLine2()
     {
         $street = $this->address->getStreet();
-        return $street[1] ?? '';
+        return isset($street[1]) ? $street[1]: '';
     }
 
     /**

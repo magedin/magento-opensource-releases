@@ -30,7 +30,7 @@ class SourceSelectionServiceTest extends WebapiAbstract
      */
     private $defaultAlgorithmCode;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->defaultAlgorithmCode = Bootstrap::getObjectManager()->get(
@@ -106,8 +106,8 @@ class SourceSelectionServiceTest extends WebapiAbstract
             ? $this->_webApiCall($serviceInfo, $requestData)
             : $this->_webApiCall($serviceInfo, $requestData);
 
-        $this->assertIsArray($sourceSelectionAlgorithmResult);
-        $this->assertNotEmpty($sourceSelectionAlgorithmResult);
+        self::assertInternalType('array', $sourceSelectionAlgorithmResult);
+        self::assertNotEmpty($sourceSelectionAlgorithmResult);
         AssertArrayContains::assert($expectedResultData, $sourceSelectionAlgorithmResult);
     }
 }

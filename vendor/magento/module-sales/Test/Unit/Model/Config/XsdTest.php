@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Config;
 
-use Magento\Framework\Config\Dom;
-use PHPUnit\Framework\TestCase;
-
-class XsdTest extends TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
      */
     protected $_xsdFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
@@ -34,7 +29,7 @@ class XsdTest extends TestCase
         $dom = new \DOMDocument();
         $dom->load(__DIR__ . "/_files/{$xmlFile}");
         libxml_use_internal_errors(true);
-        $result = Dom::validateDomDocument($dom, $this->_xsdFile);
+        $result = \Magento\Framework\Config\Dom::validateDomDocument($dom, $this->_xsdFile);
         libxml_use_internal_errors(false);
         $this->assertEmpty($result, 'Validation failed with errors: ' . join(', ', $result));
     }
@@ -58,7 +53,7 @@ class XsdTest extends TestCase
         $dom->load(__DIR__ . "/_files/{$xmlFile}");
         libxml_use_internal_errors(true);
 
-        $result = Dom::validateDomDocument($dom, $this->_xsdFile);
+        $result = \Magento\Framework\Config\Dom::validateDomDocument($dom, $this->_xsdFile);
 
         libxml_use_internal_errors(false);
         $this->assertEquals($expectedErrors, $result);

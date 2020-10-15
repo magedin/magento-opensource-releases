@@ -3,79 +3,72 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Translation\Test\Unit\Model\Js;
 
 use Magento\Framework\App\State;
 use Magento\Framework\App\Utility\Files;
-use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\DirSearch;
-use Magento\Framework\Filesystem\File\Read;
-use Magento\Framework\Filesystem\File\ReadFactory;
+use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\File\ReadInterface;
-use Magento\Framework\Phrase\Renderer\Translate;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Translation\Model\Js\DataProvider;
 use Magento\Translation\Model\Js\Config;
-use Magento\Translation\Model\Js\DataProvider as ModelDataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Phrase\Renderer\Translate;
 
 /**
- * Verify data provider translation
+ * Class DataProviderTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ModelDataProvider
+     * @var DataProvider
      */
-    private $model;
+    protected $model;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $appStateMock;
+    protected $appStateMock;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $configMock;
+    protected $configMock;
 
     /**
-     * @var Files|MockObject
+     * @var Files|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $filesUtilityMock;
+    protected $filesUtilityMock;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var ReadInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $fileReadMock;
+    protected $fileReadMock;
 
     /**
-     * @var Translate|MockObject
+     * @var Translate|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $translateMock;
+    protected $translateMock;
 
     /**
-     * @inheritDoc
+     * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->appStateMock = $this->createMock(State::class);
-        $this->configMock = $this->createMock(Config::class);
-        $this->filesUtilityMock = $this->createMock(Files::class);
-        $fileReadFactory = $this->createMock(ReadFactory::class);
-        $this->fileReadMock = $this->createMock(Read::class);
-        $this->translateMock = $this->createMock(Translate::class);
+        $this->appStateMock = $this->createMock(\Magento\Framework\App\State::class);
+        $this->configMock = $this->createMock(\Magento\Translation\Model\Js\Config::class);
+        $this->filesUtilityMock = $this->createMock(\Magento\Framework\App\Utility\Files::class);
+        $fileReadFactory = $this->createMock(\Magento\Framework\Filesystem\File\ReadFactory::class);
+        $this->fileReadMock = $this->createMock(\Magento\Framework\Filesystem\File\Read::class);
+        $this->translateMock = $this->createMock(\Magento\Framework\Phrase\Renderer\Translate::class);
         $fileReadFactory->expects($this->atLeastOnce())
             ->method('create')
             ->willReturn($this->fileReadMock);
-        $dirSearch = $this->createMock(DirSearch::class);
-        $objectManager = new ObjectManager($this);
+        $dirSearch = $this->createMock(\Magento\Framework\Component\DirSearch::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            ModelDataProvider::class,
+            \Magento\Translation\Model\Js\DataProvider::class,
             [
                 'appState' => $this->appStateMock,
                 'config' => $this->configMock,
@@ -83,19 +76,16 @@ class DataProviderTest extends TestCase
                 'translate' => $this->translateMock,
                 'dirSearch' => $dirSearch,
                 'filesUtility' => $this->filesUtilityMock,
-                'componentRegistrar' => $this->createMock(ComponentRegistrar::class)
+                'componentRegistrar' =>
+                    $this->createMock(\Magento\Framework\Component\ComponentRegistrar::class)
             ]
         );
     }
 
     /**
-     * Verify data translate.
-     *
-     * @param array $config
      * @return void
-     * @dataProvider configDataProvider
      */
-    public function testGetData(array $config): void
+    public function testGetData()
     {
         $themePath = 'blank';
         $areaCode = 'adminhtml';
@@ -111,6 +101,29 @@ class DataProviderTest extends TestCase
             [$areaCode, $themePath, '*', '*', [$filePaths[3]]]
         ];
 
+        $expectedResult = [
+            'hello1' => 'hello1translated',
+            'hello2' => 'hello2translated',
+            'hello3' => 'hello3translated',
+            'hello4' => 'hello4translated'
+        ];
+
+        $contentsMap = [
+            'content1$.mage.__("hello1")content1',
+            'content2$.mage.__("hello2")content2',
+            'content2$.mage.__("hello4")content4', // this value should be last after running data provider
+            'content2$.mage.__("hello3")content3',
+        ];
+
+        $translateMap = [
+            [['hello1'], [], 'hello1translated'],
+            [['hello2'], [], 'hello2translated'],
+            [['hello3'], [], 'hello3translated'],
+            [['hello4'], [], 'hello4translated']
+        ];
+
+        $patterns = ['~\$\.mage\.__\(([\'"])(.+?)\1\)~'];
+
         $this->appStateMock->expects($this->once())
             ->method('getAreaCode')
             ->willReturn($areaCode);
@@ -121,7 +134,7 @@ class DataProviderTest extends TestCase
             ->method('getStaticHtmlFiles')
             ->willReturnMap($staticFilesMap);
 
-        foreach ($config['contentsMap'] as $index => $content) {
+        foreach ($contentsMap as $index => $content) {
             $this->fileReadMock->expects($this->at($index))
                 ->method('readAll')
                 ->willReturn($content);
@@ -129,37 +142,34 @@ class DataProviderTest extends TestCase
 
         $this->configMock->expects($this->any())
             ->method('getPatterns')
-            ->willReturn($config['patterns']);
+            ->willReturn($patterns);
         $this->translateMock->expects($this->any())
             ->method('render')
-            ->willReturnMap($config['translateMap']);
+            ->willReturnMap($translateMap);
 
         $actualResult = $this->model->getData($themePath);
-        $this->assertEquals($config['expectedResult'], $actualResult);
+        $this->assertEquals($expectedResult, $actualResult);
         $this->assertEquals(
-            json_encode($config['expectedResult']),
+            json_encode($expectedResult),
             json_encode($actualResult),
             "Translations should be sorted by key"
         );
     }
 
     /**
-     * Verify get data throwing exception.
-     *
-     * @param array $config
-     * @return void
-     * @dataProvider configDataProvider
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
-    public function testGetDataThrowingException(array $config): void
+    public function testGetDataThrowingException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
         $themePath = 'blank';
         $areaCode = 'adminhtml';
-        $patterns = $config['patterns'];
+
+        $patterns = ['~\$\.mage\.__\(([\'"])(.+?)\1\)~'];
 
         $this->fileReadMock->expects($this->once())
             ->method('readAll')
             ->willReturn('content1$.mage.__("hello1")content1');
+
         $this->appStateMock->expects($this->once())
             ->method('getAreaCode')
             ->willReturn($areaCode);
@@ -169,57 +179,15 @@ class DataProviderTest extends TestCase
         $this->filesUtilityMock->expects($this->any())
             ->method('getStaticHtmlFiles')
             ->willReturn(['test']);
+
         $this->configMock->expects($this->any())
             ->method('getPatterns')
             ->willReturn($patterns);
+
         $this->translateMock->expects($this->once())
             ->method('render')
             ->willThrowException(new \Exception('Test exception'));
 
         $this->model->getData($themePath);
-    }
-
-    /**
-     * Config data provider.
-     *
-     * @return array
-     */
-    public function configDataProvider(): array
-    {
-        return [
-            [
-                [
-                    'patterns' => [
-                        '~\$\.mage\.__\(([\'"])(.+?)\1\)~',
-                        '~(?:i18n\:|_\.i18n\()\s*(["\'])(.*?)(?<!\\\\)\1~',
-                        '~translate\=("\')([^\'].*?)\'\"~',
-                        '~(?s)\$t\(\s*([\'"])(\?\<translate\>.+?)(?<!\\\)\1\s*(*SKIP)\)(?s)~',
-                        '~translate args\=("|\'|"\'|\\\"\')([^\'].*?)(\'\\\"|\'"|\'|")~',
-                    ],
-                    'expectedResult' => [
-                        'hello1' => 'hello1translated',
-                        'hello2' => 'hello2translated',
-                        'hello3' => 'hello3translated',
-                        'hello4' => 'hello4translated',
-                        'ko i18' => 'ko i18 translated',
-                        'underscore i18' => 'underscore i18 translated',
-                    ],
-                    'contentsMap' => [
-                        'content1$.mage.__("hello1")content1',
-                        'content2$.mage.__("hello2")content2',
-                        'content2$.mage.__("hello4")content4 <!-- ko i18n: "ko i18" --><!-- /ko -->',
-                        'content2$.mage.__("hello3")content3 <% _.i18n("underscore i18") %>',
-                    ],
-                    'translateMap' => [
-                        [['hello1'], [], 'hello1translated'],
-                        [['hello2'], [], 'hello2translated'],
-                        [['hello3'], [], 'hello3translated'],
-                        [['hello4'], [], 'hello4translated'],
-                        [['ko i18'], [], 'ko i18 translated'],
-                        [['underscore i18'], [], 'underscore i18 translated'],
-                    ]
-                ],
-            ]
-        ];
     }
 }

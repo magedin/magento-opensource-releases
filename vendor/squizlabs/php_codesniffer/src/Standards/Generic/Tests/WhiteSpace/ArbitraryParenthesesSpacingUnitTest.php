@@ -56,9 +56,6 @@ class ArbitraryParenthesesSpacingUnitTest extends AbstractSniffUnitTest
             141 => 1,
             144 => 1,
             146 => 1,
-            163 => 1,
-            164 => 1,
-            165 => 1,
         ];
 
     }//end getErrorList()

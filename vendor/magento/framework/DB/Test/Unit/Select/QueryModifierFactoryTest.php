@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Select\InQueryModifier;
-use Magento\Framework\DB\Select\QueryModifierFactory;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Select\QueryModifierFactory;
+use Magento\Framework\DB\Select\InQueryModifier;
+use Magento\Framework\ObjectManagerInterface;
 
-class QueryModifierFactoryTest extends TestCase
+class QueryModifierFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -27,19 +23,19 @@ class QueryModifierFactoryTest extends TestCase
     private $queryModifierFactory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var InQueryModifier|MockObject
+     * @var InQueryModifier|\PHPUnit_Framework_MockObject_MockObject
      */
     private $inQueryModifierMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(ObjectManagerInterface::class);
         $this->inQueryModifierMock = $this->createMock(InQueryModifier::class);
     }
 
@@ -65,9 +61,11 @@ class QueryModifierFactoryTest extends TestCase
         $this->queryModifierFactory->create('in', $params);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateUnknownQueryModifierType()
     {
-        $this->expectException('InvalidArgumentException');
         $params = ['foo' => 'bar'];
         $this->queryModifierFactory = $this->objectManager->getObject(
             QueryModifierFactory::class,
@@ -81,9 +79,11 @@ class QueryModifierFactoryTest extends TestCase
         $this->queryModifierFactory->create('in', $params);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateDoesNotImplementInterface()
     {
-        $this->expectException('InvalidArgumentException');
         $params = ['foo' => 'bar'];
         $this->queryModifierFactory = $this->objectManager->getObject(
             QueryModifierFactory::class,

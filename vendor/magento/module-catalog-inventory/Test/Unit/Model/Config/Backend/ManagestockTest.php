@@ -3,32 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Model\Config\Backend;
 
-use Magento\CatalogInventory\Model\Config\Backend\Managestock;
-use Magento\CatalogInventory\Model\Indexer\Stock\Processor;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ManagestockTest extends TestCase
+class ManagestockTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  Processor|MockObject */
+    /** @var  \Magento\CatalogInventory\Model\Indexer\Stock\Processor|\PHPUnit_Framework_MockObject_MockObject */
     protected $stockIndexerProcessor;
 
-    /** @var Managestock */
+    /** @var \Magento\CatalogInventory\Model\Config\Backend\Managestock */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stockIndexerProcessor = $this->getMockBuilder(
-            Processor::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->model = (new ObjectManager($this))->getObject(
-            Managestock::class,
+            \Magento\CatalogInventory\Model\Indexer\Stock\Processor::class
+        )->disableOriginalConstructor()->getMock();
+        $this->model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
+            \Magento\CatalogInventory\Model\Config\Backend\Managestock::class,
             [
                 'stockIndexerProcessor' => $this->stockIndexerProcessor,
             ]

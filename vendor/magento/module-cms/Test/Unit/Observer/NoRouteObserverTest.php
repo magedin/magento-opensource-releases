@@ -3,48 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Observer;
 
-use Magento\Cms\Observer\NoRouteObserver;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NoRouteObserverTest extends TestCase
+class NoRouteObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NoRouteObserver
+     * @var \Magento\Cms\Observer\NoRouteObserver
      */
     protected $noRouteObserver;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
     /**
-     * @var Event|MockObject
+     * @var \Magento\Framework\Event|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventMock;
 
     /**
-     * @var DataObject|MockObject
+     * @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->observerMock = $this
-            ->getMockBuilder(Observer::class)
+            ->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->eventMock = $this
-            ->getMockBuilder(Event::class)
+            ->getMockBuilder(\Magento\Framework\Event::class)
             ->setMethods(
                 [
                     'getStatus',
@@ -54,7 +44,7 @@ class NoRouteObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectMock = $this
-            ->getMockBuilder(DataObject::class)
+            ->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods(
                 [
                     'setLoaded',
@@ -70,9 +60,9 @@ class NoRouteObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->noRouteObserver = $objectManager->getObject(
-            NoRouteObserver::class,
+            \Magento\Cms\Observer\NoRouteObserver::class,
             []
         );
     }

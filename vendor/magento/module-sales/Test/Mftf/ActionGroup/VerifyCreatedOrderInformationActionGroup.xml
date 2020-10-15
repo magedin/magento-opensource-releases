@@ -16,8 +16,6 @@
         <see selector="{{AdminOrderDetailsMessagesSection.successMessage}}" userInput="You created the order." stepKey="seeSuccessMessage"/>
         <see selector="{{AdminOrderDetailsInformationSection.orderStatus}}" userInput="Pending" stepKey="seeOrderPendingStatus" after="seeSuccessMessage"/>
         <grabTextFrom selector="|Order # (\d+)|" stepKey="getOrderId" after="seeOrderPendingStatus"/>
-        <assertNotEmpty stepKey="assertOrderIdIsNotEmpty" after="getOrderId">
-			<actualResult type="const">$getOrderId</actualResult>
-        </assertNotEmpty>
+        <assertNotEmpty actual="$getOrderId" stepKey="assertOrderIdIsNotEmpty" after="getOrderId"/>
     </actionGroup>
 </actionGroups>

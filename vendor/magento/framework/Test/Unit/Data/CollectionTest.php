@@ -3,25 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Test\Unit\Data;
 
 use Magento\Framework\Data\Collection;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+/**
+ * Class CollectionTest
+ * @package Magento\Framework\Test\Unit\Data
+ */
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collection
      */
     private $collection;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $factoryMock = $this->getMockForAbstractClass(EntityFactoryInterface::class);
+        $factoryMock = $this->createMock(EntityFactoryInterface::class);
         $this->collection = new Collection($factoryMock);
     }
 
@@ -31,9 +32,9 @@ class CollectionTest extends TestCase
      */
     public function testWalk()
     {
-        $objOne = new DataObject(['id' => 1, 'name' => 'one']);
-        $objTwo = new DataObject(['id' => 2, 'name' => 'two']);
-        $objThree = new DataObject(['id' => 3, 'name' => 'three']);
+        $objOne = new \Magento\Framework\DataObject(['id' => 1, 'name' => 'one']);
+        $objTwo = new \Magento\Framework\DataObject(['id' => 2, 'name' => 'two']);
+        $objThree = new \Magento\Framework\DataObject(['id' => 3, 'name' => 'three']);
 
         $this->collection->addItem($objOne);
         $this->collection->addItem($objTwo);
@@ -62,9 +63,9 @@ class CollectionTest extends TestCase
      */
     public function testClearTotalRecords()
     {
-        $objOne = new DataObject(['id' => 1, 'name' => 'one']);
-        $objTwo = new DataObject(['id' => 2, 'name' => 'two']);
-        $objThree = new DataObject(['id' => 3, 'name' => 'three']);
+        $objOne = new \Magento\Framework\DataObject(['id' => 1, 'name' => 'one']);
+        $objTwo = new \Magento\Framework\DataObject(['id' => 2, 'name' => 'two']);
+        $objThree = new \Magento\Framework\DataObject(['id' => 3, 'name' => 'three']);
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->collection->addItem($objOne);
@@ -83,7 +84,7 @@ class CollectionTest extends TestCase
      * @param \Magento\Framework\DataObject $object
      * @param string $prefix
      */
-    public function modifyObjectNames(DataObject $object, $prefix)
+    public function modifyObjectNames(\Magento\Framework\DataObject $object, $prefix)
     {
         $object->setData('name', $prefix . ' ' . $object->getData('name'));
     }

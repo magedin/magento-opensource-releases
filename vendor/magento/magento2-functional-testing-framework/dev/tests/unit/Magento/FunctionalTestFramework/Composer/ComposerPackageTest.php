@@ -4,10 +4,10 @@
  * See COPYING.txt for license details.
  */
 
-namespace tests\unit\Magento\FunctionalTestFramework\Composer;
+namespace tests\unit\Magento\FunctionalTestFramework\Test\Util;
 
 use Magento\FunctionalTestingFramework\Composer\ComposerPackage;
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 use Composer\Package\RootPackage;
 
 class ComposerPackageTest extends MagentoTestCase
@@ -19,7 +19,7 @@ class ComposerPackageTest extends MagentoTestCase
      */
     private $composer;
 
-    public function setUp(): void
+    public function setUp()
     {
         $composerJson = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Composer' . DIRECTORY_SEPARATOR . '_files'
             . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'dir2' . DIRECTORY_SEPARATOR . 'composer.json';

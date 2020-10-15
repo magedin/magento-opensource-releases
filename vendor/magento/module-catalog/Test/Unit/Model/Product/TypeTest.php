@@ -3,29 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type;
-use Magento\Catalog\Model\Product\Type\Pool;
-use Magento\Catalog\Model\Product\Type\Price;
-use Magento\Catalog\Model\Product\Type\Simple;
-use Magento\Catalog\Model\Product\Type\Virtual;
-use Magento\Catalog\Model\ProductTypes\ConfigInterface;
-use Magento\Framework\Pricing\PriceInfo\Factory;
-use Magento\Framework\Pricing\PriceInfoInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * ProductType Test
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TypeTest extends TestCase
+class TypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectHelper;
 
@@ -47,7 +35,7 @@ class TypeTest extends TestCase
     ];
 
     /**
-     * @var Type
+     * @var \Magento\Catalog\Model\Product\Type
      */
     protected $_model;
 
@@ -126,7 +114,7 @@ class TypeTest extends TestCase
     public function testGetPriceInfo()
     {
         $mockedProduct = $this->getMockedProduct();
-        $expectedResult = PriceInfoInterface::class;
+        $expectedResult = \Magento\Framework\Pricing\PriceInfoInterface::class;
         $this->assertInstanceOf($expectedResult, $this->_model->getPriceInfo($mockedProduct));
     }
 
@@ -136,17 +124,17 @@ class TypeTest extends TestCase
 
         $mockedProduct->expects($this->at(0))
             ->method('getTypeId')
-            ->willReturn('type_id_1');
+            ->will($this->returnValue('type_id_1'));
         $mockedProduct->expects($this->at(1))
             ->method('getTypeId')
-            ->willReturn('type_id_3');
+            ->will($this->returnValue('type_id_3'));
 
         $this->assertInstanceOf(
-            Simple::class,
+            \Magento\Catalog\Model\Product\Type\Simple::class,
             $this->_model->factory($mockedProduct)
         );
         $this->assertInstanceOf(
-            Virtual::class,
+            \Magento\Catalog\Model\Product\Type\Virtual::class,
             $this->_model->factory($mockedProduct)
         );
     }
@@ -154,21 +142,21 @@ class TypeTest extends TestCase
     public function testPriceFactory()
     {
         $this->assertInstanceOf(
-            Price::class,
+            \Magento\Catalog\Model\Product\Type\Price::class,
             $this->_model->priceFactory('type_id_1')
         );
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectHelper = new ObjectManager($this);
+        $this->_objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $mockedPriceInfoFactory = $this->getMockedPriceInfoFactory();
         $mockedProductTypePool = $this->getMockedProductTypePool();
         $mockedConfig = $this->getMockedConfig();
         $mockedTypePriceFactory = $this->getMockedTypePriceFactory();
 
         $this->_model = $this->_objectHelper->getObject(
-            Type::class,
+            \Magento\Catalog\Model\Product\Type::class,
             [
                 'config' => $mockedConfig,
                 'priceInfoFactory' => $mockedPriceInfoFactory,
@@ -195,7 +183,7 @@ class TypeTest extends TestCase
      */
     private function getMockedProduct()
     {
-        $mockBuilder = $this->getMockBuilder(Product::class)
+        $mockBuilder = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor();
         $mock = $mockBuilder->getMock();
 
@@ -203,20 +191,20 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @return Factory
+     * @return \Magento\Framework\Pricing\PriceInfo\Factory
      */
     private function getMockedPriceInfoFactory()
     {
         $mockedPriceInfoInterface = $this->getMockedPriceInfoInterface();
 
-        $mockBuilder = $this->getMockBuilder(Factory::class)
+        $mockBuilder = $this->getMockBuilder(\Magento\Framework\Pricing\PriceInfo\Factory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create']);
         $mock = $mockBuilder->getMock();
 
         $mock->expects($this->any())
             ->method('create')
-            ->willReturn($mockedPriceInfoInterface);
+            ->will($this->returnValue($mockedPriceInfoInterface));
 
         return $mock;
     }
@@ -226,7 +214,7 @@ class TypeTest extends TestCase
      */
     private function getMockedPriceInfoInterface()
     {
-        $mockBuilder = $this->getMockBuilder(PriceInfoInterface::class)
+        $mockBuilder = $this->getMockBuilder(\Magento\Framework\Pricing\PriceInfoInterface::class)
             ->disableOriginalConstructor();
         $mock = $mockBuilder->getMockForAbstractClass();
 
@@ -234,33 +222,35 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @return Pool
+     * @return \Magento\Catalog\Model\Product\Type\Pool
      */
     private function getMockedProductTypePool()
     {
-        $mockBuild = $this->getMockBuilder(Pool::class)
+        $mockBuild = $this->getMockBuilder(\Magento\Catalog\Model\Product\Type\Pool::class)
             ->disableOriginalConstructor()
             ->setMethods(['get']);
         $mock = $mockBuild->getMock();
 
         $mock->expects($this->any())
             ->method('get')
-            ->willReturnMap(
-                [
-                    ['some_model', [], $this->getMockedProductTypeVirtual()],
-                    [Simple::class, [], $this->getMockedProductTypeSimple()],
-                ]
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['some_model', [], $this->getMockedProductTypeVirtual()],
+                        [\Magento\Catalog\Model\Product\Type\Simple::class, [], $this->getMockedProductTypeSimple()],
+                    ]
+                )
             );
 
         return $mock;
     }
 
     /**
-     * @return Virtual
+     * @return \Magento\Catalog\Model\Product\Type\Virtual
      */
     private function getMockedProductTypeVirtual()
     {
-        $mockBuilder = $this->getMockBuilder(Virtual::class)
+        $mockBuilder = $this->getMockBuilder(\Magento\Catalog\Model\Product\Type\Virtual::class)
             ->disableOriginalConstructor()
             ->setMethods(['setConfig']);
         $mock = $mockBuilder->getMock();
@@ -272,11 +262,11 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @return Simple
+     * @return \Magento\Catalog\Model\Product\Type\Simple
      */
     private function getMockedProductTypeSimple()
     {
-        $mockBuilder = $this->getMockBuilder(Simple::class)
+        $mockBuilder = $this->getMockBuilder(\Magento\Catalog\Model\Product\Type\Simple::class)
             ->disableOriginalConstructor()
             ->setMethods(['setConfig']);
         $mock = $mockBuilder->getMock();
@@ -288,18 +278,18 @@ class TypeTest extends TestCase
     }
 
     /**
-     * @return ConfigInterface
+     * @return \Magento\Catalog\Model\ProductTypes\ConfigInterface
      */
     private function getMockedConfig()
     {
-        $mockBuild = $this->getMockBuilder(ConfigInterface::class)
+        $mockBuild = $this->getMockBuilder(\Magento\Catalog\Model\ProductTypes\ConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAll']);
         $mock = $mockBuild->getMockForAbstractClass();
 
         $mock->expects($this->any())
             ->method('getAll')
-            ->willReturn($this->_productTypes);
+            ->will($this->returnValue($this->_productTypes));
 
         return $mock;
     }
@@ -316,22 +306,24 @@ class TypeTest extends TestCase
 
         $mock->expects($this->any())
             ->method('create')
-            ->willReturnMap(
-                [
-                    ['some_model', [], $this->getMockedProductTypePrice()],
-                    [Price::class, [], $this->getMockedProductTypePrice()],
-                ]
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['some_model', [], $this->getMockedProductTypePrice()],
+                        [\Magento\Catalog\Model\Product\Type\Price::class, [], $this->getMockedProductTypePrice()],
+                    ]
+                )
             );
 
         return $mock;
     }
 
     /**
-     * @return Price
+     * @return \Magento\Catalog\Model\Product\Type\Price
      */
     private function getMockedProductTypePrice()
     {
-        $mockBuild = $this->getMockBuilder(Price::class)
+        $mockBuild = $this->getMockBuilder(\Magento\Catalog\Model\Product\Type\Price::class)
             ->disableOriginalConstructor();
         $mock = $mockBuild->getMock();
 

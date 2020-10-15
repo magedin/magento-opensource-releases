@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of PHP Copy/Paste Detector (PHPCPD).
  *
@@ -14,15 +14,14 @@ use SebastianBergmann\PHPCPD\CodeCloneMap;
 
 abstract class AbstractXmlLogger
 {
-    /**
-     * @var \DOMDocument
-     */
     protected $document;
 
     /**
      * Constructor.
+     *
+     * @param string $filename
      */
-    public function __construct(string $filename)
+    public function __construct($filename)
     {
         $this->document               = new \DOMDocument('1.0', 'UTF-8');
         $this->document->formatOutput = true;
@@ -31,22 +30,21 @@ abstract class AbstractXmlLogger
     }
 
     /**
-     * Processes a list of clones.
-     */
-    abstract public function processClones(CodeCloneMap $clones);
-
-    /**
      * Writes the XML document to the file.
      */
-    protected function flush(): void
+    protected function flush()
     {
         \file_put_contents($this->filename, $this->document->saveXML());
     }
 
     /**
      * Converts a string to UTF-8 encoding.
+     *
+     * @param string $string
+     *
+     * @return string
      */
-    protected function convertToUtf8(string $string): string
+    protected function convertToUtf8($string)
     {
         if (!$this->isUtf8($string)) {
             if (\function_exists('mb_convert_encoding')) {
@@ -61,8 +59,12 @@ abstract class AbstractXmlLogger
 
     /**
      * Checks a string for UTF-8 encoding.
+     *
+     * @param string $string
+     *
+     * @return bool
      */
-    protected function isUtf8(string $string): bool
+    protected function isUtf8($string)
     {
         $length = \strlen($string);
 
@@ -95,8 +97,12 @@ abstract class AbstractXmlLogger
      * Converts the string to UTF-8, substitutes the unicode replacement
      * character for every character disallowed in XML, and escapes
      * special characters.
+     *
+     * @param string $string
+     *
+     * @return string
      */
-    protected function escapeForXml(string $string): string
+    protected function escapeForXml($string)
     {
         $string = $this->convertToUtf8($string);
 
@@ -107,6 +113,13 @@ abstract class AbstractXmlLogger
             $string
         );
 
-        return \htmlspecialchars($string, \ENT_COMPAT, 'UTF-8');
+        return \htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
     }
+
+    /**
+     * Processes a list of clones.
+     *
+     * @param CodeCloneMap $clones
+     */
+    abstract public function processClones(CodeCloneMap $clones);
 }

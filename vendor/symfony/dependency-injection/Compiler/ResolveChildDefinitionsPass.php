@@ -29,7 +29,7 @@ class ResolveChildDefinitionsPass extends AbstractRecursivePass
 {
     private $currentPath;
 
-    protected function processValue($value, bool $isRoot = false)
+    protected function processValue($value, $isRoot = false)
     {
         if (!$value instanceof Definition) {
             return parent::processValue($value, $isRoot);
@@ -102,8 +102,7 @@ class ResolveChildDefinitionsPass extends AbstractRecursivePass
         $def->setMethodCalls($parentDef->getMethodCalls());
         $def->setProperties($parentDef->getProperties());
         if ($parentDef->isDeprecated()) {
-            $deprecation = $parentDef->getDeprecation('%service_id%');
-            $def->setDeprecated($deprecation['package'], $deprecation['version'], $deprecation['message']);
+            $def->setDeprecated(true, $parentDef->getDeprecationMessage('%service_id%'));
         }
         $def->setFactory($parentDef->getFactory());
         $def->setConfigurator($parentDef->getConfigurator());
@@ -138,12 +137,7 @@ class ResolveChildDefinitionsPass extends AbstractRecursivePass
             $def->setLazy($definition->isLazy());
         }
         if (isset($changes['deprecated'])) {
-            if ($definition->isDeprecated()) {
-                $deprecation = $definition->getDeprecation('%service_id%');
-                $def->setDeprecated($deprecation['package'], $deprecation['version'], $deprecation['message']);
-            } else {
-                $def->setDeprecated(false);
-            }
+            $def->setDeprecated($definition->isDeprecated(), $definition->getDeprecationMessage('%service_id%'));
         }
         if (isset($changes['autowired'])) {
             $def->setAutowired($definition->isAutowired());

@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Method\Checks;
 
+use Magento\Paypal\Model\Method\Checks\SpecificationPlugin;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Paypal\Model\Billing\AgreementFactory as BillingAgreementFactory;
 use Magento\Payment\Model\Checks\SpecificationInterface;
 use Magento\Payment\Model\MethodInterface;
-use Magento\Paypal\Model\Billing\Agreement as BillingAgreement;
-use Magento\Paypal\Model\Billing\AgreementFactory as BillingAgreementFactory;
-use Magento\Paypal\Model\Method\Checks\SpecificationPlugin;
-use Magento\Paypal\Model\ResourceModel\Billing\Agreement\Collection as BillingAgreementCollection;
 use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Paypal\Model\ResourceModel\Billing\Agreement\Collection as BillingAgreementCollection;
+use Magento\Paypal\Model\Billing\Agreement as BillingAgreement;
 
-class SpecificationPluginTest extends TestCase
+class SpecificationPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SpecificationPlugin
@@ -31,36 +27,36 @@ class SpecificationPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var BillingAgreementFactory|MockObject
+     * @var BillingAgreementFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAgreementFactoryMock;
 
     /**
-     * @var SpecificationInterface|MockObject
+     * @var SpecificationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $specificationMock;
 
     /**
-     * @var MethodInterface|MockObject
+     * @var MethodInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMethodMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var BillingAgreementCollection|MockObject
+     * @var BillingAgreementCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAgreementCollectionMock;
 
     /**
-     * @var BillingAgreement|MockObject
+     * @var BillingAgreement|\PHPUnit_Framework_MockObject_MockObject
      */
     private $billingAgreementMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->billingAgreementFactoryMock = $this->getMockBuilder(BillingAgreementFactory::class)
             ->disableOriginalConstructor()

@@ -10,9 +10,7 @@ namespace Magento\InventoryExportStockApi\Test\Api;
 use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
-use Magento\InventorySales\Model\ResourceModel\DeleteReservationsBySkus;
 use Magento\InventorySales\Test\Api\OrderPlacementBase;
-use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * Salable qty export tests for different types of products.
@@ -677,7 +675,6 @@ class ExportStockSalableQtyTest extends OrderPlacementBase
         $this->assignStockToWebsite(1, 'base');
         $bundleSKU = 'bundle-product';
         $simple = 'simple';
-        $this->cleanUpReservations([$simple]);
         $requestData = [
             'searchCriteria' => [
                 SearchCriteria::FILTER_GROUPS => [
@@ -770,17 +767,5 @@ class ExportStockSalableQtyTest extends OrderPlacementBase
             }
         }
         self::assertEquals($productsNum, $found);
-    }
-
-    /**
-     * Clean up reservation for given product skus which may be created before test.
-     *
-     * @param array $skus
-     * @return void
-     */
-    private function cleanUpReservations(array $skus): void
-    {
-        $deleteReservations = Bootstrap::getObjectManager()->get(DeleteReservationsBySkus::class);
-        $deleteReservations->execute($skus);
     }
 }

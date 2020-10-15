@@ -13,11 +13,11 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="AdminLoginActionGroup1"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin1"/>
         </before>
 
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <amOnPage url="{{AdminCampaignReportPage.url}}" stepKey="amOnCampaignReportPage"/>

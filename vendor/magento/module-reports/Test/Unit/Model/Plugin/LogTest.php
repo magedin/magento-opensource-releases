@@ -3,69 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Model\Plugin;
 
-use Magento\Customer\Model\ResourceModel\Visitor;
-use Magento\Reports\Model\Event;
 use Magento\Reports\Model\Plugin\Log;
-use Magento\Reports\Model\Product\Index\Compared;
-use Magento\Reports\Model\Product\Index\Viewed;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LogTest extends TestCase
+class LogTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Log
+     * @var \Magento\Reports\Model\Plugin\Log
      */
     protected $log;
 
     /**
-     * @var Event|MockObject
+     * @var \Magento\Reports\Model\Event|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventMock;
 
     /**
-     * @var Compared|MockObject
+     * @var \Magento\Reports\Model\Product\Index\Compared|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $comparedMock;
 
     /**
-     * @var Viewed|MockObject
+     * @var \Magento\Reports\Model\Product\Index\Viewed|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewedMock;
 
     /**
-     * @var Visitor|MockObject
+     * @var \Magento\Customer\Model\ResourceModel\Visitor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $logResourceMock;
 
     /**
-     * @var Visitor|MockObject
+     * @var \Magento\Customer\Model\ResourceModel\Visitor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->eventMock = $this->getMockBuilder(Event::class)
+        $this->eventMock = $this->getMockBuilder(\Magento\Reports\Model\Event::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->comparedMock = $this->getMockBuilder(Compared::class)
+        $this->comparedMock = $this->getMockBuilder(\Magento\Reports\Model\Product\Index\Compared::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->viewedMock = $this->getMockBuilder(Viewed::class)
+        $this->viewedMock = $this->getMockBuilder(\Magento\Reports\Model\Product\Index\Viewed::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->logResourceMock = $this->getMockBuilder(Visitor::class)
+        $this->logResourceMock = $this->getMockBuilder(\Magento\Customer\Model\ResourceModel\Visitor::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->subjectMock = $this->getMockBuilder(Visitor::class)
+        $this->subjectMock = $this->getMockBuilder(\Magento\Customer\Model\ResourceModel\Visitor::class)
             ->disableOriginalConstructor()
             ->getMock();
 

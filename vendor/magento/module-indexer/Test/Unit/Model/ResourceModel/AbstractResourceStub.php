@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model\ResourceModel;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Indexer\Model\ResourceModel\AbstractResource;
-
-class AbstractResourceStub extends AbstractResource
+class AbstractResourceStub extends \Magento\Indexer\Model\ResourceModel\AbstractResource
 {
     /**
      * New DB Adapter
@@ -32,7 +27,7 @@ class AbstractResourceStub extends AbstractResource
     /**
      * Retrieve connection for write data
      *
-     * @return AdapterInterface|false
+     * @return \Magento\Framework\DB\Adapter\AdapterInterface|false
      */
     protected function _getIndexAdapter()
     {

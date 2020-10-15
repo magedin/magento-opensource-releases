@@ -3,26 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product;
 
 use Magento\Catalog\Model\Indexer\Product\Full;
 use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Magento\Framework\Indexer\IndexerRegistry;
 
 class FullTest extends TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerRegistryMock;
 
@@ -30,10 +27,10 @@ class FullTest extends TestCase
      * @var Full
      */
     private $full;
-
-    protected function setUp(): void
+    
+    public function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->indexerRegistryMock = $this->createMock(IndexerRegistry::class);
 
         $this->full = $this->objectManager->getObject(

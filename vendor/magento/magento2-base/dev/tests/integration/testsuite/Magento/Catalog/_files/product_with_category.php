@@ -12,9 +12,8 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category.php');
+require __DIR__ . '/category.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var ProductFactory $productFactory */

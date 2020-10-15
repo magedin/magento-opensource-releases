@@ -21,16 +21,16 @@
         </annotations>
         <after>
             <!-- Delete bundle product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="BundleProduct"/>
             </actionGroup>
         </after>
 
         <!-- Create product -->
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateProduct">
+        <actionGroup ref="goToCreateProductPage" stepKey="goToCreateProduct">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
-        <actionGroup ref="FillProductNameAndSkuInProductFormActionGroup" stepKey="fillProductForm">
+        <actionGroup ref="fillProductNameAndSkuInProductForm" stepKey="fillProductForm">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
 

@@ -3,34 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Export;
 
-use Magento\Config\App\Config\Source\DumpConfigSourceInterface;
 use Magento\Config\Model\Config\Export\Comment;
+use Magento\Config\App\Config\Source\DumpConfigSourceInterface;
 use Magento\Config\Model\Config\TypePool;
 use Magento\Config\Model\Placeholder\PlaceholderFactory;
 use Magento\Config\Model\Placeholder\PlaceholderInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CommentTest extends TestCase
+class CommentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DumpConfigSourceInterface|MockObject
+     * @var DumpConfigSourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configSourceMock;
 
     /**
-     * @var PlaceholderInterface|MockObject
+     * @var PlaceholderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $placeholderMock;
 
     /**
-     * @var TypePool|MockObject
+     * @var TypePool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $typePoolMock;
 
@@ -39,7 +35,7 @@ class CommentTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 

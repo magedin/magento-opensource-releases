@@ -3,29 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\SearchAdapter\Aggregation;
 
-use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\BucketBuilderInterface;
 use Magento\Elasticsearch\SearchAdapter\QueryContainer;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Dynamic\DataProviderInterface;
+use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\BucketBuilderInterface;
 
-/**
- * Elasticsearch aggregation builder
- */
 class Builder
 {
     /**
      * @var DataProviderInterface[]
      */
-    private $dataProviderContainer;
+    protected $dataProviderContainer;
 
     /**
      * @var BucketBuilderInterface[]
      */
-    private $aggregationContainer;
+    protected $aggregationContainer;
 
     /**
      * @var DataProviderFactory
@@ -35,31 +32,32 @@ class Builder
     /**
      * @var QueryContainer
      */
-    private $query;
+    private $query = null;
 
     /**
      * @param  DataProviderInterface[] $dataProviderContainer
      * @param  BucketBuilderInterface[] $aggregationContainer
-     * @param DataProviderFactory $dataProviderFactory
+     * @param DataProviderFactory|null $dataProviderFactory
      */
     public function __construct(
         array $dataProviderContainer,
         array $aggregationContainer,
-        DataProviderFactory $dataProviderFactory
+        DataProviderFactory $dataProviderFactory = null
     ) {
         $this->dataProviderContainer = array_map(
-            static function (DataProviderInterface $dataProvider) {
+            function (DataProviderInterface $dataProvider) {
                 return $dataProvider;
             },
             $dataProviderContainer
         );
         $this->aggregationContainer = array_map(
-            static function (BucketBuilderInterface $bucketBuilder) {
+            function (BucketBuilderInterface $bucketBuilder) {
                 return $bucketBuilder;
             },
             $aggregationContainer
         );
-        $this->dataProviderFactory = $dataProviderFactory;
+        $this->dataProviderFactory = $dataProviderFactory
+            ?: ObjectManager::getInstance()->get(DataProviderFactory::class);
     }
 
     /**

@@ -53,14 +53,8 @@ class AbstractLayoutUpdateTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        Bootstrap::getObjectManager()->configure([
-            'preferences' => [
-                \Magento\Catalog\Model\Category\Attribute\LayoutUpdateManager::class
-                => \Magento\TestFramework\Catalog\Model\CategoryLayoutUpdateManager::class
-            ]
-        ]);
         $this->categoryFactory = Bootstrap::getObjectManager()->get(CategoryFactory::class);
         $this->recreateCategory();
         $this->attribute = $this->category->getAttributes()['custom_layout_update_file']->getBackend();
@@ -99,7 +93,7 @@ class AbstractLayoutUpdateTest extends TestCase
         /** @var AbstractBackend $fileAttribute */
         $fileAttribute = $this->category->getAttributes()['custom_layout_update_file']->getBackend();
         $fileAttribute->beforeSave($this->category);
-        $this->assertNull($this->category->getData('custom_layout_update_file'));
+        $this->assertEquals(null, $this->category->getData('custom_layout_update_file'));
 
         //Removing custom layout update by explicitly selecting the new file (or an empty file).
         $this->recreateCategory();

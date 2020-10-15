@@ -3,35 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Wishlist\Test\Unit\Model\ResourceModel\Item;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Entity\Attribute;
-use Magento\Catalog\Model\Entity\AttributeFactory;
-use Magento\Catalog\Model\ResourceModel\Config;
-use Magento\Catalog\Model\ResourceModel\ConfigFactory;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadata;
 use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\TestFramework\Unit\Helper\SelectRendererTrait;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Wishlist\Model\ResourceModel\Item;
 use Magento\Wishlist\Model\ResourceModel\Item\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
-    use SelectRendererTrait;
+    use \Magento\Framework\TestFramework\Unit\Helper\SelectRendererTrait;
 
     /**
      * @var Collection
@@ -39,7 +23,7 @@ class CollectionTest extends TestCase
     protected $collection;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -60,110 +44,109 @@ class CollectionTest extends TestCase
  WHERE (INSTR(product_name_table.value, 'TestProductName'))";
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPool;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $connection = $this->createPartialMock(Mysql::class, ['quote', 'select']);
-        $select = new Select($connection, $this->getSelectRenderer($this->objectManager));
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $connection = $this->createPartialMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, ['quote', 'select']);
+        $select = new \Magento\Framework\DB\Select($connection, $this->getSelectRenderer($this->objectManager));
         $connection
             ->expects($this->any())
             ->method('quote')
-            ->willReturn('\'TestProductName\'');
+            ->will($this->returnValue('\'TestProductName\''));
         $connection
             ->expects($this->any())
             ->method('select')
             ->willReturn($select);
-        $resource = $this->getMockBuilder(Item::class)
-            ->addMethods(['getTableName'])
-            ->onlyMethods(['getConnection', 'getMainTable', 'getTable'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resource = $this->createPartialMock(
+            \Magento\Wishlist\Model\ResourceModel\Item::class,
+            ['getConnection', 'getMainTable', 'getTableName', 'getTable']
+        );
 
         $resource
             ->expects($this->any())
             ->method('getConnection')
-            ->willReturn($connection);
+            ->will($this->returnValue($connection));
         $resource
             ->expects($this->any())
             ->method('getMainTable')
-            ->willReturn('testMainTableName');
+            ->will($this->returnValue('testMainTableName'));
         $resource
             ->expects($this->any())
             ->method('getTableName')
-            ->willReturn('testMainTableName');
+            ->will($this->returnValue('testMainTableName'));
         $resource
             ->expects($this->any())
             ->method('getTable')
-            ->willReturn('testMainTableName');
+            ->will($this->returnValue('testMainTableName'));
 
         $catalogConfFactory = $this->createPartialMock(
-            ConfigFactory::class,
+            \Magento\Catalog\Model\ResourceModel\ConfigFactory::class,
             ['create']
         );
 
         $catalogConf = $this->createPartialMock(
-            Config::class,
+            \Magento\Catalog\Model\ResourceModel\Config::class,
             ['getEntityTypeId']
         );
         $catalogConf
             ->expects($this->once())
             ->method('getEntityTypeId')
-            ->willReturn(4);
+            ->will($this->returnValue(4));
 
         $catalogConfFactory
             ->expects($this->once())
             ->method('create')
-            ->willReturn($catalogConf);
+            ->will($this->returnValue($catalogConf));
 
         $attribute = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Catalog\Model\Entity\Attribute::class,
             ['loadByCode', 'getBackendTable', 'getId']
         );
         $attribute
             ->expects($this->once())
             ->method('loadByCode')
             ->with(4, 'name')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $attribute
             ->expects($this->once())
             ->method('getBackendTable')
-            ->willReturn($this->attrTableName);
+            ->will($this->returnValue($this->attrTableName));
         $attribute
             ->expects($this->once())
             ->method('getId')
-            ->willReturn($this->attrId);
+            ->will($this->returnValue($this->attrId));
 
         $catalogAttrFactory = $this->createPartialMock(
-            AttributeFactory::class,
+            \Magento\Catalog\Model\Entity\AttributeFactory::class,
             ['create']
         );
 
         $catalogAttrFactory
             ->expects($this->once())
             ->method('create')
-            ->willReturn($attribute);
+            ->will($this->returnValue($attribute));
 
-        $store = $this->createPartialMock(Store::class, ['getId']);
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getId']);
         $store
             ->expects($this->once())
             ->method('getId')
-            ->willReturn($this->storeId);
+            ->will($this->returnValue($this->storeId));
 
-        $storeManager = $this->createPartialMock(StoreManager::class, ['getStore']);
+        $storeManager = $this->createPartialMock(\Magento\Store\Model\StoreManager::class, ['getStore']);
         $storeManager
             ->expects($this->once())
             ->method('getStore')
-            ->willReturn($store);
+            ->will($this->returnValue($store));
 
         $this->collection = $this->objectManager->getObject(
-            Collection::class,
+            \Magento\Wishlist\Model\ResourceModel\Item\Collection::class,
             [
                 'resource' => $resource,
                 'catalogConfFactory' => $catalogConfFactory,
@@ -172,7 +155,7 @@ class CollectionTest extends TestCase
             ]
         );
 
-        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -184,7 +167,7 @@ class CollectionTest extends TestCase
 
     public function testAddProductNameFilter()
     {
-        $entityMetadata = $this->getMockBuilder(EntityMetadata::class)
+        $entityMetadata = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
         $entityMetadata->expects($this->once())

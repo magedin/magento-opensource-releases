@@ -3,38 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Model\Test\Unit\ResourceModel\Db;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Model\ResourceModel\Db\UpdateEntityRow;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UpdateEntityRowTest extends TestCase
+class UpdateEntityRowTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UpdateEntityRow
+     * @var \Magento\Framework\Model\ResourceModel\Db\UpdateEntityRow
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPoolMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->model = $objectManager->getObject(
-            UpdateEntityRow::class,
+            \Magento\Framework\Model\ResourceModel\Db\UpdateEntityRow::class,
             ['metadataPool' => $this->metadataPoolMock]
         );
     }
@@ -58,12 +50,12 @@ class UpdateEntityRowTest extends TestCase
         $output['test_column_name'] = 'test_column_name';
         $expectedResult = true;
 
-        $entityMetadataMock = $this->getMockBuilder(EntityMetadata::class)
+        $entityMetadataMock = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
+        $connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $connectionMock->expects($this->once())
             ->method('describeTable')
             ->willReturn($describeTable);

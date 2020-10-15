@@ -3,51 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Image\Test\Unit\Adapter;
 
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Image\Adapter\ImageMagick;
-use Magento\Framework\Phrase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class ImageMagickTest extends TestCase
+class ImageMagickTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit_Framework_MockObject_MockObject |\Magento\Framework\Filesystem
      */
     protected $filesystemMock;
 
     /**
-     * @var MockObject|LoggerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject |\Psr\Log\LoggerInterface
      */
     protected $loggerMock;
 
     /**
-     * @var MockObject|WriteInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Filesystem\Directory\WriteInterface
      */
     protected $writeMock;
 
     /**
-     * @var ImageMagick
+     * @var \Magento\Framework\Image\Adapter\ImageMagick
      */
     protected $imageMagic;
 
-    protected function setup(): void
+    public function setup()
     {
         $objectManager = new ObjectManager($this);
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->getMock();
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
         $this->writeMock = $this->getMockBuilder(
-            WriteInterface::class
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class
         )->getMock();
-        $this->filesystemMock = $this->createPartialMock(Filesystem::class, ['getDirectoryWrite']);
+        $this->filesystemMock = $this->createPartialMock(\Magento\Framework\Filesystem::class, ['getDirectoryWrite']);
         $this->filesystemMock
             ->expects($this->once())
             ->method('getDirectoryWrite')
@@ -55,7 +45,7 @@ class ImageMagickTest extends TestCase
 
         $this->imageMagic = $objectManager
             ->getObject(
-                ImageMagick::class,
+                \Magento\Framework\Image\Adapter\ImageMagick::class,
                 ['filesystem' => $this->filesystemMock,
                     'logger' => $this->loggerMock]
             );
@@ -79,34 +69,34 @@ class ImageMagickTest extends TestCase
     public function watermarkDataProvider()
     {
         return [
-            ['', ImageMagick::ERROR_WATERMARK_IMAGE_ABSENT],
-            [__DIR__ . '/not_exists', ImageMagick::ERROR_WATERMARK_IMAGE_ABSENT],
+            ['', \Magento\Framework\Image\Adapter\ImageMagick::ERROR_WATERMARK_IMAGE_ABSENT],
+            [__DIR__ . '/not_exists', \Magento\Framework\Image\Adapter\ImageMagick::ERROR_WATERMARK_IMAGE_ABSENT],
             [
                 __DIR__ . '/_files/invalid_image.jpg',
-                ImageMagick::ERROR_WRONG_IMAGE
+                \Magento\Framework\Image\Adapter\ImageMagick::ERROR_WRONG_IMAGE
             ]
         ];
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Unable to write file into directory product/cache. Access forbidden.
+     */
     public function testSaveWithException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Unable to write file into directory product/cache. Access forbidden.');
         $exception = new FileSystemException(
-            new Phrase('Unable to write file into directory product/cache. Access forbidden.')
+            new \Magento\Framework\Phrase('Unable to write file into directory product/cache. Access forbidden.')
         );
-        $this->writeMock->method('create')->willThrowException($exception);
+        $this->writeMock->method('create')->will($this->throwException($exception));
         $this->loggerMock->expects($this->once())->method('critical')->with($exception);
         $this->imageMagic->save('product/cache', 'sample.jpg');
     }
 
     /**
-     * Test open() with invalid URL.
+     * @expectedException \InvalidArgumentException
      */
     public function testOpenInvalidUrl()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $this->imageMagic->open('bar://foo.bar');
     }
 }

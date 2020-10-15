@@ -16,7 +16,9 @@ use Magento\SalesRule\Api\Data\RuleDiscountInterfaceFactory;
 use Magento\SalesRule\Api\Data\DiscountDataInterfaceFactory;
 
 /**
- * Rule applier model
+ * Class RulesApplier
+ *
+ * @package Magento\SalesRule\Model\Validator
  */
 class RulesApplier
 {
@@ -113,6 +115,7 @@ class RulesApplier
             if (!$this->validatorUtility->canProcessRule($rule, $address)) {
                 continue;
             }
+
             if (!$skipValidation && !$rule->getActions()->validate($item)) {
                 if (!$this->childrenValidationLocator->isChildrenValidationRequired($item)) {
                     continue;
@@ -186,22 +189,8 @@ class RulesApplier
      */
     protected function applyRule($item, $rule, $address, $couponCode)
     {
-        if ($item->getChildren() && $item->isChildrenCalculated()) {
-            $cloneItem = clone $item;
-            /**
-             * validate without children
-             */
-            $applyAll = $rule->getActions()->validate($cloneItem);
-            foreach ($item->getChildren() as $childItem) {
-                if ($applyAll || $rule->getActions()->validate($childItem)) {
-                    $discountData = $this->getDiscountData($childItem, $rule, $address);
-                    $this->setDiscountData($discountData, $childItem);
-                }
-            }
-        } else {
-            $discountData = $this->getDiscountData($item, $rule, $address);
-            $this->setDiscountData($discountData, $item);
-        }
+        $discountData = $this->getDiscountData($item, $rule, $address);
+        $this->setDiscountData($discountData, $item);
 
         $this->maintainAddressCouponCode($address, $rule, $couponCode);
         $this->addDiscountDescription($address, $rule);

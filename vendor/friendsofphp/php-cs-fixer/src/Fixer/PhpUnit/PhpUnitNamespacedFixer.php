@@ -49,21 +49,16 @@ final class PhpUnitNamespacedFixer extends AbstractFixer implements Configuratio
      */
     public function getDefinition()
     {
-        $codeSample = '<?php
-final class MyTest extends \PHPUnit_Framework_TestCase
-{
-    public function testSomething()
-    {
-        PHPUnit_Framework_Assert::assertTrue(true);
-    }
-}
-';
-
         return new FixerDefinition(
             'PHPUnit classes MUST be used in namespaced version, e.g. `\PHPUnit\Framework\TestCase` instead of `\PHPUnit_Framework_TestCase`.',
             [
-                new CodeSample($codeSample),
-                new CodeSample($codeSample, ['target' => PhpUnitTargetVersion::VERSION_4_8]),
+                new CodeSample(
+                    '<?php
+final class MyTest extends \PHPUnit_Framework_TestCase
+{
+}
+'
+                ),
             ],
             "PHPUnit v6 has finally fully switched to namespaces.\n"
             ."You could start preparing the upgrade by switching from non-namespaced TestCase to namespaced one.\n"

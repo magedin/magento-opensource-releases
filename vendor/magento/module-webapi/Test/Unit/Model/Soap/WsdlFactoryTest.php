@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test \Magento\Webapi\Model\Soap\WsdlFactory
  *
@@ -7,28 +7,22 @@
  */
 namespace Magento\Webapi\Test\Unit\Model\Soap;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Webapi\Model\Soap\Wsdl;
-use Magento\Webapi\Model\Soap\WsdlFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class WsdlFactoryTest extends TestCase
+class WsdlFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_objectManagerMock;
 
-    /** @var WsdlFactory */
+    /** @var \Magento\Webapi\Model\Soap\WsdlFactory */
     protected $_soapWsdlFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_soapWsdlFactory = new WsdlFactory($this->_objectManagerMock);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_soapWsdlFactory = new \Magento\Webapi\Model\Soap\WsdlFactory($this->_objectManagerMock);
         parent::setUp();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_objectManagerMock);
         unset($this->_soapWsdlFactory);
@@ -44,7 +38,7 @@ class WsdlFactoryTest extends TestCase
         )->method(
             'create'
         )->with(
-            Wsdl::class,
+            \Magento\Webapi\Model\Soap\Wsdl::class,
             ['name' => $wsdlName, 'uri' => $endpointUrl]
         );
         $this->_soapWsdlFactory->create($wsdlName, $endpointUrl);

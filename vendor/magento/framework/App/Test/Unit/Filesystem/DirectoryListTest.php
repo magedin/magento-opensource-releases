@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Filesystem;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\FileSystemException;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Filesystem\DirectoryList;
 
-class DirectoryListTest extends TestCase
+class DirectoryListTest extends \PHPUnit\Framework\TestCase
 {
     public function testRoot()
     {
@@ -26,15 +23,17 @@ class DirectoryListTest extends TestCase
         $this->assertFileExists($object->getPath(DirectoryList::SYS_TMP));
         $this->assertEquals('/root/dir/foo', $object->getPath(DirectoryList::APP));
         $this->assertEquals('bar', $object->getUrlPath(DirectoryList::APP));
-        $this->expectException(FileSystemException::class);
+        $this->expectException(\Magento\Framework\Exception\FileSystemException::class);
         $this->expectExceptionMessage("Unknown directory type: 'unknown'");
         $object->getPath('unknown');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unknown type: test
+     */
     public function testUnknownDirectory()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unknown type: test');
         new DirectoryList('/root/dir', ['test' => [DirectoryList::PATH => '/baz']]);
     }
 

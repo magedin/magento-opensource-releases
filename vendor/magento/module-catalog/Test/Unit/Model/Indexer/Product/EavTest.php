@@ -3,76 +3,65 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Indexer\Product\Eav;
-use Magento\Catalog\Model\Indexer\Product\Eav\Action\Full;
-use Magento\Catalog\Model\Indexer\Product\Eav\Action\Row;
-use Magento\Catalog\Model\Indexer\Product\Eav\Action\Rows;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Indexer\CacheContext;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class EavTest extends TestCase
+class EavTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Row|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Eav
+     */
+    protected $_model;
+
+    /**
+     * @var \Magento\Catalog\Model\Indexer\Product\Eav\Action\Row|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_productEavIndexerRow;
 
     /**
-     * @var Rows|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Eav\Action\Rows|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_productEavIndexerRows;
 
     /**
-     * @var Full|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Eav\Action\Full|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_productEavIndexerFull;
 
     /**
-     * @var CacheContext|MockObject
+     * @var \Magento\Framework\Indexer\CacheContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheContextMock;
-    /**
-     * @var Eav
-     */
-    private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_productEavIndexerRow = $this->getMockBuilder(
-            Row::class
+            \Magento\Catalog\Model\Indexer\Product\Eav\Action\Row::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->_productEavIndexerRows = $this->getMockBuilder(
-            Rows::class
+            \Magento\Catalog\Model\Indexer\Product\Eav\Action\Rows::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->_productEavIndexerFull = $this->getMockBuilder(
-            Full::class
+            \Magento\Catalog\Model\Indexer\Product\Eav\Action\Full::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->model = new Eav(
+        $this->model = new \Magento\Catalog\Model\Indexer\Product\Eav(
             $this->_productEavIndexerRow,
             $this->_productEavIndexerRows,
             $this->_productEavIndexerFull
         );
 
-        $this->cacheContextMock = $this->createMock(CacheContext::class);
+        $this->cacheContextMock = $this->createMock(\Magento\Framework\Indexer\CacheContext::class);
 
         $cacheContextProperty = new \ReflectionProperty(
-            Eav::class,
+            \Magento\Catalog\Model\Indexer\Product\Eav::class,
             'cacheContext'
         );
         $cacheContextProperty->setAccessible(true);
@@ -88,7 +77,7 @@ class EavTest extends TestCase
 
         $this->cacheContextMock->expects($this->once())
             ->method('registerEntities')
-            ->with(Product::CACHE_TAG, $ids);
+            ->with(\Magento\Catalog\Model\Product::CACHE_TAG, $ids);
 
         $this->model->execute($ids);
     }
@@ -113,8 +102,8 @@ class EavTest extends TestCase
             ->method('registerTags')
             ->with(
                 [
-                    Category::CACHE_TAG,
-                    Product::CACHE_TAG
+                    \Magento\Catalog\Model\Category::CACHE_TAG,
+                    \Magento\Catalog\Model\Product::CACHE_TAG
                 ]
             );
 

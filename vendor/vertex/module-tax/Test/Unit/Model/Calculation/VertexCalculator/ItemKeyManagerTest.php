@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -6,34 +6,33 @@
 
 namespace Vertex\Tax\Test\Unit\Model\Calculation\VertexCalculator;
 
-use Magento\Quote\Model\Quote\Address\Item;
-use Magento\Tax\Api\Data\QuoteDetailsItemInterface;
-use PHPUnit\Framework\MockObject\MockObject;
+use Vertex\Tax\Test\Unit\TestCase;
 use Vertex\Tax\Model\Calculation\VertexCalculator\ItemKeyManager;
 use Vertex\Tax\Model\TaxRegistry;
-use Vertex\Tax\Test\Unit\TestCase;
+use Magento\Tax\Api\Data\QuoteDetailsItemInterface;
+use Magento\Quote\Model\Quote\Address\Item;
 
 /**
  * Test item key management storage using the registry.
  */
 class ItemKeyManagerTest extends TestCase
 {
-    /** @var MockObject|ItemKeyManager */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|ItemKeyManager */
     private $itemKeyManagerMock;
 
-    /** @var MockObject|QuoteDetailsItemInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|QuoteDetailsItemInterface */
     private $quoteDetailsItemMock;
 
-    /** @var MockObject|Item */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Item */
     private $quoteItemMock;
 
-    /** @var MockObject|TaxRegistry */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|TaxRegistry */
     private $taxRegistryMock;
 
     /**
      * Setup test environment.
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 

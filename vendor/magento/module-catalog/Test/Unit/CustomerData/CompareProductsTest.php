@@ -17,10 +17,8 @@ use Magento\Catalog\Model\Product\Url;
 use Magento\Catalog\Model\ResourceModel\Product\Compare\Item\Collection;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CompareProductsTest extends TestCase
+class CompareProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompareProducts
@@ -28,17 +26,17 @@ class CompareProductsTest extends TestCase
     private $model;
 
     /**
-     * @var Compare|MockObject
+     * @var Compare|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helperMock;
 
     /**
-     * @var Url|MockObject
+     * @var Url|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productUrlMock;
 
     /**
-     * @var Output|MockObject
+     * @var Output|\PHPUnit_Framework_MockObject_MockObject
      */
     private $outputHelperMock;
 
@@ -48,7 +46,7 @@ class CompareProductsTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
@@ -60,7 +58,7 @@ class CompareProductsTest extends TestCase
         ProductInterface::NAME => 'getName'
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -75,7 +73,7 @@ class CompareProductsTest extends TestCase
             ->getMock();
         $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -94,9 +92,9 @@ class CompareProductsTest extends TestCase
      * Prepare compare items collection.
      *
      * @param array $items
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getItemCollectionMock(array $items) : MockObject
+    private function getItemCollectionMock(array $items) : \PHPUnit_Framework_MockObject_MockObject
     {
         $itemCollectionMock = $this->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
@@ -137,15 +135,15 @@ class CompareProductsTest extends TestCase
 
         $this->productUrlMock->expects($this->exactly($count))
             ->method('getUrl')
-            ->willReturnMap($urlMap);
+            ->will($this->returnValueMap($urlMap));
 
         $this->outputHelperMock->expects($this->exactly($count))
             ->method('productAttribute')
-            ->willReturnMap($outputMap);
+            ->will($this->returnValueMap($outputMap));
 
         $this->helperMock->expects($this->exactly($count))
             ->method('getPostDataRemove')
-            ->willReturnMap($helperMap);
+            ->will($this->returnValueMap($helperMap));
 
         return $items;
     }
@@ -154,9 +152,9 @@ class CompareProductsTest extends TestCase
      * Prepare mock of product object.
      *
      * @param array $data
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getProductMock(array $data) : MockObject
+    private function getProductMock(array $data) : \PHPUnit_Framework_MockObject_MockObject
     {
         $product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()

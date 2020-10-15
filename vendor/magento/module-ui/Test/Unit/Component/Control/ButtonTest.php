@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Control;
 
 use Magento\Framework\Escaper;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Ui\Component\Control\Button;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ButtonTest extends TestCase
+/**
+ * Class ButtonTest
+ */
+class ButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Button
@@ -22,32 +21,31 @@ class ButtonTest extends TestCase
     protected $button;
 
     /**
-     * @var Context|MockObject
+     * @var Context| \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface| \PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
      * Escaper
      *
-     * @var Escaper|MockObject
+     * @var Escaper| \PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
-            ->addMethods(['getPageLayout'])
-            ->onlyMethods(['getUrlBuilder', 'getEscaper'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->contextMock = $this->createPartialMock(
+            \Magento\Framework\View\Element\Template\Context::class,
+            ['getPageLayout', 'getUrlBuilder', 'getEscaper']
+        );
+        $this->urlBuilderMock = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class);
         $this->contextMock->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilderMock);
-        $this->escaperMock = $this->createPartialMock(Escaper::class, ['escapeHtml']);
+        $this->escaperMock = $this->createPartialMock(\Magento\Framework\Escaper::class, ['escapeHtml']);
         $this->contextMock->expects($this->any())->method('getEscaper')->willReturn($this->escaperMock);
         $this->button = new Button($this->contextMock);
     }
@@ -60,7 +58,7 @@ class ButtonTest extends TestCase
     public function testGetAttributesHtml()
     {
         $expected = 'type="button" class="action- scalable classValue disabled" '
-            . 'disabled="disabled" data-attributeKey="attributeValue" ';
+            . 'onclick="location.href = &#039;url2&#039;;" disabled="disabled" data-attributeKey="attributeValue" ';
         $this->button->setDisabled(true);
         $this->button->setData('url', 'url2');
         $this->button->setData('class', 'classValue');

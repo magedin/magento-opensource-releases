@@ -8,9 +8,8 @@ declare(strict_types=1);
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+require __DIR__ . '/customer.php';
 
 $objectManager = Bootstrap::getObjectManager();
 $storeRepository = $objectManager->get(StoreRepositoryInterface::class);

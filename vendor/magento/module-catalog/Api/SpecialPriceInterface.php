@@ -31,6 +31,8 @@ interface SpecialPriceInterface
      * ]
      * @since 101.1.0
      * @since 102.0.0
+     * @since 102.0.0
+     * @since 102.0.0
      */
     public function get(array $skus);
 

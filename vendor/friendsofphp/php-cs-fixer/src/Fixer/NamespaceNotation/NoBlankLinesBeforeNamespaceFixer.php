@@ -47,16 +47,6 @@ final class NoBlankLinesBeforeNamespaceFixer extends AbstractLinesBeforeNamespac
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after BlankLineAfterOpeningTagFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {

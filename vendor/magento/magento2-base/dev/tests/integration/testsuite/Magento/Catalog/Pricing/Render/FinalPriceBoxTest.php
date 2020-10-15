@@ -71,7 +71,7 @@ class FinalPriceBoxTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -134,7 +134,7 @@ class FinalPriceBoxTest extends \PHPUnit\Framework\TestCase
     public function testRenderAmountMinimalProductWithTierPricesShouldShowMinTierPrice()
     {
         $result = $this->finalPriceBox->renderAmountMinimal();
-        $this->assertStringContainsString('$5.00', $result);
+        $this->assertContains('$5.00', $result);
     }
 
     /**

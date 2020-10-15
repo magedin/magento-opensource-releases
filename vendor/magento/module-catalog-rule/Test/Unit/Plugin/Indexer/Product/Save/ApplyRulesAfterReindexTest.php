@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Plugin\Indexer\Product\Save;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor;
 use Magento\CatalogRule\Plugin\Indexer\Product\Save\ApplyRulesAfterReindex;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\CatalogRule\Model\Indexer\Product\ProductRuleProcessor;
+use Magento\Catalog\Model\Product;
 
-class ApplyRulesAfterReindexTest extends TestCase
+class ApplyRulesAfterReindexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ApplyRulesAfterReindex
@@ -27,16 +23,16 @@ class ApplyRulesAfterReindexTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ProductRuleProcessor|MockObject
+     * @var ProductRuleProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productRuleProcessorMock;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRuleProcessorMock = $this->getMockBuilder(ProductRuleProcessor::class)
             ->disableOriginalConstructor()

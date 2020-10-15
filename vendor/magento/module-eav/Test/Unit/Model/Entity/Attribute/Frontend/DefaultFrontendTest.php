@@ -7,18 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\Eav\Test\Unit\Model\Entity\Attribute\Frontend;
 
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Eav\Model\Entity\Attribute\Frontend\DefaultFrontend;
-use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use Magento\Eav\Model\Entity\Attribute\Source\BooleanFactory;
-use Magento\Framework\App\CacheInterface;
 use Magento\Framework\Serialize\Serializer\Json as Serializer;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\App\CacheInterface;
+use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DefaultFrontendTest extends TestCase
+class DefaultFrontendTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DefaultFrontend
@@ -68,7 +67,7 @@ class DefaultFrontendTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->cacheTags = ['tag1', 'tag2'];
 
@@ -145,10 +144,10 @@ class DefaultFrontendTest extends TestCase
         $this->model->setAttribute($attribute);
         $result = $this->model->getClass();
 
-        self::assertStringContainsString($expectedClass, $result);
-        self::assertStringContainsString('minimum-length-1', $result);
-        self::assertStringContainsString('maximum-length-2', $result);
-        self::assertStringContainsString('validate-length', $result);
+        self::assertContains($expectedClass, $result);
+        self::assertContains('minimum-length-1', $result);
+        self::assertContains('maximum-length-2', $result);
+        self::assertContains('validate-length', $result);
     }
 
     /**
@@ -187,9 +186,9 @@ class DefaultFrontendTest extends TestCase
         $this->model->setAttribute($attribute);
         $result = $this->model->getClass();
 
-        self::assertStringContainsString('minimum-length-1', $result);
-        self::assertStringContainsString('maximum-length-2', $result);
-        self::assertStringContainsString('validate-length', $result);
+        self::assertContains('minimum-length-1', $result);
+        self::assertContains('maximum-length-2', $result);
+        self::assertContains('validate-length', $result);
     }
 
     /**

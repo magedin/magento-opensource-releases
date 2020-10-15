@@ -18,16 +18,16 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
             <createData entity="_defaultCategory" stepKey="category"/>
        </before>
         <after>
             <deleteData createDataKey="category" stepKey="deleteRootCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open Url Rewrite Index Page and update the Custom Url Rewrite, Store, Request Path, Redirect Type and Description -->
-        <actionGroup ref="AdminAddUrlRewriteActionGroup" stepKey="addUrlRewrite">
+        <actionGroup ref="AdminAddUrlRewrite" stepKey="addUrlRewrite">
             <argument name="category" value="$$category.name$$"/>
             <argument name="customUrlRewriteValue" value="For Category"/>
             <argument name="storeValue" value="Default Store View"/>
@@ -37,13 +37,13 @@
         </actionGroup>
 
         <!-- Get Category ID -->
-        <actionGroup ref="OpenCategoryFromCategoryTreeActionGroup" stepKey="getCategoryId">
+        <actionGroup ref="OpenCategoryFromCategoryTree" stepKey="getCategoryId">
             <argument name="category" value="$$category.name$$"/>
         </actionGroup>
         <grabFromCurrentUrl stepKey="categoryId" regex="#\/([0-9]*)?\/$#"/>
 
         <!-- Assert Redirect path, Target Path and Redirect type in grid -->
-        <actionGroup ref="AdminSearchByRequestPathActionGroup" stepKey="searchByRequestPath">
+        <actionGroup ref="AdminSearchByRequestPath" stepKey="searchByRequestPath">
             <argument name="redirectPath" value="newrequestpath.html" />
             <argument name="redirectType" value="No" />
             <argument name="targetPath" value="catalog/category/view/id/{$categoryId}"/>

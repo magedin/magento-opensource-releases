@@ -3,23 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\Autocomplete;
 
 use Magento\CatalogSearch\Model\Autocomplete\DataProvider;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Search\Model\Autocomplete\Item;
-use Magento\Search\Model\Autocomplete\ItemFactory;
-use Magento\Search\Model\Query;
-use Magento\Search\Model\QueryFactory;
-use Magento\Search\Model\ResourceModel\Query\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataProvider
@@ -27,17 +16,17 @@ class DataProviderTest extends TestCase
     private $model;
 
     /**
-     * @var Query|MockObject
+     * @var \Magento\Search\Model\Query |\PHPUnit_Framework_MockObject_MockObject
      */
     private $query;
 
     /**
-     * @var ItemFactory|MockObject
+     * @var \Magento\Search\Model\Autocomplete\ItemFactory |\PHPUnit_Framework_MockObject_MockObject
      */
     private $itemFactory;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Search\Model\ResourceModel\Query\Collection |\PHPUnit_Framework_MockObject_MockObject
      */
     private $suggestCollection;
 
@@ -46,16 +35,16 @@ class DataProviderTest extends TestCase
      */
     private $limit = 3;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
 
-        $this->suggestCollection = $this->getMockBuilder(Collection::class)
+        $this->suggestCollection = $this->getMockBuilder(\Magento\Search\Model\ResourceModel\Query\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIterator'])
             ->getMock();
 
-        $this->query = $this->getMockBuilder(Query::class)
+        $this->query = $this->getMockBuilder(\Magento\Search\Model\Query::class)
             ->disableOriginalConstructor()
             ->setMethods(['getQueryText', 'getSuggestCollection'])
             ->getMock();
@@ -63,7 +52,7 @@ class DataProviderTest extends TestCase
             ->method('getSuggestCollection')
             ->willReturn($this->suggestCollection);
 
-        $queryFactory = $this->getMockBuilder(QueryFactory::class)
+        $queryFactory = $this->getMockBuilder(\Magento\Search\Model\QueryFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMock();
@@ -71,12 +60,12 @@ class DataProviderTest extends TestCase
             ->method('get')
             ->willReturn($this->query);
 
-        $this->itemFactory = $this->getMockBuilder(ItemFactory::class)
+        $this->itemFactory = $this->getMockBuilder(\Magento\Search\Model\Autocomplete\ItemFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -85,7 +74,7 @@ class DataProviderTest extends TestCase
             ->willReturn($this->limit);
 
         $this->model = $helper->getObject(
-            DataProvider::class,
+            \Magento\CatalogSearch\Model\Autocomplete\DataProvider::class,
             [
                 'queryFactory' => $queryFactory,
                 'itemFactory' => $this->itemFactory,
@@ -110,7 +99,7 @@ class DataProviderTest extends TestCase
             ->method('getQueryText')
             ->willReturn($queryString);
 
-        $itemMock =  $this->getMockBuilder(Item::class)
+         $itemMock =  $this->getMockBuilder(\Magento\Search\Model\Autocomplete\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTitle', 'toArray'])
             ->getMock();
@@ -125,13 +114,13 @@ class DataProviderTest extends TestCase
             ));
         $itemMock->expects($this->any())
             ->method('toArray')
-            ->willReturn($expected);
+            ->will($this->returnValue($expected));
 
         $this->itemFactory->expects($this->any())->method('create')->willReturn($itemMock);
 
         $result = $this->model->getItems();
         $this->assertEquals($expected, $result[0]->toArray());
-        $this->assertCount($this->limit, $result);
+        $this->assertEquals($this->limit, count($result));
     }
 
     /**
@@ -141,10 +130,10 @@ class DataProviderTest extends TestCase
     {
         $collectionData = [];
         foreach ($data as $collectionItem) {
-            $collectionData[] = new DataObject($collectionItem);
+            $collectionData[] = new \Magento\Framework\DataObject($collectionItem);
         }
         $this->suggestCollection->expects($this->any())
             ->method('getIterator')
-            ->willReturn(new \ArrayIterator($collectionData));
+            ->will($this->returnValue(new \ArrayIterator($collectionData)));
     }
 }

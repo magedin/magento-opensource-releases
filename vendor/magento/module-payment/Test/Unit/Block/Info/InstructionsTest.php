@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Payment\Block\Info\Instructions
  */
 namespace Magento\Payment\Test\Unit\Block\Info;
 
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Payment\Block\Info\Instructions;
-use Magento\Payment\Model\Info;
-use Magento\Payment\Model\MethodInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class InstructionsTest extends TestCase
+class InstructionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Info|MockObject
+     * @var \Magento\Payment\Model\Info|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_info;
 
     /**
-     * @var Instructions
+     * @var \Magento\Payment\Block\Info\Instructions
      */
     protected $_instructions;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->createMock(Context::class);
-        $this->_instructions = new Instructions($context);
-        $this->_info = $this->createMock(Info::class);
+        $context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->_instructions = new \Magento\Payment\Block\Info\Instructions($context);
+        $this->_info = $this->createMock(\Magento\Payment\Model\Info::class);
         $this->_instructions->setData('info', $this->_info);
     }
 
@@ -52,7 +44,7 @@ class InstructionsTest extends TestCase
     public function testGetInstruction()
     {
         $methodInstance = $this->getMockBuilder(
-            MethodInterface::class
+            \Magento\Payment\Model\MethodInterface::class
         )->getMockForAbstractClass();
         $methodInstance->expects($this->once())
             ->method('getConfigData')

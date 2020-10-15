@@ -51,15 +51,15 @@ use Symfony\Component\Process\Process;
  */
 class RunProcess extends Extension
 {
-    protected $config = ['sleep' => 0];
-
-    protected static $events = [
+    public $config = ['sleep' => 0];
+    
+    static $events = [
         Events::SUITE_BEFORE => 'runProcess',
         Events::SUITE_AFTER => 'stopProcess'
     ];
 
-    private $processes = [];
-
+    protected $processes = [];
+    
     public function _initialize()
     {
         if (!class_exists('Symfony\Component\Process\Process')) {
@@ -77,12 +77,7 @@ class RunProcess extends Extension
             if (!is_int($key)) {
                 continue; // configuration options
             }
-            if (method_exists(Process::class, 'fromShellCommandline')) {
-                //Symfony 4.2+
-                $process = Process::fromShellCommandline($command, $this->getRootDir(), null, null, null);
-            } else {
-                $process = new Process($command, $this->getRootDir(), null, null, null);
-            }
+            $process = new Process($command, $this->getRootDir(), null, null, null);
             $process->start();
             $this->processes[] = $process;
             $this->output->debug('[RunProcess] Starting '.$command);

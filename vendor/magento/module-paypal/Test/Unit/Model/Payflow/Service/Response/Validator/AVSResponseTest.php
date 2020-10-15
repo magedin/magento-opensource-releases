@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Response\Validator;
 
-use Magento\Framework\DataObject;
 use Magento\Payment\Model\Method\ConfigInterface;
 use Magento\Paypal\Model\Payflow\Service\Response\Validator\AVSResponse;
 use Magento\Paypal\Model\Payflow\Transparent;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class AVSResponseTest extends TestCase
+class AVSResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AVSResponse
@@ -34,7 +30,7 @@ class AVSResponseTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->config = $this->getMockBuilder(ConfigInterface::class)
             ->getMockForAbstractClass();
@@ -48,14 +44,14 @@ class AVSResponseTest extends TestCase
 
     /**
      * @param bool $expectedResult
-     * @param DataObject $response
+     * @param \Magento\Framework\DataObject $response
      * @param array $configMap
      *
      * @dataProvider validationDataProvider
      */
     public function testValidation(
         $expectedResult,
-        DataObject $response,
+        \Magento\Framework\DataObject $response,
         array $configMap
     ) {
         $this->payflowproFacade->method('getConfig')
@@ -81,7 +77,7 @@ class AVSResponseTest extends TestCase
         return [
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'Y',
                         'avszip' => 'Y',
@@ -94,7 +90,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'Y',
                         'avszip' => 'Y',
@@ -107,7 +103,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'Y',
                         'avszip' => 'N',
@@ -120,7 +116,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'Y',
                         'avszip' => 'N',
@@ -133,7 +129,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'Y',
                         'avszip' => 'N',
@@ -146,7 +142,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'X',
                         'avszip' => 'Y',
@@ -159,7 +155,7 @@ class AVSResponseTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'avsaddr' => 'X',
                         'avszip' => 'Y',

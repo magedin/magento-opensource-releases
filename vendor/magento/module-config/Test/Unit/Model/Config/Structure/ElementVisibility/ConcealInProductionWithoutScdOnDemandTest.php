@@ -7,19 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\Config\Test\Unit\Model\Config\Structure\ElementVisibility;
 
-use Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProduction;
-use Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProductionFactory;
+use Magento\Framework\App\DeploymentConfig;
+use \Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProduction;
+use \Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProductionFactory;
+use Magento\Framework\Config\ConfigOptionsListConstants as Constants;
 use Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProductionWithoutScdOnDemand;
 use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Config\ConfigOptionsListConstants as Constants;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConcealInProductionWithoutScdOnDemandTest extends TestCase
+class ConcealInProductionWithoutScdOnDemandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConcealInProduction|MockObject
+     * @var ConcealInProduction|\PHPUnit_Framework_MockObject_MockObject
      */
     private $concealInProductionMock;
 
@@ -29,17 +27,17 @@ class ConcealInProductionWithoutScdOnDemandTest extends TestCase
     private $model;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $concealInProductionFactoryMock = $this->createMock(ConcealInProductionFactory::class);
 
         $this->concealInProductionMock = $this->createMock(ConcealInProduction::class);
 
-        $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
+        $this->deploymentConfigMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
 
         $configs = [
             'section1/group1/field1' => ElementVisibilityInterface::DISABLED,

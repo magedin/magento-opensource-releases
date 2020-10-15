@@ -8,11 +8,12 @@ namespace Magento\Quote\Model\Quote\Item;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\DataObject\Factory as ObjectFactory;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Item;
-use Laminas\Code\Exception\InvalidArgumentException;
+use Zend\Code\Exception\InvalidArgumentException;
 
 /**
- * Quote item updater
+ * Class Updater
  */
 class Updater
 {

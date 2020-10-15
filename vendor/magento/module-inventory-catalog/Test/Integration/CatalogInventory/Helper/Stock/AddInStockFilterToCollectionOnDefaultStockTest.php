@@ -22,7 +22,7 @@ class AddInStockFilterToCollectionOnDefaultStockTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -30,8 +30,8 @@ class AddInStockFilterToCollectionOnDefaultStockTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/source_items_on_default_source.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/source_items_on_default_source.php
      */
     public function testAddInStockFilterToCollection()
     {

@@ -3,44 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Phrase\Test\Unit\Renderer;
 
-use Magento\Framework\Phrase\Renderer\Translate as PhraseRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Translate;
-use Magento\Framework\TranslateInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class TranslateTest extends TestCase
+class TranslateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Translate|MockObject
+     * @var \Magento\Framework\Translate|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_translator;
 
     /**
-     * @var PhraseRenderer
+     * @var \Magento\Framework\Phrase\Renderer\Translate
      */
     protected $_renderer;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_translator = $this->getMockForAbstractClass(TranslateInterface::class);
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->_translator = $this->createMock(\Magento\Framework\TranslateInterface::class);
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->getMock();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_renderer = $objectManagerHelper->getObject(
-            PhraseRenderer::class,
+            \Magento\Framework\Phrase\Renderer\Translate::class,
             [
                 'translator' => $this->_translator,
                 'logger' => $this->loggerMock
@@ -65,7 +55,7 @@ class TranslateTest extends TestCase
 
         $this->_translator->expects($this->once())
             ->method('getData')
-            ->willReturn([$translatedTextInDictionary => $translate]);
+            ->will($this->returnValue([$translatedTextInDictionary => $translate]));
 
         $this->assertEquals($translate, $this->_renderer->render([$translatedTextInput], []));
     }
@@ -75,7 +65,7 @@ class TranslateTest extends TestCase
         $translate = "Text with quote \'";
         $this->_translator->expects($this->once())
             ->method('getData')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
         $this->assertEquals($translate, $this->_renderer->render([$translate], []));
     }
 
@@ -87,7 +77,7 @@ class TranslateTest extends TestCase
 
         $this->_translator->expects($this->once())
             ->method('getData')
-            ->willReturn([$translatedTextInDictionary => $translate]);
+            ->will($this->returnValue([$translatedTextInDictionary => $translate]));
 
         $this->assertEquals($translate, $this->_renderer->render([$translatedTextInput], []));
     }

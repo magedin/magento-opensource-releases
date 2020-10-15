@@ -5,9 +5,6 @@
  */
 namespace Magento\Security\Model;
 
-/**
- * @magentoAppArea adminhtml
- */
 class AdminSessionsManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -43,7 +40,7 @@ class AdminSessionsManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -61,7 +58,7 @@ class AdminSessionsManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * Tear down
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->auth = null;
         $this->authSession  = null;

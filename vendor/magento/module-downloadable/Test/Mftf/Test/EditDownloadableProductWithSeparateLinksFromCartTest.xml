@@ -25,17 +25,17 @@
             <createData entity="SimpleSubCategory" stepKey="createCategory"/>
 
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
 
             <!-- Create downloadable product -->
             <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
             <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
-            <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createProduct">
+            <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="createProduct">
                 <argument name="productType" value="downloadable"/>
             </actionGroup>
 
             <!-- Fill downloadable product values -->
-            <actionGroup ref="FillMainProductFormNoWeightActionGroup" stepKey="fillDownloadableProductForm">
+            <actionGroup ref="fillMainProductFormNoWeight" stepKey="fillDownloadableProductForm">
                 <argument name="product" value="DownloadableProduct"/>
             </actionGroup>
 
@@ -51,17 +51,17 @@
                          stepKey="checkOptionPurchaseSeparately"/>
 
             <!-- Add first downloadable link -->
-            <actionGroup ref="AddDownloadableProductLinkWithMaxDownloadsActionGroup" stepKey="addFirstDownloadableProductLink">
+            <actionGroup ref="addDownloadableProductLinkWithMaxDownloads" stepKey="addFirstDownloadableProductLink">
                 <argument name="link" value="downloadableLinkWithMaxDownloads"/>
             </actionGroup>
 
             <!-- Add second downloadable link -->
-            <actionGroup ref="AddDownloadableProductLinkActionGroup" stepKey="addSecondDownloadableProductLink">
+            <actionGroup ref="addDownloadableProductLink" stepKey="addSecondDownloadableProductLink">
                 <argument name="link" value="downloadableLink"/>
             </actionGroup>
 
             <!-- Save product -->
-            <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
+            <actionGroup ref="saveProductForm" stepKey="saveProduct"/>
         </before>
         <after>
             <!-- Remove downloadable domains -->
@@ -71,12 +71,12 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
 
             <!-- Delete created downloadable product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="DownloadableProduct"/>
             </actionGroup>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Step 1: Navigate to store front Product page as guest -->
@@ -95,7 +95,8 @@
         </actionGroup>
 
         <!-- Step 4: Open cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="openShoppingCartPage"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="openShoppingCartPage"/>
+        <waitForPageLoad stepKey="waitForShoppingCartPageLoad"/>
         <see selector="{{CheckoutCartProductSection.ProductPriceByName(DownloadableProduct.name)}}" userInput="$51.99"
              stepKey="assertProductPriceInCart"/>
 

@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Model;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Search\Model\Autocomplete;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Search\Model\Autocomplete\DataProviderInterface;
-use Magento\Search\Model\Autocomplete\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AutocompleteTest extends TestCase
+class AutocompleteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Autocomplete
@@ -22,45 +17,45 @@ class AutocompleteTest extends TestCase
     private $model;
 
     /**
-     * @var DataProviderInterface|MockObject
+     * @var DataProviderInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     private $firstDataProvider;
 
     /**
-     * @var DataProviderInterface|MockObject
+     * @var DataProviderInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     private $secondDataProvider;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
 
-        $this->firstDataProvider = $this->getMockBuilder(DataProviderInterface::class)
+        $this->firstDataProvider = $this->getMockBuilder(\Magento\Search\Model\DataProviderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getItems'])
-            ->getMockForAbstractClass();
-        $this->secondDataProvider = $this->getMockBuilder(DataProviderInterface::class)
+            ->getMock();
+        $this->secondDataProvider = $this->getMockBuilder(\Magento\Search\Model\DataProviderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getItems'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $dataProviders = [
             '20' => $this->firstDataProvider,
             '10' => $this->secondDataProvider
         ];
 
         $this->model = $helper->getObject(
-            Autocomplete::class,
+            \Magento\Search\Model\Autocomplete::class,
             ['dataProviders' => $dataProviders]
         );
     }
 
     public function testGetItems()
     {
-        $firstItemMock = $this->getMockBuilder(Item::class)
+        $firstItemMock = $this->getMockBuilder(\Magento\Search\Model\Autocomplete\Item::class)
             ->disableOriginalConstructor()
             ->setMockClassName('FirstItem')
             ->getMock();
-        $secondItemMock = $this->getMockBuilder(Item::class)
+        $secondItemMock = $this->getMockBuilder(\Magento\Search\Model\Autocomplete\Item::class)
             ->disableOriginalConstructor()
             ->setMockClassName('SecondItem')
             ->getMock();

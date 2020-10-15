@@ -3,51 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
 use Magento\Setup\Fixtures\AttributeSet\AttributeSetFixture;
-use Magento\Setup\Fixtures\AttributeSet\Pattern;
 use Magento\Setup\Fixtures\AttributeSetsFixture;
-use Magento\Setup\Fixtures\FixtureModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD)
  */
-class AttributeSetsFixtureTest extends TestCase
+class AttributeSetsFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FixtureModel
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
     /**
-     * @var AttributeSetsFixture
+     * @var \Magento\Setup\Fixtures\AttributeSetsFixture
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeSetsFixtureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $patternMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->fixtureModelMock = $this->getMockBuilder(FixtureModel::class)
+        $this->fixtureModelMock = $this->getMockBuilder(\Magento\Setup\Fixtures\FixtureModel::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->attributeSetsFixtureMock = $this->getMockBuilder(AttributeSetFixture::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->patternMock = $this->getMockBuilder(Pattern::class)
+        $this->patternMock = $this->getMockBuilder(\Magento\Setup\Fixtures\AttributeSet\Pattern::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -71,7 +66,7 @@ class AttributeSetsFixtureTest extends TestCase
         $this->fixtureModelMock
             ->expects($this->exactly(2))
             ->method('getValue')
-            ->willReturnMap($valueMap);
+            ->will($this->returnValueMap($valueMap));
 
         $this->model->execute();
     }
@@ -89,7 +84,7 @@ class AttributeSetsFixtureTest extends TestCase
         };
         $this->patternMock->expects($this->once())
             ->method('generateAttributeSet')
-            ->with(AttributeSetsFixture::PRODUCT_SET_NAME . 1, 2, 3, $closure)
+            ->with(\Magento\Setup\Fixtures\AttributeSetsFixture::PRODUCT_SET_NAME . 1, 2, 3, $closure)
             ->willReturn(['some-data']);
         $this->attributeSetsFixtureMock->expects($this->once())
             ->method('createAttributeSet')
@@ -97,7 +92,7 @@ class AttributeSetsFixtureTest extends TestCase
         $this->fixtureModelMock
             ->expects($this->exactly(4))
             ->method('getValue')
-            ->willReturnMap($valueMap);
+            ->will($this->returnValueMap($valueMap));
 
         $this->model->execute();
     }

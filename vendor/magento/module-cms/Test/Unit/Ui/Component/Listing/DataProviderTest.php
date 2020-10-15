@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Ui\Component\Listing;
 
 use Magento\Cms\Ui\Component\DataProvider;
@@ -15,39 +13,36 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Authorization;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\Reporting;
-use Magento\Ui\Component\Container;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Authorization|MockObject
+     * @var \Magento\Framework\Authorization|\PHPUnit_Framework_MockObject_MockObject
      */
     private $authorizationMock;
 
     /**
-     * @var Reporting|MockObject
+     * @var \Magento\Framework\View\Element\UiComponent\DataProvider\Reporting|\PHPUnit_Framework_MockObject_MockObject
      */
     private $reportingMock;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var \Magento\Framework\Api\Search\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaBuilderMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestInterfaceMock;
 
     /**
-     * @var FilterBuilder|MockObject
+     * @var \Magento\Framework\Api\FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterBuilderMock;
 
     /**
-     * @var DataProvider
+     * @var \Magento\Cms\Ui\Component\DataProvider
      */
     private $dataProvider;
 
@@ -66,7 +61,7 @@ class DataProviderTest extends TestCase
      */
     private $requestFieldName = 'id';
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->authorizationMock = $this->getMockBuilder(Authorization::class)
             ->disableOriginalConstructor()
@@ -82,14 +77,14 @@ class DataProviderTest extends TestCase
 
         $this->requestInterfaceMock = $this->getMockBuilder(RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->filterBuilderMock = $this->getMockBuilder(FilterBuilder::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var ObjectManagerInterface|MockObject $objectManagerMock */
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock */
+        $objectManagerMock = $this->createMock(ObjectManagerInterface::class);
         $objectManagerMock->expects($this->once())
             ->method('get')
             ->willReturn($this->authorizationMock);
@@ -124,7 +119,7 @@ class DataProviderTest extends TestCase
                             'editorConfig' => [
                                 'enabled' => false
                             ],
-                            'componentType' => Container::NAME
+                            'componentType' => \Magento\Ui\Component\Container::NAME
                         ]
                     ]
                 ]

@@ -15,11 +15,10 @@ class Config extends \Magento\Framework\Config\Data implements \Magento\ImportEx
     /**
      * Constructor
      *
-     * @param \Magento\ImportExport\Model\Export\Config\Reader $reader
+     * @param Config\Reader $reader
      * @param \Magento\Framework\Config\CacheInterface $cache
-     * @param string $cacheId
-     * @param SerializerInterface $serializer
-     * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
+     * @param string|null $cacheId
+     * @param SerializerInterface|null $serializer
      */
     public function __construct(
         \Magento\ImportExport\Model\Export\Config\Reader $reader,
@@ -49,7 +48,7 @@ class Config extends \Magento\Framework\Config\Data implements \Magento\ImportEx
     public function getEntityTypes($entity)
     {
         $entities = $this->getEntities();
-        return $entities[$entity]['types'] ?? [];
+        return isset($entities[$entity]) ? $entities[$entity]['types'] : [];
     }
 
     /**

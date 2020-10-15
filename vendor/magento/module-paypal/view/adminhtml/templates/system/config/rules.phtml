@@ -6,18 +6,14 @@
 
 /**
  * @var \Magento\Paypal\Block\Adminhtml\System\Config\ResolutionRules $block
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  */
-?>
 
-<?php $scriptString = <<<script
+?>
+<script>
     require([
         "Magento_Paypal/js/solutions",
         "domReady!"
     ], function (Solutions) {
-script;
-
-$scriptString .= 'var solutions = new Solutions({config: {solutions: ' . /* @noEscape */ $block->getJson() . '}});
-    });';
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
+        var solutions = new Solutions({config: {solutions: <?= /* @noEscape */ $block->getJson() ?>}});
+    });
+</script>

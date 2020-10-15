@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -15,22 +13,31 @@ namespace OTPHP;
 
 use Assert\Assertion;
 use ParagonIE\ConstantTime\Base32;
-use RuntimeException;
-use function Safe\ksort;
-use function Safe\sprintf;
 
 abstract class OTP implements OTPInterface
 {
     use ParameterTrait;
 
-    protected function __construct(?string $secret, string $digest, int $digits)
+    /**
+     * OTP constructor.
+     *
+     * @param string|null $label
+     * @param string|null $secret
+     * @param string      $digest
+     * @param int         $digits
+     */
+    public function __construct($label, $secret, $digest, $digits)
     {
+        $this->setLabel($label);
         $this->setSecret($secret);
         $this->setDigest($digest);
         $this->setDigits($digits);
     }
 
-    public function getQrCodeUri(string $uri, string $placeholder): string
+    /**
+     * {@inheritdoc}
+     */
+    public function getQrCodeUri($uri = 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl={PROVISIONING_URI}', $placeholder = '{PROVISIONING_URI}')
     {
         $provisioning_uri = urlencode($this->getProvisioningUri());
 
@@ -38,30 +45,36 @@ abstract class OTP implements OTPInterface
     }
 
     /**
-     * The OTP at the specified input.
+     * @param int $input
+     *
+     * @return string The OTP at the specified input
      */
-    protected function generateOTP(int $input): string
+    protected function generateOTP($input)
     {
-        $hash = hash_hmac($this->getDigest(), $this->intToByteString($input), $this->getDecodedSecret(), true);
-
-        $hmac = array_values(unpack('C*', $hash));
-
-        $offset = ($hmac[\count($hmac) - 1] & 0xF);
+        $hash = hash_hmac($this->getDigest(), $this->intToByteString($input), $this->getDecodedSecret());
+        $hmac = [];
+        foreach (str_split($hash, 2) as $hex) {
+            $hmac[] = hexdec($hex);
+        }
+        $offset = $hmac[count($hmac) - 1] & 0xF;
         $code = ($hmac[$offset + 0] & 0x7F) << 24 | ($hmac[$offset + 1] & 0xFF) << 16 | ($hmac[$offset + 2] & 0xFF) << 8 | ($hmac[$offset + 3] & 0xFF);
-        $otp = $code % (10 ** $this->getDigits());
+        $otp = $code % pow(10, $this->getDigits());
 
         return str_pad((string) $otp, $this->getDigits(), '0', STR_PAD_LEFT);
     }
 
-    public function at(int $timestamp): string
+    /**
+     * {@inheritdoc}
+     */
+    public function at($input)
     {
-        return $this->generateOTP($timestamp);
+        return $this->generateOTP($input);
     }
 
     /**
-     * @param array<string, mixed> $options
+     * @param array $options
      */
-    protected function filterOptions(array &$options): void
+    protected function filterOptions(array &$options)
     {
         foreach (['algorithm' => 'sha1', 'period' => 30, 'digits' => 6] as $key => $default) {
             if (isset($options[$key]) && $default === $options[$key]) {
@@ -73,9 +86,12 @@ abstract class OTP implements OTPInterface
     }
 
     /**
-     * @param array<string, mixed> $options
+     * @param string $type
+     * @param array  $options
+     *
+     * @return string
      */
-    protected function generateURI(string $type, array $options): string
+    protected function generateURI($type, array $options)
     {
         $label = $this->getLabel();
         Assertion::string($label, 'The label is not set.');
@@ -87,27 +103,39 @@ abstract class OTP implements OTPInterface
         return sprintf('otpauth://%s/%s?%s', $type, rawurlencode((null !== $this->getIssuer() ? $this->getIssuer().':' : '').$label), $params);
     }
 
-    private function getDecodedSecret(): string
+    /**
+     * @return string
+     */
+    private function getDecodedSecret()
     {
-        try {
-            return Base32::decodeUpper($this->getSecret());
-        } catch (\Exception $e) {
-            throw new RuntimeException('Unable to decode the secret. Is it correctly base32 encoded?');
-        }
+        $secret = Base32::decodeUpper($this->getSecret());
+
+        return $secret;
     }
 
-    private function intToByteString(int $int): string
+    /**
+     * @param int $int
+     *
+     * @return string
+     */
+    private function intToByteString($int)
     {
         $result = [];
         while (0 !== $int) {
-            $result[] = \chr($int & 0xFF);
+            $result[] = chr($int & 0xFF);
             $int >>= 8;
         }
 
         return str_pad(implode(array_reverse($result)), 8, "\000", STR_PAD_LEFT);
     }
 
-    protected function compareOTP(string $safe, string $user): bool
+    /**
+     * @param string $safe
+     * @param string $user
+     *
+     * @return bool
+     */
+    protected function compareOTP($safe, $user)
     {
         return hash_equals($safe, $user);
     }

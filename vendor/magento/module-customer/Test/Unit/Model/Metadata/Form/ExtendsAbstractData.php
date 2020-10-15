@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
 
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Model\Metadata\ElementFactory;
 use Magento\Customer\Model\Metadata\Form\AbstractData;
-use Magento\Framework\App\RequestInterface;
 
 /**
+ * Class ExtendsAbstractData
  *
  * This test exists to aid with direct testing of the AbstractData class
  */
@@ -21,7 +17,7 @@ class ExtendsAbstractData extends AbstractData
     /**
      * {@inheritdoc}
      */
-    public function extractValue(RequestInterface $request)
+    public function extractValue(\Magento\Framework\App\RequestInterface $request)
     {
     }
 
@@ -49,12 +45,12 @@ class ExtendsAbstractData extends AbstractData
     /**
      * {@inheritdoc}
      */
-    public function outputValue($format = ElementFactory::OUTPUT_FORMAT_TEXT)
+    public function outputValue($format = \Magento\Customer\Model\Metadata\ElementFactory::OUTPUT_FORMAT_TEXT)
     {
     }
 
     /**
-     * @param AttributeMetadataInterface $attribute
+     * @param \Magento\Customer\Api\Data\AttributeMetadataInterface $attribute
      */
     public function setAttribute($attribute)
     {
@@ -114,10 +110,10 @@ class ExtendsAbstractData extends AbstractData
     }
 
     /**
-     * @param RequestInterface $request
+     * @param \Magento\Framework\App\RequestInterface $request
      * @return mixed
      */
-    public function getRequestValue(RequestInterface $request)
+    public function getRequestValue(\Magento\Framework\App\RequestInterface $request)
     {
         return $this->_getRequestValue($request);
     }

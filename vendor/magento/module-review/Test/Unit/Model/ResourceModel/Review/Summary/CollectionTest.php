@@ -3,30 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Review\Test\Unit\Model\ResourceModel\Review\Summary;
 
-use Magento\Framework\Data\Collection\Db\FetchStrategy\Query;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\SelectRenderer;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Review\Model\ResourceModel\Review\Summary\Collection;
-use Magento\Review\Model\Review\Summary;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collection
@@ -34,79 +19,79 @@ class CollectionTest extends TestCase
     protected $collection;
 
     /**
-     * @var Query|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategy\Query|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fetchStrategyMock = $this->createPartialMock(
-            Query::class,
+            \Magento\Framework\Data\Collection\Db\FetchStrategy\Query::class,
             ['fetchAll']
         );
         $this->entityFactoryMock = $this->createPartialMock(
-            EntityFactory::class,
+            \Magento\Framework\Data\Collection\EntityFactory::class,
             ['create']
         );
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->resourceMock = $this->getMockBuilder(AbstractDb::class)
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->setMethods(['getConnection', 'getMainTable', 'getTable'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->connectionMock = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['select', 'query']
         );
-        $selectRenderer = $this->getMockBuilder(SelectRenderer::class)
+        $selectRenderer = $this->getMockBuilder(\Magento\Framework\DB\Select\SelectRenderer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->selectMock = $this->getMockBuilder(Select::class)
+        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->setMethods(['from'])
             ->setConstructorArgs(['adapter' => $this->connectionMock, 'selectRenderer' => $selectRenderer])
             ->getMock();
 
         $this->connectionMock->expects($this->once())
             ->method('select')
-            ->willReturn($this->selectMock);
+            ->will($this->returnValue($this->selectMock));
         $this->resourceMock->expects($this->once())
             ->method('getConnection')
-            ->willReturn($this->connectionMock);
+            ->will($this->returnValue($this->connectionMock));
         $this->resourceMock->expects($this->once())
             ->method('getMainTable')
             ->willReturn('main_table_name');
 
         $this->resourceMock->expects($this->once())
             ->method('getTable')
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->collection = $objectManager->getObject(
-            Collection::class,
+            \Magento\Review\Model\ResourceModel\Review\Summary\Collection::class,
             [
                 'entityFactory' => $this->entityFactoryMock,
                 'logger' => $this->loggerMock,
@@ -122,21 +107,21 @@ class CollectionTest extends TestCase
         $statementMock = $this->createPartialMock(\Zend_Db_Statement_Pdo::class, ['fetch']);
         $statementMock->expects($this->once())
             ->method('fetch')
-            ->willReturn($data);
+            ->will($this->returnValue($data));
 
         $this->connectionMock->expects($this->once())
             ->method('query')
             ->with($this->selectMock, $this->anything())
-            ->willReturn($statementMock);
+            ->will($this->returnValue($statementMock));
 
-        $objectMock = $this->createPartialMock(AbstractModel::class, ['setData']);
+        $objectMock = $this->createPartialMock(\Magento\Framework\Model\AbstractModel::class, ['setData']);
         $objectMock->expects($this->once())
             ->method('setData')
             ->with($data);
         $this->entityFactoryMock->expects($this->once())
             ->method('create')
-            ->with(Summary::class)
-            ->willReturn($objectMock);
+            ->with(\Magento\Review\Model\Review\Summary::class)
+            ->will($this->returnValue($objectMock));
         $item = $this->collection->fetchItem();
 
         $this->assertEquals($objectMock, $item);
@@ -149,16 +134,16 @@ class CollectionTest extends TestCase
         $this->fetchStrategyMock->expects($this->once())
             ->method('fetchAll')
             ->with($this->selectMock, [])
-            ->willReturn([$data]);
+            ->will($this->returnValue([$data]));
 
-        $objectMock = $this->createPartialMock(DataObject::class, ['addData']);
+        $objectMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['addData']);
         $objectMock->expects($this->once())
             ->method('addData')
             ->with($data);
         $this->entityFactoryMock->expects($this->once())
             ->method('create')
-            ->with(Summary::class)
-            ->willReturn($objectMock);
+            ->with(\Magento\Review\Model\Review\Summary::class)
+            ->will($this->returnValue($objectMock));
 
         $this->collection->load();
     }

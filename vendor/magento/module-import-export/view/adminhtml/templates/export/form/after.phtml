@@ -3,11 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\ImportExport\Block\Adminhtml\Form\After $block */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-<fieldset class="admin__fieldset" id="export_filter_container">
+<fieldset class="admin__fieldset" id="export_filter_container" style="display:none;">
     <legend class="admin__legend">
         <span><?= $block->escapeHtml(__('Entity Attributes')) ?></span>
     </legend>
@@ -16,17 +13,11 @@
         <input name="form_key" type="hidden" value="<?= /* @noEscape */ $block->getFormKey() ?>" />
         <div id="export_filter_grid_container"><!-- --></div>
     </form>
-    <button class="action- scalable" type="button">
-        <span><?= $block->escapeHtml(__('Continue')) ?></span>
-    </button>
+    <button class="action- scalable" type="button" onclick="getFile();"><span><?=
+        $block->escapeHtml(__('Continue'))
+    ?></span></button>
 </fieldset>
-<?= /* @noEscape */ $secureRenderer->renderStyleAsTag("display:none;", 'fieldset#export_filter_container') ?>
-<?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
-    'onclick',
-    "getFile();",
-    'fieldset#export_filter_container button'
-) ?>
-<?php $scriptString = <<<script
+<script>
 require(['prototype'], function(){
 
 //<![CDATA[
@@ -34,6 +25,4 @@ require(['prototype'], function(){
 //]]>
 
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

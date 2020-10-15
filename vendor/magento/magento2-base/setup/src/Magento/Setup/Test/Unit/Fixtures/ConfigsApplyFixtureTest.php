@@ -3,63 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
-use Magento\Config\App\Config\Type\System;
-use Magento\Framework\App\Cache;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\Config;
-use Magento\Framework\App\Config\ValueInterface;
-use Magento\Framework\ObjectManager\ObjectManager;
 use Magento\Setup\Fixtures\ConfigsApplyFixture;
-use Magento\Setup\Fixtures\FixtureModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigsApplyFixtureTest extends TestCase
+class ConfigsApplyFixtureTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var MockObject|FixtureModel
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
     /**
-     * @var ConfigsApplyFixture
+     * @var \Magento\Setup\Fixtures\ConfigsApplyFixture
      */
     private $model;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->fixtureModelMock = $this->createMock(FixtureModel::class);
+        $this->fixtureModelMock = $this->createMock(\Magento\Setup\Fixtures\FixtureModel::class);
 
         $this->model = new ConfigsApplyFixture($this->fixtureModelMock);
     }
 
     public function testExecute()
     {
-        $cacheMock = $this->createMock(Cache::class);
+        $cacheMock = $this->createMock(\Magento\Framework\App\Cache::class);
 
-        $valueMock = $this->createMock(Config::class);
-        $configMock = $this->createMock(System::class);
+        $valueMock = $this->createMock(\Magento\Framework\App\Config::class);
+        $configMock = $this->createMock(\Magento\Config\App\Config\Type\System::class);
 
-        $objectManagerMock = $this->createMock(ObjectManager::class);
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManager\ObjectManager::class);
         $objectManagerMock
             ->method('get')
             ->willReturnMap([
-                [CacheInterface::class, $cacheMock],
-                [System::class, $configMock]
+                [\Magento\Framework\App\CacheInterface::class, $cacheMock],
+                [\Magento\Config\App\Config\Type\System::class, $configMock]
             ]);
 
         $this->fixtureModelMock
             ->expects($this->once())
             ->method('getValue')
-            ->willReturn(['config' => $valueMock]);
+            ->will($this->returnValue(['config' => $valueMock]));
         $this->fixtureModelMock
             ->method('getObjectManager')
-            ->willReturn($objectManagerMock);
+            ->will($this->returnValue($objectManagerMock));
 
         $cacheMock->method('clean');
         $configMock->method('clean');
@@ -69,12 +59,12 @@ class ConfigsApplyFixtureTest extends TestCase
 
     public function testNoFixtureConfigValue()
     {
-        $configMock = $this->getMockBuilder(ValueInterface::class)
+        $configMock = $this->getMockBuilder(\Magento\Framework\App\Config\ValueInterface::class)
             ->setMethods(['save'])
             ->getMockForAbstractClass();
         $configMock->expects($this->never())->method('save');
 
-        $objectManagerMock = $this->createMock(ObjectManager::class);
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManager\ObjectManager::class);
         $objectManagerMock->expects($this->never())
             ->method('create')
             ->willReturn($configMock);
@@ -82,7 +72,7 @@ class ConfigsApplyFixtureTest extends TestCase
         $this->fixtureModelMock
             ->expects($this->never())
             ->method('getObjectManager')
-            ->willReturn($objectManagerMock);
+            ->will($this->returnValue($objectManagerMock));
         $this->fixtureModelMock
             ->expects($this->once())
             ->method('getValue')

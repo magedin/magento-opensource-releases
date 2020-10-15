@@ -17,7 +17,7 @@ use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
 
 /**
- * Test Adobe Stock Images searching
+ * Class GetImageList
  */
 class GetImageList implements GetImageListInterface
 {

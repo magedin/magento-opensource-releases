@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 declare(strict_types=1);
 
 namespace Magento\Eav\Model\Entity;
 
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Locale\ResolverInterface;
 
-/**
- * Class to test EAV Entity attribute model
- */
-class AttributeTest extends TestCase
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Attribute
@@ -23,33 +19,33 @@ class AttributeTest extends TestCase
     private $attribute;
 
     /**
-     * @var ObjectManagerInterface
+     * @var \Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
 
     /**
      * @var ResolverInterface
      */
-    private $localeResolver;
+    private $_localeResolver;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->attribute = $this->objectManager->get(Attribute::class);
-        $this->localeResolver = $this->objectManager->get(ResolverInterface::class);
+        $this->_localeResolver = $this->objectManager->get(ResolverInterface::class);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->attribute = null;
         $this->objectManager = null;
-        $this->localeResolver = null;
+        $this->_localeResolver = null;
     }
 
     /**
@@ -60,17 +56,11 @@ class AttributeTest extends TestCase
      * @dataProvider beforeSaveDataProvider
      * @throws
      */
-    public function testBeforeSave(
-        string $defaultValue,
-        string $backendType,
-        string $frontendInput,
-        string $locale,
-        string $expected
-    ) {
+    public function testBeforeSave($defaultValue, $backendType, $locale, $expected)
+    {
         $this->attribute->setDefaultValue($defaultValue);
         $this->attribute->setBackendType($backendType);
-        $this->attribute->setFrontendInput($frontendInput);
-        $this->localeResolver->setLocale($locale);
+        $this->_localeResolver->setLocale($locale);
         $this->attribute->beforeSave();
 
         $this->assertEquals($expected, $this->attribute->getDefaultValue());
@@ -84,15 +74,13 @@ class AttributeTest extends TestCase
     public function beforeSaveDataProvider()
     {
         return [
-            ['21/07/18', 'datetime', 'date', 'en_AU', '2018-07-21 00:00:00'],
-            ['07/21/18', 'datetime', 'date', 'en_US', '2018-07-21 00:00:00'],
-            ['21/07/18', 'datetime', 'date', 'fr_FR', '2018-07-21 00:00:00'],
-            ['21/07/18', 'datetime', 'date', 'de_DE', '2018-07-21 00:00:00'],
-            ['21/07/18', 'datetime', 'date', 'uk_UA', '2018-07-21 00:00:00'],
-            ['100.50', 'decimal', 'decimal', 'en_US', '100.50'],
-            ['100,50', 'decimal', 'decimal', 'uk_UA', '100.5'],
-            ['07/21/2019 2:30 PM', 'datetime', 'datetime', 'en_US', '2019-07-21 21:30:00'],
-            ['21.07.2019 14:30', 'datetime', 'datetime', 'uk_UA', '2019-07-21 21:30:00'],
+            ['21/07/18', 'datetime', 'en_AU', '2018-07-21 00:00:00'],
+            ['07/21/18', 'datetime', 'en_US', '2018-07-21 00:00:00'],
+            ['21/07/18', 'datetime', 'fr_FR', '2018-07-21 00:00:00'],
+            ['21/07/18', 'datetime', 'de_DE', '2018-07-21 00:00:00'],
+            ['21/07/18', 'datetime', 'uk_UA', '2018-07-21 00:00:00'],
+            ['100.50', 'decimal', 'en_US', '100.50'],
+            ['100,50', 'decimal', 'uk_UA', '100.5'],
         ];
     }
 
@@ -102,14 +90,13 @@ class AttributeTest extends TestCase
      * @param string $locale
      * @param string $expected
      * @dataProvider beforeSaveErrorDataDataProvider
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testBeforeSaveErrorData($defaultValue, $backendType, $locale, $expected)
     {
-        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->attribute->setDefaultValue($defaultValue);
         $this->attribute->setBackendType($backendType);
-        $this->localeResolver->setLocale($locale);
+        $this->_localeResolver->setLocale($locale);
         $this->attribute->beforeSave();
 
         $this->expectExceptionMessage($expected);

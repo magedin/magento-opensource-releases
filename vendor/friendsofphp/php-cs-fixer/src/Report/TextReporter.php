@@ -53,7 +53,8 @@ final class TextReporter implements ReporterInterface
     }
 
     /**
-     * @param bool $isDecoratedOutput
+     * @param bool  $isDecoratedOutput
+     * @param array $fixResult
      *
      * @return string
      */
@@ -66,7 +67,8 @@ final class TextReporter implements ReporterInterface
     }
 
     /**
-     * @param bool $isDecoratedOutput
+     * @param bool  $isDecoratedOutput
+     * @param array $fixResult
      *
      * @return string
      */

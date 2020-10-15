@@ -3,82 +3,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AdminNotification\Test\Unit\Model;
 
-use Magento\AdminNotification\Model\Feed;
-use Magento\AdminNotification\Model\Inbox;
-use Magento\AdminNotification\Model\InboxFactory;
-use Magento\Backend\App\ConfigInterface;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\ProductMetadata;
-use Magento\Framework\App\State;
 use Magento\Framework\Config\ConfigOptionsListConstants;
-use Magento\Framework\HTTP\Adapter\Curl;
-use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FeedTest extends TestCase
+class FeedTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Feed */
+    /** @var \Magento\AdminNotification\Model\Feed */
     protected $feed;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var InboxFactory|MockObject */
+    /** @var \Magento\AdminNotification\Model\InboxFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $inboxFactory;
 
-    /** @var Inbox|MockObject */
+    /** @var \Magento\AdminNotification\Model\Inbox|\PHPUnit_Framework_MockObject_MockObject */
     protected $inboxModel;
 
-    /** @var CurlFactory|MockObject */
+    /** @var \Magento\Framework\HTTP\Adapter\CurlFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $curlFactory;
 
-    /** @var Curl|MockObject */
+    /** @var \Magento\Framework\HTTP\Adapter\Curl|\PHPUnit_Framework_MockObject_MockObject */
     protected $curl;
 
-    /** @var ConfigInterface|MockObject */
+    /** @var \Magento\Backend\App\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $backendConfig;
 
-    /** @var CacheInterface|MockObject */
+    /** @var \Magento\Framework\App\CacheInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $cacheManager;
 
-    /** @var State|MockObject */
+    /** @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject */
     protected $appState;
 
-    /** @var DeploymentConfig|MockObject */
+    /** @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject */
     protected $deploymentConfig;
 
-    /** @var ProductMetadata|MockObject */
+    /** @var \Magento\Framework\App\ProductMetadata|\PHPUnit_Framework_MockObject_MockObject */
     protected $productMetadata;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->inboxFactory = $this->createPartialMock(
-            InboxFactory::class,
+            \Magento\AdminNotification\Model\InboxFactory::class,
             ['create']
         );
-        $this->curlFactory = $this->createPartialMock(CurlFactory::class, ['create']);
-        $this->curl = $this->createMock(Curl::class);
-        $this->appState = $this->createPartialMock(State::class, []);
-        $this->inboxModel = $this->createPartialMock(Inbox::class, [
-            '__wakeup',
-            'parse'
-        ]);
+        $this->curlFactory = $this->createPartialMock(\Magento\Framework\HTTP\Adapter\CurlFactory::class, ['create']);
+        $this->curl = $this->getMockBuilder(\Magento\Framework\HTTP\Adapter\Curl::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->appState = $this->createPartialMock(\Magento\Framework\App\State::class, ['getInstallDate']);
+        $this->inboxModel = $this->createPartialMock(\Magento\AdminNotification\Model\Inbox::class, [
+                '__wakeup',
+                'parse'
+            ]);
         $this->backendConfig = $this->createPartialMock(
-            ConfigInterface::class,
+            \Magento\Backend\App\ConfigInterface::class,
             [
                 'getValue',
                 'setValue',
@@ -86,7 +73,7 @@ class FeedTest extends TestCase
             ]
         );
         $this->cacheManager = $this->createPartialMock(
-            CacheInterface::class,
+            \Magento\Framework\App\CacheInterface::class,
             [
                 'load',
                 'getFrontend',
@@ -96,16 +83,18 @@ class FeedTest extends TestCase
             ]
         );
 
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
+        $this->deploymentConfig = $this->getMockBuilder(\Magento\Framework\App\DeploymentConfig::class)
+            ->disableOriginalConstructor()->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->productMetadata = $this->createMock(ProductMetadata::class);
+        $this->productMetadata = $this->getMockBuilder(\Magento\Framework\App\ProductMetadata::class)
+            ->disableOriginalConstructor()->getMock();
 
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilder = $this->createMock(\Magento\Framework\UrlInterface::class);
 
         $this->feed = $this->objectManagerHelper->getObject(
-            Feed::class,
+            \Magento\AdminNotification\Model\Feed::class,
             [
                 'backendConfig' => $this->backendConfig,
                 'cacheManager' => $this->cacheManager,
@@ -143,20 +132,20 @@ class FeedTest extends TestCase
         ];
 
         $lastUpdate = 0;
-        $this->cacheManager->expects($this->once())->method('load')->willReturn($lastUpdate);
-        $this->curlFactory->expects($this->at(0))->method('create')->willReturn($this->curl);
+        $this->cacheManager->expects($this->once())->method('load')->will(($this->returnValue($lastUpdate)));
+        $this->curlFactory->expects($this->at(0))->method('create')->will($this->returnValue($this->curl));
         $this->curl->expects($this->once())->method('setConfig')->with($configValues)->willReturnSelf();
-        $this->curl->expects($this->once())->method('read')->willReturn($curlRequest);
-        $this->backendConfig->expects($this->at(0))->method('getValue')->willReturn('1');
-        $this->backendConfig->expects($this->once())->method('isSetFlag')->willReturn(false);
+        $this->curl->expects($this->once())->method('read')->will($this->returnValue($curlRequest));
+        $this->backendConfig->expects($this->at(0))->method('getValue')->will($this->returnValue('1'));
+        $this->backendConfig->expects($this->once())->method('isSetFlag')->will($this->returnValue(false));
         $this->backendConfig->expects($this->at(1))->method('getValue')
-            ->willReturn('http://feed.magento.com');
+            ->will($this->returnValue('http://feed.magento.com'));
         $this->deploymentConfig->expects($this->once())->method('get')
             ->with(ConfigOptionsListConstants::CONFIG_PATH_INSTALL_DATE)
-            ->willReturn('Sat, 6 Sep 2014 16:46:11 UTC');
+            ->will($this->returnValue('Sat, 6 Sep 2014 16:46:11 UTC'));
         if ($callInbox) {
             $this->inboxFactory->expects($this->once())->method('create')
-                ->willReturn($this->inboxModel);
+                ->will($this->returnValue($this->inboxModel));
             $this->inboxModel->expects($this->once())
                 ->method('parse')
                 ->with(
@@ -176,7 +165,7 @@ class FeedTest extends TestCase
                         }
                     )
                 )
-                ->willReturnSelf();
+                ->will($this->returnSelf());
         } else {
             $this->inboxFactory->expects($this->never())->method('create');
             $this->inboxModel->expects($this->never())->method('parse');

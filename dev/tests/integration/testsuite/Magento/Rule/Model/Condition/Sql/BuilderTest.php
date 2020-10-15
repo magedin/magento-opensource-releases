@@ -22,7 +22,7 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = Bootstrap::getObjectManager()->create(Builder::class);
     }

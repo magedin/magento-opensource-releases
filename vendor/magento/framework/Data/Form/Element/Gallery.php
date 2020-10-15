@@ -11,53 +11,28 @@
  */
 namespace Magento\Framework\Data\Form\Element;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
-/**
- * Gallery form element widget.
- */
 class Gallery extends AbstractElement
 {
-    /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
-     * @var Random
-     */
-    private $random;
-
     /**
      * @param Factory $factoryElement
      * @param CollectionFactory $factoryCollection
      * @param Escaper $escaper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
-     * @param Random|null $random
      */
     public function __construct(
         Factory $factoryElement,
         CollectionFactory $factoryCollection,
         Escaper $escaper,
-        $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null,
-        ?Random $random = null
+        $data = []
     ) {
-        $secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-        $random = $random ?? ObjectManager::getInstance()->get(Random::class);
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data, $secureRenderer, $random);
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
         $this->setType('file');
-        $this->secureRenderer = $secureRenderer;
-        $this->random = $random;
     }
 
     /**
-     * @inheritDoc
-     *
+     * @return string
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
@@ -96,12 +71,17 @@ class Gallery extends AbstractElement
                 $i++;
                 $html .= '<tr class="gallery">';
                 foreach ($this->getValue()->getAttributeBackend()->getImageTypes() as $type) {
-                    $linkId = 'linkId' .$this->random->getRandomString(8);
                     $url = $image->setType($type)->getSourceUrl();
-                    $html .= '<td class="gallery vertical-gallery-cell" align="center">';
-                    $html .= '<a previewlinkid="' .$linkId .'" href="' .
+                    $html .= '<td class="gallery" align="center" style="vertical-align:bottom;">';
+                    $html .= '<a href="' .
                         $url .
-                        '" target="_blank" ' .
+                        '" target="_blank" onclick="imagePreview(\'' .
+                        $this->getHtmlId() .
+                        '_image_' .
+                        $type .
+                        '_' .
+                        $image->getValueId() .
+                        '\');return false;" ' .
                         $this->_getUiId(
                             'image-' . $image->getValueId()
                         ) .
@@ -127,13 +107,8 @@ class Gallery extends AbstractElement
                         $this->_getUiId(
                             'file'
                         ) . ' ></td>';
-                    $html .= $this->secureRenderer->renderEventListenerAsTag(
-                        'onclick',
-                        "imagePreview('{$this->getHtmlId()}_image_{$type}_{$image->getValueId()}');\nreturn false;",
-                        "*[previewlinkid='{$linkId}']"
-                    );
                 }
-                $html .= '<td class="gallery vertical-gallery-cell" align="center">' .
+                $html .= '<td class="gallery" align="center" style="vertical-align:bottom;">' .
                     '<input type="input" name="' .
                     parent::getName() .
                     '[position][' .
@@ -148,7 +123,7 @@ class Gallery extends AbstractElement
                     $this->_getUiId(
                         'position-' . $image->getValueId()
                     ) . '/></td>';
-                $html .= '<td class="gallery vertical-gallery-cell" align="center">' .
+                $html .= '<td class="gallery" align="center" style="vertical-align:bottom;">' .
                     '<input type="checkbox" name="' .
                     parent::getName() .
                     '[delete][' .
@@ -165,26 +140,11 @@ class Gallery extends AbstractElement
                     ) . '/></td>';
                 $html .= '</tr>';
             }
-
-            $html .= $this->secureRenderer->renderTag(
-                'style',
-                [],
-                <<<style
-                    .vertical-gallery-cell {
-                        vertical-align:bottom;
-                    }
-style
-                ,
-                false
-            );
         }
         if ($i == 0) {
-            $html .= $this->secureRenderer->renderTag(
-                'script',
-                ['type' => 'text/javascript'],
-                'document.getElementById("gallery_thead").style.visibility="hidden";',
-                false
-            );
+            $html .= '<script type="text/javascript">' .
+                'document.getElementById("gallery_thead").style.visibility="hidden";' .
+                '</script>';
         }
 
         $html .= '</tbody></table>';
@@ -192,10 +152,9 @@ style
         $name = $this->getName();
         $parentName = parent::getName();
 
-        $html .= $this->secureRenderer->renderTag(
-            'script',
-            ['type' => 'text/javascript'],
-            <<<EndSCRIPT
+        $html .= <<<EndSCRIPT
+
+        <script language="javascript">
         id = 0;
 
         function addNewImg(){
@@ -259,17 +218,15 @@ style
 		    };
 
 	    }
-EndSCRIPT
-            ,
-            false
-        );
-        $html .= $this->getAfterElementHtml();
+        </script>
 
+EndSCRIPT;
+        $html .= $this->getAfterElementHtml();
         return $html;
     }
 
     /**
-     * @inheritDoc
+     * @return mixed
      */
     public function getName()
     {
@@ -277,9 +234,7 @@ EndSCRIPT
     }
 
     /**
-     * Get name in the usual way.
-     *
-     * @return string|null
+     * @return mixed
      */
     public function getParentName()
     {

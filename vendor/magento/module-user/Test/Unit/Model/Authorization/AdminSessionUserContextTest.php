@@ -3,47 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\User\Test\Unit\Model\Authorization;
 
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\User\Model\Authorization\AdminSessionUserContext;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\User\Model\Authorization\AdminSessionUserContext
  */
-class AdminSessionUserContextTest extends TestCase
+class AdminSessionUserContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var AdminSessionUserContext
+     * @var \Magento\User\Model\Authorization\AdminSessionUserContext
      */
     protected $adminSessionUserContext;
 
     /**
-     * @var Session
+     * @var \Magento\Backend\Model\Auth\Session
      */
     protected $adminSession;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->adminSession = $this->getMockBuilder(Session::class)
+        $this->adminSession = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['hasUser', 'getUser', 'getId'])
             ->getMock();
 
         $this->adminSessionUserContext = $this->objectManager->getObject(
-            AdminSessionUserContext::class,
+            \Magento\User\Model\Authorization\AdminSessionUserContext::class,
             ['adminSession' => $this->adminSession]
         );
     }
@@ -79,16 +74,16 @@ class AdminSessionUserContextTest extends TestCase
     {
         $this->adminSession->expects($this->once())
             ->method('hasUser')
-            ->willReturn($userId);
+            ->will($this->returnValue($userId));
 
         if ($userId) {
             $this->adminSession->expects($this->once())
                 ->method('getUser')
-                ->willReturnSelf();
+                ->will($this->returnSelf());
 
             $this->adminSession->expects($this->once())
                 ->method('getId')
-                ->willReturn($userId);
+                ->will($this->returnValue($userId));
         }
     }
 }

@@ -23,7 +23,7 @@
             <createData entity="SimpleProduct2" stepKey="createProduct"/>
 
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Delete simple product -->
@@ -38,18 +38,10 @@
             </actionGroup>
 
             <!-- Logout admin -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!-- Go to Storefront as Guest and create new account -->
-        <actionGroup ref="StorefrontOpenCustomerAccountCreatePageActionGroup" stepKey="openCreateAccountPage"/>
-        <actionGroup ref="StorefrontFillCustomerAccountCreationFormActionGroup" stepKey="fillCreateAccountForm">
-            <argument name="customer" value="CustomerEntityOne"/>
-        </actionGroup>
-        <actionGroup ref="StorefrontClickCreateAnAccountCustomerAccountCreationFormActionGroup" stepKey="submitCreateAccountForm"/>
-        <actionGroup ref="AssertMessageCustomerCreateAccountActionGroup" stepKey="seeSuccessMessage">
-            <argument name="messageType" value="success"/>
-            <argument name="message" value="Thank you for registering with Main Website Store."/>
-        </actionGroup>
+        <actionGroup ref="SignUpNewUserFromStorefrontActionGroup" stepKey="createNewCustomerAccount"/>
 
         <!-- Sign Out -->
         <actionGroup ref="StorefrontCustomerLogoutActionGroup" stepKey="customerLogout"/>
@@ -63,7 +55,7 @@
         </actionGroup>
 
         <!-- Go to Checkout page -->
-        <actionGroup ref="ClickViewAndEditCartFromMiniCartActionGroup" stepKey="goToShoppingCartFromMinicart"/>
+        <actionGroup ref="clickViewAndEditCartFromMiniCart" stepKey="goToShoppingCartFromMinicart"/>
         <click selector="{{CheckoutCartSummarySection.proceedToCheckout}}" stepKey="clickProceedToCheckout"/>
         <waitForPageLoad stepKey="waitForProceedToCheckout"/>
 

@@ -18,13 +18,10 @@
             <testCaseId value="MC-14382" />
             <group value="security"/>
             <group value="mtf_migrated"/>
-            <skip>
-                <issueId value="MQE-1964"/>
-            </skip>
         </annotations>
         <before>
             <!-- Log in to Admin Panel -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Unlock Admin user -->
@@ -95,7 +92,7 @@
         </actionGroup>
 
         <!-- Try to login as admin and check error -->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsLockedAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsLockedAdmin"/>
         <actionGroup ref="AssertMessageOnAdminLoginActionGroup" stepKey="checkLoginError" />
     </test>
 </tests>

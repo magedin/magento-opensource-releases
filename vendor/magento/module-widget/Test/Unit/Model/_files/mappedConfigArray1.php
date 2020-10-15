@@ -1,14 +1,10 @@
-<?php declare(strict_types=1);
-
-use Magento\Cms\Block\Adminhtml\Page\Widget\Chooser;
-use Magento\Cms\Block\Widget\Page\Link;
-
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 return [
-    '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+    '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
     'name' => 'CMS Page Link',
     'description' => 'Link to a CMS Page',
     'is_email_compatible' => '1',
@@ -18,7 +14,7 @@ return [
             '@' => ['type' => 'complex'],
             'type' => 'label',
             'helper_block' => [
-                'type' => Chooser::class,
+                'type' => \Magento\Cms\Block\Adminhtml\Page\Widget\Chooser::class,
                 'data' => ['button' => ['open' => 'Select Page...']],
             ],
             'visible' => '1',

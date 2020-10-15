@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model;
 
 use Magento\Analytics\Model\AnalyticsToken;
@@ -15,31 +13,29 @@ use Magento\Analytics\Model\ReportUrlProvider;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\FlagManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ReportUrlProviderTest extends TestCase
+class ReportUrlProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var AnalyticsToken|MockObject
+     * @var AnalyticsToken|\PHPUnit_Framework_MockObject_MockObject
      */
     private $analyticsTokenMock;
 
     /**
-     * @var OTPRequest|MockObject
+     * @var OTPRequest|\PHPUnit_Framework_MockObject_MockObject
      */
     private $otpRequestMock;
 
     /**
-     * @var FlagManager|MockObject
+     * @var FlagManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $flagManagerMock;
 
@@ -61,15 +57,23 @@ class ReportUrlProviderTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->configMock = $this->getMockBuilder(ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->analyticsTokenMock = $this->createMock(AnalyticsToken::class);
+        $this->analyticsTokenMock = $this->getMockBuilder(AnalyticsToken::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->otpRequestMock = $this->createMock(OTPRequest::class);
+        $this->otpRequestMock = $this->getMockBuilder(OTPRequest::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->flagManagerMock = $this->createMock(FlagManager::class);
+        $this->flagManagerMock = $this->getMockBuilder(FlagManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

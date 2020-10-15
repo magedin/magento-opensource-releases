@@ -25,10 +25,8 @@
             </createData>
             <!-- Enable *Free Shipping* -->
             <createData entity="FreeShippingMethodsSettingConfig" stepKey="freeShippingMethodsSettingConfig"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Disable *Free Shipping* -->
@@ -39,18 +37,16 @@
             <actionGroup ref="AdminDeleteCustomerActionGroup" stepKey="deleteCustomer">
                 <argument name="customerEmail" value="Simple_US_Customer.email"/>
             </actionGroup>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-    <argument name="tags" value=""/>
-</actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logOut"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
+            <actionGroup ref="logout" stepKey="logOut"/>
         </after>
 
         <!--Proceed to Admin panel > SALES > Orders. Created order should be in Processing status-->
-        <actionGroup ref="NavigateToNewOrderPageNewCustomerActionGroup" stepKey="navigateToNewOrderPage"/>
+        <actionGroup ref="navigateToNewOrderPageNewCustomer" stepKey="navigateToNewOrderPage"/>
 
         <!--Check if order can be submitted without the required fields including email address-->
         <scrollToTopOfPage stepKey="scrollToTopOfOrderFormPage"/>
-        <actionGroup ref="AddSimpleProductToOrderActionGroup" stepKey="addFirstProductToOrder">
+        <actionGroup ref="addSimpleProductToOrder" stepKey="addFirstProductToOrder">
             <argument name="product" value="$$createProduct$$"/>
         </actionGroup>
 
@@ -65,20 +61,20 @@
         <fillField selector="{{AdminOrderFormAccountSection.email}}" userInput="{{Simple_US_Customer.email}}" stepKey="fillCustomerEmail"/>
 
         <!--Fill customer address information-->
-        <actionGroup ref="FillOrderCustomerInformationActionGroup" stepKey="fillCustomerAddress">
+        <actionGroup ref="fillOrderCustomerInformation" stepKey="fillCustomerAddress">
             <argument name="customer" value="Simple_US_Customer"/>
             <argument name="address" value="US_Address_TX"/>
         </actionGroup>
 
         <!-- Select Free shipping -->
-        <actionGroup ref="OrderSelectFreeShippingActionGroup" stepKey="selectFreeShippingOption"/>
+        <actionGroup ref="orderSelectFreeShipping" stepKey="selectFreeShippingOption"/>
 
         <!--Click *Submit Order* button-->
         <click selector="{{AdminOrderFormActionSection.SubmitOrder}}" stepKey="clickSubmitOrder"/>
 
         <!--Click *Invoice* button-->
-        <actionGroup ref="StartCreateInvoiceFromOrderPageActionGroup" stepKey="startCreateInvoice"/>
-        <actionGroup ref="SubmitInvoiceActionGroup" stepKey="submitInvoice"/>
+        <actionGroup ref="StartCreateInvoiceFromOrderPage" stepKey="startCreateInvoice"/>
+        <actionGroup ref="SubmitInvoice" stepKey="submitInvoice"/>
 
         <!--Verify that *Credit Memo* button is displayed-->
         <seeElement selector="{{AdminOrderFormItemsSection.creditMemo}}" stepKey="seeCreditMemo"/>

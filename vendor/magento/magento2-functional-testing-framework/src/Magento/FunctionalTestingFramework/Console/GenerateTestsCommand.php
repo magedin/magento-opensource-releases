@@ -77,7 +77,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setIOStyle($input, $output);
+        $this->setOutputStyle($input, $output);
         $tests = $input->getArgument('name');
         $config = $input->getOption('config');
         $json = $input->getOption('tests'); // for backward compatibility
@@ -107,6 +107,9 @@ class GenerateTestsCommand extends BaseGenerateCommand
             return 1;
         }
 
+        $this->setOutputStyle($input, $output);
+        $this->showMftfNotices($output);
+
         if (!empty($tests)) {
             $json = $this->getTestAndSuiteConfiguration($tests);
         }
@@ -123,7 +126,8 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
         // Remove previous GENERATED_DIR if --remove option is used
         if ($remove) {
-            $this->removeGeneratedDirectory($output, $verbose);
+            $this->removeGeneratedDirectory($output, $verbose ||
+                ($debug !== MftfApplicationConfig::LEVEL_NONE));
         }
 
         try {

@@ -3,7 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/coupons_limited_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order_rollback.php');
+// phpcs:disable Magento2.Security.IncludeFile
+require __DIR__ . '/../../../Magento/Sales/_files/quote_with_customer_rollback.php';
+require 'coupons_limited_rollback.php';
+// phpcs:enable

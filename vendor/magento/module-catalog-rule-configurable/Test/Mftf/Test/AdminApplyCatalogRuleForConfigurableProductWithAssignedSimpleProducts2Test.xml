@@ -14,7 +14,7 @@
             <title value="Apply catalog rule for configurable product with assigned simple products"/>
             <description value="Admin should be able to apply catalog rule for configurable product with assigned simple products"/>
             <severity value="CRITICAL"/>
-            <testCaseId value="MC-27708"/>
+            <testCaseId value="MC-14063"/>
             <group value="catalog"/>
             <group value="configurable_product"/>
             <group value="catalog_rule_configurable"/>
@@ -144,7 +144,8 @@
             </createData>
 
             <!-- Login as Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="AdminCatalogPriceRuleDeleteAllActionGroup" stepKey="deleteAllCatalogPriceRule"/>
         </before>
         <after>
             <!-- Delete created data -->
@@ -160,22 +161,18 @@
             <deleteData createDataKey="createSecondConfigProductAttribute" stepKey="deleteSecondConfigProductAttribute"/>
             <deleteData createDataKey="secondSimpleCategory" stepKey="deleteSimpleCategory"/>
 
-            <!-- Customer log out -->
-            <!-- Must logout before delete customer otherwise magento fails during logout -->
-            <actionGroup ref="StorefrontCustomerLogoutActionGroup" stepKey="logoutFromStorefront"/>
-
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
             <deleteData createDataKey="customerGroup" stepKey="deleteCustomerGroup"/>
 
+            <!-- Customer log out -->
+            <actionGroup ref="StorefrontCustomerLogoutActionGroup" stepKey="logoutFromStorefront"/>
             <!-- Delete created price rules -->
-            <actionGroup ref="RemoveCatalogPriceRuleActionGroup" stepKey="deleteCatalogPriceRule">
-                <argument name="ruleName" value="{{_defaultCatalogRule.name}}"/>
-            </actionGroup>
+            <actionGroup ref="AdminCatalogPriceRuleDeleteAllActionGroup" stepKey="deleteAllCatalogPriceRule"/>
             <!-- Admin log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Create catalog price rule -->
@@ -193,7 +190,7 @@
         <actionGroup ref="AdminReindexAndFlushCache" stepKey="reindexAndFlushCache"/>
 
         <!-- Login to storefront from customer -->
-        <actionGroup ref="LoginToStorefrontActionGroup" stepKey="loginCustomerOnStorefront">
+        <actionGroup ref="LoginToStorefrontActionGroup" stepKey="loginCustomerOnStorefron">
             <argument name="Customer" value="$$createCustomer$$"/>
         </actionGroup>
 
@@ -230,7 +227,7 @@
             <argument name="attributeLabel" value="{{ProductOptionRadiobuttonWithTwoFixedOptions.title}}"/>
             <argument name="optionLabel" value="{{ProductOptionValueRadioButtons1.title}}"/>
         </actionGroup>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addFirstConfigProductToCart">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addFirstConfigProductToCart">
             <argument name="productName" value="$$createFirstConfigProduct.name$$"/>
         </actionGroup>
 
@@ -243,7 +240,7 @@
             <argument name="attributeLabel" value="{{ProductOptionRadiobuttonWithTwoFixedOptions.title}}"/>
             <argument name="optionLabel" value="{{ProductOptionValueRadioButtons3.title}}"/>
         </actionGroup>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addFirstConfigProductWithOtherOptionsToCart">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addFirstConfigProductWithOtherOptionsToCart">
             <argument name="productName" value="$$createFirstConfigProduct.name$$"/>
         </actionGroup>
 
@@ -264,7 +261,7 @@
             <argument name="attributeLabel" value="{{ProductOptionRadiobuttonWithTwoFixedOptions.title}}"/>
             <argument name="optionLabel" value="{{ProductOptionValueRadioButtons1.title}}"/>
         </actionGroup>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addSecondConfigProductToCart">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addSecondConfigProductToCart">
             <argument name="productName" value="$$createSecondConfigProduct.name$$"/>
         </actionGroup>
 
@@ -277,7 +274,7 @@
             <argument name="attributeLabel" value="{{ProductOptionRadiobuttonWithTwoFixedOptions.title}}"/>
             <argument name="optionLabel" value="{{ProductOptionValueRadioButtons3.title}}"/>
         </actionGroup>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addSecondConfigProductWithOtherOptionsToCart">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addSecondConfigProductWithOtherOptionsToCart">
             <argument name="productName" value="$$createSecondConfigProduct.name$$"/>
         </actionGroup>
 

@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace Magento\MediaGallery\Test\Unit\Model\Asset\Command;
 
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
@@ -16,13 +15,13 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\MediaGallery\Model\Asset\Command\GetById;
 use Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Zend\Db\Adapter\Driver\Pdo\Statement;
 
 /**
  * Test the GetById command with exception thrown in case when there is no such entity
  */
-class GetByIdExceptionNoSuchEntityTest extends TestCase
+class GetByIdExceptionNoSuchEntityTest extends \PHPUnit\Framework\TestCase
 {
     private const MEDIA_ASSET_STUB_ID = 1;
 
@@ -58,7 +57,7 @@ class GetByIdExceptionNoSuchEntityTest extends TestCase
     {
         $resourceConnection = $this->createMock(ResourceConnection::class);
         $this->assetFactory = $this->createMock(AssetInterfaceFactory::class);
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $this->getMediaAssetById = (new ObjectManager($this))->getObject(
             GetById::class,
@@ -68,7 +67,7 @@ class GetByIdExceptionNoSuchEntityTest extends TestCase
                 'logger' =>  $logger,
             ]
         );
-        $this->adapter = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->adapter = $this->createMock(AdapterInterface::class);
         $resourceConnection->method('getConnection')->willReturn($this->adapter);
 
         $this->selectStub = $this->createMock(Select::class);

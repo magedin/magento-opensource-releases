@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Model\Template\Css;
 
 use Magento\Email\Model\Template\Css\Processor;
 use Magento\Framework\View\Asset\File\FallbackContext;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Processor
@@ -21,16 +17,16 @@ class ProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $assetRepository;
 
     /**
-     * @var FallbackContext|MockObject
+     * @var FallbackContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fallbackContext;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->assetRepository = $this->getMockBuilder(Repository::class)
             ->disableOriginalConstructor()

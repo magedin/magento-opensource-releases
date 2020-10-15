@@ -15,7 +15,7 @@ class ConfigTest extends \Magento\TestFramework\Integrity\AbstractConfig
     /** @var \Magento\Framework\Config\Dom\UrnResolver */
     protected $urnResolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
     }

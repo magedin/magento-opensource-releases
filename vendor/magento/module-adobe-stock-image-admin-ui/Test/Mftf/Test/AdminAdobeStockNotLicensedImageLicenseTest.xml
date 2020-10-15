@@ -10,7 +10,7 @@
     <test name="AdminAdobeStockNotLicensedImageLicenseTest">
         <annotations>
             <skip>
-                <issueId value="https://github.com/magento/adobe-stock-integration/issues/1170"/>
+                <issueId value="https://github.com/magento/adobe-stock-integration/issues/783"/>
             </skip>
             <features value="AdobeStockImagePanel"/>
             <stories value="User licenses an image"/>
@@ -20,17 +20,16 @@
             <group value="adobe_stock_integration_ims_signed"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <actionGroup ref="AdminOpenMediaGalleryForPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
             <actionGroup ref="AdminAdobeStockOpenPanelFromMediaGalleryActionGroup" stepKey="openAdobeStockPanel"/>
         </before>
         <after>
-             <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="resetAdminDataGridToDefaultView"/>
         </after>
         <actionGroup ref="AdminSearchImagesOnModalActionGroup" stepKey="searchForUnlicensedImage">
             <argument name="query" value="{{AdobeStockUnlicensedImage.id}}"/>
         </actionGroup>
         <actionGroup ref="AdminAdobeStockExpandImagePreviewActionGroup" stepKey="expandPreviewedImage"/>
-        <seeElement selector="{{AdminAdobeStockImagePreviewSection.licenseAndSave}}" stepKey="assertLicenseAndSaveButtonIsVisible"/>
+        <seeElement selector="{{AdobeStockImagePreviewSection.licenseAndSave}}" stepKey="assertLicenseAndSaveButtonIsVisible"/>
     </test>
 </tests>

@@ -38,7 +38,7 @@ class FullTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $preferenceObject = $this->objectManager->get(PreferenceObject::class);
@@ -50,7 +50,7 @@ class FullTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->objectManager->removeSharedInstance(OriginObject::class);
     }

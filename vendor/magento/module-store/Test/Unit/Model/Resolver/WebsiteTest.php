@@ -4,21 +4,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Resolver;
 
-use Magento\Framework\App\ScopeInterface;
-use Magento\Framework\Exception\State\InitException;
-use Magento\Store\Model\Resolver\Website;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Store\Model\Resolver\Website;
 
 /**
  * Test class for \Magento\Store\Model\Resolver\Website
  */
-class WebsiteTest extends TestCase
+class WebsiteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Website
@@ -26,43 +19,45 @@ class WebsiteTest extends TestCase
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
         $this->_model = new Website($this->_storeManagerMock);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_storeManagerMock);
     }
 
     public function testGetScope()
     {
-        $scopeMock = $this->getMockForAbstractClass(ScopeInterface::class);
+        $scopeMock = $this->createMock(\Magento\Framework\App\ScopeInterface::class);
         $this->_storeManagerMock
             ->expects($this->once())
             ->method('getWebsite')
             ->with(0)
-            ->willReturn($scopeMock);
+            ->will($this->returnValue($scopeMock));
 
         $this->assertEquals($scopeMock, $this->_model->getScope());
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\State\InitException
+     */
     public function testGetScopeWithInvalidScope()
     {
-        $this->expectException(InitException::class);
         $scopeMock = new \StdClass();
         $this->_storeManagerMock
             ->expects($this->once())
             ->method('getWebsite')
             ->with(0)
-            ->willReturn($scopeMock);
+            ->will($this->returnValue($scopeMock));
 
         $this->assertEquals($scopeMock, $this->_model->getScope());
     }

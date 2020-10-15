@@ -3,20 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\EntityManager\Test\Unit\Db;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\EntityManager\Db\UpdateRow;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
 use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
 
-class UpdateRowTest extends TestCase
+/**
+ * Class UpdateRowTest
+ */
+class UpdateRowTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UpdateRow
@@ -24,26 +23,26 @@ class UpdateRowTest extends TestCase
     protected $model;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPoolMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceConnectionMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var EntityMetadataInterface|MockObject
+     * @var EntityMetadataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
             ->disableOriginalConstructor()

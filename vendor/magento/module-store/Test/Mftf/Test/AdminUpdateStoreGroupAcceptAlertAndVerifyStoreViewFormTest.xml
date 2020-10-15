@@ -19,7 +19,7 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!--Create root category-->
             <createData entity="NewRootCategory" stepKey="rootCategory"/>
             <createData entity="SimpleRootSubCategory" stepKey="category">
@@ -31,7 +31,7 @@
                 <argument name="websiteCode" value="{{customWebsite.code}}"/>
             </actionGroup>
             <!--Create custom store group-->
-            <actionGroup ref="CreateCustomStoreActionGroup" stepKey="createCustomStoreGroup">
+            <actionGroup ref="CreateCustomStore" stepKey="createCustomStoreGroup">
                 <argument name="website" value="{{_defaultWebsite.name}}"/>
                 <argument name="store" value="{{staticStoreGroup.name}}"/>
                 <argument name="rootCategory" value="Default Category"/>
@@ -44,7 +44,7 @@
             </actionGroup>
             <!--Delete root category-->
             <deleteData stepKey="deleteRootCategory" createDataKey="rootCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open created Store group in grid-->

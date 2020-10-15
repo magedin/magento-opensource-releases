@@ -3,15 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Locale\Test\Unit;
 
-use Magento\Framework\Locale\Config;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     private static $allAllowedLocales = [
         'af_ZA', 'ar_DZ', 'ar_EG', 'ar_KW', 'ar_MA', 'ar_SA', 'az_Latn_AZ', 'be_BY', 'bg_BG', 'bn_BD',
@@ -27,7 +22,7 @@ class ConfigTest extends TestCase
 
     private static $allAllowedCurrencies = [
         'AFN', 'ALL', 'AZN', 'DZD', 'AOA', 'ARS', 'AMD', 'AWG', 'AUD', 'BSD',
-        'BHD', 'BDT', 'BBD', 'BYN', 'BZD', 'BMD', 'BTN', 'BOB', 'BAM', 'BWP',
+        'BHD', 'BDT', 'BBD', 'BYR', 'BZD', 'BMD', 'BTN', 'BOB', 'BAM', 'BWP',
         'BRL', 'GBP', 'BND', 'BGN', 'BUK', 'BIF', 'KHR', 'CAD', 'CVE', 'CZK',
         'KYD', 'GQE', 'CLP', 'CNY', 'COP', 'KMF', 'CDF', 'CRC', 'HRK', 'CUP',
         'DKK', 'DJF', 'DOP', 'XCD', 'EGP', 'SVC', 'ERN', 'EEK', 'ETB', 'EUR',
@@ -72,14 +67,13 @@ class ConfigTest extends TestCase
         'QED', 'PNP', 'EJN', 'MTO', 'EBY',
     ];
 
-    /**
-     * @var Config
-     */
+    /** @var  \Magento\Framework\Locale\Config */
     private $configObject;
 
     public function testGetAllowedLocalesNoDataArray()
     {
-        $this->configObject = (new ObjectManager($this))->getObject(Config::class);
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
+            ->getObject(\Magento\Framework\Locale\Config::class);
 
         $retrievedLocales = $this->configObject->getAllowedLocales();
 
@@ -94,9 +88,9 @@ class ConfigTest extends TestCase
 
     public function testGetAllowedLocalesGivenDataArray()
     {
-        $this->configObject = (new ObjectManager($this))
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\Locale\Config::class,
                 [
                     'data' => [
                         'allowedLocales' => $this::$sampleAdditionalLocales,
@@ -120,9 +114,9 @@ class ConfigTest extends TestCase
 
     public function testGetAllowedLocalesGivenRedundantDataArray()
     {
-        $this->configObject = (new ObjectManager($this))
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\Locale\Config::class,
                 [
                     'data' => [
                         'allowedLocales' => $this::$samplePresentLocales,
@@ -146,8 +140,8 @@ class ConfigTest extends TestCase
 
     public function testGetAllowedCurrenciesNoDataArray()
     {
-        $this->configObject = (new ObjectManager($this))
-            ->getObject(Config::class);
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
+            ->getObject(\Magento\Framework\Locale\Config::class);
 
         $retrievedCurrencies = $this->configObject->getAllowedCurrencies();
 
@@ -162,9 +156,9 @@ class ConfigTest extends TestCase
 
     public function testGetAllowedCurrenciesGivenDataArray()
     {
-        $this->configObject = (new ObjectManager($this))
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\Locale\Config::class,
                 [
                     'data' => [
                         'allowedCurrencies' => $this::$sampleAdditionalCurrencies,
@@ -188,9 +182,9 @@ class ConfigTest extends TestCase
 
     public function testGetAllowedCurrenciesGivenRedundantDataArray()
     {
-        $this->configObject = (new ObjectManager($this))
+        $this->configObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\Locale\Config::class,
                 [
                     'data' => [
                         'allowedCurrencies' => $this::$samplePresentCurrencies,

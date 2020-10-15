@@ -3,30 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
-use Magento\Framework\Module\FullModuleList;
-use Magento\Framework\Module\ModuleList\Loader;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Module\FullModuleList;
 
-class FullModuleListTest extends TestCase
+class FullModuleListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ModuleList
      */
     private $moduleList;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $loaderMock = $this->createMock(Loader::class);
+        $loaderMock = $this->createMock(\Magento\Framework\Module\ModuleList\Loader::class);
         $modules = [
             'Vendor_A' => ['data' => 'a'],
             'Vendor_B' => ['data' => 'b'],
             'Vendor_C' => ['data' => 'c'],
         ];
-        $loaderMock->expects($this->once())->method('load')->willReturn($modules);
+        $loaderMock->expects($this->once())->method('load')->will($this->returnValue($modules));
         $this->moduleList = new FullModuleList($loaderMock);
     }
 

@@ -54,7 +54,7 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
@@ -69,7 +69,7 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->productRepository->cleanCache();
         parent::tearDown();
@@ -96,9 +96,9 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
         $this->baseOptionAsserts($option, $optionHtml, $checkArray);
 
         if ($optionData[Option::KEY_MAX_CHARACTERS] > 0) {
-            $this->assertStringContainsString($checkArray['max_characters'], $optionHtml);
+            $this->assertContains($checkArray['max_characters'], $optionHtml);
         } else {
-            $this->assertStringNotContainsString('class="character-counter', $optionHtml);
+            $this->assertNotContains('class="character-counter', $optionHtml);
         }
     }
 
@@ -121,16 +121,16 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
         $option = $this->findOptionByTitle($product, $optionData[Option::KEY_TITLE]);
         $optionHtml = $this->getOptionHtml($product);
         $this->baseOptionAsserts($option, $optionHtml, $checkArray);
-        $this->assertStringContainsString($checkArray['file_extension'], $optionHtml);
+        $this->assertContains($checkArray['file_extension'], $optionHtml);
 
         if (isset($checkArray['file_width'])) {
             $checkArray['file_width'] = sprintf($checkArray['file_width'], __('Maximum image width'));
-            $this->assertMatchesRegularExpression($checkArray['file_width'], $optionHtml);
+            $this->assertRegExp($checkArray['file_width'], $optionHtml);
         }
 
         if (isset($checkArray['file_height'])) {
             $checkArray['file_height'] = sprintf($checkArray['file_height'], __('Maximum image height'));
-            $this->assertMatchesRegularExpression($checkArray['file_height'], $optionHtml);
+            $this->assertRegExp($checkArray['file_height'], $optionHtml);
         }
     }
 
@@ -160,7 +160,7 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
 
         if (isset($checkArray['not_contain_arr'])) {
             foreach ($checkArray['not_contain_arr'] as $notContainPattern) {
-                $this->assertDoesNotMatchRegularExpression($notContainPattern, $optionHtml);
+                $this->assertNotRegExp($notContainPattern, $optionHtml);
             }
         }
 
@@ -170,7 +170,7 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
                 $optionValue->getOptionTypeId(),
                 $optionValueData[Value::KEY_TITLE]
             );
-            $this->assertMatchesRegularExpression($checkArray['option_value_item'], $optionHtml);
+            $this->assertRegExp($checkArray['option_value_item'], $optionHtml);
         }
     }
 
@@ -196,82 +196,28 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
 
         switch ($optionData[Option::KEY_TYPE]) {
             case ProductCustomOptionInterface::OPTION_TYPE_DATE:
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][month]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][year]\"",
-                    $optionHtml
-                );
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][hour]\"",
-                    $optionHtml
-                );
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][minute]\"",
-                    $optionHtml
-                );
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day_part]\"",
-                    $optionHtml
-                );
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][month]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][day]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][year]\"", $optionHtml);
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][hour]\"", $optionHtml);
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][minute]\"", $optionHtml);
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][day_part]\"", $optionHtml);
                 break;
             case ProductCustomOptionInterface::OPTION_TYPE_DATE_TIME:
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][month]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][year]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][hour]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][minute]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day_part]\"",
-                    $optionHtml
-                );
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][month]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][day]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][year]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][hour]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][minute]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][day_part]\"", $optionHtml);
                 break;
             case ProductCustomOptionInterface::OPTION_TYPE_TIME:
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][month]\"",
-                    $optionHtml
-                );
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day]\"",
-                    $optionHtml
-                );
-                $this->assertStringNotContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][year]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][hour]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][minute]\"",
-                    $optionHtml
-                );
-                $this->assertStringContainsString(
-                    "<select name=\"options[{$option->getOptionId()}][day_part]\"",
-                    $optionHtml
-                );
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][month]\"", $optionHtml);
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][day]\"", $optionHtml);
+                $this->assertNotContains("<select name=\"options[{$option->getOptionId()}][year]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][hour]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][minute]\"", $optionHtml);
+                $this->assertContains("<select name=\"options[{$option->getOptionId()}][day_part]\"", $optionHtml);
                 break;
         }
     }
@@ -289,23 +235,23 @@ abstract class AbstractRenderCustomOptionsTest extends TestCase
         string $optionHtml,
         array $checkArray
     ): void {
-        $this->assertStringContainsString($checkArray['block_with_required_class'], $optionHtml);
-        $this->assertStringContainsString($checkArray['title'], $optionHtml);
+        $this->assertContains($checkArray['block_with_required_class'], $optionHtml);
+        $this->assertContains($checkArray['title'], $optionHtml);
 
         if (isset($checkArray['label_for_created_option'])) {
             $checkArray['label_for_created_option'] = sprintf(
                 $checkArray['label_for_created_option'],
                 $option->getOptionId()
             );
-            $this->assertStringContainsString($checkArray['label_for_created_option'], $optionHtml);
+            $this->assertContains($checkArray['label_for_created_option'], $optionHtml);
         }
 
         if (isset($checkArray['price'])) {
-            $this->assertStringContainsString($checkArray['price'], $optionHtml);
+            $this->assertContains($checkArray['price'], $optionHtml);
         }
 
         if (isset($checkArray['required_element'])) {
-            $this->assertMatchesRegularExpression($checkArray['required_element'], $optionHtml);
+            $this->assertRegExp($checkArray['required_element'], $optionHtml);
         }
     }
 

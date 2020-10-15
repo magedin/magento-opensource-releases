@@ -26,9 +26,4 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\MediaStorage\Console\Command\ImagesResizeCommand">
-        <arguments>
-            <argument name="imageResizeScheduler" xsi:type="object">Magento\MediaStorage\Service\ImageResizeScheduler\Proxy</argument>
-        </arguments>
-    </type>
 </config>

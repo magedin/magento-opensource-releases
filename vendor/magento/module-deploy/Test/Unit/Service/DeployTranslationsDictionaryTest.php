@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Service;
 
-use Magento\Deploy\Service\DeployStaticFile;
 use Magento\Deploy\Service\DeployTranslationsDictionary;
+use Magento\Deploy\Service\DeployStaticFile;
+
 use Magento\Framework\App\State;
-
 use Magento\Framework\Translate\Js\Config as JsTranslationConfig;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-
-use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
+
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Translation Dictionaries deploy service class unit tests
  */
-class DeployTranslationsDictionaryTest extends TestCase
+class DeployTranslationsDictionaryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DeployTranslationsDictionary
@@ -51,7 +48,7 @@ class DeployTranslationsDictionaryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $dictionary = 'js-translation.json';
         $area = 'adminhtml';

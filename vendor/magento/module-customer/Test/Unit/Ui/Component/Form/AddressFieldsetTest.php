@@ -1,22 +1,18 @@
 <?php
-
+declare(strict_types=1);
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Form;
 
 use Magento\Customer\Ui\Component\Form\AddressFieldset;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for class \Magento\Customer\Ui\Component\Form\AddressFieldset
  */
-class AddressFieldsetTest extends TestCase
+class AddressFieldsetTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AddressFieldset
@@ -24,7 +20,7 @@ class AddressFieldsetTest extends TestCase
     protected $fieldset;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
@@ -33,10 +29,10 @@ class AddressFieldsetTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->context = $this->getMockForAbstractClass(
-            ContextInterface::class
+            \Magento\Framework\View\Element\UiComponent\ContextInterface::class
         );
         $this->fieldset = new AddressFieldset(
             $this->context,
@@ -68,6 +64,6 @@ class AddressFieldsetTest extends TestCase
     {
         $this->context->expects($this->atLeastOnce())->method('getRequestParam')->with('id')
             ->willReturn(null);
-        $this->assertFalse($this->fieldset->isComponentVisible());
+        $this->assertEquals(false, $this->fieldset->isComponentVisible());
     }
 }

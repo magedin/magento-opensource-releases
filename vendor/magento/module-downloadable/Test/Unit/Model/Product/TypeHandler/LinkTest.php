@@ -3,44 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Product\TypeHandler;
 
-use Magento\Catalog\Model\Product;
-use Magento\Downloadable\Helper\Download;
-use Magento\Downloadable\Model\LinkFactory;
 use Magento\Downloadable\Model\Product\TypeHandler\Link;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Downloadable\Model\Product\TypeHandler\Link
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataMock;
 
     /**
-     * @var \Magento\Downloadable\Model\ResourceModel\Link|MockObject
+     * @var \Magento\Downloadable\Model\ResourceModel\Link|\PHPUnit_Framework_MockObject_MockObject
      */
     private $linkResource;
 
     /**
-     * @var LinkFactory|MockObject
+     * @var \Magento\Downloadable\Model\LinkFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $linkFactory;
 
@@ -49,10 +38,10 @@ class LinkTest extends TestCase
      */
     private $target;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->linkFactory = $this->getMockBuilder(LinkFactory::class)
+        $this->linkFactory = $this->getMockBuilder(\Magento\Downloadable\Model\LinkFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -60,10 +49,10 @@ class LinkTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['deleteItems'])
             ->getMock();
-        $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->metadataMock = $this->createMock(EntityMetadata::class);
+        $this->metadataMock = $this->createMock(\Magento\Framework\EntityManager\EntityMetadata::class);
         $this->metadataMock->expects($this->any())->method('getLinkField')->willReturn('id');
         $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($this->metadataMock);
         $this->target = $objectManagerHelper->getObject(
@@ -81,7 +70,7 @@ class LinkTest extends TestCase
 
     /**
      * @dataProvider saveDataProvider
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject $product
      * @param array $data
      * @param array $modelData
      */
@@ -90,9 +79,10 @@ class LinkTest extends TestCase
         $link = $this->createLinkkModel($product, $modelData, true);
         $this->linkFactory->expects($this->once())
             ->method('create')
-            ->willReturn($link);
+            ->will($this->returnValue($link));
         $product->expects($this->once())
-            ->method('setIsCustomOptionChanged')->willReturnSelf();
+            ->method('setIsCustomOptionChanged')
+            ->will($this->returnSelf());
         $this->target->save($product, $data);
     }
 
@@ -112,7 +102,7 @@ class LinkTest extends TestCase
                             'sort_order' => '0',
                             'title' => 'Downloadable Product Link',
                             'sample' => [
-                                'type' => Download::LINK_TYPE_FILE,
+                                'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                                 'url' => null,
                                 'file' => json_encode(
                                     [
@@ -125,7 +115,7 @@ class LinkTest extends TestCase
                                     ]
                                 ),
                             ],
-                            'type' => Download::LINK_TYPE_FILE,
+                            'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                             'is_shareable' => \Magento\Downloadable\Model\Link::LINK_SHAREABLE_CONFIG,
                             'link_url' => null,
                             'is_delete' => 0,
@@ -138,7 +128,7 @@ class LinkTest extends TestCase
                             'is_delete' => 0,
                             'sample_id' => 0,
                             'title' => 'Downloadable Product Sample Title',
-                            'type' => Download::LINK_TYPE_FILE,
+                            'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                             'file' => json_encode(
                                 [
                                     [
@@ -158,7 +148,7 @@ class LinkTest extends TestCase
                     'product_id' => 1,
                     'sort_order' => '0',
                     'title' => 'Downloadable Product Link',
-                    'type' => Download::LINK_TYPE_FILE,
+                    'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                     'is_shareable' => \Magento\Downloadable\Model\Link::LINK_SHAREABLE_CONFIG,
                     'link_url' => null,
                     'number_of_downloads' => 15,
@@ -169,7 +159,7 @@ class LinkTest extends TestCase
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject $product
      * @param array $data
      * @param array $expectedItems
      * @dataProvider deleteDataProvider
@@ -178,7 +168,7 @@ class LinkTest extends TestCase
     {
         $this->linkResource->expects($this->once())
             ->method('deleteItems')
-            ->with($expectedItems);
+            ->with($this->equalTo($expectedItems));
         $this->target->save($product, $data);
     }
 
@@ -220,10 +210,10 @@ class LinkTest extends TestCase
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject $product
      * @param array $modelData
      * @param bool $isUnlimited
-     * @return \Magento\Downloadable\Model\Link|MockObject
+     * @return \Magento\Downloadable\Model\Link|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createLinkkModel($product, array $modelData, $isUnlimited)
     {
@@ -250,19 +240,24 @@ class LinkTest extends TestCase
             ->getMock();
         $link->expects($this->once())
             ->method('setData')
-            ->with($modelData)->willReturnSelf();
+            ->with($modelData)
+            ->will($this->returnSelf());
         $link->expects($this->once())
             ->method('setLinkType')
-            ->with($modelData['type'])->willReturnSelf();
+            ->with($modelData['type'])
+            ->will($this->returnSelf());
         $link->expects($this->once())
             ->method('setProductId')
-            ->with($product->getData('id'))->willReturnSelf();
+            ->with($product->getData('id'))
+            ->will($this->returnSelf());
         $link->expects($this->once())
             ->method('setStoreId')
-            ->with($product->getStoreId())->willReturnSelf();
+            ->with($product->getStoreId())
+            ->will($this->returnSelf());
         $link->expects($this->once())
             ->method('setWebsiteId')
-            ->with($product->getStore()->getWebsiteId())->willReturnSelf();
+            ->with($product->getStore()->getWebsiteId())
+            ->will($this->returnSelf());
         $link->expects($this->once())
             ->method('setPrice')
             ->with(0);
@@ -271,7 +266,7 @@ class LinkTest extends TestCase
             ->with(0);
         $link->expects($this->once())
             ->method('getIsUnlimited')
-            ->willReturn($isUnlimited);
+            ->will($this->returnValue($isUnlimited));
         return $link;
     }
 
@@ -280,12 +275,12 @@ class LinkTest extends TestCase
      * @param int $storeId
      * @param int $storeWebsiteId
      * @param array $websiteIds
-     * @return \Magento\Catalog\Model\Product|MockObject
+     * @return \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      * @internal param bool $isUnlimited
      */
     private function createProductMock($id, $storeId, $storeWebsiteId, array $websiteIds)
     {
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -301,26 +296,26 @@ class LinkTest extends TestCase
             ->getMock();
         $product->expects($this->any())
             ->method('getId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $product->expects($this->any())
             ->method('getStoreId')
-            ->willReturn($storeId);
+            ->will($this->returnValue($storeId));
         $product->expects($this->any())
             ->method('getWebsiteIds')
-            ->willReturn($websiteIds);
-        $store = $this->getMockBuilder(Store::class)
+            ->will($this->returnValue($websiteIds));
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();
         $store->expects($this->any())
             ->method('getWebsiteId')
-            ->willReturn($storeWebsiteId);
+            ->will($this->returnValue($storeWebsiteId));
         $product->expects($this->any())
             ->method('getStore')
-            ->willReturn($store);
+            ->will($this->returnValue($store));
         $product->expects($this->any())
             ->method('getLinksPurchasedSeparately')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $product->expects($this->any())
             ->method('getData')
             ->with('id')

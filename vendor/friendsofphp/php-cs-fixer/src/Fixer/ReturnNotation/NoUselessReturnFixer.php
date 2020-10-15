@@ -54,12 +54,10 @@ function example($b) {
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before BlankLineBeforeReturnFixer, BlankLineBeforeStatementFixer, NoExtraBlankLinesFixer, NoWhitespaceInBlankLineFixer.
-     * Must run after NoEmptyStatementFixer, NoUnneededCurlyBracesFixer, NoUselessElseFixer, SimplifiedNullReturnFixer.
      */
     public function getPriority()
     {
+        // should be run before BlankLineBeforeReturnFixer, NoExtraBlankLinesFixer, NoWhitespaceInBlankLineFixer and after SimplifiedNullReturnFixer and NoEmptyStatementFixer.
         return -18;
     }
 
@@ -81,8 +79,9 @@ function example($b) {
     }
 
     /**
-     * @param int $start Token index of the opening brace token of the function
-     * @param int $end   Token index of the closing brace token of the function
+     * @param Tokens $tokens
+     * @param int    $start  Token index of the opening brace token of the function
+     * @param int    $end    Token index of the closing brace token of the function
      */
     private function fixFunction(Tokens $tokens, $start, $end)
     {

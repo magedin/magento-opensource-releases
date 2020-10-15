@@ -13,7 +13,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\WebapiAbstract;
 
 /**
- * Customer Group Management API test
+ * Class GroupManagementTest
  */
 class GroupManagementTest extends WebapiAbstract
 {
@@ -34,7 +34,7 @@ class GroupManagementTest extends WebapiAbstract
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->groupRegistry = $objectManager->get(\Magento\Customer\Model\GroupRegistry::class);
@@ -123,18 +123,18 @@ class GroupManagementTest extends WebapiAbstract
             $this->_webApiCall($serviceInfo, $requestData);
             $this->fail("Expected exception");
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "SoapFault does not contain expected message."
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "Exception does not contain expected message."
             );
-            $this->assertStringContainsString((string)$nonExistentStoreId, $e->getMessage());
+            $this->assertContains((string)$nonExistentStoreId, $e->getMessage());
         }
     }
 
@@ -212,18 +212,18 @@ class GroupManagementTest extends WebapiAbstract
             $this->_webApiCall($serviceInfo, $requestData);
             $this->fail("Expected exception.");
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "SoapFault does not contain expected message."
             );
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "Exception does not contain expected message."
             );
-            $this->assertStringContainsString((string)$groupId, $e->getMessage());
+            $this->assertContains((string)$groupId, $e->getMessage());
         }
     }
 }

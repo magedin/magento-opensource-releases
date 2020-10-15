@@ -3,54 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Config\Reader;
 
-use Magento\Framework\Config\FileResolverInterface;
-use Magento\Framework\Config\ValidationStateInterface;
-use Magento\Framework\ObjectManager\Config\Reader\Dom;
-use Magento\Framework\ObjectManager\Config\SchemaLocator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 require_once __DIR__ . '/_files/ConfigDomMock.php';
 
-class DomTest extends TestCase
+class DomTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $fileResolverMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $converterMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $schemaLocatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $validationStateMock;
 
     /**
-     * @var Dom
+     * @var \Magento\Framework\ObjectManager\Config\Reader\Dom
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->fileResolverMock = $this->getMockForAbstractClass(FileResolverInterface::class);
+        $this->fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
         $this->converterMock = $this->createMock(\Magento\Framework\ObjectManager\Config\Mapper\Dom::class);
-        $this->schemaLocatorMock = $this->createMock(SchemaLocator::class);
-        $this->validationStateMock = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $this->schemaLocatorMock = $this->createMock(\Magento\Framework\ObjectManager\Config\SchemaLocator::class);
+        $this->validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
 
-        $this->model = new Dom(
+        $this->model = new \Magento\Framework\ObjectManager\Config\Reader\Dom(
             $this->fileResolverMock,
             $this->converterMock,
             $this->schemaLocatorMock,
@@ -67,7 +59,7 @@ class DomTest extends TestCase
     public function testRead()
     {
         $fileList = ['first content item'];
-        $this->fileResolverMock->expects($this->once())->method('get')->willReturn($fileList);
+        $this->fileResolverMock->expects($this->once())->method('get')->will($this->returnValue($fileList));
         $this->converterMock->expects($this->once())->method('convert')->with('reader dom result');
         $this->model->read();
     }

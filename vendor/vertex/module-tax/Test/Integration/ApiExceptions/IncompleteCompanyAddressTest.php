@@ -21,7 +21,7 @@ class IncompleteCompanyAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -50,11 +50,11 @@ class IncompleteCompanyAddressTest extends TestCase
 
     /**
      * Ensure that making an API Request with an incomplete company address results in a generic exception
-     * @magentoConfigFixture default_store tax/vertex_settings/trustedId 0123456789ABCDEF
+     *
+     * @expectedException \Vertex\Exception\ApiException
      */
     public function testSomething()
     {
-        $this->expectException('Vertex\Exception\ApiException');
         $this->quote->request(new Request());
     }
 }

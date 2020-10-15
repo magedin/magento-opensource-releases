@@ -130,7 +130,7 @@ class Sidebar
             $filter = new \Zend_Filter_LocalizedToNormalized(
                 ['locale' => $this->resolver->getLocale()]
             );
-            return $filter->filter((string)$itemQty);
+            return $filter->filter($itemQty);
         }
         return $itemQty;
     }

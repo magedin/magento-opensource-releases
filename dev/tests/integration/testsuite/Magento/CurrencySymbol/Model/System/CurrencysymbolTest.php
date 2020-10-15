@@ -20,14 +20,14 @@ class CurrencysymbolTest extends \PHPUnit\Framework\TestCase
      */
     protected $currencySymbolModel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->currencySymbolModel = Bootstrap::getObjectManager()->create(
             \Magento\CurrencySymbol\Model\System\Currencysymbol::class
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->currencySymbolModel = null;
         Bootstrap::getObjectManager()->get(\Magento\Framework\App\Config\ReinitableConfigInterface::class)->reinit();

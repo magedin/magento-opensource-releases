@@ -3,46 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer\Search;
 
-use Magento\Catalog\Model\Layer\Search\FilterableAttributeList;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FilterableAttributeListTest extends TestCase
+class FilterableAttributeListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FilterableAttributeList
+     * @var \Magento\Catalog\Model\Layer\Search\FilterableAttributeList
      */
     protected $model;
 
     /**
-     * @var MockObject|CollectionFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject|StoreManagerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class,
             ['create']
         );
 
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
-        $this->model = new FilterableAttributeList(
+        $this->model = new \Magento\Catalog\Model\Layer\Search\FilterableAttributeList(
             $this->collectionFactoryMock,
             $this->storeManagerMock
         );
@@ -53,31 +43,33 @@ class FilterableAttributeListTest extends TestCase
      */
     public function testGetList()
     {
-        $storeMock = $this->createMock(Store::class);
-        $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
+        $this->storeManagerMock->expects($this->once())->method('getStore')->will($this->returnValue($storeMock));
 
         $storeId = 4321;
-        $storeMock->expects($this->once())->method('getId')->willReturn($storeId);
+        $storeMock->expects($this->once())->method('getId')->will($this->returnValue($storeId));
 
-        $collectionMock = $this->createMock(Collection::class);
+        $collectionMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class);
         $this->collectionFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($collectionMock);
+            ->will($this->returnValue($collectionMock));
 
         $collectionMock
             ->expects($this->once())
             ->method('setItemObjectClass')
-            ->with(Attribute::class)->willReturnSelf();
+            ->with(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
+            ->will($this->returnSelf());
         $collectionMock
             ->expects($this->once())
-            ->method('addStoreLabel')->willReturnSelf();
+            ->method('addStoreLabel')
+            ->will($this->returnSelf());
         $collectionMock
             ->expects($this->once())
             ->method('setOrder');
 
-        $collectionMock->expects($this->once())->method('addIsFilterableInSearchFilter')->willReturnSelf();
-        $collectionMock->expects($this->once())->method('addVisibleFilter')->willReturnSelf();
+        $collectionMock->expects($this->once())->method('addIsFilterableInSearchFilter')->will($this->returnSelf());
+        $collectionMock->expects($this->once())->method('addVisibleFilter')->will($this->returnSelf());
         $collectionMock->expects($this->once())->method('load');
 
         $this->assertEquals($collectionMock, $this->model->getList());

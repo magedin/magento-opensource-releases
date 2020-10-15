@@ -12,11 +12,11 @@ class DesignAbstractionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Chooser\DesignAbstraction|
-     *      \PHPUnit\Framework\MockObject\MockObject
+     *      \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -27,23 +27,23 @@ class DesignAbstractionTest extends \PHPUnit\Framework\TestCase
         $processorMock = $this->getMockBuilder(\Magento\Framework\View\Layout\ProcessorInterface::class)
             ->setMethods(['isPageLayoutDesignAbstraction'])
             ->getMockForAbstractClass();
-        $processorMock->expects($this->exactly(2))->method('isPageLayoutDesignAbstraction')->willReturnCallback(
-            
+        $processorMock->expects($this->exactly(2))->method('isPageLayoutDesignAbstraction')->will(
+            $this->returnCallback(
                 function ($abstraction) {
                     return $abstraction['design_abstraction'] === 'page_layout';
                 }
-            
+            )
         );
         $processorFactoryMock =
             $this->createPartialMock(\Magento\Framework\View\Layout\ProcessorFactory::class, ['create']);
-        $processorFactoryMock->expects($this->exactly(2))->method('create')->willReturnCallback(
-            
+        $processorFactoryMock->expects($this->exactly(2))->method('create')->will(
+            $this->returnCallback(
                 function ($data) use ($processorMock, $layoutUtility) {
                     return $data === [] ? $processorMock : $layoutUtility->getLayoutUpdateFromFixture(
                         glob(__DIR__ . '/_files/layout/*.xml')
                     );
                 }
-            
+            )
         );
 
         $this->_block = new DesignAbstraction(

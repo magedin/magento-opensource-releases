@@ -11,15 +11,7 @@ define([
     return checkbox.extend({
         defaults: {
             valueFromConfig: '',
-            linkedValue: '',
-            disableParent: false,
-            listens: {
-                disabled: 'processState',
-                checked: 'processState onCheckedChanged'
-            },
-            imports: {
-                readOnly: 'ns = ${ $.ns }, index = stock_data:disabled'
-            }
+            linkedValue: ''
         },
 
         /**
@@ -28,24 +20,13 @@ define([
         initObservable: function () {
             return this
                 ._super()
-                .observe(['valueFromConfig', 'linkedValue', 'disableParent']);
-        },
-
-        /**
-         * Handle checked and disabled changes to calculate disableParent value
-         */
-        processState: function () {
-            this.disableParent(this.checked() || this.readOnly);
-
-            if (this.readOnly) {
-                this.disable();
-            }
+                .observe(['valueFromConfig', 'linkedValue']);
         },
 
         /**
          * @inheritdoc
          */
-        onCheckedChanged: function (newChecked) {
+        'onCheckedChanged': function (newChecked) {
             if (newChecked) {
                 this.linkedValue(this.valueFromConfig());
             }

@@ -3,17 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Placeholder;
 
 use Magento\Config\Model\Placeholder\Environment;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Config\ConfigOptionsListConstants;
+use \PHPUnit_Framework_MockObject_MockObject as Mock;
 
-class EnvironmentTest extends TestCase
+/**
+ * Class EnvironmentTest
+ */
+class EnvironmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Environment
@@ -25,7 +26,7 @@ class EnvironmentTest extends TestCase
      */
     private $deploymentConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()

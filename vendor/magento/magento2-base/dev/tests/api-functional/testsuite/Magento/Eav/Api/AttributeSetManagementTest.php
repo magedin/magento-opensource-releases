@@ -17,7 +17,7 @@ class AttributeSetManagementTest extends WebapiAbstract
      */
     private $createServiceInfo;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->createServiceInfo = [
             'rest' => [
@@ -62,12 +62,11 @@ class AttributeSetManagementTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Invalid value
      */
     public function testCreateThrowsExceptionIfGivenAttributeSetAlreadyHasId()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid value');
-
         $entityTypeCode = 'catalog_product';
         $entityType = $this->getEntityTypeByCode($entityTypeCode);
         $attributeSetName = 'new_attribute_set';
@@ -85,12 +84,11 @@ class AttributeSetManagementTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Invalid value
      */
     public function testCreateThrowsExceptionIfGivenSkeletonIdIsInvalid()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid value');
-
         $entityTypeCode = 'catalog_product';
         $attributeSetName = 'new_attribute_set';
 
@@ -106,12 +104,11 @@ class AttributeSetManagementTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage No such entity
      */
     public function testCreateThrowsExceptionIfGivenSkeletonAttributeSetDoesNotExist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('No such entity');
-
         $attributeSetName = 'new_attribute_set';
         $entityTypeCode = 'catalog_product';
 
@@ -127,12 +124,11 @@ class AttributeSetManagementTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Invalid entity_type specified: invalid_entity_type
      */
     public function testCreateThrowsExceptionIfGivenEntityTypeDoesNotExist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid entity_type specified: invalid_entity_type');
-
         $entityTypeCode = 'catalog_product';
         $entityType = $this->getEntityTypeByCode($entityTypeCode);
         $attributeSetName = 'new_attribute_set';
@@ -149,12 +145,11 @@ class AttributeSetManagementTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage The attribute set name is empty. Enter the name and try again.
      */
     public function testCreateThrowsExceptionIfAttributeSetNameIsEmpty()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The attribute set name is empty. Enter the name and try again.');
-
         $entityTypeCode = 'catalog_product';
         $entityType = $this->getEntityTypeByCode($entityTypeCode);
         $attributeSetName = '';
@@ -190,7 +185,7 @@ class AttributeSetManagementTest extends WebapiAbstract
             $this->_webApiCall($this->createServiceInfo, $arguments);
             $this->fail("Expected exception");
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "SoapFault does not contain expected message."

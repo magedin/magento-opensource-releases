@@ -65,7 +65,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         ]
     ];
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $mapReader = $objectManager->create(DefinitionMap::class);

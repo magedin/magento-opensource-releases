@@ -3,43 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Controller;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Wishlist\Controller\WishlistProvider;
-use Magento\Wishlist\Model\Wishlist;
-use Magento\Wishlist\Model\WishlistFactory;
-use PHPUnit\Framework\TestCase;
-
-class WishlistProviderTest extends TestCase
+class WishlistProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var WishlistProvider
+     * @var \Magento\Wishlist\Controller\WishlistProvider
      */
     protected $wishlistProvider;
 
     /**
-     * @var RequestInterface
+     * @var \Magento\Framework\App\RequestInterface
      */
     protected $request;
 
     /**
-     * @var WishlistFactory
+     * @var \Magento\Wishlist\Model\WishlistFactory
      */
     protected $wishlistFactory;
 
     /**
-     * @var Session
+     * @var \Magento\Customer\Model\Session
      */
     protected $customerSession;
 
     /**
-     * @var ManagerInterface
+     * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
 
@@ -48,20 +37,20 @@ class WishlistProviderTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
-        $this->wishlistFactory = $this->createPartialMock(WishlistFactory::class, ['create']);
+        $this->wishlistFactory = $this->createPartialMock(\Magento\Wishlist\Model\WishlistFactory::class, ['create']);
 
-        $this->customerSession = $this->createPartialMock(Session::class, ['getCustomerId']);
+        $this->customerSession = $this->createPartialMock(\Magento\Customer\Model\Session::class, ['getCustomerId']);
 
-        $this->messageManager = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->messageManager = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
 
         $this->wishlistProvider = $objectManager->getObject(
-            WishlistProvider::class,
+            \Magento\Wishlist\Controller\WishlistProvider::class,
             [
                 'request' => $this->request,
                 'wishlistFactory' => $this->wishlistFactory,
@@ -73,11 +62,11 @@ class WishlistProviderTest extends TestCase
 
     public function testGetWishlist()
     {
-        $wishlist = $this->createMock(Wishlist::class);
+        $wishlist = $this->createMock(\Magento\Wishlist\Model\Wishlist::class);
 
         $this->wishlistFactory->expects($this->once())
             ->method('create')
-            ->willReturn($wishlist);
+            ->will($this->returnValue($wishlist));
 
         $this->assertEquals($wishlist, $this->wishlistProvider->getWishlist());
     }
@@ -85,26 +74,26 @@ class WishlistProviderTest extends TestCase
     public function testGetWishlistWithCustomer()
     {
         $wishlist = $this->createPartialMock(
-            Wishlist::class,
+            \Magento\Wishlist\Model\Wishlist::class,
             ['loadByCustomerId', 'getId', 'getCustomerId', '__wakeup']
         );
         $wishlist->expects($this->once())
             ->method('loadByCustomerId')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $wishlist->expects($this->once())
             ->method('getId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $wishlist->expects($this->once())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->wishlistFactory->expects($this->once())
             ->method('create')
-            ->willReturn($wishlist);
+            ->will($this->returnValue($wishlist));
 
         $this->customerSession->expects($this->once())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->assertEquals($wishlist, $this->wishlistProvider->getWishlist());
     }
@@ -112,31 +101,31 @@ class WishlistProviderTest extends TestCase
     public function testGetWishlistWithIdAndCustomer()
     {
         $wishlist = $this->createPartialMock(
-            Wishlist::class,
+            \Magento\Wishlist\Model\Wishlist::class,
             ['loadByCustomerId', 'load', 'getId', 'getCustomerId', '__wakeup']
         );
 
         $wishlist->expects($this->once())
             ->method('load')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $wishlist->expects($this->any())
             ->method('getId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $wishlist->expects($this->once())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->wishlistFactory->expects($this->once())
             ->method('create')
-            ->willReturn($wishlist);
+            ->will($this->returnValue($wishlist));
 
         $this->request->expects($this->once())
             ->method('getParam')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->customerSession->expects($this->once())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->assertEquals($wishlist, $this->wishlistProvider->getWishlist());
     }
@@ -144,28 +133,28 @@ class WishlistProviderTest extends TestCase
     public function testGetWishlistWithIdWithoutCustomer()
     {
         $wishlist = $this->createPartialMock(
-            Wishlist::class,
+            \Magento\Wishlist\Model\Wishlist::class,
             ['loadByCustomerId', 'load', 'getId', 'getCustomerId', '__wakeup']
         );
 
         $wishlist->expects($this->once())
             ->method('load')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
         $wishlist->expects($this->any())
             ->method('getId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $wishlist->expects($this->once())
             ->method('getCustomerId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->wishlistFactory->expects($this->once())
             ->method('create')
-            ->willReturn($wishlist);
+            ->will($this->returnValue($wishlist));
 
         $this->request->expects($this->once())
             ->method('getParam')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
-        $this->assertFalse($this->wishlistProvider->getWishlist());
+        $this->assertEquals(false, $this->wishlistProvider->getWishlist());
     }
 }

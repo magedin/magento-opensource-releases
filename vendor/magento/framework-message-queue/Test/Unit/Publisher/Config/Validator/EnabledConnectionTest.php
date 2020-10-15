@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © Magento, Inc. All rights reserved.
@@ -7,17 +7,16 @@
 
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config\Validator;
 
-use Magento\Framework\MessageQueue\Publisher\Config\Validator\EnabledConnection;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\MessageQueue\Publisher\Config\Validator\EnabledConnection;
 
-class EnabledConnectionTest extends TestCase
+class EnabledConnectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EnabledConnection
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new EnabledConnection();
     }

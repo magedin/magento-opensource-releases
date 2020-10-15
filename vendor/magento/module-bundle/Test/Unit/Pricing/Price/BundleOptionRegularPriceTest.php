@@ -7,21 +7,19 @@ declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Pricing\Price;
 
-use Magento\Bundle\Model\ResourceModel\Option\Collection;
-use Magento\Bundle\Model\Selection;
-use Magento\Bundle\Pricing\Adjustment\Calculator;
-use Magento\Bundle\Pricing\Price\BundleOptionRegularPrice;
-use Magento\Bundle\Pricing\Price\BundleOptions;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Pricing\Amount\AmountInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Bundle\Pricing\Price\BundleOptionRegularPrice;
+use Magento\Catalog\Model\Product;
+use Magento\Bundle\Pricing\Adjustment\Calculator;
+use Magento\Bundle\Pricing\Price\BundleOptions;
+use Magento\Bundle\Model\ResourceModel\Option\Collection;
+use Magento\Framework\Pricing\Amount\AmountInterface;
+use Magento\Bundle\Model\Selection;
 
 /**
  * Test for Magento\Bundle\Pricing\Price\BundleRegularPrice
  */
-class BundleOptionRegularPriceTest extends TestCase
+class BundleOptionRegularPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BundleOptionRegularPrice
@@ -34,24 +32,24 @@ class BundleOptionRegularPriceTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $saleableItemMock;
 
     /**
-     * @var Calculator|MockObject
+     * @var Calculator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $bundleCalculatorMock;
 
     /**
-     * @var BundleOptions|MockObject
+     * @var BundleOptions|\PHPUnit_Framework_MockObject_MockObject
      */
     private $bundleOptionsMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->bundleOptionsMock = $this->createMock(BundleOptions::class);
         $this->saleableItemMock = $this->createMock(Product::class);
@@ -79,7 +77,7 @@ class BundleOptionRegularPriceTest extends TestCase
         $collection = $this->createMock(Collection::class);
         $this->bundleOptionsMock->expects($this->any())
             ->method('getOptions')
-            ->willReturn($collection);
+            ->will($this->returnValue($collection));
         $this->assertEquals($collection, $this->bundleOptionRegularPrice->getOptions());
     }
 
@@ -90,12 +88,12 @@ class BundleOptionRegularPriceTest extends TestCase
      */
     public function testGetOptionSelectionAmount()
     {
-        $selectionAmount = $this->getMockForAbstractClass(AmountInterface::class);
+        $selectionAmount = $this->createMock(AmountInterface::class);
         $product = $this->createMock(Product::class);
         $selection = $this->createMock(Selection::class);
         $this->bundleOptionsMock->expects($this->any())
             ->method('getOptionSelectionAmount')
-            ->willReturn($selectionAmount)
+            ->will($this->returnValue($selectionAmount))
             ->with($product, $selection, true);
         $this->assertEquals($selectionAmount, $this->bundleOptionRegularPrice->getOptionSelectionAmount($selection));
     }
@@ -107,11 +105,11 @@ class BundleOptionRegularPriceTest extends TestCase
      */
     public function testGetAmount()
     {
-        $amountMock = $this->getMockForAbstractClass(AmountInterface::class);
+        $amountMock = $this->createMock(AmountInterface::class);
         $this->bundleCalculatorMock->expects($this->once())
             ->method('getOptionsAmount')
-            ->with($this->saleableItemMock)
-            ->willReturn($amountMock);
+            ->with($this->equalTo($this->saleableItemMock))
+            ->will($this->returnValue($amountMock));
         $this->assertSame($amountMock, $this->bundleOptionRegularPrice->getAmount());
     }
 
@@ -122,8 +120,8 @@ class BundleOptionRegularPriceTest extends TestCase
      */
     public function testGetValue()
     {
-        $value = 1.0;
-        $this->bundleOptionsMock->expects($this->any())->method('calculateOptions')->willReturn($value);
+        $value = 1;
+        $this->bundleOptionsMock->expects($this->any())->method('calculateOptions')->will($this->returnValue($value));
         $this->assertEquals($value, $this->bundleOptionRegularPrice->getValue());
     }
 }

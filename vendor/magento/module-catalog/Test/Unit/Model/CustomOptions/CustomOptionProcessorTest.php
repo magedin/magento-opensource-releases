@@ -3,112 +3,97 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\CustomOptions;
 
-use Magento\Catalog\Api\Data\CustomOptionInterface;
-use Magento\Catalog\Model\CustomOptions\CustomOption;
-use Magento\Catalog\Model\CustomOptions\CustomOptionFactory;
 use Magento\Catalog\Model\CustomOptions\CustomOptionProcessor;
-use Magento\Framework\DataObject;
-use Magento\Framework\DataObject\Factory;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Quote\Api\Data\CartItemInterface;
-use Magento\Quote\Api\Data\ProductOptionExtensionFactory;
-use Magento\Quote\Api\Data\ProductOptionExtensionInterface;
-use Magento\Quote\Model\Quote\Item\Option;
-use Magento\Quote\Model\Quote\ProductOption;
-use Magento\Quote\Model\Quote\ProductOptionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CustomOptionProcessorTest extends TestCase
+class CustomOptionProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\DataObject\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectFactory;
 
     /**
-     * @var ProductOptionFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\ProductOptionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productOptionFactory;
 
     /**
-     * @var ProductOptionExtensionFactory|MockObject
+     * @var \Magento\Quote\Api\Data\ProductOptionExtensionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $extensionFactory;
 
     /**
-     * @var CustomOptionFactory|MockObject
+     * @var \Magento\Catalog\Model\CustomOptions\CustomOptionFactory
+     * |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customOptionFactory;
 
-    /** @var CartItemInterface|MockObject */
+    /** @var \Magento\Quote\Api\Data\CartItemInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $cartItem;
 
-    /** @var ProductOptionExtensionInterface|MockObject */
+    /** @var \Magento\Quote\Api\Data\ProductOptionExtensionInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $extensibleAttribute;
 
-    /** @var ProductOption|MockObject */
+    /** @var \Magento\Quote\Model\Quote\ProductOption|\PHPUnit_Framework_MockObject_MockObject */
     protected $productOption;
 
-    /** @var CustomOption|MockObject */
+    /** @var \Magento\Catalog\Model\CustomOptions\CustomOption|\PHPUnit_Framework_MockObject_MockObject */
     protected $customOption;
 
-    /** @var DataObject|MockObject */
+    /** @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject */
     protected $buyRequest;
 
     /** @var CustomOptionProcessor */
     protected $processor;
 
-    /** @var Json */
+    /** @var \Magento\Framework\Serialize\Serializer\Json */
     private $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectFactory = $this->getMockBuilder(Factory::class)
+        $this->objectFactory = $this->getMockBuilder(\Magento\Framework\DataObject\Factory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->productOptionFactory = $this->getMockBuilder(ProductOptionFactory::class)
+        $this->productOptionFactory = $this->getMockBuilder(\Magento\Quote\Model\Quote\ProductOptionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->extensionFactory = $this->getMockBuilder(ProductOptionExtensionFactory::class)
+        $this->extensionFactory = $this->getMockBuilder(\Magento\Quote\Api\Data\ProductOptionExtensionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->customOptionFactory = $this->getMockBuilder(
-            CustomOptionFactory::class
+            \Magento\Catalog\Model\CustomOptions\CustomOptionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->cartItem = $this->getMockBuilder(CartItemInterface::class)
+        $this->cartItem = $this->getMockBuilder(\Magento\Quote\Api\Data\CartItemInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOptionByCode', 'getProductOption', 'setProductOption'])
             ->getMockForAbstractClass();
         $this->extensibleAttribute = $this->getMockBuilder(
-            ProductOptionExtensionInterface::class
+            \Magento\Quote\Api\Data\ProductOptionExtensionInterface::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['setCustomOptions', 'getCustomOptions'])
             ->getMockForAbstractClass();
-        $this->productOption = $this->getMockBuilder(ProductOption::class)
+        $this->productOption = $this->getMockBuilder(\Magento\Quote\Model\Quote\ProductOption::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customOption = $this->getMockBuilder(CustomOptionInterface::class)
+        $this->customOption = $this->getMockBuilder(\Magento\Catalog\Api\Data\CustomOptionInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->buyRequest = $this->getMockBuilder(DataObject::class)
+        $this->buyRequest = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->setMethods(['unserialize'])
             ->getMockForAbstractClass();
 
@@ -153,7 +138,7 @@ class CustomOptionProcessorTest extends TestCase
     public function testProcessCustomOptions()
     {
         $optionId = 23;
-        $quoteItemOption = $this->getMockBuilder(Option::class)
+        $quoteItemOption = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->cartItem->expects($this->atLeastOnce())

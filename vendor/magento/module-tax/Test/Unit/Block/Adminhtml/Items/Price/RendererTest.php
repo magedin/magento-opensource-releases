@@ -3,37 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Block\Adminhtml\Items\Price;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn;
-use Magento\Sales\Model\Order\Item;
-use Magento\Tax\Block\Adminhtml\Items\Price\Renderer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Renderer
+     * @var \Magento\Tax\Block\Adminhtml\Items\Price\Renderer
      */
     protected $renderer;
 
     /**
-     * @var \Magento\Tax\Block\Item\Price\Renderer|MockObject
+     * @var \Magento\Tax\Block\Item\Price\Renderer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemPriceRenderer;
 
     /**
-     * @var DefaultColumn|MockObject
+     * @var \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $defaultColumnRenderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->itemPriceRenderer = $this->getMockBuilder(\Magento\Tax\Block\Item\Price\Renderer::class)
             ->disableOriginalConstructor()
@@ -49,13 +40,13 @@ class RendererTest extends TestCase
             ->getMock();
 
         $this->defaultColumnRenderer = $this->getMockBuilder(
-            DefaultColumn::class
+            \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn::class
         )->disableOriginalConstructor()
             ->setMethods(['displayPrices'])
             ->getMock();
 
         $this->renderer = $objectManager->getObject(
-            Renderer::class,
+            \Magento\Tax\Block\Adminhtml\Items\Price\Renderer::class,
             [
                 'itemPriceRenderer' => $this->itemPriceRenderer,
                 'defaultColumnRenderer' => $this->defaultColumnRenderer,
@@ -68,7 +59,7 @@ class RendererTest extends TestCase
         $flag = false;
         $this->itemPriceRenderer->expects($this->once())
             ->method('displayPriceInclTax')
-            ->willReturn($flag);
+            ->will($this->returnValue($flag));
 
         $this->assertEquals($flag, $this->renderer->displayPriceInclTax());
     }
@@ -78,7 +69,7 @@ class RendererTest extends TestCase
         $flag = true;
         $this->itemPriceRenderer->expects($this->once())
             ->method('displayPriceExclTax')
-            ->willReturn($flag);
+            ->will($this->returnValue($flag));
 
         $this->assertEquals($flag, $this->renderer->displayPriceExclTax());
     }
@@ -88,7 +79,7 @@ class RendererTest extends TestCase
         $flag = true;
         $this->itemPriceRenderer->expects($this->once())
             ->method('displayBothPrices')
-            ->willReturn($flag);
+            ->will($this->returnValue($flag));
 
         $this->assertEquals($flag, $this->renderer->displayBothPrices());
     }
@@ -102,7 +93,7 @@ class RendererTest extends TestCase
         $this->defaultColumnRenderer->expects($this->once())
             ->method('displayPrices')
             ->with($basePrice, $price)
-            ->willReturn($display);
+            ->will($this->returnValue($display));
 
         $this->assertEquals($display, $this->renderer->displayPrices($basePrice, $price));
     }
@@ -115,7 +106,7 @@ class RendererTest extends TestCase
         $this->itemPriceRenderer->expects($this->once())
             ->method('formatPrice')
             ->with($price)
-            ->willReturn($display);
+            ->will($this->returnValue($display));
 
         $this->assertEquals($display, $this->renderer->formatPrice($price));
     }
@@ -123,14 +114,14 @@ class RendererTest extends TestCase
     public function testGetTotalAmount()
     {
         $totalAmount = 10;
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->itemPriceRenderer->expects($this->once())
             ->method('getTotalAmount')
             ->with($itemMock)
-            ->willReturn($totalAmount);
+            ->will($this->returnValue($totalAmount));
 
         $this->assertEquals($totalAmount, $this->renderer->getTotalAmount($itemMock));
     }

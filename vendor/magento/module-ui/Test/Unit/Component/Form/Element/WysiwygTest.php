@@ -3,42 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form\Element;
 
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\Editor;
-use Magento\Framework\Data\FormFactory;
 use Magento\Framework\DataObject;
-use Magento\Ui\Component\Form\Element\AbstractElement;
 use Magento\Ui\Component\Form\Element\Wysiwyg;
+use Magento\Framework\Data\Form\Element\Editor;
+use Magento\Framework\Data\Form;
+use Magento\Framework\Data\FormFactory;
 use Magento\Ui\Component\Wysiwyg\ConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class WysiwygTest
+ */
 class WysiwygTest extends AbstractElementTest
 {
     /**
-     * @var FormFactory|MockObject
+     * @var FormFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $formFactoryMock;
 
     /**
-     * @var Form|MockObject
+     * @var Form|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $formMock;
 
     /**
-     * @var Editor|MockObject
+     * @var Editor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $editorMock;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $wysiwygConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->formFactoryMock = $this->getMockBuilder(FormFactory::class)
@@ -71,7 +70,7 @@ class WysiwygTest extends AbstractElementTest
     }
 
     /**
-     * @return AbstractElement|object
+     * @return \Magento\Ui\Component\Form\Element\AbstractElement|object
      */
     protected function getModel()
     {

@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GiftMessage\Test\Unit\Model;
 
-use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\GiftMessage\Model\CompositeConfigProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CompositeConfigProviderTest extends TestCase
+class CompositeConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CompositeConfigProvider
+     * @var \Magento\GiftMessage\Model\CompositeConfigProvider
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $configProviderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configProviderMock = $this->getMockForAbstractClass(ConfigProviderInterface::class);
-        $this->model = new CompositeConfigProvider([$this->configProviderMock]);
+        $this->configProviderMock = $this->createMock(\Magento\Checkout\Model\ConfigProviderInterface::class);
+        $this->model = new \Magento\GiftMessage\Model\CompositeConfigProvider([$this->configProviderMock]);
     }
 
     public function testGetConfig()

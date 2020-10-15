@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Config\Consumer;
 
 use Magento\Framework\MessageQueue\Config\Consumer\ConfigReaderPlugin as ConsumerConfigReaderPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\MessageQueue\ConfigInterface;
 use Magento\Framework\MessageQueue\Consumer\Config\CompositeReader as ConsumerConfigCompositeReader;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigReaderPluginTest extends TestCase
+class ConfigReaderPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConsumerConfigReaderPlugin
@@ -27,16 +23,16 @@ class ConfigReaderPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var ConsumerConfigCompositeReader|MockObject
+     * @var ConsumerConfigCompositeReader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configMock = $this->getMockBuilder(ConfigInterface::class)
             ->getMockForAbstractClass();

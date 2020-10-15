@@ -8,11 +8,11 @@ namespace Magento\Setup\Model;
 class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerProvider;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $this->objectManagerProvider
@@ -39,7 +39,7 @@ class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $serviceLocator = $this->getMockForAbstractClass(\Laminas\ServiceManager\ServiceLocatorInterface::class);
+        $serviceLocator = $this->getMockForAbstractClass(\Zend\ServiceManager\ServiceLocatorInterface::class);
 
         $serviceLocator->expects($this->once())
             ->method('get')

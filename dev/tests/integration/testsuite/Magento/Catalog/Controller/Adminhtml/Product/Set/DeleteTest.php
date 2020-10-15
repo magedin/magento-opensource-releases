@@ -54,7 +54,7 @@ class DeleteTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->getAttributeSetByName = $this->_objectManager->get(GetAttributeSetByName::class);

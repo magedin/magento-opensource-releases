@@ -3,56 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Robots\Test\Unit\Controller;
 
-use Magento\Framework\App\ActionFactory;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Route\ConfigInterface;
-use Magento\Framework\App\Router\ActionList;
-use Magento\Robots\Controller\Index\Index;
-use Magento\Robots\Controller\Router;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RouterTest extends TestCase
+class RouterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ActionFactory|MockObject
+     * @var \Magento\Framework\App\ActionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $actionFactoryMock;
 
     /**
-     * @var ActionList|MockObject
+     * @var \Magento\Framework\App\Router\ActionList|\PHPUnit_Framework_MockObject_MockObject
      */
     private $actionListMock;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\App\Route\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $routeConfigMock;
 
     /**
-     * @var Router
+     * @var \Magento\Robots\Controller\Router
      */
     private $router;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->actionFactoryMock = $this->getMockBuilder(ActionFactory::class)
+        $this->actionFactoryMock = $this->getMockBuilder(\Magento\Framework\App\ActionFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->actionListMock = $this->getMockBuilder(ActionList::class)
+        $this->actionListMock = $this->getMockBuilder(\Magento\Framework\App\Router\ActionList::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->routeConfigMock = $this->getMockBuilder(ConfigInterface::class)
+        $this->routeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Route\ConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->router = new Router(
+        $this->router = new \Magento\Robots\Controller\Router(
             $this->actionFactoryMock,
             $this->actionListMock,
             $this->routeConfigMock
@@ -66,7 +56,7 @@ class RouterTest extends TestCase
     {
         $identifier = 'test';
 
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods(['getPathInfo'])
             ->getMockForAbstractClass();
         $requestMock->expects($this->once())
@@ -83,7 +73,7 @@ class RouterTest extends TestCase
     {
         $identifier = 'robots.txt';
 
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods(['getPathInfo'])
             ->getMockForAbstractClass();
         $requestMock->expects($this->once())
@@ -105,9 +95,9 @@ class RouterTest extends TestCase
     {
         $identifier = 'robots.txt';
         $moduleName = 'Magento_Robots';
-        $actionClassName = Index::class;
+        $actionClassName = \Magento\Robots\Controller\Index\Index::class;
 
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods(['getPathInfo'])
             ->getMockForAbstractClass();
         $requestMock->expects($this->once())
@@ -124,7 +114,7 @@ class RouterTest extends TestCase
             ->with($moduleName, null, 'index', 'index')
             ->willReturn($actionClassName);
 
-        $actionClassMock = $this->getMockBuilder(Index::class)
+        $actionClassMock = $this->getMockBuilder(\Magento\Robots\Controller\Index\Index::class)
             ->disableOriginalConstructor()
             ->getMock();
 

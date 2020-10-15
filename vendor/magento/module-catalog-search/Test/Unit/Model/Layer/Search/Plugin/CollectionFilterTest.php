@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\Layer\Search\Plugin;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Layer\Search\CollectionFilter;
 use Magento\CatalogSearch\Model\Layer\Search\Plugin\CollectionFilter as CollectionFilterPlugin;
+use Magento\Catalog\Model\Layer\Search\CollectionFilter;
+use Magento\Catalog\Model\Category;
+use Magento\Search\Model\QueryFactory;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Search\Model\Query;
-use Magento\Search\Model\QueryFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CollectionFilterTest extends TestCase
+class CollectionFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CollectionFilterPlugin
@@ -25,27 +21,27 @@ class CollectionFilterTest extends TestCase
     private $plugin;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionMock;
 
     /**
-     * @var Category|MockObject
+     * @var Category|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryMock;
 
     /**
-     * @var QueryFactory|MockObject
+     * @var QueryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryFactoryMock;
 
     /**
-     * @var CollectionFilter|MockObject
+     * @var CollectionFilter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFilterMock;
 
     /**
-     * @var Query|MockObject
+     * @var Query|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryMock;
 
@@ -54,7 +50,7 @@ class CollectionFilterTest extends TestCase
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 

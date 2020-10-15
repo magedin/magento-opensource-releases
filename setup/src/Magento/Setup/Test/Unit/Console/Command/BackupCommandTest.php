@@ -3,33 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console\Command;
 
 use Magento\Framework\App\Console\MaintenanceModeEnabler;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\MaintenanceMode;
-use Magento\Framework\App\State;
-use Magento\Framework\ObjectManager\ConfigLoaderInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Setup\BackupRollback;
-use Magento\Framework\Setup\BackupRollbackFactory;
 use Magento\Setup\Console\Command\BackupCommand;
-use Magento\Setup\Model\ObjectManagerProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class BackupCommandTest extends TestCase
+class BackupCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
     /**
-     * @var BackupRollback|MockObject
+     * @var \Magento\Framework\Setup\BackupRollback|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupRollback;
 
@@ -39,35 +27,35 @@ class BackupCommandTest extends TestCase
     private $tester;
 
     /**
-     * @var BackupRollbackFactory|MockObject
+     * @var \Magento\Framework\Setup\BackupRollbackFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupRollbackFactory;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfig;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $maintenanceMode = $this->createMock(MaintenanceMode::class);
-        $objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        $maintenanceMode = $this->createMock(\Magento\Framework\App\MaintenanceMode::class);
+        $objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $this->objectManager = $this->getMockForAbstractClass(
-            ObjectManagerInterface::class,
+            \Magento\Framework\ObjectManagerInterface::class,
             [],
             '',
             false
         );
         $objectManagerProvider->expects($this->any())->method('get')->willReturn($this->objectManager);
-        $this->backupRollback = $this->createMock(BackupRollback::class);
-        $this->backupRollbackFactory = $this->createMock(BackupRollbackFactory::class);
+        $this->backupRollback = $this->createMock(\Magento\Framework\Setup\BackupRollback::class);
+        $this->backupRollbackFactory = $this->createMock(\Magento\Framework\Setup\BackupRollbackFactory::class);
         $this->backupRollbackFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->backupRollback);
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
-        $appState = $this->createMock(State::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $appState = $this->createMock(\Magento\Framework\App\State::class);
         $configLoader = $this->getMockForAbstractClass(
-            ConfigLoaderInterface::class,
+            \Magento\Framework\ObjectManager\ConfigLoaderInterface::class,
             [],
             '',
             false
@@ -76,12 +64,12 @@ class BackupCommandTest extends TestCase
 
         $this->objectManager->expects($this->any())
             ->method('get')
-            ->willReturnMap(
-                [
-                    [BackupRollbackFactory::class, $this->backupRollbackFactory],
-                    [State::class, $appState],
-                    [ConfigLoaderInterface::class, $configLoader],
-                ]
+            ->will(
+                $this->returnValueMap([
+                    [\Magento\Framework\Setup\BackupRollbackFactory::class, $this->backupRollbackFactory],
+                    [\Magento\Framework\App\State::class, $appState],
+                    [\Magento\Framework\ObjectManager\ConfigLoaderInterface::class, $configLoader],
+                ])
             );
         $command = new BackupCommand(
             $objectManagerProvider,
@@ -96,7 +84,7 @@ class BackupCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('codeBackup')
             ->willReturn($this->backupRollback);
@@ -107,7 +95,7 @@ class BackupCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('codeBackup')
             ->willReturn($this->backupRollback);
@@ -118,7 +106,7 @@ class BackupCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('dbBackup')
             ->willReturn($this->backupRollback);
@@ -129,7 +117,7 @@ class BackupCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->tester->execute(['--db' => true]);
         $this->assertStringMatchesFormat(
             'No information is available: the Magento application is not installed.%w',
@@ -141,7 +129,7 @@ class BackupCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->tester->execute([]);
         $expected = 'Enabling maintenance mode' . PHP_EOL
             . 'Not enough information provided to take backup.' . PHP_EOL

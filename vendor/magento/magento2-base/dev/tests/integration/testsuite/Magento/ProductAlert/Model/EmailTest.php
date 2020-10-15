@@ -7,11 +7,8 @@
 namespace Magento\ProductAlert\Model;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\MailException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\ProductAlert\Model\Email;
 use Magento\Store\Model\Website;
 use Magento\TestFramework\Mail\Template\TransportBuilderMock;
 
@@ -33,7 +30,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
     protected $_objectManager;
 
     /**
-     * @var AccountManagementInterface
+     * @var \Magento\Customer\Api\AccountManagementInterface
      */
     protected $customerAccountManagement;
 
@@ -60,11 +57,11 @@ class EmailTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->customerAccountManagement = $this->_objectManager->create(
-            AccountManagementInterface::class
+            \Magento\Customer\Api\AccountManagementInterface::class
         );
         $this->_customerViewHelper = $this->_objectManager->create(\Magento\Customer\Helper\View::class);
         $this->transportBuilder = $this->_objectManager->get(TransportBuilderMock::class);
@@ -81,9 +78,6 @@ class EmailTest extends \PHPUnit\Framework\TestCase
      * @dataProvider customerFunctionDataProvider
      *
      * @param bool isCustomerIdUsed
-     * @throws LocalizedException
-     * @throws MailException
-     * @throws NoSuchEntityException
      */
     public function testSend($isCustomerIdUsed)
     {
@@ -106,9 +100,9 @@ class EmailTest extends \PHPUnit\Framework\TestCase
         $this->_emailModel->addPriceProduct($product);
         $this->_emailModel->send();
 
-        $this->assertStringContainsString(
-            'John Smith,',
-            $this->transportBuilder->getSentMessage()->getBody()->getParts()[0]->getRawContent()
+        $this->assertContains(
+            'Smith,',
+            $this->transportBuilder->getSentMessage()->getRawMessage()
         );
     }
 
@@ -128,9 +122,6 @@ class EmailTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Customer/_files/two_customers_with_different_customer_groups.php
      *
      * @return void
-     * @throws LocalizedException
-     * @throws MailException
-     * @throws NoSuchEntityException
      */
     public function testEmailForDifferentCustomers(): void
     {
@@ -159,7 +150,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
                 . $expectedPrice . '" data-price-type="finalPrice" '
                 . 'class="price-wrapper "><span class="price">$' . $expectedPrice . '.00</span></span>';
 
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedPriceBox,
                 $this->transportBuilder->getSentMessage()->getBody()->getParts()[0]->getRawContent()
             );

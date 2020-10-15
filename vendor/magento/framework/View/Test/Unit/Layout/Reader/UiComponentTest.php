@@ -3,64 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Framework\View\Layout\Reader\UiComponent
  */
 namespace Magento\Framework\View\Test\Unit\Layout\Reader;
 
-use Magento\Framework\Config\DataInterface;
-use Magento\Framework\Config\DataInterfaceFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Layout\AclCondition;
 use Magento\Framework\View\Layout\ConfigCondition;
-use Magento\Framework\View\Layout\Element;
 use Magento\Framework\View\Layout\Reader\Context;
 use Magento\Framework\View\Layout\Reader\UiComponent;
 use Magento\Framework\View\Layout\Reader\Visibility\Condition;
+use Magento\Framework\View\Layout\ScheduledStructure\Helper;
+use Magento\Framework\Config\DataInterfaceFactory;
+use Magento\Framework\Config\DataInterface;
+use Magento\Framework\View\Layout\Element;
 use Magento\Framework\View\Layout\ReaderPool;
 use Magento\Framework\View\Layout\ScheduledStructure;
-use Magento\Framework\View\Layout\ScheduledStructure\Helper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class UiComponentTest extends TestCase
+class UiComponentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UiComponent
+     * @var \Magento\Framework\View\Layout\Reader\UiComponent
      */
     protected $model;
 
     /**
-     * @var Helper|MockObject
+     * @var Helper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helper;
 
     /**
-     * @var DataInterfaceFactory|MockObject
+     * @var DataInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataConfigFactory;
 
     /**
-     * @var DataInterface|MockObject
+     * @var DataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataConfig;
 
     /**
-     * @var ReaderPool|MockObject
+     * @var ReaderPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readerPool;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helper = $this->getMockBuilder(Helper::class)
             ->setMethods(['scheduleStructure'])
@@ -76,7 +70,7 @@ class UiComponentTest extends TestCase
             ->getMock();
         $this->dataConfig = $this->getMockBuilder(DataInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->readerPool = $this->getMockBuilder(ReaderPool::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -101,8 +95,8 @@ class UiComponentTest extends TestCase
         $scheduleStructure = $this->getMockBuilder(ScheduledStructure::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->context->expects($this->any())->method('getScheduledStructure')->willReturn(
-            $scheduleStructure
+        $this->context->expects($this->any())->method('getScheduledStructure')->will(
+            $this->returnValue($scheduleStructure)
         );
         $this->helper->expects($this->any())->method('scheduleStructure')->with(
             $scheduleStructure,

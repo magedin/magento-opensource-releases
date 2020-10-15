@@ -20,7 +20,7 @@ class GuestShipmentEstimationTest extends WebapiAbstract
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -100,7 +100,7 @@ class GuestShipmentEstimationTest extends WebapiAbstract
 
         $result = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertNotEmpty($result);
-        $this->assertCount(1, $result);
+        $this->assertEquals(1, count($result));
         foreach ($result as $rate) {
             $this->assertEquals("flatrate", $rate['carrier_code']);
             $this->assertEquals(0, $rate['amount']);

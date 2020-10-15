@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Checks;
 
-use Magento\Payment\Model\Checks\ZeroTotal;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Checks\ZeroTotal;
 
-class ZeroTotalTest extends TestCase
+class ZeroTotalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider paymentMethodDataProvider
@@ -22,25 +18,25 @@ class ZeroTotalTest extends TestCase
      */
     public function testIsApplicable($code, $total, $expectation)
     {
-        $paymentMethod = $this->getMockBuilder(MethodInterface::class)
+        $paymentMethod = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         if (!$total) {
             $paymentMethod->expects($this->once())
                 ->method('getCode')
-                ->willReturn($code);
+                ->will($this->returnValue($code));
         }
 
-        $quote = $this->getMockBuilder(Quote::class)
+        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->setMethods(['getBaseGrandTotal', '__wakeup'])
             ->getMock();
 
         $quote->expects($this->once())
             ->method('getBaseGrandTotal')
-            ->willReturn($total);
+            ->will($this->returnValue($total));
 
         $model = new ZeroTotal();
         $this->assertEquals($expectation, $model->isApplicable($paymentMethod, $quote));

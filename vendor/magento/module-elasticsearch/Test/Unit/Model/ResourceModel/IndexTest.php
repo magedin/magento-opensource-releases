@@ -3,125 +3,98 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Indexer\Product\Price\DimensionCollectionFactory;
-use Magento\CatalogSearch\Model\ResourceModel\Fulltext;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\Option;
-use Magento\Elasticsearch\Model\ResourceModel\Index;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Indexer\MultiDimensionProvider;
-use Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Search\Request\IndexScopeResolverInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Index
+     * @var \Magento\Elasticsearch\Model\ResourceModel\Index
      */
     private $model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManager;
 
     /**
-     * @var ProductRepositoryInterface|MockObject
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productRepository;
 
     /**
-     * @var CategoryRepositoryInterface|MockObject
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryRepository;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavConfig;
 
     /**
-     * @var Fulltext|MockObject
+     * @var \Magento\CatalogSearch\Model\ResourceModel\Fulltext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fullText;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManager;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPool;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
     /**
-     * @var CategoryInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $category;
 
     /**
-     * @var ProductAttributeInterface|MockObject
+     * @var \Magento\Catalog\Api\Data\ProductAttributeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productAttributeInterface;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $select;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resources;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeInterface;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $tableResolver;
 
@@ -131,29 +104,29 @@ class IndexTest extends TestCase
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getStore',
             ])
             ->getMockForAbstractClass();
 
-        $this->storeInterface = $this->getMockBuilder(StoreInterface::class)
+        $this->storeInterface = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getWebsiteId',
             ])
             ->getMockForAbstractClass();
 
-        $this->productRepository = $this->getMockBuilder(ProductRepositoryInterface::class)
+        $this->productRepository = $this->getMockBuilder(\Magento\Catalog\Api\ProductRepositoryInterface::class)
             ->getMockForAbstractClass();
 
-        $this->categoryRepository = $this->getMockBuilder(CategoryRepositoryInterface::class)
+        $this->categoryRepository = $this->getMockBuilder(\Magento\Catalog\Api\CategoryRepositoryInterface::class)
             ->getMockForAbstractClass();
 
-        $this->eavConfig = $this->getMockBuilder(Config::class)
+        $this->eavConfig = $this->getMockBuilder(\Magento\Eav\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getEntityAttributeCodes',
@@ -161,11 +134,11 @@ class IndexTest extends TestCase
             ])
             ->getMock();
 
-        $this->fullText = $this->getMockBuilder(Fulltext::class)
+        $this->fullText = $this->getMockBuilder(\Magento\CatalogSearch\Model\ResourceModel\Fulltext::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\Context::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getTransactionManager',
@@ -174,29 +147,29 @@ class IndexTest extends TestCase
             ])
             ->getMock();
 
-        $this->eventManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->setMethods(['dispatch'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->product = $this->getMockBuilder(ProductInterface::class)
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getData',
             ])
             ->getMockForAbstractClass();
 
-        $this->category = $this->getMockBuilder(CategoryInterface::class)
+        $this->category = $this->getMockBuilder(\Magento\Catalog\Api\Data\CategoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getName',
             ])
             ->getMockForAbstractClass();
 
-        $this->connection = $this->getMockBuilder(AdapterInterface::class)
+        $this->connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->select = $this->getMockBuilder(Select::class)
+        $this->select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'distinct',
@@ -207,7 +180,7 @@ class IndexTest extends TestCase
             ])
             ->getMock();
 
-        $this->resources = $this->getMockBuilder(ResourceConnection::class)
+        $this->resources = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getConnection',
@@ -216,7 +189,7 @@ class IndexTest extends TestCase
             ])
             ->getMock();
 
-        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getMetadata',
@@ -243,11 +216,11 @@ class IndexTest extends TestCase
 
         $objectManager = new ObjectManagerHelper($this);
 
-        $connection = $this->getMockBuilder(AdapterInterface::class)
+        $connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $resource = $this->getMockBuilder(ResourceConnection::class)
+        $resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->setMethods([
                 'getConnection',
                 'getTableName'
@@ -260,28 +233,28 @@ class IndexTest extends TestCase
         $resource->expects($this->any())->method('getTableName')->willReturnArgument(0);
 
         $this->tableResolver = $objectManager->getObject(
-            IndexScopeResolver::class,
+            \Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver::class,
             [
                 'resource' => $resource
             ]
         );
 
         $traversableMock = $this->createMock(\Traversable::class);
-        $dimensionsMock = $this->createMock(MultiDimensionProvider::class);
+        $dimensionsMock = $this->createMock(\Magento\Framework\Indexer\MultiDimensionProvider::class);
         $dimensionsMock->method('getIterator')->willReturn($traversableMock);
 
         $indexScopeResolverMock = $this->createMock(
-            IndexScopeResolverInterface::class
+            \Magento\Framework\Search\Request\IndexScopeResolverInterface::class
         );
 
         $dimensionFactoryMock = $this->createMock(
-            DimensionCollectionFactory::class
+            \Magento\Catalog\Model\Indexer\Product\Price\DimensionCollectionFactory::class
         );
         $dimensionFactoryMock->method('create')->willReturn($dimensionsMock);
         $indexScopeResolverMock->method('resolve')->willReturn('catalog_product_index_price');
 
         $this->model = $objectManager->getObject(
-            Index::class,
+            \Magento\Elasticsearch\Model\ResourceModel\Index::class,
             [
                 'context' => $this->context,
                 'storeManager' => $this->storeManager,
@@ -413,7 +386,7 @@ class IndexTest extends TestCase
                     1 => 1,
                 ],
             ],
-            $this->model->getCategoryProductIndexData(1, [1])
+            $this->model->getCategoryProductIndexData(1, [1, ])
         );
     }
 
@@ -455,9 +428,9 @@ class IndexTest extends TestCase
         $connection->expects($this->once())
             ->method('fetchCol')
             ->with($select)
-            ->willReturn([1]);
+            ->willReturn([1, ]);
 
-        $this->assertEquals([1], $this->model->getMovedCategoryProductIds(1));
+        $this->assertEquals([1, ], $this->model->getMovedCategoryProductIds(1));
     }
 
     /**
@@ -487,7 +460,7 @@ class IndexTest extends TestCase
                 'name',
             ]);
 
-        $attributeMock = $this->getMockBuilder(AbstractAttribute::class)
+        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getFrontendInput',
@@ -510,7 +483,7 @@ class IndexTest extends TestCase
             ->method('getFrontendInput')
             ->willReturn($frontendInput);
 
-        $attributeOption = $this->createMock(Option::class);
+        $attributeOption = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Option::class);
         $attributeOption->expects($this->any())->method('getValue')->willReturn('240-LV04');
         $attributeOption->expects($this->any())->method('getLabel')->willReturn('label');
 
@@ -518,12 +491,15 @@ class IndexTest extends TestCase
             ->method('getOptions')
             ->willReturn([$attributeOption]);
 
-        $this->assertIsArray($this->model->getFullProductIndexData(
-            1,
-            [
-                1 => $indexData
-            ]
-        ));
+        $this->assertInternalType(
+            'array',
+            $this->model->getFullProductIndexData(
+                1,
+                [
+                    1 => $indexData
+                ]
+            )
+        );
     }
 
     /**
@@ -565,7 +541,10 @@ class IndexTest extends TestCase
                 'position' => 1,
             ]]);
 
-        $this->assertIsArray($this->model->getFullCategoryProductIndexData(1, [1]));
+        $this->assertInternalType(
+            'array',
+            $this->model->getFullCategoryProductIndexData(1, [1, ])
+        );
     }
 
     /**
@@ -586,7 +565,7 @@ class IndexTest extends TestCase
             ],
             [
                 'select',
-                [1],
+                [1, ],
             ],
             [
                 'select',

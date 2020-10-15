@@ -3,56 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Block\Order\Create;
 
-use Magento\Backend\Model\Session\Quote;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Sales\Block\Adminhtml\Order\Create\Totals;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TotalsTest extends TestCase
+/**
+ * Class TotalsTest
+ */
+class TotalsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $shippingAddressMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $billingAddressMock;
 
     /**
-     * @var Totals
+     * @var \Magento\Sales\Block\Adminhtml\Order\Create\Totals
      */
     protected $totals;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $helperManager;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Backend\Model\Session\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionQuoteMock;
 
     /**
-     * @var \Magento\Quote\Model\Quote|MockObject
+     * @var \Magento\Quote\Model\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
      * Init
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helperManager = new ObjectManager($this);
-        $this->sessionQuoteMock = $this->getMockBuilder(Quote::class)
+        $this->helperManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->sessionQuoteMock = $this->getMockBuilder(\Magento\Backend\Model\Session\Quote::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
@@ -66,10 +61,10 @@ class TotalsTest extends TestCase
                 'getShippingAddress'
             ])
             ->getMock();
-        $this->shippingAddressMock = $this->getMockBuilder(Address::class)
+        $this->shippingAddressMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->billingAddressMock = $this->getMockBuilder(Address::class)
+        $this->billingAddressMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -81,7 +76,7 @@ class TotalsTest extends TestCase
             ->willReturn($this->shippingAddressMock);
         $this->sessionQuoteMock->expects($this->any())->method('getQuote')->willReturn($this->quoteMock);
         $this->totals = $this->helperManager->getObject(
-            Totals::class,
+            \Magento\Sales\Block\Adminhtml\Order\Create\Totals::class,
             ['sessionQuote' => $this->sessionQuoteMock]
         );
     }

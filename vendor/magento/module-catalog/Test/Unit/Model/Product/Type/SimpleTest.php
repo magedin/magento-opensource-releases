@@ -3,40 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Type;
 
-use Magento\Catalog\Model\Product\Type\Simple;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class SimpleTest extends TestCase
+class SimpleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Simple
+     * @var \Magento\Catalog\Model\Product\Type\Simple
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectHelper = new ObjectManager($this);
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
-        $fileStorageDbMock = $this->createMock(Database::class);
-        $filesystem = $this->getMockBuilder(Filesystem::class)
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $fileStorageDbMock = $this->createMock(\Magento\MediaStorage\Helper\File\Storage\Database::class);
+        $filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $coreRegistry = $this->createMock(Registry::class);
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $productFactoryMock = $this->createMock(ProductFactory::class);
+        $coreRegistry = $this->createMock(\Magento\Framework\Registry::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $productFactoryMock = $this->createMock(\Magento\Catalog\Model\ProductFactory::class);
         $this->_model = $objectHelper->getObject(
-            Simple::class,
+            \Magento\Catalog\Model\Product\Type\Simple::class,
             [
                 'productFactory' => $productFactoryMock,
                 'eventManager' => $eventManager,

@@ -5,9 +5,7 @@
  */
 namespace Magento\Customer\Block\Adminhtml\Sales\Order\Address\Form\Renderer;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * VAT ID element renderer
@@ -34,25 +32,17 @@ class Vat extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Element
     protected $_jsonEncoder;
 
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Json\EncoderInterface $jsonEncoder
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
+        array $data = []
     ) {
         $this->_jsonEncoder = $jsonEncoder;
         parent::__construct($context, $data);
-        $this->secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
     }
 
     /**
@@ -105,8 +95,11 @@ class Vat extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Element
             );
 
             $optionsVarName = $this->getJsVariablePrefix() . 'VatParameters';
-            $scriptString = 'var ' . $optionsVarName . ' = ' . $vatValidateOptions . ';';
-            $beforeHtml = $this->secureRenderer->renderTag('script', [], $scriptString, false);
+            $beforeHtml = '<script>var ' .
+                $optionsVarName .
+                ' = ' .
+                $vatValidateOptions .
+                ';</script>';
             $this->_validateButton = $this->getLayout()->createBlock(
                 \Magento\Backend\Block\Widget\Button::class
             )->setData(
@@ -117,7 +110,6 @@ class Vat extends \Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Element
                 ]
             );
         }
-
         return $this->_validateButton;
     }
 }

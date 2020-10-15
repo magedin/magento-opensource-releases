@@ -3,17 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Convert\Test\Unit;
 
 use Magento\Framework\Convert\DataSize;
-use PHPUnit\Framework\TestCase;
 
-class DataSizeTest extends TestCase
+/**
+ * Class DataSizeTest
+ */
+class DataSizeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataSize
+     * @var \Magento\Framework\Convert\DataSize
      */
     protected $dataSize;
 
@@ -22,7 +23,7 @@ class DataSizeTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->dataSize = new DataSize();
     }

@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\ObjectManager\Code\Generator\Factory;
 use Magento\Framework\ObjectManager\Code\Generator\Proxy;
 use Magento\Framework\Interception\Code\Generator\Interceptor;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Code\Generator\EntityAbstract;
@@ -30,7 +30,8 @@ use RuntimeException;
  */
 class GeneratorTest extends TestCase
 {
-    /** parameter value
+    /**
+     * Class name parameter value
      */
     private const SOURCE_CLASS = 'testClassName';
 
@@ -80,7 +81,7 @@ class GeneratorTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->definedClassesMock = $this->createMock(DefinedClasses::class);
         $this->ioObjectMock = $this->getMockBuilder(Io::class)
@@ -89,10 +90,10 @@ class GeneratorTest extends TestCase
         $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->objectManagerConfigMock = $this->getMockBuilder(ConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = new Generator(
             $this->ioObjectMock,
@@ -119,11 +120,11 @@ class GeneratorTest extends TestCase
     /**
      * @param string $className
      * @param string $entityType
+     * @expectedException RuntimeException
      * @dataProvider generateValidClassDataProvider
      */
     public function testGenerateClass($className, $entityType): void
     {
-        $this->expectException('RuntimeException');
         $fullClassName = $className . $entityType;
 
         $entityGeneratorMock = $this->getMockBuilder(EntityAbstract::class)
@@ -178,9 +179,11 @@ class GeneratorTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
     public function testGenerateClassWhenClassIsNotGenerationSuccess(): void
     {
-        $this->expectException('RuntimeException');
         $expectedEntities = array_values($this->expectedEntities);
         $resultClassName = self::SOURCE_CLASS . ucfirst(array_shift($expectedEntities));
 

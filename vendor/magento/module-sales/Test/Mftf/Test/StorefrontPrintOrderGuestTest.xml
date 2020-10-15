@@ -13,14 +13,14 @@
             <stories value="Print Order"/>
             <title value="Print Order from Guest on Frontend"/>
             <description value="Print Order from Guest on Frontend"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-16225"/>
             <group value="sales"/>
             <group value="mtf_migrated"/>
         </annotations>
         <before>
             <magentoCLI command="downloadable:domains:add" arguments="example.com static.magento.com" stepKey="addDownloadableDomain"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
             <createData entity="ApiCategory" stepKey="createCategory"/>
 
             <!-- Create downloadable Product -->
@@ -36,7 +36,7 @@
             </createData>
 
             <!-- Check Links can be purchased separately for Downloadable Product -->
-            <actionGroup ref="NavigateToCreatedProductEditPageActionGroup" stepKey="goToDownloadableProduct">
+            <actionGroup ref="navigateToCreatedProductEditPage" stepKey="goToDownloadableProduct">
                 <argument name="product" value="$$downloadableProduct$$"/>
             </actionGroup>
             <waitForPageLoad stepKey="waitForPageLoad"/>
@@ -112,13 +112,11 @@
             </createData>
 
             <!-- Grab attribute name for Configurable Product -->
-            <actionGroup ref="NavigateToCreatedProductEditPageActionGroup" stepKey="goToConfigurableProduct">
+            <actionGroup ref="navigateToCreatedProductEditPage" stepKey="goToConfigurableProduct">
                 <argument name="product" value="$$createConfigProduct$$"/>
             </actionGroup>
             <grabTextFrom selector="{{AdminConfigurableProductFormSection.currentAttribute}}" stepKey="grabAttribute"/>
-            <assertNotEmpty stepKey="assertNotEmpty">
-    			<actualResult type="const">$grabAttribute</actualResult>
-            </assertNotEmpty>
+            <assertNotEmpty actual="$grabAttribute" stepKey="assertNotEmpty"/>
 
             <!-- Create bundle Product -->
             <createData entity="SimpleSubCategory" stepKey="createSubCategory"/>
@@ -147,13 +145,11 @@
             </createData>
 
             <!-- Grab bundle option name for Bundle Product -->
-            <actionGroup ref="NavigateToCreatedProductEditPageActionGroup" stepKey="goToBundleProduct">
+            <actionGroup ref="navigateToCreatedProductEditPage" stepKey="goToBundleProduct">
                 <argument name="product" value="$$createBundleProduct$$"/>
             </actionGroup>
             <grabTextFrom selector="{{AdminProductFormBundleSection.currentBundleOption}}" stepKey="grabBundleOption"/>
-            <assertNotEmpty stepKey="assertBundleOptionNotEmpty">
-        		<actualResult type="const">$grabBundleOption</actualResult>
-            </assertNotEmpty>
+            <assertNotEmpty actual="$grabBundleOption" stepKey="assertBundleOptionNotEmpty"/>
 
             <!-- Create sales rule -->
             <createData entity="ActiveSalesRuleCoupon50" stepKey="createCartPriceRule"/>
@@ -164,15 +160,11 @@
             <!-- Create Customer Account -->
             <createData entity="Simple_US_Customer" stepKey="createCustomer"/>
 
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value=""/>
-            </actionGroup>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
 
             <!-- Place order with options according to dataset -->
-            <actionGroup ref="NavigateToNewOrderPageExistingCustomerActionGroup" stepKey="newOrder">
+            <actionGroup ref="navigateToNewOrderPageExistingCustomer" stepKey="newOrder">
                 <argument name="customer" value="$$createCustomer$$"/>
             </actionGroup>
 
@@ -208,12 +200,12 @@
                 <argument name="couponCode" value="$$createCouponForCartPriceRule.code$$"/>
             </actionGroup>
 
-            <actionGroup ref="FillOrderCustomerInformationActionGroup" stepKey="fillOrder">
+            <actionGroup ref="fillOrderCustomerInformation" stepKey="fillOrder">
                 <argument name="customer" value="$$createCustomer$$"/>
                 <argument name="address" value="US_Address_TX"/>
             </actionGroup>
 
-            <actionGroup ref="OrderSelectFlatRateShippingActionGroup" stepKey="selectFlatRate"/>
+            <actionGroup ref="orderSelectFlatRateShipping" stepKey="selectFlatRate"/>
         </before>
         <after>
             <magentoCLI command="downloadable:domains:remove" arguments="example.com static.magento.com" stepKey="removeDownloadableDomain"/>
@@ -233,18 +225,16 @@
 
             <deleteData createDataKey="createCartPriceRule" stepKey="deleteCartPriceRule"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <actionGroup ref="AdminSubmitOrderActionGroup" stepKey="submitOrder"/>
 
         <grabTextFrom selector="|Order # (\d+)|" stepKey="getOrderId"/>
-        <assertNotEmpty stepKey="assertOrderIdIsNotEmpty">
-			<actualResult type="const">$getOrderId</actualResult>
-        </assertNotEmpty>
+        <assertNotEmpty actual="$getOrderId" stepKey="assertOrderIdIsNotEmpty" />
 
         <!-- Find the Order on frontend > Navigate to: Orders and Returns -->
         <amOnPage url="{{StorefrontGuestOrderSearchPage.url}}" stepKey="amOnOrdersAndReturns"/>

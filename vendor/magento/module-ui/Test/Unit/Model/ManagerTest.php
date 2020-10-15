@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Ui\Test\Unit\Model;
 
 use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\UiComponent\ArrayObjectFactory;
-use Magento\Framework\View\Element\UiComponent\Config\Converter;
 use Magento\Framework\View\Element\UiComponent\Config\DomMergerInterface;
 use Magento\Framework\View\Element\UiComponent\Config\FileCollector\AggregatedFileCollector;
 use Magento\Framework\View\Element\UiComponent\Config\FileCollector\AggregatedFileCollectorFactory;
-use Magento\Framework\View\Element\UiComponent\Config\ManagerInterface;
-use Magento\Framework\View\Element\UiComponent\Config\Provider\Component\Definition as ComponentDefinition;
-use Magento\Framework\View\Element\UiComponent\Config\ReaderFactory;
 use Magento\Framework\View\Element\UiComponent\Config\UiReaderInterface;
 use Magento\Ui\Model\Manager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\Config\Provider\Component\Definition as ComponentDefinition;
+use Magento\Framework\Data\Argument\InterpreterInterface;
+use Magento\Framework\View\Element\UiComponent\Config\ManagerInterface;
+use Magento\Framework\View\Element\UiComponent\Config\Converter;
 
 /**
+ * Class ManagerTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ManagerTest extends TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Manager
@@ -35,90 +31,85 @@ class ManagerTest extends TestCase
     protected $manager;
 
     /**
-     * @var ComponentDefinition|MockObject
+     * @var ComponentDefinition|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $componentConfigProvider;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheConfig;
 
     /**
-     * @var InterpreterInterface|MockObject
+     * @var InterpreterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $argumentInterpreter;
 
     /**
-     * @var UiReaderInterface|MockObject
+     * @var UiReaderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $uiReader;
 
     /**
-     * @var ReaderFactory|MockObject
+     * @var \Magento\Framework\View\Element\UiComponent\Config\ReaderFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerFactory;
 
     /**
-     * @var AggregatedFileCollector|MockObject
+     * @var AggregatedFileCollector|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $aggregatedFileCollector;
 
     /**
-     * @var DomMergerInterface|MockObject
+     * @var DomMergerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $domMerger;
 
     /**
-     * @var ArrayObjectFactory|MockObject
+     * @var ArrayObjectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $arrayObjectFactory;
 
     /**
-     * @var AggregatedFileCollectorFactory|MockObject
+     * @var AggregatedFileCollectorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $aggregatedFileCollectorFactory;
 
-    /** @var SerializerInterface|MockObject */
+    /** @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->componentConfigProvider = $this->getMockBuilder(
             \Magento\Framework\View\Element\UiComponent\Config\Provider\Component\Definition::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->domMerger = $this->getMockBuilder(
-            DomMergerInterface::class
+            \Magento\Framework\View\Element\UiComponent\Config\DomMergerInterface::class
         )->getMockForAbstractClass();
         $this->aggregatedFileCollector = $this->getMockBuilder(
-            AggregatedFileCollector::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\Element\UiComponent\Config\FileCollector\AggregatedFileCollector::class
+        )->disableOriginalConstructor()->getMock();
         $this->aggregatedFileCollectorFactory = $this->getMockBuilder(
-            AggregatedFileCollectorFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\Element\UiComponent\Config\FileCollector\AggregatedFileCollectorFactory::class
+        )->disableOriginalConstructor()->getMock();
         $this->arrayObjectFactory = $this->getMockBuilder(
-            ArrayObjectFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\Element\UiComponent\ArrayObjectFactory::class
+        )->disableOriginalConstructor()->getMock();
         $this->arrayObjectFactory->expects($this->at(0))
             ->method('create')
             ->willReturn(new \ArrayObject([]));
         $this->uiReader = $this->getMockBuilder(
-            UiReaderInterface::class
+            \Magento\Framework\View\Element\UiComponent\Config\UiReaderInterface::class
         )->getMockForAbstractClass();
         $this->readerFactory = $this->getMockBuilder(
-            ReaderFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->cacheConfig = $this->getMockBuilder(CacheInterface::class)
+            \Magento\Framework\View\Element\UiComponent\Config\ReaderFactory::class
+        )->disableOriginalConstructor()->getMock();
+        $this->cacheConfig = $this->getMockBuilder(\Magento\Framework\Config\CacheInterface::class)
             ->getMockForAbstractClass();
-        $this->argumentInterpreter = $this->getMockBuilder(InterpreterInterface::class)
+        $this->argumentInterpreter = $this->getMockBuilder(\Magento\Framework\Data\Argument\InterpreterInterface::class)
             ->getMockForAbstractClass();
         $this->serializer = $this->getMockBuilder(
-            SerializerInterface::class
+            \Magento\Framework\Serialize\SerializerInterface::class
         )->getMockForAbstractClass();
         $this->serializer->expects($this->any())
             ->method('serialize')
@@ -161,7 +152,7 @@ class ManagerTest extends TestCase
 
     public function testPrepareDataWithoutName()
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage(
             (string)__('The "" UI component element name is invalid. Verify the name and try again.')
         );
@@ -208,17 +199,17 @@ class ManagerTest extends TestCase
     public function getComponentData()
     {
         $cachedData = new \ArrayObject(
-            ['test_component1' => [
-                ManagerInterface::COMPONENT_ARGUMENTS_KEY => ['argument_name1' => ['value' => 'value1']],
-                ManagerInterface::CHILDREN_KEY => [
-                    'custom' => [
-                        ManagerInterface::COMPONENT_ARGUMENTS_KEY => [
-                            'custom_name1' => ['value' => 'custom_value1']
+            ['test_component1' =>
+                [
+                    ManagerInterface::COMPONENT_ARGUMENTS_KEY => ['argument_name1' => ['value' => 'value1']],
+                    ManagerInterface::CHILDREN_KEY => [
+                        'custom' => [
+                            ManagerInterface::COMPONENT_ARGUMENTS_KEY =>
+                                ['custom_name1' => ['value' => 'custom_value1']],
+                            ManagerInterface::CHILDREN_KEY => [],
                         ],
-                        ManagerInterface::CHILDREN_KEY => [],
                     ],
-                ],
-            ]
+                ]
             ]
         );
 
@@ -233,9 +224,8 @@ class ManagerTest extends TestCase
                         ManagerInterface::COMPONENT_ARGUMENTS_KEY => ['argument_name1' => ['argument' => 'value1']],
                         ManagerInterface::CHILDREN_KEY => [
                             'custom' => [
-                                ManagerInterface::COMPONENT_ARGUMENTS_KEY => [
-                                    'custom_name1' => ['argument' => 'custom_value1']
-                                ],
+                                ManagerInterface::COMPONENT_ARGUMENTS_KEY =>
+                                    ['custom_name1' => ['argument' => 'custom_value1']],
                                 ManagerInterface::CHILDREN_KEY => [],
                             ]
                         ]
@@ -245,17 +235,17 @@ class ManagerTest extends TestCase
             [
                 'test_component2',
                 new \ArrayObject(
-                    ['test_component2' => [
-                        ManagerInterface::COMPONENT_ARGUMENTS_KEY => ['argument_name2' => ['value' => 'value2']],
-                        ManagerInterface::CHILDREN_KEY => [
-                            'test_component21' => [
-                                ManagerInterface::COMPONENT_ARGUMENTS_KEY => [
-                                    'argument_name21' => ['value' => 'value21']
+                    ['test_component2' =>
+                        [
+                            ManagerInterface::COMPONENT_ARGUMENTS_KEY => ['argument_name2' => ['value' => 'value2']],
+                            ManagerInterface::CHILDREN_KEY => [
+                                'test_component21' => [
+                                    ManagerInterface::COMPONENT_ARGUMENTS_KEY =>
+                                        ['argument_name21' => ['value' => 'value21']],
+                                    ManagerInterface::CHILDREN_KEY => [],
                                 ],
-                                ManagerInterface::CHILDREN_KEY => [],
                             ],
-                        ],
-                    ]
+                        ]
                     ]
                 ),
                 false,
@@ -263,9 +253,9 @@ class ManagerTest extends TestCase
                     Converter::DATA_ARGUMENTS_KEY => ['argument_name2' => ['value' => 'value2']],
                     Converter::DATA_ATTRIBUTES_KEY => ['name' => 'attribute_name2'],
                     'test_component21' => [0 => [
-                        Converter::DATA_ARGUMENTS_KEY => ['argument_name21' => ['value' => 'value21']],
-                        Converter::DATA_ATTRIBUTES_KEY => ['name' => 'attribute_name21'],
-                    ]
+                            Converter::DATA_ARGUMENTS_KEY => ['argument_name21' => ['value' => 'value21']],
+                            Converter::DATA_ATTRIBUTES_KEY => ['name' => 'attribute_name21'],
+                        ]
                     ],
                 ]]],
                 [
@@ -274,9 +264,8 @@ class ManagerTest extends TestCase
                         ManagerInterface::COMPONENT_ATTRIBUTES_KEY => ['name' => 'attribute_name2'],
                         ManagerInterface::CHILDREN_KEY => [
                             'attribute_name21' => [
-                                ManagerInterface::COMPONENT_ARGUMENTS_KEY => [
-                                    'argument_name21' => ['argument' => 'value21']
-                                ],
+                                ManagerInterface::COMPONENT_ARGUMENTS_KEY =>
+                                    ['argument_name21' => ['argument' => 'value21']],
                                 ManagerInterface::COMPONENT_ATTRIBUTES_KEY => ['name' => 'attribute_name21'],
                                 ManagerInterface::CHILDREN_KEY => [],
                             ],

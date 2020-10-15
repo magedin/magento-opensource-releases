@@ -3,26 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Template\Filter;
 
-use Magento\Catalog\Model\Template\Filter\Factory;
-use Magento\Framework\Filter\Template;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Factory
+     * @var \Magento\Catalog\Model\Template\Filter\Factory
      */
     protected $_factory;
 
@@ -31,13 +22,13 @@ class FactoryTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_factory = $objectManagerHelper->getObject(
-            Factory::class,
+            \Magento\Catalog\Model\Template\Filter\Factory::class,
             ['objectManager' => $this->_objectManagerMock]
         );
     }
@@ -49,7 +40,7 @@ class FactoryTest extends TestCase
      */
     public function testCreate()
     {
-        $className = Template::class;
+        $className = \Magento\Framework\Filter\Template::class;
 
         $filterMock = $this->createMock($className);
         $this->_objectManagerMock->expects(
@@ -59,8 +50,8 @@ class FactoryTest extends TestCase
         )->with(
             $className,
             []
-        )->willReturn(
-            $filterMock
+        )->will(
+            $this->returnValue($filterMock)
         );
 
         $this->assertEquals($filterMock, $this->_factory->create($className));
@@ -73,7 +64,7 @@ class FactoryTest extends TestCase
      */
     public function testCreateWithArguments()
     {
-        $className = Template::class;
+        $className = \Magento\Framework\Filter\Template::class;
         $arguments = ['foo', 'bar'];
 
         $filterMock = $this->createMock($className);
@@ -84,8 +75,8 @@ class FactoryTest extends TestCase
         )->with(
             $className,
             $arguments
-        )->willReturn(
-            $filterMock
+        )->will(
+            $this->returnValue($filterMock)
         );
 
         $this->assertEquals($filterMock, $this->_factory->create($className, $arguments));
@@ -94,18 +85,16 @@ class FactoryTest extends TestCase
     /**
      * Test wrong type exception
      *
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage WrongClass doesn't extend \Magento\Framework\Filter\Template
      * @return void
      */
     public function testWrongTypeException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('WrongClass doesn\'t extend \Magento\Framework\Filter\Template');
         $className = 'WrongClass';
 
-        $filterMock = $this->getMockBuilder($className)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_objectManagerMock->expects($this->once())->method('create')->willReturn($filterMock);
+        $filterMock = $this->getMockBuilder($className)->disableOriginalConstructor()->getMock();
+        $this->_objectManagerMock->expects($this->once())->method('create')->will($this->returnValue($filterMock));
 
         $this->_factory->create($className);
     }

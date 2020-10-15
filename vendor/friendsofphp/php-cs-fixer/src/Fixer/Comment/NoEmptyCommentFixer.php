@@ -29,12 +29,10 @@ final class NoEmptyCommentFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoExtraBlankLinesFixer, NoTrailingWhitespaceFixer, NoWhitespaceInBlankLineFixer.
-     * Must run after PhpdocToCommentFixer.
      */
     public function getPriority()
     {
+        // should be run after PhpdocToCommentFixer and before NoExtraBlankLinesFixer, NoTrailingWhitespaceFixer and NoWhitespaceInBlankLineFixer.
         return 2;
     }
 
@@ -81,7 +79,8 @@ final class NoEmptyCommentFixer extends AbstractFixer
     /**
      * Return the start index, end index and a flag stating if the comment block is empty.
      *
-     * @param int $index T_COMMENT index
+     * @param Tokens $tokens
+     * @param int    $index  T_COMMENT index
      *
      * @return array
      */
@@ -89,11 +88,6 @@ final class NoEmptyCommentFixer extends AbstractFixer
     {
         $commentType = $this->getCommentType($tokens[$index]->getContent());
         $empty = $this->isEmptyComment($tokens[$index]->getContent());
-
-        if (self::TYPE_SLASH_ASTERISK === $commentType) {
-            return [$index, $index, $empty];
-        }
-
         $start = $index;
         $count = \count($tokens);
         ++$index;
@@ -138,8 +132,9 @@ final class NoEmptyCommentFixer extends AbstractFixer
     }
 
     /**
-     * @param int $whiteStart
-     * @param int $whiteEnd
+     * @param Tokens $tokens
+     * @param int    $whiteStart
+     * @param int    $whiteEnd
      *
      * @return int
      */
@@ -162,7 +157,7 @@ final class NoEmptyCommentFixer extends AbstractFixer
     {
         static $mapper = [
             self::TYPE_HASH => '|^#\s*$|', // single line comment starting with '#'
-            self::TYPE_SLASH_ASTERISK => '|^/\*[\s\*]*\*+/$|', // comment starting with '/*' and ending with '*/' (but not a PHPDoc)
+            self::TYPE_SLASH_ASTERISK => '|^/\*\s*\*/$|', // comment starting with '/*' and ending with '*/' (but not a PHPDoc)
             self::TYPE_DOUBLE_SLASH => '|^//\s*$|', // single line comment starting with '//'
         ];
 

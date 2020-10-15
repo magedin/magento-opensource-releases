@@ -15,7 +15,7 @@ class FullTest extends \PHPUnit\Framework\TestCase
      */
     protected $_processor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_processor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\CatalogInventory\Model\Indexer\Stock\Processor::class

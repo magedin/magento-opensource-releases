@@ -3,28 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Captcha\Observer;
 
-use Magento\Captcha\Helper\Data as CaptchaHelper;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Session\SessionManagerInterface;
 
 /**
- * Handle request for Forgot Password
+ * Class CheckUserForgotPasswordBackendObserver
  *
  * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  */
 class CheckUserForgotPasswordBackendObserver implements ObserverInterface
 {
     /**
-     * @var CaptchaHelper
+     * @var \Magento\Captcha\Helper\Data
      */
     protected $_helper;
 
@@ -34,70 +25,62 @@ class CheckUserForgotPasswordBackendObserver implements ObserverInterface
     protected $captchaStringResolver;
 
     /**
-     * @var SessionManagerInterface
+     * @var \Magento\Framework\Session\SessionManagerInterface
      */
     protected $_session;
 
     /**
-     * @var ActionFlag
+     * @var \Magento\Framework\App\ActionFlag
      */
     protected $_actionFlag;
 
     /**
-     * @var ManagerInterface
+     * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
 
     /**
-     * @var RequestInterface
-     */
-    private $request;
-
-    /**
-     * @param CaptchaHelper $helper
+     * @param \Magento\Captcha\Helper\Data $helper
      * @param CaptchaStringResolver $captchaStringResolver
-     * @param SessionManagerInterface $session
-     * @param ActionFlag $actionFlag
-     * @param ManagerInterface $messageManager
-     * @param RequestInterface|null $request
+     * @param \Magento\Framework\Session\SessionManagerInterface $session
+     * @param \Magento\Framework\App\ActionFlag $actionFlag
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
      */
     public function __construct(
-        CaptchaHelper $helper,
+        \Magento\Captcha\Helper\Data $helper,
         CaptchaStringResolver $captchaStringResolver,
-        SessionManagerInterface $session,
-        ActionFlag $actionFlag,
-        ManagerInterface $messageManager,
-        RequestInterface $request = null
+        \Magento\Framework\Session\SessionManagerInterface $session,
+        \Magento\Framework\App\ActionFlag $actionFlag,
+        \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->_helper = $helper;
         $this->captchaStringResolver = $captchaStringResolver;
         $this->_session = $session;
         $this->_actionFlag = $actionFlag;
         $this->messageManager = $messageManager;
-        $this->request = $request ?? ObjectManager::getInstance()->get(RequestInterface::class);
     }
 
     /**
      * Check Captcha On User Login Backend Page
      *
-     * @param Event $observer
-     * @return $this
+     * @param \Magento\Framework\Event\Observer $observer
      * @throws \Magento\Framework\Exception\Plugin\AuthenticationException
+     * @return $this
      */
-    public function execute(Event $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $formId = 'backend_forgotpassword';
         $captchaModel = $this->_helper->getCaptcha($formId);
         $controller = $observer->getControllerAction();
-        $params = $this->request->getParams();
-        $email = (string)$this->request->getParam('email');
-        if (!empty($params)
-            && !empty($email)
+        $email = (string)$observer->getControllerAction()->getRequest()->getParam('email');
+        $params = $observer->getControllerAction()->getRequest()->getParams();
+        if (!empty($email)
+            && !empty($params)
             && $captchaModel->isRequired()
-            && !$captchaModel->isCorrect($this->captchaStringResolver->resolve($this->request, $formId))
+            && !$captchaModel->isCorrect($this->captchaStringResolver->resolve($controller->getRequest(), $formId))
         ) {
-            $this->_session->setEmail($email);
-            $this->_actionFlag->set('', Action::FLAG_NO_DISPATCH, true);
+            $this->_session->setEmail((string)$controller->getRequest()->getPost('email'));
+            $this->_actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
             $this->messageManager->addErrorMessage(__('Incorrect CAPTCHA'));
             $controller->getResponse()->setRedirect(
                 $controller->getUrl('*/*/forgotpassword', ['_nosecret' => true])

@@ -1,7 +1,4 @@
-<?php declare(strict_types=1);
-
-use Magento\Framework\App\Cache;
-
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -33,7 +30,7 @@ return [
     ],
     'customCacheInstance' => [
         'shared' => true,
-        'type' => Cache::class,
+        'type' => \Magento\Framework\App\Cache::class,
         'arguments' => [],
     ],
     'customOverriddenInstance' => [

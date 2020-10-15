@@ -63,7 +63,7 @@ class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->reader = $this->objectManager->get(FileReader::class);
@@ -91,7 +91,7 @@ class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
      */
     public function testExecute($scope, $scopeCode, callable $assertCallback)
     {
-        $outputMock = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputMock = $this->createMock(OutputInterface::class);
         $outputMock->expects($this->at(0))
             ->method('writeln')
             ->with('<info>Configuration value saved in app/etc/env.php</info>');
@@ -181,7 +181,7 @@ class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
     {
         $inputMock = $this->createInputMock(null, null, $scope, $scopeCode);
 
-        $outputMock = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputMock = $this->createMock(OutputInterface::class);
         $outputMock->expects($this->at(0))
             ->method('writeln')
             ->with('<info>Please set configuration values or skip them by pressing [Enter]:</info>');
@@ -253,7 +253,7 @@ class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->filesystem->getDirectoryWrite(DirectoryList::CONFIG)->writeFile(
             $this->configFilePool->getPath(ConfigFilePool::APP_CONFIG),
@@ -294,11 +294,11 @@ class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
      * @param string|null $val
      * @param string $scope
      * @param string|null $scopeCode
-     * @return InputInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return InputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createInputMock($key, $val, $scope, $scopeCode)
     {
-        $inputMock = $this->getMockForAbstractClass(InputInterface::class);
+        $inputMock = $this->createMock(InputInterface::class);
         $isInteractive = $key === null;
         
         if (!$isInteractive) {

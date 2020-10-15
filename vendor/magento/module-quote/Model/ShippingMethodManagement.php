@@ -341,7 +341,7 @@ class ShippingMethodManagement implements
     /**
      * Get transform address interface into Array
      *
-     * @param ExtensibleDataInterface $address
+     * @param ExtensibleDataInterface  $address
      * @return array
      */
     private function extractAddressData($address)
@@ -352,7 +352,6 @@ class ShippingMethodManagement implements
         } elseif ($address instanceof EstimateAddressInterface) {
             $className = EstimateAddressInterface::class;
         }
-
         $addressData = $this->getDataObjectProcessor()->buildOutputDataArray(
             $address,
             $className

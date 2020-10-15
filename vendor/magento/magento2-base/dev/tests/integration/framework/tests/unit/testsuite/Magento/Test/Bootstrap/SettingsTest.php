@@ -34,7 +34,7 @@ class SettingsTest extends \PHPUnit\Framework\TestCase
         $this->_fixtureDir = realpath(__DIR__ . '/_files') . '/';
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_object = new \Magento\TestFramework\Bootstrap\Settings(
             $this->_fixtureDir,
@@ -56,18 +56,17 @@ class SettingsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_object = null;
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Base path 'non_existing_dir' has to be an existing directory.
      */
     public function testConstructorNonExistingBaseDir()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Base path \'non_existing_dir\' has to be an existing directory.');
-
         new \Magento\TestFramework\Bootstrap\Settings('non_existing_dir', []);
     }
 

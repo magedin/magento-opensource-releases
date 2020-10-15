@@ -3,63 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
-
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Multiline;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Framework\Data\Form\Element\Multiline
  */
-class MultilineTest extends TestCase
+class MultilineTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
     /**
-     * @var Multiline
+     * @var \Magento\Framework\Data\Form\Element\Multiline
      */
     protected $element;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $elementFactory;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactory;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->elementFactory = $this->getMockBuilder(Factory::class)
+        $this->elementFactory = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->collectionFactory = $this->getMockBuilder(CollectionFactory::class)
+        $this->collectionFactory = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\CollectionFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->escaper = $this->objectManager->getObject(
-            Escaper::class
+            \Magento\Framework\Escaper::class
         );
 
-        $this->element = new Multiline(
+        $this->element = new \Magento\Framework\Data\Form\Element\Multiline(
             $this->elementFactory,
             $this->collectionFactory,
             $this->escaper

@@ -3,17 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\Customer;
 
-use Magento\Setup\Model\Address\AddressDataGenerator;
-use Magento\Setup\Model\Customer\CustomerDataGenerator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Magento\Customer\Model\ResourceModel\Group\CollectionFactory;
-
-class CustomerDataGeneratorTest extends TestCase
+class CustomerDataGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -31,29 +23,22 @@ class CustomerDataGeneratorTest extends TestCase
     ];
 
     /**
-     * @var AddressDataGenerator|MockObject
+     * @var \Magento\Setup\Model\Address\AddressDataGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressGeneratorMock;
 
     /**
-     * @var CustomerDataGenerator
+     * @var \Magento\Setup\Model\Customer\CustomerDataGenerator
      */
     private $customerGenerator;
 
-    /**
-     * @var CollectionFactory|MockObject
-     */
-    private $groupCollectionFactoryMock;
-
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->groupCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
-            ->disableOriginalConstructor()
-            ->addMethods(
-                ['getAllIds']
-            )
-            ->onlyMethods(['create'])
-            ->getMock();
+        $this->groupCollectionFactoryMock =
+            $this->createPartialMock(
+                \Magento\Customer\Model\ResourceModel\Group\CollectionFactory::class,
+                ['create', 'getAllIds']
+            );
 
         $this->groupCollectionFactoryMock
             ->expects($this->once())
@@ -65,9 +50,9 @@ class CustomerDataGeneratorTest extends TestCase
             ->method('getAllIds')
             ->willReturn([1]);
 
-        $this->addressGeneratorMock = $this->createMock(AddressDataGenerator::class);
+        $this->addressGeneratorMock = $this->createMock(\Magento\Setup\Model\Address\AddressDataGenerator::class);
 
-        $this->customerGenerator = new CustomerDataGenerator(
+        $this->customerGenerator = new \Magento\Setup\Model\Customer\CustomerDataGenerator(
             $this->groupCollectionFactoryMock,
             $this->addressGeneratorMock,
             $this->config
@@ -103,7 +88,7 @@ class CustomerDataGeneratorTest extends TestCase
         $customer = $this->customerGenerator->generate(42);
 
         foreach ($this->customerStructure as $customerField) {
-            $this->assertArrayHasKey($customerField, $customer);
+            $this->assertTrue(array_key_exists($customerField, $customer));
         }
     }
 }

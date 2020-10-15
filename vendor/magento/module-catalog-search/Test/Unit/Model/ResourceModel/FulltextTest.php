@@ -3,43 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogSearch\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\EntityManager\EntityMetadata;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FulltextTest extends TestCase
+class FulltextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
     /**
-     * @var Resource|MockObject
+     * @var Resource|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resource;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
     /**
      * Holder for MetadataPool mock object.
      *
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPool;
 
@@ -48,18 +43,18 @@ class FulltextTest extends TestCase
      */
     private $target;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resource = $this->getMockBuilder(ResourceConnection::class)
+        $this->resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->once())
             ->method('getResources')
             ->willReturn($this->resource);
-        $this->connection = $this->getMockBuilder(AdapterInterface::class)
+        $this->connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->resource->expects($this->once())
@@ -71,7 +66,7 @@ class FulltextTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->target = $objectManager->getObject(
-            Fulltext::class,
+            \Magento\CatalogSearch\Model\ResourceModel\Fulltext::class,
             [
                 'context' => $this->context,
                 'metadataPool' => $this->metadataPool
@@ -112,10 +107,10 @@ class FulltextTest extends TestCase
 
         $this->metadataPool->expects($this->once())
             ->method('getMetadata')
-            ->with(ProductInterface::class)
+            ->with(\Magento\Catalog\Api\Data\ProductInterface::class)
             ->willReturn($metadata);
 
-        $select = $this->getMockBuilder(Select::class)
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $select->expects($this->once())

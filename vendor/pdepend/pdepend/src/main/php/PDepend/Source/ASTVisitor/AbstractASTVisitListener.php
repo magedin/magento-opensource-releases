@@ -270,6 +270,7 @@ abstract class AbstractASTVisitListener implements ASTVisitListener
      */
     protected function startVisitNode(AbstractASTArtifact $node)
     {
+
     }
 
     /**
@@ -280,5 +281,6 @@ abstract class AbstractASTVisitListener implements ASTVisitListener
      */
     protected function endVisitNode(AbstractASTArtifact $node)
     {
+
     }
 }

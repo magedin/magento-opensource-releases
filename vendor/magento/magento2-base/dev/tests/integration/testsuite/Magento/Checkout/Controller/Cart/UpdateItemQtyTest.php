@@ -36,7 +36,7 @@ class UpdateItemQtyTest extends \Magento\TestFramework\TestCase\AbstractControll
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

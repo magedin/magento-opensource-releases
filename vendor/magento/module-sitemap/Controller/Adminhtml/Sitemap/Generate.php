@@ -3,36 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Controller\Adminhtml\Sitemap;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Area;
 use Magento\Sitemap\Controller\Adminhtml\Sitemap;
 use Magento\Store\Model\App\Emulation;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Generate sitemap file
  */
 class Generate extends Sitemap implements HttpGetActionInterface
 {
-    /**
-     * @var Emulation
-     */
+    /** @var \Magento\Store\Model\App\Emulation $appEmulation */
     private $appEmulation;
 
     /**
+     * Generate constructor.
      * @param Action\Context $context
-     * @param Emulation $appEmulation
+     * @param \Magento\Store\Model\App\Emulation|null $appEmulation
      */
     public function __construct(
         Action\Context $context,
-        Emulation $appEmulation
+        Emulation $appEmulation = null
     ) {
         parent::__construct($context);
-        $this->appEmulation = $appEmulation;
+        $this->appEmulation = $appEmulation ?: ObjectManager::getInstance()
+            ->get(\Magento\Store\Model\App\Emulation::class);
     }
 
     /**
@@ -52,7 +51,7 @@ class Generate extends Sitemap implements HttpGetActionInterface
             try {
                 $this->appEmulation->startEnvironmentEmulation(
                     $sitemap->getStoreId(),
-                    Area::AREA_FRONTEND,
+                    \Magento\Framework\App\Area::AREA_FRONTEND,
                     true
                 );
                 $sitemap->generateXml();

@@ -3,114 +3,95 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\Converter;
 
-use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\SalesRule\Api\Data\ConditionInterfaceFactory;
 use Magento\SalesRule\Api\Data\RuleExtensionFactory;
 use Magento\SalesRule\Api\Data\RuleExtensionInterface;
-use Magento\SalesRule\Api\Data\RuleInterfaceFactory;
-use Magento\SalesRule\Api\Data\RuleLabelInterface;
-use Magento\SalesRule\Api\Data\RuleLabelInterfaceFactory;
-use Magento\SalesRule\Model\Converter\ToDataModel;
-use Magento\SalesRule\Model\Data\Condition;
-use Magento\SalesRule\Model\Rule;
-use Magento\SalesRule\Model\Rule\Condition\Address;
-use Magento\SalesRule\Model\Rule\Condition\Combine;
-use Magento\SalesRule\Model\Rule\Condition\Product;
-use Magento\SalesRule\Model\Rule\Condition\Product\Found;
-use Magento\SalesRule\Model\RuleFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ToDataModelTest extends TestCase
+class ToDataModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RuleFactory|MockObject
+     * @var \Magento\SalesRule\Model\RuleFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleFactory;
 
     /**
-     * @var RuleInterfaceFactory|MockObject
+     * @var \Magento\SalesRule\Api\Data\RuleInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleDataFactory;
 
     /**
-     * @var ConditionInterfaceFactory|MockObject
+     * @var \Magento\SalesRule\Api\Data\ConditionInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $conditionDataFactory;
 
     /**
-     * @var DataObjectProcessor|MockObject
+     * @var \Magento\Framework\Reflection\DataObjectProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectProcessor;
 
     /**
-     * @var RuleLabelInterfaceFactory|MockObject
+     * @var \Magento\SalesRule\Api\Data\RuleLabelInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleLabelFactory;
 
     /**
-     * @var Rule|MockObject
+     * @var \Magento\SalesRule\Model\Rule|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $salesRule;
 
     /**
-     * @var ToDataModel
+     * @var \Magento\SalesRule\Model\Converter\ToDataModel
      */
     protected $model;
 
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     protected $serializer;
 
     /**
-     * @var RuleExtensionFactory|MockObject
+     * @var RuleExtensionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->ruleFactory = $this->getMockBuilder(RuleFactory::class)
+        $this->ruleFactory = $this->getMockBuilder(\Magento\SalesRule\Model\RuleFactory::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->ruleDataFactory = $this->getMockBuilder(RuleInterfaceFactory::class)
+        $this->ruleDataFactory = $this->getMockBuilder(\Magento\SalesRule\Api\Data\RuleInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->conditionDataFactory = $this->getMockBuilder(
-            ConditionInterfaceFactory::class
+            \Magento\SalesRule\Api\Data\ConditionInterfaceFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->dataObjectProcessor = $this->getMockBuilder(DataObjectProcessor::class)
+        $this->dataObjectProcessor = $this->getMockBuilder(\Magento\Framework\Reflection\DataObjectProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->ruleLabelFactory = $this->getMockBuilder(RuleLabelInterfaceFactory::class)
+        $this->ruleLabelFactory = $this->getMockBuilder(\Magento\SalesRule\Api\Data\RuleLabelInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->salesRule = $this->getMockBuilder(Rule::class)
+        $this->salesRule = $this->getMockBuilder(\Magento\SalesRule\Model\Rule::class)
             ->disableOriginalConstructor()
             ->setMethods(['_construct', 'getData', 'getConditionsSerialized', 'getActionsSerialized'])
             ->getMock();
 
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->setMethods(null)
             ->getMock();
 
@@ -119,9 +100,9 @@ class ToDataModelTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $helper->getObject(
-            ToDataModel::class,
+            \Magento\SalesRule\Model\Converter\ToDataModel::class,
             [
                 'ruleFactory' =>  $this->ruleFactory,
                 'ruleDataFactory' => $this->ruleDataFactory,
@@ -144,7 +125,7 @@ class ToDataModelTest extends TestCase
             'name' => 'testrule',
             'is_active' => '1',
             'conditions_serialized' => json_encode([
-                'type' => Combine::class,
+                'type' => \Magento\SalesRule\Model\Rule\Condition\Combine::class,
                 'attribute' => null,
                 'operator' => null,
                 'value' => '1',
@@ -152,7 +133,7 @@ class ToDataModelTest extends TestCase
                 'aggregator' => 'all',
                 'conditions' => [
                     [
-                        'type' => Address::class,
+                        'type' => \Magento\SalesRule\Model\Rule\Condition\Address::class,
                         'attribute' => 'base_subtotal',
                         'operator' => '>=',
                         'value' => '100',
@@ -169,7 +150,7 @@ class ToDataModelTest extends TestCase
                 'aggregator' => 'all',
                 'conditions' => [
                     [
-                        'type' => Product::class,
+                        'type' => \Magento\SalesRule\Model\Rule\Condition\Product::class,
                         'attribute' => 'attribute_set_id',
                         'operator' => '==',
                         'value' => '4',
@@ -194,7 +175,7 @@ class ToDataModelTest extends TestCase
         $array = $this->getArrayData();
         $arrayAttributes = $array;
 
-        /** @var RuleExtensionInterface|MockObject $attributesMock */
+        /** @var RuleExtensionInterface|\PHPUnit_Framework_MockObject_MockObject $attributesMock */
         $attributesMock = $this->getMockBuilder(RuleExtensionInterface::class)
             ->getMock();
         $arrayAttributes['extension_attributes'] = $attributesMock;
@@ -209,12 +190,12 @@ class ToDataModelTest extends TestCase
             ->setMethods(['create', 'getStoreLabels', 'setStoreLabels', 'getCouponType', 'setCouponType'])
             ->getMock();
 
-        $dataLabel = $this->getMockBuilder(RuleLabelInterface::class)
+        $dataLabel = $this->getMockBuilder(\Magento\SalesRule\Api\Data\RuleLabel::class)
             ->setMethods(['setStoreId', 'setStoreLabel', 'setStoreLabels'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $dataCondition = $this->getMockBuilder(Condition::class)
+        $dataCondition = $this->getMockBuilder(\Magento\SalesRule\Model\Data\Condition::class)
             ->setMethods(['setData'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -257,7 +238,7 @@ class ToDataModelTest extends TestCase
         $dataModel
             ->expects($this->atLeastOnce())
             ->method('getCouponType')
-            ->willReturn(Rule::COUPON_TYPE_NO_COUPON);
+            ->willReturn(\Magento\SalesRule\Model\Rule::COUPON_TYPE_NO_COUPON);
 
         $dataModel
             ->expects($this->atLeastOnce())
@@ -270,8 +251,9 @@ class ToDataModelTest extends TestCase
 
     public function testArrayToConditionDataModel()
     {
+
         $array=[
-            'type' => Combine::class,
+            'type' => \Magento\SalesRule\Model\Rule\Condition\Combine::class,
             'attribute' => null,
             'operator' => null,
             'value' => 1,
@@ -279,21 +261,21 @@ class ToDataModelTest extends TestCase
             'aggregator' => 'all',
             'conditions' => [
                 [
-                    'type' => Address::class,
+                    'type' => \Magento\SalesRule\Model\Rule\Condition\Address::class,
                     'attribute' => 'base_subtotal',
                     'operator' => '>=',
                     'value' => 100,
                     'is_value_processed' => null,
                 ],
                 [
-                    'type' => Address::class,
+                    'type' => \Magento\SalesRule\Model\Rule\Condition\Address::class,
                     'attribute' => 'total_qty',
                     'operator' => '>',
                     'value' => 2,
                     'is_value_processed' => null
                 ],
                 [
-                    'type' => Found::class,
+                    'type' => \Magento\SalesRule\Model\Rule\Condition\Product\Found::class,
                     'attribute' => null,
                     'operator' => null,
                     'value' => 1,
@@ -301,7 +283,7 @@ class ToDataModelTest extends TestCase
                     'aggregator' => 'all',
                     'conditions' => [
                         [
-                            'type' => Product::class,
+                            'type' => \Magento\SalesRule\Model\Rule\Condition\Product::class,
                             'attribute' => 'category_ids',
                             'operator' => '==',
                             'value' => 3,
@@ -315,7 +297,7 @@ class ToDataModelTest extends TestCase
 
         ];
 
-        $dataCondition = $this->getMockBuilder(Condition::class)
+        $dataCondition = $this->getMockBuilder(\Magento\SalesRule\Model\Data\Condition::class)
             ->setMethods(['setData'])
             ->disableOriginalConstructor()
             ->getMock();

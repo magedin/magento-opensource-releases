@@ -3,27 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Ui\Component\ExportButton;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ExportButtonTest extends TestCase
+/**
+ * Class ExportButtonTest
+ */
+class ExportButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContextInterface|MockObject
+     * @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
@@ -33,21 +28,21 @@ class ExportButtonTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var ExportButton
+     * @var \Magento\Ui\Component\ExportButton
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
         $this->objectManager = new ObjectManager($this);
 
-        $this->urlBuilderMock = $this->getMockBuilder(UrlInterface::class)
+        $this->urlBuilderMock = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->model = $this->objectManager->getObject(
-            ExportButton::class,
+            \Magento\Ui\Component\ExportButton::class,
             [
                 'urlBuilder' => $this->urlBuilderMock,
                 'context' => $this->context,
@@ -58,12 +53,12 @@ class ExportButtonTest extends TestCase
     public function testGetComponentName()
     {
         $this->context->expects($this->never())->method('getProcessor');
-        $this->assertEquals(ExportButton::NAME, $this->model->getComponentName());
+        $this->assertEquals(\Magento\Ui\Component\ExportButton::NAME, $this->model->getComponentName());
     }
 
     public function testPrepare()
     {
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processor);

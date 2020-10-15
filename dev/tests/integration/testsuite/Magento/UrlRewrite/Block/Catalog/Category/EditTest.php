@@ -100,7 +100,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
                 'Child block with category has invalid item name'
             );
 
-            $this->assertMatchesRegularExpression(
+            $this->assertRegExp(
                 '/http:\/\/localhost\/index.php\/.*\/category/',
                 $categoryBlock->getItemUrl(),
                 'Child block with category contains invalid URL'
@@ -123,20 +123,24 @@ class EditTest extends \PHPUnit\Framework\TestCase
         if (isset($expected['back_button'])) {
             if ($expected['back_button']) {
                 if ($block->getCategory()->getId()) {
-                    $this->assertRegExp(
-                        '/setLocation\([\\\'\"]\S+?\/category/i',
-                        $buttonsHtml,
+                    $this->assertEquals(
+                        1,
+                        \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(
+                            '//button[contains(@class, "back") and contains(@onclick, "/category")]',
+                            $buttonsHtml
+                        ),
+                        'Back button is not present in category URL rewrite edit block'
+                    );
+                } else {
+                    $this->assertEquals(
+                        1,
+                        \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(
+                            '//button[contains(@class,"back")]',
+                            $buttonsHtml
+                        ),
                         'Back button is not present in category URL rewrite edit block'
                     );
                 }
-                $this->assertEquals(
-                    1,
-                    \Magento\TestFramework\Helper\Xpath::getElementsCountForXpath(
-                        '//button[contains(@class,"back")]',
-                        $buttonsHtml
-                    ),
-                    'Back button is not present in category URL rewrite edit block'
-                );
             } else {
                 $this->assertEquals(
                     0,

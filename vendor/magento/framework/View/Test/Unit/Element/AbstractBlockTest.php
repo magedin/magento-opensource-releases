@@ -3,31 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Element;
 
-use Magento\Framework\App\Cache\StateInterface as CacheStateInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Cache\LockGuardedCacheLoader;
-use Magento\Framework\Config\View;
 use Magento\Framework\Escaper;
-use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Session\SidResolverInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\ConfigInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Config\View;
+use Magento\Framework\View\ConfigInterface;
+use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Cache\StateInterface as CacheStateInterface;
+use Magento\Framework\Session\SidResolverInterface;
+use Magento\Framework\Session\SessionManagerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractBlockTest extends TestCase
+class AbstractBlockTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AbstractBlock
@@ -35,44 +29,44 @@ class AbstractBlockTest extends TestCase
     private $block;
 
     /**
-     * @var EventManagerInterface|MockObject
+     * @var EventManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var CacheStateInterface|MockObject
+     * @var CacheStateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheStateMock;
 
     /**
-     * @var SidResolverInterface|MockObject
+     * @var SidResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sidResolverMock;
 
     /**
-     * @var SessionManagerInterface|MockObject
+     * @var SessionManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sessionMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $escaperMock;
 
     /**
-     * @var LockGuardedCacheLoader|MockObject
+     * @var LockGuardedCacheLoader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lockQuery;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->eventManagerMock = $this->getMockForAbstractClass(EventManagerInterface::class);
         $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
@@ -185,12 +179,12 @@ class AbstractBlockTest extends TestCase
                 ]
             );
 
-        $configManager = $this->getMockForAbstractClass(ConfigInterface::class);
+        $configManager = $this->createMock(ConfigInterface::class);
         $configManager->expects($this->exactly(2))->method('getViewConfig')->willReturn($config);
 
-        /** @var AbstractBlock|MockObject $block */
+        /** @var $block AbstractBlock|\PHPUnit_Framework_MockObject_MockObject */
         $params = ['viewConfig' => $configManager];
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $block = $this->getMockForAbstractClass(
             AbstractBlock::class,
             $helper->getConstructArguments(AbstractBlock::class, $params)
@@ -243,7 +237,7 @@ class AbstractBlockTest extends TestCase
             ->with('view_block_abstract_to_html_before', ['block' => $this->block]);
         $this->scopeConfigMock->expects($this->once())
             ->method('getValue')
-            ->with('advanced/modules_disable_output/' . $moduleName, ScopeInterface::SCOPE_STORE)
+            ->with('advanced/modules_disable_output/' . $moduleName, \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn(true);
 
         $this->assertSame('', $this->block->toHtml());
@@ -252,7 +246,7 @@ class AbstractBlockTest extends TestCase
     /**
      * @param string|bool $cacheLifetime
      * @param string|bool $dataFromCache
-     * @param InvokedCount $expectsDispatchEvent
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $expectsDispatchEvent
      * @param string $expectedResult
      * @return void
      * @dataProvider getCacheLifetimeDataProvider
@@ -273,7 +267,7 @@ class AbstractBlockTest extends TestCase
             ->method('dispatch');
         $this->scopeConfigMock->expects($this->once())
             ->method('getValue')
-            ->with('advanced/modules_disable_output/' . $moduleName, ScopeInterface::SCOPE_STORE)
+            ->with('advanced/modules_disable_output/' . $moduleName, \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn(false);
         $this->cacheStateMock->expects($this->any())
             ->method('isEnabled')

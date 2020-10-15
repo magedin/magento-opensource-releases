@@ -3,9 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $objectManager->removeSharedInstance(\Magento\Catalog\Model\Product\Option\Type\File\ValidatorFile::class);
 
@@ -17,4 +14,4 @@ if ($quote->getId()) {
     $objectManager->get(\Magento\Quote\Model\QuoteRepository::class)->delete($quote);
 }
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address_rollback.php');
+require __DIR__ . '/../../Checkout/_files/quote_with_address_rollback.php';

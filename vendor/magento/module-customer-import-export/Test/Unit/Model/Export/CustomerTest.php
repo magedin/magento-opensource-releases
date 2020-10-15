@@ -3,33 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CustomerImportExport\Test\Unit\Model\Export;
 
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
 use Magento\CustomerImportExport\Model\Export\Customer;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\TypeFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Data\Collection;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ImportExport\Model\Export\Adapter\AbstractAdapter;
-use Magento\ImportExport\Model\Export\Factory;
-use Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CustomerTest extends TestCase
+class CustomerTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Test attribute code
@@ -43,7 +24,7 @@ class CustomerTest extends TestCase
      *
      * @var array
      */
-    protected $_websites = [Store::DEFAULT_STORE_ID => 'admin', 1 => 'website1'];
+    protected $_websites = [\Magento\Store\Model\Store::DEFAULT_STORE_ID => 'admin', 1 => 'website1'];
 
     /**
      * Stores array (store id => code)
@@ -73,39 +54,39 @@ class CustomerTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $storeManager = $this->createMock(StoreManager::class);
+        $storeManager = $this->createMock(\Magento\Store\Model\StoreManager::class);
 
         $storeManager->expects(
             $this->any()
         )->method(
             'getWebsites'
-        )->willReturnCallback(
-            [$this, 'getWebsites']
+        )->will(
+            $this->returnCallback([$this, 'getWebsites'])
         );
 
         $storeManager->expects(
             $this->any()
         )->method(
             'getStores'
-        )->willReturnCallback(
-            [$this, 'getStores']
+        )->will(
+            $this->returnCallback([$this, 'getStores'])
         );
 
-        $this->_model = new Customer(
-            $this->getMockForAbstractClass(ScopeConfigInterface::class),
+        $this->_model = new \Magento\CustomerImportExport\Model\Export\Customer(
+            $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class),
             $storeManager,
-            $this->createMock(Factory::class),
-            $this->createMock(CollectionByPagesIteratorFactory::class),
-            $this->getMockForAbstractClass(TimezoneInterface::class),
-            $this->createMock(Config::class),
-            $this->createMock(CollectionFactory::class),
+            $this->createMock(\Magento\ImportExport\Model\Export\Factory::class),
+            $this->createMock(\Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory::class),
+            $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class),
+            $this->createMock(\Magento\Eav\Model\Config::class),
+            $this->createMock(\Magento\Customer\Model\ResourceModel\Customer\CollectionFactory::class),
             $this->_getModelDependencies()
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
     }
@@ -119,18 +100,18 @@ class CustomerTest extends TestCase
     {
         $translator = $this->createMock(\stdClass::class);
 
-        $objectManagerHelper = new ObjectManager($this);
-        $attributeCollection = new Collection(
-            $this->createMock(EntityFactory::class)
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $attributeCollection = new \Magento\Framework\Data\Collection(
+            $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class)
         );
         foreach ($this->_attributes as $attributeData) {
             $arguments = $objectManagerHelper->getConstructArguments(
-                AbstractAttribute::class,
-                ['eavTypeFactory' => $this->createMock(TypeFactory::class)]
+                \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
+                ['eavTypeFactory' => $this->createMock(\Magento\Eav\Model\Entity\TypeFactory::class)]
             );
             $arguments['data'] = $attributeData;
             $attribute = $this->getMockForAbstractClass(
-                AbstractAttribute::class,
+                \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
                 $arguments,
                 '',
                 true,
@@ -162,15 +143,15 @@ class CustomerTest extends TestCase
     public function getWebsites($withDefault = false)
     {
         $websites = [];
+        if (!$withDefault) {
+            unset($websites[0]);
+        }
         foreach ($this->_websites as $id => $code) {
-            if (!$withDefault && $id == Store::DEFAULT_STORE_ID) {
+            if (!$withDefault && $id == \Magento\Store\Model\Store::DEFAULT_STORE_ID) {
                 continue;
             }
             $websiteData = ['id' => $id, 'code' => $code];
-            $websites[$id] = new DataObject($websiteData);
-        }
-        if (!$withDefault) {
-            unset($websites[0]);
+            $websites[$id] = new \Magento\Framework\DataObject($websiteData);
         }
 
         return $websites;
@@ -185,15 +166,15 @@ class CustomerTest extends TestCase
     public function getStores($withDefault = false)
     {
         $stores = [];
+        if (!$withDefault) {
+            unset($stores[0]);
+        }
         foreach ($this->_stores as $id => $code) {
             if (!$withDefault && $id == 0) {
                 continue;
             }
             $storeData = ['id' => $id, 'code' => $code];
-            $stores[$id] = new DataObject($storeData);
-        }
-        if (!$withDefault) {
-            unset($stores[0]);
+            $stores[$id] = new \Magento\Framework\DataObject($storeData);
         }
 
         return $stores;
@@ -206,9 +187,9 @@ class CustomerTest extends TestCase
      */
     public function testExportItem()
     {
-        /** @var AbstractAdapter $writer */
+        /** @var $writer \Magento\ImportExport\Model\Export\Adapter\AbstractAdapter */
         $writer = $this->getMockForAbstractClass(
-            AbstractAdapter::class,
+            \Magento\ImportExport\Model\Export\Adapter\AbstractAdapter::class,
             [],
             '',
             false,
@@ -221,16 +202,16 @@ class CustomerTest extends TestCase
             $this->once()
         )->method(
             'writeRow'
-        )->willReturnCallback(
-            [$this, 'validateWriteRow']
+        )->will(
+            $this->returnCallback([$this, 'validateWriteRow'])
         );
 
         $this->_model->setWriter($writer);
 
-        $objectManagerHelper = new ObjectManager($this);
-        $arguments = $objectManagerHelper->getConstructArguments(AbstractModel::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $arguments = $objectManagerHelper->getConstructArguments(\Magento\Framework\Model\AbstractModel::class);
         $arguments['data'] = $this->_customerData;
-        $item = $this->getMockForAbstractClass(AbstractModel::class, $arguments);
+        $item = $this->getMockForAbstractClass(\Magento\Framework\Model\AbstractModel::class, $arguments);
 
         $this->_model->exportItem($item);
     }

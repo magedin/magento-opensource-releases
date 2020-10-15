@@ -23,32 +23,33 @@
         </annotations>
 
         <!--Login to admin area-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginActionGroup" stepKey="loginAsAdmin"/>
 
         <!--Go to backup index page-->
-        <actionGroup ref="AdminBackupIndexPageOpenActionGroup" stepKey="navigateToBackupPage"/>
+        <amOnPage url="{{BackupIndexPage.url}}" stepKey="goToBackupPage"/>
+        <waitForPageLoad stepKey="waitForBackupPage"/>
 
         <!--Create system backup-->
-        <actionGroup ref="CreateSystemBackupActionGroup" stepKey="createSystemBackup"/>
+        <actionGroup ref="createSystemBackup" stepKey="createSystemBackup"/>
 
         <!--Create database/media backup-->
-        <actionGroup ref="CreateMediaBackupActionGroup" stepKey="createMediaBackup"/>
+        <actionGroup ref="createMediaBackup" stepKey="createMediaBackup"/>
 
         <!--Create database backup-->
-        <actionGroup ref="CreateDatabaseBackupActionGroup" stepKey="createDatabaseBackup"/>
+        <actionGroup ref="createDatabaseBackup" stepKey="createDatabaseBackup"/>
 
         <!--Delete system backup-->
-        <actionGroup ref="AdminBackupDeleteActionGroup" stepKey="deleteSystemBackup">
+        <actionGroup ref="deleteBackup" stepKey="deleteSystemBackup">
             <argument name="backup" value="SystemBackup"/>
         </actionGroup>
 
         <!--Delete database/media backup-->
-        <actionGroup ref="AdminBackupDeleteActionGroup" stepKey="deleteMediaBackup">
+        <actionGroup ref="deleteBackup" stepKey="deleteMediaBackup">
             <argument name="backup" value="MediaBackup"/>
         </actionGroup>
 
         <!--Delete database backup-->
-        <actionGroup ref="AdminBackupDeleteActionGroup" stepKey="deleteDatabaseBackup">
+        <actionGroup ref="deleteBackup" stepKey="deleteDatabaseBackup">
             <argument name="backup" value="DatabaseBackup"/>
         </actionGroup>
 

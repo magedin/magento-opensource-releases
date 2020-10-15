@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Reader\Source\Deployed;
 
-use Magento\Config\Model\Config\Reader\Source\Deployed\DocumentRoot;
+use Magento\Config\Model\Config\Reader;
 use Magento\Framework\App\Config;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Config\ConfigOptionsListConstants;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Config\Model\Config\Reader\Source\Deployed\DocumentRoot;
 
 /**
  * Test class for checking settings that defined in config file
  */
-class DocumentRootTest extends TestCase
+class DocumentRootTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
@@ -30,7 +27,7 @@ class DocumentRootTest extends TestCase
      */
     private $documentRoot;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->configMock = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()
@@ -57,7 +54,7 @@ class DocumentRootTest extends TestCase
     {
         $this->configMockSetForDocumentRootIsPub();
 
-        $this->assertTrue($this->documentRoot->isPub());
+        $this->assertSame(true, $this->documentRoot->isPub());
     }
 
     private function configMockSetForDocumentRootIsPub()

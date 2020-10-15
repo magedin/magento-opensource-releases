@@ -30,7 +30,7 @@ class ShippingMethodManagementTest extends WebapiAbstract
      */
     protected $totalsCollector;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->quote = $this->objectManager->create(\Magento\Quote\Model\Quote::class);

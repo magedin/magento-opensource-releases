@@ -15,8 +15,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
 use Magento\InventoryApi\Api\SourceItemRepositoryInterface;
 use Magento\InventoryApi\Api\SourceItemsSaveInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -43,14 +42,9 @@ class BackorderConditionTest extends TestCase
     private $productRepository;
 
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
-
-    /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestFactory;
+    private $isProductSalableForRequestedQty;
 
     /**
      * @var StockItemRepositoryInterface
@@ -62,10 +56,7 @@ class BackorderConditionTest extends TestCase
      */
     private $stockItemCriteriaFactory;
 
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
         $this->stockItemRepository = Bootstrap::getObjectManager()->get(StockItemRepositoryInterface::class);
@@ -75,24 +66,20 @@ class BackorderConditionTest extends TestCase
         $this->sourceItemRepository = Bootstrap::getObjectManager()->get(SourceItemRepositoryInterface::class);
         $this->searchCriteriaBuilder = Bootstrap::getObjectManager()->get(SearchCriteriaBuilder::class);
         $this->sourceItemsSave = Bootstrap::getObjectManager()->get(SourceItemsSaveInterface::class);
-        $this->areProductsSalableForRequestedQty
-            = Bootstrap::getObjectManager()->get(AreProductsSalableForRequestedQtyInterface::class);
-        $this->isProductSalableForRequestedQtyRequestFactory = Bootstrap::getObjectManager()
-            ->get(IsProductSalableForRequestedQtyRequestInterfaceFactory::class);
+        $this->isProductSalableForRequestedQty
+            = Bootstrap::getObjectManager()->get(IsProductSalableForRequestedQtyInterface::class);
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
      *
      * @magentoDbIsolation disabled
-     *
-     * @return void
      */
-    public function testBackorderedZeroQtyProductIsSalable():void
+    public function testBackorderedZeroQtyProductIsSalable()
     {
         $product = $this->productRepository->get('SKU-2');
         $stockItemSearchCriteria = $this->stockItemCriteriaFactory->create();
@@ -109,18 +96,8 @@ class BackorderConditionTest extends TestCase
         $sourceItem->setQuantity(-15);
         $this->sourceItemsSave->execute([$sourceItem]);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => 'SKU-2',
-                'qty' => 1,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], 20);
-        $result = current($result);
-        $this->assertTrue($result->isSalable());
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], 30);
-        $result = current($result);
-        $this->assertTrue($result->isSalable());
+        $this->assertTrue($this->isProductSalableForRequestedQty->execute('SKU-2', 20, 1)->isSalable());
+        $this->assertTrue($this->isProductSalableForRequestedQty->execute('SKU-2', 30, 1)->isSalable());
     }
 
     /**

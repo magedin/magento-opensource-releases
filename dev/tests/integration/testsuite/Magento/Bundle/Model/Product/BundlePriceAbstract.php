@@ -8,7 +8,6 @@ namespace Magento\Bundle\Model\Product;
 
 /**
  * Abstract class for testing bundle prices
- * @codingStandardsIgnoreStart
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class BundlePriceAbstract extends \PHPUnit\Framework\TestCase
@@ -30,7 +29,7 @@ abstract class BundlePriceAbstract extends \PHPUnit\Framework\TestCase
      */
     protected $productCollectionFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
@@ -143,4 +142,3 @@ abstract class BundlePriceAbstract extends \PHPUnit\Framework\TestCase
         return $bundleProduct;
     }
 }
-// @codingStandardsIgnoreEnd

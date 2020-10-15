@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Unit Test for \Magento\Framework\Filesystem\Directory\PathValidator
  *
@@ -7,32 +7,30 @@
  */
 namespace Magento\Framework\Filesystem\Test\Unit\Directory;
 
-use Magento\Framework\Filesystem\Directory\PathValidator;
-use Magento\Framework\Filesystem\Driver\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Filesystem\Directory\WriteInterface;
+use Magento\Framework\Filesystem\DriverInterface;
 
-class PathValidatorTest extends TestCase
+class PathValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * \Magento\Framework\Filesystem\Driver
      *
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $driver;
 
     /**
-     * @var PathValidator
+     * @var \Magento\Framework\Filesystem\Directory\PathValidator
      */
     protected $pathValidator;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->driver = $this->createMock(File::class);
-        $this->pathValidator = new PathValidator(
+        $this->driver = $this->createMock(\Magento\Framework\Filesystem\Driver\File::class);
+        $this->pathValidator = new \Magento\Framework\Filesystem\Directory\PathValidator(
             $this->driver
         );
     }
@@ -40,7 +38,7 @@ class PathValidatorTest extends TestCase
     /**
      * Tear down
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->pathValidator = null;
     }

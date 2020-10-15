@@ -13,19 +13,9 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\OrderFactory;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
-$objectManager = Bootstrap::getObjectManager();
-/** @var \Magento\Sales\Model\Order $order */
-$order = $objectManager->create(\Magento\Sales\Model\Order::class);
-$order->loadByIncrementId('100000001');
-$payment = $order->getPayment();
-$billingAddress = $order->getBillingAddress();
-$shippingAddress = $order->getShippingAddress();
-$items = $order->getItems();
-$orderItem = reset($items);
+require __DIR__ . '/order.php';
+
 /** @var OrderFactory $orderFactory */
 $orderFactory = $objectManager->get(OrderInterfaceFactory::class);
 /** @var OrderRepositoryInterface $orderRepository */
@@ -55,8 +45,7 @@ $ordersData = [
         'base_grand_total' => 130.00,
         'grand_total' => 130.00,
         'subtotal' => 130.00,
-        'created_at' => max($dateTime->modify('-1 day'), $dateTime->modify('first day of this month'))
-            ->format(DateTime::DATETIME_PHP_FORMAT),
+        'created_at' => $dateTime->modify('-1 day')->format(DateTime::DATETIME_PHP_FORMAT),
     ],
     [
         'increment_id' => '100000004',
@@ -66,7 +55,7 @@ $ordersData = [
         'base_grand_total' => 140.00,
         'grand_total' => 140.00,
         'subtotal' => 140.00,
-        'created_at' => $dateTime->modify('first day of this month')->format(DateTime::DATETIME_PHP_FORMAT),
+        'created_at' => $dateTime->modify('first day of -1 month')->format(DateTime::DATETIME_PHP_FORMAT),
     ],
     [
         'increment_id' => '100000005',
@@ -76,7 +65,7 @@ $ordersData = [
         'base_grand_total' => 150.00,
         'grand_total' => 150.00,
         'subtotal' => 150.00,
-        'created_at' => $dateTime->modify('first day of january this year')->format(DateTime::DATETIME_PHP_FORMAT),
+        'created_at' => $dateTime->modify('-1 year')->format(DateTime::DATETIME_PHP_FORMAT),
     ],
     [
         'increment_id' => '100000006',
@@ -86,7 +75,7 @@ $ordersData = [
         'base_grand_total' => 160.00,
         'grand_total' => 160.00,
         'subtotal' => 160.00,
-        'created_at' => $dateTime->modify('first day of january last year')->format(DateTime::DATETIME_PHP_FORMAT),
+        'created_at' => $dateTime->modify('-2 year')->format(DateTime::DATETIME_PHP_FORMAT),
     ],
 ];
 

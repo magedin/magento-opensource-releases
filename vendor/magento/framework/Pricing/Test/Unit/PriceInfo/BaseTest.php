@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Pricing\Test\Unit\PriceInfo;
 
-use Magento\Framework\Pricing\Price\Collection;
-use Magento\Framework\Pricing\PriceInfo\Base;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\PriceInfo\Base;
 
 /**
  * Test class for \Magento\Framework\Pricing\PriceInfo\Base
  */
-class BaseTest extends TestCase
+class BaseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Collection
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Pricing\Price\Collection
      */
     protected $priceCollection;
 
     /**
-     * @var MockObject|\Magento\Framework\Pricing\Adjustment\Collection
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Pricing\Adjustment\Collection
      */
     protected $adjustmentCollection;
 
@@ -32,9 +28,9 @@ class BaseTest extends TestCase
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->priceCollection = $this->createMock(Collection::class);
+        $this->priceCollection = $this->createMock(\Magento\Framework\Pricing\Price\Collection::class);
         $this->adjustmentCollection = $this->createMock(\Magento\Framework\Pricing\Adjustment\Collection::class);
         $this->model = new Base($this->priceCollection, $this->adjustmentCollection);
     }
@@ -59,8 +55,8 @@ class BaseTest extends TestCase
         $this->priceCollection
             ->expects($this->exactly($createCount))
             ->method('get')
-            ->with($priceCode)
-            ->willReturn('basePrice');
+            ->with($this->equalTo($priceCode))
+            ->will($this->returnValue('basePrice'));
 
         foreach ($entryParams as $params) {
             list($priceCode) = array_values($params);
@@ -103,7 +99,7 @@ class BaseTest extends TestCase
      */
     public function testGetAdjustments()
     {
-        $this->adjustmentCollection->expects($this->once())->method('getItems')->willReturn('result');
+        $this->adjustmentCollection->expects($this->once())->method('getItems')->will($this->returnValue('result'));
         $this->assertEquals('result', $this->model->getAdjustments());
     }
 
@@ -114,7 +110,7 @@ class BaseTest extends TestCase
     {
         $this->adjustmentCollection->expects($this->any())->method('getItemByCode')
             ->with('test1')
-            ->willReturn('adjustment');
+            ->will($this->returnValue('adjustment'));
         $this->assertEquals('adjustment', $this->model->getAdjustment('test1'));
     }
 }

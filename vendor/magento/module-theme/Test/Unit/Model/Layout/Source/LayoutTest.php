@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Layout\Source;
 
 use Magento\Framework\DataObject;
-use Magento\Theme\Model\Layout\Config;
 use Magento\Theme\Model\Layout\Source\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LayoutTest extends TestCase
+class LayoutTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Layout
@@ -21,13 +16,13 @@ class LayoutTest extends TestCase
     protected $_model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Theme\Model\Layout\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\Theme\Model\Layout\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->_model = new Layout($this->config);

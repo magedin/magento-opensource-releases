@@ -9,7 +9,7 @@ namespace Magento\Framework\Stdlib\Cookie;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 /**
  * Test CookieScope
@@ -27,7 +27,7 @@ class CookieScopeTest extends \PHPUnit\Framework\TestCase
      */
     protected $request;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->request = $this->objectManager->get(\Magento\Framework\App\RequestInterface::class);

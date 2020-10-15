@@ -3,41 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Layer;
 
-use Magento\Catalog\Model\Layer\Filter\Item;
-use Magento\Catalog\Model\Layer\State;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StateTest extends TestCase
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var State
+     * @var \Magento\Catalog\Model\Layer\State
      */
     private $model;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Catalog\Model\Layer\Filter\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private $item;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->item = $this->getMockBuilder(Item::class)
+        $this->item = $this->getMockBuilder(\Magento\Catalog\Model\Layer\Filter\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $helper = new ObjectManager($this);
-        $this->model = $helper->getObject(State::class);
+        $this->model = $helper->getObject(\Magento\Catalog\Model\Layer\State::class);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     */
     public function testSetFiltersException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
         $this->model->setFilters($this->item);
     }
 

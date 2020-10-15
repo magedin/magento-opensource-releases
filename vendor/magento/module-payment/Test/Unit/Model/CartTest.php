@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Payment\Model\Cart;
-use Magento\Payment\Model\Cart\SalesModel\Factory;
-use Magento\Payment\Model\Cart\SalesModel\SalesModelInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Cart;
 
-class CartTest extends TestCase
+class CartTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Payment\Model\Cart */
     protected $_model;
 
-    /**  @var MockObject */
+    /**  @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_eventManagerMock;
 
-    /**  @var MockObject */
+    /**  @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_salesModelMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->_salesModelMock = $this->getMockForAbstractClass(SalesModelInterface::class);
-        $factoryMock = $this->createMock(Factory::class);
-        $factoryMock->expects($this->once())->method('create')->willReturn($this->_salesModelMock);
+        $this->_eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->_salesModelMock = $this->createMock(\Magento\Payment\Model\Cart\SalesModel\SalesModelInterface::class);
+        $factoryMock = $this->createMock(\Magento\Payment\Model\Cart\SalesModel\Factory::class);
+        $factoryMock->expects($this->once())->method('create')->will($this->returnValue($this->_salesModelMock));
 
-        $this->_model = new Cart($factoryMock, $this->_eventManagerMock, null);
+        $this->_model = new \Magento\Payment\Model\Cart($factoryMock, $this->_eventManagerMock, null);
     }
 
     /**
@@ -41,7 +33,7 @@ class CartTest extends TestCase
      */
     public function testGetSalesModel()
     {
-        $this->assertSame($this->_model->getSalesModel(), $this->_salesModelMock);
+        $this->assertTrue($this->_salesModelMock === $this->_model->getSalesModel());
     }
 
     /**
@@ -53,8 +45,8 @@ class CartTest extends TestCase
             $this->once()
         )->method(
             'getAllItems'
-        )->willReturn(
-            $this->_getSalesModelItems()
+        )->will(
+            $this->returnValue($this->_getSalesModelItems())
         );
         $this->_model->getAllItems();
         $this->_model->addCustomItem('test', 10, 10.5, 'some_id');
@@ -98,12 +90,12 @@ class CartTest extends TestCase
 
         $customItems = [];
         if ($transferFlags['transfer_shipping']) {
-            $customItems[] = new DataObject(
+            $customItems[] = new \Magento\Framework\DataObject(
                 ['name' => 'Shipping', 'qty' => 1, 'amount' => $salesModelAmounts['BaseShippingAmount']]
             );
         }
         if ($transferFlags['transfer_discount']) {
-            $customItems[] = new DataObject(
+            $customItems[] = new \Magento\Framework\DataObject(
                 ['name' => 'Discount', 'qty' => 1, 'amount' => -1.00 * $salesModelAmounts['BaseDiscountAmount']]
             );
         }
@@ -258,20 +250,20 @@ class CartTest extends TestCase
         )->method(
             'dispatch'
         )->with(
-            'payment_cart_collect_items_and_amounts',
-            ['cart' => $this->_model]
+            $this->equalTo('payment_cart_collect_items_and_amounts'),
+            $this->equalTo(['cart' => $this->_model])
         );
 
         $this->_salesModelMock->expects(
             $this->once()
         )->method(
             'getAllItems'
-        )->willReturn(
-            $salesModelItems
+        )->will(
+            $this->returnValue($salesModelItems)
         );
 
         foreach ($salesModelAmounts as $key => $value) {
-            $this->_salesModelMock->expects($this->once())->method('get' . $key)->willReturn($value);
+            $this->_salesModelMock->expects($this->once())->method('get' . $key)->will($this->returnValue($value));
         }
 
         return $this->_model->getAmounts();
@@ -284,15 +276,15 @@ class CartTest extends TestCase
      */
     protected function _getSalesModelItems()
     {
-        $product = new DataObject(['id' => '1']);
+        $product = new \Magento\Framework\DataObject(['id' => '1']);
         return [
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 ['name' => 'name 1', 'qty' => 1, 'price' => 0.1, 'original_item' => $product]
             ),
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 ['name' => 'name 2', 'qty' => 2, 'price' => 1.2, 'original_item' => $product]
             ),
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
                     'parent_item' => 'parent item 3',
                     'name' => 'name 3',
@@ -317,7 +309,7 @@ class CartTest extends TestCase
             if ($item->getParentItem()) {
                 continue;
             }
-            $result[] = new DataObject(
+            $result[] = new \Magento\Framework\DataObject(
                 [
                     'name' => $item->getName(),
                     'qty' => $item->getQty(),

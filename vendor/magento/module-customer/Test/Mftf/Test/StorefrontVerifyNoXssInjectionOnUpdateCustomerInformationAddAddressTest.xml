@@ -20,43 +20,37 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-            <actionGroup ref="StorefrontOpenCustomerAccountCreatePageActionGroup" stepKey="openCreateAccountPage"/>
-            <actionGroup ref="StorefrontFillCustomerAccountCreationFormActionGroup" stepKey="fillCreateAccountForm">
-                <argument name="customer" value="Colorado_US_Customer"/>
-            </actionGroup>
-            <actionGroup ref="StorefrontClickCreateAnAccountCustomerAccountCreationFormActionGroup" stepKey="submitCreateAccountForm"/>
-            <actionGroup ref="AssertMessageCustomerCreateAccountActionGroup" stepKey="seeSuccessMessage">
-                <argument name="messageType" value="success"/>
-                <argument name="message" value="Thank you for registering with Main Website Store."/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
+            <actionGroup ref="SignUpNewUserFromStorefrontActionGroup" stepKey="SignUpNewUser">
+                <argument name="Customer" value="Colorado_US_Customer"/>
             </actionGroup>
         </before>
         <after>
             <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteNewUser">
                 <argument name="email" value="{{Colorado_US_Customer.email}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Update customer address in storefront-->
-        <actionGroup ref="EnterCustomerAddressInfoActionGroup" stepKey="enterAddress">
+        <actionGroup ref="EnterCustomerAddressInfo" stepKey="enterAddress">
             <argument name="Address" value="updateCustomerNoXSSInjection"/>
         </actionGroup>
         <!--Verify customer address save success message-->
         <see selector="{{AdminCustomerMessagesSection.successMessage}}" userInput="You saved the address." stepKey="seeAssertCustomerAddressSuccessSaveMessage"/>
 
         <!--Verify customer default billing address-->
-        <actionGroup ref="VerifyCustomerBillingAddressWithStateActionGroup" stepKey="verifyBillingAddress">
+        <actionGroup ref="VerifyCustomerBillingAddressWithState" stepKey="verifyBillingAddress">
             <argument name="address" value="updateCustomerNoXSSInjection"/>
         </actionGroup>
 
         <!--Verify customer default shipping address-->
-        <actionGroup ref="VerifyCustomerShippingAddressWithStateActionGroup" stepKey="verifyShippingAddress">
+        <actionGroup ref="VerifyCustomerShippingAddressWithState" stepKey="verifyShippingAddress">
             <argument name="address" value="updateCustomerNoXSSInjection"/>
         </actionGroup>
 
         <!--Verify customer name on frontend-->
-        <actionGroup ref="VerifyCustomerNameOnFrontendActionGroup" stepKey="verifyVerifyCustomerName">
+        <actionGroup ref="VerifyCustomerNameOnFrontend" stepKey="verifyVerifyCustomerName">
             <argument name="customer" value="Colorado_US_Customer"/>
         </actionGroup>
     </test>

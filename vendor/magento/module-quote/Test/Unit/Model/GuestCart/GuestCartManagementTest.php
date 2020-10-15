@@ -4,63 +4,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\CartManagementInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Model\GuestCart\GuestCartManagement;
-use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Model\QuoteIdMaskFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestCartManagementTest extends TestCase
+class GuestCartManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $cartRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var GuestCartManagement
+     * @var \Magento\Quote\Model\GuestCart\GuestCartManagement
      */
     protected $guestCartManagement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->quoteManagementMock = $this->getMockForAbstractClass(
-            CartManagementInterface::class,
+            \Magento\Quote\Api\CartManagementInterface::class,
             [],
             '',
             false,
@@ -69,19 +58,18 @@ class GuestCartManagementTest extends TestCase
             []
         );
         $this->quoteIdMaskFactoryMock = $this->createPartialMock(
-            QuoteIdMaskFactory::class,
+            \Magento\Quote\Model\QuoteIdMaskFactory::class,
             ['create']
         );
-        $this->quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
-            ->addMethods(['getQuoteId', 'getMaskedId', 'setQuoteId'])
-            ->onlyMethods(['load', 'save'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->quoteIdMaskMock = $this->createPartialMock(
+            \Magento\Quote\Model\QuoteIdMask::class,
+            ['getQuoteId', 'getMaskedId', 'load', 'save', 'setQuoteId']
+        );
 
-        $this->cartRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $this->cartRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
 
         $this->quoteMock = $this->getMockForAbstractClass(
-            CartInterface::class,
+            \Magento\Quote\Api\Data\CartInterface::class,
             [],
             '',
             false,
@@ -91,7 +79,7 @@ class GuestCartManagementTest extends TestCase
         );
 
         $this->guestCartManagement = $objectManager->getObject(
-            GuestCartManagement::class,
+            \Magento\Quote\Model\GuestCart\GuestCartManagement::class,
             [
                 'quoteManagement' => $this->quoteManagementMock,
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,
@@ -125,7 +113,7 @@ class GuestCartManagementTest extends TestCase
         $this->quoteIdMaskFactoryMock->expects($this->once())->method('create')->willReturn($this->quoteIdMaskMock);
         $this->quoteManagementMock->expects($this->once())->method('assignCustomer')->willReturn(true);
 
-        $this->assertTrue($this->guestCartManagement->assignCustomer($cartId, $customerId, $storeId));
+        $this->assertEquals(true, $this->guestCartManagement->assignCustomer($cartId, $customerId, $storeId));
     }
 
     public function testPlaceOrder()

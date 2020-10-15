@@ -45,27 +45,18 @@ class SuiteObject
     private $hooks;
 
     /**
-     * Filename of where the suite came from
-     *
-     * @var string
-     */
-    private $filename;
-
-    /**
      * SuiteObject constructor.
      * @param string           $name
      * @param TestObject[]     $includeTests
      * @param TestObject[]     $excludeTests
      * @param TestHookObject[] $hooks
-     * @param string           $filename
      */
-    public function __construct($name, $includeTests, $excludeTests, $hooks, $filename = null)
+    public function __construct($name, $includeTests, $excludeTests, $hooks)
     {
         $this->name = $name;
         $this->includeTests = $includeTests;
         $this->excludeTests = $excludeTests;
         $this->hooks = $hooks;
-        $this->filename = $filename;
     }
 
     /**
@@ -156,15 +147,5 @@ class SuiteObject
     public function getAfterHook()
     {
         return $this->hooks['after'] ?? null;
-    }
-
-    /**
-     * Getter for the Suite Filename
-     *
-     * @return string
-     */
-    public function getFilename()
-    {
-        return $this->filename;
     }
 }

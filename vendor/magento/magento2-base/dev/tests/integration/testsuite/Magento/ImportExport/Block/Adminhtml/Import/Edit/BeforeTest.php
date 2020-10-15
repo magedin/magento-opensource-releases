@@ -52,7 +52,7 @@ class BeforeTest extends \PHPUnit\Framework\TestCase
      */
     protected $_expectedBehaviors = ['behavior_1', 'behavior_2'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $importModel = $this->createPartialMock(
             \Magento\ImportExport\Model\Import::class,
@@ -62,15 +62,15 @@ class BeforeTest extends \PHPUnit\Framework\TestCase
             $this->any()
         )->method(
             'getEntityBehaviors'
-        )->willReturn(
-            $this->_sourceEntities
+        )->will(
+            $this->returnValue($this->_sourceEntities)
         );
         $importModel->expects(
             $this->any()
         )->method(
             'getUniqueEntityBehaviors'
-        )->willReturn(
-            $this->_sourceBehaviors
+        )->will(
+            $this->returnValue($this->_sourceBehaviors)
         );
 
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

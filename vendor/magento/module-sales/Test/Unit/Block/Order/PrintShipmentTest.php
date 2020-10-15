@@ -3,60 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Order;
 
-use Magento\Framework\Registry;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Payment\Helper\Data;
-use Magento\Sales\Block\Order\PrintShipment;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Address\Renderer;
 use Magento\Sales\Model\ResourceModel\Order\Item\Collection as ItemCollection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PrintShipmentTest extends TestCase
+class PrintShipmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $registryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $itemCollectionMock;
 
     /**
-     * @var PrintShipment
+     * @var \Magento\Sales\Block\Order\PrintShipment
      */
     private $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->registryMock = $this->getMockBuilder(Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $paymentHelperMock = $this->getMockBuilder(Data::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $addressRendererMock = $this->getMockBuilder(Renderer::class)
+        $paymentHelperMock = $this->getMockBuilder(\Magento\Payment\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->block = new PrintShipment(
+        $addressRendererMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Address\Renderer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->block = new \Magento\Sales\Block\Order\PrintShipment(
             $this->contextMock,
             $this->registryMock,
             $paymentHelperMock,
@@ -84,7 +74,7 @@ class PrintShipmentTest extends TestCase
 
     public function testGetItemsSuccessful()
     {
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
         $items = [5, 3, 1];

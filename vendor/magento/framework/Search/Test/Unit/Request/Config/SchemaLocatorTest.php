@@ -3,31 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Search\Test\Unit\Request\Config;
 
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Search\Request\Config\SchemaLocator as SchemaLocatorConfig;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Framework\Cache\Config\SchemaLocator */
     protected $schemaLocator;
 
-    /** @var UrnResolver */
+    /** @var \Magento\Framework\Config\Dom\UrnResolver */
     protected $urnResolver;
 
-    /** @var UrnResolver */
+    /** @var \Magento\Framework\Config\Dom\UrnResolver */
     protected $urnResolverMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->urnResolver = new UrnResolver();
-        /** @var UrnResolver $urnResolverMock */
-        $this->urnResolverMock = $this->createMock(UrnResolver::class);
-        $this->schemaLocator = new SchemaLocatorConfig($this->urnResolverMock);
+        $this->urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
+        /** @var \Magento\Framework\Config\Dom\UrnResolver $urnResolverMock */
+        $this->urnResolverMock = $this->createMock(\Magento\Framework\Config\Dom\UrnResolver::class);
+        $this->schemaLocator = new \Magento\Framework\Search\Request\Config\SchemaLocator($this->urnResolverMock);
     }
 
     public function testGetSchema()

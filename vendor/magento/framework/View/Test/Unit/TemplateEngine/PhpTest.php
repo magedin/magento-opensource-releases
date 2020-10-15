@@ -7,36 +7,28 @@ declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\TemplateEngine;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\DataObject;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\TemplateEngine\Php;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
  * Test template engine that enables PHP templates to be used for rendering.
  */
-class PhpTest extends TestCase
+class PhpTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_PROP_VALUE = 'TEST_PROP_VALUE';
 
-    /** @var  Php */
+    /** @var  \Magento\Framework\View\TemplateEngine\Php */
     protected $_phpEngine;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_helperFactoryMock;
 
     /**
      * Create a PHP template engine to test.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_helperFactoryMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_phpEngine = new Php($this->_helperFactoryMock);
+        $this->_helperFactoryMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_phpEngine = new \Magento\Framework\View\TemplateEngine\Php($this->_helperFactoryMock);
     }
 
     /**
@@ -47,11 +39,10 @@ class PhpTest extends TestCase
     public function testRender()
     {
         $blockMock = $this->getMockBuilder(
-            Template::class
+            \Magento\Framework\View\Element\Template::class
         )->setMethods(
             ['testMethod']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $blockMock->expects($this->once())->method('testMethod');
         $blockMock->property = self::TEST_PROP_VALUE;
@@ -59,7 +50,7 @@ class PhpTest extends TestCase
         $filename = __DIR__ . '/_files/simple.phtml';
         $actualOutput = $this->_phpEngine->render($blockMock, $filename);
 
-//        $this->assertAttributeEquals(null, '_currentBlock', $this->_phpEngine);
+        $this->assertAttributeEquals(null, '_currentBlock', $this->_phpEngine);
 
         $expectedOutput = '<html>' . self::TEST_PROP_VALUE . '</html>' . PHP_EOL;
         $this->assertSame($expectedOutput, $actualOutput, 'phtml file did not render correctly');
@@ -69,26 +60,27 @@ class PhpTest extends TestCase
      * Test the render() function with a nonexistent filename.
      *
      * Expect an exception if the specified file does not exist.
+     * @expectedException PHPUnit\Framework\Exception
      */
     public function testRenderException()
     {
-        $this->expectException('PHPUnit\Framework\Exception');
         $blockMock = $this->getMockBuilder(
-            Template::class
+            \Magento\Framework\View\Element\Template::class
         )->setMethods(
             ['testMethod']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $filename = 'This_is_not_a_file';
 
         $this->_phpEngine->render($blockMock, $filename);
     }
 
+    /**
+     * @expectedException \LogicException
+     */
     public function testHelperWithInvalidClass()
     {
-        $this->expectException('LogicException');
-        $class = DataObject::class;
+        $class = \Magento\Framework\DataObject::class;
         $object = $this->createMock($class);
         $this->_helperFactoryMock->expects(
             $this->once()
@@ -96,15 +88,15 @@ class PhpTest extends TestCase
             'get'
         )->with(
             $class
-        )->willReturn(
-            $object
+        )->will(
+            $this->returnValue($object)
         );
         $this->_phpEngine->helper($class);
     }
 
     public function testHelperWithValidClass()
     {
-        $class = AbstractHelper::class;
+        $class = \Magento\Framework\App\Helper\AbstractHelper::class;
         $object = $this->getMockForAbstractClass($class, [], '', false);
         $this->_helperFactoryMock->expects(
             $this->once()
@@ -112,8 +104,8 @@ class PhpTest extends TestCase
             'get'
         )->with(
             $class
-        )->willReturn(
-            $object
+        )->will(
+            $this->returnValue($object)
         );
         $this->assertEquals($object, $this->_phpEngine->helper($class));
     }

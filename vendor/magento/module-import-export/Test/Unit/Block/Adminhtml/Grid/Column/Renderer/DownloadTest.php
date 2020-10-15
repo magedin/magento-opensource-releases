@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Block\Adminhtml\Grid\Column\Renderer;
 
 use Magento\Backend\Block\Context;
@@ -13,16 +11,14 @@ use Magento\Framework\DataObject;
 use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\ImportExport\Block\Adminhtml\Grid\Column\Renderer\Download;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\ImportExport\Block\Adminhtml\Grid\Column\Renderer\Download class.
  */
-class DownloadTest extends TestCase
+class DownloadTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var Context
      */
     protected $context;
 
@@ -37,14 +33,14 @@ class DownloadTest extends TestCase
     protected $download;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper|\PHPUnit_Framework_MockObject_MockObjecti
      */
     private $escaperMock;
 
     /**
-     * @inheritdoc
+     * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->escaperMock = $this->createMock(Escaper::class);
         $urlModel = $this->createPartialMock(Url::class, ['getUrl']);
@@ -59,7 +55,7 @@ class DownloadTest extends TestCase
             Download::class,
             [
                 'context' => $this->context,
-                'data' => $data,
+                'data' => $data
             ]
         );
     }

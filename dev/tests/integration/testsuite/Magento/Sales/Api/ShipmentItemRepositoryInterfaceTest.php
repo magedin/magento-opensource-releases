@@ -19,7 +19,7 @@ class ShipmentItemRepositoryInterfaceTest extends \PHPUnit\Framework\TestCase
      */
     private $repository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->repository = Bootstrap::getObjectManager()->create(ShipmentItemRepositoryInterface::class);
     }
@@ -72,7 +72,7 @@ class ShipmentItemRepositoryInterfaceTest extends \PHPUnit\Framework\TestCase
         $searchResult = $this->repository->getList($searchCriteria);
 
         $items = array_values($searchResult->getItems());
-        $this->assertCount(1, $items);
+        $this->assertEquals(1, count($items));
         $this->assertEquals('item 2', $items[0][ShipmentItemInterface::NAME]);
     }
 }

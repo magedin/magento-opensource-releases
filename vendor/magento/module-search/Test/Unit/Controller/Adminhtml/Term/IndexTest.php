@@ -4,20 +4,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Controller\Adminhtml\Term;
 
-use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\View\Page\Config;
 use Magento\Framework\View\Page\Title;
 use Magento\Search\Controller\Adminhtml\Term\Index;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -25,22 +21,22 @@ class IndexTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var Page|MockObject
+     * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageMock;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageConfigMock;
 
     /**
-     * @var Title|MockObject
+     * @var Title|\PHPUnit_Framework_MockObject_MockObject
      */
     private $titleMock;
 
@@ -49,7 +45,7 @@ class IndexTest extends TestCase
      */
     private $indexController;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
             ->disableOriginalConstructor()

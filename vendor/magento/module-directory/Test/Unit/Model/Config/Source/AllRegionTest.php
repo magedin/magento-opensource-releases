@@ -3,18 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Config\Source;
 
-use Magento\Directory\Model\Config\Source\Allregion;
-use Magento\Directory\Model\Region;
-use Magento\Directory\Model\ResourceModel\Country\Collection;
-use Magento\Directory\Model\ResourceModel\Country\CollectionFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class AllRegionTest extends TestCase
+class AllRegionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Directory\Model\Config\Source\AllRegion
@@ -22,7 +13,7 @@ class AllRegionTest extends TestCase
     protected $model;
 
     /**
-     * @var Collection
+     * @var \Magento\Directory\Model\ResourceModel\Country\Collection
      */
     protected $countryCollection;
 
@@ -31,44 +22,42 @@ class AllRegionTest extends TestCase
      */
     protected $regionCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $countryCollectionFactory = $this->getMockBuilder(
-            CollectionFactory::class
-        )->setMethods(['create', '__wakeup', '__sleep'])->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Directory\Model\ResourceModel\Country\CollectionFactory::class
+        )->setMethods(['create', '__wakeup', '__sleep'])->disableOriginalConstructor()->getMock();
 
         $this->countryCollection = $this->getMockBuilder(
-            Collection::class
+            \Magento\Directory\Model\ResourceModel\Country\Collection::class
         )->setMethods(['load', 'toOptionArray', '__wakeup', '__sleep'])
             ->disableOriginalConstructor()
             ->getMock();
         $countryCollectionFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->countryCollection);
+            ->will($this->returnValue($this->countryCollection));
         $this->countryCollection->expects($this->once())
             ->method('load')
-            ->willReturnSelf();
+            ->will($this->returnSelf());
 
         $regionCollectionFactory = $this->getMockBuilder(
             \Magento\Directory\Model\ResourceModel\Region\CollectionFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(['create', '__wakeup', '__sleep'])->getMock();
+        )->disableOriginalConstructor()->setMethods(['create', '__wakeup', '__sleep'])->getMock();
         $this->regionCollection = $this->getMockBuilder(\Magento\Directory\Model\ResourceModel\Region\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getIterator', '__wakeup', '__sleep'])
             ->getMock();
         $regionCollectionFactory->expects($this->once())
             ->method('create')
-            ->willReturn($this->regionCollection);
+            ->will($this->returnValue($this->regionCollection));
         $this->regionCollection->expects($this->once())
             ->method('load')
-            ->willReturn($this->regionCollection);
+            ->will($this->returnValue($this->regionCollection));
 
         $this->model = $objectManagerHelper->getObject(
-            Allregion::class,
+            \Magento\Directory\Model\Config\Source\Allregion::class,
             [
                 'countryCollectionFactory' => $countryCollectionFactory,
                 'regionCollectionFactory' => $regionCollectionFactory
@@ -88,10 +77,10 @@ class AllRegionTest extends TestCase
         $this->countryCollection->expects($this->once())
             ->method('toOptionArray')
             ->with(false)
-            ->willReturn(new \ArrayIterator($countries));
+            ->will($this->returnValue(new \ArrayIterator($countries)));
         $this->regionCollection->expects($this->once())
             ->method('getIterator')
-            ->willReturn(new \ArrayIterator($regions));
+            ->will($this->returnValue(new \ArrayIterator($regions)));
 
         $this->assertEquals($expectedResult, $this->model->toOptionArray($isMultiselect));
     }
@@ -208,23 +197,23 @@ class AllRegionTest extends TestCase
      * @param string $countryId
      * @param string $id
      * @param string $defaultName
-     * @return Region
+     * @return \Magento\Directory\Model\Region
      */
     private function generateRegion($countryId, $id, $defaultName)
     {
-        $region = $this->getMockBuilder(Region::class)
+        $region = $this->getMockBuilder(\Magento\Directory\Model\Region::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCountryId', 'getId', 'getDefaultName', '__wakeup', '__sleep'])
             ->getMock();
         $region->expects($this->once())
             ->method('getCountryId')
-            ->willReturn($countryId);
+            ->will($this->returnValue($countryId));
         $region->expects($this->once())
             ->method('getId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $region->expects($this->once())
             ->method('getDefaultName')
-            ->willReturn($defaultName);
+            ->will($this->returnValue($defaultName));
 
         return $region;
     }

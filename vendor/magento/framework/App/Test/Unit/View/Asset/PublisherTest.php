@@ -3,85 +3,76 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\View\Asset;
 
+use \Magento\Framework\App\View\Asset\Publisher;
+use \Magento\Framework\App\View\Asset\MaterializationStrategy;
+
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\View\Asset\MaterializationStrategy;
-use Magento\Framework\App\View\Asset\MaterializationStrategy\Factory;
-use Magento\Framework\App\View\Asset\MaterializationStrategy\StrategyInterface;
-use Magento\Framework\App\View\Asset\Publisher;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Filesystem\Directory\WriteFactory;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\View\Asset\File;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Framework\Filesystem\DriverPool;
 
-use PHPUnit\Framework\TestCase;
-
-class PublisherTest extends TestCase
+class PublisherTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystem;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sourceDirWrite;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $staticDirRead;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $staticDirWrite;
 
     /**
-     * @var Publisher
+     * @var \Magento\Framework\App\View\Asset\Publisher
      */
     private $object;
 
     /**
-     * @var MaterializationStrategy\Factory|MockObject
+     * @var MaterializationStrategy\Factory |\PHPUnit_Framework_MockObject_MockObject
      */
     private $materializationStrategyFactory;
 
     /**
-     * @var WriteFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writeFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->filesystem = $this->createMock(Filesystem::class);
+        $this->filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->materializationStrategyFactory =
-            $this->createMock(Factory::class);
-        $this->writeFactory = $this->createMock(WriteFactory::class);
+            $this->createMock(\Magento\Framework\App\View\Asset\MaterializationStrategy\Factory::class);
+        $this->writeFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\WriteFactory::class);
         $this->object = new Publisher($this->filesystem, $this->materializationStrategyFactory, $this->writeFactory);
 
         $this->sourceDirWrite = $this->getMockForAbstractClass(
-            WriteInterface::class
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class
         );
         $this->staticDirRead = $this->getMockForAbstractClass(
-            ReadInterface::class
+            \Magento\Framework\Filesystem\Directory\ReadInterface::class
         );
         $this->staticDirWrite = $this->getMockForAbstractClass(
-            WriteInterface::class
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class
         );
         $this->filesystem->expects($this->any())
             ->method('getDirectoryRead')
             ->with(DirectoryList::STATIC_VIEW)
-            ->willReturn($this->staticDirRead);
+            ->will($this->returnValue($this->staticDirRead));
         $this->filesystem->expects($this->any())
             ->method('getDirectoryWrite')
-            ->willReturn($this->staticDirWrite);
+            ->will($this->returnValue($this->staticDirWrite));
         $this->writeFactory->expects($this->any())->method('create')->willReturn($this->sourceDirWrite);
     }
 
@@ -90,7 +81,7 @@ class PublisherTest extends TestCase
         $this->staticDirRead->expects($this->once())
             ->method('isExist')
             ->with('some/file.ext')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->assertTrue($this->object->publish($this->getAsset()));
     }
 
@@ -99,18 +90,18 @@ class PublisherTest extends TestCase
         $this->staticDirRead->expects($this->once())
             ->method('isExist')
             ->with('some/file.ext')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $materializationStrategy =
-            $this->getMockForAbstractClass(StrategyInterface::class);
+            $this->createMock(\Magento\Framework\App\View\Asset\MaterializationStrategy\StrategyInterface::class);
 
         $this->materializationStrategyFactory->expects($this->once())
             ->method('create')
             ->with($this->getAsset())
-            ->willReturn($materializationStrategy);
+            ->will($this->returnValue($materializationStrategy));
         $materializationStrategy->expects($this->once())
             ->method('publishFile')
             ->with($this->sourceDirWrite, $this->staticDirWrite, 'file.ext', 'some/file.ext')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->assertTrue($this->object->publish($this->getAsset()));
     }
@@ -118,17 +109,17 @@ class PublisherTest extends TestCase
     /**
      * Create an asset mock
      *
-     * @return File|MockObject
+     * @return \Magento\Framework\View\Asset\File|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getAsset()
     {
-        $asset = $this->createMock(File::class);
+        $asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
         $asset->expects($this->any())
             ->method('getPath')
-            ->willReturn('some/file.ext');
+            ->will($this->returnValue('some/file.ext'));
         $asset->expects($this->any())
             ->method('getSourceFile')
-            ->willReturn('/root/some/file.ext');
+            ->will($this->returnValue('/root/some/file.ext'));
         return $asset;
     }
 }

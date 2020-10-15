@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model\ResourceModel\Attribute;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Framework\EntityManager\MetadataPool;
 use Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionProvider;
 use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class OptionProviderTest extends TestCase
+class OptionProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OptionProvider
@@ -27,16 +23,16 @@ class OptionProviderTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPool;
 
     /**
-     * @var EntityMetadataInterface|MockObject
+     * @var EntityMetadataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
             ->disableOriginalConstructor()

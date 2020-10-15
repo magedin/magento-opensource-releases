@@ -17,7 +17,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     protected $_subscriber;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_subscriber = $this->_objectManager->get(\Magento\Newsletter\Model\Subscriber::class);

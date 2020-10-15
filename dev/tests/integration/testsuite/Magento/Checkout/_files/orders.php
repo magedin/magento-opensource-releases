@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/customers.php');
+require 'customers.php';
 
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
 

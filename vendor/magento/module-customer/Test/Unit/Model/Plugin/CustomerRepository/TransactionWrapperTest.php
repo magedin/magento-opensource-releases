@@ -3,31 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Plugin\CustomerRepository;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Plugin\CustomerRepository\TransactionWrapper;
-use Magento\Customer\Model\ResourceModel\Customer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TransactionWrapperTest extends TestCase
+class TransactionWrapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TransactionWrapper
+     * @var \Magento\Customer\Model\Plugin\CustomerRepository\TransactionWrapper
      */
     protected $model;
 
     /**
-     * @var MockObject|Customer
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Customer\Model\ResourceModel\Customer
      */
     protected $resourceMock;
 
     /**
-     * @var MockObject|CustomerRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Customer\Api\CustomerRepositoryInterface
      */
     protected $subjectMock;
 
@@ -42,7 +33,7 @@ class TransactionWrapperTest extends TestCase
     protected $rollbackClosureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerMock;
 
@@ -53,11 +44,11 @@ class TransactionWrapperTest extends TestCase
 
     const ERROR_MSG = "error occurred";
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceMock = $this->createMock(Customer::class);
-        $this->subjectMock = $this->getMockForAbstractClass(CustomerRepositoryInterface::class);
-        $this->customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
+        $this->resourceMock = $this->createMock(\Magento\Customer\Model\ResourceModel\Customer::class);
+        $this->subjectMock = $this->createMock(\Magento\Customer\Api\CustomerRepositoryInterface::class);
+        $this->customerMock = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
         $customerMock = $this->customerMock;
         $this->closureMock = function () use ($customerMock) {
             return $customerMock;
@@ -66,7 +57,7 @@ class TransactionWrapperTest extends TestCase
             throw new \Exception(self::ERROR_MSG);
         };
 
-        $this->model = new TransactionWrapper($this->resourceMock);
+        $this->model = new \Magento\Customer\Model\Plugin\CustomerRepository\TransactionWrapper($this->resourceMock);
     }
 
     public function testAroundSaveCommit()
@@ -80,11 +71,12 @@ class TransactionWrapperTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage error occurred
+     */
     public function testAroundSaveRollBack()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('error occurred');
-
         $this->resourceMock->expects($this->once())->method('beginTransaction');
         $this->resourceMock->expects($this->once())->method('rollBack');
 

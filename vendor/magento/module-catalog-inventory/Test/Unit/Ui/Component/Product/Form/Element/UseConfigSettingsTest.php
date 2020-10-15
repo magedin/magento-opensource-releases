@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Ui\Component\Product\Form\Element;
 
 use Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings;
 use Magento\Framework\Data\ValueSourceInterface;
-use Magento\Framework\Serialize\JsonValidator;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UseConfigSettingsTest extends TestCase
+class UseConfigSettingsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -25,12 +19,12 @@ class UseConfigSettingsTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
@@ -40,16 +34,16 @@ class UseConfigSettingsTest extends TestCase
     private $useConfigSettings;
 
     /**
-     * @var JsonValidator|MockObject
+     * @var \Magento\Framework\Serialize\JsonValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $jsonValidatorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\View\Element\UiComponent\ContextInterface::class);
         $this->serializerMock = $this->createMock(Json::class);
-        $this->jsonValidatorMock = $this->getMockBuilder(JsonValidator::class)
+        $this->jsonValidatorMock = $this->getMockBuilder(\Magento\Framework\Serialize\JsonValidator::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->useConfigSettings = $this->objectManagerHelper->getObject(
@@ -64,7 +58,7 @@ class UseConfigSettingsTest extends TestCase
 
     public function testPrepare()
     {
-        $processorMock = $this->createMock(Processor::class);
+        $processorMock = $this->createMock(\Magento\Framework\View\Element\UiComponent\Processor::class);
         $processorMock->expects($this->atLeastOnce())->method('register');
         $this->contextMock->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processorMock);
         $config = ['valueFromConfig' => 123];
@@ -86,11 +80,11 @@ class UseConfigSettingsTest extends TestCase
         $serializedCalledNum = 0,
         $isValidCalledNum = 0
     ) {
-        $processorMock = $this->createMock(Processor::class);
+        $processorMock = $this->createMock(\Magento\Framework\View\Element\UiComponent\Processor::class);
         $processorMock->expects($this->atLeastOnce())->method('register');
         $this->contextMock->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processorMock);
-        /** @var ValueSourceInterface|MockObject $source */
-        $source = $this->getMockForAbstractClass(ValueSourceInterface::class);
+        /** @var ValueSourceInterface|\PHPUnit_Framework_MockObject_MockObject $source */
+        $source = $this->createMock(ValueSourceInterface::class);
         $source->expects($this->once())
             ->method('getValue')
             ->with($expectedResult['keyInConfiguration'])

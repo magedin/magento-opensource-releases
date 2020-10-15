@@ -3,26 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Pricing\Test\Unit\PriceInfo;
 
-use Magento\Framework\ObjectManager\ObjectManager;
-use Magento\Framework\Pricing\Price\Collection;
-use Magento\Framework\Pricing\PriceInfo\Base;
 use Magento\Framework\Pricing\PriceInfo\Factory;
-use Magento\Framework\Pricing\PriceInfoInterface;
-use Magento\Framework\Pricing\SaleableInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Framework\Pricing\PriceInfo\Factory
  */
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
@@ -32,34 +23,34 @@ class FactoryTest extends TestCase
     protected $types;
 
     /**
-     * @var Factory
+     * @var \Magento\Framework\Pricing\PriceInfo\Factory
      */
     protected $factory;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Framework\Pricing\Price\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pricesMock;
 
     /**
-     * @var SaleableInterface|MockObject
+     * @var \Magento\Framework\Pricing\SaleableInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $saleableItemMock;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\PriceInfo\Base|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceInfoMock;
 
     /**
      * SetUp test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        $this->pricesMock = $this->createMock(Collection::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManager\ObjectManager::class);
+        $this->pricesMock = $this->createMock(\Magento\Framework\Pricing\Price\Collection::class);
         $this->saleableItemMock = $this->getMockForAbstractClass(
-            SaleableInterface::class,
+            \Magento\Framework\Pricing\SaleableInterface::class,
             [],
             '',
             false,
@@ -68,7 +59,7 @@ class FactoryTest extends TestCase
             ['getQty']
         );
         $this->priceInfoMock = $this->getMockForAbstractClass(
-            PriceInfoInterface::class,
+            \Magento\Framework\Pricing\PriceInfoInterface::class,
             [],
             '',
             false,
@@ -121,32 +112,34 @@ class FactoryTest extends TestCase
     {
         $this->saleableItemMock->expects($this->once())
             ->method('getTypeId')
-            ->willReturn($typeId);
+            ->will($this->returnValue($typeId));
         $this->saleableItemMock->expects($this->once())
             ->method('getQty')
-            ->willReturn($quantity);
+            ->will($this->returnValue($quantity));
 
         $this->objectManagerMock->expects($this->exactly(2))
             ->method('create')
-            ->willReturnMap([
+            ->will($this->returnValueMap(
                 [
-                    $prices,
                     [
-                        'saleableItem' => $this->saleableItemMock,
-                        'quantity' => $quantity
+                        $prices,
+                        [
+                            'saleableItem' => $this->saleableItemMock,
+                            'quantity' => $quantity
+                        ],
+                        $this->pricesMock,
                     ],
-                    $this->pricesMock,
-                ],
-                [
-                    $infoClass,
                     [
-                        'saleableItem' => $this->saleableItemMock,
-                        'quantity' => $quantity,
-                        'prices' => $this->pricesMock
+                        $infoClass,
+                        [
+                            'saleableItem' => $this->saleableItemMock,
+                            'quantity' => $quantity,
+                            'prices' => $this->pricesMock
+                        ],
+                        $this->priceInfoMock
                     ],
-                    $this->priceInfoMock
-                ],
-            ]);
+                ]
+            ));
         $this->assertEquals($this->priceInfoMock, $this->factory->create($this->saleableItemMock, []));
     }
 }

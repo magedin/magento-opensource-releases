@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -6,19 +6,18 @@
 
 namespace Vertex\Tax\Test\Unit\Model\Calculation\VertexCalculator;
 
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Api\Data\RegionInterface;
-use Magento\Quote\Api\Data\AddressInterface as QuoteAddressInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use Vertex\Tax\Model\Calculation\VertexCalculator\TaxAddressResolver;
 use Vertex\Tax\Test\Unit\TestCase;
+use Vertex\Tax\Model\Calculation\VertexCalculator\TaxAddressResolver;
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Quote\Api\Data\AddressInterface as QuoteAddressInterface;
+use Magento\Customer\Api\Data\RegionInterface;
 
 /**
  * Test cases for the tax address resolver.
  */
 class TaxAddressResolverTest extends TestCase
 {
-    /** @var MockObject|AccountManagementInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|AccountManagementInterface */
     private $accountManagementMock;
 
     /** @var TaxAddressResolver */
@@ -27,7 +26,7 @@ class TaxAddressResolverTest extends TestCase
     /**
      * Initial test environment setup.
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 
@@ -124,7 +123,7 @@ class TaxAddressResolverTest extends TestCase
      * Generate a mock address.
      *
      * @param bool $valid Optionally specify address data integrity.
-     * @return MockObject|QuoteAddressInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|QuoteAddressInterface
      */
     private function getAddressMock($valid = true)
     {

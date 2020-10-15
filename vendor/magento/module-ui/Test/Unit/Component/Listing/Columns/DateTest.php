@@ -3,34 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Listing\Columns;
 
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Ui\Component\Listing\Columns\Date;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DateTest extends TestCase
+/**
+ * Class DateTest
+ */
+class DateTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_TIME = '2000-04-12 16:34:12';
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Date
+     * @var \Magento\Ui\Component\Listing\Columns\Date
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $timezoneMock;
 
@@ -42,12 +37,12 @@ class DateTest extends TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->contextMock = $this->getMockForAbstractClass(
-            ContextInterface::class,
+            \Magento\Framework\View\Element\UiComponent\ContextInterface::class,
             [],
             '',
             false,
@@ -55,17 +50,17 @@ class DateTest extends TestCase
             true,
             []
         );
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
 
-        $this->timezoneMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->timezoneMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = $this->objectManager->getObject(
-            Date::class,
+            \Magento\Ui\Component\Listing\Columns\Date::class,
             [
                 'context' => $this->contextMock,
                 'data' => [

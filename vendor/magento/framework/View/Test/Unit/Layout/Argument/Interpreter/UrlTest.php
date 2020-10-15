@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
 
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Layout\Argument\Interpreter\NamedParams;
-use Magento\Framework\View\Layout\Argument\Interpreter\Url;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Layout\Argument\Interpreter\Url;
 
-class UrlTest extends TestCase
+class UrlTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_urlResolver;
 
     /**
-     * @var NamedParams|MockObject
+     * @var \Magento\Framework\View\Layout\Argument\Interpreter\NamedParams|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_interpreter;
 
@@ -30,10 +24,10 @@ class UrlTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_urlResolver = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->_interpreter = $this->createMock(NamedParams::class);
+        $this->_urlResolver = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->_interpreter = $this->createMock(\Magento\Framework\View\Layout\Argument\Interpreter\NamedParams::class);
         $this->_model = new Url($this->_urlResolver, $this->_interpreter);
     }
 
@@ -49,8 +43,8 @@ class UrlTest extends TestCase
             'evaluate'
         )->with(
             $input
-        )->willReturn(
-            $urlParams
+        )->will(
+            $this->returnValue($urlParams)
         );
 
         $this->_urlResolver->expects(
@@ -60,18 +54,20 @@ class UrlTest extends TestCase
         )->with(
             'some/path',
             $urlParams
-        )->willReturn(
-            $expected
+        )->will(
+            $this->returnValue($expected)
         );
 
         $actual = $this->_model->evaluate($input);
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage URL path is missing
+     */
     public function testEvaluateWrongPath()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('URL path is missing');
         $input = [];
         $this->_model->evaluate($input);
     }

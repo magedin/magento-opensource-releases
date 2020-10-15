@@ -29,10 +29,7 @@ class DisallowInlineIfUnitTest extends AbstractSniffUnitTest
     {
         switch ($testFile) {
         case 'DisallowInlineIfUnitTest.inc':
-            return [
-                8  => 1,
-                18 => 1,
-            ];
+            return [8 => 1];
             break;
         case 'DisallowInlineIfUnitTest.js':
             return [1 => 1];

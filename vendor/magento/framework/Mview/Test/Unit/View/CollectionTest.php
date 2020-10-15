@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Mview\Test\Unit\View;
 
@@ -17,10 +16,8 @@ use Magento\Framework\Mview\View\State\CollectionInterface as StateCollectionInt
 use Magento\Framework\Mview\View\StateInterface;
 use Magento\Framework\Mview\ViewInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -28,22 +25,22 @@ class CollectionTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var IndexerConfigInterface|MockObject
+     * @var IndexerConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerConfigMock;
 
     /**
-     * @var EntityFactoryInterface|MockObject
+     * @var EntityFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityFactoryMock;
 
     /**
-     * @var MviewConfigInterface|MockObject
+     * @var MviewConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $mviewConfigMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $statesFactoryMock;
 
@@ -52,7 +49,7 @@ class CollectionTest extends TestCase
      */
     private $collection;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -63,7 +60,7 @@ class CollectionTest extends TestCase
         $this->entityFactoryMock = $this->getMockBuilder(EntityFactoryInterface::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->mviewConfigMock = $this->getMockBuilder(MviewConfigInterface::class)
             ->disableOriginalConstructor()
@@ -165,11 +162,13 @@ class CollectionTest extends TestCase
             ->method('create')
             ->willReturn($states);
 
-        $this->assertInstanceOf(Collection::class, $this->collection->loadData());
+        $this->assertInstanceOf(\Magento\Framework\Mview\View\Collection::class, $this->collection->loadData());
 
         $views = $this->collection->getViewsByStateMode(StateInterface::MODE_DISABLED);
         $this->assertCount($numDisabledViews, $views);
-        $this->assertContainsOnlyInstancesOf(ViewInterface::class, $views);
+        foreach ($views as $view) {
+            $this->assertInstanceOf(ViewInterface::class, $view);
+        }
 
         $views = $this->collection->getViewsByStateMode(StateInterface::MODE_ENABLED);
         $this->assertCount($numEnabledViews, $views);
@@ -178,7 +177,7 @@ class CollectionTest extends TestCase
     /**
      * @param array $methods
      * @param array $data
-     * @return StateInterface|MockObject
+     * @return StateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getStateMock(array $methods = [], array $data = [])
     {
@@ -193,7 +192,7 @@ class CollectionTest extends TestCase
 
     /**
      * @param array $methods
-     * @return ViewInterface|MockObject
+     * @return ViewInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getViewMock(array $methods = [])
     {
@@ -207,11 +206,11 @@ class CollectionTest extends TestCase
     /**
      * @param array $methods
      * @param array $data
-     * @return MockObject|IndexerInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|IndexerInterface
      */
     private function getIndexerMock(array $methods = [], array $data = [])
     {
-        /** @var MockObject|IndexerInterface $indexer */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|IndexerInterface $indexer */
         $indexer = $this->getMockBuilder(IndexerInterface::class)
             ->setMethods(array_merge($methods, ['getId', 'getViewId']))
             ->disableOriginalConstructor()

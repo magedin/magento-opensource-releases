@@ -40,7 +40,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->layout = Bootstrap::getObjectManager()->create(\Magento\Framework\View\Layout::class);
@@ -54,7 +54,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute per test cleanup.
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->registry->unregister(RegistryConstants::CURRENT_GROUP_ID);
     }

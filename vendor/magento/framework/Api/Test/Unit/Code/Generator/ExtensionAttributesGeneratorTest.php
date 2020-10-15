@@ -3,51 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Api\Test\Unit\Code\Generator;
 
-use Magento\Bundle\Api\Data\BundleOptionInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator;
-use Magento\Framework\Api\ExtensionAttribute\Config;
 use Magento\Framework\Api\ExtensionAttribute\Config\Converter;
-use Magento\Framework\Reflection\TypeProcessor;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ExtensionAttributesGeneratorTest extends TestCase
+class ExtensionAttributesGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\Api\ExtensionAttribute\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var TypeProcessor|MockObject
+     * @var \Magento\Framework\Reflection\TypeProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeProcessorMock;
 
     /**
-     * @var ExtensionAttributesGenerator|MockObject
+     * @var \Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Framework\Api\ExtensionAttribute\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->typeProcessorMock = $this->getMockBuilder(TypeProcessor::class)
+        $this->typeProcessorMock = $this->getMockBuilder(\Magento\Framework\Reflection\TypeProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            ExtensionAttributesGenerator::class,
+            \Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator::class,
             [
                 'config' => $this->configMock,
                 'typeProcessor' => $this->typeProcessorMock,
@@ -65,7 +56,7 @@ class ExtensionAttributesGeneratorTest extends TestCase
             ->method('get')
             ->willReturn(
                 [
-                    ProductInterface::class => [
+                    \Magento\Catalog\Api\Data\ProductInterface::class => [
                         'string_attribute' => [
                             Converter::DATA_TYPE => 'string',
                             Converter::RESOURCE_PERMISSIONS => [],
@@ -77,7 +68,7 @@ class ExtensionAttributesGeneratorTest extends TestCase
                         ],
                         // Ensure type declaration is added to argument of setter
                         'complex_object_attribute_with_type_declaration' => [
-                            Converter::DATA_TYPE => BundleOptionInterface::class,
+                            Converter::DATA_TYPE => \Magento\Bundle\Api\Data\BundleOptionInterface::class,
                             Converter::RESOURCE_PERMISSIONS => [],
                         ],
                     ],
@@ -104,13 +95,13 @@ class ExtensionAttributesGeneratorTest extends TestCase
 
     public function testValidateException()
     {
-        $objectManager = new ObjectManager($this);
-        /** @var ExtensionAttributesGenerator $model */
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator $model */
         $model = $objectManager->getObject(
-            ExtensionAttributesGenerator::class,
+            \Magento\Framework\Api\Code\Generator\ExtensionAttributesGenerator::class,
             [
                 'sourceClassName' => \Magento\Catalog\Api\Data\Product::class,
-                'resultClassName' => ProductInterface::class
+                'resultClassName' => \Magento\Catalog\Api\Data\ProductInterface::class
             ]
         );
         $reflectionObject = new \ReflectionObject($model);
@@ -119,10 +110,12 @@ class ExtensionAttributesGeneratorTest extends TestCase
 
         $expectedValidationResult = false;
         $this->assertEquals($expectedValidationResult, $reflectionMethod->invoke($model));
-        $this->assertContains(
-            'Invalid extension name [\Magento\Catalog\Api\Data\ProductInterface].'
-            . ' Use \Magento\Catalog\Api\Data\ProductExtension',
-            $model->getErrors(),
+        $this->assertTrue(
+            in_array(
+                'Invalid extension name [\Magento\Catalog\Api\Data\ProductInterface].'
+                . ' Use \Magento\Catalog\Api\Data\ProductExtension',
+                $model->getErrors()
+            ),
             'Expected validation error message is missing.'
         );
     }

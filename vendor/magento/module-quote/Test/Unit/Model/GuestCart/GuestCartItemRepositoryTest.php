@@ -4,41 +4,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\CartItemRepositoryInterface;
-use Magento\Quote\Model\GuestCart\GuestCartItemRepository;
-use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestCartItemRepositoryTest extends TestCase
+class GuestCartItemRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GuestCartItemRepository
+     * @var \Magento\Quote\Model\GuestCart\GuestCartItemRepository
      */
     protected $guestCartItemRepository;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $cartItemRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteItemMock;
 
@@ -55,17 +47,17 @@ class GuestCartItemRepositoryTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
         $this->cartId = 33;
 
         /**
-         * @var GuestCartTestHelper
+         * @var \Magento\Quote\Test\Unit\Model\GuestCart\GuestCartTestHelper
          */
-        $guestCartTestHelper = new GuestCartTestHelper($this);
+        $guestCartTestHelper = new \Magento\Quote\Test\Unit\Model\GuestCart\GuestCartTestHelper($this);
         list($this->quoteIdMaskFactoryMock, $this->quoteIdMaskMock) =
             $guestCartTestHelper->mockQuoteIdMask(
                 $this->maskedCartId,
@@ -76,7 +68,7 @@ class GuestCartItemRepositoryTest extends TestCase
             ->method('getMaskedId')
             ->willReturn($this->maskedCartId);
 
-        $this->quoteItemMock = $this->createMock(Item::class);
+        $this->quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $this->quoteItemMock->expects($this->any())
             ->method('getItemId')
             ->willReturn($this->maskedCartId);
@@ -87,10 +79,10 @@ class GuestCartItemRepositoryTest extends TestCase
             ->method('setQuoteId')
             ->with($this->cartId);
 
-        $this->cartItemRepositoryMock = $this->getMockForAbstractClass(CartItemRepositoryInterface::class);
+        $this->cartItemRepositoryMock = $this->createMock(\Magento\Quote\Api\CartItemRepositoryInterface::class);
         $this->guestCartItemRepository =
             $objectManager->getObject(
-                GuestCartItemRepository::class,
+                \Magento\Quote\Model\GuestCart\GuestCartItemRepository::class,
                 [
                     'repository' => $this->cartItemRepositoryMock,
                     'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,
@@ -115,14 +107,14 @@ class GuestCartItemRepositoryTest extends TestCase
      */
     public function testGetList()
     {
-        $itemMock = $this->createMock(Item::class);
+        $itemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $itemMock->expects($this->any())
             ->method('setQuoteId')
             ->with($this->maskedCartId);
         $this->cartItemRepositoryMock->expects($this->once())
             ->method('getList')
             ->with($this->cartId)
-            ->willReturn([$itemMock]);
+            ->will($this->returnValue([$itemMock]));
         $this->assertEquals([$itemMock], $this->guestCartItemRepository->getList($this->maskedCartId));
     }
 

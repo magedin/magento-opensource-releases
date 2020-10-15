@@ -17,33 +17,32 @@ use Magento\Inventory\Model\Source\Command\SaveInterface;
 use Magento\Inventory\Model\SourceRepository;
 use Magento\InventoryApi\Api\Data\SourceInterface;
 use Magento\InventoryApi\Api\Data\SourceSearchResultsInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SourceRepositoryTest extends TestCase
 {
     /**
-     * @var SaveInterface|MockObject
+     * @var SaveInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commandSave;
 
     /**
-     * @var GetInterface|MockObject
+     * @var GetInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commandGet;
 
     /**
-     * @var GetListInterface|MockObject
+     * @var GetListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commandGetList;
 
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
     /**
-     * @var SourceSearchResultsInterface|MockObject
+     * @var SourceSearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchResult;
 
@@ -52,18 +51,13 @@ class SourceRepositoryTest extends TestCase
      */
     private $sourceRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->commandSave = $this->getMockBuilder(SaveInterface::class)
-            ->getMock();
-        $this->commandGet = $this->getMockBuilder(GetInterface::class)
-            ->getMock();
-        $this->commandGetList = $this->getMockBuilder(GetListInterface::class)
-            ->getMock();
-        $this->source = $this->getMockBuilder(SourceInterface::class)
-            ->getMock();
-        $this->searchResult = $this->getMockBuilder(SourceSearchResultsInterface::class)
-            ->getMock();
+        $this->commandSave = $this->getMockBuilder(SaveInterface::class)->getMock();
+        $this->commandGet = $this->getMockBuilder(GetInterface::class)->getMock();
+        $this->commandGetList = $this->getMockBuilder(GetListInterface::class)->getMock();
+        $this->source = $this->getMockBuilder(SourceInterface::class)->getMock();
+        $this->searchResult = $this->getMockBuilder(SourceSearchResultsInterface::class)->getMock();
 
         $this->sourceRepository = (new ObjectManager($this))->getObject(
             SourceRepository::class,
@@ -88,10 +82,12 @@ class SourceRepositoryTest extends TestCase
         $this->sourceRepository->save($this->source);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     * @expectedExceptionMessage Some error
+     */
     public function testSaveWithCouldNotSaveException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
-        $this->expectExceptionMessage('Some error');
         $this->commandSave
             ->expects($this->once())
             ->method('execute')
@@ -114,10 +110,12 @@ class SourceRepositoryTest extends TestCase
         self::assertEquals($this->source, $this->sourceRepository->get($sourceCode));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage Some error
+     */
     public function testGetWithNoSuchEntityException()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
-        $this->expectExceptionMessage('Some error');
         $sourceCode = 'source-code';
 
         $this->commandGet
@@ -142,8 +140,7 @@ class SourceRepositoryTest extends TestCase
 
     public function testGetListWithSearchCriteria()
     {
-        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)
-            ->getMock();
+        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)->getMock();
 
         $this->commandGetList
             ->expects($this->once())

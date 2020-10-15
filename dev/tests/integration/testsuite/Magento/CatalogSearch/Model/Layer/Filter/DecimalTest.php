@@ -21,7 +21,7 @@ class DecimalTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $category = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(

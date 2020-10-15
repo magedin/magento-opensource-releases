@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\Adapter\Aggregation\Checker\Query;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\CatalogSearch\Model\Adapter\Aggregation\Checker\Query\CatalogView;
-use Magento\Framework\Search\Request\Filter\Term;
-use Magento\Framework\Search\Request\Query\Filter;
-use Magento\Framework\Search\Request\QueryInterface;
 use Magento\Framework\Search\RequestInterface;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Search\Request\QueryInterface;
+use Magento\Framework\Search\Request\Query\Filter;
+use Magento\Framework\Search\Request\Filter\Term;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 
-class CatalogViewTest extends TestCase
+class CatalogViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CatalogView
@@ -27,32 +23,32 @@ class CatalogViewTest extends TestCase
     private $catalogViewMock;
 
     /**
-     * @var CategoryRepositoryInterface|MockObject
+     * @var CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryRepositoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var QueryInterface|MockObject
+     * @var QueryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryMock;
 
     /**
-     * @var Filter|MockObject
+     * @var Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryFilterMock;
 
     /**
-     * @var Term|MockObject
+     * @var Term|\PHPUnit_Framework_MockObject_MockObject
      */
     private $termFilterMock;
 
@@ -62,16 +58,16 @@ class CatalogViewTest extends TestCase
     private $name;
 
     /**
-     * @var CategoryInterface|MockObject
+     * @var CategoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->categoryRepositoryMock = $this->getMockBuilder(CategoryRepositoryInterface::class)
             ->disableOriginalConstructor()

@@ -3,51 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Model\Rule;
 
-use Magento\CatalogRule\Model\ResourceModel\Rule\Collection;
-use Magento\CatalogRule\Model\ResourceModel\Rule\CollectionFactory;
-use Magento\CatalogRule\Model\Rule;
-use Magento\CatalogRule\Model\Rule\DataProvider;
-use Magento\Framework\App\Request\DataPersistorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataProvider
+     * @var \Magento\CatalogRule\Model\Rule\DataProvider
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataPersistorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\CatalogRule\Model\ResourceModel\Rule\CollectionFactory::class,
             ['create']
         );
-        $this->collectionMock = $this->createMock(Collection::class);
+        $this->collectionMock = $this->createMock(\Magento\CatalogRule\Model\ResourceModel\Rule\Collection::class);
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($this->collectionMock);
-        $this->dataPersistorMock = $this->getMockForAbstractClass(DataPersistorInterface::class);
+        $this->dataPersistorMock = $this->createMock(\Magento\Framework\App\Request\DataPersistorInterface::class);
 
-        $this->model = new DataProvider(
+        $this->model = new \Magento\CatalogRule\Model\Rule\DataProvider(
             'Name',
             'Primary',
             'Request',
@@ -61,7 +51,7 @@ class DataProviderTest extends TestCase
         $ruleId = 42;
         $ruleData = ['name' => 'Catalog Price Rule'];
 
-        $ruleMock = $this->createMock(Rule::class);
+        $ruleMock = $this->createMock(\Magento\CatalogRule\Model\Rule::class);
         $this->collectionMock->expects($this->once())->method('getItems')->willReturn([$ruleMock]);
 
         $ruleMock->expects($this->atLeastOnce())->method('getId')->willReturn($ruleId);
@@ -89,7 +79,7 @@ class DataProviderTest extends TestCase
             ->method('clear')
             ->with('catalog_rule');
 
-        $newRuleMock = $this->createMock(Rule::class);
+        $newRuleMock = $this->createMock(\Magento\CatalogRule\Model\Rule::class);
         $newRuleMock->expects($this->atLeastOnce())->method('setData')->with($persistedData)->willReturnSelf();
         $newRuleMock->expects($this->atLeastOnce())->method('getId')->willReturn($ruleId);
         $newRuleMock->expects($this->once())->method('getData')->willReturn($ruleData);

@@ -30,7 +30,7 @@ class SimpleWithOptionsTierPriceTest extends \PHPUnit\Framework\TestCase
      */
     private $productCollectionFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);

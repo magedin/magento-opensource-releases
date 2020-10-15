@@ -47,9 +47,8 @@ class AdminTokenServiceTest extends WebapiAbstract
     /**
      * Setup AdminTokenService
      */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->markTestSkipped('Skipped until MC-34201 is addressed');
         $this->_markTestAsRestOnly();
         $this->tokenService = Bootstrap::getObjectManager()->get(\Magento\Integration\Model\AdminTokenService::class);
         $this->tokenModel = Bootstrap::getObjectManager()->get(\Magento\Integration\Model\Oauth\Token::class);

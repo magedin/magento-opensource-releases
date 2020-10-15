@@ -3,58 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model;
 
-use Magento\Catalog\Api\CategoryLinkRepositoryInterface;
-use Magento\Catalog\Api\Data\CategoryProductLinkInterface;
-use Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory;
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\CategoryLinkManagement;
-use Magento\Catalog\Model\CategoryRepository;
-use Magento\Catalog\Model\ResourceModel\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Framework\Indexer\IndexerRegistry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class CategoryLinkManagementTest extends TestCase
+class CategoryLinkManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CategoryLinkManagement
+     * @var \Magento\Catalog\Model\CategoryLinkManagement
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productLinkFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->categoryRepositoryMock = $this->createMock(CategoryRepository::class);
-        $productResource = $this->createMock(Product::class);
-        $categoryLinkRepository = $this->getMockBuilder(CategoryLinkRepositoryInterface::class)
+        $this->categoryRepositoryMock = $this->createMock(\Magento\Catalog\Model\CategoryRepository::class);
+        $productResource = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product::class);
+        $categoryLinkRepository = $this->getMockBuilder(\Magento\Catalog\Api\CategoryLinkRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $indexerRegistry = $this->getMockBuilder(IndexerRegistry::class)
+        $indexerRegistry = $this->getMockBuilder(\Magento\Framework\Indexer\IndexerRegistry::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->productLinkFactoryMock = $this->createPartialMock(
-            CategoryProductLinkInterfaceFactory::class,
+            \Magento\Catalog\Api\Data\CategoryProductLinkInterfaceFactory::class,
             ['create']
         );
 
-        $this->model = new CategoryLinkManagement(
+        $this->model = new \Magento\Catalog\Model\CategoryLinkManagement(
             $this->categoryRepositoryMock,
             $this->productLinkFactoryMock
         );
@@ -73,13 +57,13 @@ class CategoryLinkManagementTest extends TestCase
         $productId = 55;
         $position = 25;
         $productSku = 'testSku';
-        $categoryProductLinkMock = $this->getMockForAbstractClass(CategoryProductLinkInterface::class);
-        $categoryMock = $this->createMock(Category::class);
+        $categoryProductLinkMock = $this->createMock(\Magento\Catalog\Api\Data\CategoryProductLinkInterface::class);
+        $categoryMock = $this->createMock(\Magento\Catalog\Model\Category::class);
         $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $productMock->expects($this->once())->method('getSku')->willReturn($productSku);
         $productMock->expects($this->once())->method('getData')->with('cat_index_position')->willReturn($position);
         $items = [$productId => $productMock];
-        $productsMock = $this->createMock(Collection::class);
+        $productsMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
         $this->categoryRepositoryMock->expects($this->once())->method('get')->with($categoryId)
             ->willReturn($categoryMock);
         $categoryMock->expects($this->once())->method('getProductCollection')->willReturn($productsMock);

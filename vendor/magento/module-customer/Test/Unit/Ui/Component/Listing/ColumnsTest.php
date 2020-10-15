@@ -3,69 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing;
 
-use Magento\Customer\Model\Attribute;
-use Magento\Customer\Ui\Component\ColumnFactory;
-use Magento\Customer\Ui\Component\Listing\AttributeRepository;
-use Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater;
 use Magento\Customer\Ui\Component\Listing\Columns;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Ui\Component\Listing\Columns\ColumnInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ColumnsTest extends TestCase
+class ColumnsTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ContextInterface|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var ColumnFactory|MockObject */
+    /** @var \Magento\Customer\Ui\Component\ColumnFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $columnFactory;
 
-    /** @var AttributeRepository|MockObject */
+    /** @var \Magento\Customer\Ui\Component\Listing\AttributeRepository|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeRepository;
 
-    /** @var Attribute|MockObject */
+    /** @var \Magento\Customer\Model\Attribute|\PHPUnit_Framework_MockObject_MockObject */
     protected $attribute;
 
-    /** @var ColumnInterface|MockObject */
+    /** @var \Magento\Ui\Component\Listing\Columns\ColumnInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $column;
 
-    /** @var InlineEditUpdater|MockObject */
+    /** @var \Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater|\PHPUnit_Framework_MockObject_MockObject */
     protected $inlineEditUpdater;
 
     /** @var Columns */
     protected $component;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processor);
         $this->columnFactory = $this->createPartialMock(
-            ColumnFactory::class,
+            \Magento\Customer\Ui\Component\ColumnFactory::class,
             ['create']
         );
         $this->attributeRepository = $this->createMock(
-            AttributeRepository::class
+            \Magento\Customer\Ui\Component\Listing\AttributeRepository::class
         );
-        $this->attribute = $this->createMock(Attribute::class);
+        $this->attribute = $this->createMock(\Magento\Customer\Model\Attribute::class);
         $this->column = $this->getMockForAbstractClass(
-            ColumnInterface::class,
+            \Magento\Ui\Component\Listing\Columns\ColumnInterface::class,
             [],
             '',
             false
         );
 
         $this->inlineEditUpdater = $this->getMockBuilder(
-            InlineEditUpdater::class
+            \Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater::class
         )->disableOriginalConstructor()
             ->getMock();
 

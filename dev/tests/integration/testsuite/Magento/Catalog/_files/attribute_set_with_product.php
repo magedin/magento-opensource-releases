@@ -4,21 +4,13 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Eav\Model\GetAttributeSetByName;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require __DIR__ . '/../../Eav/_files/empty_attribute_set.php';
+require __DIR__ . '/../../Catalog/_files/product_simple.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Eav/_files/empty_attribute_set.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var GetAttributeSetByName $getAttributeSetByName */
-$getAttributeSetByName = $objectManager->get(GetAttributeSetByName::class);
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->get(ProductRepositoryInterface::class);
+/** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+$productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+    ->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 try {
-    $attributeSet = $getAttributeSetByName->execute('empty_attribute_set');
     $product = $productRepository->get('simple', true, null, true);
     $product->setAttributeSetId($attributeSet->getId());
     $productRepository->save($product);

@@ -161,12 +161,10 @@ class GiftMessage extends AbstractModifier
                                     'exports' => [
                                         'checked' => '${$.parentName}.' . static::FIELD_MESSAGE_AVAILABLE
                                             . ':isUseConfig',
-                                        '__disableTmpl' => ['checked' => false],
                                     ],
                                     'imports' => [
                                         'disabled' => '${$.parentName}.' . static::FIELD_MESSAGE_AVAILABLE
                                             . ':isUseDefault',
-                                        '__disableTmpl' => ['disabled' => false],
                                     ]
                                 ],
                             ],

@@ -149,7 +149,8 @@ interface Bar extends
     }
 
     /**
-     * @param int $classyIndex Class definition token start index
+     * @param Tokens $tokens
+     * @param int    $classyIndex Class definition token start index
      */
     private function fixClassyDefinition(Tokens $tokens, $classyIndex)
     {
@@ -195,7 +196,9 @@ interface Bar extends
     }
 
     /**
-     * @param int $classOpenIndex
+     * @param Tokens $tokens
+     * @param int    $classOpenIndex
+     * @param array  $classExtendsInfo
      *
      * @return array
      */
@@ -218,7 +221,9 @@ interface Bar extends
     }
 
     /**
-     * @param int $classOpenIndex
+     * @param Tokens $tokens
+     * @param int    $classOpenIndex
+     * @param array  $classImplementsInfo
      *
      * @return array
      */
@@ -241,6 +246,9 @@ interface Bar extends
     }
 
     /**
+     * @param Tokens $tokens
+     * @param array  $classDefInfo
+     *
      * @return int
      */
     private function fixClassyDefinitionOpenSpacing(Tokens $tokens, array $classDefInfo)
@@ -276,7 +284,8 @@ interface Bar extends
     }
 
     /**
-     * @param int $classyIndex
+     * @param Tokens $tokens
+     * @param int    $classyIndex
      *
      * @return array
      */
@@ -313,6 +322,7 @@ interface Bar extends
     }
 
     /**
+     * @param Tokens $tokens
      * @param int    $startIndex
      * @param string $label
      *
@@ -340,8 +350,9 @@ interface Bar extends
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function makeClassyDefinitionSingleLine(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -394,8 +405,9 @@ interface Bar extends
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function makeClassyInheritancePartMultiLine(Tokens $tokens, $startIndex, $endIndex)
     {

@@ -6,18 +6,14 @@
 namespace Magento\Cms\Api;
 
 use Magento\Authorization\Model\Role;
-use Magento\Authorization\Model\RoleFactory;
 use Magento\Authorization\Model\Rules;
+use Magento\Authorization\Model\RoleFactory;
 use Magento\Authorization\Model\RulesFactory;
 use Magento\Cms\Api\Data\PageInterface;
-use Magento\Cms\Api\Data\PageInterfaceFactory;
-use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Framework\Webapi\Rest\Request;
 use Magento\Integration\Api\AdminTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\WebapiAbstract;
@@ -29,39 +25,34 @@ use Magento\TestFramework\TestCase\WebapiAbstract;
  */
 class PageRepositoryTest extends WebapiAbstract
 {
-    private const PAGE_TITLE = 'Page title';
-    private const PAGE_TITLE_NEW = 'Page title new';
-    private const PAGE_CONTENT = '<h1>Some content</h1>';
-    private const PAGE_IDENTIFIER_PREFIX = 'page-';
-
-    private const SERVICE_NAME = 'cmsPageRepositoryV1';
-    private const SERVICE_VERSION = 'V1';
-    private const RESOURCE_PATH = '/V1/cmsPage';
+    const SERVICE_NAME = 'cmsPageRepositoryV1';
+    const SERVICE_VERSION = 'V1';
+    const RESOURCE_PATH = '/V1/cmsPage';
 
     /**
-     * @var PageInterfaceFactory
+     * @var \Magento\Cms\Api\Data\PageInterfaceFactory
      */
-    private $pageFactory;
+    protected $pageFactory;
 
     /**
-     * @var PageRepositoryInterface
+     * @var \Magento\Cms\Api\PageRepositoryInterface
      */
-    private $pageRepository;
+    protected $pageRepository;
 
     /**
-     * @var DataObjectHelper
+     * @var \Magento\Framework\Api\DataObjectHelper
      */
-    private $dataObjectHelper;
+    protected $dataObjectHelper;
 
     /**
-     * @var DataObjectProcessor
+     * @var \Magento\Framework\Reflection\DataObjectProcessor
      */
-    private $dataObjectProcessor;
+    protected $dataObjectProcessor;
 
     /**
-     * @var PageInterface|null
+     * @var \Magento\Cms\Api\Data\PageInterface|null
      */
-    private $currentPage;
+    protected $currentPage;
 
     /**
      * @var RoleFactory
@@ -79,49 +70,39 @@ class PageRepositoryTest extends WebapiAbstract
     private $adminTokens;
 
     /**
-     * @var array
+     * Execute per test initialization.
      */
-    private $createdPages = [];
-
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->pageFactory = Bootstrap::getObjectManager()->create(PageInterfaceFactory::class);
-        $this->pageRepository = Bootstrap::getObjectManager()->create(PageRepositoryInterface::class);
-        $this->dataObjectHelper = Bootstrap::getObjectManager()->create(DataObjectHelper::class);
-        $this->dataObjectProcessor = Bootstrap::getObjectManager()->create(DataObjectProcessor::class);
+        $this->pageFactory = Bootstrap::getObjectManager()->create(\Magento\Cms\Api\Data\PageInterfaceFactory::class);
+        $this->pageRepository = Bootstrap::getObjectManager()->create(\Magento\Cms\Api\PageRepositoryInterface::class);
+        $this->dataObjectHelper = Bootstrap::getObjectManager()->create(\Magento\Framework\Api\DataObjectHelper::class);
+        $this->dataObjectProcessor = Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Reflection\DataObjectProcessor::class);
         $this->roleFactory = Bootstrap::getObjectManager()->get(RoleFactory::class);
         $this->rulesFactory = Bootstrap::getObjectManager()->get(RulesFactory::class);
         $this->adminTokens = Bootstrap::getObjectManager()->get(AdminTokenServiceInterface::class);
     }
 
     /**
-     * @inheritdoc
+     * Clear temporary data
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         if ($this->currentPage) {
             $this->pageRepository->delete($this->currentPage);
             $this->currentPage = null;
         }
-
-        foreach ($this->createdPages as $page) {
-            $this->pageRepository->delete($page);
-        }
     }
 
     /**
-     * Test get page
-     *
-     * @return void
+     * Test get \Magento\Cms\Api\Data\PageInterface
      */
-    public function testGet(): void
+    public function testGet()
     {
-        $pageTitle = self::PAGE_TITLE;
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
-        /** @var  PageInterface $pageDataObject */
+        $pageTitle = 'Page title';
+        $pageIdentifier = 'page-title' . uniqid();
+        /** @var  \Magento\Cms\Api\Data\PageInterface $pageDataObject */
         $pageDataObject = $this->pageFactory->create();
         $pageDataObject->setTitle($pageTitle)
             ->setIdentifier($pageIdentifier);
@@ -130,7 +111,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . '/' . $this->currentPage->getId(),
-                'httpMethod' => Request::HTTP_METHOD_GET,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -148,15 +129,13 @@ class PageRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * Test create page
-     *
-     * @return void
+     * Test create \Magento\Cms\Api\Data\PageInterface
      */
-    public function testCreate(): void
+    public function testCreate()
     {
-        $pageTitle = self::PAGE_TITLE;
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
-        /** @var  PageInterface $pageDataObject */
+        $pageTitle = 'Page title';
+        $pageIdentifier = 'page-title' . uniqid();
+        /** @var  \Magento\Cms\Api\Data\PageInterface $pageDataObject */
         $pageDataObject = $this->pageFactory->create();
         $pageDataObject->setTitle($pageTitle)
             ->setIdentifier($pageIdentifier);
@@ -164,7 +143,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Request::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -173,8 +152,7 @@ class PageRepositoryTest extends WebapiAbstract
             ],
         ];
 
-        $requestData = [
-            'page' => [
+        $requestData = ['page' => [
                 PageInterface::IDENTIFIER => $pageDataObject->getIdentifier(),
                 PageInterface::TITLE      => $pageDataObject->getTitle(),
             ],
@@ -192,10 +170,10 @@ class PageRepositoryTest extends WebapiAbstract
      */
     public function testUpdate()
     {
-        $pageTitle = self::PAGE_TITLE;
-        $newPageTitle = self::PAGE_TITLE_NEW;
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
-        /** @var  PageInterface $pageDataObject */
+        $pageTitle = 'Page title';
+        $newPageTitle = 'New Page title';
+        $pageIdentifier = 'page-title' . uniqid();
+        /** @var  \Magento\Cms\Api\Data\PageInterface $pageDataObject */
         $pageDataObject = $this->pageFactory->create();
         $pageDataObject->setTitle($pageTitle)
             ->setIdentifier($pageIdentifier);
@@ -203,17 +181,17 @@ class PageRepositoryTest extends WebapiAbstract
         $this->dataObjectHelper->populateWithArray(
             $this->currentPage,
             [PageInterface::TITLE => $newPageTitle],
-            PageInterface::class
+            \Magento\Cms\Api\Data\PageInterface::class
         );
         $pageData = $this->dataObjectProcessor->buildOutputDataArray(
             $this->currentPage,
-            PageInterface::class
+            \Magento\Cms\Api\Data\PageInterface::class
         );
 
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Request::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -230,69 +208,14 @@ class PageRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * Test update page one field
-     *
-     * @return void
-     */
-    public function testUpdateOneField(): void
-    {
-        $pageTitle = self::PAGE_TITLE;
-        $content = self::PAGE_CONTENT;
-        $newPageTitle = self::PAGE_TITLE_NEW;
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
-
-        /** @var PageInterface $pageDataObject */
-        $pageDataObject = $this->pageFactory->create();
-        $pageDataObject->setTitle($pageTitle)
-            ->setIdentifier($pageIdentifier)
-            ->setContent($content);
-        $this->currentPage = $this->pageRepository->save($pageDataObject);
-        $pageId = $this->currentPage->getId();
-
-        $serviceInfo = [
-            'rest' => [
-                'resourcePath' => self::RESOURCE_PATH . '/' . $pageId,
-                'httpMethod' => Request::HTTP_METHOD_PUT,
-            ],
-            'soap' => [
-                'service' => self::SERVICE_NAME,
-                'serviceVersion' => self::SERVICE_VERSION,
-                'operation' => self::SERVICE_NAME . 'Save',
-            ],
-        ];
-
-        $data = [
-            'page' => [
-                'title' => $newPageTitle,
-            ],
-        ];
-
-        if (TESTS_WEB_API_ADAPTER === self::ADAPTER_SOAP) {
-            $data['page'] += [
-                'id' => $pageId,
-                'identifier' => $pageIdentifier,
-            ];
-        }
-
-        $page = $this->_webApiCall($serviceInfo, $data);
-
-        $this->assertArrayHasKey('title', $page);
-        $this->assertEquals($page['title'], $newPageTitle);
-
-        $this->assertArrayHasKey('content', $page);
-        $this->assertEquals($page['content'], $content);
-    }
-
-    /**
      * Test delete \Magento\Cms\Api\Data\PageInterface
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testDelete()
     {
-        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
-
-        $pageTitle = self::PAGE_TITLE;
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
-        /** @var  PageInterface $pageDataObject */
+        $pageTitle = 'Page title';
+        $pageIdentifier = 'page-title' . uniqid();
+        /** @var  \Magento\Cms\Api\Data\PageInterface $pageDataObject */
         $pageDataObject = $this->pageFactory->create();
         $pageDataObject->setTitle($pageTitle)
             ->setIdentifier($pageIdentifier);
@@ -301,7 +224,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . '/' . $this->currentPage->getId(),
-                'httpMethod' => Request::HTTP_METHOD_DELETE,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_DELETE,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -368,7 +291,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . "/search" . '?' . http_build_query($requestData),
-                'httpMethod' => Request::HTTP_METHOD_GET,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -379,7 +302,7 @@ class PageRepositoryTest extends WebapiAbstract
 
         $searchResult = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertEquals(2, $searchResult['total_count']);
-        $this->assertCount(1, $searchResult['items']);
+        $this->assertEquals(1, count($searchResult['items']));
         $this->assertEquals(
             $searchResult['items'][0][PageInterface::IDENTIFIER],
             $cmsPages['third']->getIdentifier()
@@ -391,12 +314,11 @@ class PageRepositoryTest extends WebapiAbstract
      */
     public function testCreateSamePage()
     {
-        $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
+        $pageIdentifier = 'page-' . uniqid();
 
         $pageId = $this->createPageWithIdentifier($pageIdentifier);
         $this->deletePageByIdentifier($pageId);
-        $id = $this->createPageWithIdentifier($pageIdentifier);
-        $this->currentPage = $this->pageRepository->getById($id);
+        $this->createPageWithIdentifier($pageIdentifier);
     }
 
     /**
@@ -419,14 +341,14 @@ class PageRepositoryTest extends WebapiAbstract
         $pagesData['third'][PageInterface::IS_ACTIVE] = true;
 
         foreach ($pagesData as $key => $pageData) {
-            /** @var  PageInterface $pageDataObject */
+            /** @var  \Magento\Cms\Api\Data\PageInterface $pageDataObject */
             $pageDataObject = $this->pageFactory->create();
             $this->dataObjectHelper->populateWithArray(
                 $pageDataObject,
                 $pageData,
-                PageInterface::class
+                \Magento\Cms\Api\Data\PageInterface::class
             );
-            $this->createdPages[] = $result[$key] = $this->pageRepository->save($pageDataObject);
+            $result[$key] = $this->pageRepository->save($pageDataObject);
         }
 
         return $result;
@@ -442,7 +364,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Request::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -450,10 +372,10 @@ class PageRepositoryTest extends WebapiAbstract
                 'operation' => self::SERVICE_NAME . 'Save',
             ],
         ];
-        $requestData = [
-            'page' => [
+        $requestData = ['page' =>
+            [
                 PageInterface::IDENTIFIER => $identifier,
-                PageInterface::TITLE => self::PAGE_TITLE,
+                PageInterface::TITLE => 'Page title',
             ],
         ];
 
@@ -471,7 +393,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . '/' . $pageId,
-                'httpMethod' => Request::HTTP_METHOD_DELETE,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_DELETE,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -499,7 +421,7 @@ class PageRepositoryTest extends WebapiAbstract
         /** @var Rules $rules */
         $rules = $this->rulesFactory->create();
         $rules->setRoleId($role->getId());
-        $rules->setResources(['Magento_Cms::page']);
+        $rules->setResources(['Magento_Cms::save']);
         $rules->saveRel();
         //Using the admin user with custom role.
         $token = $this->adminTokens->createAdminAccessToken(
@@ -511,7 +433,7 @@ class PageRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Request::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
                 'token' => $token,
             ],
             'soap' => [
@@ -524,7 +446,7 @@ class PageRepositoryTest extends WebapiAbstract
         $requestData = [
             'page' => [
                 PageInterface::IDENTIFIER => $id,
-                PageInterface::TITLE => self::PAGE_TITLE,
+                PageInterface::TITLE => 'Page title',
                 PageInterface::CUSTOM_THEME => 1
             ],
         ];
@@ -549,7 +471,7 @@ class PageRepositoryTest extends WebapiAbstract
         /** @var Rules $rules */
         $rules = Bootstrap::getObjectManager()->create(Rules::class);
         $rules->setRoleId($role->getId());
-        $rules->setResources(['Magento_Cms::page', 'Magento_Cms::save_design']);
+        $rules->setResources(['Magento_Cms::save', 'Magento_Cms::save_design']);
         $rules->saveRel();
         //Making the same request with design settings.
         $result = $this->_webApiCall($serviceInfo, $requestData);
@@ -564,7 +486,7 @@ class PageRepositoryTest extends WebapiAbstract
         /** @var Rules $rules */
         $rules = Bootstrap::getObjectManager()->create(Rules::class);
         $rules->setRoleId($role->getId());
-        $rules->setResources(['Magento_Cms::page']);
+        $rules->setResources(['Magento_Cms::save']);
         $rules->saveRel();
         //Updating the page but with the same design properties values.
         $result = $this->_webApiCall($serviceInfo, $requestData);

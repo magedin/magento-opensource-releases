@@ -17,10 +17,10 @@
             <group value="store"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!--Create custom store view-->
         <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createNewStoreView">

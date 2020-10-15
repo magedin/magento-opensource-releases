@@ -37,12 +37,12 @@ class QuantityValidatorTest extends \PHPUnit\Framework\TestCase
     private $quantityValidator;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $observerMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $eventMock;
 
@@ -52,12 +52,12 @@ class QuantityValidatorTest extends \PHPUnit\Framework\TestCase
     private $objectManager;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $optionInitializer;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $stockState;
 
@@ -69,7 +69,7 @@ class QuantityValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var \Magento\Framework\ObjectManagerInterface objectManager */
         $this->objectManager = Bootstrap::getObjectManager();
@@ -151,7 +151,7 @@ class QuantityValidatorTest extends \PHPUnit\Framework\TestCase
      *
      *
      * @param \Magento\Quote\Model\Quote\Item $quoteItem
-     * @param \PHPUnit\Framework\MockObject\MockObject $resultMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $resultMock
      */
     private function setMockStockStateResultToQuoteItemOptions($quoteItem, $resultMock)
     {

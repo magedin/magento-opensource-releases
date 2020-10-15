@@ -7,34 +7,34 @@ declare(strict_types=1);
 
 namespace Magento\InventorySales\Test\Integration\IsProductSalable;
 
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 class ManageStockConditionTest extends TestCase
 {
     /**
-     * @var AreProductsSalableInterface
+     * @var IsProductSalableInterface
      */
-    private $areProductsSalable;
+    private $isProductSalable;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $this->areProductsSalable = Bootstrap::getObjectManager()->get(AreProductsSalableInterface::class);
+        $this->isProductSalable = Bootstrap::getObjectManager()->get(IsProductSalableInterface::class);
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      * @magentoConfigFixture default_store cataloginventory/item_options/manage_stock 0
      *
      * @param string $sku
@@ -48,9 +48,8 @@ class ManageStockConditionTest extends TestCase
      */
     public function testExecuteWithManageStockFalse(string $sku, int $stockId, bool $expectedResult)
     {
-        $result = $this->areProductsSalable->execute([$sku], $stockId);
-        $result = current($result);
-        self::assertEquals($expectedResult, $result->isSalable());
+        $isSalable = $this->isProductSalable->execute($sku, $stockId);
+        self::assertEquals($expectedResult, $isSalable);
     }
 
     /**

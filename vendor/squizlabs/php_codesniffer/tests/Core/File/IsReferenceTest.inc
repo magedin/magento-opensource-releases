@@ -2,140 +2,137 @@
 
 namespace PHP_CodeSniffer\Tests\Core\File;
 
-/* testBitwiseAndA */
+/* bitwiseAndA */
 error_reporting( E_NOTICE & E_STRICT );
 
-/* testBitwiseAndB */
+/* bitwiseAndB */
 $a = [ $something & $somethingElse ];
 
-/* testBitwiseAndC */
+/* bitwiseAndC */
 $a = [ $first, $something & self::$somethingElse ];
 
-/* testBitwiseAndD */
+/* bitwiseAndD */
 $a = array $first, $something & $somethingElse );
 
-/* testBitwiseAndE */
+/* bitwiseAndE */
 $a = [ 'a' => $first, 'b' => $something & $somethingElse ];
 
-/* testBitwiseAndF */
+/* bitwiseAndF */
 $a = array( 'a' => $first, 'b' => $something & \MyClass::$somethingElse );
 
-/* testBitwiseAndG */
+/* bitwiseAndG */
 $a = $something & $somethingElse;
 
-/* testBitwiseAndH */
+/* bitwiseAndH */
 function myFunction($a = 10 & 20) {}
 
-/* testBitwiseAndI */
+/* bitwiseAndI */
 $closure = function ($a = MY_CONSTANT & parent::OTHER_CONSTANT) {};
 
-/* testFunctionReturnByReference */
+/* functionReturnByReference */
 function &myFunction() {}
 
-/* testFunctionPassByReferenceA */
+/* functionPassByReferenceA */
 function myFunction( &$a ) {}
 
-/* testFunctionPassByReferenceB */
+/* functionPassByReferenceB */
 function myFunction( $a, &$b ) {}
 
-/* testFunctionPassByReferenceC */
+/* functionPassByReferenceC */
 $closure = function ( &$a ) {};
 
-/* testFunctionPassByReferenceD */
+/* functionPassByReferenceD */
 $closure = function ( $a, &$b ) {};
 
-/* testFunctionPassByReferenceE */
+/* functionPassByReferenceE */
 function myFunction(array &$one) {}
 
-/* testFunctionPassByReferenceF */
+/* functionPassByReferenceF */
 $closure = function (\MyClass &$one) {};
 
-/* testFunctionPassByReferenceG */
+/* functionPassByReferenceG */
 $closure = function myFunc($param, &...$moreParams) {};
 
-/* testForeachValueByReference */
+/* foreachValueByReference */
 foreach( $array as $key => &$value ) {}
 
-/* testForeachKeyByReference */
+/* foreachKeyByReference */
 foreach( $array as &$key => $value ) {}
 
-/* testArrayValueByReferenceA */
+/* arrayValueByReferenceA */
 $a = [ 'a' => &$something ];
 
-/* testArrayValueByReferenceB */
+/* arrayValueByReferenceB */
 $a = [ 'a' => $something, 'b' => &$somethingElse ];
 
-/* testArrayValueByReferenceC */
+/* arrayValueByReferenceC */
 $a = [ &$something ];
 
-/* testArrayValueByReferenceD */
+/* arrayValueByReferenceD */
 $a = [ $something, &$somethingElse ];
 
-/* testArrayValueByReferenceE */
+/* arrayValueByReferenceE */
 $a = array( 'a' => &$something );
 
-/* testArrayValueByReferenceF */
+/* arrayValueByReferenceF */
 $a = array( 'a' => $something, 'b' => &$somethingElse );
 
-/* testArrayValueByReferenceG */
+/* arrayValueByReferenceG */
 $a = array( &$something );
 
-/* testArrayValueByReferenceH */
+/* arrayValueByReferenceH */
 $a = array( $something, &$somethingElse );
 
-/* testAssignByReferenceA */
+/* assignByReferenceA */
 $b = &$something;
 
-/* testAssignByReferenceB */
+/* assignByReferenceB */
 $b =& $something;
 
-/* testAssignByReferenceC */
+/* assignByReferenceC */
 $b .= &$something;
 
-/* testAssignByReferenceD */
+/* assignByReferenceD */
 $myValue = &$obj->getValue();
 
-/* testAssignByReferenceE */
+/* assignByReferenceE */
 $collection = &collector();
 
-/* testPassByReferenceA */
+/* passByReferenceA */
 functionCall(&$something, $somethingElse);
 
-/* testPassByReferenceB */
+/* passByReferenceB */
 functionCall($something, &$somethingElse);
 
-/* testPassByReferenceC */
+/* passByReferenceC */
 functionCall($something, &$this->somethingElse);
 
-/* testPassByReferenceD */
+/* passByReferenceD */
 functionCall($something, &self::$somethingElse);
 
-/* testPassByReferenceE */
+/* passByReferenceE */
 functionCall($something, &parent::$somethingElse);
 
-/* testPassByReferenceF */
+/* passByReferenceF */
 functionCall($something, &static::$somethingElse);
 
-/* testPassByReferenceG */
+/* passByReferenceG */
 functionCall($something, &SomeClass::$somethingElse);
 
-/* testPassByReferenceH */
+/* passByReferenceH */
 functionCall(&\SomeClass::$somethingElse);
 
-/* testPassByReferenceI */
+/* passByReferenceI */
 functionCall($something, &\SomeNS\SomeClass::$somethingElse);
 
-/* testPassByReferenceJ */
+/* passByReferenceJ */
 functionCall($something, &namespace\SomeClass::$somethingElse);
 
-/* testNewByReferenceA */
+/* newByReferenceA */
 $foobar2 = &new Foobar();
 
-/* testNewByReferenceB */
+/* newByReferenceB */
 functionCall( $something , &new Foobar() );
 
-/* testUseByReference */
+/* useByReference */
 $closure = function() use (&$var){};
-
-/* testArrowFunctionReturnByReference */
-fn&($x) => $x;

@@ -3,20 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Block\Adminhtml\System\Config\Multiselect;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Helper\Js;
-use Magento\Paypal\Block\Adminhtml\System\Config\MultiSelect\DisabledFundingOptions;
-use Magento\Paypal\Model\Config;
-use Magento\Paypal\Model\Config\StructurePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use \Magento\Framework\Data\Form\Element\AbstractElement;
+use \Magento\Framework\App\RequestInterface;
+use \Magento\Framework\View\Helper\Js;
+use \Magento\Paypal\Model\Config;
+use \Magento\Paypal\Block\Adminhtml\System\Config\MultiSelect\DisabledFundingOptions;
+use \Magento\Paypal\Model\Config\StructurePlugin;
+use \PHPUnit\Framework\TestCase;
 
+/**
+ * Class DisabledFundingOptionsTest
+ */
 class DisabledFundingOptionsTest extends TestCase
 {
     /**
@@ -25,26 +26,26 @@ class DisabledFundingOptionsTest extends TestCase
     private $model;
 
     /**
-     * @var AbstractElement
+     * @var \Magento\Framework\Data\Form\Element\AbstractElement
      */
     private $element;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $request;
 
     /**
-     * @var Js|MockObject
+     * @var \Magento\Framework\View\Helper\Js|\PHPUnit_Framework_MockObject_MockObject
      */
     private $jsHelper;
 
     /**
-     * @var Config
+     * @var \Magento\Paypal\Model\Config
      */
     private $config;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
         $this->element = $this->getMockForAbstractClass(
@@ -79,27 +80,29 @@ class DisabledFundingOptionsTest extends TestCase
     ) {
         $this->request->expects($this->any())
             ->method('getParam')
-            ->willReturnCallback(
-                function ($param) use ($requestCountry) {
-                    if ($param == StructurePlugin::REQUEST_PARAM_COUNTRY) {
-                        return $requestCountry;
+            ->will(
+                $this->returnCallback(
+                    function ($param) use ($requestCountry) {
+                        if ($param == StructurePlugin::REQUEST_PARAM_COUNTRY) {
+                            return $requestCountry;
+                        }
+                        return $param;
                     }
-                    return $param;
-                }
+                )
             );
         $this->config->expects($this->any())
             ->method('getMerchantCountry')
-            ->willReturnCallback(
-                
+            ->will(
+                $this->returnCallback(
                     function () use ($merchantCountry) {
                         return $merchantCountry;
                     }
-                
+                )
             );
         $this->model->render($this->element);
         $payPalCreditOption = [
             'value' => 'CREDIT',
-            'label' => __('PayPal Credit')->getText()
+            'label' => __('PayPal Credit')
         ];
         $elementValues = $this->element->getValues();
         if ($shouldContainPaypalCredit) {
@@ -132,15 +135,15 @@ class DisabledFundingOptionsTest extends TestCase
         return [
             [
                 'value' => 'CREDIT',
-                'label' => __('PayPal Credit')->getText()
+                'label' => __('PayPal Credit')
             ],
             [
                 'value' => 'CARD',
-                'label' => __('PayPal Guest Checkout Credit Card Icons')->getText()
+                'label' => __('PayPal Guest Checkout Credit Card Icons')
             ],
             [
                 'value' => 'ELV',
-                'label' => __('Elektronisches Lastschriftverfahren - German ELV')->getText()
+                'label' => __('Elektronisches Lastschriftverfahren - German ELV')
             ]
         ];
     }

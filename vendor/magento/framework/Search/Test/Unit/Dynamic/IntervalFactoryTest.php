@@ -3,29 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Search\Test\Unit\Dynamic;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Search\Dynamic\IntervalFactory;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Search\Dynamic\IntervalInterface;
 use Magento\Framework\Search\EngineResolverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class IntervalFactoryTest extends TestCase
+class IntervalFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var IntervalFactory */
     private $model;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $objectManagerMock;
 
-    /** @var EngineResolverInterface|MockObject */
+    /** @var EngineResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $engineResolverMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->getMockForAbstractClass();
@@ -63,10 +59,12 @@ class IntervalFactoryTest extends TestCase
         $this->assertEquals($dataProviderMock, $this->model->create($data));
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Interval not found by config current_interval
+     */
     public function testCreateWithoutIntervals()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Interval not found by config current_interval');
         $dataProvider = 'current_interval';
         $dataProviders = [];
 
@@ -81,10 +79,12 @@ class IntervalFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Interval not instance of interface
+     */
     public function testCreateWithWrongInterval()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Interval not instance of interface');
         $dataProvider = 'current_interval';
         $dataProviderClass = \stdClass::class;
         $dataProviders = [

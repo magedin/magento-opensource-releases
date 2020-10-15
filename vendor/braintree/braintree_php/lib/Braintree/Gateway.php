@@ -15,19 +15,12 @@ class Gateway
      */
     public $config;
 
-    /**
-     *
-     * @var GraphQLClient
-     */
-    public $graphQLClient;
-
     public function __construct($config)
     {
         if (is_array($config)) {
             $config = new Configuration($config);
         }
         $this->config = $config;
-        $this->graphQLClient = new GraphQLClient($config);
     }
 
     /**
@@ -230,6 +223,15 @@ class Gateway
 
     /**
      *
+     * @return TransparentRedirectGateway
+     */
+    public function transparentRedirect()
+    {
+        return new TransparentRedirectGateway($this);
+    }
+
+    /**
+     *
      * @return UsBankAccountGateway
      */
     public function usBankAccount()
@@ -244,6 +246,15 @@ class Gateway
     public function usBankAccountVerification()
     {
         return new UsBankAccountVerificationGateway($this);
+    }
+
+    /**
+     *
+     * @return IdealPaymentGateway
+     */
+    public function idealPayment()
+    {
+        return new IdealPaymentGateway($this);
     }
 
     /**

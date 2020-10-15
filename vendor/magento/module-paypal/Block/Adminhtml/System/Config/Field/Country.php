@@ -9,7 +9,6 @@
  */
 namespace Magento\Paypal\Block\Adminhtml\System\Config\Field;
 
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Magento\Paypal\Model\Config\StructurePlugin;
 
 class Country extends \Magento\Config\Block\System\Config\Form\Field
@@ -52,17 +51,15 @@ class Country extends \Magento\Config\Block\System\Config\Form\Field
      * @param \Magento\Framework\View\Helper\Js $jsHelper
      * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureHtmlRenderer
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Model\Url $url,
         \Magento\Framework\View\Helper\Js $jsHelper,
         \Magento\Directory\Helper\Data $directoryHelper,
-        array $data = [],
-        ?SecureHtmlRenderer $secureHtmlRenderer = null
+        array $data = []
     ) {
-        parent::__construct($context, $data, $secureHtmlRenderer);
+        parent::__construct($context, $data);
         $this->_url = $url;
         $this->_jsHelper = $jsHelper;
         $this->directoryHelper = $directoryHelper;
@@ -135,7 +132,7 @@ class Country extends \Magento\Config\Block\System\Config\Form\Field
         }
 
         return parent::_getElementHtml($element) . $this->_jsHelper->getScript(
-            'require([\'prototype\'], function() { document.observe("dom:loaded", function() {' . $jsString . '}); });'
+            'require([\'prototype\'], function(){document.observe("dom:loaded", function() {' . $jsString . '});});'
         );
     }
 }

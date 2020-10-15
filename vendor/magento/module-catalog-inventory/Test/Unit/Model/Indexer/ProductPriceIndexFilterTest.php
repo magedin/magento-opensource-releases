@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogInventory\Test\Unit\Model\Indexer;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableStructure;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
 use Magento\CatalogInventory\Model\Indexer\ProductPriceIndexFilter;
 use Magento\CatalogInventory\Model\ResourceModel\Stock\Item;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Query\Generator;
-use Magento\Framework\DB\Select;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableStructure;
 
 /**
  * Product Price filter test, to ensure that product id's filtered.
  */
-class ProductPriceIndexFilterTest extends TestCase
+class ProductPriceIndexFilterTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -52,9 +48,9 @@ class ProductPriceIndexFilterTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->stockConfiguration = $this->getMockForAbstractClass(StockConfigurationInterface::class);
+        $this->stockConfiguration = $this->createMock(StockConfigurationInterface::class);
         $this->item = $this->createMock(Item::class);
         $this->resourceCnnection = $this->createMock(ResourceConnection::class);
         $this->generator = $this->createMock(Generator::class);
@@ -76,9 +72,9 @@ class ProductPriceIndexFilterTest extends TestCase
     {
         $entityIds = [1, 2, 3];
         $indexTableStructure = $this->createMock(IndexTableStructure::class);
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->resourceCnnection->expects($this->once())->method('getConnection')->willReturn($connectionMock);
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $connectionMock->expects($this->once())->method('select')->willReturn($selectMock);
         $selectMock->expects($this->at(2))
             ->method('where')
@@ -86,15 +82,17 @@ class ProductPriceIndexFilterTest extends TestCase
             ->willReturn($selectMock);
         $this->generator->expects($this->once())
             ->method('generate')
-            ->willReturnCallback(
-                $this->getBatchIteratorCallback($selectMock, 5)
+            ->will(
+                $this->returnCallback(
+                    $this->getBatchIteratorCallback($selectMock, 5)
+                )
             );
 
         $fetchStmtMock = $this->createPartialMock(\Zend_Db_Statement_Pdo::class, ['fetchAll']);
         $fetchStmtMock->expects($this->any())
             ->method('fetchAll')
-            ->willReturn([['product_id' => 1]]);
-        $connectionMock->expects($this->any())->method('query')->willReturn($fetchStmtMock);
+            ->will($this->returnValue([['product_id' => 1]]));
+        $connectionMock->expects($this->any())->method('query')->will($this->returnValue($fetchStmtMock));
         $this->productPriceIndexFilter->modifyPrice($indexTableStructure, $entityIds);
     }
 

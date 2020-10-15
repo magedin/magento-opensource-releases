@@ -3,29 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Category\Product\Plugin;
 
-use Magento\Catalog\Model\Indexer\Category\Product;
 use Magento\Catalog\Model\Indexer\Category\Product\Plugin\StoreView;
-use Magento\Catalog\Model\Indexer\Category\Product\TableMaintainer;
 use Magento\Framework\Indexer\IndexerInterface;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Store\Model\ResourceModel\Group;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StoreViewTest extends TestCase
+class StoreViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Store|MockObject
+     * @var Store|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var MockObject|IndexerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|IndexerInterface
      */
     protected $indexerMock;
 
@@ -35,21 +29,21 @@ class StoreViewTest extends TestCase
     protected $model;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerRegistryMock;
 
     /**
-     * @var TableMaintainer|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Category\Product\TableMaintainer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $tableMaintainer;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->indexerMock = $this->getMockForAbstractClass(
             IndexerInterface::class,
@@ -58,7 +52,7 @@ class StoreViewTest extends TestCase
             false,
             false,
             true,
-            ['getId', 'getState']
+            ['getId', 'getState', '__wakeup']
         );
         $this->subject = $this->createMock(Group::class);
         $this->indexerRegistryMock = $this->createPartialMock(IndexerRegistry::class, ['get']);
@@ -67,11 +61,12 @@ class StoreViewTest extends TestCase
             [
                 'isObjectNew',
                 'getId',
-                'dataHasChangedFor'
+                'dataHasChangedFor',
+                '__wakeup'
             ]
         );
         $this->tableMaintainer = $this->createPartialMock(
-            TableMaintainer::class,
+            \Magento\Catalog\Model\Indexer\Category\Product\TableMaintainer::class,
             [
                 'createTablesForStore'
             ]
@@ -115,7 +110,7 @@ class StoreViewTest extends TestCase
         $this->indexerMock->expects($this->once())->method('invalidate');
         $this->indexerRegistryMock->expects($this->once())
             ->method('get')
-            ->with(Product::INDEXER_ID)
+            ->with(\Magento\Catalog\Model\Indexer\Category\Product::INDEXER_ID)
             ->willReturn($this->indexerMock);
     }
 }

@@ -3,42 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Block\Adminhtml\Widget\Instance\Edit\Tab;
 
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Tab\Properties;
-use Magento\Widget\Model\Widget\Instance;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PropertiesTest extends TestCase
+class PropertiesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $widget;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var Properties
+     * @var \Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Tab\Properties
      */
     protected $propertiesBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->widget = $this->createMock(Instance::class);
-        $this->registry = $this->createMock(Registry::class);
+        $this->widget = $this->createMock(\Magento\Widget\Model\Widget\Instance::class);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->propertiesBlock = $objectManager->getObject(
-            Properties::class,
+            \Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Tab\Properties::class,
             [
                 'registry' => $this->registry
             ]

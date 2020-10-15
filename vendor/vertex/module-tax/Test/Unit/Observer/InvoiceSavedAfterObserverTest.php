@@ -1,26 +1,24 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Vertex\Tax\Test\Unit\Observer;
 
 use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject as MockObject;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Vertex\Services\Invoice\Request;
 use Vertex\Services\Invoice\RequestInterface;
 use Vertex\Tax\Model\Api\Data\InvoiceRequestBuilder;
 use Vertex\Tax\Model\Config;
 use Vertex\Tax\Model\ConfigurationValidator;
-use Vertex\Tax\Model\ConfigurationValidator\Result;
 use Vertex\Tax\Model\CountryGuard;
 use Vertex\Tax\Model\InvoiceSentRegistry;
-use Vertex\Tax\Model\Loader\GiftwrapExtensionLoader;
-use Vertex\Tax\Model\Loader\VertexCalculationExtensionLoader;
 use Vertex\Tax\Model\TaxInvoice;
+use Vertex\Tax\Model\Loader\GiftwrapExtensionLoader;
 use Vertex\Tax\Observer\InvoiceSavedAfterObserver;
+use Vertex\Tax\Model\Loader\VertexCalculationExtensionLoader;
 use Vertex\Tax\Test\Unit\TestCase;
 
 /**
@@ -52,7 +50,7 @@ class InvoiceSavedAfterObserverTest extends TestCase
     /** @var MockObject|InvoiceRequestBuilder */
     private $invoiceRequestBuilderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -80,7 +78,7 @@ class InvoiceSavedAfterObserverTest extends TestCase
             ->setMethods(['execute'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $result = new Result();
+        $result = new ConfigurationValidator\Result();
         $result->setValid(true);
 
         $this->configValidatorMock->method('execute')
@@ -137,10 +135,10 @@ class InvoiceSavedAfterObserverTest extends TestCase
     public function testNonDuplicativeInvoiceSentState()
     {
         /** @var MockObject|Event $eventMock */
-        $eventMock = $this->getMockBuilder(Event::class)->addMethods(['getInvoice'])->getMock();
+        $eventMock = $this->createPartialMock(Event::class, ['getInvoice']);
 
         /** @var MockObject|Event\Observer $observerMock */
-        $observerMock = $this->createPartialMock(Observer::class, ['getEvent']);
+        $observerMock = $this->createPartialMock(Event\Observer::class, ['getEvent']);
 
         /** @var MockObject|Invoice $invoiceMock */
         $invoiceMock = $this->createPartialMock(
@@ -230,10 +228,10 @@ class InvoiceSavedAfterObserverTest extends TestCase
     public function testSendOrderAfterInvoiceSaveRequest()
     {
         /** @var MockObject|Event $eventMock */
-        $eventMock = $this->getMockBuilder(Event::class)->addMethods(['getInvoice'])->getMock();
+        $eventMock = $this->createPartialMock(Event::class, ['getInvoice']);
 
         /** @var MockObject|Event\Observer $observerMock */
-        $observerMock = $this->createPartialMock(Observer::class, ['getEvent']);
+        $observerMock = $this->createPartialMock(Event\Observer::class, ['getEvent']);
 
         /** @var MockObject|Invoice $invoiceMock */
         $invoiceMock = $this->createPartialMock(

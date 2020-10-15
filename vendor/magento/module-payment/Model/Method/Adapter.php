@@ -17,7 +17,6 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Validator\ValidatorPoolInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\MethodInterface;
-use Magento\Payment\Model\SaleOperationInterface;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Api\Data\CartInterface;
 use Psr\Log\LoggerInterface;
@@ -31,7 +30,7 @@ use Psr\Log\LoggerInterface;
  * @api Use this class as a base for virtual types declaration
  * @since 100.0.2
  */
-class Adapter implements MethodInterface, SaleOperationInterface
+class Adapter implements MethodInterface
 {
     /**
      * @var ValueHandlerPoolInterface
@@ -297,7 +296,6 @@ class Adapter implements MethodInterface, SaleOperationInterface
 
                 $checkResult->setData('is_available', $result->isValid());
             }
-        // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock
         } catch (\Exception $e) {
             // pass
         }
@@ -368,7 +366,7 @@ class Adapter implements MethodInterface, SaleOperationInterface
      * Unifies configured value handling logic
      *
      * @param string $field
-     * @param int|null $storeId
+     * @param null $storeId
      * @return mixed
      */
     private function getConfiguredValue($field, $storeId = null)
@@ -664,26 +662,5 @@ class Adapter implements MethodInterface, SaleOperationInterface
     public function getConfigPaymentAction()
     {
         return $this->getConfiguredValue('payment_action');
-    }
-
-    /**
-     * @inheritdoc
-     * @since 100.4.0
-     */
-    public function canSale(): bool
-    {
-        return $this->canPerformCommand('sale');
-    }
-
-    /**
-     * @inheritdoc
-     * @since 100.4.0
-     */
-    public function sale(InfoInterface $payment, float $amount)
-    {
-        $this->executeCommand(
-            'sale',
-            ['payment' => $payment, 'amount' => $amount]
-        );
     }
 }

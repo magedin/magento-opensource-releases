@@ -3,65 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Block\Adminhtml\Widget\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Context;
-use Magento\Backend\Block\Widget\Grid\Column;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Integration\Block\Adminhtml\Widget\Grid\Column\Renderer\Link;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\Block\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaperMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
     /**
-     * @var Link
+     * @var \Magento\Integration\Block\Adminhtml\Widget\Grid\Column\Renderer\Link
      */
     protected $linkRenderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->escaperMock = $this->createMock(Escaper::class);
+        $this->escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
         $this->escaperMock->expects($this->any())->method('escapeHtml')->willReturnArgument(0);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
         $this->urlBuilderMock->expects($this->once())->method('getUrl')->willReturn('http://magento.loc/linkurl');
         $this->contextMock = $this->createPartialMock(
-            Context::class,
+            \Magento\Backend\Block\Context::class,
             ['getEscaper', 'getUrlBuilder']
         );
-        $this->contextMock->expects($this->any())->method('getEscaper')->willReturn($this->escaperMock);
+        $this->contextMock->expects($this->any())->method('getEscaper')->will($this->returnValue($this->escaperMock));
         $this->contextMock->expects($this->any())
             ->method('getUrlBuilder')
-            ->willReturn($this->urlBuilderMock);
+            ->will($this->returnValue($this->urlBuilderMock));
 
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->linkRenderer = $this->objectManagerHelper->getObject(
-            Link::class,
+            \Magento\Integration\Block\Adminhtml\Widget\Grid\Column\Renderer\Link::class,
             ['context' => $this->contextMock]
         );
     }
@@ -72,19 +61,19 @@ class LinkTest extends TestCase
     public function testRender()
     {
         $expectedResult = '<a href="http://magento.loc/linkurl" title="Link Caption">Link Caption</a>';
-        $column = $this->getMockBuilder(Column::class)
+        $column = $this->getMockBuilder(\Magento\Backend\Block\Widget\Grid\Column::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCaption', 'getId'])
             ->getMock();
         $column->expects($this->any())
             ->method('getCaption')
-            ->willReturn('Link Caption');
+            ->will($this->returnValue('Link Caption'));
         $column->expects($this->any())
             ->method('getId')
             ->willReturn('1');
         $this->escaperMock->expects($this->at(0))->method('escapeHtmlAttr')->willReturn('Link Caption');
         $this->linkRenderer->setColumn($column);
-        $object = new DataObject(['id' => '1']);
+        $object = new \Magento\Framework\DataObject(['id' => '1']);
         $actualResult = $this->linkRenderer->render($object);
         $this->assertEquals($expectedResult, $actualResult);
     }

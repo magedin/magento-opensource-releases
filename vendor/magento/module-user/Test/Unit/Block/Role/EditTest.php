@@ -3,69 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\User\Test\Unit\Block\Role;
-
-use Magento\Backend\Block\Widget\Tabs;
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\Json\EncoderInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\LayoutInterface;
-use Magento\User\Block\Role\Edit;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class EditTest to cover Magento\User\Block\Role\Edit
  *
  */
-class EditTest extends TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Edit|MockObject */
+    /** @var \Magento\User\Block\Role\Edit|\PHPUnit_Framework_MockObject_MockObject */
     protected $model;
 
-    /** @var EncoderInterface|MockObject */
+    /** @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $jsonEncoderMock;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Backend\Model\Auth\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $authSessionsMock;
 
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $registryMock;
 
-    /** @var LayoutInterface|MockObject */
+    /** @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $layoutInterfaceMock;
 
     /**
+     * Set required values
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->jsonEncoderMock = $this->getMockBuilder(EncoderInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMockForAbstractClass();
-
-        $this->authSessionsMock = $this->getMockBuilder(Session::class)
+        $this->jsonEncoderMock = $this->getMockBuilder(\Magento\Framework\Json\EncoderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->authSessionsMock = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->layoutInterfaceMock = $this->getMockBuilder(LayoutInterface::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+
+        $this->layoutInterfaceMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['setRole', 'setActive', 'getId'])
             ->getMockForAbstractClass();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            Edit::class,
+            \Magento\User\Block\Role\Edit::class,
             [
                 'jsonEncoder' => $this->jsonEncoderMock,
                 'authSession' => $this->authSessionsMock,
@@ -86,7 +76,7 @@ class EditTest extends TestCase
         $this->layoutInterfaceMock->expects($this->once())->method('getId')->willReturn(false);
 
         $this->assertInstanceOf(
-            Tabs::class,
+            \Magento\Backend\Block\Widget\Tabs::class,
             $this->invokeMethod($this->model, '_prepareLayout')
         );
     }

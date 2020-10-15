@@ -3,20 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Console\Command;
 
-use Magento\Framework\Console\Cli;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\Store\Console\Command\WebsiteListCommand;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Helper\HelperSet;
+use Magento\Store\Model\Website;
+use Magento\Framework\Console\Cli;
+use Magento\Store\Api\WebsiteRepositoryInterface;
 
-class WebsiteListCommandTest extends TestCase
+/**
+ * @package Magento\Store\Test\Unit\Console\Command
+ */
+class WebsiteListCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WebsiteListCommand
@@ -24,18 +23,18 @@ class WebsiteListCommandTest extends TestCase
     private $command;
 
     /**
-     * @var WebsiteRepositoryInterface|MockObject
+     * @var \Magento\Store\Api\WebsiteRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $websiteRepositoryMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->websiteRepositoryMock = $this->getMockForAbstractClass(WebsiteRepositoryInterface::class);
 

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model\ItemProvider;
 
@@ -15,10 +14,8 @@ use Magento\Sitemap\Model\ResourceModel\Catalog\Category as CategoryResource;
 use Magento\Sitemap\Model\ResourceModel\Catalog\CategoryFactory;
 use Magento\Sitemap\Model\SitemapItem;
 use Magento\Sitemap\Model\SitemapItemInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetItemsEmpty()
     {
@@ -46,7 +43,7 @@ class CategoryTest extends TestCase
         $resolver = new CategoryItemResolver($configReaderMock, $categoryFactoryMock, $itemFactoryMock);
         $items = $resolver->getItems(1);
 
-        $this->assertCount(count($categories), $items);
+        $this->assertTrue(count($items) == count($categories));
         foreach ($categories as $index => $category) {
             $this->assertSame($category->getUpdatedAt(), $items[$index]->getUpdatedAt());
             $this->assertSame('daily', $items[$index]->getChangeFrequency());
@@ -77,7 +74,7 @@ class CategoryTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getCategoryFactoryMock($returnValue)
     {
@@ -94,7 +91,7 @@ class CategoryTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getItemFactoryMock()
     {
@@ -115,7 +112,7 @@ class CategoryTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getConfigReaderMock()
     {
@@ -132,7 +129,7 @@ class CategoryTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getCategoryCollectionMock($returnValue)
     {

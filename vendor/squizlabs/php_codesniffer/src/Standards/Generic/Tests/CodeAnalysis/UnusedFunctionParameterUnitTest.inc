@@ -121,5 +121,3 @@ function something($a) {
 function myCallback($a, $b, $c, $d) {
     return $a * $c;
 }
-
-fn ($a, $b, $c) => $b;

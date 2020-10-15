@@ -30,7 +30,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /** @var \ReflectionMethod */
     protected $prepareFormMethod;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->expectedFields = [
             'base_fieldset',

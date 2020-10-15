@@ -3,100 +3,89 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Service;
 
-use Magento\Framework\Api\Filter;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Api\InvoiceCommentRepositoryInterface;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Model\AbstractModel;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\InvoiceNotifier;
-use Magento\Sales\Model\Service\InvoiceService;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class InvoiceServiceTest extends TestCase
+/**
+ * Class InvoiceServiceTest
+ */
+class InvoiceServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Repository
      *
-     * @var InvoiceRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\InvoiceRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repositoryMock;
 
     /**
      * Repository
      *
-     * @var InvoiceCommentRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\InvoiceCommentRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $commentRepositoryMock;
 
     /**
      * Search Criteria Builder
      *
-     * @var SearchCriteriaBuilder|MockObject
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchCriteriaBuilderMock;
 
     /**
      * Filter Builder
      *
-     * @var FilterBuilder|MockObject
+     * @var \Magento\Framework\Api\FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filterBuilderMock;
 
     /**
      * Invoice Notifier
      *
-     * @var InvoiceNotifier|MockObject
+     * @var \Magento\Sales\Model\Order\InvoiceNotifier|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceNotifierMock;
 
     /**
-     * @var InvoiceService
+     * @var \Magento\Sales\Model\Service\InvoiceService
      */
     protected $invoiceService;
 
     /**
      * SetUp
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManagerHelper($this);
 
         $this->repositoryMock = $this->getMockForAbstractClass(
-            InvoiceRepositoryInterface::class,
+            \Magento\Sales\Api\InvoiceRepositoryInterface::class,
             ['get'],
             '',
             false
         );
         $this->commentRepositoryMock = $this->getMockForAbstractClass(
-            InvoiceCommentRepositoryInterface::class,
+            \Magento\Sales\Api\InvoiceCommentRepositoryInterface::class,
             ['getList'],
             '',
             false
         );
         $this->searchCriteriaBuilderMock = $this->createPartialMock(
-            SearchCriteriaBuilder::class,
+            \Magento\Framework\Api\SearchCriteriaBuilder::class,
             ['create', 'addFilters']
         );
         $this->filterBuilderMock = $this->createPartialMock(
-            FilterBuilder::class,
+            \Magento\Framework\Api\FilterBuilder::class,
             ['setField', 'setValue', 'setConditionType', 'create']
         );
         $this->invoiceNotifierMock = $this->createPartialMock(
-            InvoiceNotifier::class,
+            \Magento\Sales\Model\Order\InvoiceNotifier::class,
             ['notify']
         );
 
         $this->invoiceService = $objectManager->getObject(
-            InvoiceService::class,
+            \Magento\Sales\Model\Service\InvoiceService::class,
             [
                 'repository' => $this->repositoryMock,
                 'commentRepository' => $this->commentRepositoryMock,
@@ -115,15 +104,15 @@ class InvoiceServiceTest extends TestCase
         $id = 145;
         $returnValue = true;
 
-        $invoiceMock = $this->createPartialMock(Invoice::class, ['capture']);
+        $invoiceMock = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice::class, ['capture']);
 
         $this->repositoryMock->expects($this->once())
             ->method('get')
             ->with($id)
-            ->willReturn($invoiceMock);
+            ->will($this->returnValue($invoiceMock));
         $invoiceMock->expects($this->once())
             ->method('capture')
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
 
         $this->assertTrue($this->invoiceService->setCapture($id));
     }
@@ -136,31 +125,34 @@ class InvoiceServiceTest extends TestCase
         $id = 25;
         $returnValue = 'return-value';
 
-        $filterMock = $this->createMock(Filter::class);
-        $searchCriteriaMock = $this->createMock(SearchCriteria::class);
+        $filterMock = $this->createMock(\Magento\Framework\Api\Filter::class);
+        $searchCriteriaMock = $this->createMock(\Magento\Framework\Api\SearchCriteria::class);
 
         $this->filterBuilderMock->expects($this->once())
             ->method('setField')
-            ->with('parent_id')->willReturnSelf();
+            ->with('parent_id')
+            ->will($this->returnSelf());
         $this->filterBuilderMock->expects($this->once())
             ->method('setValue')
-            ->with($id)->willReturnSelf();
+            ->with($id)
+            ->will($this->returnSelf());
         $this->filterBuilderMock->expects($this->once())
             ->method('setConditionType')
-            ->with('eq')->willReturnSelf();
+            ->with('eq')
+            ->will($this->returnSelf());
         $this->filterBuilderMock->expects($this->once())
             ->method('create')
-            ->willReturn($filterMock);
+            ->will($this->returnValue($filterMock));
         $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('addFilters')
             ->with([$filterMock]);
         $this->searchCriteriaBuilderMock->expects($this->once())
             ->method('create')
-            ->willReturn($searchCriteriaMock);
+            ->will($this->returnValue($searchCriteriaMock));
         $this->commentRepositoryMock->expects($this->once())
             ->method('getList')
             ->with($searchCriteriaMock)
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
 
         $this->assertEquals($returnValue, $this->invoiceService->getCommentsList($id));
     }
@@ -174,7 +166,7 @@ class InvoiceServiceTest extends TestCase
         $returnValue = 'return-value';
 
         $modelMock = $this->getMockForAbstractClass(
-            AbstractModel::class,
+            \Magento\Sales\Model\AbstractModel::class,
             [],
             '',
             false
@@ -183,11 +175,11 @@ class InvoiceServiceTest extends TestCase
         $this->repositoryMock->expects($this->once())
             ->method('get')
             ->with($id)
-            ->willReturn($modelMock);
+            ->will($this->returnValue($modelMock));
         $this->invoiceNotifierMock->expects($this->once())
             ->method('notify')
             ->with($modelMock)
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
 
         $this->assertEquals($returnValue, $this->invoiceService->notify($id));
     }
@@ -200,15 +192,15 @@ class InvoiceServiceTest extends TestCase
         $id = 145;
         $returnValue = true;
 
-        $invoiceMock = $this->createPartialMock(Invoice::class, ['void']);
+        $invoiceMock = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice::class, ['void']);
 
         $this->repositoryMock->expects($this->once())
             ->method('get')
             ->with($id)
-            ->willReturn($invoiceMock);
+            ->will($this->returnValue($invoiceMock));
         $invoiceMock->expects($this->once())
             ->method('void')
-            ->willReturn($returnValue);
+            ->will($this->returnValue($returnValue));
 
         $this->assertTrue($this->invoiceService->setVoid($id));
     }

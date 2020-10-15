@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product;
 
 use Magento\CatalogImportExport\Model\Import\Product\SkuProcessor as SkuProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SkuProcessorTest extends TestCase
+class SkuProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \Magento\Catalog\Model\ProductFactory|MockObject
+     * @var \Magento\Catalog\Model\ProductFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productFactory;
 
     /**
-     * @var SkuProcessor|MockObject
+     * @var SkuProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $skuProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productFactory = $this->createMock(\Magento\Catalog\Model\ProductFactory::class);
         $this->skuProcessor = $this->getMockBuilder(

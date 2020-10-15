@@ -25,11 +25,11 @@
             <createData entity="UsCustomerAssignedToNewCustomerGroup" stepKey="customer">
                 <requiredEntity createDataKey="customerGroup"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <deleteData createDataKey="customer" stepKey="deleteCustomer"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Customer Group success delete message-->

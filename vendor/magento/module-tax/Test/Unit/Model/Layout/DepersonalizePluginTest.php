@@ -12,16 +12,15 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\DepersonalizeChecker;
 use Magento\Tax\Model\Layout\DepersonalizePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for \Magento\Tax\Model\Layout\DepersonalizePlugin class.
+ * Tests \Magento\Tax\Model\Layout\DepersonalizePlugin.
  */
 class DepersonalizePluginTest extends TestCase
 {
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
@@ -31,33 +30,31 @@ class DepersonalizePluginTest extends TestCase
     private $plugin;
 
     /**
-     * @var DepersonalizeChecker|MockObject
+     * @var DepersonalizeChecker|\PHPUnit_Framework_MockObject_MockObject
      */
     private $depersonalizeCheckerMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layoutMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerSessionMock = $this->getMockBuilder(CustomerSession::class)
-            ->addMethods(
-                [
-                    'getDefaultTaxBillingAddress',
-                    'getDefaultTaxShippingAddress',
-                    'getCustomerTaxClassId',
-                    'setDefaultTaxBillingAddress',
-                    'setDefaultTaxShippingAddress',
-                    'setCustomerTaxClassId'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->customerSessionMock = $this->createPartialMock(
+            CustomerSession::class,
+            [
+                'getDefaultTaxBillingAddress',
+                'getDefaultTaxShippingAddress',
+                'getCustomerTaxClassId',
+                'setDefaultTaxBillingAddress',
+                'setDefaultTaxShippingAddress',
+                'setCustomerTaxClassId'
+            ]
+        );
         $this->depersonalizeCheckerMock = $this->createMock(DepersonalizeChecker::class);
         $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
 
@@ -113,8 +110,7 @@ class DepersonalizePluginTest extends TestCase
     }
 
     /**
-     * Test afterGenerateElements method when depersonalization is not needed.
-     *
+     * Test afterGenerateElements method when depersonalization is not needed
      * @return void
      */
     public function testAfterGenerateElementsNoDepersonalize(): void

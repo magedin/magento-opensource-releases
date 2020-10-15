@@ -5,18 +5,17 @@
  */
 declare(strict_types=1);
 
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
-use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Quote\Api\Data\AddressInterface;
+use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\ObjectManager;
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var QuoteFactory $quoteFactory */
-$quoteFactory = Bootstrap::getObjectManager()->get(QuoteFactory::class);
-/** @var QuoteResource $quoteResource */
-$quoteResource = Bootstrap::getObjectManager()->get(QuoteResource::class);
-$quote = $quoteFactory->create();
-$quoteResource->load($quote, 'multishipping_quote_id', 'reserved_order_id');
+/**
+ * @var Magento\Quote\Model\Quote $quote
+ */
+
+if (empty($quote)) {
+    throw new \Exception('$quote should be defined in the parent fixture');
+}
 
 $data = [
     'firstname' => 'Jonh',
@@ -31,7 +30,9 @@ $data = [
     'address_type' => 'billing',
 ];
 
+/** @var ObjectManager $objectManager */
+$objectManager = Bootstrap::getObjectManager();
+
 /** @var AddressInterface $address */
 $address = $objectManager->create(AddressInterface::class, ['data' => $data]);
 $quote->setBillingAddress($address);
-$quoteResource->save($quote);

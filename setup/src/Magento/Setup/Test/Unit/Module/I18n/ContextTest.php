@@ -3,30 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Setup\Module\I18n\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Module\I18n\Context;
 
-class ContextTest extends TestCase
+class ContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context
+     * @var \Magento\Setup\Module\I18n\Context
      */
     protected $context;
 
     /**
-     * @var ComponentRegistrar|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $componentRegistrar;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->componentRegistrar = $this->createMock(ComponentRegistrar::class);
+        $this->componentRegistrar = $this->createMock(\Magento\Framework\Component\ComponentRegistrar::class);
     }
 
     /**
@@ -77,10 +73,12 @@ class ContextTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid path given: "invalid_path".
+     */
     public function testGetContextByPathWithInvalidPath()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Invalid path given: "invalid_path".');
         $this->componentRegistrar->expects($this->any())
             ->method('getPaths')
             ->willReturnMap([
@@ -141,10 +139,12 @@ class ContextTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid context given: "invalid_type".
+     */
     public function testBuildPathToLocaleDirectoryByContextWithInvalidType()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Invalid context given: "invalid_type".');
         $this->componentRegistrar->expects($this->never())
             ->method('getPath');
         $this->context = new Context($this->componentRegistrar);

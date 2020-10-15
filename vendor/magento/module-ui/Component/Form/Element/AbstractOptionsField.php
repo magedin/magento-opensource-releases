@@ -7,7 +7,6 @@ namespace Magento\Ui\Component\Form\Element;
 
 use Magento\Framework\Data\OptionSourceInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\DataProvider\Sanitizer;
 
 /**
  * Base abstract form element.
@@ -25,28 +24,20 @@ abstract class AbstractOptionsField extends AbstractElement
     protected $options;
 
     /**
-     * @var Sanitizer
-     */
-    private $sanitizer;
-
-    /**
      * Constructor
      *
      * @param ContextInterface $context
      * @param array|OptionSourceInterface|null $options
      * @param array $components
      * @param array $data
-     * @param Sanitizer|null $sanitizer
      */
     public function __construct(
         ContextInterface $context,
         $options = null,
         array $components = [],
-        array $data = [],
-        ?Sanitizer $sanitizer = null
+        array $data = []
     ) {
         $this->options = $options;
-        $this->sanitizer = $sanitizer ?? \Magento\Framework\App\ObjectManager::getInstance()->get(Sanitizer::class);
         parent::__construct($context, $components, $data);
     }
 
@@ -71,10 +62,13 @@ abstract class AbstractOptionsField extends AbstractElement
             if (empty($config['rawOptions'])) {
                 $options = $this->convertOptionsValueToString($options);
             }
-            foreach ($options as &$option) {
-                //Options contain static or dynamic entity data that is not supposed to contain templates.
-                $option = $this->sanitizer->sanitize($option);
-            }
+
+            array_walk(
+                $options,
+                function (&$item) {
+                    $item['__disableTmpl'] = true;
+                }
+            );
 
             $config['options'] = array_values(array_replace_recursive($config['options'], $options));
         }

@@ -12,7 +12,7 @@ class KeyValidatorTest extends TestCase
     private $characterReplacer;
     private $suffix;
 
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->spaceReplacer = '-';
         $this->characterReplacer = '';

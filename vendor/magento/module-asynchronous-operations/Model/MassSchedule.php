@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 declare(strict_types=1);
 
 namespace Magento\AsynchronousOperations\Model;
@@ -12,10 +13,10 @@ use Magento\AsynchronousOperations\Api\Data\AsyncResponseInterfaceFactory;
 use Magento\AsynchronousOperations\Api\Data\ItemStatusInterface;
 use Magento\AsynchronousOperations\Api\Data\ItemStatusInterfaceFactory;
 use Magento\Authorization\Model\UserContextInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Bulk\BulkManagementInterface;
 use Magento\Framework\DataObject\IdentityGeneratorInterface;
 use Magento\Framework\Encryption\Encryptor;
-use Magento\AsynchronousOperations\Api\SaveMultipleOperationsInterface;
 use Magento\Framework\Exception\BulkException;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
@@ -28,7 +29,7 @@ use Psr\Log\LoggerInterface;
 class MassSchedule
 {
     /**
-     * @var IdentityGeneratorInterface
+     * @var \Magento\Framework\DataObject\IdentityGeneratorInterface
      */
     private $identityService;
 
@@ -43,7 +44,7 @@ class MassSchedule
     private $itemStatusInterfaceFactory;
 
     /**
-     * @var BulkManagementInterface
+     * @var \Magento\Framework\Bulk\BulkManagementInterface
      */
     private $bulkManagement;
 
@@ -58,7 +59,7 @@ class MassSchedule
     private $operationRepository;
 
     /**
-     * @var UserContextInterface
+     * @var \Magento\Authorization\Model\UserContextInterface
      */
     private $userContext;
 
@@ -66,11 +67,6 @@ class MassSchedule
      * @var Encryptor
      */
     private $encryptor;
-
-    /**
-     * @var SaveMultipleOperationsInterface
-     */
-    private $saveMultipleOperations;
 
     /**
      * Initialize dependencies.
@@ -82,8 +78,7 @@ class MassSchedule
      * @param LoggerInterface $logger
      * @param OperationRepositoryInterface $operationRepository
      * @param UserContextInterface $userContext
-     * @param Encryptor $encryptor
-     * @param SaveMultipleOperationsInterface $saveMultipleOperations
+     * @param Encryptor|null $encryptor
      */
     public function __construct(
         IdentityGeneratorInterface $identityService,
@@ -92,9 +87,8 @@ class MassSchedule
         BulkManagementInterface $bulkManagement,
         LoggerInterface $logger,
         OperationRepositoryInterface $operationRepository,
-        UserContextInterface $userContext,
-        Encryptor $encryptor,
-        SaveMultipleOperationsInterface $saveMultipleOperations
+        UserContextInterface $userContext = null,
+        Encryptor $encryptor = null
     ) {
         $this->identityService = $identityService;
         $this->itemStatusInterfaceFactory = $itemStatusInterfaceFactory;
@@ -102,9 +96,8 @@ class MassSchedule
         $this->bulkManagement = $bulkManagement;
         $this->logger = $logger;
         $this->operationRepository = $operationRepository;
-        $this->userContext = $userContext;
-        $this->encryptor = $encryptor;
-        $this->saveMultipleOperations = $saveMultipleOperations;
+        $this->userContext = $userContext ?: ObjectManager::getInstance()->get(UserContextInterface::class);
+        $this->encryptor = $encryptor ?: ObjectManager::getInstance()->get(Encryptor::class);
     }
 
     /**
@@ -143,6 +136,7 @@ class MassSchedule
         foreach ($entitiesArray as $key => $entityParams) {
             /** @var \Magento\AsynchronousOperations\Api\Data\ItemStatusInterface $requestItem */
             $requestItem = $this->itemStatusInterfaceFactory->create();
+
             try {
                 $operation = $this->operationRepository->create($topicName, $entityParams, $groupId, $key);
                 $operations[] = $operation;
@@ -166,7 +160,6 @@ class MassSchedule
             }
         }
 
-        $this->saveMultipleOperations->execute($operations);
         if (!$this->bulkManagement->scheduleBulk($groupId, $operations, $bulkDescription, $userId)) {
             throw new LocalizedException(
                 __('Something went wrong while processing the request.')

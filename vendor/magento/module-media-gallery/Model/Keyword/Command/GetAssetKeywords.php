@@ -15,8 +15,7 @@ use Magento\Framework\App\ResourceConnection;
 use Psr\Log\LoggerInterface;
 
 /**
- * Retrieve keywords for the media asset
- * @deprecated 100.4.0 use \Magento\MediaGalleryApi\Api\GetAssetsByIdsInterface instead
+ * ClassGetAssetKeywords
  */
 class GetAssetKeywords implements GetAssetKeywordsInterface
 {
@@ -60,29 +59,23 @@ class GetAssetKeywords implements GetAssetKeywordsInterface
      *
      * @param int $assetId
      *
-     * @return KeywordInterface[]
+     * @return KeywordInterface[]|[]
      * @throws IntegrationException
      */
     public function execute(int $assetId): array
     {
         try {
             $connection = $this->resourceConnection->getConnection();
-            $tableAssetKeyword = $this->resourceConnection->getTableName(self::TABLE_ASSET_KEYWORD);
 
             $select = $connection->select()
                 ->from(['k' => $this->resourceConnection->getTableName(self::TABLE_KEYWORD)])
-                ->join(['ak' => $tableAssetKeyword], 'k.id = ak.keyword_id')
+                ->join(['ak' => self::TABLE_ASSET_KEYWORD], 'k.id = ak.keyword_id')
                 ->where('ak.asset_id = ?', $assetId);
             $data = $connection->query($select)->fetchAll();
 
             $keywords = [];
             foreach ($data as $keywordData) {
-                $keywords[] = $this->assetKeywordFactory->create(
-                    [
-                        'id' => $keywordData['id'],
-                        'keyword' => $keywordData['keyword'],
-                    ]
-                );
+                $keywords[] = $this->assetKeywordFactory->create(['data' => $keywordData]);
             }
 
             return $keywords;

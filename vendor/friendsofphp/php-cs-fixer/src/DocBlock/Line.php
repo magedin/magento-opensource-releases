@@ -67,7 +67,7 @@ class Line
      */
     public function containsUsefulContent()
     {
-        return 0 !== Preg::match('/\\*\s*\S+/', $this->content) && '' !== trim(str_replace(['/', '*'], ' ', $this->content));
+        return 0 !== Preg::match('/\\*\s*\S+/', $this->content) && !$this->isTheStart() && !$this->isTheEnd();
     }
 
     /**
@@ -133,7 +133,7 @@ class Line
      */
     public function addBlank()
     {
-        $matched = Preg::match('/^(\h*\*)[^\r\n]*(\r?\n)$/', $this->content, $matches);
+        $matched = Preg::match('/^([ \t]*\*)[^\r\n]*(\r?\n)$/', $this->content, $matches);
 
         if (1 !== $matched) {
             return;

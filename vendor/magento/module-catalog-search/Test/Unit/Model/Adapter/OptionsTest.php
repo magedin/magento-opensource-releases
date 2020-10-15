@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\Adapter;
 
 use Magento\CatalogSearch\Model\Adapter\Options;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
@@ -26,17 +21,17 @@ class OptionsTest extends TestCase
      */
     private $options;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
 
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->options = $helper->getObject(
-            Options::class,
+            \Magento\CatalogSearch\Model\Adapter\Options::class,
             [
                 'scopeConfig' => $this->scopeConfig
             ]

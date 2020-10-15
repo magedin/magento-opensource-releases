@@ -3,16 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model\ItemProvider;
 
 use Magento\Sitemap\Model\ItemProvider\Composite as CompositeItemResolver;
 use Magento\Sitemap\Model\ItemProvider\ItemProviderInterface;
 use Magento\Sitemap\Model\SitemapItemInterface;
-use PHPUnit\Framework\TestCase;
 
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     public function testNoResolvers()
     {
@@ -55,10 +53,10 @@ class CompositeTest extends TestCase
             $itemProviders = [];
             $expectedItems = [];
             $maxProviders = random_int(1, 5);
-            for ($j = 1; $j < $maxProviders; $j++) {
+            for ($i = 1; $i < $maxProviders; $i++) {
                 $items = [];
                 $maxItems = random_int(2, 5);
-                for ($k = 1; $k < $maxItems; $k++) {
+                for ($i = 1; $i < $maxItems; $i++) {
                     $sitemapItem = $this->getMockForAbstractClass(SitemapItemInterface::class);
                     $items[] = $sitemapItem;
                     $expectedItems[]  = $sitemapItem;

@@ -11,7 +11,8 @@ use Magento\Paypal\Model\Info;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
 /**
- * Processes CVV codes mapping from PayPal Payflow transaction to electronic merchant systems standard.
+ * Processes CVV codes mapping from PayPal Payflow transaction to
+ * electronic merchant systems standard.
  *
  * @see https://developer.paypal.com/docs/classic/payflow/integration-guide/#credit-card-transaction-responses
  * @see http://www.emsecommerce.net/avs_cvv2_response_codes.htm
@@ -57,6 +58,6 @@ class CvvEmsCodeMapper implements PaymentVerificationInterface
 
         $cvv = $additionalInfo[Info::PAYPAL_CVV2MATCH];
 
-        return self::$cvvMap[$cvv] ?? self::$notProvidedCode;
+        return isset(self::$cvvMap[$cvv]) ? self::$cvvMap[$cvv] : self::$notProvidedCode;
     }
 }

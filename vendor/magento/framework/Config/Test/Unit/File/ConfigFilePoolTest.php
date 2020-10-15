@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Config\Test\Unit\File;
 
 use Magento\Framework\Config\File\ConfigFilePool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigFilePoolTest extends TestCase
+class ConfigFilePoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ConfigFilePool
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Config\File\ConfigFilePool
      */
     private $configFilePool;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $newPath = [
             'new_key' => 'new_config.php'
@@ -41,10 +38,12 @@ class ConfigFilePoolTest extends TestCase
         $this->assertEquals($expected, $this->configFilePool->getPath(ConfigFilePool::APP_CONFIG));
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage File config key does not exist.
+     */
     public function testGetPathException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('File config key does not exist.');
         $fileKey = 'not_existing';
         $this->configFilePool->getPath($fileKey);
     }

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Observer;
 
 use Magento\Catalog\Block\ShortcutButtons;
@@ -14,18 +12,17 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\View\Layout;
 use Magento\Paypal\Block\Express\InContext\Minicart\SmartButton as MinicartButton;
 use Magento\Paypal\Block\Express\InContext\SmartButton as Button;
-use Magento\Paypal\Block\Express\Shortcut;
 use Magento\Paypal\Helper\Shortcut\Factory;
 use Magento\Paypal\Model\Config;
 use Magento\Paypal\Observer\AddPaypalShortcutsObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class AddPaypalShortcutsObserverTest
+ *
  * @see \Magento\Paypal\Observer\AddPaypalShortcutsObserver
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddPaypalShortcutsObserverTest extends TestCase
+class AddPaypalShortcutsObserverTest extends \PHPUnit\Framework\TestCase
 {
     const PAYMENT_CODE = 'code';
 
@@ -42,13 +39,13 @@ class AddPaypalShortcutsObserverTest extends TestCase
      */
     public function testAddShortcutsButtons(array $blocks)
     {
-        /** @var ShortcutButtons|MockObject $shortcutButtonsMock */
+        /** @var ShortcutButtons|\PHPUnit_Framework_MockObject_MockObject $shortcutButtonsMock */
         $shortcutButtonsMock = $this->getMockBuilder(ShortcutButtons::class)
             ->setMethods(['getLayout', 'addShortcut'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var ShortcutButtons|MockObject $shortcutButtonsMock */
+        /** @var ShortcutButtons|\PHPUnit_Framework_MockObject_MockObject $shortcutButtonsMock */
         $eventMock = $this->getMockBuilder(DataObject::class)
             ->setMethods(
                 [
@@ -67,11 +64,11 @@ class AddPaypalShortcutsObserverTest extends TestCase
         $observer = new Observer();
         $observer->setEvent($eventMock);
 
-        /** @var Config|MockObject $paypalConfigMock */
+        /** @var Config|\PHPUnit_Framework_MockObject_MockObject $paypalConfigMock */
         $paypalConfigMock = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var Factory|MockObject $shortcutFactoryMock */
+        /** @var Factory|\PHPUnit_Framework_MockObject_MockObject $shortcutFactoryMock */
         $shortcutFactoryMock = $this->getMockBuilder(Factory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -82,7 +79,7 @@ class AddPaypalShortcutsObserverTest extends TestCase
             $paypalConfigMock
         );
 
-        /** @var Layout|MockObject $layoutMock */
+        /** @var Layout|\PHPUnit_Framework_MockObject_MockObject $layoutMock */
         $layoutMock = $this->getMockBuilder(Layout::class)
             ->setMethods(['createBlock'])
             ->disableOriginalConstructor()
@@ -172,13 +169,33 @@ class AddPaypalShortcutsObserverTest extends TestCase
                         self::PAYMENT_AVAILABLE => true,
                         self::PAYMENT_IS_BML => false,
                     ],
-                    Shortcut::class => [
+                    \Magento\Paypal\Block\Express\Shortcut::class => [
                         self::PAYMENT_CODE => Config::METHOD_WPP_EXPRESS,
                         self::PAYMENT_AVAILABLE => true,
                         self::PAYMENT_IS_BML => false,
                     ],
                     \Magento\Paypal\Block\Bml\Shortcut::class => [
                         self::PAYMENT_CODE => Config::METHOD_WPP_EXPRESS,
+                        self::PAYMENT_AVAILABLE => true,
+                        self::PAYMENT_IS_BML => true,
+                    ],
+                    \Magento\Paypal\Block\WpsExpress\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPS_EXPRESS,
+                        self::PAYMENT_AVAILABLE => true,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\WpsBml\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPS_EXPRESS,
+                        self::PAYMENT_AVAILABLE => true,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\PayflowExpress\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPP_PE_EXPRESS,
+                        self::PAYMENT_AVAILABLE => true,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\Payflow\Bml\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPP_PE_EXPRESS,
                         self::PAYMENT_AVAILABLE => true,
                         self::PAYMENT_IS_BML => true,
                     ]
@@ -196,13 +213,33 @@ class AddPaypalShortcutsObserverTest extends TestCase
                         self::PAYMENT_AVAILABLE => true,
                         self::PAYMENT_IS_BML => false,
                     ],
-                    Shortcut::class => [
+                    \Magento\Paypal\Block\Express\Shortcut::class => [
                         self::PAYMENT_CODE => Config::METHOD_WPP_EXPRESS,
                         self::PAYMENT_AVAILABLE => false,
                         self::PAYMENT_IS_BML => false,
                     ],
                     \Magento\Paypal\Block\Bml\Shortcut::class => [
                         self::PAYMENT_CODE => Config::METHOD_WPP_EXPRESS,
+                        self::PAYMENT_AVAILABLE => false,
+                        self::PAYMENT_IS_BML => true,
+                    ],
+                    \Magento\Paypal\Block\WpsExpress\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPS_EXPRESS,
+                        self::PAYMENT_AVAILABLE => false,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\WpsBml\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPS_EXPRESS,
+                        self::PAYMENT_AVAILABLE => false,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\PayflowExpress\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPP_PE_EXPRESS,
+                        self::PAYMENT_AVAILABLE => false,
+                        self::PAYMENT_IS_BML => false,
+                    ],
+                    \Magento\Paypal\Block\Payflow\Bml\Shortcut::class => [
+                        self::PAYMENT_CODE => Config::METHOD_WPP_PE_EXPRESS,
                         self::PAYMENT_AVAILABLE => false,
                         self::PAYMENT_IS_BML => true,
                     ]

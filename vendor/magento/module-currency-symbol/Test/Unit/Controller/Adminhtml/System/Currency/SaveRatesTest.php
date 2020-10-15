@@ -3,47 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CurrencySymbol\Test\Unit\Controller\Adminhtml\System\Currency;
 
-use Magento\CurrencySymbol\Controller\Adminhtml\System\Currency\SaveRates;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SaveRatesTest extends TestCase
+/**
+ * Class SaveRatesTest
+ */
+class SaveRatesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SaveRates
+     * @var \Magento\CurrencySymbol\Controller\Adminhtml\System\Currency\SaveRates
      */
     protected $action;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $responseMock;
 
-    protected function setUp(): void
+    /**
+     *
+     */
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setRedirect'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
+        $this->responseMock = $this->createPartialMock(
+            \Magento\Framework\App\ResponseInterface::class,
+            ['setRedirect', 'sendResponse']
+        );
 
         $this->action = $objectManager->getObject(
-            SaveRates::class,
+            \Magento\CurrencySymbol\Controller\Adminhtml\System\Currency\SaveRates::class,
             [
                 'request' => $this->requestMock,
                 'response' => $this->responseMock,
@@ -51,6 +50,9 @@ class SaveRatesTest extends TestCase
         );
     }
 
+    /**
+     *
+     */
     public function testWithNullRateExecute()
     {
         $this->requestMock->expects($this->once())

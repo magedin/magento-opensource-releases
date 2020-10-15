@@ -3,28 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Diff;
 
-use Magento\Framework\Setup\Declaration\Schema\Comparator;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\Setup\Declaration\Schema\Diff\Diff;
-use Magento\Framework\Setup\Declaration\Schema\Diff\DiffManager;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Column;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Constraints\Reference;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Index;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Table;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test diff manager methods
  */
-class DiffManagerTest extends TestCase
+class DiffManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DiffManager
+     * @var \Magento\Framework\Setup\Declaration\Schema\Diff\DiffManager
      */
     private $model;
 
@@ -34,18 +29,18 @@ class DiffManagerTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Comparator|MockObject
+     * @var \Magento\Framework\Setup\Declaration\Schema\Comparator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $comparatorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->comparatorMock = $this->getMockBuilder(Comparator::class)
+        $this->comparatorMock = $this->getMockBuilder(\Magento\Framework\Setup\Declaration\Schema\Comparator::class)
             ->getMockForAbstractClass();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            DiffManager::class,
+            \Magento\Framework\Setup\Declaration\Schema\Diff\DiffManager::class,
             [
                 'comparator' => $this->comparatorMock
             ]
@@ -73,7 +68,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterModification()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -97,7 +92,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterIndexModification()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -122,7 +117,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterRemovalReference()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -159,7 +154,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterCreation()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -189,7 +184,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterTableModificationWhenChangeResource()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -221,7 +216,7 @@ class DiffManagerTest extends TestCase
 
     public function testRegisterTableModificationWhenChangeEngine()
     {
-        /** @var Diff|MockObject $diff */
+        /** @var Diff|\PHPUnit_Framework_MockObject_MockObject $diff */
         $diff = $this->getMockBuilder(Diff::class)
             ->disableOriginalConstructor()
             ->getMock();

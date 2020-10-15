@@ -75,7 +75,7 @@ class TaxCalculationTest extends \PHPUnit\Framework\TestCase
      */
     private $dataObjectHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->quoteDetailsFactory = $this->objectManager->create(
@@ -88,7 +88,7 @@ class TaxCalculationTest extends \PHPUnit\Framework\TestCase
         $this->setUpDefaultRules();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->tearDownDefaultRules();
     }

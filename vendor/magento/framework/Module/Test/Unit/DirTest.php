@@ -3,33 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Framework\Module\Dir;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DirTest extends TestCase
+class DirTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Dir
+     * @var \Magento\Framework\Module\Dir
      */
     protected $_model;
 
     /**
-     * @var ComponentRegistrarInterface|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrarInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $moduleRegistryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->moduleRegistryMock = $this->getMockForAbstractClass(ComponentRegistrarInterface::class);
+        $this->moduleRegistryMock = $this->createMock(\Magento\Framework\Component\ComponentRegistrarInterface::class);
 
-        $this->_model = new Dir($this->moduleRegistryMock);
+        $this->_model = new \Magento\Framework\Module\Dir($this->moduleRegistryMock);
     }
 
     public function testGetDirModuleRoot()
@@ -37,7 +31,7 @@ class DirTest extends TestCase
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with(ComponentRegistrar::MODULE, 'Test_Module')
-            ->willReturn('/Test/Module');
+            ->will($this->returnValue('/Test/Module'));
 
         $this->assertEquals('/Test/Module', $this->_model->getDir('Test_Module'));
     }
@@ -47,7 +41,7 @@ class DirTest extends TestCase
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with(ComponentRegistrar::MODULE, 'Test_Module')
-            ->willReturn('/Test/Module');
+            ->will($this->returnValue('/Test/Module'));
 
         $this->assertEquals('/Test/Module/etc', $this->_model->getDir('Test_Module', 'etc'));
     }
@@ -62,22 +56,26 @@ class DirTest extends TestCase
         $this->assertEquals('/Test/Module/Setup', $this->_model->getDir('Test_Module', 'Setup'));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Directory type 'unknown' is not recognized
+     */
     public function testGetDirModuleSubDirUnknown()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Directory type \'unknown\' is not recognized');
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with(ComponentRegistrar::MODULE, 'Test_Module')
-            ->willReturn('/Test/Module');
+            ->will($this->returnValue('/Test/Module'));
 
         $this->_model->getDir('Test_Module', 'unknown');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Module 'Test Module' is not correctly registered.
+     */
     public function testGetDirModuleIncorrectlyRegistered()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Module \'Test Module\' is not correctly registered.');
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with($this->identicalTo(ComponentRegistrar::MODULE), $this->identicalTo('Test Module'))

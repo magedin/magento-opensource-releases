@@ -12,7 +12,7 @@ use Magento\AdobeStockImageApi\Api\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
- * Configuration for Adobe Stock Images functionality
+ * Class Config
  */
 class Config implements ConfigInterface
 {

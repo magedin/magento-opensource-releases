@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of PHP Copy/Paste Detector (PHPCPD).
  *
@@ -10,7 +10,7 @@
 
 namespace SebastianBergmann\PHPCPD;
 
-final class CodeClone
+class CodeClone
 {
     /**
      * @var int Size of the clone (lines)
@@ -37,7 +37,15 @@ final class CodeClone
      */
     private $lines = '';
 
-    public function __construct(CodeCloneFile $fileA, CodeCloneFile $fileB, int $size, int $tokens)
+    /**
+     * Constructor.
+     *
+     * @param CodeCloneFile $fileA
+     * @param CodeCloneFile $fileB
+     * @param int           $size
+     * @param int           $tokens
+     */
+    public function __construct(CodeCloneFile $fileA, CodeCloneFile $fileB, $size, $tokens)
     {
         $this->addFile($fileA);
         $this->addFile($fileB);
@@ -47,7 +55,12 @@ final class CodeClone
         $this->id     = \md5($this->getLines());
     }
 
-    public function addFile(CodeCloneFile $file): void
+    /**
+     * Add file with clone
+     *
+     * @param CodeCloneFile $file
+     */
+    public function addFile(CodeCloneFile $file)
     {
         $id = $file->getId();
 
@@ -57,14 +70,23 @@ final class CodeClone
     }
 
     /**
+     * Get files with clone
+     *
      * @return CodeCloneFile[]
      */
-    public function getFiles(): array
+    public function getFiles()
     {
         return $this->files;
     }
 
-    public function getLines($indent = ''): string
+    /**
+     * Returns the lines of the clone.
+     *
+     * @param string $indent
+     *
+     * @return string The lines of the clone
+     */
+    public function getLines($indent = '')
     {
         if (empty($this->lines)) {
             $file = \current($this->files);
@@ -87,17 +109,26 @@ final class CodeClone
         return $this->lines;
     }
 
-    public function getId(): string
+    /**
+     * @return string
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getSize(): int
+    /**
+     * @return int
+     */
+    public function getSize()
     {
         return $this->size;
     }
 
-    public function getTokens(): int
+    /**
+     * @return int
+     */
+    public function getTokens()
     {
         return $this->tokens;
     }

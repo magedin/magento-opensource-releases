@@ -54,7 +54,7 @@ class ImageResizeCommandTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -74,7 +74,7 @@ class ImageResizeCommandTest extends \PHPUnit\Framework\TestCase
     public function testRunResizeWithMissingFile()
     {
         $this->tester->execute([]);
-        $this->assertStringContainsString('original image not found', $this->tester->getDisplay());
+        $this->assertContains('original image not found', $this->tester->getDisplay());
     }
 
     /**
@@ -106,7 +106,7 @@ class ImageResizeCommandTest extends \PHPUnit\Framework\TestCase
         $product->save();
 
         $this->tester->execute([]);
-        $this->assertStringContainsString('Wrong file', $this->tester->getDisplay());
+        $this->assertContains('Wrong file', $this->tester->getDisplay());
         $this->mediaDirectory->getDriver()->deleteFile($this->mediaDirectory->getAbsolutePath($this->fileName));
     }
 
@@ -120,6 +120,6 @@ class ImageResizeCommandTest extends \PHPUnit\Framework\TestCase
     public function testDatabaseStorageMissingFile()
     {
         $this->tester->execute([]);
-        $this->assertStringContainsString('Product images resized successfully', $this->tester->getDisplay());
+        $this->assertContains('Product images resized successfully', $this->tester->getDisplay());
     }
 }

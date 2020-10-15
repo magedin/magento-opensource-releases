@@ -14,49 +14,43 @@
             <title value="Update Customer Address (UK) in Storefront"/>
             <description value="Test log in to Storefront and Update Customer Address (UK) in Storefront"/>
             <testCaseId value="MC-10911"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <group value="customer"/>
             <group value="mtf_migrated"/>
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-            <actionGroup ref="StorefrontOpenCustomerAccountCreatePageActionGroup" stepKey="openCreateAccountPage"/>
-            <actionGroup ref="StorefrontFillCustomerAccountCreationFormActionGroup" stepKey="fillCreateAccountForm">
-                <argument name="customer" value="CustomerEntityOne"/>
-            </actionGroup>
-            <actionGroup ref="StorefrontClickCreateAnAccountCustomerAccountCreationFormActionGroup" stepKey="submitCreateAccountForm"/>
-            <actionGroup ref="AssertMessageCustomerCreateAccountActionGroup" stepKey="seeSuccessMessage">
-                <argument name="messageType" value="success"/>
-                <argument name="message" value="Thank you for registering with Main Website Store."/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
+            <actionGroup ref="SignUpNewUserFromStorefrontActionGroup" stepKey="SignUpNewUser">
+                <argument name="Customer" value="CustomerEntityOne"/>
             </actionGroup>
         </before>
         <after>
             <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteNewUser">
                 <argument name="email" value="{{CustomerEntityOne.email}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Update customer address UK in storefront-->
-        <actionGroup ref="EnterCustomerAddressInfoActionGroup" stepKey="enterAddress">
+        <actionGroup ref="EnterCustomerAddressInfo" stepKey="enterAddress">
             <argument name="Address" value="updateCustomerUKAddress"/>
         </actionGroup>
         <!--Verify customer address save success message-->
         <see selector="{{AdminCustomerMessagesSection.successMessage}}" userInput="You saved the address." stepKey="seeAssertCustomerAddressSuccessSaveMessage"/>
 
         <!--Verify customer default billing address-->
-        <actionGroup ref="VerifyCustomerBillingAddressActionGroup" stepKey="verifyBillingAddress">
+        <actionGroup ref="VerifyCustomerBillingAddress" stepKey="verifyBillingAddress">
             <argument name="address" value="updateCustomerUKAddress"/>
         </actionGroup>
 
         <!--Verify customer default shipping address-->
-        <actionGroup ref="VerifyCustomerShippingAddressActionGroup" stepKey="verifyShippingAddress">
+        <actionGroup ref="VerifyCustomerShippingAddress" stepKey="verifyShippingAddress">
             <argument name="address" value="updateCustomerUKAddress"/>
         </actionGroup>
 
         <!--Verify customer name on frontend-->
-        <actionGroup ref="VerifyCustomerNameOnFrontendActionGroup" stepKey="verifyVerifyCustomerName">
+        <actionGroup ref="VerifyCustomerNameOnFrontend" stepKey="verifyVerifyCustomerName">
             <argument name="customer" value="CustomerEntityOne"/>
         </actionGroup>
     </test>

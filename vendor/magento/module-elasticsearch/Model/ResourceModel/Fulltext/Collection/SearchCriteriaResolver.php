@@ -80,9 +80,6 @@ class SearchCriteriaResolver implements SearchCriteriaResolverInterface
         $searchCriteria->setRequestName($this->searchRequestName);
         $searchCriteria->setSortOrders($this->orders);
         $searchCriteria->setCurrentPage($this->currentPage - 1);
-        if ($this->size) {
-            $searchCriteria->setPageSize($this->size);
-        }
 
         return $searchCriteria;
     }

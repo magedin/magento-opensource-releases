@@ -65,7 +65,7 @@ class SaveTest extends WebapiAbstract
         AssertArrayContains::assert($sourceItems, $actualData['items']);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $sourceItems = [
             [

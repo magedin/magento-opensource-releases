@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Response\HeaderProvider;
 
 use Magento\Framework\App\Response\HeaderProvider\XssProtection;
-use Magento\Framework\HTTP\Header;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class XssProtectionTest extends TestCase
+class XssProtectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider userAgentDataProvider
@@ -21,12 +18,12 @@ class XssProtectionTest extends TestCase
      */
     public function testGetValue($userAgent, $expectedHeader)
     {
-        $headerServiceMock = $this->getMockBuilder(Header::class)
+        $headerServiceMock = $this->getMockBuilder(\Magento\Framework\HTTP\Header::class)
             ->disableOriginalConstructor()
             ->getMock();
         $headerServiceMock->expects($this->once())->method('getHttpUserAgent')->willReturn($userAgent);
         $model = (new ObjectManager($this))->getObject(
-            XssProtection::class,
+            \Magento\Framework\App\Response\HeaderProvider\XssProtection::class,
             ['headerService' => $headerServiceMock]
         );
         $this->assertSame($expectedHeader, $model->getValue());

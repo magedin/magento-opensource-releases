@@ -3,28 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Config;
 
-use Magento\Payment\Gateway\Config\ConfigValueHandler;
 use Magento\Payment\Gateway\ConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Payment\Gateway\Config\ConfigValueHandler;
 
-class ConfigValueHandlerTest extends TestCase
+/**
+ * Class ConfigValueHandlerTest
+ */
+class ConfigValueHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ConfigValueHandler */
     protected $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockBuilder(ConfigInterface::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Payment\Gateway\ConfigInterface::class)
             ->getMockForAbstractClass();
         $this->model = new ConfigValueHandler($this->configMock);
     }

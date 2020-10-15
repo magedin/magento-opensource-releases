@@ -3,22 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Marketplace\Test\Unit\Block;
 
-use Magento\Marketplace\Block\Partners;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PartnersTest extends TestCase
+class PartnersTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Partners
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Marketplace\Block\Partners
      */
     private $partnersBlockMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->partnersBlockMock = $this->getPartnersBlockMock(
             [
@@ -35,11 +30,11 @@ class PartnersTest extends TestCase
         $partnersModelMock = $this->getPartnersModelMock(['getPartners']);
         $partnersModelMock->expects($this->once())
             ->method('getPartners')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $this->partnersBlockMock->expects($this->once())
             ->method('getPartnersModel')
-            ->willReturn($partnersModelMock);
+            ->will($this->returnValue($partnersModelMock));
 
         $this->partnersBlockMock->getPartners();
     }
@@ -47,17 +42,17 @@ class PartnersTest extends TestCase
     /**
      * Gets partners block mock
      *
-     * @return MockObject|Partners
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Marketplace\Block\Partners
      */
     public function getPartnersBlockMock($methods = null)
     {
-        return $this->createPartialMock(Partners::class, $methods);
+        return $this->createPartialMock(\Magento\Marketplace\Block\Partners::class, $methods);
     }
 
     /**
      * Gets partners model mock
      *
-     * @return MockObject|\Magento\Marketplace\Model\Partners
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Marketplace\Model\Partners
      */
     public function getPartnersModelMock($methods)
     {

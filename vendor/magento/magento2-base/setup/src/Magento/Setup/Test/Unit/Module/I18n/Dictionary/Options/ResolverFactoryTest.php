@@ -3,36 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Dictionary\Options;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory;
-use PHPUnit\Framework\TestCase;
-
-class ResolverFactoryTest extends TestCase
+/**
+ * Class ResolverTest
+ */
+class ResolverFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        /** @var ResolverFactory $resolverFactory */
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory $resolverFactory */
         $resolverFactory = $objectManagerHelper
-            ->getObject(ResolverFactory::class);
+            ->getObject(\Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory::class);
         $this->assertInstanceOf(
-            ResolverFactory::DEFAULT_RESOLVER,
+            \Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory::DEFAULT_RESOLVER,
             $resolverFactory->create('some_dir', true)
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage stdClass doesn't implement ResolverInterface
+     */
     public function testCreateException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('stdClass doesn\'t implement ResolverInterface');
-        $objectManagerHelper = new ObjectManager($this);
-        /** @var ResolverFactory $resolverFactory */
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory $resolverFactory */
         $resolverFactory = $objectManagerHelper->getObject(
-            ResolverFactory::class,
+            \Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory::class,
             [
                 'resolverClass' => 'stdClass'
             ]

@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Config\Test\Unit\Model\Config;
 
-use Magento\Config\Model\Config\Backend\Encrypted;
 use Magento\Config\Model\Config\ScopeDefiner;
 use Magento\Config\Model\Config\Structure;
 use Magento\Config\Model\Config\Structure\Data;
-use Magento\Config\Model\Config\Structure\Element\Field;
 use Magento\Config\Model\Config\Structure\Element\FlyweightFactory;
 use Magento\Config\Model\Config\Structure\Element\Iterator\Tab as TabIterator;
-use Magento\Config\Model\Config\Structure\Element\Section;
-use Magento\Config\Model\Config\Structure\ElementInterface;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Test for Structure.
  *
  * @see Structure
  */
-class StructureTest extends TestCase
+class StructureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Structure|Mock
@@ -56,10 +50,7 @@ class StructureTest extends TestCase
      */
     protected $_structureData;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_flyweightFactory = $this->getMockBuilder(FlyweightFactory::class)
             ->disableOriginalConstructor()
@@ -91,12 +82,7 @@ class StructureTest extends TestCase
         );
     }
 
-    /**
-     * Verify tabs build section tree
-     *
-     * @return void
-     */
-    public function testGetTabsBuildsSectionTree(): void
+    public function testGetTabsBuildsSectionTree()
     {
         $expected = ['tab1' => ['children' => ['section1' => ['tab' => 'tab1']]]];
 
@@ -112,7 +98,7 @@ class StructureTest extends TestCase
             ->method('setElements')
             ->with($expected);
 
-        $model = new Structure(
+        $model = new \Magento\Config\Model\Config\Structure(
             $this->_structureDataMock,
             $this->_tabIteratorMock,
             $this->_flyweightFactory,
@@ -122,12 +108,7 @@ class StructureTest extends TestCase
         $this->assertEquals($this->_tabIteratorMock, $model->getTabs());
     }
 
-    /**
-     * Verify get section list method
-     *
-     * @return void
-     */
-    public function testGetSectionList(): void
+    public function testGetSectionList()
     {
         $expected = [
             'section1_child_id_1' => true,
@@ -160,7 +141,7 @@ class StructureTest extends TestCase
                 ]
             );
 
-        $model = new Structure(
+        $model = new \Magento\Config\Model\Config\Structure(
             $this->_structureDataMock,
             $this->_tabIteratorMock,
             $this->_flyweightFactory,
@@ -171,8 +152,6 @@ class StructureTest extends TestCase
     }
 
     /**
-     * Verify Get Element return empty element if element is requested
-     *
      * @param string $path
      * @param string $expectedType
      * @param string $expectedId
@@ -195,8 +174,6 @@ class StructureTest extends TestCase
     }
 
     /**
-     * Verify get Element return empty by path element if not exist
-     *
      * @param string $path
      * @param string $expectedType
      * @param string $expectedId
@@ -219,8 +196,6 @@ class StructureTest extends TestCase
     }
 
     /**
-     * Verify Element return e,pty element if not exists
-     *
      * @param string $expectedType
      * @param string $expectedId
      * @param string $expectedPath
@@ -233,7 +208,7 @@ class StructureTest extends TestCase
     ) {
         $expectedConfig = ['id' => $expectedId, 'path' => $expectedPath, '_elementType' => $expectedType];
 
-        $elementMock = $this->getMockBuilder(ElementInterface::class)
+        $elementMock = $this->getMockBuilder(Structure\ElementInterface::class)
             ->getMockForAbstractClass();
         $elementMock->expects($this->once())
             ->method('setData')
@@ -259,24 +234,14 @@ class StructureTest extends TestCase
         ];
     }
 
-    /**
-     * Verify get element returns proper element by path
-     *
-     * @return void
-     */
-    public function testGetElementReturnsProperElementByPath(): void
+    public function testGetElementReturnsProperElementByPath()
     {
         $elementMock = $this->getElementPathReturnsProperElementByPath();
 
         $this->assertEquals($elementMock, $this->_model->getElement('section_1/group_level_1/field_3'));
     }
 
-    /**
-     * Verify get element by config path return proper path
-     *
-     * @return void
-     */
-    public function testGetElementByConfigPathReturnsProperElementByPath(): void
+    public function testGetElementByConfigPathReturnsProperElementByPath()
     {
         $elementMock = $this->getElementPathReturnsProperElementByPath();
 
@@ -284,8 +249,6 @@ class StructureTest extends TestCase
     }
 
     /**
-     * Build mock element
-     *
      * @return Mock
      */
     private function getElementPathReturnsProperElementByPath()
@@ -293,7 +256,7 @@ class StructureTest extends TestCase
         $section = $this->_structureData['config']['system']['sections']['section_1'];
         $fieldData = $section['children']['group_level_1']['children']['field_3'];
 
-        $elementMock = $this->getMockBuilder(Field::class)
+        $elementMock = $this->getMockBuilder(Structure\Element\Field::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -308,12 +271,7 @@ class StructureTest extends TestCase
         return $elementMock;
     }
 
-    /**
-     * Verefy get element by path part
-     *
-     * @return void
-     */
-    public function testGetElementByPathPartsIfSectionDataIsEmpty(): void
+    public function testGetElementByPathPartsIfSectionDataIsEmpty()
     {
         $fieldData = [
             'id' => 'field_3',
@@ -322,7 +280,7 @@ class StructureTest extends TestCase
         ];
         $pathParts = explode('/', 'section_1/group_level_1/field_3');
 
-        $elementMock = $this->getMockBuilder(Field::class)
+        $elementMock = $this->getMockBuilder(Structure\Element\Field::class)
             ->disableOriginalConstructor()
             ->getMock();
         $structureDataMock = $this->getMockBuilder(Data::class)
@@ -362,7 +320,7 @@ class StructureTest extends TestCase
             ->willReturnSelf();
         $tabMock->expects($this->once())
             ->method('rewind');
-        $section = $this->getMockBuilder(Section::class)
+        $section = $this->getMockBuilder(Structure\Element\Section::class)
             ->disableOriginalConstructor()
             ->setMethods(['isVisible', 'getData'])
             ->getMock();
@@ -384,12 +342,7 @@ class StructureTest extends TestCase
         $this->assertEquals('currentSection', $this->_model->getFirstSection()->getData());
     }
 
-    /**
-     * Verify get element return element by path caches object
-     *
-     * @return void
-     */
-    public function testGetElementReturnsProperElementByPathCachesObject(): void
+    public function testGetElementReturnsProperElementByPathCachesObject()
     {
         $elementMock = $this->getElementReturnsProperElementByPathCachesObject();
 
@@ -397,12 +350,7 @@ class StructureTest extends TestCase
         $this->assertEquals($elementMock, $this->_model->getElement('section_1/group_level_1/field_3'));
     }
 
-    /**
-     * Verify Get Element by id returns proper element
-     *
-     * @return void
-     */
-    public function testGetElementByConfigPathReturnsProperElementByPathCachesObject(): void
+    public function testGetElementByConfigPathReturnsProperElementByPathCachesObject()
     {
         $elementMock = $this->getElementReturnsProperElementByPathCachesObject();
 
@@ -418,7 +366,7 @@ class StructureTest extends TestCase
         $section = $this->_structureData['config']['system']['sections']['section_1'];
         $fieldData = $section['children']['group_level_1']['children']['field_3'];
 
-        $elementMock = $this->getMockBuilder(Field::class)
+        $elementMock = $this->getMockBuilder(Structure\Element\Field::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -445,8 +393,6 @@ class StructureTest extends TestCase
     }
 
     /**
-     * DataProvider
-     *
      * @return array
      */
     public function getFieldPathsByAttributeDataProvider()
@@ -454,7 +400,7 @@ class StructureTest extends TestCase
         return [
             [
                 'backend_model',
-                Encrypted::class,
+                \Magento\Config\Model\Config\Backend\Encrypted::class,
                 [
                     'section_1/group_1/field_2',
                     'section_1/group_level_1/group_level_2/group_level_3/field_3_1_1',
@@ -465,53 +411,33 @@ class StructureTest extends TestCase
         ];
     }
 
-    /**
-     * Verify get Fields paths method
-     *
-     * @dataProvider getFieldPaths
-     * @param array $expected
-     * @return void
-     */
-    public function testGetFieldPaths(array $expected): void
+    public function testGetFieldPaths()
     {
+        $expected = [
+            'section/group/field2' => [
+                'field_2'
+            ],
+            'field_3' => [
+                'field_3',
+                'field_3'
+            ],
+            'field_3_1' => [
+                'field_3_1'
+            ],
+            'field_3_1_1' => [
+                'field_3_1_1'
+            ],
+            'section/group/field4' => [
+                'field_4',
+            ],
+            'field_5' => [
+                'field_5',
+            ],
+        ];
+
         $this->assertSame(
             $expected,
             $this->_model->getFieldPaths()
         );
-    }
-
-    /**
-     * dataprovider for Field Paths
-     *
-     * @return array
-     */
-    public function getFieldPaths(): array
-    {
-        return  [
-            [
-                [
-                    'section/group/field2' => [
-                        'field_2'
-                    ],
-                    'field_3' => [
-                        'field_3',
-                        'field_3'
-                    ],
-                    'field_3_1' => [
-                        'field_3_1'
-                    ],
-                    'field_3_1_1' => [
-                        'field_3_1_1'
-                    ],
-                    'section/group/field4' => [
-                        'field_4',
-                    ],
-                    'field_5' => [
-                        'field_5',
-                        'field_5'
-                    ]
-                ]
-            ]
-        ];
     }
 }

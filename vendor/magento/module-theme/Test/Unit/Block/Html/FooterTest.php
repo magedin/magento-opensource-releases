@@ -3,30 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Html;
 
-use Magento\Cms\Model\Block;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Theme\Block\Html\Footer;
-use PHPUnit\Framework\TestCase;
-
-class FooterTest extends TestCase
+class FooterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Theme\Block\Html\Footer
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->block = $objectManager->getObject(Footer::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->block = $objectManager->getObject(\Magento\Theme\Block\Html\Footer::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->block = null;
     }
@@ -34,7 +26,7 @@ class FooterTest extends TestCase
     public function testGetIdentities()
     {
         $this->assertEquals(
-            [Store::CACHE_TAG, Block::CACHE_TAG],
+            [\Magento\Store\Model\Store::CACHE_TAG, \Magento\Cms\Model\Block::CACHE_TAG],
             $this->block->getIdentities()
         );
     }

@@ -41,7 +41,7 @@ class CreateCustomOptionsTest extends AbstractBackendController
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -55,8 +55,6 @@ class CreateCustomOptionsTest extends AbstractBackendController
      * @dataProvider productWithNewOptionsDataProvider
      *
      * @param array $productPostData
-     *
-     * @magentoDbIsolation enabled
      */
     public function testSaveCustomOptionWithTypeField(array $productPostData): void
     {
@@ -65,7 +63,7 @@ class CreateCustomOptionsTest extends AbstractBackendController
         $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->dispatch('backend/catalog/product/save/id/' . $product->getEntityId());
         $this->assertSessionMessages(
-            $this->containsEqual('You saved the product.'),
+            $this->contains('You saved the product.'),
             MessageInterface::TYPE_SUCCESS
         );
         $productOptions = $this->optionRepository->getProductOptions($product);

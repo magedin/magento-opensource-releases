@@ -3,35 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Area\Request;
 
-use Magento\Backend\App\Request\PathInfoProcessor;
-use Magento\Backend\Helper\Data;
-use Magento\Framework\App\RequestInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PathInfoProcessorTest extends TestCase
+class PathInfoProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PathInfoProcessor
+     * @var \Magento\Backend\App\Request\PathInfoProcessor
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_backendHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_subjectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
@@ -40,12 +32,12 @@ class PathInfoProcessorTest extends TestCase
      */
     protected $_pathInfo = '/storeCode/node_one/';
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->_subjectMock = $this->createMock(\Magento\Store\App\Request\PathInfoProcessor::class);
-        $this->_backendHelperMock = $this->createMock(Data::class);
-        $this->_model = new PathInfoProcessor(
+        $this->_backendHelperMock = $this->createMock(\Magento\Backend\Helper\Data::class);
+        $this->_model = new \Magento\Backend\App\Request\PathInfoProcessor(
             $this->_subjectMock,
             $this->_backendHelperMock
         );
@@ -57,8 +49,8 @@ class PathInfoProcessorTest extends TestCase
             $this->once()
         )->method(
             'getAreaFrontName'
-        )->willReturn(
-            'storeCode'
+        )->will(
+            $this->returnValue('storeCode')
         );
         $this->assertEquals($this->_pathInfo, $this->_model->process($this->_requestMock, $this->_pathInfo));
     }
@@ -69,8 +61,8 @@ class PathInfoProcessorTest extends TestCase
             $this->once()
         )->method(
             'getAreaFrontName'
-        )->willReturn(
-            'store'
+        )->will(
+            $this->returnValue('store')
         );
         $this->_subjectMock->expects(
             $this->once()
@@ -79,8 +71,8 @@ class PathInfoProcessorTest extends TestCase
         )->with(
             $this->_requestMock,
             $this->_pathInfo
-        )->willReturn(
-            'Expected'
+        )->will(
+            $this->returnValue('Expected')
         );
         $this->assertEquals('Expected', $this->_model->process($this->_requestMock, $this->_pathInfo));
     }

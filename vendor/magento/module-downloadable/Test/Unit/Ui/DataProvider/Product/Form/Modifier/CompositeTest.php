@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Catalog\Model\Product\Type as CatalogType;
-use Magento\Downloadable\Model\Product\Type as DownloadableType;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Composite;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Composite;
 use Magento\Ui\DataProvider\Modifier\ModifierFactory;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Model\Product\Type as DownloadableType;
+use Magento\Catalog\Model\Product\Type as CatalogType;
 
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -26,17 +22,17 @@ class CompositeTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var ModifierFactory|MockObject
+     * @var ModifierFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $modifierFactoryMock;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
@@ -46,7 +42,7 @@ class CompositeTest extends TestCase
     protected $composite;
 
     /**
-     * @var ModifierInterface|MockObject
+     * @var ModifierInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $modifierMock;
 
@@ -58,13 +54,13 @@ class CompositeTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->modifiers = ['someClass' => 'namespase\SomeClass'];
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->modifierFactoryMock = $this->createMock(ModifierFactory::class);
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
-        $this->productMock = $this->getMockForAbstractClass(ProductInterface::class);
+        $this->locatorMock = $this->createMock(LocatorInterface::class);
+        $this->productMock = $this->createMock(ProductInterface::class);
         $this->composite = $this->objectManagerHelper->getObject(
             Composite::class,
             [

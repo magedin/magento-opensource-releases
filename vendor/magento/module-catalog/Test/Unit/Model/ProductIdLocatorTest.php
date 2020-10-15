@@ -3,37 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model;
-
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ProductIdLocator;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for ProductIdLocator class.
  */
-class ProductIdLocatorTest extends TestCase
+class ProductIdLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MetadataPool|MockObject
+     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPool;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactory;
 
     /**
-     * @var ProductIdLocator
+     * @var \Magento\Catalog\Model\ProductIdLocator
      */
     private $model;
 
@@ -42,21 +31,19 @@ class ProductIdLocatorTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->setMethods(['getMetadata'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->collectionFactory = $this
-            ->getMockBuilder(CollectionFactory::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class)
             ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            ProductIdLocator::class,
+            \Magento\Catalog\Model\ProductIdLocator::class,
             [
                 'metadataPool' => $this->metadataPool,
                 'collectionFactory' => $this->collectionFactory,
@@ -70,7 +57,7 @@ class ProductIdLocatorTest extends TestCase
     public function testRetrieveProductIdsBySkus()
     {
         $skus = ['sku_1', 'sku_2'];
-        $collection = $this->getMockBuilder(Collection::class)
+        $collection = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Collection::class)
             ->setMethods(
                 [
                     'getItems',
@@ -81,19 +68,16 @@ class ProductIdLocatorTest extends TestCase
                     'clear'
                 ]
             )
-            ->disableOriginalConstructor()
-            ->getMock();
-        $product = $this->getMockBuilder(ProductInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $product = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductInterface::class)
             ->setMethods(['getSku', 'getData', 'getTypeId'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $metaDataInterface = $this->getMockBuilder(EntityMetadataInterface::class)
+            ->disableOriginalConstructor()->getMockForAbstractClass();
+        $metaDataInterface = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadataInterface::class)
             ->setMethods(['getLinkField'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->disableOriginalConstructor()->getMockForAbstractClass();
         $this->collectionFactory->expects($this->once())->method('create')->willReturn($collection);
         $collection->expects($this->once())->method('addFieldToFilter')
-            ->with(ProductInterface::SKU, ['in' => $skus])->willReturnSelf();
+            ->with(\Magento\Catalog\Api\Data\ProductInterface::SKU, ['in' => $skus])->willReturnSelf();
         $collection->expects($this->atLeastOnce())->method('getItems')->willReturn([$product]);
         $collection->expects($this->atLeastOnce())->method('setPageSize')->willReturnSelf();
         $collection->expects($this->atLeastOnce())->method('getLastPageNumber')->willReturn(1);
@@ -102,7 +86,7 @@ class ProductIdLocatorTest extends TestCase
         $this->metadataPool
             ->expects($this->once())
             ->method('getMetadata')
-            ->with(ProductInterface::class)
+            ->with(\Magento\Catalog\Api\Data\ProductInterface::class)
             ->willReturn($metaDataInterface);
         $metaDataInterface->expects($this->once())->method('getLinkField')->willReturn('entity_id');
         $product->expects($this->once())->method('getSku')->willReturn('sku_1');

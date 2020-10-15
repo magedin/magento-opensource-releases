@@ -3,75 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Cron;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Paypal\Cron\FetchReports;
-use Magento\Paypal\Model\Report\Settlement;
-use Magento\Paypal\Model\Report\SettlementFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class FetchReportsTest extends TestCase
+class FetchReportsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var FetchReports
+     * @var \Magento\Paypal\Cron\FetchReports
      */
     private $fetchReports;
 
     /**
-     * @var SettlementFactory|MockObject
+     * @var \Magento\Paypal\Model\Report\SettlementFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $settlementFactoryMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $logger;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->settlementFactoryMock = $this->getMockBuilder(SettlementFactory::class)
+        $this->settlementFactoryMock = $this->getMockBuilder(\Magento\Paypal\Model\Report\SettlementFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->logger = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->logger = $this->getMockForAbstractClass(\Psr\Log\LoggerInterface::class);
 
         $this->objectManager = new ObjectManager($this);
         $this->fetchReports = $this->objectManager->getObject(
-            FetchReports::class,
+            \Magento\Paypal\Cron\FetchReports::class,
             [
                 'settlementFactory' => $this->settlementFactoryMock
             ]
         );
     }
 
+    /**
+     * @expectedException \Exception
+     */
     public function testExecuteThrowsException()
     {
-        $this->expectException('Exception');
         $sftpCredentials = [
             'hostname' => ['test_hostname'],
             'username' => ['test_username'],
             'password' => ['test_password'],
             'path' => ['test_path']
         ];
-        $settlementMock = $this->getMockBuilder(Settlement::class)
+        $settlementMock = $this->getMockBuilder(\Magento\Paypal\Model\Report\Settlement::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -80,7 +73,7 @@ class FetchReportsTest extends TestCase
             ->willReturn($settlementMock);
 
         $settlementMock->expects($this->once())->method('getSftpCredentials')->with(true)->willReturn($sftpCredentials);
-        $settlementMock->expects($this->any())->method('fetchAndSave')->willThrowException(new \Exception());
+        $settlementMock->expects($this->any())->method('fetchAndSave')->willThrowException(new \Exception);
         $this->logger->expects($this->never())->method('critical');
 
         $this->fetchReports->execute();

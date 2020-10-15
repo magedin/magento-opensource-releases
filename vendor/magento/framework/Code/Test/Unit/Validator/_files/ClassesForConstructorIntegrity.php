@@ -1,6 +1,4 @@
 <?php
-use Magento\Framework\ObjectManager\ContextInterface;
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -32,7 +30,7 @@ interface SecondInterface
 class ImplementationOfSecondInterface implements SecondInterface
 {
 }
-class Context implements ContextInterface
+class Context implements \Magento\Framework\ObjectManager\ContextInterface
 {
     /**
      * @var ClassA

@@ -16,9 +16,8 @@ use Magento\Framework\Locale\FormatInterface;
 use Magento\InventoryCatalogApi\Model\GetSkusByProductIdsInterface;
 use Magento\InventorySales\Model\IsProductSalableCondition\BackOrderNotifyCustomerCondition;
 use Magento\InventorySales\Model\IsProductSalableForRequestedQtyCondition\ProductSalabilityError;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
 use Magento\InventorySalesApi\Api\Data\SalesChannelInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\InventorySalesApi\Api\StockResolverInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -39,14 +38,9 @@ class CheckQuoteItemQtyPlugin
     private $format;
 
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
-
-    /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestInterfaceFactory;
+    private $isProductSalableForRequestedQty;
 
     /**
      * @var GetSkusByProductIdsInterface
@@ -71,8 +65,7 @@ class CheckQuoteItemQtyPlugin
     /**
      * @param ObjectFactory $objectFactory
      * @param FormatInterface $format
-     * @param AreProductsSalableForRequestedQtyInterface $areProductsSalableForRequestedQty
-     * @param IsProductSalableForRequestedQtyRequestInterfaceFactory $isProductSalableForRequestedQtyRequestFactory
+     * @param IsProductSalableForRequestedQtyInterface $isProductSalableForRequestedQty
      * @param GetSkusByProductIdsInterface $getSkusByProductIds
      * @param StockResolverInterface $stockResolver
      * @param StoreManagerInterface $storeManager
@@ -82,8 +75,7 @@ class CheckQuoteItemQtyPlugin
     public function __construct(
         ObjectFactory $objectFactory,
         FormatInterface $format,
-        AreProductsSalableForRequestedQtyInterface $areProductsSalableForRequestedQty,
-        IsProductSalableForRequestedQtyRequestInterfaceFactory $isProductSalableForRequestedQtyRequestFactory,
+        IsProductSalableForRequestedQtyInterface $isProductSalableForRequestedQty,
         GetSkusByProductIdsInterface $getSkusByProductIds,
         StockResolverInterface $stockResolver,
         StoreManagerInterface $storeManager,
@@ -91,8 +83,7 @@ class CheckQuoteItemQtyPlugin
     ) {
         $this->objectFactory = $objectFactory;
         $this->format = $format;
-        $this->areProductsSalableForRequestedQty = $areProductsSalableForRequestedQty;
-        $this->isProductSalableForRequestedQtyRequestInterfaceFactory = $isProductSalableForRequestedQtyRequestFactory;
+        $this->isProductSalableForRequestedQty = $isProductSalableForRequestedQty;
         $this->getSkusByProductIds = $getSkusByProductIds;
         $this->stockResolver = $stockResolver;
         $this->storeManager = $storeManager;
@@ -136,18 +127,11 @@ class CheckQuoteItemQtyPlugin
         $stock = $this->stockResolver->execute(SalesChannelInterface::TYPE_WEBSITE, $websiteCode);
         $stockId = $stock->getStockId();
 
-        $request = $this->isProductSalableForRequestedQtyRequestInterfaceFactory->create(
-            [
-                'sku' => $productSku,
-                'qty' => $qty,
-            ]
-        );
-        $productsSalableResult = $this->areProductsSalableForRequestedQty->execute([$request], (int)$stockId);
-        $productsSalableResult = current($productsSalableResult);
+        $isSalableResult = $this->isProductSalableForRequestedQty->execute($productSku, (int)$stockId, $qty);
 
-        if ($productsSalableResult->isSalable() === false) {
+        if ($isSalableResult->isSalable() === false) {
             /** @var ProductSalabilityError $error */
-            foreach ($productsSalableResult->getErrors() as $error) {
+            foreach ($isSalableResult->getErrors() as $error) {
                 $result->setHasError(true)->setMessage($error->getMessage())->setQuoteMessage($error->getMessage())
                     ->setQuoteMessageIndex('qty');
             }

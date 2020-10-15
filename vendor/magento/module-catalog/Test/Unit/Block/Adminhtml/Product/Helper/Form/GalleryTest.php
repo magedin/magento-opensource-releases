@@ -3,64 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Product\Helper\Form;
 
-use Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GalleryTest extends TestCase
+class GalleryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var Gallery|MockObject
+     * @var \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $gallery;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var Form|MockObject
+     * @var \Magento\Framework\Data\Form|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $formMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var DataPersistorInterface|MockObject
+     * @var DataPersistorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataPersistorMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->productMock = $this->createPartialMock(Product::class, ['getData']);
-        $this->formMock = $this->createMock(Form::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['getData']);
+        $this->formMock = $this->createMock(\Magento\Framework\Data\Form::class);
         $this->dataPersistorMock = $this->getMockBuilder(DataPersistorInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMockForAbstractClass();
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->gallery = $this->objectManager->getObject(
-            Gallery::class,
+            \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery::class,
             [
                 'registry' => $this->registryMock,
                 'form' => $this->formMock,
@@ -164,7 +154,7 @@ class GalleryTest extends TestCase
     {
         $name = 'product[image]';
 
-        $attribute = $this->createMock(Attribute::class);
+        $attribute = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
         $attribute->expects($this->once())->method('getAttributeCode')->willReturn('image');
 
         $this->formMock->expects($this->once())->method('addSuffixToName')->willReturn($name);

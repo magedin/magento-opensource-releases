@@ -6,54 +6,41 @@
 namespace Magento\Sales\Model\Order\Pdf\Items;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\DataObject;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Filter\FilterManager;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Pdf\AbstractPdf;
-use Magento\Tax\Helper\Data as TaxHelper;
 
 /**
  * Sales Order Pdf Items renderer Abstract
  *
- * phpcs:disable Magento2.Classes.AbstractApi
  * @api
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @since 100.0.2
  */
-abstract class AbstractItems extends AbstractModel
+abstract class AbstractItems extends \Magento\Framework\Model\AbstractModel
 {
     /**
      * Order model
      *
-     * @var Order
+     * @var \Magento\Sales\Model\Order
      */
     protected $_order;
 
     /**
      * Source model (invoice, shipment, creditmemo)
      *
-     * @var AbstractModel
+     * @var \Magento\Framework\Model\AbstractModel
      */
     protected $_source;
 
     /**
      * Item object
      *
-     * @var DataObject
+     * @var \Magento\Framework\DataObject
      */
     protected $_item;
 
     /**
      * Pdf object
      *
-     * @var AbstractPdf
+     * @var \Magento\Sales\Model\Order\Pdf\AbstractPdf
      */
     protected $_pdf;
 
@@ -67,38 +54,38 @@ abstract class AbstractItems extends AbstractModel
     /**
      * Tax data
      *
-     * @var TaxHelper
+     * @var \Magento\Tax\Helper\Data
      */
     protected $_taxData;
 
     /**
-     * @var ReadInterface
+     * @var \Magento\Framework\Filesystem\Directory\ReadInterface
      */
     protected $_rootDirectory;
 
     /**
-     * @var FilterManager
+     * @var \Magento\Framework\Filter\FilterManager
      */
     protected $filterManager;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param TaxHelper $taxData
-     * @param Filesystem $filesystem ,
-     * @param FilterManager $filterManager
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Tax\Helper\Data $taxData
+     * @param \Magento\Framework\Filesystem $filesystem ,
+     * @param \Magento\Framework\Filter\FilterManager $filterManager
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        Registry $registry,
-        TaxHelper $taxData,
-        Filesystem $filesystem,
-        FilterManager $filterManager,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Tax\Helper\Data $taxData,
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\Framework\Filter\FilterManager $filterManager,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->filterManager = $filterManager;
@@ -110,10 +97,10 @@ abstract class AbstractItems extends AbstractModel
     /**
      * Set order model
      *
-     * @param  Order $order
+     * @param  \Magento\Sales\Model\Order $order
      * @return $this
      */
-    public function setOrder(Order $order)
+    public function setOrder(\Magento\Sales\Model\Order $order)
     {
         $this->_order = $order;
         return $this;
@@ -122,10 +109,10 @@ abstract class AbstractItems extends AbstractModel
     /**
      * Set Source model
      *
-     * @param  AbstractModel $source
+     * @param  \Magento\Framework\Model\AbstractModel $source
      * @return $this
      */
-    public function setSource(AbstractModel $source)
+    public function setSource(\Magento\Framework\Model\AbstractModel $source)
     {
         $this->_source = $source;
         return $this;
@@ -134,10 +121,10 @@ abstract class AbstractItems extends AbstractModel
     /**
      * Set item object
      *
-     * @param  DataObject $item
+     * @param  \Magento\Framework\DataObject $item
      * @return $this
      */
-    public function setItem(DataObject $item)
+    public function setItem(\Magento\Framework\DataObject $item)
     {
         $this->_item = $item;
         return $this;
@@ -146,10 +133,10 @@ abstract class AbstractItems extends AbstractModel
     /**
      * Set Pdf model
      *
-     * @param  AbstractPdf $pdf
+     * @param  \Magento\Sales\Model\Order\Pdf\AbstractPdf $pdf
      * @return $this
      */
-    public function setPdf(AbstractPdf $pdf)
+    public function setPdf(\Magento\Sales\Model\Order\Pdf\AbstractPdf $pdf)
     {
         $this->_pdf = $pdf;
         return $this;
@@ -326,20 +313,20 @@ abstract class AbstractItems extends AbstractModel
      */
     public function getItemOptions()
     {
-        $result = [[]];
+        $result = [];
         $options = $this->getItem()->getOrderItem()->getProductOptions();
         if ($options) {
             if (isset($options['options'])) {
-                $result[] = $options['options'];
+                $result = array_merge($result, $options['options']);
             }
             if (isset($options['additional_options'])) {
-                $result[] = $options['additional_options'];
+                $result = array_merge($result, $options['additional_options']);
             }
             if (isset($options['attributes_info'])) {
-                $result[] = $options['attributes_info'];
+                $result = array_merge($result, $options['attributes_info']);
             }
         }
-        return array_merge(...$result);
+        return $result;
     }
 
     /**

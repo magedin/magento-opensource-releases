@@ -3,34 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Grid;
 
-use Magento\Framework\Registry;
-use Magento\Sales\Model\Grid\CollectionUpdater;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CollectionUpdaterTest extends TestCase
+class CollectionUpdaterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CollectionUpdater
+     * @var \Magento\Sales\Model\Grid\CollectionUpdater
      */
     protected $collectionUpdater;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->registryMock = $this->createMock(Registry::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
 
-        $this->collectionUpdater = new CollectionUpdater(
+        $this->collectionUpdater = new \Magento\Sales\Model\Grid\CollectionUpdater(
             $this->registryMock
         );
     }
@@ -38,38 +30,40 @@ class CollectionUpdaterTest extends TestCase
     public function testUpdateIfOrderNotExists()
     {
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection::class
         );
         $this->registryMock
             ->expects($this->once())
             ->method('registry')
             ->with('current_order')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $collectionMock->expects($this->never())->method('setOrderFilter');
         $collectionMock
             ->expects($this->once())
             ->method('addOrderInformation')
-            ->with(['increment_id'])->willReturnSelf();
+            ->with(['increment_id'])
+            ->will($this->returnSelf());
         $this->assertEquals($collectionMock, $this->collectionUpdater->update($collectionMock));
     }
 
     public function testUpdateIfOrderExists()
     {
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection::class
         );
-        $orderMock = $this->createMock(Order::class);
+        $orderMock = $this->createMock(\Magento\Sales\Model\Order::class);
         $this->registryMock
             ->expects($this->once())
             ->method('registry')
             ->with('current_order')
-            ->willReturn($orderMock);
-        $orderMock->expects($this->once())->method('getId')->willReturn('orderId');
-        $collectionMock->expects($this->once())->method('setOrderFilter')->with('orderId')->willReturnSelf();
+            ->will($this->returnValue($orderMock));
+        $orderMock->expects($this->once())->method('getId')->will($this->returnValue('orderId'));
+        $collectionMock->expects($this->once())->method('setOrderFilter')->with('orderId')->will($this->returnSelf());
         $collectionMock
             ->expects($this->once())
             ->method('addOrderInformation')
-            ->with(['increment_id'])->willReturnSelf();
+            ->with(['increment_id'])
+            ->will($this->returnSelf());
         $this->assertEquals($collectionMock, $this->collectionUpdater->update($collectionMock));
     }
 }

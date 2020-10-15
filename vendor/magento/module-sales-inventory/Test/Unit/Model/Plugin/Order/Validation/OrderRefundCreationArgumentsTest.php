@@ -3,22 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesInventory\Test\Unit\Model\Plugin\Order\Validation;
 
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
-use Magento\Sales\Api\Data\CreditmemoInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Validation\RefundOrderInterface;
-use Magento\Sales\Model\ValidatorResultInterface;
 use Magento\SalesInventory\Model\Order\ReturnValidator;
 use Magento\SalesInventory\Model\Plugin\Order\Validation\OrderRefundCreationArguments;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Sales\Model\Order\Validation\RefundOrderInterface;
+use Magento\Sales\Model\ValidatorResultInterface;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 
-class OrderRefundCreationArgumentsTest extends TestCase
+/**
+ * Class OrderRefundCreationArgumentsTest
+ */
+class OrderRefundCreationArgumentsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderRefundCreationArguments
@@ -26,41 +25,41 @@ class OrderRefundCreationArgumentsTest extends TestCase
     private $plugin;
 
     /**
-     * @var ReturnValidator|MockObject
+     * @var ReturnValidator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $returnValidatorMock;
 
     /**
-     * @var CreditmemoCreationArgumentsExtensionInterface|MockObject
+     * @var CreditmemoCreationArgumentsExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionAttributesMock;
 
     /**
-     * @var CreditmemoCreationArgumentsInterface|MockObject
+     * @var CreditmemoCreationArgumentsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoCreationArgumentsMock;
 
     /**
-     * @var RefundOrderInterface|MockObject
+     * @var RefundOrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $refundOrderValidatorMock;
 
     /**
-     * @var ValidatorResultInterface|MockObject
+     * @var ValidatorResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validateResultMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var CreditmemoInterface|MockObject
+     * @var CreditmemoInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->returnValidatorMock = $this->getMockBuilder(ReturnValidator::class)
             ->disableOriginalConstructor()
@@ -68,7 +67,7 @@ class OrderRefundCreationArgumentsTest extends TestCase
 
         $this->creditmemoCreationArgumentsMock = $this->getMockBuilder(CreditmemoCreationArgumentsInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->extensionAttributesMock = $this->getMockBuilder(CreditmemoCreationArgumentsExtensionInterface::class)
             ->setMethods(['getReturnToStockItems'])
@@ -77,19 +76,19 @@ class OrderRefundCreationArgumentsTest extends TestCase
 
         $this->validateResultMock = $this->getMockBuilder(ValidatorResultInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->refundOrderValidatorMock = $this->getMockBuilder(RefundOrderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->orderMock = $this->getMockBuilder(OrderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->creditmemoMock = $this->getMockBuilder(CreditmemoInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->plugin = new OrderRefundCreationArguments($this->returnValidatorMock);
     }

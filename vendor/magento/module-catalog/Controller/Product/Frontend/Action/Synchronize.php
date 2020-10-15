@@ -7,13 +7,12 @@ namespace Magento\Catalog\Controller\Product\Frontend\Action;
 
 use Magento\Catalog\Model\Product\ProductFrontendAction\Synchronizer;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 
 /**
  * Synchronizes Product Frontend Actions with database
  */
-class Synchronize extends \Magento\Framework\App\Action\Action implements HttpPostActionInterface
+class Synchronize extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var Context
@@ -47,8 +46,6 @@ class Synchronize extends \Magento\Framework\App\Action\Action implements HttpPo
     }
 
     /**
-     * @inheritDoc
-     *
      * This is handle for synchronizing between frontend and backend product actions:
      *  - visit product page (recently_viewed)
      *  - compare products (recently_compared)
@@ -60,6 +57,9 @@ class Synchronize extends \Magento\Framework\App\Action\Action implements HttpPo
      *      'added_at' => "JS_TIMESTAMP"
      *  ]
      * ]
+     *
+     *
+     * @inheritdoc
      */
     public function execute()
     {
@@ -71,8 +71,8 @@ class Synchronize extends \Magento\Framework\App\Action\Action implements HttpPo
             $this->synchronizer->syncActions($productsData, $typeId);
         } catch (\Exception $e) {
             $resultJson->setStatusHeader(
-                \Laminas\Http\Response::STATUS_CODE_400,
-                \Laminas\Http\AbstractMessage::VERSION_11,
+                \Zend\Http\Response::STATUS_CODE_400,
+                \Zend\Http\AbstractMessage::VERSION_11,
                 'Bad Request'
             );
         }

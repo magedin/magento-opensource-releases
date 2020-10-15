@@ -3,19 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit;
 
 use Magento\Framework\App\Config\Reader\Source\SourceInterface;
+use Magento\Framework\App\Config\Scope\Converter;
 use Magento\Framework\Config\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Stdlib\ArrayUtils;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
@@ -24,7 +22,7 @@ class ReaderTest extends TestCase
      */
     private $reader;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->source = $this->getMockBuilder(SourceInterface::class)
             ->getMockForAbstractClass();

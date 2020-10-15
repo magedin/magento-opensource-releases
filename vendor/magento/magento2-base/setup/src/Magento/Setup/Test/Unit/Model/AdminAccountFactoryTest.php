@@ -3,36 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Encryption\Encryptor;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Setup\Model\AdminAccount;
-use Magento\Setup\Model\AdminAccountFactory;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Model\AdminAccountFactory;
 
-class AdminAccountFactoryTest extends TestCase
+class AdminAccountFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
         $serviceLocatorMock =
-            $this->getMockBuilder(ServiceLocatorInterface::class)
-                ->onlyMethods(['get'])
-                ->getMockForAbstractClass();
+            $this->getMockForAbstractClass(\Zend\ServiceManager\ServiceLocatorInterface::class, ['get']);
         $serviceLocatorMock
             ->expects($this->once())
             ->method('get')
-            ->with(Encryptor::class)
-            ->willReturn($this->getMockForAbstractClass(EncryptorInterface::class));
+            ->with(\Magento\Framework\Encryption\Encryptor::class)
+            ->willReturn($this->getMockForAbstractClass(\Magento\Framework\Encryption\EncryptorInterface::class));
         $adminAccountFactory = new AdminAccountFactory($serviceLocatorMock);
         $adminAccount = $adminAccountFactory->create(
-            $this->getMockForAbstractClass(AdapterInterface::class),
+            $this->getMockForAbstractClass(\Magento\Framework\DB\Adapter\AdapterInterface::class),
             []
         );
-        $this->assertInstanceOf(AdminAccount::class, $adminAccount);
+        $this->assertInstanceOf(\Magento\Setup\Model\AdminAccount::class, $adminAccount);
     }
 }

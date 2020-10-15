@@ -1,20 +1,16 @@
-<?php declare(strict_types=1);
-
-use Magento\Catalog\Block\Product\NewProduct;
-use Magento\CatalogSearch\Block\Result;
-use Magento\Framework\Module\Setup\Migration;
-
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 return [
     '$replaceRules' => [
         [
             'table',
             'field',
-            Migration::ENTITY_TYPE_BLOCK,
-            Migration::FIELD_CONTENT_TYPE_XML,
+            \Magento\Framework\Module\Setup\Migration::ENTITY_TYPE_BLOCK,
+            \Magento\Framework\Module\Setup\Migration::FIELD_CONTENT_TYPE_XML,
         ],
     ],
     '$tableData' => [
@@ -38,9 +34,9 @@ return [
             ],
         ],
         'aliases_map' => [
-            Migration::ENTITY_TYPE_BLOCK => [
-                'catalog/product_newProduct' => NewProduct::class,
-                'catalogSearch/result' => Result::class,
+            \Magento\Framework\Module\Setup\Migration::ENTITY_TYPE_BLOCK => [
+                'catalog/product_newProduct' => \Magento\Catalog\Block\Product\NewProduct::class,
+                'catalogSearch/result' => \Magento\CatalogSearch\Block\Result::class,
             ],
         ],
     ]

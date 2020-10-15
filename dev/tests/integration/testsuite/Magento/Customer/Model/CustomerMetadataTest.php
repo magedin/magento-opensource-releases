@@ -27,7 +27,7 @@ class CustomerMetadataTest extends \PHPUnit\Framework\TestCase
      */
     private $extensibleDataObjectConverter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         CacheCleaner::cleanAll();
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -384,7 +384,7 @@ class CustomerMetadataTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

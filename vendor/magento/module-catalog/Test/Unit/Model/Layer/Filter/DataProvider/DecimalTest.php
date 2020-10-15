@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer\Filter\DataProvider;
 
-use Magento\Catalog\Model\Layer\Filter\FilterInterface;
-use Magento\Catalog\Model\ResourceModel\Layer\Filter\Decimal;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test for \Magento\Catalog\Model\Layer\Filter\DataProvider\Decimal
  */
-class DecimalTest extends TestCase
+class DecimalTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  FilterInterface|MockObject */
+    /** @var  \Magento\Catalog\Model\Layer\Filter\FilterInterface|MockObject */
     private $filter;
 
-    /** @var  Decimal|MockObject */
+    /** @var  \Magento\Catalog\Model\ResourceModel\Layer\Filter\Decimal|MockObject */
     private $resource;
 
     /**
@@ -29,13 +25,13 @@ class DecimalTest extends TestCase
      */
     private $target;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->filter = $this->getMockBuilder(FilterInterface::class)
+        $this->filter = $this->getMockBuilder(\Magento\Catalog\Model\Layer\Filter\FilterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMockForAbstractClass();
-        $this->resource = $this->getMockBuilder(Decimal::class)
+        $this->resource = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Layer\Filter\Decimal::class)
             ->disableOriginalConstructor()
             ->setMethods(['getMinMax', 'getCount'])
             ->getMock();
@@ -53,7 +49,7 @@ class DecimalTest extends TestCase
         $this->resource->expects($this->once())
             ->method('getMinMax')
             ->with($this->filter)
-            ->willReturn([10, 20]);
+            ->will($this->returnValue([10, 20]));
         $max = $this->target->getMaxValue($this->filter);
         $this->assertSame(20, $max);
     }
@@ -63,7 +59,7 @@ class DecimalTest extends TestCase
         $this->resource->expects($this->once())
             ->method('getMinMax')
             ->with($this->filter)
-            ->willReturn([50, 220]);
+            ->will($this->returnValue([50, 220]));
         $min = $this->target->getMinValue($this->filter);
         $this->assertSame(50, $min);
     }
@@ -74,7 +70,7 @@ class DecimalTest extends TestCase
         $this->resource->expects($this->once())
             ->method('getCount')
             ->with($this->filter, $range)
-            ->willReturn(350);
+            ->will($this->returnValue(350));
         $this->assertSame(350, $this->target->getRangeItemCounts($range, $this->filter));
     }
 
@@ -83,7 +79,7 @@ class DecimalTest extends TestCase
         $this->resource->expects($this->once())
             ->method('getMinMax')
             ->with($this->filter)
-            ->willReturn([74, 147]);
+            ->will($this->returnValue([74, 147]));
         $range = $this->target->getRange($this->filter);
         $this->assertSame(10, $range);
     }

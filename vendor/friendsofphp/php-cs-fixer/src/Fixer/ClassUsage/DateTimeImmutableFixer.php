@@ -102,9 +102,10 @@ final class DateTimeImmutableFixer extends AbstractFixer
     }
 
     /**
-     * @param int  $index
-     * @param bool $isInNamespace
-     * @param bool $isImported
+     * @param Tokens $tokens
+     * @param int    $index
+     * @param bool   $isInNamespace
+     * @param bool   $isImported
      */
     private function fixClassUsage(Tokens $tokens, $index, $isInNamespace, $isImported)
     {
@@ -141,6 +142,7 @@ final class DateTimeImmutableFixer extends AbstractFixer
     }
 
     /**
+     * @param Tokens $tokens
      * @param int    $index
      * @param string $replacement
      */

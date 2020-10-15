@@ -25,22 +25,23 @@
 
         <after>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <actionGroup ref="logout" stepKey="adminLogout"/>
         </after>
 
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
         <!-- Create a configurable product via the UI -->
-        <actionGroup ref="CreateConfigurableProductActionGroup" stepKey="createProduct">
+        <actionGroup ref="createConfigurableProduct" stepKey="createProduct">
             <argument name="product" value="BaseConfigurableProduct"/>
             <argument name="category" value="$$createCategory$$"/>
         </actionGroup>
         <!--Add custom option to configurable product-->
-        <actionGroup ref="AddProductCustomOptionFileActionGroup" stepKey="addCustomOptionToProduct"/>
+        <actionGroup ref="AddProductCustomOptionFile" stepKey="addCustomOptionToProduct"/>
         <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveProduct"/>
-
+        
         <!--Go to storefront-->
-        <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToHomePage"/>
+        <amOnPage url="{{StorefrontHomePage.url}}" stepKey="goToHomePage"/>
+        <waitForPageLoad stepKey="waitForHomePageLoad"/>
         <click selector="{{StorefrontNavigationSection.topCategory($$createCategory.name$$)}}" stepKey="goToCategoryStorefront"/>
         <waitForPageLoad stepKey="waitForCategoryPageLoad"/>
         <see selector="{{StorefrontCategoryMainSection.CategoryTitle}}" userInput="$$createCategory.name$$" stepKey="seeOnCategoryPage"/>
@@ -65,7 +66,8 @@
         <see selector="{{StorefrontProductPageSection.messagesBlock}}" userInput="You added {{BaseConfigurableProduct.name}} to your shopping cart." stepKey="seeSuccessMessage"/>
 
         <!--Check item in cart-->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="goToCart"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCart"/>
+        <waitForPageLoad stepKey="waitForCartPageLoad"/>
         <seeElement selector="{{CheckoutCartProductSection.ProductLinkByName(BaseConfigurableProduct.name)}}" stepKey="seeProductInCart"/>
         <see selector="{{CheckoutCartProductSection.ProductOptionByNameAndAttribute(BaseConfigurableProduct.name, colorProductAttribute.default_label)}}" userInput="{{colorProductAttribute2.name}}" stepKey="seeSelectedOption"/>
         <see selector="{{CheckoutCartProductSection.ProductOptionByNameAndAttribute(BaseConfigurableProduct.name, ProductOptionFile.title)}}" userInput="{{MagentoLogo.file}}" stepKey="seeCorrectOptionFile"/>

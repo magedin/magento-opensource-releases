@@ -12,7 +12,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $resourceModel = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->get(\Magento\Framework\App\ResourceConnection::class);
@@ -35,10 +35,10 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
             $this->any()
         )->method(
             'getMainTable'
-        )->willReturn(
-            $resource->getTable('store_website')
+        )->will(
+            $this->returnValue($resource->getTable('store_website'))
         );
-        $resource->expects($this->any())->method('getIdFieldName')->willReturn('website_id');
+        $resource->expects($this->any())->method('getIdFieldName')->will($this->returnValue('website_id'));
 
         $fetchStrategy = $this->getMockForAbstractClass(
             \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class

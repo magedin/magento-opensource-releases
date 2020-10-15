@@ -3,29 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model\Cart\SalesModel;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Payment\Model\Cart\SalesModel\Factory;
-use Magento\Quote\Model\Quote;
-use Magento\Sales\Model\Order;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Factory */
+    /** @var \Magento\Payment\Model\Cart\SalesModel\Factory */
     protected $_model;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $_objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_model = new Factory($this->_objectManagerMock);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_model = new \Magento\Payment\Model\Cart\SalesModel\Factory($this->_objectManagerMock);
     }
 
     /**
@@ -35,13 +26,17 @@ class FactoryTest extends TestCase
      */
     public function testCreate($salesModelClass, $expectedType)
     {
-        $salesModel = $this->getMockBuilder($salesModelClass)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_objectManagerMock->expects($this->once())
-            ->method('create')
-            ->with($expectedType, ['salesModel' => $salesModel])
-            ->willReturn('some value');
+        $salesModel = $this->createPartialMock($salesModelClass, ['__wakeup']);
+        $this->_objectManagerMock->expects(
+            $this->once()
+        )->method(
+            'create'
+        )->with(
+            $expectedType,
+            ['salesModel' => $salesModel]
+        )->will(
+            $this->returnValue('some value')
+        );
         $this->assertEquals('some value', $this->_model->create($salesModel));
     }
 
@@ -51,14 +46,16 @@ class FactoryTest extends TestCase
     public function createDataProvider()
     {
         return [
-            [Quote::class, \Magento\Payment\Model\Cart\SalesModel\Quote::class],
-            [Order::class, \Magento\Payment\Model\Cart\SalesModel\Order::class]
+            [\Magento\Quote\Model\Quote::class, \Magento\Payment\Model\Cart\SalesModel\Quote::class],
+            [\Magento\Sales\Model\Order::class, \Magento\Payment\Model\Cart\SalesModel\Order::class]
         ];
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateInvalid()
     {
-        $this->expectException(\InvalidArgumentException::class);
         $this->_model->create('any invalid');
     }
 }

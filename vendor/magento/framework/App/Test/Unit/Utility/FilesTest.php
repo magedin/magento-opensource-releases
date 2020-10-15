@@ -3,32 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Utility;
 
 use Magento\Framework\App\Utility\Files;
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\DirSearch;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Utility/Files class.
  *
+ * @package Magento\Framework\App\Test\Unit\Utility
  */
-class FilesTest extends TestCase
+class FilesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DirSearch|MockObject
+     * @var \Magento\Framework\Component\DirSearch|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dirSearchMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->dirSearchMock = $this->createMock(DirSearch::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->dirSearchMock = $this->createMock(\Magento\Framework\Component\DirSearch::class);
         $fileUtilities = $objectManager->getObject(
             Files::class,
             [
@@ -38,7 +33,7 @@ class FilesTest extends TestCase
         Files::setInstance($fileUtilities);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Files::setInstance();
     }

@@ -3,48 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Scanner;
 
-use Magento\Framework\App\AreaList;
-use Magento\Framework\App\Config\FileResolver;
-use Magento\Framework\Config\FileIterator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigurationScannerTest extends TestCase
+class ConfigurationScannerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FileResolver|MockObject
+     * @var \Magento\Framework\App\Config\FileResolver | \PHPUnit_Framework_MockObject_MockObject
      */
     private $fileResolverMock;
 
     /**
-     * @var AreaList|MockObject
+     * @var \Magento\Framework\App\AreaList | \PHPUnit_Framework_MockObject_MockObject
      */
     private $areaListMock;
 
     /**
-     * @var ConfigurationScanner
+     * @var \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->fileResolverMock = $this->getMockBuilder(FileResolver::class)
+        $this->fileResolverMock = $this->getMockBuilder(\Magento\Framework\App\Config\FileResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->areaListMock = $this->getMockBuilder(AreaList::class)
+        $this->areaListMock = $this->getMockBuilder(\Magento\Framework\App\AreaList::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            ConfigurationScanner::class,
+            \Magento\Setup\Module\Di\Code\Scanner\ConfigurationScanner::class,
             [
                 'fileResolver' => $this->fileResolverMock,
                 'areaList' => $this->areaListMock,
@@ -55,7 +45,7 @@ class ConfigurationScannerTest extends TestCase
     public function testScan()
     {
         $codes = ['code1', 'code2'];
-        $iteratorMock = $this->getMockBuilder(FileIterator::class)
+        $iteratorMock = $this->getMockBuilder(\Magento\Framework\Config\FileIterator::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->areaListMock->expects($this->once())

@@ -23,7 +23,7 @@ class RuleProductTest extends \PHPUnit\Framework\TestCase
      */
     protected $resourceRule;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->indexBuilder = Bootstrap::getObjectManager()->get(
             \Magento\CatalogRule\Model\Indexer\IndexBuilder::class

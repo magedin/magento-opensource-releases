@@ -12,11 +12,9 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Copier;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
-use Magento\Framework\Exception\InputException;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
 use Magento\InventoryApi\Api\SourceItemRepositoryInterface;
-use Magento\InventoryCatalogApi\Model\SourceItemsProcessorInterface;
-use Psr\Log\LoggerInterface;
+use Magento\InventoryCatalogAdminUi\Observer\SourceItemsProcessor;
 
 /**
  * Copies source items from the original product to the duplicate
@@ -34,36 +32,26 @@ class CopySourceItemsPlugin
     private $searchCriteriaBuilderFactory;
 
     /**
-     * @var SourceItemsProcessorInterface
+     * @var SourceItemsProcessor
      */
     private $sourceItemsProcessor;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param SourceItemRepositoryInterface $sourceItemRepository
      * @param SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory
-     * @param SourceItemsProcessorInterface $sourceItemsProcessor
-     * @param LoggerInterface $logger
+     * @param SourceItemsProcessor $sourceItemsProcessor
      */
     public function __construct(
         SourceItemRepositoryInterface $sourceItemRepository,
         SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory,
-        SourceItemsProcessorInterface $sourceItemsProcessor,
-        LoggerInterface $logger
+        SourceItemsProcessor $sourceItemsProcessor
     ) {
         $this->sourceItemRepository = $sourceItemRepository;
         $this->searchCriteriaBuilderFactory = $searchCriteriaBuilderFactory;
         $this->sourceItemsProcessor = $sourceItemsProcessor;
-        $this->logger = $logger;
     }
 
     /**
-     * Copy source items after product has been copied.
-     *
      * @param Copier $subject
      * @param Product $result
      * @param Product $product
@@ -82,8 +70,6 @@ class CopySourceItemsPlugin
     }
 
     /**
-     * Retrieve source items for given product sku.
-     *
      * @param string $sku
      * @return array
      */
@@ -98,13 +84,10 @@ class CopySourceItemsPlugin
     }
 
     /**
-     * Copy source items from original product to copy.
-     *
      * @param string $originalSku
      * @param string $duplicateSku
-     * @return void
      */
-    private function copySourceItems(string $originalSku, string $duplicateSku): void
+    private function copySourceItems(string $originalSku, string $duplicateSku)
     {
         $sourceItems = $this->getSourceItems($originalSku);
 
@@ -115,18 +98,14 @@ class CopySourceItemsPlugin
                     SourceItemInterface::SKU => $duplicateSku,
                     SourceItemInterface::SOURCE_CODE => $sourceItem->getSourceCode(),
                     SourceItemInterface::QUANTITY => $sourceItem->getQuantity(),
-                    SourceItemInterface::STATUS => $sourceItem->getStatus(),
+                    SourceItemInterface::STATUS => $sourceItem->getStatus()
                 ];
             }
         }
 
-        try {
-            $this->sourceItemsProcessor->execute(
-                (string)$duplicateSku,
-                $duplicateItemData
-            );
-        } catch (InputException $e) {
-            $this->logger->error($e->getLogMessage());
-        }
+        $this->sourceItemsProcessor->process(
+            $duplicateSku,
+            $duplicateItemData
+        );
     }
 }

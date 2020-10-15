@@ -3,53 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model;
 
-use Magento\Framework\Indexer\ConfigInterface;
 use Magento\Framework\Indexer\IndexerInterfaceFactory;
 use Magento\Framework\Indexer\StateInterface;
-use Magento\Framework\Mview\ProcessorInterface;
-use Magento\Indexer\Model\Indexer;
-use Magento\Indexer\Model\Indexer\Collection;
-use Magento\Indexer\Model\Indexer\CollectionFactory;
-use Magento\Indexer\Model\Indexer\State;
-use Magento\Indexer\Model\Processor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Indexer\Model\Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\Indexer\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var IndexerInterfaceFactory|MockObject
+     * @var IndexerInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerFactoryMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Indexer\Model\Indexer\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexersFactoryMock;
 
     /**
-     * @var ProcessorInterface|MockObject
+     * @var \Magento\Framework\Mview\ProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewProcessorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configMock = $this->getMockForAbstractClass(
-            ConfigInterface::class,
+            \Magento\Framework\Indexer\ConfigInterface::class,
             [],
             '',
             false,
@@ -62,16 +51,16 @@ class ProcessorTest extends TestCase
             ['create']
         );
         $this->indexersFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Indexer\Model\Indexer\CollectionFactory::class,
             ['create']
         );
         $this->viewProcessorMock = $this->getMockForAbstractClass(
-            ProcessorInterface::class,
+            \Magento\Framework\Mview\ProcessorInterface::class,
             [],
             '',
             false
         );
-        $this->model = new Processor(
+        $this->model = new \Magento\Indexer\Model\Processor(
             $this->configMock,
             $this->indexerFactoryMock,
             $this->indexersFactoryMock,
@@ -83,53 +72,53 @@ class ProcessorTest extends TestCase
     {
         $indexers = ['indexer1' => [], 'indexer2' => []];
 
-        $this->configMock->expects($this->once())->method('getIndexers')->willReturn($indexers);
+        $this->configMock->expects($this->once())->method('getIndexers')->will($this->returnValue($indexers));
 
-        $state1Mock = $this->createPartialMock(State::class, ['getStatus', '__wakeup']);
+        $state1Mock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['getStatus', '__wakeup']);
         $state1Mock->expects(
             $this->once()
         )->method(
             'getStatus'
-        )->willReturn(
-            StateInterface::STATUS_INVALID
+        )->will(
+            $this->returnValue(StateInterface::STATUS_INVALID)
         );
         $indexer1Mock = $this->createPartialMock(
-            Indexer::class,
+            \Magento\Indexer\Model\Indexer::class,
             ['load', 'getState', 'reindexAll']
         );
-        $indexer1Mock->expects($this->once())->method('getState')->willReturn($state1Mock);
+        $indexer1Mock->expects($this->once())->method('getState')->will($this->returnValue($state1Mock));
         $indexer1Mock->expects($this->once())->method('reindexAll');
 
-        $state2Mock = $this->createPartialMock(State::class, ['getStatus', '__wakeup']);
+        $state2Mock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['getStatus', '__wakeup']);
         $state2Mock->expects(
             $this->once()
         )->method(
             'getStatus'
-        )->willReturn(
-            StateInterface::STATUS_VALID
+        )->will(
+            $this->returnValue(StateInterface::STATUS_VALID)
         );
         $indexer2Mock = $this->createPartialMock(
-            Indexer::class,
+            \Magento\Indexer\Model\Indexer::class,
             ['load', 'getState', 'reindexAll']
         );
         $indexer2Mock->expects($this->never())->method('reindexAll');
-        $indexer2Mock->expects($this->once())->method('getState')->willReturn($state2Mock);
+        $indexer2Mock->expects($this->once())->method('getState')->will($this->returnValue($state2Mock));
 
-        $this->indexerFactoryMock->expects($this->at(0))->method('create')->willReturn($indexer1Mock);
-        $this->indexerFactoryMock->expects($this->at(1))->method('create')->willReturn($indexer2Mock);
+        $this->indexerFactoryMock->expects($this->at(0))->method('create')->will($this->returnValue($indexer1Mock));
+        $this->indexerFactoryMock->expects($this->at(1))->method('create')->will($this->returnValue($indexer2Mock));
 
         $this->model->reindexAllInvalid();
     }
 
     public function testReindexAll()
     {
-        $indexerMock = $this->createMock(Indexer::class);
+        $indexerMock = $this->createMock(\Magento\Indexer\Model\Indexer::class);
         $indexerMock->expects($this->exactly(2))->method('reindexAll');
         $indexers = [$indexerMock, $indexerMock];
 
-        $indexersMock = $this->createMock(Collection::class);
-        $this->indexersFactoryMock->expects($this->once())->method('create')->willReturn($indexersMock);
-        $indexersMock->expects($this->once())->method('getItems')->willReturn($indexers);
+        $indexersMock = $this->createMock(\Magento\Indexer\Model\Indexer\Collection::class);
+        $this->indexersFactoryMock->expects($this->once())->method('create')->will($this->returnValue($indexersMock));
+        $indexersMock->expects($this->once())->method('getItems')->will($this->returnValue($indexers));
 
         $this->model->reindexAll();
     }

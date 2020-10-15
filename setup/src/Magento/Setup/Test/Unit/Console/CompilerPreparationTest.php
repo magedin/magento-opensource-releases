@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console;
 
-use Laminas\ServiceManager\ServiceManager;
 use Magento\Framework\Console\GenerationDirectoryAccess;
-use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Console\Command\DiCompileCommand;
-use Magento\Setup\Console\CompilerPreparation;
 use Magento\Setup\Mvc\Bootstrap\InitParamListener;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Filesystem\Driver\File;
 use Symfony\Component\Console\Input\ArgvInput;
+use Zend\ServiceManager\ServiceManager;
+use Magento\Setup\Console\CompilerPreparation;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
-class CompilerPreparationTest extends TestCase
+class CompilerPreparationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompilerPreparation|Mock
@@ -48,7 +45,7 @@ class CompilerPreparationTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->serviceManagerMock = $this->getMockBuilder(ServiceManager::class)
             ->disableOriginalConstructor()
@@ -139,7 +136,25 @@ class CompilerPreparationTest extends TestCase
                 'commandName' => 'not:a:compiler',
                 'isCompileCommand' => false,
                 'isHelpOption' => false,
-            ]
+            ],
+            'ST compiler, directory exists, abbreviation 1' => [
+                'commandName' => 's:d:c',
+                'isCompileCommand' => true,
+                'isHelpOption' => false,
+                'dirExists' => true
+            ],
+            'ST compiler, directory exists, abbreviation 2' => [
+                'commandName' => 'se:di:co',
+                'isCompileCommand' => true,
+                'isHelpOption' => false,
+                'dirExists' => true
+            ],
+            'ST compiler, directory exists, abbreviation ambiguous' => [
+                'commandName' => 'se:di',
+                'isCompileCommand' => false,
+                'isHelpOption' => false,
+                'dirExists' => true
+            ],
         ];
     }
 

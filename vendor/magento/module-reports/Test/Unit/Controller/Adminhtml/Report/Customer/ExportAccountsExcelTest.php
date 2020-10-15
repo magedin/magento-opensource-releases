@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Customer;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Reports\Controller\Adminhtml\Report\Customer\ExportAccountsExcel;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
 
-class ExportAccountsExcelTest extends AbstractControllerTest
+class ExportAccountsExcelTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportAccountsExcel
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Customer\ExportAccountsExcel
      */
     protected $exportAccountsExcel;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -47,7 +44,7 @@ class ExportAccountsExcelTest extends AbstractControllerTest
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with('new_accounts.xml', ['export'], DirectoryList::VAR_DIR);
+            ->with('new_accounts.xml', ['export'], \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
         $this->exportAccountsExcel->execute();
     }
 }

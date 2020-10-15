@@ -7,11 +7,9 @@
 namespace Magento\Ui\Model;
 
 use ArrayObject;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Data\Argument\InterpreterInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\View\Element\UiComponent\ArrayObjectFactory;
 use Magento\Framework\View\Element\UiComponent\Config\Converter;
 use Magento\Framework\View\Element\UiComponent\Config\DomMergerInterface;
@@ -20,10 +18,11 @@ use Magento\Framework\View\Element\UiComponent\Config\ManagerInterface;
 use Magento\Framework\View\Element\UiComponent\Config\Provider\Component\Definition as ComponentDefinition;
 use Magento\Framework\View\Element\UiComponent\Config\ReaderFactory;
 use Magento\Framework\View\Element\UiComponent\Config\UiReaderInterface;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\App\ObjectManager;
 
 /**
- * @inheritdoc
- *
+ * Class Manager
  * @deprecated 101.0.0
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -314,7 +313,6 @@ class Manager implements ManagerInterface
             // Create inner components
             foreach ($component as $subComponentName => $subComponent) {
                 if (is_array($subComponent)) {
-                    // phpcs:ignore Magento2.Performance.ForeachArrayMerge
                     $resultConfiguration[ManagerInterface::CHILDREN_KEY] = array_merge(
                         $resultConfiguration[ManagerInterface::CHILDREN_KEY],
                         $this->createDataForComponent($subComponentName, $subComponent)
@@ -388,7 +386,8 @@ class Manager implements ManagerInterface
      */
     protected function createName(array $componentData, $key, $componentName)
     {
-        return $componentData[Converter::DATA_ATTRIBUTES_KEY][Converter::NAME_ATTRIBUTE_KEY]
-            ?? sprintf(ManagerInterface::ANONYMOUS_TEMPLATE, $componentName, $key);
+        return isset($componentData[Converter::DATA_ATTRIBUTES_KEY][Converter::NAME_ATTRIBUTE_KEY])
+            ? $componentData[Converter::DATA_ATTRIBUTES_KEY][Converter::NAME_ATTRIBUTE_KEY]
+            : sprintf(ManagerInterface::ANONYMOUS_TEMPLATE, $componentName, $key);
     }
 }

@@ -64,14 +64,8 @@ class PageDesignTest extends AbstractBackendController
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        Bootstrap::getObjectManager()->configure([
-            'preferences' => [
-                \Magento\Cms\Model\Page\CustomLayoutManagerInterface::class =>
-                    \Magento\TestFramework\Cms\Model\CustomLayoutManager::class
-            ]
-        ]);
         parent::setUp();
 
         $this->aclBuilder = Bootstrap::getObjectManager()->get(Builder::class);
@@ -82,7 +76,7 @@ class PageDesignTest extends AbstractBackendController
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
 

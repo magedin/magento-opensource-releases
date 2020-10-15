@@ -3,23 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Account;
-
-use Magento\Customer\Block\Account\AuthorizationLink;
-use Magento\Customer\Model\Url;
-use Magento\Framework\App\Http\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Customer\Block\Account\AuthorizationLink
  */
-class AuthorizationLinkTest extends TestCase
+class AuthorizationLinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectManager;
 
@@ -29,30 +21,30 @@ class AuthorizationLinkTest extends TestCase
     protected $httpContext;
 
     /**
-     * @var Url
+     * @var \Magento\Customer\Model\Url
      */
     protected $_customerUrl;
 
     /**
-     * @var AuthorizationLink
+     * @var \Magento\Customer\Block\Account\AuthorizationLink
      */
     protected $_block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = new ObjectManager($this);
-        $this->httpContext = $this->getMockBuilder(Context::class)
+        $this->_objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->httpContext = $this->getMockBuilder(\Magento\Framework\App\Http\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
-        $this->_customerUrl = $this->getMockBuilder(Url::class)
+        $this->_customerUrl = $this->getMockBuilder(\Magento\Customer\Model\Url::class)
             ->disableOriginalConstructor()
             ->setMethods(['getLogoutUrl', 'getLoginUrl'])
             ->getMock();
 
         $context = $this->_objectManager->getObject(\Magento\Framework\View\Element\Template\Context::class);
         $this->_block = $this->_objectManager->getObject(
-            AuthorizationLink::class,
+            \Magento\Customer\Block\Account\AuthorizationLink::class,
             [
                 'context' => $context,
                 'httpContext' => $this->httpContext,
@@ -65,7 +57,7 @@ class AuthorizationLinkTest extends TestCase
     {
         $this->httpContext->expects($this->once())
             ->method('getValue')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->assertEquals('Sign Out', $this->_block->getLabel());
     }
@@ -74,7 +66,7 @@ class AuthorizationLinkTest extends TestCase
     {
         $this->httpContext->expects($this->once())
             ->method('getValue')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->assertEquals('Sign In', $this->_block->getLabel());
     }
@@ -83,9 +75,9 @@ class AuthorizationLinkTest extends TestCase
     {
         $this->httpContext->expects($this->once())
             ->method('getValue')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
-        $this->_customerUrl->expects($this->once())->method('getLogoutUrl')->willReturn('logout url');
+        $this->_customerUrl->expects($this->once())->method('getLogoutUrl')->will($this->returnValue('logout url'));
 
         $this->assertEquals('logout url', $this->_block->getHref());
     }
@@ -94,9 +86,9 @@ class AuthorizationLinkTest extends TestCase
     {
         $this->httpContext->expects($this->once())
             ->method('getValue')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
-        $this->_customerUrl->expects($this->once())->method('getLoginUrl')->willReturn('login url');
+        $this->_customerUrl->expects($this->once())->method('getLoginUrl')->will($this->returnValue('login url'));
 
         $this->assertEquals('login url', $this->_block->getHref());
     }

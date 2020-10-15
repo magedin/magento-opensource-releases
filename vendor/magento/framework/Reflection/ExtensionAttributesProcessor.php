@@ -11,7 +11,7 @@ use Magento\Framework\Api\ExtensionAttribute\Config\Converter;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Api\ExtensionAttributesInterface;
-use Laminas\Code\Reflection\MethodReflection;
+use Zend\Code\Reflection\MethodReflection;
 
 /**
  * Processes extension attributes and produces an array for the data.
@@ -140,8 +140,6 @@ class ExtensionAttributesProcessor
     }
 
     /**
-     * Is attribute permissions valid
-     *
      * @param string $dataObjectType
      * @param string $attributeCode
      * @return bool
@@ -160,8 +158,6 @@ class ExtensionAttributesProcessor
     }
 
     /**
-     * Get regular type for extension attribute type
-     *
      * @param string $name
      * @return string
      */
@@ -171,8 +167,6 @@ class ExtensionAttributesProcessor
     }
 
     /**
-     * Get permissions for attribute type
-     *
      * @param string $typeName
      * @param string $attributeCode
      * @return string[] A list of permissions

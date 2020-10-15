@@ -21,7 +21,7 @@ class CartDiscountTest extends GraphQlAbstract
      */
     private $getMaskedQuoteIdByReservedOrderId;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -71,7 +71,7 @@ class CartDiscountTest extends GraphQlAbstract
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $query = $this->getQuery($maskedQuoteId);
         $response = $this->graphQlQuery($query);
-        self::assertNull($response['cart']['prices']['discount']);
+        self::assertEquals(null, $response['cart']['prices']['discount']);
     }
 
     /**

@@ -171,12 +171,13 @@ settype($bar, "null");
     }
 
     /**
-     * @param int $functionNameIndex
-     * @param int $openParenthesisIndex
-     * @param int $firstArgumentStart
-     * @param int $commaIndex
-     * @param int $secondArgumentStart
-     * @param int $closeParenthesisIndex
+     * @param Tokens $tokens
+     * @param int    $functionNameIndex
+     * @param int    $openParenthesisIndex
+     * @param int    $firstArgumentStart
+     * @param int    $commaIndex
+     * @param int    $secondArgumentStart
+     * @param int    $closeParenthesisIndex
      */
     private function removeSettypeCall(
         Tokens $tokens,
@@ -201,7 +202,10 @@ settype($bar, "null");
     }
 
     /**
-     * @param int $functionNameIndex
+     * @param Tokens $tokens
+     * @param Token  $castToken
+     * @param int    $functionNameIndex
+     * @param Token  $argumentToken
      */
     private function fixSettypeCall(
         Tokens $tokens,
@@ -226,7 +230,9 @@ settype($bar, "null");
     }
 
     /**
-     * @param int $functionNameIndex
+     * @param Tokens $tokens
+     * @param int    $functionNameIndex
+     * @param Token  $argumentToken
      */
     private function findSettypeNullCall(
         Tokens $tokens,

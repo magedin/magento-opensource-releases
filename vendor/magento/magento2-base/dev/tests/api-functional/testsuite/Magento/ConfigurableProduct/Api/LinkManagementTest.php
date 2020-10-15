@@ -35,7 +35,7 @@ class LinkManagementTest extends WebapiAbstract
     /**
      * Execute per test initialization
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->attributeRepository = $this->objectManager->get(\Magento\Eav\Model\AttributeRepository::class);
@@ -58,10 +58,10 @@ class LinkManagementTest extends WebapiAbstract
             $this->assertArrayHasKey('updated_at', $product);
 
             $this->assertArrayHasKey('name', $product);
-            $this->assertStringContainsString('Configurable Option', $product['name']);
+            $this->assertContains('Configurable Option', $product['name']);
 
             $this->assertArrayHasKey('sku', $product);
-            $this->assertStringContainsString('simple_', $product['sku']);
+            $this->assertContains('simple_', $product['sku']);
 
             $this->assertArrayHasKey('status', $product);
             $this->assertEquals('1', $product['status']);

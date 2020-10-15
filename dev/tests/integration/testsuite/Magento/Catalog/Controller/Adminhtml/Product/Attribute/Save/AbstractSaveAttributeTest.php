@@ -41,7 +41,7 @@ abstract class AbstractSaveAttributeTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->escaper = $this->_objectManager->get(Escaper::class);

@@ -3,23 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\NewRelicReporting\Test\Unit\Model\Cron;
 
-use Magento\NewRelicReporting\Model\Apm\Deployments;
-use Magento\NewRelicReporting\Model\Apm\DeploymentsFactory;
-use Magento\NewRelicReporting\Model\Config;
-use Magento\NewRelicReporting\Model\Counter;
 use Magento\NewRelicReporting\Model\Cron\ReportNewRelicCron;
-use Magento\NewRelicReporting\Model\CronEvent;
-use Magento\NewRelicReporting\Model\CronEventFactory;
-use Magento\NewRelicReporting\Model\Module\Collect;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class ReportNewRelicCronTest extends TestCase
+/**
+ * Class ReportNewRelicCronTest
+ */
+class ReportNewRelicCronTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReportNewRelicCron
@@ -27,42 +18,42 @@ class ReportNewRelicCronTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\NewRelicReporting\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Collect|MockObject
+     * @var \Magento\NewRelicReporting\Model\Module\Collect|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collect;
 
     /**
-     * @var Counter|MockObject
+     * @var \Magento\NewRelicReporting\Model\Counter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $counter;
 
     /**
-     * @var CronEventFactory|MockObject
+     * @var \Magento\NewRelicReporting\Model\CronEventFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cronEventFactory;
 
     /**
-     * @var CronEvent|MockObject
+     * @var \Magento\NewRelicReporting\Model\CronEvent|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cronEventModel;
 
     /**
-     * @var DeploymentsFactory|MockObject
+     * @var \Magento\NewRelicReporting\Model\Apm\DeploymentsFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $deploymentsFactory;
 
     /**
-     * @var Deployments|MockObject
+     * @var \Magento\NewRelicReporting\Model\Apm\Deployments|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $deploymentsModel;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $logger;
 
@@ -71,17 +62,17 @@ class ReportNewRelicCronTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isNewRelicEnabled'])
             ->getMock();
-        $this->collect = $this->getMockBuilder(Collect::class)
+        $this->collect = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Module\Collect::class)
             ->disableOriginalConstructor()
             ->setMethods(['getModuleData'])
             ->getMock();
-        $this->counter = $this->getMockBuilder(Counter::class)
+        $this->counter = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Counter::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getAllProductsCount',
@@ -93,20 +84,20 @@ class ReportNewRelicCronTest extends TestCase
                 'getCustomerCount',
             ])
             ->getMock();
-        $this->cronEventFactory = $this->getMockBuilder(CronEventFactory::class)
+        $this->cronEventFactory = $this->getMockBuilder(\Magento\NewRelicReporting\Model\CronEventFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->cronEventModel = $this->getMockBuilder(CronEvent::class)
+        $this->cronEventModel = $this->getMockBuilder(\Magento\NewRelicReporting\Model\CronEvent::class)
             ->disableOriginalConstructor()
             ->setMethods(['addData', 'sendRequest'])
             ->getMock();
         $this->deploymentsFactory = $this->getMockBuilder(
-            DeploymentsFactory::class
+            \Magento\NewRelicReporting\Model\Apm\DeploymentsFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->deploymentsModel = $this->getMockBuilder(Deployments::class)
+        $this->deploymentsModel = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Apm\Deployments::class)
             ->disableOriginalConstructor()
             ->setMethods(['setDeployment'])
             ->getMock();
@@ -117,7 +108,7 @@ class ReportNewRelicCronTest extends TestCase
         $this->deploymentsFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->deploymentsModel);
-        $this->logger = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->logger = $this->getMockForAbstractClass(\Psr\Log\LoggerInterface::class);
 
         $this->model = new ReportNewRelicCron(
             $this->config,
@@ -153,6 +144,7 @@ class ReportNewRelicCronTest extends TestCase
      */
     public function testReportNewRelicCron()
     {
+
         $this->config->expects($this->once())
             ->method('isNewRelicEnabled')
             ->willReturn(true);
@@ -187,10 +179,12 @@ class ReportNewRelicCronTest extends TestCase
 
     /**
      * Test case when module is enabled and request is failed
+     *
+     * @expectedException \Exception
      */
     public function testReportNewRelicCronRequestFailed()
     {
-        $this->expectException('Exception');
+
         $this->config->expects($this->once())
             ->method('isNewRelicEnabled')
             ->willReturn(true);

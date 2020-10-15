@@ -14,7 +14,7 @@ use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\View\LayoutInterface;
 
 /**
- * Plugin which adds an Adobe Stock search button to the media gallery tab
+ * Plugin which adds an Adobe Stock search button to the media пфддукн tab
  */
 class AddSearchButton
 {
@@ -52,6 +52,7 @@ class AddSearchButton
      *
      * @param Container $subject
      * @param LayoutInterface $layout
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function beforeSetLayout(Container $subject, LayoutInterface $layout): void

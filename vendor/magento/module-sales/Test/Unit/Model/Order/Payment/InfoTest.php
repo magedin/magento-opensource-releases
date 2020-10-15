@@ -3,23 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Payment;
 
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Payment\Helper\Data;
 use Magento\Payment\Model\Method;
-use Magento\Payment\Model\Method\Substitution;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Sales\Model\Order\Payment\Info;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-class InfoTest extends TestCase
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Sales\Model\Order\Payment\Info */
     protected $info;
@@ -27,33 +17,33 @@ class InfoTest extends TestCase
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $registryMock;
 
-    /** @var Data|MockObject */
+    /** @var \Magento\Payment\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $paymentHelperMock;
 
-    /** @var EncryptorInterface|MockObject */
+    /** @var \Magento\Framework\Encryption\EncryptorInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $encryptorInterfaceMock;
 
-    /** @var Data|MockObject */
+    /** @var \Magento\Payment\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $methodInstanceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->paymentHelperMock = $this->createPartialMock(Data::class, ['getMethodInstance']);
-        $this->encryptorInterfaceMock = $this->getMockForAbstractClass(EncryptorInterface::class);
-        $this->methodInstanceMock = $this->getMockBuilder(MethodInterface::class)
+        $this->contextMock = $this->createMock(\Magento\Framework\Model\Context::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->paymentHelperMock = $this->createPartialMock(\Magento\Payment\Helper\Data::class, ['getMethodInstance']);
+        $this->encryptorInterfaceMock = $this->createMock(\Magento\Framework\Encryption\EncryptorInterface::class);
+        $this->methodInstanceMock = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->getMockForAbstractClass();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->info = $this->objectManagerHelper->getObject(
-            Info::class,
+            \Magento\Sales\Model\Order\Payment\Info::class,
             [
                 'context' => $this->contextMock,
                 'registry' => $this->registryMock,
@@ -75,8 +65,8 @@ class InfoTest extends TestCase
 
         // we set encrypted data
         $this->info->setData($keyCcEnc, $keyCcEnc);
-        $this->encryptorInterfaceMock->expects($this->once())->method('decrypt')->with($keyCcEnc)->willReturn(
-            $keyCc
+        $this->encryptorInterfaceMock->expects($this->once())->method('decrypt')->with($keyCcEnc)->will(
+            $this->returnValue($keyCc)
         );
         $this->assertEquals($keyCc, $this->info->getData($keyCc));
     }
@@ -127,16 +117,18 @@ class InfoTest extends TestCase
 
         $this->paymentHelperMock->expects($this->at(1))
             ->method('getMethodInstance')
-            ->with(Substitution::CODE)
+            ->with(Method\Substitution::CODE)
             ->willReturn($this->methodInstanceMock);
 
         $this->info->getMethodInstance();
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The payment method you requested is not available.
+     */
     public function testGetMethodInstanceWithNoMethod()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The payment method you requested is not available.');
         $this->info->setData('method', false);
         $this->info->getMethodInstance();
     }
@@ -165,8 +157,8 @@ class InfoTest extends TestCase
         $data = 'data';
         $encryptedData = 'd1a2t3a4';
 
-        $this->encryptorInterfaceMock->expects($this->once())->method('encrypt')->with($data)->willReturn(
-            $encryptedData
+        $this->encryptorInterfaceMock->expects($this->once())->method('encrypt')->with($data)->will(
+            $this->returnValue($encryptedData)
         );
         $this->assertEquals($encryptedData, $this->info->encrypt($data));
     }
@@ -176,15 +168,17 @@ class InfoTest extends TestCase
         $data = 'data';
         $encryptedData = 'd1a2t3a4';
 
-        $this->encryptorInterfaceMock->expects($this->once())->method('decrypt')->with($encryptedData)->willReturn(
-            $data
+        $this->encryptorInterfaceMock->expects($this->once())->method('decrypt')->with($encryptedData)->will(
+            $this->returnValue($data)
         );
         $this->assertEquals($data, $this->info->decrypt($encryptedData));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     */
     public function testSetAdditionalInformationException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
         $this->info->setAdditionalInformation('object', new \stdClass());
     }
 

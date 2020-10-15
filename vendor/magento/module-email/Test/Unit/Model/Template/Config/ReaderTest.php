@@ -3,46 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Model\Template\Config;
-
-use Magento\Catalog\Model\Attribute\Config\Converter as AttributeConverter;
-use Magento\Email\Model\Template\Config\FileIterator;
-use Magento\Email\Model\Template\Config\FileResolver;
-use Magento\Email\Model\Template\Config\Reader;
-use Magento\Email\Model\Template\Config\SchemaLocator;
-use Magento\Framework\Config\ValidationStateInterface;
-use Magento\Framework\Filesystem\File\Read;
-use Magento\Framework\Filesystem\File\ReadFactory;
-use Magento\Framework\Module\Dir\ReverseResolver;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Email\Model\Template\Config\Reader
      */
     protected $_model;
 
     /**
-     * @var AttributeConverter|MockObject
+     * @var \Magento\Catalog\Model\Attribute\Config\Converter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_converter;
 
     /**
-     * @var ReverseResolver|MockObject
+     * @var \Magento\Framework\Module\Dir\ReverseResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleDirResolver;
 
     /**
-     * @var Read|MockObject
+     * @var \Magento\Framework\Filesystem\File\Read|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $read;
 
@@ -53,9 +37,9 @@ class ReaderTest extends TestCase
      */
     protected $_paths;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $fileResolver = $this->createMock(FileResolver::class);
+        $fileResolver = $this->createMock(\Magento\Email\Model\Template\Config\FileResolver::class);
         $this->_paths = [
             __DIR__ . '/_files/Fixture/ModuleOne/etc/email_templates_one.xml',
             __DIR__ . '/_files/Fixture/ModuleTwo/etc/email_templates_two.xml',
@@ -74,22 +58,22 @@ class ReaderTest extends TestCase
         )->with(
             'etc',
             'Magento_Email'
-        )->willReturn(
-            'stub'
+        )->will(
+            $this->returnValue('stub')
         );
-        $schemaLocator = new SchemaLocator($moduleReader);
+        $schemaLocator = new \Magento\Email\Model\Template\Config\SchemaLocator($moduleReader);
 
-        $validationStateMock = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $validationStateMock->expects($this->any())
             ->method('isValidationRequired')
             ->willReturn(false);
 
-        $this->_moduleDirResolver = $this->createMock(ReverseResolver::class);
-        $readFactory = $this->createMock(ReadFactory::class);
-        $this->read = $this->createMock(Read::class);
+        $this->_moduleDirResolver = $this->createMock(\Magento\Framework\Module\Dir\ReverseResolver::class);
+        $readFactory = $this->createMock(\Magento\Framework\Filesystem\File\ReadFactory::class);
+        $this->read = $this->createMock(\Magento\Framework\Filesystem\File\Read::class);
         $readFactory->expects($this->any())->method('create')->willReturn($this->read);
 
-        $fileIterator = new FileIterator(
+        $fileIterator = new \Magento\Email\Model\Template\Config\FileIterator(
             $readFactory,
             $this->_paths,
             $this->_moduleDirResolver
@@ -101,11 +85,11 @@ class ReaderTest extends TestCase
         )->with(
             'email_templates.xml',
             'scope'
-        )->willReturn(
-            $fileIterator
+        )->will(
+            $this->returnValue($fileIterator)
         );
 
-        $this->_model = new Reader(
+        $this->_model = new \Magento\Email\Model\Template\Config\Reader(
             $fileResolver,
             $this->_converter,
             $schemaLocator,
@@ -119,15 +103,15 @@ class ReaderTest extends TestCase
             $this->at(0)
         )->method(
             'readAll'
-        )->willReturn(
-            file_get_contents($this->_paths[0])
+        )->will(
+            $this->returnValue(file_get_contents($this->_paths[0]))
         );
         $this->read->expects(
             $this->at(1)
         )->method(
             'readAll'
-        )->willReturn(
-            file_get_contents($this->_paths[1])
+        )->will(
+            $this->returnValue(file_get_contents($this->_paths[1]))
         );
         $this->_moduleDirResolver->expects(
             $this->at(0)
@@ -135,8 +119,8 @@ class ReaderTest extends TestCase
             'getModuleName'
         )->with(
             __DIR__ . '/_files/Fixture/ModuleOne/etc/email_templates_one.xml'
-        )->willReturn(
-            'Fixture_ModuleOne'
+        )->will(
+            $this->returnValue('Fixture_ModuleOne')
         );
         $this->_moduleDirResolver->expects(
             $this->at(1)
@@ -144,17 +128,17 @@ class ReaderTest extends TestCase
             'getModuleName'
         )->with(
             __DIR__ . '/_files/Fixture/ModuleTwo/etc/email_templates_two.xml'
-        )->willReturn(
-            'Fixture_ModuleTwo'
+        )->will(
+            $this->returnValue('Fixture_ModuleTwo')
         );
         $constraint = function (\DOMDocument $actual) {
             try {
                 $expected = file_get_contents(__DIR__ . '/_files/email_templates_merged.xml');
                 $expectedNorm = preg_replace('/xsi:noNamespaceSchemaLocation="[^"]*"/', '', $expected, 1);
                 $actualNorm = preg_replace('/xsi:noNamespaceSchemaLocation="[^"]*"/', '', $actual->saveXML(), 1);
-                Assert::assertXmlStringEqualsXmlString($expectedNorm, $actualNorm);
+                \PHPUnit\Framework\Assert::assertXmlStringEqualsXmlString($expectedNorm, $actualNorm);
                 return true;
-            } catch (AssertionFailedError $e) {
+            } catch (\PHPUnit\Framework\AssertionFailedError $e) {
                 return false;
             }
         };
@@ -165,18 +149,20 @@ class ReaderTest extends TestCase
             'convert'
         )->with(
             $this->callback($constraint)
-        )->willReturn(
-            $expectedResult
+        )->will(
+            $this->returnValue($expectedResult)
         );
 
         $this->assertSame($expectedResult, $this->_model->read('scope'));
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Unable to determine a module
+     */
     public function testReadUnknownModule()
     {
-        $this->expectException('UnexpectedValueException');
-        $this->expectExceptionMessage('Unable to determine a module');
-        $this->_moduleDirResolver->expects($this->once())->method('getModuleName')->willReturn(null);
+        $this->_moduleDirResolver->expects($this->once())->method('getModuleName')->will($this->returnValue(null));
         $this->_converter->expects($this->never())->method('convert');
         $this->_model->read('scope');
     }

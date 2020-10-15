@@ -3,29 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Interception\Test\Unit\PluginList;
 
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\Interception\ObjectManager\ConfigInterface;
-use Magento\Framework\Interception\PluginList\PluginList;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item\Enhanced;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainer;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemPlugin\Advanced;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemPlugin\Simple;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\StartingBackslash;
-use Magento\Framework\Interception\Test\Unit\Custom\Module\Model\StartingBackslash\Plugin;
-use Magento\Framework\ObjectManager\Config\Reader\Dom;
-use Magento\Framework\ObjectManager\Definition\Runtime;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\ObjectManagerInterface;
 
 require_once __DIR__ . '/../Custom/Module/Model/Item.php';
 require_once __DIR__ . '/../Custom/Module/Model/Item/Enhanced.php';
@@ -40,58 +21,58 @@ require_once __DIR__ . '/../Custom/Module/Model/StartingBackslash/Plugin.php';
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PluginListTest extends TestCase
+class PluginListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PluginList
+     * @var \Magento\Framework\Interception\PluginList\PluginList
      */
     private $object;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var \Magento\Framework\Config\ScopeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configScopeMock;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Config\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
     /**
-     * @var ObjectManagerInterface||\PHPUnit\Framework\MockObject\MockObject
+     * @var ObjectManagerInterface||\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $readerMap = include __DIR__ . '/../_files/reader_mock_map.php';
-        $readerMock = $this->createMock(Dom::class);
-        $readerMock->expects($this->any())->method('read')->willReturnMap($readerMap);
+        $readerMock = $this->createMock(\Magento\Framework\ObjectManager\Config\Reader\Dom::class);
+        $readerMock->expects($this->any())->method('read')->will($this->returnValueMap($readerMap));
 
-        $this->configScopeMock = $this->getMockForAbstractClass(ScopeInterface::class);
-        $this->cacheMock = $this->getMockBuilder(CacheInterface::class)
+        $this->configScopeMock = $this->createMock(\Magento\Framework\Config\ScopeInterface::class);
+        $this->cacheMock = $this->getMockBuilder(\Magento\Framework\Config\CacheInterface::class)
             ->setMethods(['get'])
             ->getMockForAbstractClass();
         // turn cache off
         $this->cacheMock->expects($this->any())
             ->method('get')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $omConfigMock =  $this->getMockForAbstractClass(
-            ConfigInterface::class
+            \Magento\Framework\Interception\ObjectManager\ConfigInterface::class
         );
 
-        $omConfigMock->expects($this->any())->method('getOriginalInstanceType')->willReturnArgument(0);
+        $omConfigMock->expects($this->any())->method('getOriginalInstanceType')->will($this->returnArgument(0));
 
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->setMethods(['get'])
@@ -99,13 +80,13 @@ class PluginListTest extends TestCase
         $this->objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturnArgument(0);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->serializerMock = $this->createMock(SerializerInterface::class);
 
-        $definitions = new Runtime();
+        $definitions = new \Magento\Framework\ObjectManager\Definition\Runtime();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->object = $objectManagerHelper->getObject(
-            PluginList::class,
+            \Magento\Framework\Interception\PluginList\PluginList::class,
             [
                 'reader' => $readerMock,
                 'configScope' => $this->configScopeMock,
@@ -121,7 +102,7 @@ class PluginListTest extends TestCase
             ]
         );
 
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $objectManagerHelper->setBackwardCompatibleProperty(
             $this->object,
             'logger',
@@ -131,62 +112,70 @@ class PluginListTest extends TestCase
 
     public function testGetPlugin()
     {
-        $this->configScopeMock->expects($this->any())->method('getCurrentScope')->willReturn('backend');
-        $this->object->getNext(Item::class, 'getName');
+        $this->configScopeMock->expects($this->any())->method('getCurrentScope')->will($this->returnValue('backend'));
+        $this->object->getNext(\Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class, 'getName');
         $this->object->getNext(
-            ItemContainer::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainer::class,
             'getName'
         );
         $this->object->getNext(
-            StartingBackslash::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\StartingBackslash::class,
             'getName'
         );
         $this->assertEquals(
-            Simple::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemPlugin\Simple::class,
             $this->object->getPlugin(
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'simple_plugin'
             )
         );
         $this->assertEquals(
-            Advanced::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemPlugin\Advanced::class,
             $this->object->getPlugin(
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'advanced_plugin'
             )
         );
         $this->assertEquals(
             \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainerPlugin\Simple::class,
             $this->object->getPlugin(
-                ItemContainer::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainer::class,
                 'simple_plugin'
             )
         );
         $this->assertEquals(
-            Plugin::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\StartingBackslash\Plugin::class,
             $this->object->getPlugin(
-                StartingBackslash::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\StartingBackslash::class,
                 'simple_plugin'
             )
         );
     }
 
     /**
-     * @param $expectedResult
-     * @param $type
-     * @param $method
-     * @param $scopeCode
+     * @param array $expectedResult
+     * @param string $type
+     * @param string $method
+     * @param string $scopeCode
      * @param string $code
+     * @param array $scopePriorityScheme
      * @dataProvider getPluginsDataProvider
      */
-    public function testGetPlugins($expectedResult, $type, $method, $scopeCode, $code = '__self')
-    {
+    public function testGetPlugins(
+        ?array $expectedResult,
+        string $type,
+        string $method,
+        string $scopeCode,
+        string $code = '__self',
+        array $scopePriorityScheme = ['global']
+    ): void {
+        $this->setScopePriorityScheme($scopePriorityScheme);
         $this->configScopeMock->expects(
             $this->any()
         )->method(
             'getCurrentScope'
-        )->willReturn(
-            $scopeCode
+        )->will(
+            $this->returnValue($scopeCode)
         );
         $this->assertEquals($expectedResult, $this->object->getNext($type, $method, $code));
     }
@@ -198,67 +187,107 @@ class PluginListTest extends TestCase
     {
         return [
             [
-                [4 => ['simple_plugin']], Item::class,
+                [4 => ['simple_plugin']], \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'getName',
                 'global',
             ],
             [
                 // advanced plugin has lower sort order
                 [2 => 'advanced_plugin', 4 => ['advanced_plugin']],
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'getName',
                 'backend'
             ],
             [
                 // advanced plugin has lower sort order
                 [4 => ['simple_plugin']],
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'getName',
                 'backend',
                 'advanced_plugin'
             ],
             // simple plugin is disabled in configuration for
             // \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item in frontend
-            [null, Item::class, 'getName', 'frontend'],
+            [null, \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class, 'getName', 'frontend'],
             // test plugin inheritance
             [
                 [4 => ['simple_plugin']],
-                Enhanced::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item\Enhanced::class,
                 'getName',
                 'global'
             ],
             [
                 // simple plugin is disabled in configuration for parent
                 [2 => 'advanced_plugin', 4 => ['advanced_plugin']],
-                Enhanced::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item\Enhanced::class,
                 'getName',
                 'frontend'
             ],
             [
                 null,
-                ItemContainer::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainer::class,
                 'getName',
                 'global'
             ],
             [
                 [4 => ['simple_plugin']],
-                ItemContainer::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemContainer::class,
                 'getName',
                 'backend'
-            ]
+            ],
+            [
+                // even though the scope is primary, both primary and global scopes are loaded
+                // because global is in default priority scheme
+                [
+                    4 => [
+                        'primary_plugin',
+                        'simple_plugin',
+                    ]
+                ],
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
+                'getName',
+                'primary',
+                '__self',
+                ['primary', 'global']
+            ],
+            [
+                [
+                    4 => [
+                        'primary_plugin',
+                        'simple_plugin',
+                    ]
+                ],
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
+                'getName',
+                'global',
+                '__self',
+                ['primary', 'global']
+            ],
+            [
+                [
+                    4 => [
+                        'primary_plugin',
+                    ]
+                ],
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
+                'getName',
+                'frontend',
+                '__self',
+                ['primary', 'global']
+            ],
         ];
     }
 
     /**
+     * @expectedException \InvalidArgumentException
      * @covers \Magento\Framework\Interception\PluginList\PluginList::getNext
      * @covers \Magento\Framework\Interception\PluginList\PluginList::_inheritPlugins
      */
     public function testInheritPluginsWithNonExistingClass()
     {
-        $this->expectException('InvalidArgumentException');
         $this->configScopeMock->expects($this->any())
             ->method('getCurrentScope')
-            ->willReturn('frontend');
+            ->will($this->returnValue('frontend'));
 
         $this->object->getNext('SomeType', 'someMethod');
     }
@@ -267,7 +296,7 @@ class PluginListTest extends TestCase
     {
         $this->configScopeMock->expects($this->exactly(3))
             ->method('getCurrentScope')
-            ->willReturn('scope');
+            ->will($this->returnValue('scope'));
         $this->serializerMock->expects($this->once())
             ->method('serialize');
         $this->serializerMock->expects($this->never())
@@ -275,7 +304,7 @@ class PluginListTest extends TestCase
         $this->cacheMock->expects($this->once())
             ->method('save');
 
-        $this->assertNull($this->object->getNext('Type', 'method'));
+        $this->assertEquals(null, $this->object->getNext('Type', 'method'));
     }
 
     /**
@@ -289,7 +318,7 @@ class PluginListTest extends TestCase
             ->with("Reference to undeclared plugin with name 'simple_plugin'.");
         $this->configScopeMock->expects($this->any())
             ->method('getCurrentScope')
-            ->willReturn('frontend');
+            ->will($this->returnValue('frontend'));
 
         $this->assertNull($this->object->getNext('typeWithoutInstance', 'someMethod'));
     }
@@ -302,7 +331,7 @@ class PluginListTest extends TestCase
     {
         $this->configScopeMock->expects($this->once())
             ->method('getCurrentScope')
-            ->willReturn('scope');
+            ->will($this->returnValue('scope'));
 
         $data = [['key'], ['key'], ['key']];
         $serializedData = 'serialized data';
@@ -317,7 +346,7 @@ class PluginListTest extends TestCase
             ->with('global|scope|interception')
             ->willReturn($serializedData);
 
-        $this->assertNull($this->object->getNext('Type', 'method'));
+        $this->assertEquals(null, $this->object->getNext('Type', 'method'));
     }
 
     /**
@@ -328,24 +357,36 @@ class PluginListTest extends TestCase
     {
         $this->objectManagerMock->expects($this->any())
             ->method('get')
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
         $this->configScopeMock->expects($this->any())
             ->method('getCurrentScope')
-            ->willReturn('emptyscope');
+            ->will($this->returnValue('emptyscope'));
 
         $this->assertEquals(
             [4 => ['simple_plugin']],
             $this->object->getNext(
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'getName'
             )
         );
         $this->assertEquals(
-            Simple::class,
+            \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\ItemPlugin\Simple::class,
             $this->object->getPlugin(
-                Item::class,
+                \Magento\Framework\Interception\Test\Unit\Custom\Module\Model\Item::class,
                 'simple_plugin'
             )
         );
+    }
+
+    /**
+     * @param array $areaCodes
+     * @throws \ReflectionException
+     */
+    private function setScopePriorityScheme(array $areaCodes): void
+    {
+        $reflection = new \ReflectionClass($this->object);
+        $reflection_property = $reflection->getProperty('_scopePriorityScheme');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->object, $areaCodes);
     }
 }

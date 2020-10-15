@@ -3,72 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Block;
-
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Cms\Api\BlockRepositoryInterface;
-use Magento\Cms\Controller\Adminhtml\Block\Save;
-use Magento\Cms\Model\Block;
-use Magento\Cms\Model\BlockFactory;
-use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManager\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var DataPersistorInterface|MockObject
+     * @var \Magento\Framework\App\Request\DataPersistorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataPersistorMock;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirectFactory;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirect;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Block|MockObject $blockMock
+     * @var \Magento\Cms\Model\Block|\PHPUnit_Framework_MockObject_MockObject $blockMock
      */
     protected $blockMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManagerMock;
 
     /**
-     * @var \Magento\Framework\Event\ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
@@ -78,17 +61,17 @@ class SaveTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var Save
+     * @var \Magento\Cms\Controller\Adminhtml\Block\Save
      */
     protected $saveController;
 
     /**
-     * @var BlockFactory|MockObject
+     * @var \Magento\Cms\Model\BlockFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $blockFactory;
 
     /**
-     * @var BlockRepositoryInterface|MockObject
+     * @var \Magento\Cms\Api\BlockRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $blockRepository;
 
@@ -97,28 +80,28 @@ class SaveTest extends TestCase
      */
     protected $blockId = 1;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->contextMock = $this->createMock(Context::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\App\Action\Context::class);
 
-        $this->resultRedirectFactory = $this->getMockBuilder(RedirectFactory::class)
+        $this->resultRedirectFactory = $this->getMockBuilder(\Magento\Backend\Model\View\Result\RedirectFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultRedirect = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resultRedirectFactory->expects($this->atLeastOnce())
             ->method('create')
             ->willReturn($this->resultRedirect);
 
-        $this->dataPersistorMock = $this->getMockBuilder(DataPersistorInterface::class)
+        $this->dataPersistorMock = $this->getMockBuilder(\Magento\Framework\App\Request\DataPersistorInterface::class)
             ->getMock();
 
         $this->requestMock = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
@@ -128,11 +111,10 @@ class SaveTest extends TestCase
         );
 
         $this->blockMock = $this->getMockBuilder(
-            Block::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Cms\Model\Block::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->messageManagerMock = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
 
         $this->eventManagerMock = $this->getMockForAbstractClass(
             \Magento\Framework\Event\ManagerInterface::class,
@@ -144,7 +126,7 @@ class SaveTest extends TestCase
             ['dispatch']
         );
 
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManager\ObjectManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'create'])
             ->getMock();
@@ -157,17 +139,17 @@ class SaveTest extends TestCase
             ->method('getResultRedirectFactory')
             ->willReturn($this->resultRedirectFactory);
 
-        $this->blockFactory = $this->getMockBuilder(BlockFactory::class)
+        $this->blockFactory = $this->getMockBuilder(\Magento\Cms\Model\BlockFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->blockRepository = $this->getMockBuilder(BlockRepositoryInterface::class)
+        $this->blockRepository = $this->getMockBuilder(\Magento\Cms\Api\BlockRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->saveController = $this->objectManager->getObject(
-            Save::class,
+            \Magento\Cms\Controller\Adminhtml\Block\Save::class,
             [
                 'context' => $this->contextMock,
                 'dataPersistor' => $this->dataPersistorMock,
@@ -218,7 +200,7 @@ class SaveTest extends TestCase
             ->method('addSuccessMessage')
             ->with(__('You saved the block.'));
 
-        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/edit')->willReturnSelf();
+        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/edit') ->willReturnSelf();
 
         $this->assertSame($this->resultRedirect, $this->saveController->execute());
     }
@@ -226,7 +208,7 @@ class SaveTest extends TestCase
     public function testSaveActionWithoutData()
     {
         $this->requestMock->expects($this->any())->method('getPostValue')->willReturn(false);
-        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/')->willReturnSelf();
+        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/') ->willReturnSelf();
         $this->assertSame($this->resultRedirect, $this->saveController->execute());
     }
 
@@ -254,13 +236,13 @@ class SaveTest extends TestCase
         $this->blockRepository->expects($this->once())
             ->method('getById')
             ->with($this->blockId)
-            ->willThrowException(new NoSuchEntityException(__('Error message')));
+            ->willThrowException(new \Magento\Framework\Exception\NoSuchEntityException(__('Error message')));
 
         $this->messageManagerMock->expects($this->once())
             ->method('addErrorMessage')
             ->with(__('This block no longer exists.'));
 
-        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/')->willReturnSelf();
+        $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/') ->willReturnSelf();
 
         $this->assertSame($this->resultRedirect, $this->saveController->execute());
     }
@@ -291,9 +273,8 @@ class SaveTest extends TestCase
             ->willReturn($this->blockMock);
 
         $duplicateBlockMock = $this->getMockBuilder(
-            Block::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Cms\Model\Block::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->blockFactory->expects($this->at(1))
             ->method('create')
@@ -388,58 +369,6 @@ class SaveTest extends TestCase
             ->with(__('You saved the block.'));
 
         $this->resultRedirect->expects($this->atLeastOnce())->method('setPath')->with('*/*/')->willReturnSelf();
-
-        $this->assertSame($this->resultRedirect, $this->saveController->execute());
-    }
-
-    public function testSaveActionWithMarginalSpace()
-    {
-        $postData = [
-            'title' => 'unique_title_123',
-            'identifier' => '  unique_title_123',
-            'stores' => ['0'],
-            'is_active' => true,
-            'content' => '',
-            'back' => 'continue'
-        ];
-
-        $this->requestMock->expects($this->any())->method('getPostValue')->willReturn($postData);
-        $this->requestMock->expects($this->atLeastOnce())
-            ->method('getParam')
-            ->willReturnMap(
-                [
-                    ['block_id', null, 1],
-                    ['back', null, true],
-                ]
-            );
-
-        $this->blockFactory->expects($this->atLeastOnce())
-            ->method('create')
-            ->willReturn($this->blockMock);
-
-        $this->blockRepository->expects($this->once())
-            ->method('getById')
-            ->with($this->blockId)
-            ->willReturn($this->blockMock);
-
-        $this->blockMock->expects($this->once())->method('setData');
-        $this->blockRepository->expects($this->once())->method('save')
-            ->with($this->blockMock)
-            ->willThrowException(new \Exception('No marginal white space please.'));
-
-        $this->messageManagerMock->expects($this->never())
-            ->method('addSuccessMessage');
-        $this->messageManagerMock->expects($this->once())
-            ->method('addExceptionMessage');
-
-        $this->dataPersistorMock->expects($this->any())
-            ->method('set')
-            ->with('cms_block', array_merge($postData, ['block_id' => null]));
-
-        $this->resultRedirect->expects($this->atLeastOnce())
-            ->method('setPath')
-            ->with('*/*/edit', ['block_id' => $this->blockId])
-            ->willReturnSelf();
 
         $this->assertSame($this->resultRedirect, $this->saveController->execute());
     }

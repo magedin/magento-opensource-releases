@@ -14,7 +14,6 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use function is_numeric;
 
 /**
  * CMS blocks field resolver, used for GraphQL request processing
@@ -45,13 +44,14 @@ class Blocks implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        $storeId = (int)$context->getExtensionAttributes()->getStore()->getId();
-        $blockIdentifiers = $this->getBlockIdentifiers($args);
-        $blocksData = $this->getBlocksData($blockIdentifiers, $storeId);
 
-        return [
+        $blockIdentifiers = $this->getBlockIdentifiers($args);
+        $blocksData = $this->getBlocksData($blockIdentifiers);
+
+        $resultData = [
             'items' => $blocksData,
         ];
+        return $resultData;
     }
 
     /**
@@ -74,22 +74,15 @@ class Blocks implements ResolverInterface
      * Get blocks data
      *
      * @param array $blockIdentifiers
-     * @param int $storeId
      * @return array
      * @throws GraphQlNoSuchEntityException
      */
-    private function getBlocksData(array $blockIdentifiers, int $storeId): array
+    private function getBlocksData(array $blockIdentifiers): array
     {
         $blocksData = [];
         foreach ($blockIdentifiers as $blockIdentifier) {
             try {
-                if (!is_numeric($blockIdentifier)) {
-                    $blocksData[$blockIdentifier] = $this->blockDataProvider
-                        ->getBlockByIdentifier($blockIdentifier, $storeId);
-                } else {
-                    $blocksData[$blockIdentifier] = $this->blockDataProvider
-                        ->getBlockById((int)$blockIdentifier, $storeId);
-                }
+                $blocksData[$blockIdentifier] = $this->blockDataProvider->getData($blockIdentifier);
             } catch (NoSuchEntityException $e) {
                 $blocksData[$blockIdentifier] = new GraphQlNoSuchEntityException(__($e->getMessage()), $e);
             }

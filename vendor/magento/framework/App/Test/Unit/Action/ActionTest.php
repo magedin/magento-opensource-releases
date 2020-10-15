@@ -3,98 +3,100 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Action;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http as HttpRequest;
+use \Magento\Framework\App\Action\Action;
 
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Profiler;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Page\Config as PageConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ActionTest extends TestCase
+class ActionTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ActionFake
-     */
+    /** @var \Magento\Framework\App\Test\Unit\Action\ActionFake */
     protected $action;
 
-    /**
-     * @var ObjectManagerHelper
-     */
+    /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var HttpRequest|MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_responseMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_eventManagerMock;
 
     /**
-     * @var ActionFlag|MockObject
+     * @var \Magento\Framework\App\ActionFlag|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_actionFlagMock;
 
     /**
-     * @var RedirectInterface|MockObject
+     * @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_redirectMock;
 
     /**
-     * @var ViewInterface|MockObject
+     * @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewMock;
 
     /**
-     * @var PageConfig|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfigMock;
 
-    public const FULL_ACTION_NAME = 'module/controller/someaction';
-    public const ROUTE_NAME = 'module/controller/actionroute';
-    public const ACTION_NAME = 'someaction';
-    public const CONTROLLER_NAME = 'controller';
-    public const MODULE_NAME = 'module';
+    /**
+     * Full action name
+     */
+    const FULL_ACTION_NAME = 'module/controller/someaction';
+
+    /**
+     * Route name
+     */
+    const ROUTE_NAME = 'module/controller/actionroute';
+
+    /**
+     * Action name
+     */
+    const ACTION_NAME = 'someaction';
+
+    /**
+     * Controller name
+     */
+    const CONTROLLER_NAME = 'controller';
+
+    /**
+     * Module name
+     */
+    const MODULE_NAME = 'module';
 
     public static $actionParams = ['param' => 'value'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->_actionFlagMock = $this->createMock(ActionFlag::class);
-        $this->_redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
-        $this->_requestMock = $this->createMock(HttpRequest::class);
-        $this->_responseMock = $this->getMockForAbstractClass(ResponseInterface::class);
+        $this->_eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->_actionFlagMock = $this->createMock(\Magento\Framework\App\ActionFlag::class);
+        $this->_redirectMock = $this->createMock(\Magento\Framework\App\Response\RedirectInterface::class);
+        $this->_requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->_responseMock = $this->createMock(\Magento\Framework\App\ResponseInterface::class);
 
-        $this->pageConfigMock = $this->getMockBuilder(PageConfig::class)
-            ->addMethods(['getConfig'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->viewMock = $this->getMockForAbstractClass(ViewInterface::class);
-        $this->viewMock->expects($this->any())->method('getPage')->willReturn($this->pageConfigMock);
-        $this->pageConfigMock->expects($this->any())->method('getConfig')->willReturn(1);
+        $this->pageConfigMock = $this->createPartialMock(\Magento\Framework\View\Page\Config::class, ['getConfig']);
+        $this->viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $this->viewMock->expects($this->any())->method('getPage')->will($this->returnValue($this->pageConfigMock));
+        $this->pageConfigMock->expects($this->any())->method('getConfig')->will($this->returnValue(1));
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->action = $this->objectManagerHelper->getObject(
-            ActionFake::class,
+            \Magento\Framework\App\Test\Unit\Action\ActionFake::class,
             [
                 'request' => $this->_requestMock,
                 'response' => $this->_responseMock,
@@ -104,17 +106,34 @@ class ActionTest extends TestCase
                 'view' => $this->viewMock,
             ]
         );
-        Profiler::disable();
+        \Magento\Framework\Profiler::disable();
     }
 
     public function testDispatchPostDispatch()
     {
-        $this->_requestMock->method('getFullActionName')->willReturn(self::FULL_ACTION_NAME);
-        $this->_requestMock->method('getRouteName')->willReturn(self::ROUTE_NAME);
-        $this->_requestMock->method('isDispatched')->willReturn(true);
-        $this->_actionFlagMock->method('get')->willReturnMap(
-            ['', Action::FLAG_NO_DISPATCH, false],
-            ['', Action::FLAG_NO_POST_DISPATCH]
+        $this->_requestMock->expects($this->exactly(3))->method('getFullActionName')->will(
+            $this->returnValue(self::FULL_ACTION_NAME)
+        );
+        $this->_requestMock->expects($this->exactly(2))->method('getRouteName')->will(
+            $this->returnValue(self::ROUTE_NAME)
+        );
+        $expectedEventParameters = ['controller_action' => $this->action, 'request' => $this->_requestMock];
+        $this->_eventManagerMock->expects($this->at(0))->method('dispatch')->with(
+            'controller_action_predispatch',
+            $expectedEventParameters
+        );
+        $this->_eventManagerMock->expects($this->at(1))->method('dispatch')->with(
+            'controller_action_predispatch_' . self::ROUTE_NAME,
+            $expectedEventParameters
+        );
+        $this->_eventManagerMock->expects($this->at(2))->method('dispatch')->with(
+            'controller_action_predispatch_' . self::FULL_ACTION_NAME,
+            $expectedEventParameters
+        );
+
+        $this->_requestMock->expects($this->once())->method('isDispatched')->will($this->returnValue(true));
+        $this->_actionFlagMock->expects($this->at(0))->method('get')->with('', Action::FLAG_NO_DISPATCH)->will(
+            $this->returnValue(false)
         );
 
         // _forward expectations
@@ -130,6 +149,23 @@ class ActionTest extends TestCase
             $this->_responseMock,
             self::FULL_ACTION_NAME,
             self::$actionParams
+        );
+
+        $this->_actionFlagMock->expects($this->at(1))->method('get')->with('', Action::FLAG_NO_POST_DISPATCH)->will(
+            $this->returnValue(false)
+        );
+
+        $this->_eventManagerMock->expects($this->at(3))->method('dispatch')->with(
+            'controller_action_postdispatch_' . self::FULL_ACTION_NAME,
+            $expectedEventParameters
+        );
+        $this->_eventManagerMock->expects($this->at(4))->method('dispatch')->with(
+            'controller_action_postdispatch_' . self::ROUTE_NAME,
+            $expectedEventParameters
+        );
+        $this->_eventManagerMock->expects($this->at(5))->method('dispatch')->with(
+            'controller_action_postdispatch',
+            $expectedEventParameters
         );
 
         $this->assertEquals($this->_responseMock, $this->action->dispatch($this->_requestMock));

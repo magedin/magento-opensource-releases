@@ -3,17 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Block\Backend\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Context;
-use Magento\Framework\DataObject;
-use Magento\Framework\Indexer\StateInterface;
-use Magento\Indexer\Block\Backend\Grid\Column\Renderer\Status;
-use PHPUnit\Framework\TestCase;
-
-class StatusTest extends TestCase
+class StatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param array $indexValues
@@ -22,11 +14,11 @@ class StatusTest extends TestCase
      */
     public function testRender($indexValues, $expectedResult)
     {
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Backend\Block\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $model = new Status($context);
-        $obj = new DataObject();
+        $model = new \Magento\Indexer\Block\Backend\Grid\Column\Renderer\Status($context);
+        $obj = new \Magento\Framework\DataObject();
         $obj->setGetter(null);
         $obj->setDefault('');
         $obj->setValue('');
@@ -48,16 +40,16 @@ class StatusTest extends TestCase
     {
         return [
             'set1' => [
-                [StateInterface::STATUS_INVALID],
+                [\Magento\Framework\Indexer\StateInterface::STATUS_INVALID],
                 ['class' => 'grid-severity-critical', 'text' => 'Reindex required']
             ],
             'set2' => [
-                [StateInterface::STATUS_VALID],
+                [\Magento\Framework\Indexer\StateInterface::STATUS_VALID],
                 ['class' => 'grid-severity-notice', 'text' => 'Ready']
             ],
             'set3' => [
-                [StateInterface::STATUS_WORKING],
-                ['class' => 'grid-severity-minor', 'text' => 'Processing']
+                [\Magento\Framework\Indexer\StateInterface::STATUS_WORKING],
+                ['class' => 'grid-severity-major', 'text' => 'Processing']
             ]
         ];
     }

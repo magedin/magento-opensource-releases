@@ -37,7 +37,7 @@
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Add product to cart -->
@@ -75,7 +75,7 @@
 
         <!-- Open new browser's window and login as Admin -->
         <openNewTab stepKey="openNewTab"/>
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
         <!-- Go to Store > Configuration > Sales > Shipping Methods -->
         <actionGroup ref="AdminOpenShippingMethodsConfigPageActionGroup" stepKey="openShippingMethodConfigPage"/>
@@ -84,9 +84,7 @@
         <actionGroup ref="AdminChangeFlatRateShippingMethodStatusActionGroup" stepKey="enableFlatRateShippingStatus"/>
 
         <!-- Flush cache -->
-        <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-            <argument name="tags" value=""/>
-        </actionGroup>
+        <magentoCLI command="cache:flush" stepKey="cacheFlush"/>
 
         <!-- Back to the Checkout and refresh the page -->
         <switchToPreviousTab stepKey="switchToPreviousTab"/>

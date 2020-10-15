@@ -3,55 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Data\Test\Unit\Form;
 
-use Magento\Framework\Data\Form\AbstractForm;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\Form\Element\Collection;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Form\AbstractForm;
 
-class AbstractFormTest extends TestCase
+class AbstractFormTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $factoryElementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $factoryCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $elementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $allElementsMock;
 
     /**
-     * @var AbstractForm
+     * @var \Magento\Framework\Data\Form\AbstractForm
      */
     protected $abstractForm;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->factoryElementMock =
-            $this->createPartialMock(Factory::class, ['create']);
+            $this->createPartialMock(\Magento\Framework\Data\Form\Element\Factory::class, ['create']);
         $this->factoryCollectionMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
+            $this->createPartialMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class, ['create']);
         $this->allElementsMock =
-            $this->createMock(Collection::class);
+            $this->createMock(\Magento\Framework\Data\Form\Element\Collection::class);
         $this->elementMock =
-            $this->createMock(AbstractElement::class);
+            $this->createMock(\Magento\Framework\Data\Form\Element\AbstractElement::class);
 
         $this->abstractForm = new AbstractForm($this->factoryElementMock, $this->factoryCollectionMock, []);
     }
@@ -61,7 +54,7 @@ class AbstractFormTest extends TestCase
         $this->factoryCollectionMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->allElementsMock);
+            ->will($this->returnValue($this->allElementsMock));
         $this->elementMock->expects($this->once())->method('setForm');
         $this->allElementsMock->expects($this->once())->method('add')->with($this->elementMock, false);
         $this->abstractForm->addElement($this->elementMock, false);
@@ -74,12 +67,12 @@ class AbstractFormTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->with('hidden', ['data' => $config])
-            ->willReturn($this->elementMock);
+            ->will($this->returnValue($this->elementMock));
         $this->elementMock->expects($this->once())->method('setId')->with('store_type');
         $this->factoryCollectionMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->allElementsMock);
+            ->will($this->returnValue($this->allElementsMock));
         $this->allElementsMock->expects($this->once())->method('add')->with($this->elementMock, false);
         $this->assertEquals($this->elementMock, $this->abstractForm->addField('store_type', 'hidden', $config));
         $this->abstractForm->removeField('hidden');
@@ -92,14 +85,14 @@ class AbstractFormTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->with('fieldset', ['data' => $config])
-            ->willReturn($this->elementMock);
+            ->will($this->returnValue($this->elementMock));
         $this->elementMock->expects($this->once())->method('setId')->with('hidden');
         $this->elementMock->expects($this->once())->method('setAdvanced')->with(false);
         $this->elementMock->expects($this->once())->method('setForm');
         $this->factoryCollectionMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->allElementsMock);
+            ->will($this->returnValue($this->allElementsMock));
         $this->allElementsMock->expects($this->once())->method('add')->with($this->elementMock, false);
         $this->abstractForm->addFieldset('hidden', $config);
     }
@@ -111,13 +104,13 @@ class AbstractFormTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->with('column', ['data' => $config])
-            ->willReturn($this->elementMock);
+            ->will($this->returnValue($this->elementMock));
         $this->elementMock->expects($this->once())->method('setId')->with('hidden');
-        $this->elementMock->expects($this->exactly(2))->method('setForm')->willReturnSelf();
+        $this->elementMock->expects($this->exactly(2))->method('setForm')->will($this->returnSelf());
         $this->factoryCollectionMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->allElementsMock);
+            ->will($this->returnValue($this->allElementsMock));
         $this->allElementsMock->expects($this->once())->method('add')->with($this->elementMock, false);
         $this->abstractForm->addColumn('hidden', $config);
     }

@@ -3,38 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Utility;
 
-use Magento\Framework\App\Utility\AggregateInvoker;
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Framework\IncompleteTestError;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\OutputError;
-use PHPUnit\Framework\SkippedTestError;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Utility\AggregateInvoker;
 
-class AggregateInvokerTest extends TestCase
+class AggregateInvokerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AggregateInvoker
+     * @var \Magento\Framework\App\Utility\AggregateInvoker
      */
     protected $_invoker;
 
     /**
-     * @var TestCase|MockObject
+     * @var \PHPUnit\Framework\TestCase|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_testCase;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_testCase = $this->getMockBuilder(Test::class)
-            ->addMethods(['fail', 'markTestIncomplete', 'markTestSkipped'])
-            ->onlyMethods(['run', 'count'])
-            ->getMock();
+        $this->_testCase = $this->createPartialMock(
+            \PHPUnit\Framework\Test::class,
+            ['run', 'count', 'fail', 'markTestIncomplete', 'markTestSkipped']
+        );
         $this->_invoker = new AggregateInvoker($this->_testCase, []);
     }
 
@@ -72,23 +62,23 @@ class AggregateInvokerTest extends TestCase
             [
                 'Passed: 0, Failed: 1, Incomplete: 0, Skipped: 0.',
                 'fail',
-                AssertionFailedError::class,
+                \PHPUnit\Framework\AssertionFailedError::class,
             ],
-            ['Passed: 0, Failed: 1, Incomplete: 0, Skipped: 0.', 'fail', OutputError::class],
+            ['Passed: 0, Failed: 1, Incomplete: 0, Skipped: 0.', 'fail', \PHPUnit\Framework\OutputError::class],
             [
                 'Passed: 0, Failed: 1, Incomplete: 0, Skipped: 0.',
                 'fail',
-                ExpectationFailedException::class
+                \PHPUnit\Framework\ExpectationFailedException::class
             ],
             [
                 'Passed: 0, Failed: 0, Incomplete: 1, Skipped: 0.',
                 'markTestIncomplete',
-                IncompleteTestError::class
+                \PHPUnit\Framework\IncompleteTestError::class
             ],
             [
                 'Passed: 0, Failed: 0, Incomplete: 0, Skipped: 1.',
                 'markTestSkipped',
-                SkippedTestError::class
+                \PHPUnit\Framework\SkippedTestError::class
             ]
         ];
     }

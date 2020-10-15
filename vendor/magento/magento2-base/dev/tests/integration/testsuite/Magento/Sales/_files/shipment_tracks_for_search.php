@@ -5,20 +5,16 @@
  */
 
 use Magento\Payment\Helper\Data;
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Api\ShipmentTrackRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\Order\ShipmentFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'default_rollback.php';
+require __DIR__ . '/order.php';
 
-$objectManager = Bootstrap::getObjectManager();
 /** @var Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 $payment = $order->getPayment();
 $paymentInfoBlock = Bootstrap::getObjectManager()->get(Data::class)
     ->getInfoBlock($payment);
@@ -28,7 +24,7 @@ $items = [];
 foreach ($order->getItems() as $orderItem) {
     $items[$orderItem->getId()] = $orderItem->getQtyOrdered();
 }
-$shipment = $objectManager->get(ShipmentFactory::class)->create($order, $items);
+$shipment = Bootstrap::getObjectManager()->get(ShipmentFactory::class)->create($order, $items);
 $shipment->setPackages([['1'], ['2']]);
 $shipment->setShipmentStatus(\Magento\Sales\Model\Order\Shipment::STATUS_NEW);
 $shipment->save();
@@ -77,11 +73,11 @@ $tracks = [
 ];
 
 /** @var ShipmentTrackRepositoryInterface $shipmentTrackRepository */
-$shipmentTrackRepository = $objectManager->get(ShipmentTrackRepositoryInterface::class);
+$shipmentTrackRepository = Bootstrap::getObjectManager()->get(ShipmentTrackRepositoryInterface::class);
 
 foreach ($tracks as $data) {
     /** @var $track Track */
-    $track = $objectManager->create(Track::class);
+    $track = Bootstrap::getObjectManager()->create(Track::class);
     $track->setOrderId($order->getId());
     $track->setParentId($shipment->getId());
     $track->setTitle($data['title']);

@@ -3,87 +3,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller;
-
-use Magento\Cms\Controller\Router;
-use Magento\Cms\Model\Page;
-use Magento\Cms\Model\PageFactory;
-use Magento\Framework\App\Action\Forward;
-use Magento\Framework\App\ActionFactory;
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RouterTest extends TestCase
+class RouterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Router
+     * @var \Magento\Cms\Controller\Router
      */
     private $router;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var PageFactory|MockObject
+     * @var \Magento\Cms\Model\PageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageFactoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var ActionFactory|MockObject
+     * @var \Magento\Framework\App\ActionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $actionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $this->pageFactoryMock = $this->getMockBuilder(PageFactory::class)
+        $this->pageFactoryMock = $this->getMockBuilder(\Magento\Cms\Model\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->storeMock = $this->getMockBuilder(StoreInterface::class)
+        $this->storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->getMockForAbstractClass();
 
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
             ->willReturn($this->storeMock);
 
-        $this->actionFactoryMock = $this->getMockBuilder(ActionFactory::class)
+        $this->actionFactoryMock = $this->getMockBuilder(\Magento\Framework\App\ActionFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->router = $objectManagerHelper->getObject(
-            Router::class,
+            \Magento\Cms\Controller\Router::class,
             [
                 'eventManager' => $this->eventManagerMock,
                 'pageFactory' => $this->pageFactoryMock,
@@ -100,8 +82,8 @@ class RouterTest extends TestCase
         $pageId = 1;
         $storeId = 1;
 
-        /** @var RequestInterface|MockObject $requestMock */
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock */
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods([
                 'getPathInfo',
                 'setModuleName',
@@ -132,10 +114,10 @@ class RouterTest extends TestCase
             ->willReturnSelf();
         $requestMock->expects($this->once())
             ->method('setAlias')
-            ->with(Url::REWRITE_REQUEST_PATH_ALIAS, $trimmedIdentifier)
+            ->with(\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS, $trimmedIdentifier)
             ->willReturnSelf();
 
-        $condition = new DataObject(['identifier' => $trimmedIdentifier, 'continue' => true]);
+        $condition = new \Magento\Framework\DataObject(['identifier' => $trimmedIdentifier, 'continue' => true]);
 
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')
@@ -148,7 +130,7 @@ class RouterTest extends TestCase
             )
             ->willReturnSelf();
 
-        $pageMock = $this->getMockBuilder(Page::class)
+        $pageMock = $this->getMockBuilder(\Magento\Cms\Model\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
         $pageMock->expects($this->once())
@@ -164,12 +146,12 @@ class RouterTest extends TestCase
             ->method('getId')
             ->willReturn($storeId);
 
-        $actionMock = $this->getMockBuilder(ActionInterface::class)
+        $actionMock = $this->getMockBuilder(\Magento\Framework\App\ActionInterface::class)
             ->getMockForAbstractClass();
 
         $this->actionFactoryMock->expects($this->once())
             ->method('create')
-            ->with(Forward::class)
+            ->with(\Magento\Framework\App\Action\Forward::class)
             ->willReturn($actionMock);
 
         $this->assertEquals($actionMock, $this->router->match($requestMock));

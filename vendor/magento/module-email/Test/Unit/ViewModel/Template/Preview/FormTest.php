@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Email\Test\Unit\ViewModel\Template\Preview;
 
@@ -11,21 +10,21 @@ use Magento\Email\ViewModel\Template\Preview\Form;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class FormTest
+ *
  * @covers \Magento\Email\ViewModel\Template\Preview\Form
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Form */
     protected $form;
 
-    /** @var  Http|MockObject  */
+    /** @var  Http|\PHPUnit_Framework_MockObject_MockObject  */
     protected $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->requestMock = $this->createPartialMock(
             Http::class,
@@ -68,13 +67,13 @@ class FormTest extends TestCase
      * Tests that an exception is thrown when a required parameter is missing for the request type.
      *
      * @dataProvider getFormFieldsInvalidDataProvider
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Missing expected parameter
      * @param string $httpMethod
      * @param array $httpParams
      */
     public function testGetFormFieldsMissingParameter(string $httpMethod, array $httpParams)
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Missing expected parameter');
         $this->requestMock->expects($this->once())
             ->method('getMethod')
             ->willReturn($httpMethod);

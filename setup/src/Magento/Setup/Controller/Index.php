@@ -6,8 +6,8 @@
 
 namespace Magento\Setup\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\ViewModel;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 /**
  * Main controller of the Setup Wizard
@@ -15,9 +15,7 @@ use Laminas\View\Model\ViewModel;
 class Index extends AbstractActionController
 {
     /**
-     * Index action
-     *
-     * @return ViewModel|\Laminas\Http\Response
+     * @return ViewModel|\Zend\Http\Response
      */
     public function indexAction()
     {

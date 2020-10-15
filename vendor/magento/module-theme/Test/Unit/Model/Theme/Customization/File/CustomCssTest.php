@@ -3,32 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Theme\Customization\File;
 
-use Magento\Framework\Filesystem;
-use Magento\Framework\View\Design\Theme\Customization\Path;
-use Magento\Framework\View\Design\Theme\FileFactory;
-use Magento\Framework\View\Design\Theme\FileInterface;
-use Magento\Theme\Model\Theme\Customization\File\CustomCss;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Theme\Model\Theme\Customization\File\CustomCss;
 
-class CustomCssTest extends TestCase
+class CustomCssTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Path
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\Customization\Path
      */
     protected $customizationPath;
 
     /**
-     * @var MockObject|FileFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\FileFactory
      */
     protected $fileFactory;
 
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem
      */
     protected $filesystem;
 
@@ -40,16 +32,16 @@ class CustomCssTest extends TestCase
     /**
      * Initialize testable object
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customizationPath = $this->getMockBuilder(Path::class)
+        $this->customizationPath = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Customization\Path::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->fileFactory = $this->getMockBuilder(FileFactory::class)
+        $this->fileFactory = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\FileFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -66,7 +58,7 @@ class CustomCssTest extends TestCase
      */
     public function testPrepareFile()
     {
-        $file = $this->getMockBuilder(FileInterface::class)
+        $file = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\FileInterface::class)
             ->setMethods(
                 [
                     'delete',
@@ -84,7 +76,7 @@ class CustomCssTest extends TestCase
                     'setData',
                 ]
             )
-            ->getMockForAbstractClass();
+            ->getMock();
         $file->expects($this->any())
             ->method('setData')
             ->willReturnMap(
@@ -107,9 +99,9 @@ class CustomCssTest extends TestCase
             ->method('setFileName')
             ->with(CustomCss::FILE_NAME);
 
-        /** @var FileInterface $file */
+        /** @var $file \Magento\Framework\View\Design\Theme\FileInterface */
         $this->assertInstanceOf(
-            CustomCss::class,
+            \Magento\Theme\Model\Theme\Customization\File\CustomCss::class,
             $this->object->prepareFile($file)
         );
     }

@@ -15,12 +15,12 @@ class GuestCartRepositoryTest extends WebapiAbstract
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         try {
             $cart = $this->getCart('test01');
@@ -91,9 +91,9 @@ class GuestCartRepositoryTest extends WebapiAbstract
         $this->assertEquals($cart->getItemsCount(), $cartData['items_count']);
         $this->assertEquals($cart->getItemsQty(), $cartData['items_qty']);
         //following checks will be uncommented when all cart related services are ready
-        $this->assertArrayHasKey('customer', $cartData);
-        $this->assertTrue($cartData['customer_is_guest']);
-        $this->assertArrayHasKey('currency', $cartData);
+        $this->assertContains('customer', $cartData);
+        $this->assertEquals(true, $cartData['customer_is_guest']);
+        $this->assertContains('currency', $cartData);
         $this->assertEquals($cart->getGlobalCurrencyCode(), $cartData['currency']['global_currency_code']);
         $this->assertEquals($cart->getBaseCurrencyCode(), $cartData['currency']['base_currency_code']);
         $this->assertEquals($cart->getQuoteCurrencyCode(), $cartData['currency']['quote_currency_code']);
@@ -105,12 +105,11 @@ class GuestCartRepositoryTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage No such entity with
      */
     public function testGetCartThrowsExceptionIfThereIsNoCartWithProvidedId()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('No such entity with');
-
         $cartId = 9999;
 
         $serviceInfo = [

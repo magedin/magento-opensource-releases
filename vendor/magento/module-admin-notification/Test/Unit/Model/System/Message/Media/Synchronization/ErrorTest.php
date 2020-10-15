@@ -3,48 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AdminNotification\Test\Unit\Model\System\Message\Media\Synchronization;
 
-use Magento\AdminNotification\Model\System\Message\Media\Synchronization\Error;
-use Magento\Framework\Notification\MessageInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Model\File\Storage\Flag;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ErrorTest extends TestCase
+class ErrorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_syncFlagMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_fileStorage;
 
     /**
-     * @var Error
+     * @var \Magento\AdminNotification\Model\System\Message\Media\Synchronization\Error
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_syncFlagMock = $this->createPartialMock(
-            Flag::class,
-            ['save', 'getFlagData']
+            \Magento\MediaStorage\Model\File\Storage\Flag::class,
+            ['setState', 'save', 'getFlagData']
         );
 
-        $this->_fileStorage = $this->createMock(Flag::class);
-        $this->_fileStorage->method('loadSelf')->willReturn($this->_syncFlagMock);
+        $this->_fileStorage = $this->createMock(\Magento\MediaStorage\Model\File\Storage\Flag::class);
+        $this->_fileStorage->expects($this->any())->method('loadSelf')->will($this->returnValue($this->_syncFlagMock));
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $arguments = ['fileStorage' => $this->_fileStorage];
         $this->_model = $objectManagerHelper->getObject(
-            Error::class,
+            \Magento\AdminNotification\Model\System\Message\Media\Synchronization\Error::class,
             $arguments
         );
     }
@@ -52,7 +43,8 @@ class ErrorTest extends TestCase
     public function testGetText()
     {
         $messageText = 'We were unable to synchronize one or more media files.';
-        $this->assertStringContainsString($messageText, (string)$this->_model->getText());
+
+        $this->assertContains($messageText, (string)$this->_model->getText());
     }
 
     /**
@@ -63,16 +55,17 @@ class ErrorTest extends TestCase
     public function testIsDisplayed($expectedFirstRun, $data)
     {
         $arguments = ['fileStorage' => $this->_fileStorage];
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         // create new instance to ensure that it hasn't been displayed yet (var $this->_isDisplayed is unset)
-        /** @var Error $model */
+        /** @var $model \Magento\AdminNotification\Model\System\Message\Media\Synchronization\Error */
         $model = $objectManagerHelper->getObject(
-            Error::class,
+            \Magento\AdminNotification\Model\System\Message\Media\Synchronization\Error::class,
             $arguments
         );
 
-        $this->_syncFlagMock->method('save');
-        $this->_syncFlagMock->method('getFlagData')->willReturn($data);
+        $this->_syncFlagMock->expects($this->any())->method('setState');
+        $this->_syncFlagMock->expects($this->any())->method('save');
+        $this->_syncFlagMock->expects($this->any())->method('getFlagData')->will($this->returnValue($data));
         //check first call
         $this->assertEquals($expectedFirstRun, $model->isDisplayed());
         //check second call(another branch of if operator)
@@ -99,7 +92,7 @@ class ErrorTest extends TestCase
 
     public function testGetSeverity()
     {
-        $severity = MessageInterface::SEVERITY_MAJOR;
+        $severity = \Magento\Framework\Notification\MessageInterface::SEVERITY_MAJOR;
         $this->assertEquals($severity, $this->_model->getSeverity());
     }
 }

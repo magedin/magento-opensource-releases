@@ -7,16 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\CardinalCommerce\Test\Unit\Model\Response;
 
-use Magento\CardinalCommerce\Model\Config;
-use Magento\CardinalCommerce\Model\JwtManagement;
 use Magento\CardinalCommerce\Model\Response\JwtParser;
+use Magento\CardinalCommerce\Model\Config;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\CardinalCommerce\Model\JwtManagement;
 use Magento\CardinalCommerce\Model\Response\JwtPayloadValidatorInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class JwtParserTest extends TestCase
+/**
+ * Class \Magento\CardinalCommerce\Test\Unit\Model\Response\JwtParserTest
+ */
+class JwtParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -29,24 +30,24 @@ class JwtParserTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject|Config
+     * @var \PHPUnit_Framework_MockObject_MockObject | Config
      */
     private $configMock;
 
     /**
-     * @var MockObject|JwtManagement
+     * @var \PHPUnit_Framework_MockObject_MockObject | JwtManagement
      */
     private $jwtManagementMock;
 
     /**
-     * @var MockObject|JwtPayloadValidatorInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | JwtPayloadValidatorInterface
      */
     private $jwtPayloadValidatorMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -63,7 +64,7 @@ class JwtParserTest extends TestCase
         $this->jwtPayloadValidatorMock = $this->getMockBuilder(JwtPayloadValidatorInterface::class)
             ->setMethods(['validate'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = $this->objectManager->getObject(
             JwtParser::class,

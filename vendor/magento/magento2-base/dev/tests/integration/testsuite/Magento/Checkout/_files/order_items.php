@@ -6,10 +6,9 @@
 
 use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/products.php');
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/orders.php');
+require 'products.php';
+require 'orders.php';
 
 $objectManager = Bootstrap::getObjectManager();
 

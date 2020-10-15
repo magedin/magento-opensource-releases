@@ -11,14 +11,8 @@
  */
 namespace Magento\Framework\Data\Form\Element;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
-/**
- * Link form element widget.
- */
 class Link extends AbstractElement
 {
     /**
@@ -26,20 +20,14 @@ class Link extends AbstractElement
      * @param CollectionFactory $factoryCollection
      * @param Escaper $escaper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureHtmlRenderer
-     * @param Random|null $random
      */
     public function __construct(
         Factory $factoryElement,
         CollectionFactory $factoryCollection,
         Escaper $escaper,
-        $data = [],
-        ?SecureHtmlRenderer $secureHtmlRenderer = null,
-        ?Random $random = null
+        $data = []
     ) {
-        $secureHtmlRenderer = $secureHtmlRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-        $random = $random ?? ObjectManager::getInstance()->get(Random::class);
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data, $secureHtmlRenderer, $random);
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
         $this->setType('link');
     }
 

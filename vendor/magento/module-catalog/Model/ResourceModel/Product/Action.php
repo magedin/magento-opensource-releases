@@ -3,81 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Model\ResourceModel\Product;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Model\AbstractModel;
-use Magento\Catalog\Model\Factory;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type;
-use Magento\Catalog\Model\Product\TypeTransitionManager;
-use Magento\Catalog\Model\ResourceModel\AbstractResource;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\UniqueValidationInterface;
-use Magento\Eav\Model\Entity\Context;
-use Magento\Framework\DataObject;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Catalog Product Mass processing resource model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Action extends AbstractResource
+class Action extends \Magento\Catalog\Model\ResourceModel\AbstractResource
 {
     /**
-     * @var DateTime
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
     private $dateTime;
 
     /**
-     * @var ProductCollectionFactory
-     */
-    private $productCollectionFactory;
-
-    /**
-     * @var TypeTransitionManager
-     */
-    private $typeTransitionManager;
-
-    /**
-     * Entity type id values to save
-     *
-     * @var array
-     */
-    private $typeIdValuesToSave = [];
-
-    /**
-     * @param Context $context
-     * @param StoreManagerInterface $storeManager
-     * @param Factory $modelFactory
-     * @param UniqueValidationInterface $uniqueValidator
-     * @param DateTime $dateTime
-     * @param CollectionFactory $productCollectionFactory
-     * @param TypeTransitionManager $typeTransitionManager
+     * @param \Magento\Eav\Model\Entity\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Catalog\Model\Factory $modelFactory
+     * @param \Magento\Eav\Model\Entity\Attribute\UniqueValidationInterface $uniqueValidator
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        StoreManagerInterface $storeManager,
-        Factory $modelFactory,
-        UniqueValidationInterface $uniqueValidator,
-        DateTime $dateTime,
-        ProductCollectionFactory $productCollectionFactory,
-        TypeTransitionManager $typeTransitionManager,
+        \Magento\Eav\Model\Entity\Context $context,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Catalog\Model\Factory $modelFactory,
+        \Magento\Eav\Model\Entity\Attribute\UniqueValidationInterface $uniqueValidator,
+        \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
         $data = []
     ) {
         parent::__construct($context, $storeManager, $modelFactory, $data, $uniqueValidator);
 
         $this->dateTime = $dateTime;
-        $this->productCollectionFactory = $productCollectionFactory;
-        $this->typeTransitionManager = $typeTransitionManager;
     }
 
     /**
@@ -89,7 +50,7 @@ class Action extends AbstractResource
     {
         $resource = $this->_resource;
         $this->setType(
-            Product::ENTITY
+            \Magento\Catalog\Model\Product::ENTITY
         )->setConnection(
             $resource->getConnection('catalog')
         );
@@ -106,18 +67,13 @@ class Action extends AbstractResource
      */
     public function updateAttributes($entityIds, $attrData, $storeId)
     {
-        $object = new DataObject();
+        $object = new \Magento\Framework\DataObject();
         $object->setStoreId($storeId);
 
         $attrData[ProductInterface::UPDATED_AT] = $this->dateTime->gmtDate();
         $this->getConnection()->beginTransaction();
         try {
             foreach ($attrData as $attrCode => $value) {
-                if ($attrCode === ProductAttributeInterface::CODE_HAS_WEIGHT) {
-                    $this->updateHasWeightAttribute($entityIds, $value);
-                    continue;
-                }
-
                 $attribute = $this->getAttribute($attrCode);
                 if (!$attribute->getAttributeId()) {
                     continue;
@@ -149,7 +105,7 @@ class Action extends AbstractResource
     /**
      * Insert or Update attribute data
      *
-     * @param AbstractModel $object
+     * @param \Magento\Catalog\Model\AbstractModel $object
      * @param AbstractAttribute $attribute
      * @param mixed $value
      * @return $this
@@ -180,13 +136,13 @@ class Action extends AbstractResource
         }
 
         $data = $attribute->isStatic()
-            ? new DataObject(
+            ? new \Magento\Framework\DataObject(
                 [
                     $this->getLinkField() => $entityId,
                     $attribute->getAttributeCode() => $this->_prepareValueForSave($value, $attribute),
                 ]
             )
-            : new DataObject(
+            : new \Magento\Framework\DataObject(
                 [
                     'attribute_id' => $attribute->getAttributeId(),
                     'store_id' => $storeId,
@@ -222,10 +178,9 @@ class Action extends AbstractResource
     }
 
     /**
-     * Resolve entity id for current entity
+     * Resolve entity id
      *
      * @param int $entityId
-     *
      * @return int
      */
     protected function resolveEntityId($entityId)
@@ -238,88 +193,5 @@ class Action extends AbstractResource
         $select->from($tableName, [$this->getLinkField()])
             ->where('entity_id = ?', $entityId);
         return $this->getConnection()->fetchOne($select);
-    }
-
-    /**
-     * Process product_has_weight attribute update
-     *
-     * @param array $entityIds
-     * @param string $value
-     */
-    private function updateHasWeightAttribute($entityIds, $value): void
-    {
-        $productCollection = $this->productCollectionFactory->create();
-        $productCollection->addIdFilter($entityIds);
-        // Type can be changed depending on weight only between simple and virtual products
-        $productCollection->addFieldToFilter(
-            Product::TYPE_ID,
-            [
-                'in' => [
-                    Type::TYPE_SIMPLE,
-                    Type::TYPE_VIRTUAL
-                ]
-            ]
-        );
-        $productCollection->addFieldToSelect(Product::TYPE_ID);
-        $i = 0;
-
-        foreach ($productCollection->getItems() as $product) {
-            $product->setData(ProductAttributeInterface::CODE_HAS_WEIGHT, $value);
-            $oldTypeId = $product->getTypeId();
-            $this->typeTransitionManager->processProduct($product);
-
-            if ($oldTypeId !== $product->getTypeId()) {
-                $i++;
-                $this->saveTypeIdValue($product);
-
-                // save collected data every 1000 rows
-                if ($i % 1000 === 0) {
-                    $this->processTypeIdValues();
-                }
-            }
-        }
-
-        $this->processTypeIdValues();
-    }
-
-    /**
-     * Save type id value to be updated
-     *
-     * @param Product $product
-     * @return $this
-     */
-    private function saveTypeIdValue($product): self
-    {
-        $typeId = $product->getTypeId();
-
-        if (!array_key_exists($typeId, $this->typeIdValuesToSave)) {
-            $this->typeIdValuesToSave[$typeId] = [];
-        }
-
-        $this->typeIdValuesToSave[$typeId][] = $product->getId();
-
-        return $this;
-    }
-
-    /**
-     * Update type id values
-     *
-     * @return $this
-     */
-    private function processTypeIdValues(): self
-    {
-        $connection = $this->getConnection();
-        $table = $this->getTable('catalog_product_entity');
-
-        foreach ($this->typeIdValuesToSave as $typeId => $entityIds) {
-            $connection->update(
-                $table,
-                ['type_id' => $typeId],
-                ['entity_id IN (?)' => $entityIds]
-            );
-        }
-        $this->typeIdValuesToSave = [];
-
-        return $this;
     }
 }

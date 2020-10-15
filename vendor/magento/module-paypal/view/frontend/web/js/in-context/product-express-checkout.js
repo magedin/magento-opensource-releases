@@ -15,8 +15,7 @@ define([
         defaults: {
             productFormSelector: '#product_addtocart_form',
             declinePayment: false,
-            formInvalid: false,
-            productAddedToCart: false
+            formInvalid: false
         },
 
         /** @inheritdoc */
@@ -46,10 +45,9 @@ define([
         onClick: function () {
             var $form = $(this.productFormSelector);
 
-            if (!this.declinePayment && !this.productAddedToCart) {
+            if (!this.declinePayment) {
                 $form.submit();
                 this.formInvalid = !$form.validation('isValid');
-                this.productAddedToCart = true;
             }
         },
 
@@ -76,51 +74,14 @@ define([
             return promise;
         },
 
-        /**
-         * After payment execute
-         *
-         * @param {Object} res
-         * @param {Function} resolve
-         * @param {Function} reject
-         *
-         * @return {*}
-         */
-        afterPayment: function (res, resolve, reject) {
-            if (res.success) {
-                return resolve(res.token);
-            }
-
-            this.addAlert(res['error_message']);
-
-            return reject(new Error(res['error_message']));
-        },
-
         /** @inheritdoc */
         prepareClientConfig: function () {
             this._super();
             this.clientConfig.quoteId = '';
             this.clientConfig.customerId = '';
+            this.clientConfig.commit = false;
 
             return this.clientConfig;
-        },
-
-        /** @inheritdoc */
-        onError: function (err) {
-            this.productAddedToCart = false;
-            this._super(err);
-        },
-
-        /** @inheritdoc */
-        onCancel: function (data, actions) {
-            this.productAddedToCart = false;
-            this._super(data, actions);
-        },
-
-        /** @inheritdoc */
-        afterOnAuthorize: function (res, resolve, reject, actions) {
-            this.productAddedToCart = false;
-
-            return this._super(res, resolve, reject, actions);
         }
     });
 });

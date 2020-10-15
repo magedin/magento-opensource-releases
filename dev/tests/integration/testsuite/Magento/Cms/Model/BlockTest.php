@@ -40,7 +40,7 @@ class BlockTest extends TestCase
      */
     private $blockIdentifier;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 

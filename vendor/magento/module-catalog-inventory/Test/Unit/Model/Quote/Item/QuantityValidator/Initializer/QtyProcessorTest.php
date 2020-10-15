@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Model\Quote\Item\QuantityValidator\Initializer;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\Initializer\QtyProcessor;
-use Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\QuoteItemQtyList;
-use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\Initializer\QtyProcessor;
 
-class QtyProcessorTest extends TestCase
+class QtyProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QtyProcessor
@@ -22,24 +15,24 @@ class QtyProcessorTest extends TestCase
     protected $qtyProcessor;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteItemQtyList;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->quoteItemQtyList = $this->getMockBuilder(
-            QuoteItemQtyList::class
+            \Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\QuoteItemQtyList::class
         )
             ->disableOriginalConstructor()
             ->getMock();
         $this->qtyProcessor = new QtyProcessor($this->quoteItemQtyList);
-        $this->itemMock = $this->getMockBuilder(Item::class)
+        $this->itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getParentItem', 'getProduct', '__wakeup'])
             ->getMock();
@@ -47,12 +40,12 @@ class QtyProcessorTest extends TestCase
 
     public function testSetItem()
     {
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->assertInstanceOf(
-            QtyProcessor::class,
+            \Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\Initializer\QtyProcessor::class,
             $this->qtyProcessor->setItem($itemMock)
         );
     }
@@ -61,10 +54,10 @@ class QtyProcessorTest extends TestCase
     {
         $qty = 1;
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
         $itemMock->expects($this->any())
@@ -78,19 +71,21 @@ class QtyProcessorTest extends TestCase
         $this->assertEquals($qty, $this->qtyProcessor->getRowQty($qty));
     }
 
+    /**
+     */
     public function testGetQtyForCheckNoParentItem()
     {
         $qty = 1;
         $productId = 1;
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', '__wakeup'])
             ->getMock();
         $productMock->expects($this->once())
             ->method('getId')
             ->willReturn($productId);
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
         $itemMock->expects($this->any())
@@ -110,14 +105,14 @@ class QtyProcessorTest extends TestCase
         $qty = 1;
         $productId = 1;
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', '__wakeup'])
             ->getMock();
         $productMock->expects($this->once())
             ->method('getId')
             ->willReturn($productId);
-        $parentItemMock = $this->getMockBuilder(Item::class)
+        $parentItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->itemMock->expects($this->any())

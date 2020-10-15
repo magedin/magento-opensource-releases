@@ -3,136 +3,88 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Test\Unit\Model;
 
-use Magento\AsynchronousOperations\Api\Data\OperationInterfaceFactory;
-use Magento\AsynchronousOperations\Model\OperationManagement;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class OperationManagementTest extends TestCase
+/**
+ * Class OperationManagementTest
+ */
+class OperationManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OperationManagement
+     * @var \Magento\AsynchronousOperations\Model\OperationManagement
      */
     private $model;
 
     /**
-     * @var OperationInterfaceFactory|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $entityManagerMock;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $operationFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $operationMock;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
-
-    /**
-     * @var ResourceConnection|MockObject
-     */
-    private $resourceConnectionMock;
-
-    protected function setUp(): void
+    
+    protected function setUp()
     {
+        $this->entityManagerMock = $this->createMock(\Magento\Framework\EntityManager\EntityManager::class);
+        $this->metadataPoolMock = $this->createMock(\Magento\Framework\EntityManager\MetadataPool::class);
         $this->operationFactoryMock = $this->createPartialMock(
-            OperationInterfaceFactory::class,
+            \Magento\AsynchronousOperations\Api\Data\OperationInterfaceFactory::class,
             ['create']
         );
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getConnection', 'getTableName'])
-            ->getMock();
-
-        $this->model = new OperationManagement(
+        $this->operationMock =
+            $this->createMock(\Magento\AsynchronousOperations\Api\Data\OperationInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->model = new \Magento\AsynchronousOperations\Model\OperationManagement(
+            $this->entityManagerMock,
             $this->operationFactoryMock,
-            $this->loggerMock,
-            $this->resourceConnectionMock
+            $this->loggerMock
         );
     }
 
-    /**
-     * Test change operation status.
-     */
     public function testChangeOperationStatus()
     {
-        $operationKey = 1;
+        $operationId = 1;
         $status = 1;
         $message = 'Message';
         $data = 'data';
         $errorCode = 101;
-        $bulkUuid = '13f85e88-be1d-4ce7-8570-88637a589930';
-
-        $tableName = 'magento_operation';
-
-        $bind = [
-            'error_code' => $errorCode,
-            'status' => $status,
-            'result_message' => $message,
-            'serialized_data' => $data,
-            'result_serialized_data' => ''
-        ];
-        $where = ['bulk_uuid = ?' => $bulkUuid, 'operation_key = ?' => $operationKey];
-
-        $connection = $this->getMockBuilder(AdapterInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->resourceConnectionMock->expects($this->atLeastOnce())
-            ->method('getConnection')->with('default')
-            ->willReturn($connection);
-        $this->resourceConnectionMock->expects($this->once())->method('getTableName')->with($tableName)
-            ->willReturn($tableName);
-
-        $connection->expects($this->once())->method('update')->with($tableName, $bind, $where)
-            ->willReturn(1);
-        $this->assertTrue(
-            $this->model->changeOperationStatus($bulkUuid, $operationKey, $status, $errorCode, $message, $data)
-        );
+        $this->operationFactoryMock->expects($this->once())->method('create')->willReturn($this->operationMock);
+        $this->entityManagerMock->expects($this->once())->method('load')->with($this->operationMock, $operationId);
+        $this->operationMock->expects($this->once())->method('setStatus')->with($status)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setResultMessage')->with($message)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setSerializedData')->with($data)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setErrorCode')->with($errorCode)->willReturnSelf();
+        $this->entityManagerMock->expects($this->once())->method('save')->with($this->operationMock);
+        $this->assertTrue($this->model->changeOperationStatus($operationId, $status, $errorCode, $message, $data));
     }
 
-    /**
-     * Test generic exception throw case.
-     */
     public function testChangeOperationStatusIfExceptionWasThrown()
     {
-        $operationKey = 1;
+        $operationId = 1;
         $status = 1;
         $message = 'Message';
         $data = 'data';
         $errorCode = 101;
-        $bulkUuid = '13f85e88-be1d-4ce7-8570-88637a589930';
-
-        $tableName = 'magento_operation';
-
-        $bind = [
-            'error_code' => $errorCode,
-            'status' => $status,
-            'result_message' => $message,
-            'serialized_data' => $data,
-            'result_serialized_data' => ''
-        ];
-        $where = ['bulk_uuid = ?' => $bulkUuid, 'operation_key = ?' => $operationKey];
-
-        $connection = $this->getMockBuilder(AdapterInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->resourceConnectionMock->expects($this->atLeastOnce())
-            ->method('getConnection')->with('default')
-            ->willReturn($connection);
-        $this->resourceConnectionMock->expects($this->once())
-            ->method('getTableName')->with($tableName)
-            ->willReturn($tableName);
-
-        $connection->expects($this->once())->method('update')->with($tableName, $bind, $where)
-            ->willThrowException(new \Exception());
+        $this->operationFactoryMock->expects($this->once())->method('create')->willReturn($this->operationMock);
+        $this->entityManagerMock->expects($this->once())->method('load')->with($this->operationMock, $operationId);
+        $this->operationMock->expects($this->once())->method('setStatus')->with($status)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setResultMessage')->with($message)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setSerializedData')->with($data)->willReturnSelf();
+        $this->operationMock->expects($this->once())->method('setErrorCode')->with($errorCode)->willReturnSelf();
+        $this->entityManagerMock->expects($this->once())->method('save')->willThrowException(new \Exception());
         $this->loggerMock->expects($this->once())->method('critical');
-        $this->assertFalse(
-            $this->model->changeOperationStatus($bulkUuid, $operationKey, $status, $errorCode, $message, $data)
-        );
+        $this->assertFalse($this->model->changeOperationStatus($operationId, $status, $errorCode, $message, $data));
     }
 }

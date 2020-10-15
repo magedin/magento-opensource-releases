@@ -45,7 +45,7 @@ class ColumnTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->customerSession = $this->objectManager->get(Session::class);
@@ -58,7 +58,7 @@ class ColumnTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->customerSession->setCustomerId(null);
 

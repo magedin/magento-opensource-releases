@@ -10,7 +10,7 @@ namespace Magento\Framework\Interception;
  */
 class TwoPluginTest extends AbstractPlugin
 {
-    protected function setUp(): void
+    public function setUp()
     {
         $this->setUpInterceptionConfig(
             [\Magento\Framework\Interception\Fixture\Intercepted::class => [

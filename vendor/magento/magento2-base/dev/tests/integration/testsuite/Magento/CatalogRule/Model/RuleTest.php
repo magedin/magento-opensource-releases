@@ -16,19 +16,19 @@ class RuleTest extends \PHPUnit\Framework\TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $resourceMock = $this->createPartialMock(
             \Magento\CatalogRule\Model\ResourceModel\Rule::class,
             ['getIdFieldName', 'getRulesFromProduct']
         );
-        $resourceMock->expects($this->any())->method('getIdFieldName')->willReturn('id');
+        $resourceMock->expects($this->any())->method('getIdFieldName')->will($this->returnValue('id'));
         $resourceMock->expects(
             $this->any()
         )->method(
             'getRulesFromProduct'
-        )->willReturn(
-            $this->_getCatalogRulesFixtures()
+        )->will(
+            $this->returnValue($this->_getCatalogRulesFixtures())
         );
 
         $this->_object = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(

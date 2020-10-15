@@ -11,20 +11,21 @@ namespace Magento\Email\Test\Unit\Block\Adminhtml\Template\Render;
 use Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Type;
 use Magento\Framework\DataObject;
 use Magento\Framework\Phrase;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TypeTest extends TestCase
+/**
+ * Class \Magento\Email\Test\Unit\Block\Adminhtml\Template\Render\TypeTest
+ */
+class TypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Type
+     * @var \PHPUnit_Framework_MockObject_MockObject|Type
      */
     protected $block;
 
     /**
      * Setup environment
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->block = $this->getMockBuilder(Type::class)
             ->disableOriginalConstructor()

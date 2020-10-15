@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Customer;
 
 use Magento\Customer\Model\Customer\NotificationStorage;
-use Magento\Framework\Cache\FrontendInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class NotificationStorageTest extends TestCase
+class NotificationStorageTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -23,24 +16,24 @@ class NotificationStorageTest extends TestCase
     private $notificationStorage;
 
     /**
-     * @var FrontendInterface|MockObject
+     * @var \Magento\Framework\Cache\FrontendInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->cacheMock = $this->getMockForAbstractClass(FrontendInterface::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->cacheMock = $this->createMock(\Magento\Framework\Cache\FrontendInterface::class);
         $this->notificationStorage = $objectManager->getObject(
             NotificationStorage::class,
             ['cache' => $this->cacheMock]
         );
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
         $objectManager->setBackwardCompatibleProperty($this->notificationStorage, 'serializer', $this->serializerMock);
     }
 

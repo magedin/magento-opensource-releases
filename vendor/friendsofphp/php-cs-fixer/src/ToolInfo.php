@@ -46,9 +46,7 @@ final class ToolInfo implements ToolInfoInterface
         if (null === $this->composerInstallationDetails) {
             $composerInstalled = json_decode(file_get_contents($this->getComposerInstalledFile()), true);
 
-            $packages = isset($composerInstalled['packages']) ? $composerInstalled['packages'] : $composerInstalled;
-
-            foreach ($packages as $package) {
+            foreach ($composerInstalled as $package) {
                 if (\in_array($package['name'], [self::COMPOSER_PACKAGE_NAME, self::COMPOSER_LEGACY_PACKAGE_NAME], true)) {
                     $this->composerInstallationDetails = $package;
 

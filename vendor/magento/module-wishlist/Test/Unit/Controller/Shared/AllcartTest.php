@@ -3,27 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Controller\Shared;
 
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Controller\Result\Forward;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Wishlist\Controller\Shared\Allcart;
-use Magento\Wishlist\Controller\Shared\WishlistProvider;
-use Magento\Wishlist\Model\ItemCarrier;
-use Magento\Wishlist\Model\Wishlist;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Controller\ResultFactory;
 
-class AllcartTest extends TestCase
+class AllcartTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Allcart
+     * @var \Magento\Wishlist\Controller\Shared\Allcart
      */
     protected $allcartController;
 
@@ -33,66 +21,66 @@ class AllcartTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Context
+     * @var \Magento\Framework\App\Action\Context
      */
     protected $context;
 
     /**
-     * @var WishlistProvider|MockObject
+     * @var \Magento\Wishlist\Controller\Shared\WishlistProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $wishlistProviderMock;
 
     /**
-     * @var ItemCarrier|MockObject
+     * @var \Magento\Wishlist\Model\ItemCarrier|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemCarrierMock;
 
     /**
-     * @var Wishlist|MockObject
+     * @var \Magento\Wishlist\Model\Wishlist|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $wishlistMock;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirectMock;
 
     /**
-     * @var Forward|MockObject
+     * @var \Magento\Framework\Controller\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultForwardMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->wishlistProviderMock = $this->getMockBuilder(WishlistProvider::class)
+        $this->wishlistProviderMock = $this->getMockBuilder(\Magento\Wishlist\Controller\Shared\WishlistProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->itemCarrierMock = $this->getMockBuilder(ItemCarrier::class)
+        $this->itemCarrierMock = $this->getMockBuilder(\Magento\Wishlist\Model\ItemCarrier::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->wishlistMock = $this->getMockBuilder(Wishlist::class)
+        $this->wishlistMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultForwardMock = $this->getMockBuilder(Forward::class)
+        $this->resultForwardMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -107,14 +95,14 @@ class AllcartTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->context = $this->objectManagerHelper->getObject(
-            Context::class,
+            \Magento\Framework\App\Action\Context::class,
             [
                 'request' => $this->requestMock,
                 'resultFactory' => $this->resultFactoryMock
             ]
         );
         $this->allcartController = $this->objectManagerHelper->getObject(
-            Allcart::class,
+            \Magento\Wishlist\Controller\Shared\Allcart::class,
             [
                 'context' => $this->context,
                 'wishlistProvider' => $this->wishlistProviderMock,

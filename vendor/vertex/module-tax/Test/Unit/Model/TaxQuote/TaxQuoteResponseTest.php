@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -8,6 +8,7 @@ namespace Vertex\Tax\Test\Unit\Model\TaxQuote;
 
 use Magento\Framework\DataObject;
 use Magento\Framework\DataObjectFactory;
+use SebastianBergmann\Diff\Line;
 use Vertex\Data\LineItem;
 use Vertex\Data\Tax;
 use Vertex\Services\Quote\Response;
@@ -21,7 +22,7 @@ class TaxQuoteResponseTest extends TestCase
 
     private $dataObjectFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->dataObjectFactory = $this->createMock(DataObjectFactory::class);
@@ -76,7 +77,7 @@ class TaxQuoteResponseTest extends TestCase
         $response->prepareQuoteTaxedItems($this->response->getLineItems());
 
         $result = $response->getQuoteTaxedItems();
-        $this->assertIsArray($result);
+        $this->assertInternalType('array', $result);
         $this->assertCount(2, $result);
 
         $this->assertTrue(isset($result[1]));

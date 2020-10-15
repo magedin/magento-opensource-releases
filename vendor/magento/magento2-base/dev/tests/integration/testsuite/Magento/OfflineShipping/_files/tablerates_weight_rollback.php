@@ -5,6 +5,4 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/OfflineShipping/_files/tablerates_rollback.php');
+require 'tablerates_rollback.php';

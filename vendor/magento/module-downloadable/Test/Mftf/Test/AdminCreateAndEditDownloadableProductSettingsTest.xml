@@ -20,25 +20,25 @@
         </annotations>
         <before>
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Delete created downloadable product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="DownloadableProduct"/>
             </actionGroup>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create new downloadable product -->
-        <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createDownloadableProduct">
+        <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="createDownloadableProduct">
             <argument name="productType" value="downloadable"/>
         </actionGroup>
 
         <!-- Fill all main fields -->
-        <actionGroup ref="FillMainProductFormNoWeightActionGroup" stepKey="fillMainProductForm">
+        <actionGroup ref="fillMainProductFormNoWeight" stepKey="fillMainProductForm">
             <argument name="product" value="DownloadableProduct"/>
         </actionGroup>
 
@@ -53,7 +53,7 @@
         </actionGroup>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveButton"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveButton"/>
 
         <!-- Open product page -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openStorefrontProductPage">
@@ -93,11 +93,11 @@
         <actionGroup ref="AdminSwitchProductGiftMessageStatusActionGroup" stepKey="disableGiftMessageSettings"/>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveProduct"/>
 
         <!-- Verify Url Key after changing -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openProductPage">
-            <argument name="productUrl" value="{{ApiDownloadableProduct.urlKey}}"/>
+            <argument name="productUrl" value="{{ApiDownloadableProduct.name}}"/>
         </actionGroup>
 
         <!-- Assert product design settings "left bar is present at product page with 2 columns" -->

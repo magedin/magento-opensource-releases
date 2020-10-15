@@ -10,7 +10,7 @@ use Magento\Framework\Escaper;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
- * Test for \Magento\Customer\Block\Adminhtml\Edit\Tab\Orders
+ * Class OrdersTest
  *
  * @magentoAppArea adminhtml
  */
@@ -38,7 +38,7 @@ class OrdersTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
@@ -60,7 +60,7 @@ class OrdersTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute post test cleanup.
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->coreRegistry->unregister(RegistryConstants::CURRENT_CUSTOMER_ID);
         $this->block->setCollection(null);
@@ -72,7 +72,7 @@ class OrdersTest extends \PHPUnit\Framework\TestCase
     public function testGetRowUrl()
     {
         $row = new \Magento\Framework\DataObject(['id' => 1]);
-        $this->assertStringContainsString('sales/order/view/order_id/1', $this->block->getRowUrl($row));
+        $this->assertContains('sales/order/view/order_id/1', $this->block->getRowUrl($row));
     }
 
     /**
@@ -80,7 +80,7 @@ class OrdersTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetGridUrl()
     {
-        $this->assertStringContainsString('customer/index/orders', $this->block->getGridUrl());
+        $this->assertContains('customer/index/orders', $this->block->getGridUrl());
     }
 
     /**
@@ -88,7 +88,7 @@ class OrdersTest extends \PHPUnit\Framework\TestCase
      */
     public function testToHtml()
     {
-        $this->assertStringContainsString(
+        $this->assertContains(
             $this->escaper->escapeHtml("We couldn't find any records."),
             $this->block->toHtml()
         );

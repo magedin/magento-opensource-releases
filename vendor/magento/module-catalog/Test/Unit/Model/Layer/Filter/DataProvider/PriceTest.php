@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer\Filter\DataProvider;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Layer;
-use Magento\Catalog\Model\Layer\Filter\DataProvider\Price;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\ScopeInterface;
+use \Magento\Catalog\Model\Layer\Filter\DataProvider\Price;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test for \Magento\Catalog\Model\Layer\Filter\DataProvider\Price
  */
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  Collection|MockObject */
+    /** @var  \Magento\Catalog\Model\ResourceModel\Product\Collection|MockObject */
     private $productCollection;
 
-    /** @var Layer|MockObject */
+    /** @var \Magento\Catalog\Model\Layer|MockObject */
     private $layer;
 
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|MockObject */
     private $coreRegistry;
 
-    /** @var ScopeConfigInterface|MockObject */
+    /** @var \Magento\Framework\App\Config\ScopeConfigInterface|MockObject */
     private $scopeConfig;
 
     /** @var \Magento\Catalog\Model\ResourceModel\Layer\Filter\Price|MockObject */
@@ -44,24 +36,24 @@ class PriceTest extends TestCase
      */
     private $target;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->productCollection = $this->getMockBuilder(Collection::class)
+        $this->productCollection = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getMaxPrice'])
             ->getMock();
-        $this->layer = $this->getMockBuilder(Layer::class)
+        $this->layer = $this->getMockBuilder(\Magento\Catalog\Model\Layer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getProductCollection'])
             ->getMock();
         $this->layer->expects($this->any())
             ->method('getProductCollection')
-            ->willReturn($this->productCollection);
-        $this->coreRegistry = $this->getMockBuilder(Registry::class)
+            ->will($this->returnValue($this->productCollection));
+        $this->coreRegistry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->setMethods(['registry'])
             ->getMock();
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMockForAbstractClass();
@@ -71,7 +63,7 @@ class PriceTest extends TestCase
             ->getMock();
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->target = $objectManagerHelper->getObject(
-            Price::class,
+            \Magento\Catalog\Model\Layer\Filter\DataProvider\Price::class,
             [
                 'layer' => $this->layer,
                 'coreRegistry' => $this->coreRegistry,
@@ -93,11 +85,13 @@ class PriceTest extends TestCase
         $map = $this->getValueMap();
         $this->scopeConfig->expects($this->exactly(5))
             ->method('getValue')
-            ->willReturnCallback(
-                function ($key, $scope) use ($map) {
-                    $this->assertArrayHasKey($key, $map);
-                    return $map[$key]['scope'] === $scope ? $map[$key]['value'] : null;
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($key, $scope) use ($map) {
+                        $this->assertArrayHasKey($key, $map);
+                        return $map[$key]['scope'] === $scope ? $map[$key]['value'] : null;
+                    }
+                )
             );
         $this->assertSame($map[Price::XML_PATH_RANGE_CALCULATION]['value'], $this->target->getRangeCalculationValue());
         $this->assertSame($map[Price::XML_PATH_RANGE_STEP]['value'], $this->target->getRangeStepValue());
@@ -114,41 +108,41 @@ class PriceTest extends TestCase
 
     public function testGetPriceRangeWithRangeInFilter()
     {
-        /** @var Category|MockObject $category */
-        $category = $this->getMockBuilder(Category::class)
+        /** @var \Magento\Catalog\Model\Category|MockObject $category */
+        $category = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->setMethods(['getFilterPriceRange'])
             ->getMock();
         $priceRange = 10;
         $category->expects($this->once())
             ->method('getFilterPriceRange')
-            ->willReturn($priceRange);
+            ->will($this->returnValue($priceRange));
         $this->coreRegistry->expects($this->once())
             ->method('registry')
             ->with('current_category_filter')
-            ->willReturn($category);
+            ->will($this->returnValue($category));
         $this->target->getPriceRange();
     }
 
     public function testGetPriceRangeWithRangeCalculation()
     {
-        /** @var Category|MockObject $category */
-        $category = $this->getMockBuilder(Category::class)
+        /** @var \Magento\Catalog\Model\Category|MockObject $category */
+        $category = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->setMethods(['getFilterPriceRange'])
             ->getMock();
         $priceRange = 0;
         $category->expects($this->once())
             ->method('getFilterPriceRange')
-            ->willReturn($priceRange);
+            ->will($this->returnValue($priceRange));
         $this->coreRegistry->expects($this->once())
             ->method('registry')
             ->with('current_category_filter')
-            ->willReturn($category);
+            ->will($this->returnValue($category));
         $maxPrice = 8000;
         $this->productCollection->expects($this->once())
             ->method('getMaxPrice')
-            ->willReturn($maxPrice);
+            ->will($this->returnValue($maxPrice));
         $this->target->getPriceRange();
     }
 
@@ -157,7 +151,7 @@ class PriceTest extends TestCase
         $maxPrice = 8000;
         $this->productCollection->expects($this->once())
             ->method('getMaxPrice')
-            ->willReturn($maxPrice);
+            ->will($this->returnValue($maxPrice));
         $this->assertSame((float)$maxPrice, $this->target->getMaxPrice());
     }
 
@@ -184,7 +178,6 @@ class PriceTest extends TestCase
             ['filter' => '0', 'result' => false],
             ['filter' => 0, 'result' => false],
             ['filter' => '100500INF', 'result' => false],
-            ['filter' => '-10\'[0]', 'result' => false],
         ];
     }
 
@@ -200,7 +193,7 @@ class PriceTest extends TestCase
         $this->resource->expects($this->once())
             ->method('getCount')
             ->with($range)
-            ->willReturn($count);
+            ->will($this->returnValue($count));
         $this->assertSame($count, $this->target->getRangeItemCounts($range));
     }
 
@@ -211,23 +204,23 @@ class PriceTest extends TestCase
     {
         return [
             Price::XML_PATH_RANGE_CALCULATION => [
-                'scope' => ScopeInterface::SCOPE_STORE,
+                'scope' => \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 'value' => 111,
             ],
             Price::XML_PATH_RANGE_STEP => [
-                'scope' => ScopeInterface::SCOPE_STORE,
+                'scope' => \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 'value' => 222,
             ],
             Price::XML_PATH_ONE_PRICE_INTERVAL => [
-                'scope' => ScopeInterface::SCOPE_STORE,
+                'scope' => \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 'value' => 333,
             ],
             Price::XML_PATH_INTERVAL_DIVISION_LIMIT => [
-                'scope' => ScopeInterface::SCOPE_STORE,
+                'scope' => \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 'value' => 444,
             ],
             Price::XML_PATH_RANGE_MAX_INTERVALS => [
-                'scope' => ScopeInterface::SCOPE_STORE,
+                'scope' => \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 'value' => 555,
             ],
         ];

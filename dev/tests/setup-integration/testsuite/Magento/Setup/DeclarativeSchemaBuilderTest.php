@@ -36,7 +36,7 @@ class DeclarativeSchemaBuilderTest extends SetupTestCase
      */
     private $cliCommad;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->schemaConfig = $objectManager->create(SchemaConfig::class);

@@ -15,7 +15,7 @@ class MarkAsReadTest extends \Magento\TestFramework\TestCase\AbstractBackendCont
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->resource = 'Magento_AdminNotification::mark_as_read';
         $this->uri = 'backend/admin/notification/markasread';

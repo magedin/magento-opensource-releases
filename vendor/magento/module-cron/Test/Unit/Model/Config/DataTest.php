@@ -3,18 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cron\Test\Unit\Model\Config;
 
-use Magento\Cron\Model\Config\Data;
-use Magento\Cron\Model\Config\Reader\Db;
-use Magento\Cron\Model\Config\Reader\Xml;
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Testing return jobs from different sources (DB, XML)
@@ -22,14 +13,12 @@ class DataTest extends TestCase
     public function testGetJobs()
     {
         $reader = $this->getMockBuilder(
-            Xml::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $cache = $this->getMockForAbstractClass(CacheInterface::class);
+            \Magento\Cron\Model\Config\Reader\Xml::class
+        )->disableOriginalConstructor()->getMock();
+        $cache = $this->createMock(\Magento\Framework\Config\CacheInterface::class);
         $dbReader = $this->getMockBuilder(
-            Db::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Cron\Model\Config\Reader\Db::class
+        )->disableOriginalConstructor()->getMock();
 
         $jobs = [
             'job1' => ['schedule' => '1 1 1 1 1', 'instance' => 'JobModel1_1', 'method' => 'method1_1'],
@@ -46,13 +35,13 @@ class DataTest extends TestCase
             ->with('test_cache_id')
             ->willReturn(json_encode($jobs));
 
-        $dbReader->expects($this->once())->method('get')->willReturn($dbReaderData);
+        $dbReader->expects($this->once())->method('get')->will($this->returnValue($dbReaderData));
 
-        $serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
         $serializerMock->method('unserialize')
             ->willReturn($jobs);
 
-        $configData = new Data($reader, $cache, $dbReader, 'test_cache_id', $serializerMock);
+        $configData = new \Magento\Cron\Model\Config\Data($reader, $cache, $dbReader, 'test_cache_id', $serializerMock);
 
         $expected = [
             'job1' => ['schedule' => '* * * * *', 'instance' => 'JobModel1', 'method' => 'method1'],

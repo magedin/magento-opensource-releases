@@ -3,23 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Model;
-
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Integration\Model\Integration;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for \Magento\Integration\Model\Integration
  */
-class IntegrationTest extends TestCase
+class IntegrationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Integration\Model\Integration
@@ -27,30 +16,30 @@ class IntegrationTest extends TestCase
     protected $integrationModel;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Data\Collection\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceCollectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createPartialMock(Context::class, ['getEventDispatcher']);
+        $this->contextMock = $this->createPartialMock(\Magento\Framework\Model\Context::class, ['getEventDispatcher']);
         $eventManagerMock = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Event\ManagerInterface::class,
             [],
             '',
             false,
@@ -60,10 +49,10 @@ class IntegrationTest extends TestCase
         );
         $this->contextMock->expects($this->once())
             ->method('getEventDispatcher')
-            ->willReturn($eventManagerMock);
-        $this->registryMock = $this->createMock(Registry::class);
+            ->will($this->returnValue($eventManagerMock));
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
         $this->resourceMock = $this->getMockForAbstractClass(
-            AbstractResource::class,
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
             [],
             '',
             false,
@@ -71,8 +60,8 @@ class IntegrationTest extends TestCase
             true,
             ['getIdFieldName', 'load', 'selectActiveIntegrationByConsumerId']
         );
-        $this->resourceCollectionMock = $this->createMock(AbstractDb::class);
-        $this->integrationModel = new Integration(
+        $this->resourceCollectionMock = $this->createMock(\Magento\Framework\Data\Collection\AbstractDb::class);
+        $this->integrationModel = new \Magento\Integration\Model\Integration(
             $this->contextMock,
             $this->registryMock,
             $this->resourceMock,
@@ -85,7 +74,7 @@ class IntegrationTest extends TestCase
         $consumerId = 1;
         $this->resourceMock->expects($this->once())
             ->method('load')
-            ->with($this->integrationModel, $consumerId, Integration::CONSUMER_ID);
+            ->with($this->integrationModel, $consumerId, \Magento\Integration\Model\Integration::CONSUMER_ID);
 
         $this->integrationModel->loadByConsumerId($consumerId);
         $this->assertFalse($this->integrationModel->hasDataChanges());
@@ -102,7 +91,7 @@ class IntegrationTest extends TestCase
         $this->resourceMock->expects($this->once())
             ->method('selectActiveIntegrationByConsumerId')
             ->with($consumerId)
-            ->willReturn($integrationData);
+            ->will($this->returnValue($integrationData));
 
         $this->integrationModel->loadActiveIntegrationByConsumerId($consumerId);
         $this->assertEquals($integrationData, $this->integrationModel->getData());

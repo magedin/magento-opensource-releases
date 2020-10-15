@@ -3,45 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\App\Task;
 
 use Magento\Setup\Module\Di\App\Task\Operation\ApplicationCodeGenerator;
-use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
 use Magento\Setup\Module\Di\Code\Scanner;
-use Magento\Setup\Module\Di\Code\Scanner\DirectoryScanner;
-use Magento\Setup\Module\Di\Code\Scanner\PhpScanner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
 
-class ApplicationCodeGeneratorTest extends TestCase
+class ApplicationCodeGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Scanner\DirectoryScanner|MockObject
+     * @var Scanner\DirectoryScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $directoryScannerMock;
 
     /**
-     * @var Scanner\PhpScanner|MockObject
+     * @var Scanner\PhpScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $phpScannerMock;
 
     /**
-     * @var ClassesScanner|MockObject
+     * @var ClassesScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classesScannerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->directoryScannerMock = $this->getMockBuilder(
-            DirectoryScanner::class
+            \Magento\Setup\Module\Di\Code\Scanner\DirectoryScanner::class
         )->disableOriginalConstructor()
             ->getMock();
-        $this->phpScannerMock = $this->getMockBuilder(PhpScanner::class)
+        $this->phpScannerMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Scanner\PhpScanner::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->classesScannerMock = $this->getMockBuilder(ClassesScanner::class)
+        $this->classesScannerMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Reader\ClassesScanner::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

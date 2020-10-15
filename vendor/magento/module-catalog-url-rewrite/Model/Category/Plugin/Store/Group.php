@@ -5,7 +5,6 @@
  */
 namespace Magento\CatalogUrlRewrite\Model\Category\Plugin\Store;
 
-use Magento\Store\Model\ResourceModel\Group as StoreGroup;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Magento\Catalog\Model\CategoryFactory;
@@ -17,39 +16,37 @@ use Magento\Store\Model\Store;
 use Magento\Framework\Model\AbstractModel;
 
 /**
- * Generate Product and Category URLs
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Group
 {
     /**
-     * @var UrlPersistInterface
+     * @var \Magento\UrlRewrite\Model\UrlPersistInterface
      */
     protected $urlPersist;
 
     /**
-     * @var CategoryFactory
+     * @var \Magento\Catalog\Model\CategoryFactory
      */
     protected $categoryFactory;
 
     /**
-     * @var ProductFactory
+     * @var \Magento\Catalog\Model\ProductFactory
      */
     protected $productFactory;
 
     /**
-     * @var CategoryUrlRewriteGenerator
+     * @var \Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator
      */
     protected $categoryUrlRewriteGenerator;
 
     /**
-     * @var ProductUrlRewriteGenerator
+     * @var \Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator
      */
     protected $productUrlRewriteGenerator;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
 
@@ -80,15 +77,15 @@ class Group
     /**
      * Perform updating url for categories and products assigned to the group
      *
-     * @param StoreGroup $subject
-     * @param StoreGroup $result
+     * @param \Magento\Store\Model\ResourceModel\Group $subject
+     * @param \Magento\Store\Model\ResourceModel\Group $result
      * @param AbstractModel $group
-     * @return StoreGroup
+     * @return \Magento\Store\Model\ResourceModel\Group
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterSave(
-        StoreGroup $subject,
-        StoreGroup $result,
+        \Magento\Store\Model\ResourceModel\Group $subject,
+        \Magento\Store\Model\ResourceModel\Group $result,
         AbstractModel $group
     ) {
         if (!$group->isObjectNew()
@@ -121,7 +118,7 @@ class Group
      */
     protected function generateProductUrls($websiteId, $originWebsiteId)
     {
-        $urls = [[]];
+        $urls = [];
         $websiteIds = $websiteId != $originWebsiteId
             ? [$websiteId, $originWebsiteId]
             : [$websiteId];
@@ -133,30 +130,33 @@ class Group
         foreach ($collection as $product) {
             /** @var \Magento\Catalog\Model\Product $product */
             $product->setStoreId(Store::DEFAULT_STORE_ID);
-            $urls[] = $this->productUrlRewriteGenerator->generate($product);
+            $urls = array_merge(
+                $urls,
+                $this->productUrlRewriteGenerator->generate($product)
+            );
         }
 
-        return array_merge(...$urls);
+        return $urls;
     }
 
     /**
-     * Generate url rewrites for categories assigned to store
-     *
      * @param int $rootCategoryId
      * @param array $storeIds
      * @return array
      */
     protected function generateCategoryUrls($rootCategoryId, $storeIds)
     {
-        $urls = [[]];
+        $urls = [];
         $categories = $this->categoryFactory->create()->getCategories($rootCategoryId, 1, false, true);
         foreach ($categories as $category) {
             /** @var \Magento\Catalog\Model\Category $category */
             $category->setStoreId(Store::DEFAULT_STORE_ID);
             $category->setStoreIds($storeIds);
-            $urls[] = $this->categoryUrlRewriteGenerator->generate($category);
+            $urls = array_merge(
+                $urls,
+                $this->categoryUrlRewriteGenerator->generate($category)
+            );
         }
-
-        return array_merge(...$urls);
+        return $urls;
     }
 }

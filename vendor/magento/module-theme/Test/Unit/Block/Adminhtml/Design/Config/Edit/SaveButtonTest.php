@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Adminhtml\Design\Config\Edit;
 
 use Magento\Backend\Block\Widget\Context;
-use Magento\Framework\UrlInterface;
 use Magento\Theme\Block\Adminhtml\Design\Config\Edit\SaveButton;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SaveButtonTest extends TestCase
+class SaveButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SaveButton
@@ -21,11 +16,11 @@ class SaveButtonTest extends TestCase
     protected $block;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->initContext();
 
@@ -39,16 +34,16 @@ class SaveButtonTest extends TestCase
         $this->assertArrayHasKey('label', $result);
         $this->assertEquals($result['label'], __('Save Configuration'));
         $this->assertArrayHasKey('data_attribute', $result);
-        $this->assertIsArray($result['data_attribute']);
+        $this->assertTrue(is_array($result['data_attribute']));
     }
 
     protected function initContext()
     {
-        $this->urlBuilder = $this->getMockBuilder(UrlInterface::class)
+        $this->urlBuilder = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Backend\Block\Widget\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->any())

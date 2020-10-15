@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\NewRelicReporting\Test\Unit\Model\Observer;
 
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\Event\Observer;
-use Magento\NewRelicReporting\Model\Apm\Deployments;
-use Magento\NewRelicReporting\Model\Apm\DeploymentsFactory;
-use Magento\NewRelicReporting\Model\Config;
 use Magento\NewRelicReporting\Model\Observer\ReportSystemCacheFlushToNewRelic;
-use Magento\User\Model\User;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReportSystemCacheFlushToNewRelicTest extends TestCase
+/**
+ * Class ReportSystemCacheFlushToNewRelicTest
+ */
+class ReportSystemCacheFlushToNewRelicTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReportSystemCacheFlushToNewRelic
@@ -25,22 +18,22 @@ class ReportSystemCacheFlushToNewRelicTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\NewRelicReporting\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Auth\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $backendAuthSession;
 
     /**
-     * @var DeploymentsFactory|MockObject
+     * @var \Magento\NewRelicReporting\Model\Apm\DeploymentsFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $deploymentsFactory;
 
     /**
-     * @var Deployments|MockObject
+     * @var \Magento\NewRelicReporting\Model\Apm\Deployments|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $deploymentsModel;
 
@@ -49,22 +42,22 @@ class ReportSystemCacheFlushToNewRelicTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isNewRelicEnabled'])
             ->getMock();
-        $this->backendAuthSession = $this->getMockBuilder(Session::class)
+        $this->backendAuthSession = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['getUser'])
             ->getMock();
         $this->deploymentsFactory = $this->getMockBuilder(
-            DeploymentsFactory::class
+            \Magento\NewRelicReporting\Model\Apm\DeploymentsFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->deploymentsModel = $this->getMockBuilder(Deployments::class)
+        $this->deploymentsModel = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Apm\Deployments::class)
             ->disableOriginalConstructor()
             ->setMethods(['setDeployment'])
             ->getMock();
@@ -86,8 +79,8 @@ class ReportSystemCacheFlushToNewRelicTest extends TestCase
      */
     public function testReportSystemCacheFlushToNewRelicModuleDisabledFromConfig()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -105,17 +98,15 @@ class ReportSystemCacheFlushToNewRelicTest extends TestCase
      */
     public function testReportSystemCacheFlushToNewRelic()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->config->expects($this->once())
             ->method('isNewRelicEnabled')
             ->willReturn(true);
-        $userMock = $this->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userMock = $this->getMockBuilder(\Magento\User\Model\User::class)->disableOriginalConstructor()->getMock();
         $this->backendAuthSession->expects($this->once())
             ->method('getUser')
             ->willReturn($userMock);

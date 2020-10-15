@@ -3,47 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Wysiwyg\Files;
 
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\Json\Helper\Data;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\DeleteFolder;
-use Magento\Theme\Helper\Storage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DeleteFolderTest extends TestCase
+class DeleteFolderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Files */
+    /** @var \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files */
     protected $controller;
 
-    /** @var MockObject|MockObject*/
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\PHPUnit_Framework_MockObject_MockObject*/
     protected $objectManager;
 
-    /** @var Http|MockObject */
+    /** @var \Magento\Framework\App\Response\Http|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    /** @var Storage|MockObject */
+    /** @var \Magento\Theme\Helper\Storage|\PHPUnit_Framework_MockObject_MockObject */
     protected $storage;
 
-    /** @var Storage|MockObject */
+    /** @var \Magento\Theme\Helper\Storage|\PHPUnit_Framework_MockObject_MockObject */
     protected $storageHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->response = $this->createMock(Http::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->response = $this->createMock(\Magento\Framework\App\Response\Http::class);
         $this->storage = $this->createMock(\Magento\Theme\Model\Wysiwyg\Storage::class);
-        $this->storageHelper = $this->createMock(Storage::class);
+        $this->storageHelper = $this->createMock(\Magento\Theme\Helper\Storage::class);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->controller = $helper->getObject(
-            DeleteFolder::class,
+            \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\DeleteFolder::class,
             [
                 'objectManager' => $this->objectManager,
                 'response' => $this->response,
@@ -67,7 +55,7 @@ class DeleteFolderTest extends TestCase
             ->with('/current/path/')
             ->willThrowException(new \Exception('Message'));
 
-        $jsonData = $this->createMock(Data::class);
+        $jsonData = $this->createMock(\Magento\Framework\Json\Helper\Data::class);
         $jsonData->expects($this->once())
             ->method('jsonEncode')
             ->with(['error' => true, 'message' => 'Message'])
@@ -75,7 +63,7 @@ class DeleteFolderTest extends TestCase
 
         $this->objectManager->expects($this->at(1))
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Framework\Json\Helper\Data::class)
             ->willReturn($jsonData);
 
         $this->controller->execute();

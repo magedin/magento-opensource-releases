@@ -54,16 +54,6 @@ final class LineEndingFixer extends AbstractFixer implements WhitespacesAwareFix
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before BracesFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
@@ -77,7 +67,7 @@ final class LineEndingFixer extends AbstractFixer implements WhitespacesAwareFix
                     $tokens[$index] = new Token([
                         $token->getId(),
                         Preg::replace(
-                            '#\R#',
+                            "#\r\n|\n#",
                             $ending,
                             $token->getContent()
                         ),
@@ -87,11 +77,11 @@ final class LineEndingFixer extends AbstractFixer implements WhitespacesAwareFix
                 continue;
             }
 
-            if ($token->isGivenKind([T_CLOSE_TAG, T_COMMENT, T_DOC_COMMENT, T_OPEN_TAG, T_START_HEREDOC, T_WHITESPACE])) {
+            if ($token->isGivenKind([T_OPEN_TAG, T_WHITESPACE, T_COMMENT, T_DOC_COMMENT, T_START_HEREDOC])) {
                 $tokens[$index] = new Token([
                     $token->getId(),
                     Preg::replace(
-                        '#\R#',
+                        "#\r\n|\n#",
                         $ending,
                         $token->getContent()
                     ),

@@ -3,33 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Url\Plugin;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Url\Plugin\SecurityInfo;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SecurityInfoTest extends TestCase
+class SecurityInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_scopeConfigMock;
 
     /**
-     * @var SecurityInfo
+     * @var \Magento\Store\Url\Plugin\SecurityInfo
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->_model = new SecurityInfo($this->_scopeConfigMock);
+        $this->_scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_model = new \Magento\Store\Url\Plugin\SecurityInfo($this->_scopeConfigMock);
     }
 
     public function testAroundIsSecureDisabledInConfig()
@@ -38,10 +29,10 @@ class SecurityInfoTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with(
-                Store::XML_PATH_SECURE_IN_FRONTEND,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\Store::XML_PATH_SECURE_IN_FRONTEND,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->assertFalse(
             $this->_model->aroundIsSecure(
                 $this->createMock(\Magento\Framework\Url\SecurityInfo::class),
@@ -58,10 +49,10 @@ class SecurityInfoTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with(
-                Store::XML_PATH_SECURE_IN_FRONTEND,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\Store::XML_PATH_SECURE_IN_FRONTEND,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->assertTrue(
             $this->_model->aroundIsSecure(
                 $this->createMock(\Magento\Framework\Url\SecurityInfo::class),

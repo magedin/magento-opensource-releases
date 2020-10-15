@@ -4,18 +4,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Multishipping\Test\Unit\Block\Checkout\Payment;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Multishipping\Block\Checkout\Payment\Info;
-use Magento\Multishipping\Model\Checkout\Type\Multishipping;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class InfoTest extends TestCase
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Info
@@ -23,17 +17,17 @@ class InfoTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $multiShippingMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->multiShippingMock =
-            $this->createMock(Multishipping::class);
-        $objectManager = new ObjectManager($this);
+            $this->createMock(\Magento\Multishipping\Model\Checkout\Type\Multishipping::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Info::class,
+            \Magento\Multishipping\Block\Checkout\Payment\Info::class,
             [
                 'multishipping' => $this->multiShippingMock,
             ]
@@ -42,7 +36,7 @@ class InfoTest extends TestCase
 
     public function testGetPaymentInfo()
     {
-        $quoteMock = $this->createMock(Quote::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
         $paymentInfoMock = $this->createMock(\Magento\Payment\Model\Info::class);
         $this->multiShippingMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
         $quoteMock->expects($this->once())->method('getPayment')->willReturn($paymentInfoMock);

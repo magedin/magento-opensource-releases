@@ -3,27 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Model;
 
 use Magento\ConfigurableProduct\Model\AttributeOptionProvider;
 use Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionSelectBuilderInterface;
-use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Attribute;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use Magento\Framework\App\ScopeInterface;
 use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
+use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Attribute;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AttributeOptionProviderTest extends TestCase
+class AttributeOptionProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeOptionProvider
@@ -36,41 +33,41 @@ class AttributeOptionProviderTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ScopeResolverInterface|MockObject
+     * @var ScopeResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeResolver;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $select;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var AbstractAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractAttribute;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var ScopeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scope;
 
     /**
-     * @var Attribute|MockObject
+     * @var Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeResource;
 
     /**
-     * @var OptionSelectBuilderInterface|MockObject
+     * @var OptionSelectBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $optionSelectBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->select = $this->getMockBuilder(Select::class)
             ->setMethods([])
@@ -122,12 +119,12 @@ class AttributeOptionProviderTest extends TestCase
         $this->scopeResolver->expects($this->any())
             ->method('getScope')
             ->willReturn($this->scope);
-
+        
         $this->optionSelectBuilder->expects($this->any())
             ->method('getSelect')
             ->with($this->abstractAttribute, 4, $this->scope)
             ->willReturn($this->select);
-
+        
         $this->attributeResource->expects($this->once())
             ->method('getConnection')
             ->willReturn($this->connectionMock);
@@ -164,7 +161,7 @@ class AttributeOptionProviderTest extends TestCase
                 ['value' => 14, 'label' => 'Option Value for index 14'],
                 ['value' => 15, 'label' => 'Option Value for index 15']
             ]);
-
+        
         $this->abstractAttribute->expects($this->any())
             ->method('getSource')
             ->willReturn($source);

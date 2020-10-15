@@ -3,60 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Swatches\Test\Unit\Model\Plugin;
 
-use Magento\Catalog\Model\Layer\Filter\AbstractFilter;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\Swatches\Block\LayeredNavigation\RenderLayered;
-use Magento\Swatches\Helper\Data;
 use Magento\Swatches\Model\Plugin\FilterRenderer;
-use Magento\Swatches\Model\Plugin\FilterRenderer as FilterRendererPlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FilterRendererTest extends TestCase
+class FilterRendererTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var FilterRenderer|ObjectManager */
+    /** @var FilterRenderer|\Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     protected $plugin;
 
-    /** @var MockObject|Data */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Swatches\Helper\Data */
     protected $swatchHelperMock;
 
-    /** @var MockObject|Layout */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Layout */
     protected $layoutMock;
 
-    /** @var MockObject|AbstractFilter */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Layer\Filter\AbstractFilter */
     protected $filterMock;
 
-    /** @var MockObject|\Magento\LayeredNavigation\Block\Navigation\FilterRenderer */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\LayeredNavigation\Block\Navigation\FilterRenderer */
     protected $filterRendererMock;
 
-    /** @var MockObject|RenderLayered */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Swatches\Block\LayeredNavigation\RenderLayered */
     protected $blockMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $closureMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->layoutMock = $this->createPartialMock(Layout::class, ['createBlock']);
+        $this->layoutMock = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['createBlock']);
 
-        $this->swatchHelperMock = $this->createPartialMock(Data::class, ['isSwatchAttribute']);
+        $this->swatchHelperMock = $this->createPartialMock(\Magento\Swatches\Helper\Data::class, ['isSwatchAttribute']);
 
         $this->blockMock = $this->createPartialMock(
-            RenderLayered::class,
+            \Magento\Swatches\Block\LayeredNavigation\RenderLayered::class,
             ['setSwatchFilter', 'toHtml']
         );
 
-        $this->filterMock = $this->getMockBuilder(AbstractFilter::class)
-            ->addMethods(['hasAttributeModel'])
-            ->onlyMethods(['getAttributeModel'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->filterMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Layer\Filter\AbstractFilter::class,
+            ['getAttributeModel', 'hasAttributeModel']
+        );
 
         $this->filterRendererMock = $this->createMock(
             \Magento\LayeredNavigation\Block\Navigation\FilterRenderer::class
@@ -66,9 +55,9 @@ class FilterRendererTest extends TestCase
             return $this->filterMock;
         };
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->plugin = $objectManager->getObject(
-            FilterRendererPlugin::class,
+            \Magento\Swatches\Model\Plugin\FilterRenderer::class,
             [
                 'layout' => $this->layoutMock,
                 'swatchHelper' => $this->swatchHelperMock
@@ -78,7 +67,7 @@ class FilterRendererTest extends TestCase
 
     public function testAroundRenderTrue()
     {
-        $attributeMock = $this->createMock(Attribute::class);
+        $attributeMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
         $this->filterMock->expects($this->atLeastOnce())->method('getAttributeModel')->willReturn($attributeMock);
         $this->filterMock->expects($this->once())->method('hasAttributeModel')->willReturn(true);
         $this->swatchHelperMock
@@ -88,14 +77,14 @@ class FilterRendererTest extends TestCase
             ->willReturn(true);
 
         $this->layoutMock->expects($this->once())->method('createBlock')->willReturn($this->blockMock);
-        $this->blockMock->expects($this->once())->method('setSwatchFilter')->willReturnSelf();
+        $this->blockMock->expects($this->once())->method('setSwatchFilter')->will($this->returnSelf());
 
         $this->plugin->aroundRender($this->filterRendererMock, $this->closureMock, $this->filterMock);
     }
 
     public function testAroundRenderFalse()
     {
-        $attributeMock = $this->createMock(Attribute::class);
+        $attributeMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
         $this->filterMock->expects($this->atLeastOnce())->method('getAttributeModel')->willReturn($attributeMock);
         $this->filterMock->expects($this->once())->method('hasAttributeModel')->willReturn(true);
         $this->swatchHelperMock

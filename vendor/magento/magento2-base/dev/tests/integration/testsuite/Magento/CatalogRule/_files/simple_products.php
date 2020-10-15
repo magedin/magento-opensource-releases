@@ -5,9 +5,7 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/CatalogRule/_files/attribute.php');
+require __DIR__ . '/attribute.php';
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

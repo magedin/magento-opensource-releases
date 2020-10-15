@@ -3,79 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Persistent\Helper\Data as PersistentHelper;
-use Magento\Persistent\Helper\Session as SessionHelper;
-use Magento\Persistent\Model\QuoteManager;
-use Magento\Persistent\Model\Session as PersistentSession;
-use Magento\Persistent\Observer\RemoveGuestPersistenceOnEmptyCartObserver;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Magento\Quote\Api\Data\CartInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Persistent\Observer\RemoveGuestPersistenceOnEmptyCartObserver;
 
-class RemoveGuestPersistenceOnEmptyCartObserverTest extends TestCase
+class RemoveGuestPersistenceOnEmptyCartObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RemoveGuestPersistenceOnEmptyCartObserver
      */
-    private $model;
+    protected $model;
 
     /**
-     * @var SessionHelper|MockObject
+     * @var \Magento\Persistent\Helper\Session|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $persistentHelperMock;
+    protected $persistentSessionMock;
 
     /**
-     * @var PersistentSession|MockObject
+     * @var \Magento\Persistent\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $sessionModelMock;
+    protected $persistentDataMock;
 
     /**
-     * @var PersistentHelper|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $persistentDataMock;
+    protected $customerSessionMock;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var \Magento\Persistent\Model\QuoteManager|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $customerSessionMock;
+    protected $quoteManagerMock;
 
     /**
-     * @var QuoteManager|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $quoteManagerMock;
+    protected $observerMock;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Quote\Api\CartRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $observerMock;
+    protected $cartRepositoryMock;
 
-    /**
-     * @var CartRepositoryInterface|MockObject
-     */
-    private $cartRepositoryMock;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->persistentHelperMock = $this->createMock(SessionHelper::class);
-        $this->sessionModelMock = $this->createMock(PersistentSession::class);
-        $this->persistentDataMock = $this->createMock(PersistentHelper::class);
-        $this->customerSessionMock = $this->createMock(CustomerSession::class);
-        $this->quoteManagerMock = $this->createMock(QuoteManager::class);
-        $this->observerMock = $this->createMock(Observer::class);
+        $this->persistentSessionMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
+        $this->sessionModelMock = $this->createMock(\Magento\Persistent\Model\Session::class);
+        $this->persistentDataMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->quoteManagerMock = $this->createMock(\Magento\Persistent\Model\QuoteManager::class);
+        $this->observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
         $this->cartRepositoryMock = $this->createMock(
-            CartRepositoryInterface::class
+            \Magento\Quote\Api\CartRepositoryInterface::class
         );
 
         $this->model = new RemoveGuestPersistenceOnEmptyCartObserver(
-            $this->persistentHelperMock,
+            $this->persistentSessionMock,
             $this->persistentDataMock,
             $this->quoteManagerMock,
             $this->customerSessionMock,
@@ -85,14 +68,14 @@ class RemoveGuestPersistenceOnEmptyCartObserverTest extends TestCase
 
     public function testExecuteWhenSessionIsNotPersistent()
     {
-        $this->persistentHelperMock->expects($this->once())->method('isPersistent')->willReturn(false);
+        $this->persistentSessionMock->expects($this->once())->method('isPersistent')->willReturn(false);
 
         $this->model->execute($this->observerMock);
     }
 
     public function testExecuteWithLoggedInCustomer()
     {
-        $this->persistentHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
+        $this->persistentSessionMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(true);
 
         $this->model->execute($this->observerMock);
@@ -100,7 +83,7 @@ class RemoveGuestPersistenceOnEmptyCartObserverTest extends TestCase
 
     public function testExecuteWithNonPersistentShoppingCart()
     {
-        $this->persistentHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
+        $this->persistentSessionMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
         $this->persistentDataMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(false);
 
@@ -112,18 +95,15 @@ class RemoveGuestPersistenceOnEmptyCartObserverTest extends TestCase
         $customerId = 1;
         $emptyCount = 0;
 
-        $this->persistentHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
+        $this->persistentSessionMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
         $this->persistentDataMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(true);
-        $sessionMock = $this->getMockBuilder(PersistentSession::class)
-            ->addMethods(['getCustomerId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->persistentHelperMock->expects($this->once())->method('getSession')->willReturn($sessionMock);
+        $sessionMock = $this->createPartialMock(\Magento\Persistent\Model\Session::class, ['getCustomerId']);
+        $this->persistentSessionMock->expects($this->once())->method('getSession')->willReturn($sessionMock);
         $sessionMock->expects($this->once())->method('getCustomerId')->willReturn($customerId);
-        /** @var CartInterface|MockObject $quoteMock */
+        /** @var \Magento\Quote\Api\Data\CartInterface|\PHPUnit_Framework_MockObject_MockObject $quoteMock */
         $quoteMock = $this->getMockForAbstractClass(
-            CartInterface::class,
+            \Magento\Quote\Api\Data\CartInterface::class,
             [],
             '',
             false,
@@ -145,16 +125,13 @@ class RemoveGuestPersistenceOnEmptyCartObserverTest extends TestCase
     public function testExecuteWithNonexistentCart()
     {
         $customerId = 1;
-        $exception = new NoSuchEntityException();
+        $exception = new \Magento\Framework\Exception\NoSuchEntityException;
 
-        $this->persistentHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
+        $this->persistentSessionMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
         $this->persistentDataMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(true);
-        $sessionMock = $this->getMockBuilder(PersistentSession::class)
-            ->addMethods(['getCustomerId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->persistentHelperMock->expects($this->once())->method('getSession')->willReturn($sessionMock);
+        $sessionMock = $this->createPartialMock(\Magento\Persistent\Model\Session::class, ['getCustomerId']);
+        $this->persistentSessionMock->expects($this->once())->method('getSession')->willReturn($sessionMock);
         $sessionMock->expects($this->once())->method('getCustomerId')->willReturn($customerId);
         $this->cartRepositoryMock->expects($this->once())
             ->method('getActiveForCustomer')

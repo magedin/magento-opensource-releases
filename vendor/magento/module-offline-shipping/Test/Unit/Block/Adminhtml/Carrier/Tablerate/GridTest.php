@@ -3,81 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflineShipping\Test\Unit\Block\Adminhtml\Carrier\Tablerate;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid;
-use Magento\OfflineShipping\Model\Carrier\Tablerate;
-use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CollectionFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GridTest extends TestCase
+class GridTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grid
+     * @var \Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid
      */
     protected $model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backend\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $backendHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $tablerateMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->context = $objectManager->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             ['storeManager' => $this->storeManagerMock]
         );
 
-        $this->backendHelperMock = $this->getMockBuilder(Data::class)
+        $this->backendHelperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->collectionFactoryMock =
             $this->getMockBuilder(
-                CollectionFactory::class
+                \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CollectionFactory::class
             )->disableOriginalConstructor()
-                ->getMock();
+            ->getMock();
 
-        $this->tablerateMock = $this->getMockBuilder(Tablerate::class)
+        $this->tablerateMock = $this->getMockBuilder(\Magento\OfflineShipping\Model\Carrier\Tablerate::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->model = new Grid(
+        $this->model = new \Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid(
             $this->context,
             $this->backendHelperMock,
             $this->collectionFactoryMock,
@@ -89,7 +76,7 @@ class GridTest extends TestCase
     {
         $websiteId = 1;
 
-        $websiteMock = $this->getMockBuilder(Website::class)
+        $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
             ->setMethods(['getId'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -111,7 +98,7 @@ class GridTest extends TestCase
     {
         $websiteId = 10;
 
-        $websiteMock = $this->getMockBuilder(Website::class)
+        $websiteMock = $this->getMockBuilder(\Magento\Store\Model\Website::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
             ->getMock();

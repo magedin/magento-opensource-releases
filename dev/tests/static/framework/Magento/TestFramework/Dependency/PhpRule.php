@@ -12,7 +12,6 @@ namespace Magento\TestFramework\Dependency;
 use Magento\Framework\App\Utility\Files;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
-use Magento\TestFramework\Dependency\Reader\ClassScanner;
 use Magento\TestFramework\Dependency\Route\RouteMapper;
 use Magento\TestFramework\Exception\NoSuchActionException;
 
@@ -81,32 +80,24 @@ class PhpRule implements RuleInterface
     private $whitelists;
 
     /**
-     * @var ClassScanner
-     */
-    private $classScanner;
-
-    /**
      * @param array $mapRouters
      * @param array $mapLayoutBlocks
      * @param array $pluginMap
      * @param array $whitelists
-     * @param ClassScanner|null $classScanner
-     *
-     * @throws LocalizedException
+     * @throws \Exception
      */
     public function __construct(
         array $mapRouters,
         array $mapLayoutBlocks,
         array $pluginMap = [],
-        array $whitelists = [],
-        ClassScanner $classScanner = null
+        array $whitelists = []
     ) {
         $this->_mapRouters = $mapRouters;
         $this->_mapLayoutBlocks = $mapLayoutBlocks;
+        $this->_namespaces = implode('|', \Magento\Framework\App\Utility\Files::init()->getNamespaces());
         $this->pluginMap = $pluginMap ?: null;
         $this->routeMapper = new RouteMapper();
         $this->whitelists = $whitelists;
-        $this->classScanner = $classScanner ?? new ClassScanner();
     }
 
     /**
@@ -186,14 +177,14 @@ class PhpRule implements RuleInterface
             if (empty($matches['class_inside_module'][$i]) && !empty($matches['module_scoped_key'][$i])) {
                 $dependencyType = RuleInterface::TYPE_SOFT;
             } else {
-                $currentClass = $this->getClassFromFilepath($file);
+                $currentClass = $this->getClassFromFilepath($file, $currentModule);
                 $dependencyType = $this->isPluginDependency($currentClass, $dependencyClass)
                     ? RuleInterface::TYPE_SOFT
                     : RuleInterface::TYPE_HARD;
             }
 
             $dependenciesInfo[] = [
-                'modules' => [$referenceModule],
+                'module' => $referenceModule,
                 'type' => $dependencyType,
                 'source' => $dependencyClass,
             ];
@@ -206,11 +197,14 @@ class PhpRule implements RuleInterface
      * Get class name from filename based on class/file naming conventions
      *
      * @param string $filepath
+     * @param string $module
      * @return string
      */
-    private function getClassFromFilepath(string $filepath): string
+    private function getClassFromFilepath($filepath, $module)
     {
-        return $this->classScanner->getClassName($filepath);
+        $class = strstr($filepath, str_replace(['_', '\\', '/'], DIRECTORY_SEPARATOR, $module));
+        $class = str_replace(DIRECTORY_SEPARATOR, '\\', strstr($class, '.php', true));
+        return $class;
     }
 
     /**
@@ -274,8 +268,7 @@ class PhpRule implements RuleInterface
         if ($subject === $dependency) {
             return true;
         } elseif ($subject) {
-            $moduleNameLength = strpos($subject, '\\', strpos($subject, '\\') + 1);
-            $subjectModule = substr($subject, 0, $moduleNameLength);
+            $subjectModule = substr($subject, 0, strpos($subject, '\\', 9)); // (strlen('Magento\\') + 1) === 9
             return strpos($dependency, $subjectModule) === 0;
         } else {
             return false;
@@ -324,8 +317,11 @@ class PhpRule implements RuleInterface
                     $actionName
                 );
                 if (!in_array($currentModule, $modules)) {
+                    if (count($modules) === 1) {
+                        $modules = reset($modules);
+                    }
                     $dependencies[] = [
-                        'modules' => $modules,
+                        'module' => $modules,
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => $item['source'],
                     ];
@@ -365,14 +361,12 @@ class PhpRule implements RuleInterface
                 continue;
             }
             $check = $this->_checkDependencyLayoutBlock($currentModule, $area, $match['block']);
-            $modules = isset($check['modules']) ? $check['modules'] : null;
-            if ($modules) {
-                foreach ($modules as $module) {
-                    $result[$module] = [
-                        'type' => RuleInterface::TYPE_HARD,
-                        'source' => $match['source'],
-                    ];
-                }
+            $module = isset($check['module']) ? $check['module'] : null;
+            if ($module) {
+                $result[$module] = [
+                    'type' => RuleInterface::TYPE_HARD,
+                    'source' => $match['source'],
+                ];
             }
         }
         return $this->_getUniqueDependencies($result);
@@ -401,7 +395,7 @@ class PhpRule implements RuleInterface
      * Check layout block dependency
      *
      * Return: array(
-     *  'modules'  // dependent modules
+     *  'module'  // dependent module
      *  'source'  // source text
      * )
      *
@@ -425,16 +419,16 @@ class PhpRule implements RuleInterface
                 $modules = $this->_mapLayoutBlocks[$area][$block];
             }
             if (isset($modules[$currentModule])) {
-                return ['modules' => []];
+                return ['module' => null];
             }
             // CASE 2: Single dependency
             if (1 == count($modules)) {
-                return ['modules' => $modules];
+                return ['module' => current($modules)];
             }
             // CASE 3: Default module dependency
             $defaultModule = $this->_getDefaultModuleName($area);
             if (isset($modules[$defaultModule])) {
-                return ['modules' => [$defaultModule]];
+                return ['module' => $defaultModule];
             }
         }
         // CASE 4: \Exception - Undefined block
@@ -465,7 +459,7 @@ class PhpRule implements RuleInterface
     {
         $result = [];
         foreach ($dependencies as $module => $value) {
-            $result[] = ['modules' => [$module], 'type' => $value['type'], 'source' => $value['source']];
+            $result[] = ['module' => $module, 'type' => $value['type'], 'source' => $value['source']];
         }
         return $result;
     }

@@ -3,27 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Backend\Test\Unit\Controller\Adminhtml\Cache;
 
-use Magento\Backend\App\Action\Context;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Magento\Backend\Controller\Adminhtml\Cache\MassDisable;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\Cache\StateInterface as CacheState;
-use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
-use Magento\Framework\App\RequestInterface as Request;
-use Magento\Framework\App\State;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\State;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Message\ManagerInterface as MessageManager;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\RequestInterface as Request;
+use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
+use Magento\Framework\App\Cache\StateInterface as CacheState;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class MassDisableTest extends TestCase
+class MassDisableTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MassDisable
@@ -60,7 +58,7 @@ class MassDisableTest extends TestCase
      */
     private $cacheStateMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
 

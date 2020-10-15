@@ -3,121 +3,103 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\ResourceModel;
-
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityManager;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\SalesRule\Model\ResourceModel\Rule;
-use Magento\SalesRule\Model\Rule\Condition\Product;
-use Magento\SalesRule\Model\Rule\Condition\Product\Found;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RuleTest extends TestCase
+class RuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Rule
+     * @var \Magento\SalesRule\Model\ResourceModel\Rule
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleResource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityManager;
 
     /**
-     * @var MockObject|AdapterInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\DB\Adapter\AdapterInterface
      */
     protected $adapter;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $select;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourcesMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $transactionManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $rule;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $relationProcessorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->rule = $this->getMockBuilder(\Magento\SalesRule\Model\Rule::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->ruleResource = $this->getMockBuilder(Rule::class)
+        $this->ruleResource = $this->getMockBuilder(\Magento\SalesRule\Model\ResourceModel\Rule::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $connectionName = 'test';
-        $this->resourcesMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->resourcesMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->relationProcessorMock =
-            $this->getMockBuilder(ObjectRelationProcessor::class)
-                ->disableOriginalConstructor()
-                ->getMock();
+            $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->transactionManagerMock =
-            $this->getMockBuilder(TransactionManagerInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
+            $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $context->expects($this->any())
             ->method('getResources')
             ->willReturn($this->resourcesMock);
 
-        $this->entityManager = $this->getMockBuilder(EntityManager::class)
+        $this->entityManager = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityManager::class)
             ->setMethods(['load', 'save', 'delete'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->adapter = $this->getMockBuilder(AdapterInterface::class)
+        $this->adapter = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->resourcesMock->expects($this->any())
             ->method('getConnection')
             ->willReturn($this->adapter);
@@ -133,11 +115,11 @@ class RuleTest extends TestCase
             ->method('getTransactionManager')
             ->willReturn($this->transactionManagerMock);
 
-        $this->select = $this->getMockBuilder(Select::class)
+        $this->select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $associatedEntitiesMap = $this->createPartialMock(DataObject::class, ['getData']);
+        $associatedEntitiesMap = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getData']);
         $associatedEntitiesMap->expects($this->once())
             ->method('getData')
             ->willReturn(
@@ -156,7 +138,7 @@ class RuleTest extends TestCase
             );
 
         $this->model = $this->objectManager->getObject(
-            Rule::class,
+            \Magento\SalesRule\Model\ResourceModel\Rule::class,
             [
                 'context' => $context,
                 'connectionName' => $connectionName,
@@ -172,8 +154,8 @@ class RuleTest extends TestCase
     public function testLoad()
     {
         $ruleId = 1;
-        /** @var AbstractModel|MockObject $abstractModel */
-        $abstractModel = $this->getMockBuilder(AbstractModel::class)
+        /** @var \Magento\Framework\Model\AbstractModel|\PHPUnit_Framework_MockObject_MockObject $abstractModel */
+        $abstractModel = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->entityManager->expects($this->once())
@@ -220,7 +202,7 @@ class RuleTest extends TestCase
         return [
             [
                 json_encode([
-                    'type' => Product::class,
+                    'type' => \Magento\SalesRule\Model\Rule\Condition\Product::class,
                     'attribute' => 'some_attribute',
                 ]),
                 [
@@ -230,11 +212,11 @@ class RuleTest extends TestCase
             [
                 json_encode([
                     [
-                        'type' => Product::class,
+                        'type' => \Magento\SalesRule\Model\Rule\Condition\Product::class,
                         'attribute' => 'some_attribute',
                     ],
                     [
-                        'type' => Product::class,
+                        'type' => \Magento\SalesRule\Model\Rule\Condition\Product::class,
                         'attribute' => 'some_attribute2',
                     ],
                 ]),
@@ -245,7 +227,7 @@ class RuleTest extends TestCase
             ],
             [
                 json_encode([
-                    'type' => Found::class,
+                    'type' => \Magento\SalesRule\Model\Rule\Condition\Product\Found::class,
                     'attribute' => 'some_attribute',
                 ]),
                 []

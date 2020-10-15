@@ -7,9 +7,8 @@
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\CreditmemoFactory;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Paypal/_files/order_express_with_invoice_and_shipping.php');
+require __DIR__ . '/order_express_with_invoice_and_shipping.php';
 
 /** @var CreditmemoFactory $creditmemoFactory */
 $creditmemoFactory = $objectManager->create(CreditmemoFactory::class);

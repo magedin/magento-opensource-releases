@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Amqp\Test\Unit;
 
 use Magento\Framework\Amqp\ConnectionTypeResolver;
 use Magento\Framework\App\DeploymentConfig;
-use PHPUnit\Framework\TestCase;
 
-class ConnectionTypeResolverTest extends TestCase
+class ConnectionTypeResolverTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetConnectionType()
     {
@@ -19,7 +16,7 @@ class ConnectionTypeResolverTest extends TestCase
         $config->expects($this->once())
             ->method('getConfigData')
             ->with('queue')
-            ->willReturn(
+            ->will($this->returnValue(
                 [
                     'amqp' => [
                         'host' => '127.0.01',
@@ -42,7 +39,7 @@ class ConnectionTypeResolverTest extends TestCase
                         ]
                     ]
                 ]
-            );
+            ));
 
         $model = new ConnectionTypeResolver($config);
         $this->assertEquals('amqp', $model->getConnectionType('connection-01'));

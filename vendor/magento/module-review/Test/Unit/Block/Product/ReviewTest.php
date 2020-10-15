@@ -3,29 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Review\Test\Unit\Block\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Catalog\Model\Product;
 use Magento\Review\Block\Product\Review as ReviewBlock;
 use Magento\Review\Model\ResourceModel\Review\Collection;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory;
 use Magento\Review\Model\Review;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class ReviewTest
+ * @package Magento\Review\Test\Unit\Block\Product
  */
-class ReviewTest extends TestCase
+class ReviewTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Review\Block\Product\Review
@@ -33,45 +29,45 @@ class ReviewTest extends TestCase
     private $block;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Review\Model\ResourceModel\Review\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collection;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Review\Model\ResourceModel\Review\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactory;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $registry;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $product;
 
     /**
-     * @var StoreManager|MockObject
+     * @var \Magento\Store\Model\StoreManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var Store|MockObject
+     * @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject
      */
     private $store;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->initContextMock();
         $this->initRegistryMock();
@@ -175,11 +171,10 @@ class ReviewTest extends TestCase
         $this->storeManager->expects(static::any())
             ->method('getStore')
             ->willReturn($this->store);
-        $this->urlBuilder = $this->getMockBuilder(UrlInterface::class)
+        $this->urlBuilder = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)->getMockForAbstractClass();
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMockForAbstractClass();
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
-            ->getMockForAbstractClass();
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->any())->method('getRequest')->willReturn($this->requestMock);

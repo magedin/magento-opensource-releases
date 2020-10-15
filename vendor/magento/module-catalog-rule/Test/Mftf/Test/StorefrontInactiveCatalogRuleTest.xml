@@ -12,58 +12,59 @@
         <annotations>
             <features value="CatalogRule"/>
             <stories value="Customer view catalog price rule"/>
-            <title value="Customer should not see the catalog price rule promotion if status is inactive"/>
+            <title value="DEPRECATED. Customer should not see the catalog price rule promotion if status is inactive"/>
             <description value="Customer should not see the catalog price rule promotion if status is inactive"/>
             <severity value="CRITICAL"/>
             <testCaseId value="MC-79"/>
-            <group value="catalogRule"/>
+            <group value="CatalogRule"/>
+            <skip>
+                <issueId value="DEPRECATED">Use StorefrontInactiveCatalogRule2Test instead.</issueId>
+            </skip>
         </annotations>
-
         <before>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
             <createData entity="ApiCategory" stepKey="createCategory"/>
             <createData entity="ApiSimpleProduct" stepKey="createProduct">
                 <requiredEntity createDataKey="createCategory"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup stepKey="createNewPriceRule" ref="newCatalogPriceRuleByUI"/>
+            <actionGroup stepKey="selectLoggedInCustomers" ref="selectNotLoggedInCustomerGroup"/>
+            <scrollToTopOfPage stepKey="scrollToTop"/>
+            <click stepKey="setInactive" selector="{{AdminCategoryBasicFieldSection.enableCategoryLabel}}"/>
+            <click selector="{{AdminNewCatalogPriceRule.saveAndApply}}" stepKey="saveAndApply"/>
+            <see selector="{{AdminCategoryMessagesSection.SuccessMessage}}" userInput="You saved the rule." stepKey="seeSuccess"/>
 
-            <actionGroup ref="AdminOpenNewCatalogPriceRuleFormPageActionGroup" stepKey="startCreatingFirstPriceRule"/>
-            <actionGroup ref="AdminCatalogPriceRuleFillMainInfoActionGroup" stepKey="fillMainInfoForFirstPriceRule">
-                <argument name="active" value="0"/>
-                <argument name="groups" value="'NOT LOGGED IN'"/>
-            </actionGroup>
-            <actionGroup ref="AdminCatalogPriceRuleFillActionsActionGroup" stepKey="fillActionsForThirdPriceRule"/>
-            <actionGroup ref="AdminCatalogPriceRuleSaveAndApplyActionGroup" stepKey="saveAndApplyFirstPriceRule"/>
-            <!-- Perform reindex -->
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value="catalogrule_rule"/>
-            </actionGroup>
+            <!-- Perform reindex and flush cache -->
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
-
         <after>
             <deleteData createDataKey="createProduct" stepKey="deleteSimpleProduct"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <actionGroup ref="RemoveCatalogPriceRuleActionGroup" stepKey="deleteCatalogPriceRule">
-                <argument name="ruleName" value="{{_defaultCatalogRule.name}}"/>
+            <amOnPage url="admin/catalog_rule/promo_catalog/" stepKey="goToPriceRulePage"/>
+            <actionGroup ref="deleteEntitySecondaryGrid" stepKey="deletePriceRule">
+                <argument name="name" value="{{_defaultCatalogRule.name}}"/>
+                <argument name="searchInput" value="{{AdminSecondaryGridSection.catalogRuleIdentifierSearch}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <amOnPage url="{{AdminLogoutPage.url}}" stepKey="logout"/>
         </after>
 
         <!-- Verify price is not discounted on category page -->
-        <amOnPage url="{{StorefrontCategoryPage.url($createCategory.custom_attributes[url_key]$)}}" stepKey="openCategoryPageOnFrontend"/>
-        <waitForPageLoad stepKey="waitForCategoryPageLoaded"/>
-        <see selector="{{StorefrontCategoryProductSection.ProductPriceByNumber('1')}}" userInput="$$createProduct.price$$" stepKey="seeProductPriceOnCategoryPage"/>
+        <amOnPage url="$$createCategory.name$$.html" stepKey="goToCategory"/>
+        <waitForPageLoad stepKey="waitForCategory"/>
+        <see selector="{{StorefrontCategoryProductSection.ProductPriceByNumber('1')}}" userInput="$$createProduct.price$$" stepKey="seePrice1"/>
 
         <!-- Verify price is not discounted on the product page -->
-        <amOnPage url="{{StorefrontProductPage.url($createProduct.custom_attributes[url_key]$)}}" stepKey="openProductPageOnFrontend"/>
-        <waitForPageLoad stepKey="waitForProductPageLoaded"/>
-        <see selector="{{StorefrontProductInfoMainSection.productPrice}}" userInput="$createProduct.price$" stepKey="seePriceOnProductPage"/>
+        <amOnPage url="$$createProduct.sku$$.html" stepKey="goToProduct"/>
+        <waitForPageLoad stepKey="waitForProduct"/>
+        <see selector="{{StorefrontProductInfoMainSection.productPrice}}" userInput="$$createProduct.price$$" stepKey="seePrice2"/>
 
         <!-- Verify price is not discounted in the cart -->
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
-            <argument name="productName" value="$createProduct.name$"/>
-        </actionGroup>
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="openCartPage" />
-        <waitForElementVisible selector="{{CheckoutCartSummarySection.subtotal}}" stepKey="waitForSubtotalAppears"/>
-        <see selector="{{CheckoutCartSummarySection.subtotal}}" userInput="$createProduct.price$" stepKey="seeProductPriceOnCartPage"/>
+        <click selector="{{StorefrontProductActionSection.addToCart}}" stepKey="addToCart"/>
+        <waitForPageLoad stepKey="waitForCart"/>
+        <waitForElementVisible selector="{{StorefrontMessagesSection.success}}" stepKey="waitForSuccessMessage"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCheckout"/>
+        <waitForPageLoad stepKey="waitForCheckout"/>
+        <see selector="{{CheckoutCartSummarySection.subtotal}}" userInput="$$createProduct.price$$" stepKey="seePrice3"/>
     </test>
 </tests>

@@ -5,7 +5,6 @@ namespace Dotdigitalgroup\Email\Model\Sales;
 use Dotdigitalgroup\Email\Model\AbandonedCart\PendingContactUpdater;
 use Dotdigitalgroup\Email\Model\ResourceModel\Campaign;
 use Dotdigitalgroup\Email\Model\Sync\SetsSyncFromTime;
-use Dotdigitalgroup\Email\Model\AbandonedCart\TimeLimit;
 
 /**
  * Customer and guest Abandoned Carts.
@@ -139,11 +138,6 @@ class Quote
     private $cartInsight;
 
     /**
-     * @var TimeLimit
-     */
-    private $timeLimit;
-
-    /**
      * Quote constructor.
      *
      * @param \Dotdigitalgroup\Email\Model\AbandonedFactory $abandonedFactory
@@ -158,7 +152,6 @@ class Quote
      * @param \Dotdigitalgroup\Email\Model\DateIntervalFactory $dateIntervalFactory
      * @param PendingContactUpdater $pendingContactUpdater
      * @param \Dotdigitalgroup\Email\Model\AbandonedCart\CartInsight\Data $cartInsight
-     * @param TimeLimit $timeLimit
      */
     public function __construct(
         \Dotdigitalgroup\Email\Model\AbandonedFactory $abandonedFactory,
@@ -172,8 +165,7 @@ class Quote
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         \Dotdigitalgroup\Email\Model\DateIntervalFactory $dateIntervalFactory,
         PendingContactUpdater $pendingContactUpdater,
-        \Dotdigitalgroup\Email\Model\AbandonedCart\CartInsight\Data $cartInsight,
-        TimeLimit $timeLimit
+        \Dotdigitalgroup\Email\Model\AbandonedCart\CartInsight\Data $cartInsight
     ) {
         $this->timeZone = $timezone;
         $this->rulesFactory = $rulesFactory;
@@ -190,7 +182,6 @@ class Quote
         $this->abandonedCollectionFactory = $abandonedFactory->create()->abandonedCollectionFactory;
         $this->acPendingContactUpdater = $pendingContactUpdater;
         $this->cartInsight = $cartInsight;
-        $this->timeLimit = $timeLimit;
     }
 
     /**
@@ -393,9 +384,31 @@ class Quote
      */
     public function isIntervalCampaignFound($email, $storeId)
     {
-        if (!$updated = $this->timeLimit->getAbandonedCartTimeLimit($storeId)) {
+        $cartLimit = $this->scopeConfig->getValue(
+            \Dotdigitalgroup\Email\Helper\Config::XML_PATH_CONNECTOR_ABANDONED_CART_LIMIT,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        //no limit is set skip
+        if (! $cartLimit) {
             return false;
         }
+
+        $fromTime = $this->timeZone->scopeDate($storeId, $this->getSyncFromTime()->format('Y-m-d H:i:s'), true);
+        $toTime = clone $fromTime;
+        $interval = $this->dateIntervalFactory->create(
+            ['interval_spec' => sprintf('PT%sH', $cartLimit)]
+        );
+        $fromTime->sub($interval);
+
+        $fromDate   = $fromTime->getTimestamp();
+        $toDate     = $toTime->getTimestamp();
+        $updated = [
+            'from' => $fromDate,
+            'to' => $toDate,
+            'date' => true,
+        ];
 
         //total campaigns sent for this interval of time
         $campaignLimit = $this->campaignCollection->create()

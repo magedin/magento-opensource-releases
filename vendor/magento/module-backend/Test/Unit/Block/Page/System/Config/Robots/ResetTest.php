@@ -3,46 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Backend\Block\Page\System\Config\Robots\Reset
  */
 namespace Magento\Backend\Test\Unit\Block\Page\System\Config\Robots;
 
-use Magento\Backend\Block\Page\System\Config\Robots\Reset;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
- * @deprecated Original class is deprecated
+ * Class ResetTest
+ * @deprecated
+ * @package Magento\Backend\Test\Unit\Block\Page\System\Config\Robots
  */
-class ResetTest extends TestCase
+class ResetTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reset
+     * @var \Magento\Backend\Block\Page\System\Config\Robots\Reset
      */
     private $_resetRobotsBlock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $objectHelper = new ObjectManager($this);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $context = $objectHelper->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             ['scopeConfig' => $this->configMock]
         );
 
-        $this->_resetRobotsBlock = new Reset($context, []);
+        $this->_resetRobotsBlock = new \Magento\Backend\Block\Page\System\Config\Robots\Reset($context, []);
     }
 
     /**
@@ -51,7 +45,7 @@ class ResetTest extends TestCase
     public function testGetRobotsDefaultCustomInstructions()
     {
         $expectedInstructions = 'User-agent: *';
-        $this->configMock->expects($this->once())->method('getValue')->willReturn($expectedInstructions);
+        $this->configMock->expects($this->once())->method('getValue')->will($this->returnValue($expectedInstructions));
         $this->assertEquals($expectedInstructions, $this->_resetRobotsBlock->getRobotsDefaultCustomInstructions());
     }
 }

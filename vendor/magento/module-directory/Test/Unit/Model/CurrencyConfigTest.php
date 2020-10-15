@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Directory\Test\Unit\Model;
 
@@ -15,7 +14,6 @@ use Magento\Framework\App\State;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,28 +27,28 @@ class CurrencyConfigTest extends TestCase
     private $testSubject;
 
     /**
-     * @var System|MockObject
+     * @var System|\PHPUnit_Framework_MockObject_MockObject
      */
     private $config;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appState;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->config = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
             ->setMethods(['getStores', 'getWebsites'])
             ->disableOriginalConstructor()
@@ -84,7 +82,7 @@ class CurrencyConfigTest extends TestCase
             ->method('getAreaCode')
             ->willReturn($areCode);
 
-        /** @var StoreInterface|MockObject $store */
+        /** @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject $store */
         $store = $this->getMockBuilder(StoreInterface::class)
             ->setMethods(['getCode'])
             ->disableOriginalConstructor()

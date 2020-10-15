@@ -13,18 +13,14 @@
 namespace PhpCsFixer\Fixer\ControlStructure;
 
 use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 
 /**
  * @author SpacePossum
  */
-final class NoUnneededCurlyBracesFixer extends AbstractFixer implements ConfigurationDefinitionFixerInterface
+final class NoUnneededCurlyBracesFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
@@ -46,25 +42,16 @@ switch ($b) {
 }
 '
                 ),
-                new CodeSample(
-                    '<?php
-namespace Foo {
-    function Bar(){}
-}
-',
-                    ['namespaces' => true]
-                ),
             ]
         );
     }
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoUselessElseFixer, NoUselessReturnFixer, ReturnAssignmentFixer.
      */
     public function getPriority()
     {
+        // must be run before NoUselessElseFixer and NoUselessReturnFixer.
         return 26;
     }
 
@@ -86,28 +73,12 @@ namespace Foo {
                 $this->clearOverCompleteBraces($tokens, $index, $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $index));
             }
         }
-
-        if ($this->configuration['namespaces']) {
-            $this->clearIfIsOverCompleteNamespaceBlock($tokens);
-        }
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function createConfigurationDefinition()
-    {
-        return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('namespaces', 'Remove unneeded curly braces from bracketed namespaces.'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->getOption(),
-        ]);
-    }
-
-    /**
-     * @param int $openIndex  index of `{` token
-     * @param int $closeIndex index of `}` token
+     * @param Tokens $tokens
+     * @param int    $openIndex  index of `{` token
+     * @param int    $closeIndex index of `}` token
      */
     private function clearOverCompleteBraces(Tokens $tokens, $openIndex, $closeIndex)
     {
@@ -125,53 +96,15 @@ namespace Foo {
     }
 
     /**
-     * @param int $index index of `{` token
+     * @param Tokens $tokens
+     * @param int    $index  index of `{` token
      *
      * @return bool
      */
     private function isOverComplete(Tokens $tokens, $index)
     {
-        static $include = ['{', '}', [T_OPEN_TAG], ':', ';'];
+        static $whiteList = ['{', '}', [T_OPEN_TAG], ':', ';'];
 
-        return $tokens[$tokens->getPrevMeaningfulToken($index)]->equalsAny($include);
-    }
-
-    private function clearIfIsOverCompleteNamespaceBlock(Tokens $tokens)
-    {
-        if (Tokens::isLegacyMode()) {
-            $index = $tokens->getNextTokenOfKind(0, [[T_NAMESPACE]]);
-            $secondNamespaceIndex = $tokens->getNextTokenOfKind($index, [[T_NAMESPACE]]);
-
-            if (null !== $secondNamespaceIndex) {
-                return;
-            }
-        } elseif (1 !== $tokens->countTokenKind(T_NAMESPACE)) {
-            return; // fast check, we never fix if multiple namespaces are defined
-        }
-
-        $index = $tokens->getNextTokenOfKind(0, [[T_NAMESPACE]]);
-
-        do {
-            $index = $tokens->getNextMeaningfulToken($index);
-        } while ($tokens[$index]->isGivenKind([T_STRING, T_NS_SEPARATOR]));
-
-        if (!$tokens[$index]->equals('{')) {
-            return; // `;`
-        }
-
-        $closeIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $index);
-        $afterCloseIndex = $tokens->getNextMeaningfulToken($closeIndex);
-
-        if (null !== $afterCloseIndex && (!$tokens[$afterCloseIndex]->isGivenKind(T_CLOSE_TAG) || null !== $tokens->getNextMeaningfulToken($afterCloseIndex))) {
-            return;
-        }
-
-        // clear up
-        $tokens->clearTokenAndMergeSurroundingWhitespace($closeIndex);
-        $tokens[$index] = new Token(';');
-
-        if ($tokens[$index - 1]->isWhitespace(" \t") && !$tokens[$index - 2]->isComment()) {
-            $tokens->clearTokenAndMergeSurroundingWhitespace($index - 1);
-        }
+        return $tokens[$tokens->getPrevMeaningfulToken($index)]->equalsAny($whiteList);
     }
 }

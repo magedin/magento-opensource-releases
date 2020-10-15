@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\ImportExport\Model\Source\Import\Behavior\Basic
  */
 namespace Magento\ImportExport\Test\Unit\Model\Source\Import\Behavior;
 
-use Magento\ImportExport\Model\Import;
-use Magento\ImportExport\Model\Source\Import\Behavior\Basic;
-use Magento\ImportExport\Test\Unit\Model\Source\Import\AbstractBehaviorTestCase;
-
-class BasicTest extends AbstractBehaviorTestCase
+class BasicTest extends \Magento\ImportExport\Test\Unit\Model\Source\Import\AbstractBehaviorTestCase
 {
     /**
      * Expected behavior group code
@@ -29,15 +24,15 @@ class BasicTest extends AbstractBehaviorTestCase
      * @var array
      */
     protected $_expectedBehaviors = [
-        Import::BEHAVIOR_APPEND,
-        Import::BEHAVIOR_REPLACE,
-        Import::BEHAVIOR_DELETE,
+        \Magento\ImportExport\Model\Import::BEHAVIOR_APPEND,
+        \Magento\ImportExport\Model\Import::BEHAVIOR_REPLACE,
+        \Magento\ImportExport\Model\Import::BEHAVIOR_DELETE,
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
-        $this->_model = new Basic();
+        $this->_model = new \Magento\ImportExport\Model\Source\Import\Behavior\Basic();
     }
 
     /**
@@ -48,7 +43,7 @@ class BasicTest extends AbstractBehaviorTestCase
     public function testToArray()
     {
         $behaviorData = $this->_model->toArray();
-        $this->assertIsArray($behaviorData);
+        $this->assertInternalType('array', $behaviorData);
         $this->assertEquals($this->_expectedBehaviors, array_keys($behaviorData));
     }
 

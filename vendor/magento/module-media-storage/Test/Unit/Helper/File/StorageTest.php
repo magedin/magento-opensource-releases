@@ -3,48 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\MediaStorage\Test\Unit\Helper\File;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\MediaStorage\Helper\File\Storage;
-use Magento\MediaStorage\Helper\File\Storage\Database as DatabaseHelper;
-use Magento\MediaStorage\Model\File\Storage\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StorageTest extends TestCase
+class StorageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    /** @var File|MockObject  */
+    /** @var \Magento\MediaStorage\Model\File\Storage\File | \PHPUnit_Framework_MockObject_MockObject  */
     protected $filesystemStorageMock;
 
-    /** @var DatabaseHelper|MockObject  */
+    /** @var \Magento\MediaStorage\Helper\File\Storage\Database | \PHPUnit_Framework_MockObject_MockObject  */
     protected $coreFileStorageDbMock;
 
-    /** @var \Magento\MediaStorage\Model\File\Storage|MockObject  */
+    /** @var \Magento\MediaStorage\Model\File\Storage | \PHPUnit_Framework_MockObject_MockObject  */
     protected $storageMock;
 
-    /** @var ScopeConfigInterface|MockObject  */
+    /** @var \Magento\Framework\App\Config\ScopeConfigInterface | \PHPUnit_Framework_MockObject_MockObject  */
     protected $configMock;
 
     /** @var  Storage */
     protected $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $className = Storage::class;
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $className = \Magento\MediaStorage\Helper\File\Storage::class;
         $arguments = $this->objectManager->getConstructArguments($className);
-        /** @var Context $context */
+        /** @var \Magento\Framework\App\Helper\Context $context */
         $context = $arguments['context'];
         $this->filesystemStorageMock = $arguments['filesystemStorage'];
         $this->coreFileStorageDbMock = $arguments['coreFileStorageDb'];
@@ -59,7 +49,7 @@ class StorageTest extends TestCase
         $this->configMock->expects($this->once())
             ->method('getValue')
             ->with(\Magento\MediaStorage\Model\File\Storage::XML_PATH_STORAGE_MEDIA, 'default')
-            ->willReturn($currentStorage);
+            ->will($this->returnValue($currentStorage));
 
         $this->assertEquals($currentStorage, $this->helper->getCurrentStorageCode());
         $this->assertEquals($currentStorage, $this->helper->getCurrentStorageCode());
@@ -82,7 +72,7 @@ class StorageTest extends TestCase
         $this->configMock->expects($this->exactly($callNum))
             ->method('getValue')
             ->with(\Magento\MediaStorage\Model\File\Storage::XML_PATH_STORAGE_MEDIA, 'default')
-            ->willReturn($currentStorage);
+            ->will($this->returnValue($currentStorage));
 
         $this->assertEquals($expected, $this->helper->isInternalStorage($storage));
     }
@@ -101,12 +91,12 @@ class StorageTest extends TestCase
 
     public function testGetStorageModel()
     {
-        $storageModelMock = $this->getMockBuilder(AbstractModel::class)
+        $storageModelMock = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->storageMock->expects($this->once())
             ->method('getStorageModel')
-            ->willReturn($storageModelMock);
+            ->will($this->returnValue($storageModelMock));
         $this->assertSame($storageModelMock, $this->helper->getStorageModel());
     }
 
@@ -123,22 +113,22 @@ class StorageTest extends TestCase
         $this->configMock->expects($this->once())
             ->method('getValue')
             ->with(\Magento\MediaStorage\Model\File\Storage::XML_PATH_STORAGE_MEDIA, 'default')
-            ->willReturn($storage);
+            ->will($this->returnValue($storage));
 
         $filename = 'filename';
         $relativePath = 'relativePath';
         $this->coreFileStorageDbMock->expects($this->exactly($callNum))
             ->method('getMediaRelativePath')
             ->with($filename)
-            ->willReturn($relativePath);
+            ->will($this->returnValue($relativePath));
 
-        $storageModelMock = $this->getMockBuilder(AbstractModel::class)
+        $storageModelMock = $this->getMockBuilder(\Magento\Framework\Model\AbstractModel::class)
             ->disableOriginalConstructor()
             ->setMethods(['loadByFileName', '__wakeup'])
             ->getMock();
         $this->storageMock->expects($this->exactly($callNum))
             ->method('getStorageModel')
-            ->willReturn($storageModelMock);
+            ->will($this->returnValue($storageModelMock));
         $fileMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\Storage\Database::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', '__wakeup'])
@@ -146,15 +136,15 @@ class StorageTest extends TestCase
         $storageModelMock->expects($this->exactly($callNum))
             ->method('loadByFilename')
             ->with($relativePath)
-            ->willReturn($fileMock);
+            ->will($this->returnValue($fileMock));
         $fileMock->expects($this->exactly($callNum))
             ->method('getId')
-            ->willReturn($fileId);
+            ->will($this->returnValue($fileId));
 
         $this->filesystemStorageMock->expects($this->exactly($callSaveFileNum))
             ->method('saveFile')
             ->with($fileMock, true)
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->assertEquals($expected, $this->helper->processStorageFile($filename));
     }
@@ -177,7 +167,7 @@ class StorageTest extends TestCase
         $this->filesystemStorageMock->expects($this->once())
             ->method('saveFile')
             ->with($file, true)
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $this->assertEquals(1, $this->helper->saveFileToFileSystem($file));
     }
 }

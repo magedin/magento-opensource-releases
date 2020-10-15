@@ -3,31 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Plugin\ProductRepository;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Plugin\ProductRepository\TransactionWrapper;
-use Magento\Catalog\Model\ResourceModel\Product;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TransactionWrapperTest extends TestCase
+class TransactionWrapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TransactionWrapper
+     * @var \Magento\Catalog\Model\Plugin\ProductRepository\TransactionWrapper
      */
     protected $model;
 
     /**
-     * @var MockObject|Product
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\ResourceModel\Product
      */
     protected $resourceMock;
 
     /**
-     * @var MockObject|ProductRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $subjectMock;
 
@@ -42,7 +33,7 @@ class TransactionWrapperTest extends TestCase
     protected $rollbackClosureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
@@ -53,11 +44,11 @@ class TransactionWrapperTest extends TestCase
 
     const ERROR_MSG = "error occurred";
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceMock = $this->createMock(Product::class);
-        $this->subjectMock = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
-        $this->productMock = $this->getMockForAbstractClass(ProductInterface::class);
+        $this->resourceMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product::class);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Api\Data\ProductInterface::class);
         $productMock = $this->productMock;
         $this->closureMock = function () use ($productMock) {
             return $productMock;
@@ -66,7 +57,7 @@ class TransactionWrapperTest extends TestCase
             throw new \Exception(self::ERROR_MSG);
         };
 
-        $this->model = new TransactionWrapper($this->resourceMock);
+        $this->model = new \Magento\Catalog\Model\Plugin\ProductRepository\TransactionWrapper($this->resourceMock);
     }
 
     public function testAroundSaveCommit()
@@ -80,10 +71,12 @@ class TransactionWrapperTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage error occurred
+     */
     public function testAroundSaveRollBack()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('error occurred');
         $this->resourceMock->expects($this->once())->method('beginTransaction');
         $this->resourceMock->expects($this->once())->method('rollBack');
 
@@ -101,10 +94,12 @@ class TransactionWrapperTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage error occurred
+     */
     public function testAroundDeleteRollBack()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('error occurred');
         $this->resourceMock->expects($this->once())->method('beginTransaction');
         $this->resourceMock->expects($this->once())->method('rollBack');
 
@@ -127,10 +122,12 @@ class TransactionWrapperTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage error occurred
+     */
     public function testAroundDeleteByIdRollBack()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('error occurred');
         $this->resourceMock->expects($this->once())->method('beginTransaction');
         $this->resourceMock->expects($this->once())->method('rollBack');
 

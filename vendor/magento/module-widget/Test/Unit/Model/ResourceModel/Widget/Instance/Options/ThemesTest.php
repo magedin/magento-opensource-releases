@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model\ResourceModel\Widget\Instance\Options;
 
+use Magento\Widget\Model\ResourceModel\Widget\Instance\Options\Themes;
 use Magento\Theme\Model\ResourceModel\Theme\Collection as ThemeCollection;
 use Magento\Theme\Model\ResourceModel\Theme\CollectionFactory as ThemeCollectionFactory;
-use Magento\Widget\Model\ResourceModel\Widget\Instance\Options\Themes;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Widget\Model\ResourceModel\Widget\Instance\Options\Themes
  */
-class ThemesTest extends TestCase
+class ThemesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Themes
@@ -24,16 +20,16 @@ class ThemesTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $themeCollectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $themeCollectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->themeCollectionMock = $this->createMock(ThemeCollection::class);
         $this->themeCollectionFactoryMock = $this->createPartialMock(ThemeCollectionFactory::class, ['create']);

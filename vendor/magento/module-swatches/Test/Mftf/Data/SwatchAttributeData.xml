@@ -18,9 +18,6 @@
         <data key="default_label" unique="suffix">TextSwatchAttr</data>
         <data key="attribute_code" unique="suffix">text_swatch_attr</data>
     </entity>
-    <entity name="textSwatchProductAttribute" type="ProductAttribute" extends="productDropDownAttribute">
-        <data key="frontend_input">swatch_text</data>
-    </entity>
     <entity name="VisualSwatchProductAttribute" type="ProductAttribute">
         <data key="frontend_input">swatch_visual</data>
         <data key="attribute_code" unique="suffix">visual_swatch</data>
@@ -48,10 +45,5 @@
         <data key="is_visible_on_front">1</data>
         <data key="used_in_product_listing">1</data>
         <data key="used_for_sort_by">0</data>
-    </entity>
-    <entity name="TextSwatchProductAttributeForm" extends="VisualSwatchProductAttributeForm">
-        <data key="frontend_label[0]" unique="suffix">TextSwatchAttribute-</data>
-        <data key="frontend_input">swatch_text</data>
-        <data key="attribute_code" unique="suffix">text_swatch_attribute_</data>
     </entity>
 </entities>

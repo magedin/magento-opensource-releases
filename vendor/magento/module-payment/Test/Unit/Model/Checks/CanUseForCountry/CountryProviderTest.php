@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model\Checks\CanUseForCountry;
 
 use Magento\Directory\Helper\Data;
 use Magento\Payment\Model\Checks\CanUseForCountry\CountryProvider;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * CountryProviderTest contains tests for CountryProvider class
  */
-class CountryProviderTest extends TestCase
+class CountryProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CountryProvider
@@ -34,7 +31,7 @@ class CountryProviderTest extends TestCase
      */
     private $quote;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->directory = $this->getMockBuilder(Data::class)
             ->disableOriginalConstructor()

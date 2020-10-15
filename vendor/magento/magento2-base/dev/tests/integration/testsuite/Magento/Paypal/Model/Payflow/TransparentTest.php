@@ -40,14 +40,14 @@ class TransparentTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->management = $this->objectManager->get(PaymentInformationManagementInterface::class);
     }
 
     /**
-     * Checks a case when order should be placed in "Suspected Fraud" status based on after account verification.
+     * Checks a case when order should be placed in "Suspected Fraud" status based on account verification.
      *
      * @magentoDataFixture Magento/Checkout/_files/quote_with_shipping_method.php
      * @magentoConfigFixture current_store payment/payflowpro/active 1
@@ -72,7 +72,7 @@ class TransparentTest extends TestCase
         self::assertEquals(Order::STATE_PAYMENT_REVIEW, $order->getState());
 
         $transactions = $this->getPaymentTransactionList((int) $orderId);
-        self::assertCount(1, $transactions, 'Only one transaction should be present.');
+        self::assertEquals(1, sizeof($transactions), 'Only one transaction should be present.');
 
         /** @var TransactionInterface $transaction */
         $transaction = array_pop($transactions);
@@ -82,7 +82,7 @@ class TransparentTest extends TestCase
             'Authorization transaction id should be equal to PNREF.'
         );
 
-        self::assertStringContainsString(
+        self::assertContains(
             'Order is suspended as an account verification transaction is suspected to be fraudulent.',
             $this->getOrderComment($orderId)
         );

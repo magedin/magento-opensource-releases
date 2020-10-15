@@ -6,8 +6,6 @@
 declare(strict_types=1);
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Customer\Model\CustomerRegistry;
 use Magento\Downloadable\Api\Data\LinkInterface;
 use Magento\Downloadable\Model\Product\Type;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -18,19 +16,11 @@ use Magento\Sales\Model\Order\ItemFactory;
 use Magento\Sales\Model\Order\PaymentFactory;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Downloadable/_files/product_downloadable.php');
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+require __DIR__ . '/../../../Magento/Downloadable/_files/product_downloadable.php';
+require __DIR__ . '/../../../Magento/Customer/_files/customer.php';
 
 $addressData = include __DIR__ . '/../../../Magento/Sales/_files/address_data.php';
-$objectManager = Bootstrap::getObjectManager();
-/** @var CustomerRegistry $customerRegistry */
-$customerRegistry = $objectManager->create(CustomerRegistry::class);
-$customer = $customerRegistry->retrieve(1);
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
 /** @var AddressFactory $addressFactory */
 $addressFactory = $objectManager->get(AddressFactory::class);
 $billingAddress = $addressFactory->create(['data' => $addressData]);

@@ -3,52 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Router;
 
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\Router\ActionList;
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ActionListTest extends TestCase
+class ActionListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Config\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readerMock;
 
     /**
-     * @var ActionList
+     * @var \Magento\Framework\App\Router\ActionList
      */
     private $actionList;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
-        $this->readerMock = $this->createMock(Reader::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->cacheMock = $this->createMock(\Magento\Framework\Config\CacheInterface::class);
+        $this->readerMock = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
     }
 
     public function testConstructActionsCached()
@@ -76,7 +65,8 @@ class ActionListTest extends TestCase
             ->method('save');
         $this->readerMock->expects($this->once())
             ->method('getActionFiles')
-            ->willReturn('data');
+            ->willReturn('data')
+        ;
         $this->createActionListInstance();
     }
 
@@ -93,7 +83,7 @@ class ActionListTest extends TestCase
     {
         $this->cacheMock->expects($this->once())
             ->method('load')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->cacheMock->expects($this->once())
             ->method('save');
         $this->readerMock->expects($this->once())
@@ -110,7 +100,7 @@ class ActionListTest extends TestCase
     {
         $mockClassName = 'Mock_Action_Class';
         $actionClass = $this->getMockClass(
-            ActionInterface::class,
+            \Magento\Framework\App\ActionInterface::class,
             ['execute', 'getResponse'],
             [],
             $mockClassName
@@ -171,7 +161,7 @@ class ActionListTest extends TestCase
     private function createActionListInstance()
     {
         $this->actionList = $this->objectManager->getObject(
-            ActionList::class,
+            \Magento\Framework\App\Router\ActionList::class,
             [
                 'cache' => $this->cacheMock,
                 'moduleReader' => $this->readerMock,

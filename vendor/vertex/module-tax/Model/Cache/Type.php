@@ -14,8 +14,8 @@ use Magento\Framework\App\Cache\Type\FrontendPool;
  */
 class Type extends TagScope
 {
-    public const TYPE_IDENTIFIER = 'vertex';
-    public const CACHE_TAG = 'VERTEX';
+    const TYPE_IDENTIFIER = 'vertex';
+    const CACHE_TAG = 'VERTEX';
 
     /**
      * @param FrontendPool $cacheFrontendPool

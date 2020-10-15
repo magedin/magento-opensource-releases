@@ -6,9 +6,9 @@
 
 namespace Magento\Eav\Model\TypeLocator;
 
-use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Reflection\TypeProcessor;
+use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Framework\Webapi\CustomAttribute\ServiceTypeListInterface;
 use Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface;
 
@@ -28,10 +28,9 @@ class SimpleType implements CustomAttributeTypeLocatorInterface
     private $serviceTypeList;
 
     /**
-     * Constructor
+     * Initialize dependencies.
      *
      * @param AttributeRepositoryInterface $attributeRepository
-     * @param ServiceTypeListInterface $serviceTypeList
      */
     public function __construct(
         AttributeRepositoryInterface $attributeRepository,
@@ -42,7 +41,7 @@ class SimpleType implements CustomAttributeTypeLocatorInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getType($attributeCode, $entityType)
     {
@@ -60,13 +59,12 @@ class SimpleType implements CustomAttributeTypeLocatorInterface
             'datetime' => TypeProcessor::NORMALIZED_STRING_TYPE,
             'decimal' => TypeProcessor::NORMALIZED_DOUBLE_TYPE,
         ];
-        return $backendTypeMap[$backendType] ?? TypeProcessor::NORMALIZED_ANY_TYPE;
+        return isset($backendTypeMap[$backendType])
+            ? $backendTypeMap[$backendType] : TypeProcessor::NORMALIZED_ANY_TYPE;
     }
 
     /**
-     * Get data Types from service type list
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function getAllServiceDataInterfaces()
     {

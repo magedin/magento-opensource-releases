@@ -3,9 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-declare(strict_types=1);
-
 namespace Magento\Quote\Model\Cart;
 
 use Magento\Quote\Api;
@@ -15,11 +12,9 @@ use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\ExtensibleDataInterface;
 use Magento\Quote\Model\Cart\Totals\ItemConverter;
 use Magento\Quote\Api\CouponManagementInterface;
-use Magento\Quote\Api\Data\TotalsInterface as QuoteTotalsInterface;
 
 /**
  * Cart totals data object.
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CartTotalRepository implements CartTotalRepositoryInterface
@@ -84,8 +79,11 @@ class CartTotalRepository implements CartTotalRepositoryInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $cartId The cart ID.
+     * @return Totals Quote totals data.
      */
-    public function get($cartId): QuoteTotalsInterface
+    public function get($cartId)
     {
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
@@ -98,14 +96,17 @@ class CartTotalRepository implements CartTotalRepositoryInterface
         }
         unset($addressTotalsData[ExtensibleDataInterface::EXTENSION_ATTRIBUTES_KEY]);
 
-        /** @var QuoteTotalsInterface $quoteTotals */
+        /** @var \Magento\Quote\Api\Data\TotalsInterface $quoteTotals */
         $quoteTotals = $this->totalsFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $quoteTotals,
             $addressTotalsData,
-            QuoteTotalsInterface::class
+            \Magento\Quote\Api\Data\TotalsInterface::class
         );
-        $items = array_map([$this->itemConverter, 'modelToDataObject'], $quote->getAllVisibleItems());
+        $items = [];
+        foreach ($quote->getAllVisibleItems() as $index => $item) {
+            $items[$index] = $this->itemConverter->modelToDataObject($item);
+        }
         $calculatedTotals = $this->totalsConverter->process($addressTotals);
         $quoteTotals->setTotalSegments($calculatedTotals);
 

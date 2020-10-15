@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\System\Config\Source;
 
 use Magento\Paypal\Model\System\Config\Source\Yesnoshortcut;
-use PHPUnit\Framework\TestCase;
 
-class YesnoshortcutTest extends TestCase
+class YesnoshortcutTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Yesnoshortcut
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = new Yesnoshortcut();
     }

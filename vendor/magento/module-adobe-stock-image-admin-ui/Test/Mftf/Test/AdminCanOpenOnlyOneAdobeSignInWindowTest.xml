@@ -14,30 +14,26 @@
             <title value="User can not open several `Sign In Adobe ID` windows copy"/>
             <testCaseId value="https://studio.cucumber.io/projects/131313/test-plan/folders/943908/scenarios/4314374"/>
             <description value="User can open only one `Sign In Adobe ID` window"/>
-            <stories value="User can open only one `Sign In Adobe ID` window"/>
             <severity value="MAJOR"/>
             <group value="adobe_stock_integration"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <actionGroup ref="AdminOpenMediaGalleryForPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
             <actionGroup ref="AdminAdobeStockOpenPanelFromMediaGalleryActionGroup" stepKey="openAdobeStockPanel"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
-        <executeJS function="return window.name;" stepKey="rootWindow"/>
         <actionGroup ref="AdminAdobeStockClickSignInActionGroup" stepKey="clickSignIn"/>
-        <switchToWindow userInput="{$rootWindow}" stepKey="switchToRoot1"/>
         <actionGroup ref="AdminAdobeStockClickSignInActionGroup" stepKey="clickSignTheSecondTime"/>
-        <switchToWindow userInput="{$rootWindow}" stepKey="switchToRoot2"/>
         <actionGroup ref="AdminAdobeStockClickSignInActionGroup" stepKey="clickSignTheThirdTime"/>
 
-        <switchToWindow userInput="{$rootWindow}" stepKey="switchToAdobeImsGallery"/>
-        <seeElement selector="{{AdminAdobeStockSection.adobeSignIn}}" stepKey="seeSignInButton"/>
-        <seeElement selector="{{AdminAdobeStockSection.searchInput}}" stepKey="seeSearchInput"/>
-        <switchToWindow userInput="authorization_widnow" stepKey="switchToCloseWindow"/>
-        <closeTab stepKey="closeAuthorizationWindow"/>
+        <switchToNextTab stepKey="switchToAdobeSignInIms"/>
+        <switchToPreviousTab stepKey="switchToPreviousTab"/>
+
+        <seeElement selector="{{AdobeStockSection.adobeSignIn}}" stepKey="seeSignInButton"/>
+        <seeElement selector="{{AdobeStockSection.searchInput}}" stepKey="seeSearchInput"/>
     </test>
 </tests>

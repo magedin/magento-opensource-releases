@@ -20,14 +20,14 @@
 
         <before>
             <createData entity="CustomCustomerGroup" stepKey="customerGroup" />
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
         </before>
         <after>
             <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteCustomer">
                 <argument name="email" value="{{CustomerEntityOne.email}}" />
             </actionGroup>
             <deleteData createDataKey="customerGroup" stepKey="deleteCustomerGroup"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open New Customer Page -->
@@ -39,9 +39,7 @@
         <fillField userInput="{{CustomerEntityOne.email}}" selector="{{AdminCustomerAccountInformationSection.email}}" stepKey="fillEmail"/>
         <click selector="{{AdminCustomerMainActionsSection.saveButton}}" stepKey="saveCustomer"/>
         <seeElement selector="{{AdminCustomerMessagesSection.successMessage}}" stepKey="assertSuccessMessage"/>
-        <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-            <argument name="tags" value=""/>
-        </actionGroup>
+        <magentoCLI stepKey="flushMagentoCache" command="cache:flush" />
         <reloadPage stepKey="reloadPage"/>
 
         <!--Verify Customer in grid -->

@@ -8,10 +8,8 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Model;
 
-use Magento\Eav\Model\Config as EavConfig;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\TestFramework\ObjectManager;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Framework\ObjectManagerInterface;
@@ -50,7 +48,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
@@ -60,7 +58,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var \Magento\Catalog\Model\Product\Media\Config $config */
@@ -333,9 +331,9 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->_model = $this->productRepository->get('simple');
 
         // fixture
-        $this->assertTrue((bool) $this->_model->isSalable());
-        $this->assertTrue((bool) $this->_model->isSaleable());
-        $this->assertTrue((bool) $this->_model->isAvailable());
+        $this->assertTrue((bool)$this->_model->isSalable());
+        $this->assertTrue((bool)$this->_model->isSaleable());
+        $this->assertTrue((bool)$this->_model->isAvailable());
         $this->assertTrue($this->_model->isInStock());
     }
 
@@ -352,9 +350,9 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->_model = $this->productRepository->get('simple');
 
         $this->_model->setStatus(0);
-        $this->assertFalse((bool) $this->_model->isSalable());
-        $this->assertFalse((bool) $this->_model->isSaleable());
-        $this->assertFalse((bool) $this->_model->isAvailable());
+        $this->assertFalse((bool)$this->_model->isSalable());
+        $this->assertFalse((bool)$this->_model->isSaleable());
+        $this->assertFalse((bool)$this->_model->isAvailable());
         $this->assertFalse($this->_model->isInStock());
     }
 
@@ -633,7 +631,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
                 continue;
             }
             foreach ($option->getValues() as $value) {
-                $this->assertEquals($expectedValue[$value->getSku()], (float) $value->getPrice());
+                $this->assertEquals($expectedValue[$value->getSku()], (float)$value->getPrice());
             }
         }
     }
@@ -653,7 +651,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     {
         $product = $this->productRepository->get('simple-out-of-stock', true, null, true);
         $stockItem = $product->getExtensionAttributes()->getStockItem();
-        $this->assertFalse($stockItem->getIsInStock());
+        $this->assertEquals(false, $stockItem->getIsInStock());
         $stockData = [
             'backorders' => 1,
             'qty' => $qty,
@@ -724,41 +722,5 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             [-1, 1, true],
             [1, 1, true],
         ];
-    }
-
-    public function testConstructionWithCustomAttributesMapInData()
-    {
-        $data = [
-            'custom_attributes' => [
-                'tax_class_id' => '3',
-                'category_ids' => '1,2'
-            ],
-        ];
-
-        /** @var Product $product */
-        $product = ObjectManager::getInstance()->create(Product::class, ['data' => $data]);
-        $this->assertSame($product->getCustomAttribute('tax_class_id')->getValue(), '3');
-        $this->assertSame($product->getCustomAttribute('category_ids')->getValue(), '1,2');
-    }
-
-    public function testConstructionWithCustomAttributesArrayInData()
-    {
-        $data = [
-            'custom_attributes' => [
-                [
-                    'attribute_code' => 'tax_class_id',
-                    'value' => '3'
-                ],
-                [
-                    'attribute_code' => 'category_ids',
-                    'value' => '1,2'
-                ]
-            ],
-        ];
-
-        /** @var Product $product */
-        $product = ObjectManager::getInstance()->create(Product::class, ['data' => $data]);
-        $this->assertSame($product->getCustomAttribute('tax_class_id')->getValue(), '3');
-        $this->assertSame($product->getCustomAttribute('category_ids')->getValue(), '1,2');
     }
 }

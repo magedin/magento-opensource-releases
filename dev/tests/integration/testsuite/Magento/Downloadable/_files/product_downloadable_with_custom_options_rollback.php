@@ -3,6 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+use Magento\Framework\Exception\NoSuchEntityException;
 
-Resolver::getInstance()->requireDataFixture('Magento/Downloadable/_files/product_downloadable_rollback.php');
+require __DIR__ . '/product_downloadable_rollback.php';

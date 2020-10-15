@@ -8,7 +8,7 @@
 
 <actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
-    <actionGroup name="AdminAddProductVideoWithPreviewActionGroup" extends="AddProductVideoActionGroup">
+    <actionGroup name="AdminAddProductVideoWithPreviewActionGroup" extends="addProductVideo">
         <annotations>
             <description>Adds product video with a preview image on the Admin Product creation/edit page.</description>
         </annotations>

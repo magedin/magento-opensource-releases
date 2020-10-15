@@ -3,76 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CacheInvalidate\Observer;
 
-use Magento\CacheInvalidate\Model\PurgeCache;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\App\Cache\Tag\Resolver;
-use Magento\PageCache\Model\Config;
 
-/**
- * Observer used to invalidate varnish cache once Magento cache was cleaned
- */
 class InvalidateVarnishObserver implements ObserverInterface
 {
     /**
      * Application config object
      *
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    private $config;
+    protected $config;
 
     /**
-     * @var PurgeCache
+     * @var \Magento\CacheInvalidate\Model\PurgeCache
      */
-    private $purgeCache;
+    protected $purgeCache;
 
     /**
      * Invalidation tags resolver
      *
-     * @var Resolver
+     * @var \Magento\Framework\App\Cache\Tag\Resolver
      */
     private $tagResolver;
 
     /**
-     * @param Config $config
-     * @param PurgeCache $purgeCache
-     * @param Resolver $tagResolver
+     * @param \Magento\PageCache\Model\Config $config
+     * @param \Magento\CacheInvalidate\Model\PurgeCache $purgeCache
      */
     public function __construct(
-        Config $config,
-        PurgeCache $purgeCache,
-        Resolver $tagResolver
+        \Magento\PageCache\Model\Config $config,
+        \Magento\CacheInvalidate\Model\PurgeCache $purgeCache
     ) {
         $this->config = $config;
         $this->purgeCache = $purgeCache;
-        $this->tagResolver = $tagResolver;
     }
 
     /**
-     * If Varnish caching is enabled it collects array of tags of incoming object and asks to clean cache.
+     * If Varnish caching is enabled it collects array of tags
+     * of incoming object and asks to clean cache.
      *
-     * @param Observer $observer
-     *
+     * @param \Magento\Framework\Event\Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $object = $observer->getEvent()->getObject();
-
         if (!is_object($object)) {
             return;
         }
-
-        if ((int)$this->config->getType() === Config::VARNISH && $this->config->isEnabled()) {
-            $bareTags = $this->tagResolver->getTags($object);
+        if ($this->config->getType() == \Magento\PageCache\Model\Config::VARNISH && $this->config->isEnabled()) {
+            $bareTags = $this->getTagResolver()->getTags($object);
 
             $tags = [];
-            $pattern = '((^|,)%s(,|$))';
+            $pattern = "((^|,)%s(,|$))";
             foreach ($bareTags as $tag) {
                 $tags[] = sprintf($pattern, $tag);
             }
@@ -80,5 +65,18 @@ class InvalidateVarnishObserver implements ObserverInterface
                 $this->purgeCache->sendPurgeRequest(implode('|', array_unique($tags)));
             }
         }
+    }
+
+    /**
+     * @deprecated 100.1.2
+     * @return \Magento\Framework\App\Cache\Tag\Resolver
+     */
+    private function getTagResolver()
+    {
+        if ($this->tagResolver === null) {
+            $this->tagResolver = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Framework\App\Cache\Tag\Resolver::class);
+        }
+        return $this->tagResolver;
     }
 }

@@ -15,124 +15,52 @@
         <conditionalClick selector="{{AdminShippingMethodsUpsSection.carriersUpsTab}}" dependentSelector="{{AdminShippingMethodsUpsSection.carriersUPSActive}}" visible="false" stepKey="expandUPSTab"/>
         <waitForElementVisible selector="{{AdminShippingMethodsUpsSection.carriersUPSActive}}" stepKey="waitUPSTabOpen"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSActive}}" userInput="disabled" stepKey="grabUPSActiveDisabled"/>
-        <assertEquals stepKey="assertUPSActiveDisabled">
-			<actualResult type="const">$grabUPSActiveDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSActiveDisabled" stepKey="assertUPSActiveDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSTypeSystem}}" userInput="disabled" stepKey="grabUPSTypeDisabled"/>
-        <assertEquals stepKey="assertUPSTypeDisabled">
-			<actualResult type="const">$grabUPSTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSTypeDisabled" stepKey="assertUPSTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSAccountLive}}" userInput="disabled" stepKey="grabUPSAccountLiveDisabled"/>
-        <assertEquals stepKey="assertUPSAccountLiveDisabled">
-			<actualResult type="const">$grabUPSAccountLiveDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSAccountLiveDisabled" stepKey="assertUPSAccountLiveDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSGatewayXMLUrl}}" userInput="disabled" stepKey="grabUPSGatewayXMLUrlDisabled"/>
-        <assertEquals stepKey="assertUPSGatewayXMLUrlDisabled">
-			<actualResult type="const">$grabUPSGatewayXMLUrlDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSGatewayXMLUrlDisabled" stepKey="assertUPSGatewayXMLUrlDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSModeXML}}" userInput="disabled" stepKey="grabUPSModeXMLDisabled"/>
-        <assertEquals stepKey="assertUPSModeXMLDisabled">
-			<actualResult type="const">$grabUPSModeXMLDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSModeXMLDisabled" stepKey="assertUPSModeXMLDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSOriginShipment}}" userInput="disabled" stepKey="grabUPSOriginShipmentDisabled"/>
-        <assertEquals stepKey="assertUPSOriginShipmentDisabled">
-			<actualResult type="const">$grabUPSOriginShipmentDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSOriginShipmentDisabled" stepKey="assertUPSOriginShipmentDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSTitle}}" userInput="disabled" stepKey="grabUPSTitleDisabled"/>
-        <assertEquals stepKey="assertUPSTitleDisabled">
-			<actualResult type="const">$grabUPSTitleDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSTitleDisabled" stepKey="assertUPSTitleDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSNegotiatedActive}}" userInput="disabled" stepKey="grabUPSNegotiatedActiveDisabled"/>
-        <assertEquals stepKey="assertUPSNegotiatedActiveDisabled">
-			<actualResult type="const">$grabUPSNegotiatedActiveDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSNegotiatedActiveDisabled" stepKey="assertUPSNegotiatedActiveDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSIncludeTaxes}}" userInput="disabled" stepKey="grabUPSIncludeTaxesDisabled"/>
-        <assertEquals stepKey="assertUPSIncludeTaxesDisabled">
-			<actualResult type="const">$grabUPSIncludeTaxesDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSIncludeTaxesDisabled" stepKey="assertUPSIncludeTaxesDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSShipmentRequestType}}" userInput="disabled" stepKey="grabUPSShipmentRequestTypeDisabled"/>
-        <assertEquals stepKey="assertUPSShipmentRequestTypeDisabled">
-			<actualResult type="const">$grabUPSShipmentRequestTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSShipmentRequestTypeDisabled" stepKey="assertUPSShipmentRequestTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSContainer}}" userInput="disabled" stepKey="grabUPSContainerDisabled"/>
-        <assertEquals stepKey="assertUPSContainerDisabled">
-			<actualResult type="const">$grabUPSContainerDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSContainerDisabled" stepKey="assertUPSContainerDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSDestType}}" userInput="disabled" stepKey="grabUPSDestTypeDisabled"/>
-        <assertEquals stepKey="assertUPSDestTypeDisabled">
-			<actualResult type="const">$grabUPSDestTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSDestTypeDisabled" stepKey="assertUPSDestTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSTrackingXmlUrl}}" userInput="disabled" stepKey="grabUPSTrackingXmlUrlDisabled"/>
-        <assertEquals stepKey="assertUPSTrackingXmlUrlDisabled">
-			<actualResult type="const">$grabUPSTrackingXmlUrlDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSTrackingXmlUrlDisabled" stepKey="assertUPSTrackingXmlUrlDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSUnitOfMeasure}}" userInput="disabled" stepKey="grabUPSUnitOfMeasureDisabled"/>
-        <assertEquals stepKey="assertUPSUnitOfMeasureDisabled">
-			<actualResult type="const">$grabUPSUnitOfMeasureDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSUnitOfMeasureDisabled" stepKey="assertUPSUnitOfMeasureDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSMaxPackageWeight}}" userInput="disabled" stepKey="grabUPSMaxPackageWeightDisabled"/>
-        <assertEquals stepKey="assertUPSMaxPackageWeightDisabled">
-			<actualResult type="const">$grabUPSMaxPackageWeightDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSMaxPackageWeightDisabled" stepKey="assertUPSMaxPackageWeightDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSPickup}}" userInput="disabled" stepKey="grabUPSPickupDisabled"/>
-        <assertEquals stepKey="assertUPSPickupDisabled">
-			<actualResult type="const">$grabUPSPickupDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSPickupDisabled" stepKey="assertUPSPickupDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSMinPackageWeight}}" userInput="disabled" stepKey="grabUPSMinPackageWeightDisabled"/>
-        <assertEquals stepKey="assertUPSMinPackageWeightDisabled">
-			<actualResult type="const">$grabUPSMinPackageWeightDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSMinPackageWeightDisabled" stepKey="assertUPSMinPackageWeightDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSHandlingType}}" userInput="disabled" stepKey="grabUPSHandlingTypeDisabled"/>
-        <assertEquals stepKey="assertUPSHandlingTypeDisabled">
-			<actualResult type="const">$grabUPSHandlingTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSHandlingTypeDisabled" stepKey="assertUPSHandlingTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSHandlingAction}}" userInput="disabled" stepKey="grabUPSHandlingActionDisabled"/>
-        <assertEquals stepKey="assertUPSHandlingActionDisabled">
-			<actualResult type="const">$grabUPSHandlingActionDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSHandlingActionDisabled" stepKey="assertUPSHandlingActionDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSAllowedMethods}}" userInput="disabled" stepKey="grabUPSAllowedMethodsDisabled"/>
-        <assertEquals stepKey="assertUPSAllowedMethodsDisabled">
-			<actualResult type="const">$grabUPSAllowedMethodsDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSAllowedMethodsDisabled" stepKey="assertUPSAllowedMethodsDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSFreeMethod}}" userInput="disabled" stepKey="grabUPSFreeMethodDisabled"/>
-        <assertEquals stepKey="assertUPSFreeMethodDisabled">
-			<actualResult type="const">$grabUPSFreeMethodDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSFreeMethodDisabled" stepKey="assertUPSFreeMethodDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSSpecificErrMsg}}" userInput="disabled" stepKey="grabUPSSpecificErrMsgDisabled"/>
-        <assertEquals stepKey="assertUPSSpecificErrMsgDisabled">
-			<actualResult type="const">$grabUPSSpecificErrMsgDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSSpecificErrMsgDisabled" stepKey="assertUPSSpecificErrMsgDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSAllowSpecific}}" userInput="disabled" stepKey="grabUPSAllowSpecificDisabled"/>
-        <assertEquals stepKey="assertUPSAllowSpecificDisabled">
-			<actualResult type="const">$grabUPSAllowSpecificDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSAllowSpecificDisabled" stepKey="assertUPSAllowSpecificDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodsUpsSection.carriersUPSSpecificCountry}}" userInput="disabled" stepKey="grabUPSSpecificCountryDisabled"/>
-        <assertEquals stepKey="assertUPSSpecificCountryDisabled">
-			<actualResult type="const">$grabUPSSpecificCountryDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabUPSSpecificCountryDisabled" stepKey="assertUPSSpecificCountryDisabled"/>
     </test>
 </tests>

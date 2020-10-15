@@ -37,7 +37,7 @@ class LinkRepositoryTest extends WebapiAbstract
      */
     protected $testImagePath;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->createServiceInfo = [
             'rest' => [
@@ -245,12 +245,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage The link type is invalid. Verify and try again.
      */
     public function testCreateThrowsExceptionIfLinkTypeIsNotSpecified()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The link type is invalid. Verify and try again.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -271,12 +270,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Provided content must be valid base64 encoded data.
      */
     public function testCreateThrowsExceptionIfLinkFileContentIsNotAValidBase64EncodedString()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Provided content must be valid base64 encoded data.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -303,13 +301,12 @@ class LinkRepositoryTest extends WebapiAbstract
      * Check that error appears when link file not existing in filesystem.
      *
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link file not found. Please try again.
      * @return void
      */
     public function testCreateLinkWithMissingLinkFileThrowsException(): void
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link file not found. Please try again.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -333,13 +330,12 @@ class LinkRepositoryTest extends WebapiAbstract
      * Check that error appears when link sample file not existing in filesystem.
      *
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link sample file not found. Please try again.
      * @return void
      */
     public function testCreateLinkWithMissingSampleFileThrowsException(): void
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link sample file not found. Please try again.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -361,12 +357,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Provided content must be valid base64 encoded data.
      */
     public function testCreateThrowsExceptionIfSampleFileContentIsNotAValidBase64EncodedString()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Provided content must be valid base64 encoded data.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -391,12 +386,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Provided file name contains forbidden characters.
      */
     public function testCreateThrowsExceptionIfLinkFileNameContainsForbiddenCharacters()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Provided file name contains forbidden characters.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -422,12 +416,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Provided file name contains forbidden characters.
      */
     public function testCreateThrowsExceptionIfSampleFileNameContainsForbiddenCharacters()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Provided file name contains forbidden characters.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -453,12 +446,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link URL must have valid format.
      */
     public function testCreateThrowsExceptionIfLinkUrlHasWrongFormat()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link URL must have valid format.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -480,12 +472,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link URL's domain is not in list of downloadable_domains in env.php.
      */
     public function testCreateThrowsExceptionIfLinkUrlUsesDomainNotInWhitelist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link URL\'s domain is not in list of downloadable_domains in env.php.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -507,12 +498,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Sample URL's domain is not in list of downloadable_domains in env.php.
      */
     public function testCreateThrowsExceptionIfSampleUrlUsesDomainNotInWhitelist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Sample URL\'s domain is not in list of downloadable_domains in env.php.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -534,12 +524,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Sample URL must have valid format.
      */
     public function testCreateThrowsExceptionIfSampleUrlHasWrongFormat()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Sample URL must have valid format.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -561,13 +550,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link price must have numeric positive value.
      * @dataProvider getInvalidLinkPrice
      */
     public function testCreateThrowsExceptionIfLinkPriceIsInvalid($linkPrice)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link price must have numeric positive value.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -599,13 +587,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Sort order must be a positive integer.
      * @dataProvider getInvalidSortOrder
      */
     public function testCreateThrowsExceptionIfSortOrderIsInvalid($sortOrder)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Sort order must be a positive integer.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -636,13 +623,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Number of downloads must be a positive integer.
      * @dataProvider getInvalidNumberOfDownloads
      */
     public function testCreateThrowsExceptionIfNumberOfDownloadsIsInvalid($numberOfDownloads)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Number of downloads must be a positive integer.');
-
         $requestData = [
             'isGlobalScopeContent' => false,
             'sku' => 'downloadable-product',
@@ -669,6 +655,57 @@ class LinkRepositoryTest extends WebapiAbstract
         return [
             [-1],
         ];
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/Catalog/_files/product_simple.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage The product needs to be the downloadable type. Verify the product and try again.
+     */
+    public function testCreateThrowsExceptionIfTargetProductTypeIsNotDownloadable()
+    {
+        $this->createServiceInfo['rest']['resourcePath'] = '/V1/products/simple/downloadable-links';
+        $requestData = [
+            'isGlobalScopeContent' => false,
+            'sku' => 'simple',
+            'link' => [
+                'title' => 'Link Title',
+                'sort_order' => 50,
+                'price' => 200,
+                'is_shareable' => 0,
+                'number_of_downloads' => 10,
+                'sample_type' => 'url',
+                'sample_url' => 'http://example.com/',
+                'link_type' => 'url',
+                'link_url' => 'http://example.com/',
+            ],
+        ];
+        $this->_webApiCall($this->createServiceInfo, $requestData);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage The product that was requested doesn't exist. Verify the product and try again.
+     */
+    public function testCreateThrowsExceptionIfTargetProductDoesNotExist()
+    {
+        $this->createServiceInfo['rest']['resourcePath'] = '/V1/products/wrong-sku/downloadable-links';
+        $requestData = [
+            'isGlobalScopeContent' => false,
+            'sku' => 'wrong-sku',
+            'link' => [
+                'title' => 'Link Title',
+                'sort_order' => 15,
+                'price' => 200,
+                'is_shareable' => 1,
+                'number_of_downloads' => 100,
+                'sample_type' => 'url',
+                'sample_url' => 'http://example.com/',
+                'link_type' => 'url',
+                'link_url' => 'http://example.com/',
+            ],
+        ];
+        $this->_webApiCall($this->createServiceInfo, $requestData);
     }
 
     /**
@@ -746,14 +783,11 @@ class LinkRepositoryTest extends WebapiAbstract
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage The product that was requested doesn't exist. Verify the product and try again.
      */
     public function testUpdateThrowsExceptionIfTargetProductDoesNotExist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(
-            'The product that was requested doesn\'t exist. Verify the product and try again.'
-        );
-
         $this->updateServiceInfo['rest']['resourcePath'] = '/V1/products/wrong-sku/downloadable-links/1';
         $requestData = [
             'isGlobalScopeContent' => true,
@@ -774,14 +808,11 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage No downloadable link with the provided ID was found. Verify the ID and try again.
      */
     public function testUpdateThrowsExceptionIfThereIsNoDownloadableLinkWithGivenId()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(
-            'No downloadable link with the provided ID was found. Verify the ID and try again.'
-        );
-
         $linkId = 9999;
         $this->updateServiceInfo['rest']['resourcePath']
             = "/V1/products/downloadable-product/downloadable-links/{$linkId}";
@@ -805,13 +836,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Link price must have numeric positive value.
      * @dataProvider getInvalidLinkPrice
      */
     public function testUpdateThrowsExceptionIfLinkPriceIsInvalid($linkPrice)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Link price must have numeric positive value.');
-
         $linkId = $this->getTargetLink($this->getTargetProduct())->getId();
         $this->updateServiceInfo['rest']['resourcePath']
             = "/V1/products/downloadable-product/downloadable-links/{$linkId}";
@@ -835,13 +865,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Sort order must be a positive integer.
      * @dataProvider getInvalidSortOrder
      */
     public function testUpdateThrowsExceptionIfSortOrderIsInvalid($sortOrder)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Sort order must be a positive integer.');
-
         $linkId = $this->getTargetLink($this->getTargetProduct())->getId();
         $this->updateServiceInfo['rest']['resourcePath']
             = "/V1/products/downloadable-product/downloadable-links/{$linkId}";
@@ -864,13 +893,12 @@ class LinkRepositoryTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Number of downloads must be a positive integer.
      * @dataProvider getInvalidNumberOfDownloads
      */
     public function testUpdateThrowsExceptionIfNumberOfDownloadsIsInvalid($numberOfDownloads)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Number of downloads must be a positive integer.');
-
         $linkId = $this->getTargetLink($this->getTargetProduct())->getId();
         $this->updateServiceInfo['rest']['resourcePath']
             = "/V1/products/downloadable-product/downloadable-links/{$linkId}";
@@ -908,69 +936,11 @@ class LinkRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable_with_files.php
-     * @dataProvider getListForAbsentProductProvider
-     */
-    public function testGetList($urlTail, $method, $expectations)
-    {
-        $sku = 'downloadable-product';
-
-        $serviceInfo = [
-            'rest' => [
-                'resourcePath' => '/V1/products/' . $sku . $urlTail,
-                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
-            ],
-            'soap' => [
-                'service' => 'downloadableLinkRepositoryV1',
-                'serviceVersion' => 'V1',
-                'operation' => 'downloadableLinkRepositoryV1' . $method,
-            ],
-        ];
-
-        $requestData = ['sku' => $sku];
-
-        $list = $this->_webApiCall($serviceInfo, $requestData);
-
-        $this->assertCount(1, $list);
-
-        $link = reset($list);
-        foreach ($expectations['fields'] as $index => $value) {
-            $this->assertEquals($value, $link[$index]);
-        }
-        $this->assertStringContainsString('jellyfish_1_3.jpg', $link['sample_file']);
-    }
-
-    public function getListForAbsentProductProvider()
-    {
-        $linkExpectation = [
-            'fields' => [
-                'is_shareable' => 2,
-                'price' => 15,
-                'number_of_downloads' => 15,
-                'sample_type' => 'file',
-                'link_file' => '/j/e/jellyfish_2_4.jpg',
-                'link_type' => 'file'
-            ]
-        ];
-
-        return [
-            'links' => [
-                '/downloadable-links',
-                'GetList',
-                $linkExpectation,
-            ],
-        ];
-    }
-
-    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage No downloadable link with the provided ID was found. Verify the ID and try again.
      */
     public function testDeleteThrowsExceptionIfThereIsNoDownloadableLinkWithGivenId()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(
-            'No downloadable link with the provided ID was found. Verify the ID and try again.'
-        );
-
         $linkId = 9999;
         $this->deleteServiceInfo['rest']['resourcePath'] = "/V1/products/downloadable-links/{$linkId}";
         $requestData = [
@@ -1007,7 +977,7 @@ class LinkRepositoryTest extends WebapiAbstract
         } catch (\SoapFault $e) {
             $this->assertEquals($expectedMessage, $e->getMessage());
         } catch (\Exception $e) {
-            $this->assertStringContainsString($expectedMessage, $e->getMessage());
+            $this->assertContains($expectedMessage, $e->getMessage());
         }
     }
 
@@ -1038,59 +1008,57 @@ class LinkRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * @magentoApiDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoApiDataFixture Magento/Downloadable/_files/product_downloadable_with_files.php
+     * @dataProvider getListForAbsentProductProvider
      */
-    public function testCreateThrowsExceptionIfTargetProductTypeIsNotDownloadable()
+    public function testGetList($urlTail, $method, $expectations)
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(
-            'The product needs to be the downloadable type. Verify the product and try again.'
-        );
+        $sku = 'downloadable-product';
 
-        $this->createServiceInfo['rest']['resourcePath'] = '/V1/products/simple/downloadable-links';
-        $requestData = [
-            'isGlobalScopeContent' => false,
-            'sku' => 'simple',
-            'link' => [
-                'title' => 'Link Title',
-                'sort_order' => 50,
-                'price' => 200,
-                'is_shareable' => 0,
-                'number_of_downloads' => 10,
-                'sample_type' => 'url',
-                'sample_url' => 'http://example.com/',
-                'link_type' => 'url',
-                'link_url' => 'http://example.com/',
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => '/V1/products/' . $sku . $urlTail,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
+            ],
+            'soap' => [
+                'service' => 'downloadableLinkRepositoryV1',
+                'serviceVersion' => 'V1',
+                'operation' => 'downloadableLinkRepositoryV1' . $method,
             ],
         ];
-        $this->_webApiCall($this->createServiceInfo, $requestData);
+
+        $requestData = ['sku' => $sku];
+
+        $list = $this->_webApiCall($serviceInfo, $requestData);
+
+        $this->assertEquals(1, count($list));
+
+        $link = reset($list);
+        foreach ($expectations['fields'] as $index => $value) {
+            $this->assertEquals($value, $link[$index]);
+        }
+        $this->assertContains('jellyfish_1_3.jpg', $link['sample_file']);
     }
 
-    /**
-     */
-    public function testCreateThrowsExceptionIfTargetProductDoesNotExist()
+    public function getListForAbsentProductProvider()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage(
-            'The product that was requested doesn\'t exist. Verify the product and try again.'
-        );
+        $linkExpectation = [
+            'fields' => [
+                'is_shareable' => 2,
+                'price' => 15,
+                'number_of_downloads' => 15,
+                'sample_type' => 'file',
+                'link_file' => '/j/e/jellyfish_2_4.jpg',
+                'link_type' => 'file'
+            ]
+        ];
 
-        $this->createServiceInfo['rest']['resourcePath'] = '/V1/products/wrong-sku/downloadable-links';
-        $requestData = [
-            'isGlobalScopeContent' => false,
-            'sku' => 'wrong-sku',
-            'link' => [
-                'title' => 'Link Title',
-                'sort_order' => 15,
-                'price' => 200,
-                'is_shareable' => 1,
-                'number_of_downloads' => 100,
-                'sample_type' => 'url',
-                'sample_url' => 'http://example.com/',
-                'link_type' => 'url',
-                'link_url' => 'http://example.com/',
+        return [
+            'links' => [
+                '/downloadable-links',
+                'GetList',
+                $linkExpectation,
             ],
         ];
-        $this->_webApiCall($this->createServiceInfo, $requestData);
     }
 }

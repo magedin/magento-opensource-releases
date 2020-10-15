@@ -3,19 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Query\Builder;
 
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
 use Magento\Elasticsearch\SearchAdapter\Query\Builder\Aggregation;
 use Magento\Framework\Search\Request\BucketInterface;
-use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AggregationTest extends TestCase
+class AggregationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Aggregation
@@ -23,17 +17,17 @@ class AggregationTest extends TestCase
     protected $model;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fieldMapper;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\Search\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestInterface;
 
     /**
-     * @var BucketInterface|MockObject
+     * @var BucketInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestBucketInterface;
 
@@ -42,26 +36,26 @@ class AggregationTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
 
-        $this->fieldMapper = $this->getMockBuilder(FieldMapperInterface::class)
+        $this->fieldMapper = $this->getMockBuilder(\Magento\Elasticsearch\Model\Adapter\FieldMapperInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->requestInterface = $this->getMockBuilder(RequestInterface::class)
+        $this->requestInterface = $this->getMockBuilder(\Magento\Framework\Search\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->requestBucketInterface = $this->getMockBuilder(BucketInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = $helper->getObject(
-            Aggregation::class,
+            \Magento\Elasticsearch\SearchAdapter\Query\Builder\Aggregation::class,
             [
-                'fieldMapper' => $this->fieldMapper,
+                'fieldMapper' =>$this->fieldMapper,
             ]
         );
     }
@@ -171,9 +165,8 @@ class AggregationTest extends TestCase
         $result = $this->model->build($this->requestInterface, $query);
 
         $this->assertNotNull($result);
-        $this->assertArrayHasKey(
-            'size',
-            $result['body']['aggregations'][$bucketName]['terms'],
+        $this->assertTrue(
+            isset($result['body']['aggregations'][$bucketName]['terms']['size']),
             'The size have to be specified since by default, ' .
             'the terms aggregation will return only the buckets for the top ten terms ordered by the doc_count'
         );

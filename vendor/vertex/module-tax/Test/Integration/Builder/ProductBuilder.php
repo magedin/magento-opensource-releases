@@ -10,11 +10,9 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterfaceFactory;
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\Product\Visibility;
-use Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Model\StockRegistryStorage;
 
@@ -37,17 +35,28 @@ class ProductBuilder
     /** @var ProductRepositoryInterface */
     private $productRepositoryFactory;
 
-    /** @var StockItemInterfaceFactory */
-    private $stockItemFactory;
+    /** @var StockRegistryInterface */
+    private $stockRegistry;
 
+    /** @var StockRegistryStorage */
+    private $stockRegistryStorage;
+
+    /**
+     * @param ProductInterfaceFactory $productFactory
+     * @param ProductRepositoryInterfaceFactory $productRepositoryFactory
+     * @param StockRegistryInterface $stockRegistry
+     * @param StockRegistryStorage $stockRegistryStorage
+     */
     public function __construct(
         ProductInterfaceFactory $productFactory,
         ProductRepositoryInterfaceFactory $productRepositoryFactory,
-        StockItemInterfaceFactory $stockItemFactory
+        StockRegistryInterface $stockRegistry,
+        StockRegistryStorage $stockRegistryStorage
     ) {
         $this->productFactory = $productFactory;
         $this->productRepositoryFactory = $productRepositoryFactory;
-        $this->stockItemFactory = $stockItemFactory;
+        $this->stockRegistry = $stockRegistry;
+        $this->stockRegistryStorage = $stockRegistryStorage;
     }
 
     /**
@@ -69,12 +78,13 @@ class ProductBuilder
         return $this->createProduct(
             function (ProductInterface $product) use ($productConfiguration) {
                 $product->setName(static::EXAMPLE_PRODUCT_NAME);
-                $product->setSku(uniqid(static::EXAMPLE_PRODUCT_SKU));
+                $product->setSku(static::EXAMPLE_PRODUCT_SKU);
                 $product->setPrice(static::EXAMPLE_PRODUCT_PRICE);
                 $product->setVisibility(static::EXAMPLE_PRODUCT_VISIBILITY);
                 $product->setStatus(static::EXAMPLE_PRODUCT_STATUS);
                 $product->setTypeId(static::EXAMPLE_PRODUCT_TYPE);
                 $product->setAttributeSetId(static::EXAMPLE_PRODUCT_ATTRIBUTE_SET);
+
                 return $productConfiguration !== null ? $productConfiguration($product) : $product;
             },
             $isInStock,
@@ -87,7 +97,7 @@ class ProductBuilder
      *
      * Performs 3 database queries.
      *
-     * @param callable $productConfiguration Receives 1 parameter of ProductInterface. Should return a ProductInterface.
+     * @param callable $productConfiguration Receives 1 parameter of ProductInterface.  Should return a ProductInterface
      * @param bool $isInStock
      * @param int $stockQty
      * @return ProductInterface
@@ -98,21 +108,26 @@ class ProductBuilder
      */
     public function createProduct(callable $productConfiguration, $isInStock = true, $stockQty = 500)
     {
-        /** @var ProductInterface|Product $product */
+        /** @var ProductInterface $product */
         $product = $this->productFactory->create();
         $product = $productConfiguration($product);
         if (!($product instanceof ProductInterface)) {
             throw new \TypeError('Result of createProduct callback must return a ProductInterface');
         }
 
-        $stockItem = $this->stockItemFactory->create();
-        $stockItem->setIsInStock($isInStock)->setQty($stockQty);
-        $product->getExtensionAttributes()->setStockItem($stockItem);
-
         /** @var ProductRepositoryInterface $productRepository */
         $productRepository = $this->productRepositoryFactory->create();
+
         $product = $productRepository->save($product);
 
+        $stockItem = $this->stockRegistry->getStockItemBySku($product->getSku());
+        $stockItem->setIsInStock($isInStock);
+        $stockItem->setQty($stockQty);
+        $this->stockRegistry->updateStockItemBySku($product->getSku(), $stockItem);
+
+        // Reload product in such a way as to re-generate saleability data
+        $this->stockRegistryStorage->removeStockStatus($product->getId());
+        $this->stockRegistryStorage->removeStockItem($product->getId());
         $product = $productRepository->get($product->getSku());
 
         return $product;

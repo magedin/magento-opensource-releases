@@ -3,16 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Model\Adapter\BatchDataMapper;
 
+use Magento\Elasticsearch\Model\ResourceModel\Index;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\AdvancedSearch\Model\Adapter\DataMapper\AdditionalFieldsProviderInterface;
 use Magento\CatalogSearch\Model\Indexer\Fulltext\Action\DataProvider;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeProvider;
+use Magento\Framework\App\ObjectManager;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\ResolverInterface;
-use Magento\Elasticsearch\Model\ResourceModel\Index;
-use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Provide data mapping for price fields
@@ -48,21 +48,23 @@ class PriceFieldsProvider implements AdditionalFieldsProviderInterface
      * @param Index $resourceIndex
      * @param DataProvider $dataProvider
      * @param StoreManagerInterface $storeManager
-     * @param AttributeProvider $attributeAdapterProvider
-     * @param ResolverInterface $fieldNameResolver
+     * @param AttributeProvider|null $attributeAdapterProvider
+     * @param ResolverInterface|null $fieldNameResolver
      */
     public function __construct(
         Index $resourceIndex,
         DataProvider $dataProvider,
         StoreManagerInterface $storeManager,
-        AttributeProvider $attributeAdapterProvider,
-        ResolverInterface $fieldNameResolver
+        AttributeProvider $attributeAdapterProvider = null,
+        ResolverInterface $fieldNameResolver = null
     ) {
         $this->resourceIndex = $resourceIndex;
         $this->dataProvider = $dataProvider;
         $this->storeManager = $storeManager;
-        $this->attributeAdapterProvider = $attributeAdapterProvider;
-        $this->fieldNameResolver = $fieldNameResolver;
+        $this->attributeAdapterProvider = $attributeAdapterProvider ?: ObjectManager::getInstance()
+            ->get(AttributeProvider::class);
+        $this->fieldNameResolver = $fieldNameResolver ?: ObjectManager::getInstance()
+            ->get(ResolverInterface::class);
     }
 
     /**
@@ -71,7 +73,7 @@ class PriceFieldsProvider implements AdditionalFieldsProviderInterface
     public function getFields(array $productIds, $storeId)
     {
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-
+        
         $priceData = $this->dataProvider->getSearchableAttribute('price')
             ? $this->resourceIndex->getPriceIndexData($productIds, $storeId)
             : [];

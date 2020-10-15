@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Query\Builder;
 
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeAdapter;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeProvider;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldType\ResolverInterface as TypeResolver;
 use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
-use Magento\Elasticsearch\Model\Config;
 use Magento\Elasticsearch\SearchAdapter\Query\Builder\Match as MatchQueryBuilder;
 use Magento\Elasticsearch\SearchAdapter\Query\ValueTransformerInterface;
 use Magento\Elasticsearch\SearchAdapter\Query\ValueTransformerPool;
 use Magento\Framework\Search\Request\Query\Match as MatchRequestQuery;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-/**
- * Test Match query builder
- */
-class MatchTest extends TestCase
+class MatchTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeProvider|MockObject
@@ -39,41 +32,30 @@ class MatchTest extends TestCase
      * @var MatchQueryBuilder
      */
     private $matchQueryBuilder;
-    /**
-     * @var MockObject
-     */
-    private $config;
-    /**
-     * @var MockObject
-     */
-    private $fieldMapper;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attributeProvider = $this->createMock(AttributeProvider::class);
         $this->fieldTypeResolver = $this->createMock(TypeResolver::class);
-        $this->config = $this->createMock(Config::class);
-        $this->fieldMapper = $this->getMockForAbstractClass(FieldMapperInterface::class);
-        $this->fieldMapper->method('getFieldName')
-            ->willReturnArgument(0);
+
         $valueTransformerPoolMock = $this->createMock(ValueTransformerPool::class);
-        $valueTransformerMock = $this->getMockForAbstractClass(ValueTransformerInterface::class);
+        $valueTransformerMock = $this->createMock(ValueTransformerInterface::class);
         $valueTransformerPoolMock->method('get')
             ->willReturn($valueTransformerMock);
         $valueTransformerMock->method('transform')
             ->willReturnArgument(0);
+
         $this->matchQueryBuilder = (new ObjectManager($this))->getObject(
             MatchQueryBuilder::class,
             [
-                'fieldMapper' => $this->fieldMapper,
+                'fieldMapper' => $this->getFieldMapper(),
                 'preprocessorContainer' => [],
                 'attributeProvider' => $this->attributeProvider,
                 'fieldTypeResolver' => $this->fieldTypeResolver,
                 'valueTransformerPool' => $valueTransformerPoolMock,
-                'config' => $this->config,
             ]
         );
     }
@@ -81,197 +63,130 @@ class MatchTest extends TestCase
     /**
      * Tests that method constructs a correct select query.
      *
-     * @param string $searchQuery
-     * @param array $fields
-     * @param array $expected
-     * @param string|null $minimumShouldMatch
-     * @dataProvider buildDataProvider
-     * @dataProvider buildDataProviderForMatchPhrasePrefix
+     * @see MatchQueryBuilder::build
      */
-    public function testBuild(
-        string $searchQuery,
-        array $fields,
-        array $expected,
-        ?string $minimumShouldMatch = null
-    ) {
-        $this->config->method('getElasticsearchConfigData')
-            ->with('minimum_should_match')
-            ->willReturn($minimumShouldMatch);
+    public function testBuild()
+    {
+        $attributeAdapter = $this->createMock(AttributeAdapter::class);
+        $this->attributeProvider->expects($this->once())
+            ->method('getByAttributeCode')
+            ->with('some_field')
+            ->willReturn($attributeAdapter);
+        $this->fieldTypeResolver->expects($this->once())
+            ->method('getFieldType')
+            ->with($attributeAdapter)
+            ->willReturn('text');
 
-        foreach ($fields as $field) {
-            $this->mockAttribute($field['field']);
-        }
-
-        $requestQuery = new MatchRequestQuery('match', $searchQuery, 1, $fields);
-        $query = $this->matchQueryBuilder->build([], $requestQuery, 'should');
+        $rawQueryValue = 'query_value';
+        $selectQuery = $this->matchQueryBuilder->build([], $this->getMatchRequestQuery($rawQueryValue), 'not');
 
         $expectedSelectQuery = [
             'bool' => [
-                'should' => $expected,
+                'must_not' => [
+                    [
+                        'match' => [
+                            'some_field' => [
+                                'query' => $rawQueryValue,
+                                'boost' => 43,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->assertEquals($expectedSelectQuery, $selectQuery);
+    }
+
+    /**
+     * Tests that method constructs a correct "match" query depending on query value.
+     *
+     * @dataProvider matchProvider
+     *
+     * @param string $rawQueryValue
+     * @param string $queryValue
+     * @param string $match
+     */
+    public function testBuildMatchQuery($rawQueryValue, $queryValue, $match)
+    {
+        $attributeAdapter = $this->createMock(AttributeAdapter::class);
+        $this->attributeProvider->expects($this->once())
+            ->method('getByAttributeCode')
+            ->with('some_field')
+            ->willReturn($attributeAdapter);
+        $this->fieldTypeResolver->expects($this->once())
+            ->method('getFieldType')
+            ->with($attributeAdapter)
+            ->willReturn('text');
+
+        $query = $this->matchQueryBuilder->build([], $this->getMatchRequestQuery($rawQueryValue), 'should');
+
+        $expectedSelectQuery = [
+            'bool' => [
+                'should' => [
+                    [
+                        $match => [
+                            'some_field' => [
+                                'query' => $queryValue,
+                                'boost' => 43,
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
         $this->assertEquals(
             $expectedSelectQuery,
-            $query
+            $query,
+            sprintf('Wrong "match" query. Should be processed with "%s"', $match)
         );
     }
 
     /**
      * @return array
      */
-    public function buildDataProvider(): array
+    public function matchProvider()
     {
         return [
-            'match query without minimum_should_match' => [
-                'fitness bottle',
-                [
-                    [
-                        'field' => 'name',
-                        'boost' => 5
-                    ]
-                ],
-                [
-                    [
-                        'match' => [
-                            'name' => [
-                                'query' => 'fitness bottle',
-                                'boost' => 6,
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            'match_phrase query without minimum_should_match' => [
-                '"fitness bottle"',
-                [
-                    [
-                        'field' => 'name',
-                        'boost' => 5
-                    ]
-                ],
-                [
-                    [
-                        'match_phrase' => [
-                            'name' => [
-                                'query' => 'fitness bottle',
-                                'boost' => 6,
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            'match query with minimum_should_match' => [
-                'fitness bottle',
-                [
-                    [
-                        'field' => 'name',
-                        'boost' => 5
-                    ]
-                ],
-                [
-                    [
-                        'match' => [
-                            'name' => [
-                                'query' => 'fitness bottle',
-                                'boost' => 6,
-                                'minimum_should_match' => '2<75%',
-                            ],
-                        ],
-                    ],
-                ],
-                '2<75%'
-            ],
-            'match_phrase query with minimum_should_match' => [
-                '"fitness bottle"',
-                [
-                    [
-                        'field' => 'name',
-                        'boost' => 5
-                    ]
-                ],
-                [
-                    [
-                        'match_phrase' => [
-                            'name' => [
-                                'query' => 'fitness bottle',
-                                'boost' => 6,
-                                'minimum_should_match' => '2<75%',
-                            ],
-                        ],
-                    ],
-                ],
-                '2<75%'
-            ],
-
+            ['query_value', 'query_value', 'match'],
+            ['"query value"', 'query value', 'match_phrase'],
         ];
     }
 
     /**
-     * @return array
+     * Gets fieldMapper mock object.
+     *
+     * @return FieldMapperInterface|MockObject
      */
-    public function buildDataProviderForMatchPhrasePrefix()
+    private function getFieldMapper()
     {
-        return [
-        'match_phrase_prefix query with minimum_should_match' => [
-            '"fitness bottle"',
-            [
-                [
-                    'field' => 'name',
-                    'boost' => 5,
-                    'matchCondition' => 'match_phrase_prefix'
-                ]
-            ],
-            [
-                [
-                    'match_phrase_prefix' => [
-                        'name' => [
-                            'query' => 'fitness bottle',
-                            'boost' => 6
-                        ],
-                    ],
-                ],
-            ],
-            '2<75%'
-        ],
-        'match_phrase_prefix query with no minimum_should_match' => [
-            '"fitness bottle"',
-            [
-                [
-                    'field' => 'name',
-                    'boost' => 5,
-                    'matchCondition' => 'match_phrase_prefix'
-                ]
-            ],
-            [
-                [
-                    'match_phrase_prefix' => [
-                        'name' => [
-                            'query' => 'fitness bottle',
-                            'boost' => 6
-                        ],
-                    ],
-                ],
-            ]
-        ]];
+        $fieldMapper = $this->getMockBuilder(FieldMapperInterface::class)
+            ->getMockForAbstractClass();
+
+        $fieldMapper->method('getFieldName')
+            ->with('some_field', ['type' => FieldMapperInterface::TYPE_QUERY])
+            ->willReturnArgument(0);
+
+        return $fieldMapper;
     }
 
     /**
-     * Mock attribute
+     * Gets RequestQuery mock object.
      *
-     * @param string $attributeCode
-     * @param string $type
+     * @param string $rawQueryValue
+     * @return MatchRequestQuery|MockObject
      */
-    private function mockAttribute(string $attributeCode, string $type = 'text')
+    private function getMatchRequestQuery($rawQueryValue)
     {
-        $attributeAdapter = $this->createMock(AttributeAdapter::class);
-        $this->attributeProvider->expects($this->once())
-            ->method('getByAttributeCode')
-            ->with($attributeCode)
-            ->willReturn($attributeAdapter);
-        $this->fieldTypeResolver->expects($this->once())
-            ->method('getFieldType')
-            ->with($attributeAdapter)
-            ->willReturn($type);
+        $matchRequestQuery = $this->getMockBuilder(MatchRequestQuery::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $matchRequestQuery->method('getValue')
+            ->willReturn($rawQueryValue);
+        $matchRequestQuery->method('getMatches')
+            ->willReturn([['field' => 'some_field', 'boost' => 42]]);
+
+        return $matchRequestQuery;
     }
 }

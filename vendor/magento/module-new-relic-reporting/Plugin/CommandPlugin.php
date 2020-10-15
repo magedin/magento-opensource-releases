@@ -26,23 +26,15 @@ class CommandPlugin
     private $newRelicWrapper;
 
     /**
-     * @var string[]
-     */
-    private $skipCommands;
-
-    /**
      * @param Config $config
      * @param NewRelicWrapper $newRelicWrapper
-     * @param array $skipCommands
      */
     public function __construct(
         Config $config,
-        NewRelicWrapper $newRelicWrapper,
-        array $skipCommands = []
+        NewRelicWrapper $newRelicWrapper
     ) {
         $this->config = $config;
         $this->newRelicWrapper = $newRelicWrapper;
-        $this->skipCommands = $skipCommands;
     }
 
     /**
@@ -54,24 +46,10 @@ class CommandPlugin
      */
     public function beforeRun(Command $command, ...$args)
     {
-        if (!$this->isCommandSkipped($command)) {
-            $this->newRelicWrapper->setTransactionName(
-                sprintf('CLI %s', $command->getName())
-            );
-        }
+        $this->newRelicWrapper->setTransactionName(
+            sprintf('CLI %s', $command->getName())
+        );
 
         return $args;
-    }
-
-    /**
-     * Determines whether the Command is declared to be skipped
-     *
-     * @param Command $command
-     * @return bool
-     */
-    private function isCommandSkipped(Command $command): bool
-    {
-        $commandName = $command->getName();
-        return isset($this->skipCommands[$commandName]) && $this->skipCommands[$commandName] === true;
     }
 }

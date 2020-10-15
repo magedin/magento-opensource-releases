@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Plugin;
 
-use Magento\Catalog\Api\Data\ProductCustomOptionInterface as ProductOption;
 use Magento\Catalog\Model\Plugin\QuoteItemProductOption as QuoteItemProductOptionPlugin;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Quote\Model\Quote\Item\ToOrderItem as QuoteToOrderItem;
 use Magento\Quote\Model\Quote\Item\AbstractItem as AbstractQuoteItem;
 use Magento\Quote\Model\Quote\Item\Option as QuoteItemOption;
-use Magento\Quote\Model\Quote\Item\ToOrderItem as QuoteToOrderItem;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\DataObject;
+use Magento\Catalog\Api\Data\ProductCustomOptionInterface as ProductOption;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class QuoteItemProductOptionTest extends TestCase
+class QuoteItemProductOptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QuoteItemProductOptionPlugin
@@ -34,26 +30,26 @@ class QuoteItemProductOptionTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var QuoteToOrderItem|MockObject
+     * @var QuoteToOrderItem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
     /**
-     * @var AbstractQuoteItem|MockObject
+     * @var AbstractQuoteItem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteItemMock;
 
     /**
-     * @var QuoteItemOption|MockObject
+     * @var QuoteItemOption|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteItemOptionMock;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->subjectMock = $this->getMockBuilder(QuoteToOrderItem::class)
             ->disableOriginalConstructor()

@@ -3,33 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Theme;
 
-use Magento\Framework\Composer\Remove;
-use Magento\Theme\Model\Theme;
-use Magento\Theme\Model\Theme\ThemePackageInfo;
-use Magento\Theme\Model\Theme\ThemeProvider;
 use Magento\Theme\Model\Theme\ThemeUninstaller;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class ThemeUninstallerTest extends TestCase
+class ThemeUninstallerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ThemePackageInfo|MockObject
+     * @var \Magento\Theme\Model\Theme\ThemePackageInfo|\PHPUnit_Framework_MockObject_MockObject
      */
     private $themePackageInfo;
 
     /**
-     * @var Remove|MockObject
+     * @var \Magento\Framework\Composer\Remove|\PHPUnit_Framework_MockObject_MockObject
      */
     private $remove;
 
     /**
-     * @var ThemeProvider|MockObject
+     * @var \Magento\Theme\Model\Theme\ThemeProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $themeProvider;
 
@@ -39,18 +30,18 @@ class ThemeUninstallerTest extends TestCase
     private $themeUninstaller;
 
     /**
-     * @var OutputInterface|MockObject
+     * @var \Symfony\Component\Console\Output\OutputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $output;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->themePackageInfo = $this->createMock(ThemePackageInfo::class);
-        $this->remove = $this->createMock(Remove::class);
-        $this->themeProvider = $this->createMock(ThemeProvider::class);
+        $this->themePackageInfo = $this->createMock(\Magento\Theme\Model\Theme\ThemePackageInfo::class);
+        $this->remove = $this->createMock(\Magento\Framework\Composer\Remove::class);
+        $this->themeProvider = $this->createMock(\Magento\Theme\Model\Theme\ThemeProvider::class);
         $this->themeUninstaller = new ThemeUninstaller($this->themePackageInfo, $this->remove, $this->themeProvider);
         $this->output = $this->getMockForAbstractClass(
-            OutputInterface::class,
+            \Symfony\Component\Console\Output\OutputInterface::class,
             [],
             '',
             false
@@ -62,7 +53,7 @@ class ThemeUninstallerTest extends TestCase
         $this->output->expects($this->atLeastOnce())->method('writeln');
         $this->themePackageInfo->expects($this->never())->method($this->anything());
         $this->remove->expects($this->never())->method($this->anything());
-        $theme = $this->createMock(Theme::class);
+        $theme = $this->createMock(\Magento\Theme\Model\Theme::class);
         $theme->expects($this->exactly(3))->method('delete');
         $this->themeProvider->expects($this->exactly(3))->method('getThemeByFullPath')->willReturn($theme);
         $this->themeUninstaller->uninstallRegistry(

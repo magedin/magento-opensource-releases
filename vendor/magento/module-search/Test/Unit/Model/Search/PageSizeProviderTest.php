@@ -7,12 +7,9 @@ declare(strict_types=1);
 
 namespace Magento\Search\Test\Unit\Model\Search;
 
-use Magento\Search\Model\EngineResolver;
 use Magento\Search\Model\Search\PageSizeProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PageSizeProviderTest extends TestCase
+class PageSizeProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PageSizeProvider
@@ -20,17 +17,18 @@ class PageSizeProviderTest extends TestCase
     private $model;
 
     /**
-     * @var EngineResolver|MockObject
+     * @var \Magento\Search\Model\EngineResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageSizeBySearchEngineMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->pageSizeBySearchEngineMock = $this->getMockBuilder(EngineResolver::class)
+        $this->pageSizeBySearchEngineMock = $this->getMockBuilder(\Magento\Search\Model\EngineResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->model = new PageSizeProvider(
+
             $this->pageSizeBySearchEngineMock,
             ['search' => 10,
                 'catalogSearch3' => 11

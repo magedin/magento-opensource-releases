@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\ObjectManager\Test\Unit\Config;
 
-use Magento\Framework\ObjectManager\Config\Config;
-use Magento\Framework\ObjectManager\ConfigCacheInterface;
-use Magento\Framework\ObjectManager\DefinitionInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\ObjectManager\Config\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     public function testGetArgumentsEmpty()
@@ -50,14 +44,14 @@ class ConfigTest extends TestCase
 
     public function testExtendWithCacheMock()
     {
-        $definitions = $this->getMockForAbstractClass(DefinitionInterface::class);
-        $definitions->expects($this->once())->method('getClasses')->willReturn(['FooType']);
+        $definitions = $this->createMock(\Magento\Framework\ObjectManager\DefinitionInterface::class);
+        $definitions->expects($this->once())->method('getClasses')->will($this->returnValue(['FooType']));
 
-        $cache = $this->getMockForAbstractClass(ConfigCacheInterface::class);
-        $cache->expects($this->once())->method('get')->willReturn(false);
+        $cache = $this->createMock(\Magento\Framework\ObjectManager\ConfigCacheInterface::class);
+        $cache->expects($this->once())->method('get')->will($this->returnValue(false));
 
         $config = new Config(null, $definitions);
-        $serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $serializerMock = $this->createMock(SerializerInterface::class);
         $serializerMock->expects($this->exactly(2))
             ->method('serialize');
         $this->objectManagerHelper->setBackwardCompatibleProperty(

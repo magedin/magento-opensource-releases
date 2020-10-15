@@ -4,93 +4,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Controller\Account;
 
-use Magento\Customer\Controller\Account\Create;
-use Magento\Customer\Model\Registration;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CreateTest extends TestCase
+class CreateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Create
+     * @var \Magento\Customer\Controller\Account\Create
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSession;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $registrationMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $redirectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $response;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Framework\Controller\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $redirectFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $redirectResultMock;
 
     /**
-     * @var Page|MockObject
+     * @var \Magento\Framework\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageMock;
 
     /**
-     * @var PageFactory|MockObject
+     * @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->customerSession = $this->createMock(Session::class);
-        $this->registrationMock = $this->createMock(Registration::class);
-        $this->redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
-        $this->response = $this->getMockForAbstractClass(ResponseInterface::class);
-        $this->request = $this->getMockBuilder(Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->redirectResultMock = $this->createMock(Redirect::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->customerSession = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->registrationMock = $this->createMock(\Magento\Customer\Model\Registration::class);
+        $this->redirectMock = $this->createMock(\Magento\Framework\App\Response\RedirectInterface::class);
+        $this->response = $this->createMock(\Magento\Framework\App\ResponseInterface::class);
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->redirectResultMock = $this->createMock(\Magento\Framework\Controller\Result\Redirect::class);
 
         $this->redirectFactoryMock = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Framework\Controller\Result\RedirectFactory::class,
             ['create']
         );
 
-        $this->resultPageMock = $this->createMock(Page::class);
-        $this->pageFactoryMock = $this->createMock(PageFactory::class);
+        $this->resultPageMock = $this->createMock(\Magento\Framework\View\Result\Page::class);
+        $this->pageFactoryMock = $this->createMock(\Magento\Framework\View\Result\PageFactory::class);
 
         $this->object = $objectManager->getObject(
-            Create::class,
+            \Magento\Customer\Controller\Account\Create::class,
             [
                 'request' => $this->request,
                 'response' => $this->response,
@@ -110,11 +94,11 @@ class CreateTest extends TestCase
     {
         $this->customerSession->expects($this->once())
             ->method('isLoggedIn')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->registrationMock->expects($this->once())
             ->method('isAllowed')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->redirectFactoryMock->expects($this->once())
             ->method('create')
@@ -138,11 +122,11 @@ class CreateTest extends TestCase
     {
         $this->customerSession->expects($this->once())
             ->method('isLoggedIn')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->registrationMock->expects($this->once())
             ->method('isAllowed')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->redirectMock->expects($this->never())
             ->method('redirect');

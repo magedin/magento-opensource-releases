@@ -33,7 +33,7 @@ class AbstractBlockTest extends \PHPUnit\Framework\TestCase
      */
     private $session;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var \Magento\Framework\App\State $state */
         $state = Bootstrap::getObjectManager()->get(\Magento\Framework\App\State::class);
@@ -339,7 +339,7 @@ class AbstractBlockTest extends \PHPUnit\Framework\TestCase
         $block1->setText('Block text');
         $block1->setNameInLayout('block');
         $html = $this->_block->getBlockHtml('block');
-        $this->assertIsString($html);
+        $this->assertInternalType('string', $html);
         $this->assertEmpty($html);
 
         // With layout
@@ -348,7 +348,7 @@ class AbstractBlockTest extends \PHPUnit\Framework\TestCase
         $block3 = $this->_createBlockWithLayout('block3', 'block3');
         $block2->setText($expected);
         $html = $block3->getBlockHtml('block2');
-        $this->assertIsString($html);
+        $this->assertInternalType('string', $html);
         $this->assertEquals($expected, $html);
     }
 
@@ -401,11 +401,10 @@ class AbstractBlockTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoAppIsolation enabled
+     * @expectedException \OutOfBoundsException
      */
     public function testInsertWithoutCreateBlock()
     {
-        $this->expectException(\OutOfBoundsException::class);
-
         $parent = $this->_createBlockWithLayout('parent', 'parent');
         $parent->insert('block');
     }

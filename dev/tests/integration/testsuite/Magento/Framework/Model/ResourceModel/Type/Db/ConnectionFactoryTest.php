@@ -12,7 +12,7 @@ class ConnectionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new ConnectionFactory(
             \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

@@ -133,8 +133,8 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *
      * Ex.: <element module="{module}">
      *
-     * @param string $currentModule
-     * @param string $contents
+     * @param $currentModule
+     * @param $contents
      * @return array
      */
     protected function _caseAttributeModule($currentModule, &$contents)
@@ -154,8 +154,8 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      * Ex.: <block class="{name}">
      *      <block template="{path}">
      *
-     * @param string $currentModule
-     * @param string $contents
+     * @param $currentModule
+     * @param $contents
      * @return array
      */
     protected function _caseElementBlock($currentModule, &$contents)
@@ -182,8 +182,8 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *      <file>{path}
      *      <element helper="{name}">
      *
-     * @param string $currentModule
-     * @param string $contents
+     * @param $currentModule
+     * @param $contents
      * @return array
      */
     protected function _caseElementAction($currentModule, &$contents)
@@ -218,9 +218,9 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *
      * Ex.: <layout><{name}>...</layout>
      *
-     * @param string $currentModule
-     * @param string $file
-     * @param string $contents
+     * @param $currentModule
+     * @param $file
+     * @param $contents
      * @return array
      */
     protected function _caseLayoutHandle($currentModule, $file, &$contents)
@@ -235,8 +235,11 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
         $result = [];
         foreach ((array)$xml->xpath('/layout/child::*') as $element) {
             $check = $this->_checkDependencyLayoutHandle($currentModule, $area, $element->getName());
-            $modules = isset($check['modules']) ? $check['modules'] : null;
+            $modules = isset($check['module']) ? $check['module'] : null;
             if ($modules) {
+                if (!is_array($modules)) {
+                    $modules = [$modules];
+                }
                 foreach ($modules as $module) {
                     $result[$module] = [
                         'type' => \Magento\Test\Integrity\DependencyTest::TYPE_SOFT,
@@ -253,9 +256,9 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *
      * Ex.: <layout_name  parent="{name}">
      *
-     * @param string $currentModule
-     * @param string $file
-     * @param string $contents
+     * @param $currentModule
+     * @param $file
+     * @param $contents
      * @return array
      */
     protected function _caseLayoutHandleParent($currentModule, $file, &$contents)
@@ -270,8 +273,11 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
         $result = [];
         foreach ((array)$xml->xpath('/layout/child::*/@parent') as $element) {
             $check = $this->_checkDependencyLayoutHandle($currentModule, $area, (string)$element);
-            $modules = isset($check['modules']) ? $check['modules'] : null;
+            $modules = isset($check['module']) ? $check['module'] : null;
             if ($modules) {
+                if (!is_array($modules)) {
+                    $modules = [$modules];
+                }
                 foreach ($modules as $module) {
                     $result[$module] = [
                         'type' => \Magento\Test\Integrity\DependencyTest::TYPE_HARD,
@@ -288,9 +294,9 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *
      * Ex.: <update handle="{name}" />
      *
-     * @param string $currentModule
-     * @param string $file
-     * @param string $contents
+     * @param $currentModule
+     * @param $file
+     * @param $contents
      * @return array
      */
     protected function _caseLayoutHandleUpdate($currentModule, $file, &$contents)
@@ -305,8 +311,11 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
         $result = [];
         foreach ((array)$xml->xpath('//update/@handle') as $element) {
             $check = $this->_checkDependencyLayoutHandle($currentModule, $area, (string)$element);
-            $modules = isset($check['modules']) ? $check['modules'] : null;
+            $modules = isset($check['module']) ? $check['module'] : null;
             if ($modules) {
+                if (!is_array($modules)) {
+                    $modules = [$modules];
+                }
                 foreach ($modules as $module) {
                     $result[$module] = [
                         'type' => \Magento\Test\Integrity\DependencyTest::TYPE_SOFT,
@@ -323,9 +332,9 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      *
      * Ex.: <reference name="{name}">
      *
-     * @param string $currentModule
-     * @param string $file
-     * @param string $contents
+     * @param $currentModule
+     * @param $file
+     * @param $contents
      * @return array
      */
     protected function _caseLayoutReference($currentModule, $file, &$contents)
@@ -340,14 +349,12 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
         $result = [];
         foreach ((array)$xml->xpath('//reference/@name') as $element) {
             $check = $this->_checkDependencyLayoutBlock($currentModule, $area, (string)$element);
-            $modules = isset($check['modules']) ? $check['modules'] : null;
-            if ($modules) {
-                foreach ($modules as $module) {
-                    $result[$module] = [
-                        'type' => \Magento\Test\Integrity\DependencyTest::TYPE_SOFT,
-                        'source' => (string)$element,
-                    ];
-                }
+            $module = isset($check['module']) ? $check['module'] : null;
+            if ($module) {
+                $result[$module] = [
+                    'type' => \Magento\TestFramework\Dependency\RuleInterface::TYPE_SOFT,
+                    'source' => (string)$element,
+                ];
             }
         }
         return $this->_getUniqueDependencies($result);
@@ -356,8 +363,8 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
     /**
      * Search dependencies by defined regexp patterns
      *
-     * @param string $currentModule
-     * @param string $contents
+     * @param $currentModule
+     * @param $contents
      * @param array $patterns
      * @return array
      */
@@ -383,14 +390,14 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      * Check layout handle dependency
      *
      * Return: array(
-     *  'modules'  // dependent modules
+     *  'module'  // dependent module
      *  'source'  // source text
      * )
      *
-     * @param admin $currentModule
-     * @param string $area
-     * @param string $handle
-     * @return string[]
+     * @param $currentModule
+     * @param $area
+     * @param $handle
+     * @return array
      */
     protected function _checkDependencyLayoutHandle($currentModule, $area, $handle)
     {
@@ -404,7 +411,7 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
             // CASE 1: Single dependency
             $modules = $this->_mapRouters[$router];
             if (!in_array($currentModule, $modules)) {
-                return ['modules' => $modules];
+                return ['module' => $modules];
             }
         }
 
@@ -412,18 +419,18 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
             // CASE 2: No dependencies
             $modules = $this->_mapLayoutHandles[$area][$handle];
             if (isset($modules[$currentModule])) {
-                return ['modules' => []];
+                return ['module' => null];
             }
 
             // CASE 3: Single dependency
             if (1 == count($modules)) {
-                return ['modules' => $modules];
+                return ['module' => current($modules)];
             }
 
             // CASE 4: Default module dependency
             $defaultModule = $this->_getDefaultModuleName($area);
             if (isset($modules[$defaultModule])) {
-                return ['modules' => [$defaultModule]];
+                return ['module' => $defaultModule];
             }
         }
 
@@ -434,14 +441,14 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      * Check layout block dependency
      *
      * Return: array(
-     *  'modules'  // dependent modules
+     *  'module'  // dependent module
      *  'source'  // source text
      * )
      *
-     * @param string $currentModule
-     * @param string $area
-     * @param string $block
-     * @return string[]
+     * @param $currentModule
+     * @param $area
+     * @param $block
+     * @return array
      */
     protected function _checkDependencyLayoutBlock($currentModule, $area, $block)
     {
@@ -449,18 +456,18 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
             // CASE 1: No dependencies
             $modules = $this->_mapLayoutBlocks[$area][$block];
             if (isset($modules[$currentModule])) {
-                return ['modules' => []];
+                return ['module' => null];
             }
 
             // CASE 2: Single dependency
             if (1 == count($modules)) {
-                return ['modules' => $modules];
+                return ['module' => current($modules)];
             }
 
             // CASE 3: Default module dependency
             $defaultModule = $this->_getDefaultModuleName($area);
             if (isset($modules[$defaultModule])) {
-                return ['modules' => [$defaultModule]];
+                return ['module' => $defaultModule];
             }
         }
         return [];
@@ -469,7 +476,7 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
     /**
      * Get area from file path
      *
-     * @param string $file
+     * @param $file
      * @return string
      */
     protected function _getAreaByFile($file)
@@ -491,7 +498,7 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
     {
         $result = [];
         foreach ($dependencies as $module => $value) {
-            $result[] = ['modules' => [$module], 'type' => $value['type'], 'source' => $value['source']];
+            $result[] = ['module' => $module, 'type' => $value['type'], 'source' => $value['source']];
         }
         return $result;
     }
@@ -500,7 +507,7 @@ class LayoutRule implements \Magento\TestFramework\Dependency\RuleInterface
      * Retrieve default module name (by area)
      *
      * @param string $area
-     * @return string|null
+     * @return null
      */
     protected function _getDefaultModuleName($area = 'default')
     {

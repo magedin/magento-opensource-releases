@@ -15,7 +15,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     protected $_block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\View\LayoutInterface::class

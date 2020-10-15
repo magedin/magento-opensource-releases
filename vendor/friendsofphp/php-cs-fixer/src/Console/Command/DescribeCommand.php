@@ -25,6 +25,7 @@ use PhpCsFixer\FixerConfiguration\DeprecatedFixerOption;
 use PhpCsFixer\FixerDefinition\CodeSampleInterface;
 use PhpCsFixer\FixerDefinition\FileSpecificCodeSampleInterface;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
 use PhpCsFixer\FixerDefinition\VersionSpecificCodeSampleInterface;
 use PhpCsFixer\FixerFactory;
 use PhpCsFixer\Preg;
@@ -47,7 +48,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class DescribeCommand extends Command
 {
-    protected static $defaultName = 'describe';
+    const COMMAND_NAME = 'describe';
 
     /**
      * @var string[]
@@ -64,6 +65,9 @@ final class DescribeCommand extends Command
      */
     private $fixers;
 
+    /**
+     * @param null|FixerFactory $fixerFactory
+     */
     public function __construct(FixerFactory $fixerFactory = null)
     {
         parent::__construct();
@@ -82,6 +86,7 @@ final class DescribeCommand extends Command
     protected function configure()
     {
         $this
+            ->setName(self::COMMAND_NAME)
             ->setDefinition(
                 [
                     new InputArgument('name', InputArgument::REQUIRED, 'Name of rule / set.'),
@@ -102,7 +107,7 @@ final class DescribeCommand extends Command
             if ('@' === $name[0]) {
                 $this->describeSet($output, $name);
 
-                return 0;
+                return null;
             }
 
             $this->describeRule($output, $name);
@@ -122,12 +127,11 @@ final class DescribeCommand extends Command
                 null === $alternative ? '' : ' Did you mean "'.$alternative.'"?'
             ));
         }
-
-        return 0;
     }
 
     /**
-     * @param string $name
+     * @param OutputInterface $output
+     * @param string          $name
      */
     private function describeRule(OutputInterface $output, $name)
     {
@@ -196,7 +200,7 @@ final class DescribeCommand extends Command
                     }
                 } else {
                     $allowed = array_map(
-                        static function ($type) {
+                        function ($type) {
                             return '<comment>'.$type.'</comment>';
                         },
                         $option->getAllowedTypes()
@@ -265,22 +269,18 @@ final class DescribeCommand extends Command
             $output->writeln('Fixing examples:');
 
             $differ = new FullDiffer();
-            $diffFormatter = new DiffConsoleFormatter(
-                $output->isDecorated(),
-                sprintf(
-                    '<comment>   ---------- begin diff ----------</comment>%s%%s%s<comment>   ----------- end diff -----------</comment>',
-                    PHP_EOL,
-                    PHP_EOL
-                )
-            );
+            $diffFormatter = new DiffConsoleFormatter($output->isDecorated(), sprintf(
+                '<comment>   ---------- begin diff ----------</comment>%s%%s%s<comment>   ----------- end diff -----------</comment>',
+                PHP_EOL,
+                PHP_EOL
+            ));
 
             foreach ($codeSamples as $index => $codeSample) {
                 $old = $codeSample->getCode();
                 $tokens = Tokens::fromCode($old);
 
-                $configuration = $codeSample->getConfiguration();
-
                 if ($fixer instanceof ConfigurableFixerInterface) {
+                    $configuration = $codeSample->getConfiguration();
                     $fixer->configure(null === $configuration ? [] : $configuration);
                 }
 
@@ -309,7 +309,8 @@ final class DescribeCommand extends Command
     }
 
     /**
-     * @param string $name
+     * @param OutputInterface $output
+     * @param string          $name
      */
     private function describeSet(OutputInterface $output, $name)
     {
@@ -329,21 +330,12 @@ final class DescribeCommand extends Command
         $help = '';
 
         foreach ($rules as $rule => $config) {
-            $fixer = $fixers[$rule];
-
-            if (!$fixer instanceof DefinedFixerInterface) {
-                throw new \RuntimeException(sprintf(
-                    'Cannot describe rule %s, the fixer does not implement %s',
-                    $rule,
-                    DefinedFixerInterface::class
-                ));
-            }
-
-            $definition = $fixer->getDefinition();
+            /** @var FixerDefinitionInterface $definition */
+            $definition = $fixers[$rule]->getDefinition();
             $help .= sprintf(
                 " * <info>%s</info>%s\n   | %s\n%s\n",
                 $rule,
-                $fixer->isRisky() ? ' <error>risky</error>' : '',
+                $fixers[$rule]->isRisky() ? ' <error>risky</error>' : '',
                 $definition->getSummary(),
                 true !== $config ? sprintf("   <comment>| Configuration: %s</comment>\n", HelpCommand::toString($config)) : ''
             );
@@ -389,7 +381,8 @@ final class DescribeCommand extends Command
     }
 
     /**
-     * @param string $type 'rule'|'set'
+     * @param OutputInterface $output
+     * @param string          $type   'rule'|'set'
      */
     private function describeList(OutputInterface $output, $type)
     {

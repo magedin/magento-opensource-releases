@@ -3,70 +3,66 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Http\Client;
 
-use Magento\Framework\HTTP\ZendClient;
-use Magento\Framework\HTTP\ZendClientFactory;
 use Magento\Payment\Gateway\Http\Client\Zend;
-use Magento\Payment\Gateway\Http\ClientException;
-use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\ConverterInterface;
+use Magento\Framework\HTTP\ZendClientFactory;
+use Magento\Framework\HTTP\ZendClient;
 use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Payment\Model\Method\Logger;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ZendTest extends TestCase
+/**
+ * Class ZendTest
+ */
+class ZendTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Zend */
     protected $model;
 
     /**
-     * @var ConverterInterface|MockObject
+     * @var ConverterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $converterMock;
 
     /**
-     * @var ZendClientFactory|MockObject
+     * @var ZendClientFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $zendClientFactoryMock;
 
     /**
-     * @var ZendClient|MockObject
+     * @var ZendClient|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $clientMock;
 
     /**
-     * @var TransferInterface|MockObject
+     * @var TransferInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $transferObjectMock;
 
     /**
-     * @var Logger|MockObject
+     * @var \Magento\Payment\Model\Method\Logger|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->converterMock = $this->getMockBuilder(ConverterInterface::class)
+        $this->converterMock = $this->getMockBuilder(\Magento\Payment\Gateway\Http\ConverterInterface::class)
             ->getMockForAbstractClass();
 
-        $this->zendClientFactoryMock = $this->getMockBuilder(ZendClientFactory::class)
+        $this->zendClientFactoryMock = $this->getMockBuilder(\Magento\Framework\HTTP\ZendClientFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->clientMock = $this->getMockBuilder(ZendClient::class)
+        $this->clientMock = $this->getMockBuilder(\Magento\Framework\HTTP\ZendClient::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->loggerMock = $this->getMockBuilder(Logger::class)
+        $this->loggerMock = $this->getMockBuilder(\Magento\Payment\Model\Method\Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->transferObjectMock = $this->getMockBuilder(TransferInterface::class)
+        $this->transferObjectMock = $this->getMockBuilder(\Magento\Payment\Gateway\Http\TransferInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new Zend(
@@ -83,8 +79,7 @@ class ZendTest extends TestCase
 
         $zendHttpResponseMock = $this->getMockBuilder(
             \Zend_Http_Response::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $zendHttpResponseMock->expects($this->once())->method('getBody')->willReturn($responseBody);
 
         $this->clientMock->expects($this->once())->method('request')->willReturn($zendHttpResponseMock);
@@ -98,15 +93,16 @@ class ZendTest extends TestCase
 
     /**
      * Tests failing client gateway request
+     *
+     * @expectedException  \Magento\Payment\Gateway\Http\ClientException
      */
     public function testPlaceRequestClientFail()
     {
-        $this->expectException(ClientException::class);
         $this->setClientTransferObjects();
 
         $this->clientMock->expects($this->once())
             ->method('request')
-            ->willThrowException(new \Zend_Http_Client_Exception());
+            ->willThrowException(new \Zend_Http_Client_Exception);
 
         $this->converterMock->expects($this->never())->method('convert');
 
@@ -119,24 +115,24 @@ class ZendTest extends TestCase
 
     /**
      * Tests failing response converting
+     *
+     * @expectedException  \Magento\Payment\Gateway\Http\ConverterException
      */
     public function testPlaceRequestConvertResponseFail()
     {
-        $this->expectException(ConverterException::class);
         $this->setClientTransferObjects();
         $responseBody = 'Response body content';
 
         $zendHttpResponseMock = $this->getMockBuilder(
             \Zend_Http_Response::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $zendHttpResponseMock->expects($this->once())->method('getBody')->willReturn($responseBody);
 
         $this->clientMock->expects($this->once())->method('request')->willReturn($zendHttpResponseMock);
         $this->converterMock->expects($this->once())
             ->method('convert')
             ->with($responseBody)
-            ->willThrowException(new ConverterException(__()));
+            ->willThrowException(new \Magento\Payment\Gateway\Http\ConverterException(__()));
 
         $this->zendClientFactoryMock->expects($this->once())
             ->method('create')

@@ -39,7 +39,7 @@ class CustomerPaymentTokensTest extends GraphQlAbstract
      */
     private $tokenResource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -49,7 +49,7 @@ class CustomerPaymentTokensTest extends GraphQlAbstract
         $this->tokenCollectionFactory = Bootstrap::getObjectManager()->get(CollectionFactory::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
 
@@ -84,7 +84,7 @@ query {
 QUERY;
         $response = $this->graphQlQuery($query, [], '', $this->getCustomerAuthHeaders($currentEmail, $currentPassword));
 
-        $this->assertCount(2, $response['customerPaymentTokens']['items']);
+        $this->assertEquals(2, count($response['customerPaymentTokens']['items']));
         $this->assertArrayHasKey('public_hash', $response['customerPaymentTokens']['items'][0]);
         $this->assertArrayHasKey('details', $response['customerPaymentTokens']['items'][0]);
         $this->assertArrayHasKey('payment_method_code', $response['customerPaymentTokens']['items'][0]);
@@ -94,12 +94,11 @@ QUERY;
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage GraphQL response contains errors: The current customer isn't authorized.
      */
     public function testGetCustomerPaymentTokensIfUserIsNotAuthorized()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GraphQL response contains errors: The current customer isn\'t authorized.');
-
         $query = <<<QUERY
 query {
     customerPaymentTokens {
@@ -151,7 +150,7 @@ QUERY;
         );
 
         $this->assertTrue($response['deletePaymentToken']['result']);
-        $this->assertCount(1, $response['deletePaymentToken']['customerPaymentTokens']['items']);
+        $this->assertEquals(1, count($response['deletePaymentToken']['customerPaymentTokens']['items']));
 
         $token = $response['deletePaymentToken']['customerPaymentTokens']['items'][0];
         $this->assertArrayHasKey('public_hash', $token);
@@ -163,12 +162,11 @@ QUERY;
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage GraphQL response contains errors: The current customer isn't authorized.
      */
     public function testDeletePaymentTokenIfUserIsNotAuthorized()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GraphQL response contains errors: The current customer isn\'t authorized.');
-
         $query = <<<QUERY
 mutation {
   deletePaymentToken(
@@ -183,12 +181,11 @@ QUERY;
 
     /**
      * @magentoApiDataFixture Magento/Vault/_files/payment_tokens.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage GraphQL response contains errors: Could not find a token using public hash: ksdfk392ks
      */
     public function testDeletePaymentTokenInvalidPublicHash()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GraphQL response contains errors: Could not find a token using public hash: ksdfk392ks');
-
         $currentEmail = 'customer@example.com';
         $currentPassword = 'password';
 

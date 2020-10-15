@@ -15,89 +15,38 @@
         <conditionalClick selector="{{AdminShippingMethodFedExSection.carriersFedExTab}}" dependentSelector="{{AdminShippingMethodFedExSection.carriersFedExActive}}" visible="false" stepKey="expandFedExTab"/>
         <waitForElementVisible selector="{{AdminShippingMethodFedExSection.carriersFedExActive}}" stepKey="waitFedExTabOpen"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExActive}}" userInput="disabled" stepKey="grabFedExActiveDisabled"/>
-        <assertEquals stepKey="assertFedExActiveDisabled">
-			<actualResult type="const">$grabFedExActiveDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExActiveDisabled" stepKey="assertFedExActiveDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExTitle}}" userInput="disabled" stepKey="grabFedExTitleDisabled"/>
-        <assertEquals stepKey="assertFedExTitleDisabled">
-			<actualResult type="const">$grabFedExTitleDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExTitleDisabled" stepKey="assertFedExTitleDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExAccountId}}" userInput="disabled" stepKey="grabFedExAccountIdDisabled"/>
-        <assertEquals stepKey="assertFedExAccountIdDisabled">
-			<actualResult type="const">$grabFedExAccountIdDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExAccountIdDisabled" stepKey="assertFedExAccountIdDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExMeterNumber}}" userInput="disabled" stepKey="grabFedExMeterNumberDisabled"/>
-        <assertEquals stepKey="assertFedExMeterNumberDisabled">
-			<actualResult type="const">$grabFedExMeterNumberDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExMeterNumberDisabled" stepKey="assertFedExMeterNumberDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExKey}}" userInput="disabled" stepKey="grabFedExKeyDisabled"/>
-        <assertEquals stepKey="assertFedExKeyDisabled">
-			<actualResult type="const">$grabFedExKeyDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExKeyDisabled" stepKey="assertFedExKeyDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExPassword}}" userInput="disabled" stepKey="grabFedExPasswordDisabled"/>
-        <assertEquals stepKey="assertFedExPasswordDisabled">
-			<actualResult type="const">$grabFedExPasswordDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExPasswordDisabled" stepKey="assertFedExPasswordDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExSandboxMode}}" userInput="disabled" stepKey="grabFedExSandboxDisabled"/>
-        <assertEquals stepKey="assertFedExSandboxDisabled">
-			<actualResult type="const">$grabFedExSandboxDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExSandboxDisabled" stepKey="assertFedExSandboxDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExShipmentRequestType}}" userInput="disabled" stepKey="grabFedExShipmentRequestTypeDisabled"/>
-        <assertEquals stepKey="assertFedExShipmentRequestTypeDisabled">
-			<actualResult type="const">$grabFedExShipmentRequestTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExShipmentRequestTypeDisabled" stepKey="assertFedExShipmentRequestTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExPackaging}}" userInput="disabled" stepKey="grabFedExPackagingDisabled"/>
-        <assertEquals stepKey="assertFedExPackagingDisabled">
-			<actualResult type="const">$grabFedExPackagingDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExPackagingDisabled" stepKey="assertFedExPackagingDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExDropoff}}" userInput="disabled" stepKey="grabFedExDropoffDisabled"/>
-        <assertEquals stepKey="assertFedExDropoffDisabled">
-			<actualResult type="const">$grabFedExDropoffDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExDropoffDisabled" stepKey="assertFedExDropoffDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExUnitOfMeasure}}" userInput="disabled" stepKey="grabFedExUnitOfMeasureDisabled"/>
-        <assertEquals stepKey="assertFedExUnitOfMeasureDisabled">
-			<actualResult type="const">$grabFedExUnitOfMeasureDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExUnitOfMeasureDisabled" stepKey="assertFedExUnitOfMeasureDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExMaxPackageWeight}}" userInput="disabled" stepKey="grabFedExMaxPackageWeightDisabled"/>
-        <assertEquals stepKey="assertFedExMaxPackageWeightDisabled">
-			<actualResult type="const">$grabFedExMaxPackageWeightDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExMaxPackageWeightDisabled" stepKey="assertFedExMaxPackageWeightDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExHandlingType}}" userInput="disabled" stepKey="grabFedExHandlingTypeDisabled"/>
-        <assertEquals stepKey="assertFedExHandlingTypeDisabled">
-			<actualResult type="const">$grabFedExHandlingTypeDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExHandlingTypeDisabled" stepKey="assertFedExHandlingTypeDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExHandlingAction}}" userInput="disabled" stepKey="grabFedExHandlingActionDisabled"/>
-        <assertEquals stepKey="assertFedExHandlingActionDisabled">
-			<actualResult type="const">$grabFedExHandlingActionDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExHandlingActionDisabled" stepKey="assertFedExHandlingActionDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExSpecificErrMsg}}" userInput="disabled" stepKey="grabFedExSpecificErrMsgDisabled"/>
-        <assertEquals stepKey="assertFedExSpecificErrMsgDisabled">
-			<actualResult type="const">$grabFedExSpecificErrMsgDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExSpecificErrMsgDisabled" stepKey="assertFedExSpecificErrMsgDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExAllowSpecific}}" userInput="disabled" stepKey="grabFedExAllowSpecificDisabled"/>
-        <assertEquals stepKey="assertFedExAllowSpecificDisabled">
-			<actualResult type="const">$grabFedExAllowSpecificDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExAllowSpecificDisabled" stepKey="assertFedExAllowSpecificDisabled"/>
         <grabAttributeFrom selector="{{AdminShippingMethodFedExSection.carriersFedExSpecificCountry}}" userInput="disabled" stepKey="grabFedExSpecificCountryDisabled"/>
-        <assertEquals stepKey="assertFedExSpecificCountryDisabled">
-			<actualResult type="const">$grabFedExSpecificCountryDisabled</actualResult>
-			<expectedResult type="string">true</expectedResult>
-        </assertEquals>
+        <assertEquals expected='true' expectedType="string" actual="$grabFedExSpecificCountryDisabled" stepKey="assertFedExSpecificCountryDisabled"/>
     </test>
 </tests>

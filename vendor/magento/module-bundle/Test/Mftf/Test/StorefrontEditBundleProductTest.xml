@@ -14,15 +14,14 @@
             <stories value="Bundle products list on Storefront"/>
             <title value="Customer should be able to change chosen options for Bundle Product when clicking Edit button in Shopping Cart page"/>
             <description value="Customer should be able to change chosen options for Bundle Product when clicking Edit button in Shopping Cart page"/>
-            <severity value="BLOCKER"/>
+            <severity value="MAJOR"/>
             <testCaseId value="MC-290"/>
             <group value="Bundle"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct1"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct2"/>
-            <magentoCron stepKey="runCronIndex" groups="index"/>
         </before>
         <after>
             <amOnPage url="{{AdminLogoutPage.url}}" stepKey="amOnLogoutPage"/>
@@ -33,11 +32,11 @@
         <!-- Create a bundle product -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="visitAdminProductPageBundle"/>
         <waitForPageLoad stepKey="waitForProductPageLoadBundle"/>
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateBundleProduct">
+        <actionGroup ref="goToCreateProductPage" stepKey="goToCreateBundleProduct">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
 
-        <actionGroup ref="FillProductNameAndSkuInProductFormActionGroup" stepKey="fillBundleProductNameAndSku">
+        <actionGroup ref="fillProductNameAndSkuInProductForm" stepKey="fillBundleProductNameAndSku">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
 
@@ -51,11 +50,11 @@
         <waitForElementVisible selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="waitForAddProductsToBundle"/>
         <click selector="{{AdminProductFormBundleSection.addProductsToOption}}" stepKey="clickAddProductsToOption"/>
         <waitForPageLoad stepKey="waitForPageLoadAfterBundleProducts"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterBundleProductOptions">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterBundleProductOptions">
             <argument name="product" value="$$simpleProduct1$$"/>
         </actionGroup>
         <checkOption selector="{{AdminAddProductsToOptionPanel.firstCheckbox}}" stepKey="selectFirstGridRow"/>
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterBundleProductOptions2">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterBundleProductOptions2">
             <argument name="product" value="$$simpleProduct2$$"/>
         </actionGroup>
         <checkOption selector="{{AdminAddProductsToOptionPanel.firstCheckbox}}" stepKey="selectFirstGridRow2"/>
@@ -65,8 +64,6 @@
 
         <click stepKey="saveProductBundle" selector="{{AdminProductFormActionSection.saveButton}}"/>
         <see stepKey="assertSuccess" selector="{{AdminProductMessagesSection.successMessage}}" userInput="You saved the product."/>
-
-        <magentoCLI command="cron:run --group=index" stepKey="runCronIndexer"/>
 
         <!-- Go to the storefront bundled product page -->
         <amOnPage url="/{{BundleProduct.urlKey}}.html" stepKey="visitStoreFrontBundle"/>
@@ -89,7 +86,8 @@
         <waitForPageLoad stepKey="waitForElementAdded2"/>
 
         <!-- Go to the shopping cart page and edit the first product -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="onPageShoppingCart"/>
+        <amOnPage url="/checkout/cart/" stepKey="onPageShoppingCart"/>
+        <waitForPageLoad stepKey="waitForCartPageLoad"/>
         <waitForElementVisible stepKey="waitForInfoDropdown" selector="{{CheckoutCartSummarySection.total}}"/>
         <waitForPageLoad stepKey="waitForCartPageLoad3"/>
         <grabTextFrom selector="{{CheckoutCartSummarySection.total}}" stepKey="grabTotalBefore"/>
@@ -106,7 +104,8 @@
         <waitForPageLoad stepKey="waitForElementAdded3"/>
 
         <!-- Go to the shopping cart page -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="onPageShoppingCart2"/>
+        <amOnPage url="/checkout/cart/" stepKey="onPageShoppingCart2"/>
+        <waitForPageLoad stepKey="waitForCartPageLoad2"/>
 
         <!-- Assert that the options are both there and the proce no longer matches -->
         <see stepKey="assertBothOptions" selector="{{CheckoutCartProductSection.nthItemOption('2')}}" userInput="$$simpleProduct1.sku$$"/>
@@ -114,13 +113,10 @@
         <waitForElementVisible stepKey="waitForInfoDropdown2" selector="{{CheckoutCartSummarySection.total}}"/>
         <waitForPageLoad stepKey="waitForCartPageLoad4"/>
         <grabTextFrom selector="{{CheckoutCartSummarySection.total}}" stepKey="grabTotalAfter"/>
-        <assertNotEquals stepKey="assertNotEquals">
-			<actualResult type="string">{$grabTotalAfter}</actualResult>
-			<expectedResult type="string">{$grabTotalBefore}</expectedResult>
-        </assertNotEquals>
+        <assertNotEquals expected="{$grabTotalBefore}" expectedType="string" actual="{$grabTotalAfter}" actualType="string"  stepKey="assertNotEquals"/>
 
         <!-- Delete the bundled product -->
-        <actionGroup stepKey="deleteBundle" ref="DeleteProductUsingProductGridActionGroup">
+        <actionGroup stepKey="deleteBundle" ref="deleteProductUsingProductGrid">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
     </test>

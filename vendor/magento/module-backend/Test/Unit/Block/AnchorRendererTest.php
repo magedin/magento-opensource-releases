@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block;
 
 use Magento\Backend\Block\AnchorRenderer;
@@ -12,28 +10,31 @@ use Magento\Backend\Block\MenuItemChecker;
 use Magento\Backend\Model\Menu\Item;
 use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AnchorRendererTest extends TestCase
+class AnchorRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Item|MockObject
+     * @var Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private $activeMenuItemMock;
 
     /**
-     * @var Item|MockObject
+     * @var Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private $menuItemMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $escaperMock;
 
     /**
-     * @var MenuItemChecker|MockObject
+     * @var ObjectManagerHelper
+     */
+    private $objectManagerHelper;
+
+    /**
+     * @var MenuItemChecker|\PHPUnit_Framework_MockObject_MockObject
      */
     private $menuItemCheckerMock;
 
@@ -41,12 +42,8 @@ class AnchorRendererTest extends TestCase
      * @var AnchorRenderer
      */
     private $anchorRenderer;
-    /**
-     * @var MockObject
-     */
-    private $menuItemWithoutChildrenMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->activeMenuItemMock = $this->getMockBuilder(Item::class)
             ->disableOriginalConstructor()
@@ -64,8 +61,8 @@ class AnchorRendererTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->anchorRenderer =  $objectManagerHelper->getObject(
+        $this->objectManagerHelper = new ObjectManagerHelper($this);
+        $this->anchorRenderer =  $this->objectManagerHelper->getObject(
             AnchorRenderer::class,
             [
                 'menuItemChecker' => $this->menuItemCheckerMock,

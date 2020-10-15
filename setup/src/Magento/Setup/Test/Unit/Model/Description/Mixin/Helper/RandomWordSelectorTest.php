@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\Description\Mixin\Helper;
 
-use Magento\Setup\Model\Description\Mixin\Helper\RandomWordSelector;
-use PHPUnit\Framework\TestCase;
-
-class RandomWordSelectorTest extends TestCase
+class RandomWordSelectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RandomWordSelector
+     * @var \Magento\Setup\Model\Description\Mixin\Helper\RandomWordSelector
      */
     private $helper;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->helper = new RandomWordSelector();
+        $this->helper = new \Magento\Setup\Model\Description\Mixin\Helper\RandomWordSelector();
     }
 
     /**
@@ -35,7 +30,7 @@ class RandomWordSelectorTest extends TestCase
 
         $fixtureWords = str_word_count($fixtureSource, 1);
         foreach ($randWords as $randWord) {
-            $this->assertContains($randWord, $fixtureWords);
+            $this->assertTrue(in_array($randWord, $fixtureWords));
         }
     }
 

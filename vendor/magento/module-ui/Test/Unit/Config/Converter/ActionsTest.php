@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Ui\Test\Unit\Config\Converter;
 
 use Magento\Ui\Config\Converter\Actions;
 use Magento\Ui\Config\ConverterInterface;
 use Magento\Ui\Config\ConverterUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ActionsTest extends TestCase
+class ActionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Actions
@@ -21,14 +18,13 @@ class ActionsTest extends TestCase
     private $converter;
 
     /**
-     * @var ConverterInterface|MockObject
+     * @var ConverterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlConverter;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->urlConverter = $this->getMockBuilder(ConverterInterface::class)
-            ->getMockForAbstractClass();
+        $this->urlConverter = $this->getMockBuilder(ConverterInterface::class)->getMockForAbstractClass();
         $this->converter = new Actions($this->urlConverter, new ConverterUtils());
     }
 

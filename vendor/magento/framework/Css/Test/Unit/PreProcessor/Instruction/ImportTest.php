@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Css\Test\Unit\PreProcessor\Instruction;
 
 use Magento\Framework\Css\PreProcessor\FileGenerator\RelatedGenerator;
 use Magento\Framework\Css\PreProcessor\Instruction\Import;
-use Magento\Framework\View\Asset\ContextInterface;
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\NotationResolver\Module;
-use Magento\Framework\View\Asset\PreProcessor\Chain;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ImportTest extends TestCase
+/**
+ * Class ImportTest
+ */
+class ImportTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Module|MockObject
+     * @var \Magento\Framework\View\Asset\NotationResolver\Module|\PHPUnit_Framework_MockObject_MockObject
      */
     private $notationResolver;
 
     /**
-     * @var File|MockObject
+     * @var \Magento\Framework\View\Asset\File|\PHPUnit_Framework_MockObject_MockObject
      */
     private $asset;
 
@@ -38,18 +34,19 @@ class ImportTest extends TestCase
      */
     private $relatedFileGeneratorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->notationResolver = $this->createMock(Module::class);
+
+        $this->notationResolver = $this->createMock(\Magento\Framework\View\Asset\NotationResolver\Module::class);
         $contextMock = $this->getMockForAbstractClass(
-            ContextInterface::class,
+            \Magento\Framework\View\Asset\ContextInterface::class,
             [],
             '',
             false
         );
         $contextMock->expects($this->any())->method('getPath')->willReturn('');
-        $this->asset = $this->createMock(File::class);
-        $this->asset->expects($this->any())->method('getContentType')->willReturn('css');
+        $this->asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
+        $this->asset->expects($this->any())->method('getContentType')->will($this->returnValue('css'));
         $this->asset->expects($this->any())->method('getContext')->willReturn($contextMock);
 
         $this->relatedFileGeneratorMock = $this->getMockBuilder(RelatedGenerator::class)
@@ -69,7 +66,7 @@ class ImportTest extends TestCase
      */
     public function testProcess($originalContent, $foundPath, $resolvedPath, $expectedContent)
     {
-        $chain = new Chain(
+        $chain = new \Magento\Framework\View\Asset\PreProcessor\Chain(
             $this->asset,
             $originalContent,
             'less',
@@ -82,7 +79,7 @@ class ImportTest extends TestCase
         $this->notationResolver->expects($invoke)
             ->method('convertModuleNotationToPath')
             ->with($this->asset, $foundPath)
-            ->willReturn($resolvedPath);
+            ->will($this->returnValue($resolvedPath));
         $this->object->process($chain);
         $this->assertEquals($expectedContent, $chain->getContent());
         $this->assertEquals('less', $chain->getContentType());
@@ -167,7 +164,7 @@ class ImportTest extends TestCase
         $originalContent = 'color: #000000;';
         $expectedContent = 'color: #000000;';
 
-        $chain = new Chain(
+        $chain = new \Magento\Framework\View\Asset\PreProcessor\Chain(
             $this->asset,
             $originalContent,
             'css',
@@ -190,15 +187,15 @@ class ImportTest extends TestCase
         $this->notationResolver->expects($this->once())
             ->method('convertModuleNotationToPath')
             ->with($this->asset, 'Magento_Module::something.css')
-            ->willReturn('Magento_Module/something.css');
-        $chain = new Chain(
+            ->will($this->returnValue('Magento_Module/something.css'));
+        $chain = new \Magento\Framework\View\Asset\PreProcessor\Chain(
             $this->asset,
             '@import (type) "Magento_Module::something.css" media;',
             'css',
             'path'
         );
         $this->object->process($chain);
-        $chain = new Chain(
+        $chain = new \Magento\Framework\View\Asset\PreProcessor\Chain(
             $this->asset,
             'color: #000000;',
             'css',

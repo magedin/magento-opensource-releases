@@ -3,40 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Controller\Test\Unit\Result;
 
-use Magento\Framework\App\Response\HttpInterface as HttpResponseInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Response\HttpInterface as HttpResponseInterface;
+use \Magento\Framework\App\Response\RedirectInterface;
+use \Magento\Framework\Controller\Result\Redirect;
+use \Magento\Framework\UrlInterface;
 
 class RedirectTest extends TestCase
 {
-    /** @var Redirect */
+    /** @var \Magento\Framework\Controller\Result\Redirect */
     protected $redirect;
 
-    /** @var RedirectInterface|MockObject */
+    /** @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $redirectInterface;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $urlInterface;
 
-    /** @var HttpResponseInterface|MockObject */
+    /** @var HttpResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->redirectInterface = $this->getMockForAbstractClass(RedirectInterface::class);
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->urlInterface = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->response = $this->getMockForAbstractClass(HttpResponseInterface::class);
+        $this->redirectInterface = $this->createMock(RedirectInterface::class);
+        $this->urlBuilder = $this->createMock(UrlInterface::class);
+        $this->urlInterface = $this->createMock(UrlInterface::class);
+        $this->response = $this->createMock(HttpResponseInterface::class);
         $this->redirect = new Redirect($this->redirectInterface, $this->urlInterface);
     }
 
@@ -68,8 +66,8 @@ class RedirectTest extends TestCase
     {
         $path = 'test/path';
         $params = ['one' => 1, 'two' => 2];
-        $this->redirectInterface->expects($this->once())->method('updatePathParams')->with($params)->willReturn(
-            $params
+        $this->redirectInterface->expects($this->once())->method('updatePathParams')->with($params)->will(
+            $this->returnValue($params)
         );
         $this->assertInstanceOf(
             Redirect::class,

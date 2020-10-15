@@ -210,6 +210,8 @@ class AttributeMetadataResolver
      *
      * @param AttributeInterface $attribute
      * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function modifyGroupAttributeMeta(AttributeInterface $attribute): void
     {

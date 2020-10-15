@@ -1220,6 +1220,22 @@ fotoramaVersion = '4.6.4';
         stopPropagation && e.stopPropagation && e.stopPropagation();
     }
 
+    function stubEvent($el, eventType) {
+        var isIOS = /ip(ad|hone|od)/i.test(window.navigator.userAgent);
+
+        if (isIOS && eventType === 'touchend') {
+            $el.on('touchend', function(e){
+                $DOCUMENT.trigger('mouseup', e);
+            })
+        }
+
+        $el.on(eventType, function (e) {
+            stopEvent(e, true);
+
+            return false;
+        });
+    }
+
     function getDirectionSign(forward) {
         return forward ? '>' : '<';
     }
@@ -1522,10 +1538,10 @@ fotoramaVersion = '4.6.4';
 
             $WINDOW.on('scroll', onOtherEnd);
 
-            $el.on('mousedown', onStart);
+            $el.on('mousedown pointerdown', onStart);
             $DOCUMENT
-                .on('mousemove', onMove)
-                .on('mouseup', onEnd);
+                .on('mousemove pointermove', onMove)
+                .on('mouseup pointerup', onEnd);
         }
         if (Modernizr.touch) {
             dragDomEl = 'a';
@@ -2167,6 +2183,11 @@ fotoramaVersion = '4.6.4';
             if (o_allowFullScreen) {
                 $fullscreenIcon.prependTo($stage);
                 o_nativeFullScreen = FULLSCREEN && o_allowFullScreen === 'native';
+
+                // Due 300ms click delay on mobile devices
+                // we stub touchend and fallback to click.
+                // MAGETWO-69567
+                stubEvent($fullscreenIcon, 'touchend');
             } else {
                 $fullscreenIcon.detach();
                 o_nativeFullScreen = false;
@@ -3254,9 +3275,13 @@ fotoramaVersion = '4.6.4';
 
             if (measureIsValid(width)) {
                 $wrap.css({width: ''});
+                $wrap.css({height: ''});
                 $stage.css({width: ''});
+                $stage.css({height: ''});
                 $stageShaft.css({width: ''});
+                $stageShaft.css({height: ''});
                 $nav.css({width: ''});
+                $nav.css({height: ''});
                 $wrap.css({minWidth: measures.minwidth || 0, maxWidth: measures.maxwidth || MAX_WIDTH});
 
                 if (o_nav === 'dots') {

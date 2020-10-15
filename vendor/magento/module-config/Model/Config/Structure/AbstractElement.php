@@ -103,7 +103,7 @@ abstract class AbstractElement implements StructureElementInterface
      */
     public function getId()
     {
-        return $this->_data['id'] ?? '';
+        return isset($this->_data['id']) ? $this->_data['id'] : '';
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class AbstractElement implements StructureElementInterface
      */
     public function getFrontendModel()
     {
-        return $this->_data['frontend_model'] ?? '';
+        return isset($this->_data['frontend_model']) ? $this->_data['frontend_model'] : '';
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class AbstractElement implements StructureElementInterface
      */
     public function getClass()
     {
-        return $this->_data['class'] ?? '';
+        return isset($this->_data['class']) ? $this->_data['class'] : '';
     }
 
     /**

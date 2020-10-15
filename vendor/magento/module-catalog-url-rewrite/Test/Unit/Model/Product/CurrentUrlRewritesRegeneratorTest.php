@@ -3,93 +3,73 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Product;
-use Magento\CatalogUrlRewrite\Model\Map\UrlRewriteFinder;
-use Magento\CatalogUrlRewrite\Model\ObjectRegistry;
-use Magento\CatalogUrlRewrite\Model\Product\CurrentUrlRewritesRegenerator;
-use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\UrlRewrite\Model\MergeDataProvider;
-use Magento\UrlRewrite\Model\MergeDataProviderFactory;
 use Magento\UrlRewrite\Model\OptionProvider;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CurrentUrlRewritesRegeneratorTest extends TestCase
+class CurrentUrlRewritesRegeneratorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CurrentUrlRewritesRegenerator */
+    /** @var \Magento\CatalogUrlRewrite\Model\Product\CurrentUrlRewritesRegenerator */
     private $currentUrlRewritesRegenerator;
 
-    /** @var ProductUrlPathGenerator|MockObject */
+    /** @var \Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator|\PHPUnit_Framework_MockObject_MockObject */
     private $productUrlPathGenerator;
 
-    /** @var Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject */
     private $product;
 
-    /** @var Category|MockObject */
+    /** @var \Magento\Catalog\Model\Category|\PHPUnit_Framework_MockObject_MockObject */
     private $category;
 
-    /** @var ObjectRegistry|MockObject */
+    /** @var \Magento\CatalogUrlRewrite\Model\ObjectRegistry|\PHPUnit_Framework_MockObject_MockObject */
     private $objectRegistry;
 
-    /** @var UrlRewriteFactory|MockObject */
+    /** @var \Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $urlRewriteFactory;
 
-    /** @var UrlRewrite|MockObject */
+    /** @var \Magento\UrlRewrite\Service\V1\Data\UrlRewrite|\PHPUnit_Framework_MockObject_MockObject */
     private $urlRewrite;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $mergeDataProvider;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $urlRewriteFinder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->urlRewriteFactory = $this->getMockBuilder(UrlRewriteFactory::class)
+        $this->urlRewriteFactory = $this->getMockBuilder(\Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory::class)
             ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->urlRewrite = $this->getMockBuilder(UrlRewrite::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->product = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->category = $this->getMockBuilder(Category::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->objectRegistry = $this->getMockBuilder(ObjectRegistry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->urlRewriteFinder = $this->getMockBuilder(UrlRewriteFinder::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
+        $this->urlRewrite = $this->getMockBuilder(\Magento\UrlRewrite\Service\V1\Data\UrlRewrite::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->category = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->objectRegistry = $this->getMockBuilder(\Magento\CatalogUrlRewrite\Model\ObjectRegistry::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->urlRewriteFinder = $this->getMockBuilder(\Magento\CatalogUrlRewrite\Model\Map\UrlRewriteFinder::class)
+            ->disableOriginalConstructor()->getMock();
         $this->urlRewriteFactory->expects($this->once())->method('create')
             ->willReturn($this->urlRewrite);
         $this->productUrlPathGenerator = $this->getMockBuilder(
-            ProductUrlPathGenerator::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator::class
+        )->disableOriginalConstructor()->getMock();
         $mergeDataProviderFactory = $this->createPartialMock(
-            MergeDataProviderFactory::class,
+            \Magento\UrlRewrite\Model\MergeDataProviderFactory::class,
             ['create']
         );
-        $this->mergeDataProvider = new MergeDataProvider();
+        $this->mergeDataProvider = new \Magento\UrlRewrite\Model\MergeDataProvider();
         $mergeDataProviderFactory->expects($this->once())->method('create')->willReturn($this->mergeDataProvider);
         $this->currentUrlRewritesRegenerator = (new ObjectManager($this))->getObject(
-            CurrentUrlRewritesRegenerator::class,
+            \Magento\CatalogUrlRewrite\Model\Product\CurrentUrlRewritesRegenerator::class,
             [
                 'productUrlPathGenerator' => $this->productUrlPathGenerator,
                 'urlRewriteFactory' => $this->urlRewriteFactory,
@@ -102,9 +82,9 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
     public function testIsAutogeneratedWithoutSaveRewriteHistory()
     {
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([[UrlRewrite::IS_AUTOGENERATED => 1]]));
+            ->will($this->returnValue($this->getCurrentRewritesMocks([[UrlRewrite::IS_AUTOGENERATED => 1]])));
         $this->product->expects($this->once())->method('getData')->with('save_rewrites_history')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $this->assertEquals(
             [],
@@ -115,13 +95,13 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
     public function testSkipGenerationForAutogenerated()
     {
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [UrlRewrite::IS_AUTOGENERATED => 1, UrlRewrite::REQUEST_PATH => 'same-path'],
-            ]));
+            ])));
         $this->product->expects($this->once())->method('getData')->with('save_rewrites_history')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->productUrlPathGenerator->expects($this->once())->method('getUrlPathWithSuffix')
-            ->willReturn('same-path');
+            ->will($this->returnValue('same-path'));
 
         $this->assertEquals(
             [],
@@ -138,7 +118,7 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
         $productId = 12;
         $description = 'description';
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [
                     UrlRewrite::REQUEST_PATH => $requestPath,
                     UrlRewrite::TARGET_PATH => 'custom-target-path',
@@ -147,12 +127,12 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
                     UrlRewrite::METADATA => [],
                     UrlRewrite::DESCRIPTION => $description,
                 ],
-            ]));
-        $this->product->expects($this->any())->method('getEntityId')->willReturn($productId);
+            ])));
+        $this->product->expects($this->any())->method('getEntityId')->will($this->returnValue($productId));
         $this->product->expects($this->once())->method('getData')->with('save_rewrites_history')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->productUrlPathGenerator->expects($this->once())->method('getUrlPathWithSuffix')
-            ->willReturn($targetPath);
+            ->will($this->returnValue($targetPath));
 
         $this->prepareUrlRewriteMock(
             $storeId,
@@ -181,7 +161,7 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
         $metadata = ['category_id' => 2, 'some_another_data' => 1];
         $description = 'description';
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [
                     UrlRewrite::REQUEST_PATH => $requestPath,
                     UrlRewrite::TARGET_PATH => 'some-path.html',
@@ -190,13 +170,13 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
                     UrlRewrite::METADATA => $metadata,
                     UrlRewrite::DESCRIPTION => $description,
                 ],
-            ]));
-        $this->product->expects($this->any())->method('getEntityId')->willReturn($productId);
+            ])));
+        $this->product->expects($this->any())->method('getEntityId')->will($this->returnValue($productId));
         $this->product->expects($this->once())->method('getData')->with('save_rewrites_history')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->productUrlPathGenerator->expects($this->once())->method('getUrlPathWithSuffix')
-            ->willReturn($targetPath);
-        $this->objectRegistry->expects($this->once())->method('get')->willReturn($this->category);
+            ->will($this->returnValue($targetPath));
+        $this->objectRegistry->expects($this->once())->method('get')->will($this->returnValue($this->category));
         $this->prepareUrlRewriteMock(
             $storeId,
             $productId,
@@ -217,15 +197,15 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
     public function testSkipGenerationForCustom()
     {
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [
                     UrlRewrite::IS_AUTOGENERATED => 0,
                     UrlRewrite::REQUEST_PATH => 'same-path',
                     UrlRewrite::REDIRECT_TYPE => 1,
                 ],
-            ]));
+            ])));
         $this->productUrlPathGenerator->expects($this->once())->method('getUrlPathWithSuffix')
-            ->willReturn('same-path');
+            ->will($this->returnValue('same-path'));
 
         $this->assertEquals(
             [],
@@ -242,7 +222,7 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
         $autoGenerated = 0;
         $description = 'description';
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [
                     UrlRewrite::REQUEST_PATH => $requestPath,
                     UrlRewrite::TARGET_PATH => $targetPath,
@@ -251,9 +231,9 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
                     UrlRewrite::DESCRIPTION => $description,
                     UrlRewrite::METADATA => [],
                 ],
-            ]));
+            ])));
         $this->productUrlPathGenerator->expects($this->never())->method('getUrlPathWithSuffix');
-        $this->product->expects($this->any())->method('getEntityId')->willReturn($productId);
+        $this->product->expects($this->any())->method('getEntityId')->will($this->returnValue($productId));
         $this->prepareUrlRewriteMock(
             $storeId,
             $productId,
@@ -280,7 +260,7 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
         $autoGenerated = 0;
         $description = 'description';
         $this->urlRewriteFinder->expects($this->once())->method('findAllByData')
-            ->willReturn($this->getCurrentRewritesMocks([
+            ->will($this->returnValue($this->getCurrentRewritesMocks([
                 [
                     UrlRewrite::REQUEST_PATH => $requestPath,
                     UrlRewrite::TARGET_PATH => 'custom-target-path.html',
@@ -289,10 +269,10 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
                     UrlRewrite::DESCRIPTION => $description,
                     UrlRewrite::METADATA => [],
                 ],
-            ]));
+            ])));
         $this->productUrlPathGenerator->expects($this->any())->method('getUrlPathWithSuffix')
-            ->willReturn($targetPath);
-        $this->product->expects($this->any())->method('getEntityId')->willReturn($productId);
+            ->will($this->returnValue($targetPath));
+        $this->product->expects($this->any())->method('getEntityId')->will($this->returnValue($productId));
         $this->prepareUrlRewriteMock($storeId, $productId, $requestPath, $targetPath, 0, 'code', [], $description);
 
         $this->assertEquals(
@@ -309,14 +289,13 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
     {
         $rewrites = [];
         foreach ($currentRewrites as $urlRewrite) {
-            /** @var MockObject */
-            $url = $this->getMockBuilder(UrlRewrite::class)
-                ->disableOriginalConstructor()
-                ->getMock();
+            /** @var \PHPUnit_Framework_MockObject_MockObject */
+            $url = $this->getMockBuilder(\Magento\UrlRewrite\Service\V1\Data\UrlRewrite::class)
+                ->disableOriginalConstructor()->getMock();
             foreach ($urlRewrite as $key => $value) {
                 $url->expects($this->any())
                     ->method('get' . str_replace('_', '', ucwords($key, '_')))
-                    ->willReturn($value);
+                    ->will($this->returnValue($value));
             }
             $rewrites[] = $url;
         }
@@ -343,16 +322,24 @@ class CurrentUrlRewritesRegeneratorTest extends TestCase
         $metadata,
         $description
     ) {
-        $this->urlRewrite->expects($this->any())->method('setStoreId')->with($storeId)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setEntityId')->with($productId)->willReturnSelf();
+        $this->urlRewrite->expects($this->any())->method('setStoreId')->with($storeId)
+            ->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setEntityId')->with($productId)
+            ->will($this->returnSelf());
         $this->urlRewrite->expects($this->any())->method('setEntityType')
-            ->with(ProductUrlRewriteGenerator::ENTITY_TYPE)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setRequestPath')->with($requestPath)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setTargetPath')->with($targetPath)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setIsAutogenerated')->with($autoGenerated)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setRedirectType')->with($redirectType)->willReturnSelf();
-        $this->urlRewrite->expects($this->any())->method('setMetadata')->with($metadata)->willReturnSelf();
-        $this->urlRewriteFactory->expects($this->any())->method('create')->willReturn($this->urlRewrite);
-        $this->urlRewrite->expects($this->once())->method('setDescription')->with($description)->willReturnSelf();
+            ->with(ProductUrlRewriteGenerator::ENTITY_TYPE)->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setRequestPath')->with($requestPath)
+            ->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setTargetPath')->with($targetPath)
+            ->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setIsAutogenerated')->with($autoGenerated)
+            ->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setRedirectType')->with($redirectType)
+            ->will($this->returnSelf());
+        $this->urlRewrite->expects($this->any())->method('setMetadata')->with($metadata)
+            ->will($this->returnSelf());
+        $this->urlRewriteFactory->expects($this->any())->method('create')->will($this->returnValue($this->urlRewrite));
+        $this->urlRewrite->expects($this->once())->method('setDescription')->with($description)
+            ->will($this->returnSelf());
     }
 }

@@ -63,7 +63,7 @@ class CreateTest extends WebapiAbstract
         AssertArrayContains::assert($expectedData, $this->getSourceDataByCode($sourceCode));
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var ResourceConnection $connection */
         $connection = Bootstrap::getObjectManager()->get(ResourceConnection::class);

@@ -3,15 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit;
 
-use Magento\Framework\Data\Test\Unit\Stub\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class AbstractDataObjectTest extends TestCase
+class AbstractDataObjectTest extends \PHPUnit\Framework\TestCase
 {
     public function testToArray()
     {
@@ -23,15 +17,15 @@ class AbstractDataObjectTest extends TestCase
             'nestedArray' => ['nestedObject' => $nestedObjectData],
         ];
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $subObject = $objectManager->getObject(DataObject::class);
+        $subObject = $objectManager->getObject(\Magento\Framework\Data\Test\Unit\Stub\DataObject::class);
         $subObject->setData($subObjectData);
 
-        $nestedObject = $objectManager->getObject(DataObject::class);
+        $nestedObject = $objectManager->getObject(\Magento\Framework\Data\Test\Unit\Stub\DataObject::class);
         $nestedObject->setData($nestedObjectData);
 
-        $dataObject = $objectManager->getObject(DataObject::class);
+        $dataObject = $objectManager->getObject(\Magento\Framework\Data\Test\Unit\Stub\DataObject::class);
         $data = ['key' => 'value', 'object' => $subObject, 'nestedArray' => ['nestedObject' => $nestedObject]];
         $dataObject->setData($data);
 
@@ -44,8 +38,8 @@ class AbstractDataObjectTest extends TestCase
         $value = 'value';
         $data = [$key => $value];
 
-        $objectManager = new ObjectManager($this);
-        $dataObject = $objectManager->getObject(DataObject::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $dataObject = $objectManager->getObject(\Magento\Framework\Data\Test\Unit\Stub\DataObject::class);
         $dataObject->setData($data);
 
         $this->assertEquals($value, $dataObject->get($key));

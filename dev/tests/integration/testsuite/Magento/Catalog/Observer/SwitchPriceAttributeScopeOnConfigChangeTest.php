@@ -15,7 +15,7 @@ class SwitchPriceAttributeScopeOnConfigChangeTest extends \PHPUnit\Framework\Tes
      */
     private $objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }

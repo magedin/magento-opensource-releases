@@ -3,22 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\App\Task;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Setup\Model\ObjectManagerProvider;
-use Magento\Setup\Module\Di\App\Task\Operation\Area;
-use Magento\Setup\Module\Di\App\Task\Operation\Interception;
-use Magento\Setup\Module\Di\App\Task\Operation\InterceptionCache;
 use Magento\Setup\Module\Di\App\Task\OperationException;
 use Magento\Setup\Module\Di\App\Task\OperationFactory;
-use Magento\Setup\Module\Di\App\Task\OperationInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class OperationFactoryTest extends TestCase
+class OperationFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OperationFactory
@@ -26,16 +17,16 @@ class OperationFactoryTest extends TestCase
     private $factory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->setMethods([])
-            ->getMockForAbstractClass();
-        $objectManagerProviderMock = $this->createMock(ObjectManagerProvider::class);
+            ->getMock();
+        $objectManagerProviderMock = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $objectManagerProviderMock->expects($this->once())->method('get')->willReturn($this->objectManagerMock);
         $this->factory = new OperationFactory(
             $objectManagerProviderMock
@@ -49,7 +40,7 @@ class OperationFactoryTest extends TestCase
      */
     public function testCreateSuccess($alias, $arguments, $instanceName)
     {
-        $operationInstance = $this->getMockBuilder(OperationInterface::class)
+        $operationInstance = $this->getMockBuilder(\Magento\Setup\Module\Di\App\Task\OperationInterface::class)
             ->getMock();
 
         $this->objectManagerMock->expects($this->once())
@@ -63,7 +54,7 @@ class OperationFactoryTest extends TestCase
     public function testCreateException()
     {
         $notRegisteredOperation = 'coffee';
-        $this->expectException(OperationException::class);
+        $this->expectException(\Magento\Setup\Module\Di\App\Task\OperationException::class);
         $this->expectExceptionMessage(
             sprintf('Unrecognized operation "%s"', $notRegisteredOperation),
             OperationException::UNAVAILABLE_OPERATION
@@ -77,12 +68,12 @@ class OperationFactoryTest extends TestCase
     public function aliasesDataProvider()
     {
         return  [
-            [OperationFactory::AREA_CONFIG_GENERATOR, [], Area::class],
-            [OperationFactory::INTERCEPTION, null, Interception::class],
+            [OperationFactory::AREA_CONFIG_GENERATOR, [], \Magento\Setup\Module\Di\App\Task\Operation\Area::class],
+            [OperationFactory::INTERCEPTION, null, \Magento\Setup\Module\Di\App\Task\Operation\Interception::class],
             [
                 OperationFactory::INTERCEPTION_CACHE,
                 1,
-                InterceptionCache::class
+                \Magento\Setup\Module\Di\App\Task\Operation\InterceptionCache::class
             ],
         ];
     }

@@ -11,18 +11,13 @@
  */
 namespace Magento\Newsletter\Block\Adminhtml;
 
-use Magento\Backend\Block\Template;
-use Magento\Backend\Block\Template\Context;
 use Magento\Newsletter\Model\ResourceModel\Queue\Collection;
-use Magento\Newsletter\Model\ResourceModel\Queue\CollectionFactory;
 
 /**
- * Newsletter Subscriber block
- *
  * @api
  * @since 100.0.2
  */
-class Subscriber extends Template
+class Subscriber extends \Magento\Backend\Block\Template
 {
     /**
      * Queue collection
@@ -37,22 +32,32 @@ class Subscriber extends Template
     protected $_template = 'Magento_Newsletter::subscriber/list.phtml';
 
     /**
-     * @var CollectionFactory
+     * @var \Magento\Newsletter\Model\ResourceModel\Queue\CollectionFactory
      */
     protected $_collectionFactory;
 
     /**
-     * @param Context $context
-     * @param CollectionFactory $collectionFactory
+     * @param \Magento\Backend\Block\Template\Context $context
+     * @param \Magento\Newsletter\Model\ResourceModel\Queue\CollectionFactory $collectionFactory
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        CollectionFactory $collectionFactory,
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Newsletter\Model\ResourceModel\Queue\CollectionFactory $collectionFactory,
         array $data = []
     ) {
         $this->_collectionFactory = $collectionFactory;
         parent::__construct($context, $data);
+    }
+
+    /**
+     * Prepares block to render
+     *
+     * @return $this
+     */
+    protected function _beforeToHtml()
+    {
+        return parent::_beforeToHtml();
     }
 
     /**
@@ -63,7 +68,7 @@ class Subscriber extends Template
     public function getQueueCollection()
     {
         if ($this->_queueCollection === null) {
-            /** @var $this->_queueCollection Collection */
+            /** @var $this->_queueCollection \Magento\Newsletter\Model\ResourceModel\Queue\Collection */
             $this->_queueCollection = $this
                 ->_collectionFactory
                 ->create()

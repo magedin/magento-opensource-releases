@@ -48,32 +48,32 @@ class DiRuleTest extends \PHPUnit\Framework\TestCase
                 $this->getFileContent('di_external_dependency.xml'),
                 [
                     [
-                        'modules' => ['Magento\ExternalModule3'],
+                        'module' => 'Magento\ExternalModule3',
                         'type' => RuleInterface::TYPE_SOFT,
                         'source' => 'Magento\ExternalModule3\Some\Another\Class'
                     ],
                     [
-                        'modules' => ['Magento\ExternalModule5'],
+                        'module' => 'Magento\ExternalModule5',
                         'type' => RuleInterface::TYPE_SOFT,
                         'source' => 'Magento\ExternalModule5\Some\Another\Class'
                     ],
                     [
-                        'modules' => ['Magento\ExternalModule6'],
+                        'module' => 'Magento\ExternalModule6',
                         'type' => RuleInterface::TYPE_SOFT,
                         'source' => 'Magento\ExternalModule6\Some\Plugin\Class'
                     ],
                     [
-                        'modules' => ['Magento\ExternalModule1'],
+                        'module' => 'Magento\ExternalModule1',
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => 'Magento\ExternalModule1\Some\Argument1'
                     ],
                     [
-                        'modules' => ['Magento\ExternalModule2'],
+                        'module' => 'Magento\ExternalModule2',
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => 'Magento\ExternalModule2\Some\Argument2'
                     ],
                     [
-                        'modules' => ['Magento\ExternalModule4'],
+                        'module' => 'Magento\ExternalModule4',
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => 'Magento\ExternalModule4\Some\Argument3'
                     ]
@@ -84,12 +84,12 @@ class DiRuleTest extends \PHPUnit\Framework\TestCase
                 $this->getFileContent('di_virtual_dependency.xml'),
                 [
                     [
-                        'modules' => ['Magento\AnotherModule'],
+                        'module' => 'Magento\AnotherModule',
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => 'Magento\AnotherModule\Some\Class1',
                     ],
                     [
-                        'modules' => ['Magento\AnotherModule'],
+                        'module' => 'Magento\AnotherModule',
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => 'Magento\AnotherModule\Some\Class2',
                     ]

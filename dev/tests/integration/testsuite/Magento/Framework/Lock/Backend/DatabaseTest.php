@@ -7,11 +7,8 @@ declare(strict_types=1);
 
 namespace Magento\Framework\Lock\Backend;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\App\DeploymentConfig;
-
 /**
- * \Magento\Framework\Lock\Backend\Database test case.
+ * \Magento\Framework\Lock\Backend\Database test case
  */
 class DatabaseTest extends \PHPUnit\Framework\TestCase
 {
@@ -25,13 +22,10 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $resourceConnection = $this->objectManager->create(ResourceConnection::class);
-        $deploymentConfig = $this->objectManager->create(DeploymentConfig::class);
-        // create object with new otherwise dummy locker is created because of di.xml preference for integration tests
-        $this->model = new Database($resourceConnection, $deploymentConfig);
+        $this->model = $this->objectManager->create(\Magento\Framework\Lock\Backend\Database::class);
     }
 
     public function testLockAndUnlock()

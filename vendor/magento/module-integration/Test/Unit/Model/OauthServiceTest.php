@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test for \Magento\Integration\Model\OauthService
  *
@@ -8,26 +8,12 @@
 
 namespace Magento\Integration\Test\Unit\Model;
 
-use Magento\Framework\HTTP\ZendClient;
-use Magento\Framework\Oauth\Exception;
-use Magento\Framework\Oauth\Helper\Oauth;
-use Magento\Integration\Helper\Oauth\Data;
-use Magento\Integration\Model\Integration;
-use Magento\Integration\Model\Oauth\Consumer;
-use Magento\Integration\Model\Oauth\ConsumerFactory;
 use Magento\Integration\Model\Oauth\Token;
-use Magento\Integration\Model\Oauth\Token\Provider;
-use Magento\Integration\Model\Oauth\TokenFactory;
-use Magento\Integration\Model\OauthService;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OauthServiceTest extends TestCase
+class OauthServiceTest extends \PHPUnit\Framework\TestCase
 {
     const VALUE_CONSUMER_ID = 1;
 
@@ -35,65 +21,62 @@ class OauthServiceTest extends TestCase
 
     const VALUE_TOKEN_TYPE = 'access';
 
-    /** @var ConsumerFactory|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\ConsumerFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $_consumerFactory;
 
-    /** @var Provider|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\Token\Provider|\PHPUnit_Framework_MockObject_MockObject */
     protected $_tokenProviderMock;
 
-    /** @var Consumer|MockObject */
+    /** @var \Magento\Integration\Model\Oauth\Consumer|\PHPUnit_Framework_MockObject_MockObject */
     private $_consumerMock;
 
-    /** @var Integration|MockObject */
+    /** @var \Magento\Integration\Model\Integration|\PHPUnit_Framework_MockObject_MockObject */
     private $_emptyConsumerMock;
 
     /**
-     * @var Token|MockObject
+     * @var \Magento\Integration\Model\Oauth\Token|\PHPUnit_Framework_MockObject_MockObject
      */
     private $_tokenMock;
 
-    /** @var OauthService */
+    /** @var \Magento\Integration\Model\OauthService */
     private $_service;
 
     /** @var array */
     private $_consumerData;
 
     /**
-     * @var TokenFactory|MockObject
+     * @var \Magento\Integration\Model\Oauth\TokenFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $_tokenFactoryMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_consumerFactory = $this->getMockBuilder(ConsumerFactory::class)
+        $this->_consumerFactory = $this->getMockBuilder(\Magento\Integration\Model\Oauth\ConsumerFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->_tokenProviderMock = $this->getMockBuilder(
-            Provider::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Integration\Model\Oauth\Token\Provider::class
+        )->disableOriginalConstructor()->getMock();
         $this->_tokenMock = $this->getMockBuilder(
-            Token::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['createVerifierToken', 'getType', '__wakeup', 'delete']
-            )->getMock();
+            \Magento\Integration\Model\Oauth\Token::class
+        )->disableOriginalConstructor()->setMethods(
+            ['createVerifierToken', 'getType', '__wakeup', 'delete']
+        )->getMock();
 
         $this->_tokenFactoryMock = $this->createPartialMock(
-            TokenFactory::class,
+            \Magento\Integration\Model\Oauth\TokenFactory::class,
             ['create']
         );
-        $this->_tokenFactoryMock->expects($this->any())->method('create')->willReturn($this->_tokenMock);
+        $this->_tokenFactoryMock->expects($this->any())->method('create')->will($this->returnValue($this->_tokenMock));
         $this->_consumerMock = $this->getMockBuilder(
-            Consumer::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getData', 'getId', 'load', 'save', 'delete', '__wakeup']
-            )->getMock();
+            \Magento\Integration\Model\Oauth\Consumer::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getData', 'getId', 'load', 'save', 'delete', '__wakeup']
+        )->getMock();
         $this->_consumerData = [
             'entity_id' => self::VALUE_CONSUMER_ID,
             'key' => self::VALUE_CONSUMER_KEY,
@@ -107,27 +90,26 @@ class OauthServiceTest extends TestCase
             $this->any()
         )->method(
             'create'
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
-        $this->_service = new OauthService(
-            $this->getMockForAbstractClass(StoreManagerInterface::class),
+        $this->_service = new \Magento\Integration\Model\OauthService(
+            $this->createMock(\Magento\Store\Model\StoreManagerInterface::class),
             $this->_consumerFactory,
             $this->_tokenFactoryMock,
-            $this->createMock(Data::class),
-            $this->createMock(ZendClient::class),
-            $this->getMockForAbstractClass(LoggerInterface::class),
-            $this->createMock(Oauth::class),
+            $this->createMock(\Magento\Integration\Helper\Oauth\Data::class),
+            $this->createMock(\Magento\Framework\HTTP\ZendClient::class),
+            $this->createMock(\Psr\Log\LoggerInterface::class),
+            $this->createMock(\Magento\Framework\Oauth\Helper\Oauth::class),
             $this->_tokenProviderMock
         );
         $this->_emptyConsumerMock = $this->getMockBuilder(
-            Integration::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getData', 'load', 'getId', 'save', 'delete', '__wakeup']
-            )->getMock();
-        $this->_emptyConsumerMock->expects($this->any())->method('getId')->willReturn(null);
+            \Magento\Integration\Model\Integration::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getData', 'load', 'getId', 'save', 'delete', '__wakeup']
+        )->getMock();
+        $this->_emptyConsumerMock->expects($this->any())->method('getId')->will($this->returnValue(null));
     }
 
     /**
@@ -139,8 +121,8 @@ class OauthServiceTest extends TestCase
             $this->once()
         )->method(
             'getId'
-        )->willReturn(
-            self::VALUE_CONSUMER_ID
+        )->will(
+            $this->returnValue(self::VALUE_CONSUMER_ID)
         );
         $this->_consumerMock->expects(
             $this->once()
@@ -148,24 +130,24 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
-        $this->_consumerMock->expects($this->once())->method('delete')->willReturn($this->_consumerMock);
-        $this->_consumerMock->expects($this->any())->method('getData')->willReturn($this->_consumerData);
+        $this->_consumerMock->expects($this->once())->method('delete')->will($this->returnValue($this->_consumerMock));
+        $this->_consumerMock->expects($this->any())->method('getData')->will($this->returnValue($this->_consumerData));
         $consumerData = $this->_service->deleteConsumer(self::VALUE_CONSUMER_ID);
         $this->assertEquals($this->_consumerData['entity_id'], $consumerData['entity_id']);
     }
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Exception\IntegrationException
+     * @expectedExceptionMessage A consumer with ID "1" doesn't exist. Verify the ID and try again.
      */
     public function testDeleteException()
     {
-        $this->expectException('Magento\Framework\Exception\IntegrationException');
-        $this->expectExceptionMessage('A consumer with ID "1" doesn\'t exist. Verify the ID and try again.');
-        $this->_consumerMock->expects($this->any())->method('getId')->willReturn(null);
-        $this->_consumerMock->expects($this->once())->method('load')->willReturnSelf();
+        $this->_consumerMock->expects($this->any())->method('getId')->will($this->returnValue(null));
+        $this->_consumerMock->expects($this->once())->method('load')->will($this->returnSelf());
         $this->_consumerMock->expects($this->never())->method('delete');
         $this->_service->deleteConsumer(self::VALUE_CONSUMER_ID);
     }
@@ -181,23 +163,23 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->_tokenProviderMock->expects($this->any())->method('createRequestToken')->with($this->_consumerMock);
 
         $this->_tokenProviderMock->expects($this->any())->method('getAccessToken')->with($this->_consumerMock);
 
-        $this->_tokenFactoryMock->expects($this->any())->method('create')->willReturn($this->_tokenMock);
+        $this->_tokenFactoryMock->expects($this->any())->method('create')->will($this->returnValue($this->_tokenMock));
 
         $this->_tokenMock->expects($this->once())->method('delete');
 
@@ -221,16 +203,16 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->_tokenMock->expects($this->never())->method('delete');
@@ -249,17 +231,19 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             0
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willThrowException(
-            new Exception(
-                __('A token with consumer ID 0 does not exist')
+        )->will(
+            $this->throwException(
+                new \Magento\Framework\Oauth\Exception(
+                    __('A token with consumer ID 0 does not exist')
+                )
             )
         );
 
@@ -269,8 +253,8 @@ class OauthServiceTest extends TestCase
             $this->once()
         )->method(
             'create'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->_tokenMock->expects($this->once())->method('createVerifierToken');
@@ -293,10 +277,10 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
-        $this->_consumerMock->expects($this->any())->method('getData')->willReturn($this->_consumerData);
+        $this->_consumerMock->expects($this->any())->method('getData')->will($this->returnValue($this->_consumerData));
         $consumer = $this->_service->loadConsumer(self::VALUE_CONSUMER_ID);
         $consumerData = $consumer->getData();
         $this->assertEquals($this->_consumerData['entity_id'], $consumerData['entity_id']);
@@ -304,19 +288,21 @@ class OauthServiceTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Oauth\Exception
      */
     public function testLoadConsumerException()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
         $this->_consumerMock->expects(
             $this->once()
         )->method(
             'load'
-        )->willThrowException(
-            new Exception(
-                __(
-                    "The oAuth consumer account couldn't be loaded due to an unexpected error. "
-                    . "Please try again later."
+        )->will(
+            $this->throwException(
+                new \Magento\Framework\Oauth\Exception(
+                    __(
+                        "The oAuth consumer account couldn't be loaded due to an unexpected error. "
+                        . "Please try again later."
+                    )
                 )
             )
         );
@@ -339,10 +325,10 @@ class OauthServiceTest extends TestCase
         )->with(
             self::VALUE_CONSUMER_KEY,
             'key'
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
-        $this->_consumerMock->expects($this->any())->method('getData')->willReturn($this->_consumerData);
+        $this->_consumerMock->expects($this->any())->method('getData')->will($this->returnValue($this->_consumerData));
         $consumer = $this->_service->loadConsumerByKey(self::VALUE_CONSUMER_KEY);
         $consumerData = $consumer->getData();
         $this->assertEquals($this->_consumerData['key'], $consumerData['key']);
@@ -350,19 +336,21 @@ class OauthServiceTest extends TestCase
 
     /**
      * @return void
+     * @expectedException \Magento\Framework\Oauth\Exception
      */
     public function testLoadConsumerByKeyException()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
         $this->_consumerMock->expects(
             $this->once()
         )->method(
             'load'
-        )->willThrowException(
-            new Exception(
-                __(
-                    "The oAuth consumer account couldn't be loaded due to an unexpected error. "
-                    . "Please try again later."
+        )->will(
+            $this->throwException(
+                new \Magento\Framework\Oauth\Exception(
+                    __(
+                        "The oAuth consumer account couldn't be loaded due to an unexpected error. "
+                        . "Please try again later."
+                    )
                 )
             )
         );
@@ -384,16 +372,16 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->_tokenMock->expects($this->once())->method('delete');
@@ -412,16 +400,16 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->_tokenMock->expects($this->never())->method('delete');
@@ -440,19 +428,19 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
-        $this->assertFalse($this->_service->getAccessToken(self::VALUE_CONSUMER_ID));
+        $this->assertFalse($this->_service->getAccessToken(self::VALUE_CONSUMER_ID), false);
     }
 
     /**
@@ -466,18 +454,18 @@ class OauthServiceTest extends TestCase
             'load'
         )->with(
             self::VALUE_CONSUMER_ID
-        )->willReturn(
-            $this->_consumerMock
+        )->will(
+            $this->returnValue($this->_consumerMock)
         );
 
-        $this->_tokenMock->expects($this->once())->method('getType')->willReturn(Token::TYPE_ACCESS);
+        $this->_tokenMock->expects($this->once())->method('getType')->will($this->returnValue(Token::TYPE_ACCESS));
 
         $this->_tokenProviderMock->expects(
             $this->any()
         )->method(
             'getIntegrationTokenByConsumerId'
-        )->willReturn(
-            $this->_tokenMock
+        )->will(
+            $this->returnValue($this->_tokenMock)
         );
 
         $this->assertEquals($this->_service->getAccessToken(self::VALUE_CONSUMER_ID), $this->_tokenMock);

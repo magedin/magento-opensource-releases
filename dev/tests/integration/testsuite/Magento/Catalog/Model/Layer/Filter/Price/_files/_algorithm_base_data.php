@@ -8,34 +8,21 @@
  * Test cases for pricesSegmentationDataProvider
  */
 $testCases = [
-    // some test cases are skipped, as part of stabilization
-    // no products, no prices data set 0
-    [
-        [], [],
-        [
-            ['from' => 0, 'to' => '', 'count' => 138]
-        ],
-        'incomplete_reason' => ' '
-     ],
-    // small prices data set 1
+    // no products, no prices
+    [[], [], []],
+    // small prices
     [
         range(0.01, 0.08, 0.01),
         range(1, 8, 1),
-        [
-            ['from' => 0, 'to' => '', 'count' => 138]
-        ],
-            'incomplete_reason' => ' '
+        [['from' => 0, 'to' => 0.05, 'count' => 4], ['from' => 0.05, 'to' => '', 'count' => 4]]
     ],
-    // zero price test data set 2
+    // zero price test
     [
         [0, 0.71, 0.89],
         range(9, 11, 1),
-        [
-            ['from' => 0, 'to' => '', 'count' => 138]
-        ],
-        'incomplete_reason' => ' '
+        [['from' => 0, 'to' => 0, 'count' => 1], ['from' => 0.5, 'to' => '', 'count' => 2]]
     ],
-    // first quantile should be skipped data set 3
+    // first quantile should be skipped
     [
         [
             0.01,
@@ -61,31 +48,15 @@ $testCases = [
             0.15,
         ],
         range(12, 32, 1),
-        [
-            ['from' => 0, 'to' => 0.05, 'count' => 12.0], ['from' => 0.05, 'to' => '', 'count' => 126.0],
-        ],
-        'incomplete_reason' => ' '
+        [['from' => 0, 'to' => 0.05, 'count' => 12], ['from' => 0.05, 'to' => '', 'count' => 9]]
     ],
-    // test many equal values data set 4
-    [
-        array_merge([10.57], array_fill(0, 20, 10.58), [10.59]),
-        range(63, 84, 1),
-        [
-            ['from' => 0, 'to' => 15.0, 'count' => 13.0], ['from' => 15.0, 'to' => '', 'count' => 125.0],
-        ],
-        'incomplete_reason' => ' '
-    ],
-    // test if best rounding factor is used data set 5
+    // test if best rounding factor is used
     [
         [10.19, 10.2, 10.2, 10.2, 10.21],
         range(33, 37, 1),
-        [
-            ['from' => 10.19, 'to' => 10.19, 'count' => 1], ['from' => 10.2, 'to' => '', 'count' => 4],
-        ],
-        'incomplete_reason' => 'MC-33826:'
-            . 'Stabilize skipped test cases for Integration AlgorithmBaseTest with elasticsearch'
+        [['from' => 10.19, 'to' => 10.19, 'count' => 1], ['from' => 10.2, 'to' => '', 'count' => 4]]
     ],
-    // quantiles interception data set 6
+    // quantiles interception
     [
         [
             5.99,
@@ -114,21 +85,25 @@ $testCases = [
             ['from' => 0, 'to' => 9, 'count' => 5],
             ['from' => 9.99, 'to' => 9.99, 'count' => 5],
             ['from' => 10, 'to' => '', 'count' => 10]
-        ],
-        'incomplete_reason' => 'MC-33826:'
-        . 'Stabilize skipped test cases for Integration AlgorithmBaseTest with elasticsearch'
+        ]
     ],
-    // test if best rounding factor is used data set 7
+    // test if best rounding factor is used
     [
         [10.18, 10.19, 10.19, 10.19, 10.2],
         range(58, 62, 1),
-        [
-            ['from' => 0, 'to' => 10.2, 'count' => 4], ['from' => 10.2, 'to' => 10.2, 'count' => 1]
-        ],
-        'incomplete_reason' => 'MC-33826:'
-            . 'Stabilize skipped test cases for Integration AlgorithmBaseTest with elasticsearch',
+        [['from' => 0, 'to' => 10.2, 'count' => 4], ['from' => 10.2, 'to' => 10.2, 'count' => 1]]
     ],
-    // test preventing low count in interval and rounding factor to have lower priority data set 8
+    // test many equal values
+    [
+        array_merge([10.57], array_fill(0, 20, 10.58), [10.59]),
+        range(63, 84, 1),
+        [
+            ['from' => 10.57, 'to' => 10.57, 'count' => 1],
+            ['from' => 10.58, 'to' => 10.58, 'count' => 20],
+            ['from' => 10.59, 'to' => 10.59, 'count' => 1]
+        ]
+    ],
+    // test preventing low count in interval and rounding factor to have lower priority
     [
         [
             0.01,
@@ -196,9 +171,7 @@ $testCases = [
             ['from' => 10, 'to' => 100, 'count' => 7],
             ['from' => 100, 'to' => 500, 'count' => 8],
             ['from' => 500, 'to' => '', 'count' => 8]
-        ],
-        'incomplete_reason' => 'MC-33826:'
-            . 'Stabilize skipped test cases for Integration AlgorithmBaseTest with elasticsearch',
+        ]
     ],
 ];
 

@@ -11,13 +11,11 @@ use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Swatches\Model\Swatch;
 use Magento\Swatches\Model\SwatchAttributeType;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for \Magento\Swatches\Model\SwatchAttributeType class.
  */
-class SwatchAttributeTypeTest extends TestCase
+class SwatchAttributeTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SwatchAttributeType
@@ -27,7 +25,7 @@ class SwatchAttributeTypeTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->swatchType = new SwatchAttributeType(new Json());
@@ -132,7 +130,7 @@ class SwatchAttributeTypeTest extends TestCase
         $json = new Json();
         $encodedAdditionData = $json->serialize([Swatch::SWATCH_INPUT_TYPE_KEY => Swatch::SWATCH_INPUT_TYPE_TEXT]);
 
-        /** @var AttributeInterface|MockObject $attributeMock */
+        /** @var AttributeInterface | \PHPUnit_Framework_MockObject_MockObject $attributeMock */
         $attributeMock = $this->getMockBuilder(AttributeInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['hasData', 'getData', 'setData'])
@@ -149,14 +147,14 @@ class SwatchAttributeTypeTest extends TestCase
                 ]
             );
 
-        $this->assertTrue($this->swatchType->isTextSwatch($attributeMock));
-        $this->assertFalse($this->swatchType->isVisualSwatch($attributeMock));
+        $this->assertEquals(true, $this->swatchType->isTextSwatch($attributeMock));
+        $this->assertEquals(false, $this->swatchType->isVisualSwatch($attributeMock));
     }
 
     /**
      * @param mixed $getDataReturns
      * @param bool $hasDataReturns
-     * @return AttributeInterface|MockObject
+     * @return AttributeInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected function createAttributeMock($getDataReturns, bool $hasDataReturns = true)
     {

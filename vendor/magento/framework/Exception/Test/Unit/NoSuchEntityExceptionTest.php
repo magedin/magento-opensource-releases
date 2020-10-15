@@ -3,37 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Exception\Test\Unit;
 
-use Magento\Framework\Exception\NoSuchEntityException;
+use \Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Phrase;
-use Magento\Framework\Phrase\Renderer\Placeholder;
-use Magento\Framework\Phrase\RendererInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class NoSuchEntityExceptionTest extends TestCase
+/**
+ * Class NoSuchEntityExceptionTest
+ */
+class NoSuchEntityExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RendererInterface */
+    /** @var \Magento\Framework\Phrase\RendererInterface */
     private $defaultRenderer;
 
     /** @var string */
     private $renderedMessage;
 
     /**
-     * @var Placeholder|MockObject
+     * @var \Magento\Framework\Phrase\Renderer\Placeholder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rendererMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->defaultRenderer = Phrase::getRenderer();
-        $this->rendererMock = $this->getMockBuilder(Placeholder::class)
+        $this->defaultRenderer = \Magento\Framework\Phrase::getRenderer();
+        $this->rendererMock = $this->getMockBuilder(\Magento\Framework\Phrase\Renderer\Placeholder::class)
             ->setMethods(['render'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -42,9 +39,9 @@ class NoSuchEntityExceptionTest extends TestCase
     /**
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
-        Phrase::setRenderer($this->defaultRenderer);
+        \Magento\Framework\Phrase::setRenderer($this->defaultRenderer);
     }
 
     /**
@@ -55,8 +52,8 @@ class NoSuchEntityExceptionTest extends TestCase
         $this->renderedMessage = 'rendered message';
         $this->rendererMock->expects($this->once())
             ->method('render')
-            ->willReturn($this->renderedMessage);
-        Phrase::setRenderer($this->rendererMock);
+            ->will($this->returnValue($this->renderedMessage));
+        \Magento\Framework\Phrase::setRenderer($this->rendererMock);
         $message = 'message %1 %2';
         $params = [
             'parameter1',

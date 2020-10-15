@@ -3,21 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Filter\Test\Unit;
 
-use Magento\Framework\Filter\AbstractFactory;
-use Magento\Framework\Filter\ArrayFilter;
-use Magento\Framework\Filter\Sprintf;
-use Magento\Framework\Filter\Template;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\TestCase;
-
-class AbstractFactoryTest extends TestCase
+class AbstractFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractFactory
+     * @var \Magento\Framework\Filter\AbstractFactory
      */
     protected $_factory;
 
@@ -25,37 +16,37 @@ class AbstractFactoryTest extends TestCase
      * @var array
      */
     protected $_invokableList = [
-        'sprintf' => Sprintf::class,
-        'template' => Template::class,
-        'arrayFilter' => ArrayFilter::class,
+        'sprintf' => \Magento\Framework\Filter\Sprintf::class,
+        'template' => \Magento\Framework\Filter\Template::class,
+        'arrayFilter' => \Magento\Framework\Filter\ArrayFilter::class,
     ];
 
     /**
      * @var array
      */
     protected $_sharedList = [
-        Template::class => true,
-        ArrayFilter::class => false,
+        \Magento\Framework\Filter\Template::class => true,
+        \Magento\Framework\Filter\ArrayFilter::class => false,
     ];
 
     /**
-     * @var ObjectManagerInterface
+     * @var \Magento\Framework\ObjectManagerInterface
      */
     protected $_objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->_factory = $this->getMockForAbstractClass(
-            AbstractFactory::class,
+            \Magento\Framework\Filter\AbstractFactory::class,
             ['objectManger' => $this->_objectManager]
         );
-        $property = new \ReflectionProperty(AbstractFactory::class, 'invokableClasses');
+        $property = new \ReflectionProperty(\Magento\Framework\Filter\AbstractFactory::class, 'invokableClasses');
         $property->setAccessible(true);
         $property->setValue($this->_factory, $this->_invokableList);
 
-        $property = new \ReflectionProperty(AbstractFactory::class, 'shared');
+        $property = new \ReflectionProperty(\Magento\Framework\Filter\AbstractFactory::class, 'shared');
         $property->setAccessible(true);
         $property->setValue($this->_factory, $this->_sharedList);
     }
@@ -94,9 +85,9 @@ class AbstractFactoryTest extends TestCase
     public function isSharedDataProvider()
     {
         return [
-            'shared' => [Template::class, true],
-            'not shared' => [ArrayFilter::class, false],
-            'default value' => [Sprintf::class, true]
+            'shared' => [\Magento\Framework\Filter\Template::class, true],
+            'not shared' => [\Magento\Framework\Filter\ArrayFilter::class, false],
+            'default value' => [\Magento\Framework\Filter\Sprintf::class, true]
         ];
     }
 
@@ -108,11 +99,10 @@ class AbstractFactoryTest extends TestCase
      */
     public function testCreateFilter($alias, $arguments, $isShared)
     {
-        $property = new \ReflectionProperty(AbstractFactory::class, 'sharedInstances');
+        $property = new \ReflectionProperty(\Magento\Framework\Filter\AbstractFactory::class, 'sharedInstances');
         $property->setAccessible(true);
 
-        $filterMock = $this->getMockBuilder('FactoryInterface')
-            ->setMethods(['filter'])->getMock();
+        $filterMock = $this->getMockBuilder('FactoryInterface')->setMethods(['filter'])->getMock();
         $this->_objectManager->expects(
             $this->atLeastOnce()
         )->method(
@@ -120,14 +110,14 @@ class AbstractFactoryTest extends TestCase
         )->with(
             $this->equalTo($this->_invokableList[$alias]),
             $this->equalTo($arguments)
-        )->willReturn(
-            $filterMock
+        )->will(
+            $this->returnValue($filterMock)
         );
 
         $this->assertEquals($filterMock, $this->_factory->createFilter($alias, $arguments));
         if ($isShared) {
             $sharedList = $property->getValue($this->_factory);
-            $this->assertArrayHasKey($alias, $sharedList);
+            $this->assertTrue(array_key_exists($alias, $sharedList));
             $this->assertEquals($filterMock, $sharedList[$alias]);
         } else {
             $this->assertEmpty($property->getValue($this->_factory));

@@ -61,9 +61,9 @@ class DbSchemaWriter implements DbSchemaWriterInterface
 
     /**
      * @param ResourceConnection $resourceConnection
-     * @param StatementFactory   $statementFactory
-     * @param DryRunLogger       $dryRunLogger
-     * @param array              $tableOptions
+     * @param StatementFactory $statementFactory
+     * @param DryRunLogger $dryRunLogger
+     * @param array $tableOptions
      */
     public function __construct(
         ResourceConnection $resourceConnection,
@@ -101,6 +101,8 @@ class DbSchemaWriter implements DbSchemaWriterInterface
     }
 
     /**
+     * Drop table from MySQL database.
+     *
      * @inheritdoc
      */
     public function dropTable($tableName, $resource)
@@ -125,34 +127,24 @@ class DbSchemaWriter implements DbSchemaWriterInterface
      */
     private function getDropElementSQL($type, $name)
     {
-        $result = sprintf('DROP COLUMN %s', $name);
         switch ($type) {
             case Constraint::PRIMARY_TYPE:
-                $result = 'DROP PRIMARY KEY';
-                break;
+                return 'DROP PRIMARY KEY';
             case Constraint::UNIQUE_TYPE:
-                $result = sprintf('DROP KEY %s', $name);
-                break;
+                return sprintf('DROP KEY %s', $name);
             case \Magento\Framework\Setup\Declaration\Schema\Dto\Index::TYPE:
-                $result = sprintf('DROP INDEX %s', $name);
-                break;
+                return sprintf('DROP INDEX %s', $name);
             case Reference::TYPE:
-                $result = sprintf('DROP FOREIGN KEY %s', $name);
-                break;
+                return sprintf('DROP FOREIGN KEY %s', $name);
+            default:
+                return sprintf('DROP COLUMN %s', $name);
         }
-
-        return $result;
     }
 
     /**
-     * @inheritdoc
+     * Add element to existing table: column, constraint or index.
      *
-     * @param string $elementName
-     * @param string $resource
-     * @param string $tableName
-     * @param string $elementDefinition , for example: like CHAR(200) NOT NULL
-     * @param string $elementType
-     * @return Statement
+     * @inheritdoc
      */
     public function addElement($elementName, $resource, $tableName, $elementDefinition, $elementType)
     {
@@ -173,12 +165,6 @@ class DbSchemaWriter implements DbSchemaWriterInterface
 
     /**
      * @inheritdoc
-     *
-     * @param string $tableName
-     * @param string $resource
-     * @param string $optionName
-     * @param string $optionValue
-     * @return Statement
      */
     public function modifyTableOption($tableName, $resource, $optionName, $optionValue)
     {
@@ -192,13 +178,9 @@ class DbSchemaWriter implements DbSchemaWriterInterface
     }
 
     /**
-     * @inheritdoc
+     * Modify column and change its definition.
      *
-     * @param  string $columnName
-     * @param  string $resource
-     * @param  string $tableName
-     * @param  string $columnDefinition
-     * @return Statement
+     * @inheritdoc
      */
     public function modifyColumn($columnName, $resource, $tableName, $columnDefinition)
     {
@@ -217,12 +199,6 @@ class DbSchemaWriter implements DbSchemaWriterInterface
 
     /**
      * @inheritdoc
-     *
-     * @param string $resource
-     * @param string $elementName
-     * @param string $tableName
-     * @param string $type
-     * @return Statement
      */
     public function dropElement($resource, $elementName, $tableName, $type)
     {
@@ -267,11 +243,7 @@ class DbSchemaWriter implements DbSchemaWriterInterface
     {
         foreach ($statementAggregator->getStatementsBank() as $statementBank) {
             $statementsSql = [];
-            $statement = null;
-
-            /**
-             * @var Statement $statement
-             */
+            /** @var Statement $statement */
             foreach ($statementBank as $statement) {
                 $statementsSql[] = $statement->getStatement();
             }

@@ -3,31 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Platform\Quote;
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\GroupRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GroupRendererTest extends TestCase
+/**
+ * Class GroupRendererTest
+ */
+class GroupRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GroupRenderer
+     * @var \Magento\Framework\DB\Select\GroupRenderer
      */
     protected $model;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Framework\DB\Platform\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
@@ -36,13 +33,13 @@ class GroupRendererTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->quoteMock = $this->createPartialMock(Quote::class, ['quoteIdentifier']);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->quoteMock = $this->createPartialMock(\Magento\Framework\DB\Platform\Quote::class, ['quoteIdentifier']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
         $this->model = $objectManager->getObject(
-            GroupRenderer::class,
+            \Magento\Framework\DB\Select\GroupRenderer::class,
             ['quote' => $this->quoteMock]
         );
     }

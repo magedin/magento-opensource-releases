@@ -3,15 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Framework\Serialize\Test\Unit\Serializer;
 
-use Magento\Framework\Serialize\JsonConverter;
-use PHPUnit\Framework\TestCase;
-
-class JsonConverterTest extends TestCase
+/**
+ * Class JsonConverterTest
+ */
+class JsonConverterTest extends \PHPUnit\Framework\TestCase
 {
     public function testConvert()
     {
@@ -19,14 +17,16 @@ class JsonConverterTest extends TestCase
             'key' => 'value'
         ];
 
-        $this->assertEquals(json_encode($data), JsonConverter::convert($data));
+        $this->assertEquals(json_encode($data), \Magento\Framework\Serialize\JsonConverter::convert($data));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to serialize value.
+     */
     public function testConvertWithException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unable to serialize value.');
         //verify that exception will be thrown with invalid UTF8 sequence
-        JsonConverter::convert("\xB1\x31");
+        \Magento\Framework\Serialize\JsonConverter::convert("\xB1\x31");
     }
 }

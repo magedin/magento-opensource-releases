@@ -13,7 +13,7 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite;
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 
 /**
  * @inheritdoc
@@ -21,25 +21,25 @@ use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
 class StockStatusProvider implements ResolverInterface
 {
     /**
+     * @var IsProductSalableInterface
+     */
+    private $isProductSalable;
+
+    /**
      * @var GetStockIdForCurrentWebsite
      */
     private $getStockIdForCurrentWebsite;
 
     /**
-     * @var AreProductsSalableInterface|null
-     */
-    private $areProductsSalable;
-
-    /**
+     * @param IsProductSalableInterface $isProductSalable
      * @param GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite
-     * @param AreProductsSalableInterface $areProductsSalable
      */
     public function __construct(
-        GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite,
-        AreProductsSalableInterface $areProductsSalable
+        IsProductSalableInterface $isProductSalable,
+        GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite
     ) {
+        $this->isProductSalable = $isProductSalable;
         $this->getStockIdForCurrentWebsite = $getStockIdForCurrentWebsite;
-        $this->areProductsSalable = $areProductsSalable;
     }
 
     /**
@@ -55,9 +55,8 @@ class StockStatusProvider implements ResolverInterface
         $product = $value['model'];
 
         $stockId = $this->getStockIdForCurrentWebsite->execute();
-        $result = $this->areProductsSalable->execute([$product->getSku()], $stockId);
-        $result = current($result);
+        $isProductSalable = $this->isProductSalable->execute($product->getSku(), $stockId);
 
-        return $result->isSalable() ? 'IN_STOCK' : 'OUT_OF_STOCK';
+        return $isProductSalable ? 'IN_STOCK' : 'OUT_OF_STOCK';
     }
 }

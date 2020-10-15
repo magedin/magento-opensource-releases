@@ -3,42 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Asset\NotationResolver;
 
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\NotationResolver\Module;
-use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ModuleTest extends TestCase
+class ModuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File|MockObject
+     * @var \Magento\Framework\View\Asset\File|\PHPUnit_Framework_MockObject_MockObject
      */
     private $asset;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetRepo;
 
     /**
-     * @var Module ;
+     * @var \Magento\Framework\View\Asset\NotationResolver\Module;
      */
     private $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->asset = $this->createMock(File::class);
-        $this->assetRepo = $this->getMockBuilder(Repository::class)
-            ->addMethods(['createUsingContext'])
-            ->onlyMethods(['createSimilar'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->object = new Module($this->assetRepo);
+        $this->asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
+        $this->assetRepo = $this->createPartialMock(
+            \Magento\Framework\View\Asset\Repository::class,
+            ['createUsingContext', 'createSimilar']
+        );
+        $this->object = new \Magento\Framework\View\Asset\NotationResolver\Module($this->assetRepo);
     }
 
     public function testConvertModuleNotationToPathNoModularSeparator()
@@ -65,17 +57,17 @@ class ModuleTest extends TestCase
         $similarRelPath,
         $expectedResult
     ) {
-        $similarAsset = $this->createMock(File::class);
+        $similarAsset = $this->createMock(\Magento\Framework\View\Asset\File::class);
         $similarAsset->expects($this->any())
             ->method('getPath')
-            ->willReturn($similarRelPath);
+            ->will($this->returnValue($similarRelPath));
         $this->asset->expects($this->once())
             ->method('getPath')
-            ->willReturn($assetRelPath);
+            ->will($this->returnValue($assetRelPath));
         $this->assetRepo->expects($this->once())
             ->method('createSimilar')
             ->with($relatedFieldId, $this->asset)
-            ->willReturn($similarAsset);
+            ->will($this->returnValue($similarAsset));
         $this->assertEquals(
             $expectedResult,
             $this->object->convertModuleNotationToPath($this->asset, $relatedFieldId)

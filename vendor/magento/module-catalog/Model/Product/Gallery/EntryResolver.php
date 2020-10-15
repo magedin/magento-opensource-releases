@@ -9,9 +9,6 @@ namespace Magento\Catalog\Model\Product\Gallery;
 
 use Magento\Catalog\Model\Product;
 
-/**
- * Manage entryes
- */
 class EntryResolver
 {
     /**
@@ -30,7 +27,7 @@ class EntryResolver
 
         foreach ($mediaGalleryData['images'] as $image) {
             if (isset($image['value_id']) && $image['value_id'] == $entryId) {
-                return $image['file'] ?? null;
+                return isset($image['file']) ? $image['file'] : null;
             }
         }
         return null;
@@ -52,7 +49,7 @@ class EntryResolver
 
         foreach ($mediaGalleryData['images'] as $image) {
             if (isset($image['file']) && $image['file'] == $filePath) {
-                return $image['value_id'] ?? null;
+                return isset($image['value_id']) ? $image['value_id'] : null;
             }
         }
         return null;

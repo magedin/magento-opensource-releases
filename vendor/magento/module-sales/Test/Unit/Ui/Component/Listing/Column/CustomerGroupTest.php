@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column;
 
-use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Sales\Ui\Component\Listing\Column\CustomerGroup;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CustomerGroupTest extends TestCase
+/**
+ * Class CustomerGroupTest
+ */
+class CustomerGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CustomerGroup
@@ -24,22 +20,22 @@ class CustomerGroupTest extends TestCase
     protected $model;
 
     /**
-     * @var GroupRepositoryInterface|MockObject
+     * @var GroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $groupRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $contextMock = $this->getMockBuilder(ContextInterface::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->groupRepository = $this->getMockForAbstractClass(GroupRepositoryInterface::class);
+        $this->groupRepository = $this->getMockForAbstractClass(\Magento\Customer\Api\GroupRepositoryInterface::class);
         $this->model = $objectManager->getObject(
-            CustomerGroup::class,
+            \Magento\Sales\Ui\Component\Listing\Column\CustomerGroup::class,
             ['groupRepository' => $this->groupRepository, 'context' => $contextMock]
         );
     }
@@ -57,7 +53,7 @@ class CustomerGroupTest extends TestCase
             ]
         ];
 
-        $group = $this->getMockForAbstractClass(GroupInterface::class);
+        $group = $this->getMockForAbstractClass(\Magento\Customer\Api\Data\GroupInterface::class);
         $group->expects($this->once())
             ->method('getCode')
             ->willReturn($newItemValue);

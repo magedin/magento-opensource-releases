@@ -29,7 +29,7 @@ class RepositoryTest extends \PHPUnit\Framework\TestCase
     /** @var SearchCriteriaBuilder */
     private $searchCriteriaBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->repository = $objectManager->create(Repository::class);

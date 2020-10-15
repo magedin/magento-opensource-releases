@@ -30,7 +30,7 @@ class SaveTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -41,7 +41,7 @@ class SaveTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->changeIndexerSchedule(FulltextIndexer::INDEXER_ID, $this->indexerSchedule[FulltextIndexer::INDEXER_ID]);
         $this->changeIndexerSchedule(CategoryIndexer::INDEXER_ID, $this->indexerSchedule[CategoryIndexer::INDEXER_ID]);

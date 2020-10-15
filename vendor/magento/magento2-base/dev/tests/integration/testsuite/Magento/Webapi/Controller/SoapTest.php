@@ -21,7 +21,7 @@ class SoapTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->soapController = $this->objectManager->get(\Magento\Webapi\Controller\Soap::class);

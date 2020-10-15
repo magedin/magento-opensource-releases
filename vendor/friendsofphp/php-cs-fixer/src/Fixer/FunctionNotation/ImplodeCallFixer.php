@@ -59,12 +59,11 @@ final class ImplodeCallFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before MethodArgumentSpaceFixer.
-     * Must run after NoAliasFunctionsFixer.
      */
     public function getPriority()
     {
+        // must be run after NoAliasFunctionsFixer
+        // must be run before MethodArgumentSpaceFixer
         return -1;
     }
 
@@ -75,7 +74,7 @@ final class ImplodeCallFixer extends AbstractFixer
     {
         $functionsAnalyzer = new FunctionsAnalyzer();
 
-        for ($index = \count($tokens) - 1; $index > 0; --$index) {
+        foreach ($tokens as $index => $token) {
             if (!$tokens[$index]->equals([T_STRING, 'implode'], false)) {
                 continue;
             }
@@ -128,7 +127,8 @@ final class ImplodeCallFixer extends AbstractFixer
     }
 
     /**
-     * @param int $functionNameIndex
+     * @param Tokens $tokens
+     * @param int    $functionNameIndex
      *
      * @return array<int, int> In the format: startIndex => endIndex
      */

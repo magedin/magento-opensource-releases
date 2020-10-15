@@ -3,52 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Plugin\Indexer;
 
-use Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor;
-use Magento\CatalogRule\Plugin\Indexer\ImportExport;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ImportExport\Model\Import;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ImportExportTest extends TestCase
+class ImportExportTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Indexer processor mock
      *
-     * @var RuleProductProcessor|MockObject
+     * @var \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleProductProcessor;
 
     /**
      * Import model mock
      *
-     * @var \Magento\ImportExport\Model\Import|MockObject
+     * @var \Magento\ImportExport\Model\Import|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
 
     /**
      * Tested plugin
      *
-     * @var ImportExport
+     * @var \Magento\CatalogRule\Plugin\Indexer\ImportExport
      */
     protected $plugin;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->ruleProductProcessor = $this->createPartialMock(
-            RuleProductProcessor::class,
+            \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor::class,
             ['isIndexerScheduled', 'markIndexerAsInvalid']
         );
         $this->ruleProductProcessor->expects($this->once())->method('isIndexerScheduled')->willReturn(false);
-        $this->subject = $this->createMock(Import::class);
+        $this->subject = $this->createMock(\Magento\ImportExport\Model\Import::class);
 
         $this->plugin = (new ObjectManager($this))->getObject(
-            ImportExport::class,
+            \Magento\CatalogRule\Plugin\Indexer\ImportExport::class,
             [
                 'ruleProductProcessor' => $this->ruleProductProcessor,
             ]

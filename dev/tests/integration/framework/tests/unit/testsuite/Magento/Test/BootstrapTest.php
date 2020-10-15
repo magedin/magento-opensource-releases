@@ -12,7 +12,7 @@ namespace Magento\Test;
 class BootstrapTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \Magento\TestFramework\Bootstrap|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_object;
 
@@ -26,37 +26,37 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
     ];
 
     /**
-     * @var \Magento\TestFramework\Bootstrap\Settings|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap\Settings|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_settings;
 
     /**
-     * @var \Magento\TestFramework\Bootstrap\Environment|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap\Environment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_envBootstrap;
 
     /**
-     * @var \Magento\TestFramework\Bootstrap\DocBlock|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap\DocBlock|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_docBlockBootstrap;
 
     /**
-     * @var \Magento\TestFramework\Bootstrap\Profiler|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap\Profiler|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_profilerBootstrap;
 
     /**
-     * @var \Magento\TestFramework\Bootstrap\MemoryFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Bootstrap\MemoryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $memoryFactory;
 
     /**
-     * @var \Magento\Framework\Shell|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\Framework\Shell|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_shell;
 
     /**
-     * @var \Magento\TestFramework\Application|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Application|\PHPUnit_Framework_MockObject_MockObject
      */
     private $application;
 
@@ -65,7 +65,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
      */
     protected $_integrationTestsDir;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_integrationTestsDir = realpath(__DIR__ . '/../../../../../../');
         $this->_settings = $this->createMock(\Magento\TestFramework\Bootstrap\Settings::class);
@@ -98,7 +98,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_object = null;
         $this->_settings = null;
@@ -131,7 +131,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
         ];
         $this->_settings->expects($this->any())
             ->method('get')
-            ->willReturnMap($settingsMap);
+            ->will($this->returnValueMap($settingsMap));
         $memoryBootstrap = $this->createPartialMock(
             \Magento\TestFramework\Bootstrap\Memory::class,
             ['activateStatsDisplaying', 'activateLimitValidation']
@@ -141,7 +141,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
         $this->memoryFactory->expects($this->once())
             ->method('create')
             ->with($memUsageLimit, $memLeakLimit)
-            ->willReturn($memoryBootstrap);
+            ->will($this->returnValue($memoryBootstrap));
 
         $this->_docBlockBootstrap->expects($this->once())
             ->method('registerAnnotations')
@@ -163,7 +163,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
         $this->memoryFactory->expects($this->once())
             ->method('create')
             ->with(0, 0)
-            ->willReturn($memoryBootstrap);
+            ->will($this->returnValue($memoryBootstrap));
 
         $settingsMap = [
             ['TESTS_PROFILER_FILE', '', 'profiler.csv'],
@@ -172,7 +172,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
         ];
         $this->_settings->expects($this->any())
             ->method('getAsFile')
-            ->willReturnMap($settingsMap);
+            ->will($this->returnValueMap($settingsMap));
         $this->_profilerBootstrap
             ->expects($this->once())
             ->method('registerFileProfiler')

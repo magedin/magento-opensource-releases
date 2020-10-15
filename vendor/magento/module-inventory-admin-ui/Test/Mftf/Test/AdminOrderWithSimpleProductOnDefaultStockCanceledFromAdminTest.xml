@@ -19,7 +19,7 @@
             <group value="multi_mode"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <createData entity="MsiCustomer1" stepKey="customer"/>
             <!--Create additional source and stock.-->
             <createData entity="SimpleSubCategory" stepKey="simpleCategory"/>
@@ -48,7 +48,7 @@
             <deleteData createDataKey="simpleProduct" stepKey="deleteProduct"/>
             <deleteData createDataKey="simpleCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="additionalStock" stepKey="deleteCustomStock"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutOfAdmin1"/>
+            <actionGroup ref="logout" stepKey="logoutOfAdmin1"/>
         </after>
 
         <!-- Create order -->
@@ -62,9 +62,7 @@
         <actionGroup ref="OrderSelectFlatRateShippingActionGroup" stepKey="selectFlatRate"/>
         <actionGroup ref="AdminSubmitOrderActionGroup" stepKey="submitOrder"/>
         <grabTextFrom selector="|Order # (\d+)|" stepKey="getOrderId"/>
-        <assertNotEmpty stepKey="assertOrderIdIsNotEmpty">
-			<actualResult type="const">$getOrderId</actualResult>
-        </assertNotEmpty>
+        <assertNotEmpty actual="$getOrderId" stepKey="assertOrderIdIsNotEmpty"/>
 
         <!-- Cancel whole  order from admin -->
         <actionGroup ref="CancelPendingOrderActionGroup" stepKey="cancelPendingOrder"/>

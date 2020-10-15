@@ -12,15 +12,11 @@ use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\Catalog\Setup\CategorySetup;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/core_fixturestore.php');
+require __DIR__ . '/../../Store/_files/core_fixturestore.php';
 
 $objectManager = Bootstrap::getObjectManager();
-/** @var StoreManagerInterface $storeManager */
-$storeManager = $objectManager->get(StoreManagerInterface::class);
 $defaultInstalledStoreId = $storeManager->getStore('default')->getId();
 $secondStoreId = $storeManager->getStore('fixturestore')->getId();
 /** @var CategorySetup $installer */

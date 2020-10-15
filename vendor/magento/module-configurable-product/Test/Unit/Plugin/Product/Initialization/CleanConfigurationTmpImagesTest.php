@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Plugin\Product\Initialization;
 
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper as ProductInitializationHelper;
@@ -17,14 +15,14 @@ use Magento\Framework\Filesystem\Directory\Write;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\MediaStorage\Helper\File\Storage\Database as FileStorage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class CleanConfigurationTmpImagesTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPCS.Magento2.Files.LineLength.MaxExceeded)
+ * @package Magento\ConfigurableProduct\Test\Unit\Controller\Adminhtml\Product\Initialization\Helper\Plugin
  */
-class CleanConfigurationTmpImagesTest extends TestCase
+class CleanConfigurationTmpImagesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CleanConfigurationTmpImages
@@ -37,41 +35,41 @@ class CleanConfigurationTmpImagesTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var FileStorage|MockObject
+     * @var FileStorage|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileStorageDb;
 
     /**
-     * @var MediaConfig|MockObject
+     * @var MediaConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $mediaConfig;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystem;
 
     /**
-     * @var Write|MockObject
+     * @var Write|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writeFolder;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $seralizer;
 
     /**
-     * @var ProductInitializationHelper|MockObject
+     * @var ProductInitializationHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->requestMock = $this->getMockBuilder(RequestInterface::class)
             ->getMockForAbstractClass();
@@ -187,7 +185,7 @@ class CleanConfigurationTmpImagesTest extends TestCase
      * @param array $expectedData
      * @param bool $hasDataChanges
      * @param bool $wasChanged
-     * @return Product|MockObject
+     * @return Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getProductMock(array $expectedData = null, $hasDataChanges = false, $wasChanged = false)
     {

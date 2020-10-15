@@ -31,7 +31,7 @@ class AdditionalTest extends \PHPUnit\Framework\TestCase
      */
     protected $_objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -56,7 +56,7 @@ class AdditionalTest extends \PHPUnit\Framework\TestCase
         $this->_customerSession->loginById(1);
         $translation = __('Not you?');
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<a href="' . $this->_block->getHref() . '">' . $translation . '</a>',
             $this->_block->toHtml()
         );

@@ -43,7 +43,6 @@
 
 namespace PDepend\Source\AST;
 
-use OutOfBoundsException;
 use PDepend\Source\ASTVisitor\ASTVisitor;
 
 /**
@@ -79,8 +78,7 @@ class ASTFormalParameter extends AbstractASTNode
         if ($this->hasType()) {
             return $this->getChild(0);
         }
-
-        throw new OutOfBoundsException('The parameter does not has a type specification.');
+        throw new \OutOfBoundsException('The parameter does not has a type specification.');
     }
 
     /**
@@ -103,7 +101,7 @@ class ASTFormalParameter extends AbstractASTNode
      */
     public function setVariableArgList()
     {
-        $this->setMetadataBoolean(6, true);
+        return $this->setMetadataBoolean(6, true);
     }
 
     /**
@@ -124,7 +122,7 @@ class ASTFormalParameter extends AbstractASTNode
      */
     public function setPassedByReference()
     {
-        $this->setMetadataBoolean(5, true);
+        return $this->setMetadataBoolean(5, true);
     }
 
     /**

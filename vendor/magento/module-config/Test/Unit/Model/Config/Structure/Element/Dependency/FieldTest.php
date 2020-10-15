@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Element\Dependency;
 
-use Magento\Config\Model\Config\Structure\Element\Dependency\Field;
-use PHPUnit\Framework\TestCase;
-
-class FieldTest extends TestCase
+class FieldTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * SUT values
      */
     const SIMPLE_VALUE = 'someValue';
-
-    const EMPTY_VALUE = '';
 
     const COMPLEX_VALUE1 = 'value_1';
 
@@ -68,7 +61,7 @@ class FieldTest extends TestCase
         if ($isNegative) {
             $data['negative'] = '1';
         }
-        return new Field($data, self::PREFIX);
+        return new \Magento\Config\Model\Config\Structure\Element\Dependency\Field($data, self::PREFIX);
     }
 
     /**
@@ -157,19 +150,8 @@ class FieldTest extends TestCase
         return [
             [$this->_getSimpleData(), true, [self::SIMPLE_VALUE]],
             [$this->_getSimpleData(), false, [self::SIMPLE_VALUE]],
-            [$this->_getSimpleEmptyData(), false, [static::EMPTY_VALUE]],
             [$this->_getComplexData(), true, $complexDataValues],
             [$this->_getComplexData(), false, $complexDataValues]
         ];
-    }
-
-    /**
-     * Providing a field data with no field value
-     *
-     * @return array
-     */
-    protected function _getSimpleEmptyData(): array
-    {
-        return ['dependPath' => ['section_2', 'group_3', 'field_4']];
     }
 }

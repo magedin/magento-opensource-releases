@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset;
 
-use Magento\Framework\View\Asset\AssetInterface;
-use Magento\Framework\View\Asset\Collection;
-use Magento\Framework\View\Asset\Remote;
-use PHPUnit\Framework\TestCase;
-
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Framework\View\Asset\Collection
      */
     protected $_object;
 
     /**
-     * @var AssetInterface
+     * @var \Magento\Framework\View\Asset\AssetInterface
      */
     protected $_asset;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_object = new Collection();
-        $this->_asset = new Remote('http://127.0.0.1/magento/test.css');
+        $this->_object = new \Magento\Framework\View\Asset\Collection();
+        $this->_asset = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/magento/test.css');
         $this->_object->add('asset', $this->_asset);
     }
 
     public function testAdd()
     {
-        $assetNew = new Remote('http://127.0.0.1/magento/test.js');
+        $assetNew = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/magento/test.js');
         $this->_object->add('asset_new', $assetNew);
         $this->assertSame(['asset' => $this->_asset, 'asset_new' => $assetNew], $this->_object->getAll());
     }
@@ -52,7 +45,7 @@ class CollectionTest extends TestCase
 
     public function testAddOverrideExisting()
     {
-        $assetOverridden = new Remote('http://127.0.0.1/magento/test_overridden.css');
+        $assetOverridden = new \Magento\Framework\View\Asset\Remote('http://127.0.0.1/magento/test_overridden.css');
         $this->_object->add('asset', $assetOverridden);
         $this->assertSame(['asset' => $assetOverridden], $this->_object->getAll());
     }

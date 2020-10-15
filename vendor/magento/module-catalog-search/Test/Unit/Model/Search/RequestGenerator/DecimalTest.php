@@ -11,28 +11,25 @@ use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\CatalogSearch\Model\Search\RequestGenerator\Decimal;
 use Magento\Framework\Search\Request\BucketInterface;
 use Magento\Framework\Search\Request\FilterInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test catalog search range request generator.
  */
-class DecimalTest extends TestCase
+class DecimalTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Decimal */
     private $decimal;
 
-    /** @var  Attribute|MockObject */
+    /** @var  Attribute|\PHPUnit_Framework_MockObject_MockObject */
     private $attribute;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attribute = $this->getMockBuilder(Attribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAttributeCode'])
             ->getMockForAbstractClass();
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->decimal = $objectManager->getObject(Decimal::class);
     }
 

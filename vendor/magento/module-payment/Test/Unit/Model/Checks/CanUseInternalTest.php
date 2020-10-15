@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Checks;
 
-use Magento\Payment\Model\Checks\CanUseInternal;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Checks\CanUseInternal;
 
-class CanUseInternalTest extends TestCase
+class CanUseInternalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CanUseInternal
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = new CanUseInternal();
     }
@@ -30,17 +26,14 @@ class CanUseInternalTest extends TestCase
      */
     public function testIsApplicable($expectation)
     {
-        $quote = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                []
-            )->getMock();
+        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->disableOriginalConstructor()->setMethods(
+            []
+        )->getMock();
         $paymentMethod = $this->getMockBuilder(
-            MethodInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
-        $paymentMethod->expects($this->once())->method('canUseInternal')->willReturn(
-            $expectation
+            \Magento\Payment\Model\MethodInterface::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
+        $paymentMethod->expects($this->once())->method('canUseInternal')->will(
+            $this->returnValue($expectation)
         );
         $this->assertEquals($expectation, $this->_model->isApplicable($paymentMethod, $quote));
     }

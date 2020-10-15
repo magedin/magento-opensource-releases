@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure;
 
-use Magento\Config\Model\Config\Structure\Converter;
-use Magento\Config\Model\Config\Structure\Mapper\Dependencies;
-use Magento\Config\Model\Config\Structure\Mapper\Factory;
-use PHPUnit\Framework\TestCase;
-
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Converter
+     * @var \Magento\Config\Model\Config\Structure\Converter
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
+        $factoryMock = $this->createMock(\Magento\Config\Model\Config\Structure\Mapper\Factory::class);
 
-        $mapperMock = $this->createMock(Dependencies::class);
-        $mapperMock->expects($this->any())->method('map')->willReturnArgument(0);
-        $factoryMock->expects($this->any())->method('create')->willReturn($mapperMock);
+        $mapperMock = $this->createMock(\Magento\Config\Model\Config\Structure\Mapper\Dependencies::class);
+        $mapperMock->expects($this->any())->method('map')->will($this->returnArgument(0));
+        $factoryMock->expects($this->any())->method('create')->will($this->returnValue($mapperMock));
 
-        $this->_model = new Converter($factoryMock);
+        $this->_model = new \Magento\Config\Model\Config\Structure\Converter($factoryMock);
     }
 
     public function testConvertCorrectlyConvertsConfigStructureToArray()

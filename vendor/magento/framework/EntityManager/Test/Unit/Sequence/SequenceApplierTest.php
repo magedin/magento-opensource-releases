@@ -3,68 +3,63 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\EntityManager\Test\Unit\Sequence;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\Sequence\SequenceInterface;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\HydratorInterface;
 use Magento\Framework\EntityManager\HydratorPool;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Sequence\SequenceApplier;
 use Magento\Framework\EntityManager\Sequence\SequenceManager;
 use Magento\Framework\EntityManager\Sequence\SequenceRegistry;
 use Magento\Framework\EntityManager\TypeResolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DataObject;
+use Magento\Framework\EntityManager\HydratorInterface;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
+use Magento\Framework\DB\Sequence\SequenceInterface;
 
-class SequenceApplierTest extends TestCase
+class SequenceApplierTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var TypeResolver|MockObject
+     * @var TypeResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $typeResolverMock;
 
     /**
-     * @var SequenceManager|MockObject
+     * @var SequenceManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sequenceManagerMock;
 
     /**
-     * @var SequenceRegistry|MockObject
+     * @var SequenceRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sequenceRegistryMock;
 
     /**
-     * @var HydratorPool|MockObject
+     * @var HydratorPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hydratorPoolMock;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityMock;
 
     /**
-     * @var HydratorInterface|MockObject
+     * @var HydratorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hydratorMock;
 
     /**
-     * @var EntityMetadataInterface|MockObject
+     * @var EntityMetadataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataMock;
 
     /**
-     * @var SequenceInterface|MockObject
+     * @var SequenceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sequenceMock;
 
@@ -73,9 +68,9 @@ class SequenceApplierTest extends TestCase
      */
     private $sequenceApplier;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
             ->disableOriginalConstructor()
@@ -97,13 +92,13 @@ class SequenceApplierTest extends TestCase
             ->getMock();
         $this->hydratorMock = $this->getMockBuilder(HydratorInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->metadataMock = $this->getMockBuilder(EntityMetadataInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->sequenceMock = $this->getMockBuilder(SequenceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->sequenceApplier = $helper->getObject(
             SequenceApplier::class,
@@ -138,7 +133,7 @@ class SequenceApplierTest extends TestCase
             ->method('resolve')
             ->with($this->entityMock)
             ->willReturn($entityType);
-        $this->sequenceRegistryMock->expects($this->exactly(2))
+        $this->sequenceRegistryMock->expects($this->once())
             ->method('retrieve')
             ->with($entityType)
             ->willReturn($sequenceInfo);
@@ -176,7 +171,7 @@ class SequenceApplierTest extends TestCase
             ->method('resolve')
             ->with($this->entityMock)
             ->willReturn($entityType);
-        $this->sequenceRegistryMock->expects($this->exactly(2))
+        $this->sequenceRegistryMock->expects($this->once())
             ->method('retrieve')
             ->with($entityType)
             ->willReturn($sequenceInfo);

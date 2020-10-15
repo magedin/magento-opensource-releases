@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
@@ -12,10 +10,9 @@ use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Item as ShipmentItem;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Comment\Collection;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Comment\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class ShipmentTest extends TestCase
+class ShipmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CollectionFactory|MockObject
@@ -35,7 +32,7 @@ class ShipmentTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $helperManager = new ObjectManager($this);
 
@@ -91,7 +88,7 @@ class ShipmentTest extends TestCase
 
         $actual = $this->shipmentModel->getCommentsCollection();
 
-        self::assertIsObject($actual);
+        self::assertTrue(is_object($actual));
         self::assertEquals($this->commentCollection, $actual);
     }
 
@@ -129,7 +126,7 @@ class ShipmentTest extends TestCase
             ->willReturn($collection);
 
         $actual = $this->shipmentModel->getComments();
-        self::assertIsArray($actual);
+        self::assertTrue(is_array($actual));
         self::assertEquals($collection, $actual);
     }
 

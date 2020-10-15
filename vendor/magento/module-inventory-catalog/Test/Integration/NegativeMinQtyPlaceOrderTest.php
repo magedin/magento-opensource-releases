@@ -17,18 +17,17 @@ use Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\GetStockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\SaveStockItemConfigurationInterface;
 use Magento\InventoryReservationsApi\Model\CleanupReservationsInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
 use Magento\InventorySalesApi\Api\Data\SalesChannelInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\InventorySalesApi\Api\GetProductSalableQtyInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\CartItemInterface;
 use Magento\Quote\Api\Data\CartItemInterfaceFactory;
+use Magento\Store\Api\Data\StoreInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -41,9 +40,9 @@ use PHPUnit\Framework\TestCase;
 class NegativeMinQtyPlaceOrderTest extends TestCase
 {
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
+    private $isProductSalableForRequestedQty;
 
     /**
      * @var GetProductSalableQtyInterface
@@ -121,20 +120,13 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
     private $storeManager;
 
     /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestFactory;
-
-    /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
-        $this->isProductSalableForRequestedQtyRequestFactory = Bootstrap::getObjectManager()
-            ->get(IsProductSalableForRequestedQtyRequestInterfaceFactory::class);
-        $this->areProductsSalableForRequestedQty = Bootstrap::getObjectManager()->get(
-            AreProductsSalableForRequestedQtyInterface::class
+        $this->isProductSalableForRequestedQty = Bootstrap::getObjectManager()->get(
+            IsProductSalableForRequestedQtyInterface::class
         );
         $this->getProductSalableQty = Bootstrap::getObjectManager()->get(GetProductSalableQtyInterface::class);
         $this->getStockItemConfiguration = Bootstrap::getObjectManager()->get(
@@ -163,21 +155,19 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/websites_with_stores.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/stock_website_sales_channels.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/quote.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/websites_with_stores.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/stock_website_sales_channels.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/quote.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @magentoDbIsolation disabled
-     *
-     * @return void
      */
-    public function testIsProductOutOfStockAfterPlacingAnOrder(): void
+    public function testIsProductOutOfStockAfterPlacingAnOrder()
     {
         $sku = 'SKU-1';
         $stockId = 10;
@@ -188,7 +178,7 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
 
         // Before backorder is set, Salable Quantity is 8.5
         $this->assertEquals(8.5, $this->getProductSalableQty->execute($sku, $stockId));
-        $this->assertFalse($this->isSalable($sku, 13, $stockId));
+        $this->assertFalse($this->isProductSalableForRequestedQty->execute($sku, $stockId, 13)->isSalable());
 
         $stockItemConfiguration = $this->getStockItemConfiguration->execute($sku, $stockId);
         $stockItemConfiguration->setUseConfigMinQty(false);
@@ -197,7 +187,7 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
 
         // Before backorder is set, Salable Quantity is 8.5
         $this->assertEquals(8.5, $this->getProductSalableQty->execute($sku, $stockId));
-        $this->assertFalse($this->isSalable($sku, 13, $stockId));
+        $this->assertFalse($this->isProductSalableForRequestedQty->execute($sku, $stockId, 13)->isSalable());
 
         $stockItemConfiguration->setUseConfigBackorders(false);
         $stockItemConfiguration->setBackorders(StockItemConfigurationInterface::BACKORDERS_YES_NONOTIFY);
@@ -205,8 +195,9 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
 
         // After backorder is set, Salable Quantity is 8.5 - (-4.5) = 13
         $this->assertEquals(13, $this->getProductSalableQty->execute($sku, $stockId));
-        $this->assertTrue($this->isSalable($sku, 13, $stockId));
-        $this->assertFalse($this->isSalable($sku, 14, $stockId));
+
+        $this->assertTrue($this->isProductSalableForRequestedQty->execute($sku, $stockId, 13)->isSalable());
+        $this->assertFalse($this->isProductSalableForRequestedQty->execute($sku, $stockId, 14)->isSalable());
 
         $cart = $this->getCartByStockId($stockId);
         $product = $this->productRepository->get($sku);
@@ -215,23 +206,21 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
         $this->cartRepository->save($cart);
 
         $orderId = $this->cartManagement->placeOrder($cart->getId());
-        $this->assertFalse($this->isSalable($sku, 1, $stockId));
+        $this->assertFalse($this->isProductSalableForRequestedQty->execute($sku, $stockId, 1)->isSalable());
         $this->deleteOrderById((int)$orderId);
 
         // Now the Salable Quantity of Product SKU-1 is infinite
         $stockItemConfiguration->setMinQty(0);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
-        $this->assertTrue($this->isSalable($sku, 1, $stockId));
+        $this->assertTrue($this->isProductSalableForRequestedQty->execute($sku, $stockId, 1)->isSalable());
 
         // Positive MinQty works the same as MinQty = 0 , so that Salable Quantity is infinite
         $stockItemConfiguration->setMinQty(10);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
-        $this->assertTrue($this->isSalable($sku, 100, $stockId));
+        $this->assertTrue($this->isProductSalableForRequestedQty->execute($sku, $stockId, 100)->isSalable());
     }
 
     /**
-     * Create cart for given stock.
-     *
      * @param int $stockId
      * @return CartInterface
      */
@@ -262,8 +251,6 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
     }
 
     /**
-     * Delete order.
-     *
      * @param int $orderId
      */
     private function deleteOrderById(int $orderId)
@@ -277,8 +264,6 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
     }
 
     /**
-     * Build cart item for given product, cart and quantity.
-     *
      * @param ProductInterface $product
      * @param float $quoteItemQty
      * @param int $cartId
@@ -295,39 +280,15 @@ class NegativeMinQtyPlaceOrderTest extends TestCase
                         CartItemInterface::KEY_QTY => $quoteItemQty,
                         CartItemInterface::KEY_QUOTE_ID => $cartId,
                         'product_id' => $product->getId(),
-                        'product' => $product,
-                    ],
+                        'product' => $product
+                    ]
                 ]
             );
         return $cartItem;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->cleanupReservations->execute();
-    }
-
-    /**
-     * @param string $sku
-     * @param float $qty
-     * @param int $stockId
-     * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function isSalable(string $sku, float $qty, int $stockId): bool
-    {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $qty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-
-        return $result->isSalable();
     }
 }

@@ -7,7 +7,7 @@
 namespace Magento\Setup\Console;
 
 use Magento\Setup\Console\Command\TablesWhitelistGenerateCommand;
-use Laminas\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Class CommandList contains predefined list of commands for Setup.
@@ -44,6 +44,7 @@ class CommandList
             \Magento\Setup\Console\Command\AdminUserCreateCommand::class,
             \Magento\Setup\Console\Command\BackupCommand::class,
             \Magento\Setup\Console\Command\ConfigSetCommand::class,
+            \Magento\Setup\Console\Command\CronRunCommand::class,
             \Magento\Setup\Console\Command\DbDataUpgradeCommand::class,
             \Magento\Setup\Console\Command\DbSchemaUpgradeCommand::class,
             \Magento\Setup\Console\Command\DbStatusCommand::class,

@@ -21,8 +21,3 @@ abstract function foo(): array;
 abstract function foo(): Foo\Bar;
 
 abstract function foo(): \Foo\Bar;
-
-array_map(
-    static fn (array $value): array => array_filter($value),
-    []
-);

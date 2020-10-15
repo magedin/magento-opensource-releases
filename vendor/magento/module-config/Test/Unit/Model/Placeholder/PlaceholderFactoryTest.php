@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Placeholder;
 
 use Magento\Config\Model\Placeholder\Environment;
 use Magento\Config\Model\Placeholder\PlaceholderFactory;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PlaceholderFactoryTest extends TestCase
+class PlaceholderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PlaceholderFactory
@@ -21,16 +17,16 @@ class PlaceholderFactoryTest extends TestCase
     private $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var Environment|MockObject
+     * @var Environment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $environmentMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->getMockForAbstractClass();
@@ -60,19 +56,21 @@ class PlaceholderFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage There is no defined type dummyClass
+     */
     public function testCreateNonExisted()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('There is no defined type dummyClass');
         $this->model->create('dummyClass');
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Object is not instance of Magento\Config\Model\Placeholder\PlaceholderInterface
+     */
     public function testCreateWrongImplementation()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage(
-            'Object is not instance of Magento\Config\Model\Placeholder\PlaceholderInterface'
-        );
         $this->model->create('wrongClass');
     }
 }

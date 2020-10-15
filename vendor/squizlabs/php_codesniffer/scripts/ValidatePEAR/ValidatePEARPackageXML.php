@@ -11,8 +11,6 @@
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
 
-use PHP_CodeSniffer\Tests\FileList;
-
 /**
  * Validate the PHP_CodeSniffer PEAR package.xml file.
  */

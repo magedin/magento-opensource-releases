@@ -3,71 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Indexer\Product\Flat;
-use Magento\Catalog\Model\Indexer\Product\Flat\Action\Full;
-use Magento\Catalog\Model\Indexer\Product\Flat\Action\Row;
-use Magento\Catalog\Model\Indexer\Product\Flat\Action\Rows;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Indexer\CacheContext;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FlatTest extends TestCase
+class FlatTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Flat
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat
      */
     private $model;
 
     /**
-     * @var Row|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\Action\Row|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productFlatIndexerRow;
 
     /**
-     * @var Rows|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\Action\Rows|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productFlatIndexerRows;
 
     /**
-     * @var Full|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\Action\Full|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productFlatIndexerFull;
 
     /**
-     * @var CacheContext|MockObject
+     * @var \Magento\Framework\Indexer\CacheContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheContextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productFlatIndexerRow = $this->getMockBuilder(
-            Row::class
+            \Magento\Catalog\Model\Indexer\Product\Flat\Action\Row::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->productFlatIndexerRows = $this->getMockBuilder(
-            Rows::class
+            \Magento\Catalog\Model\Indexer\Product\Flat\Action\Rows::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->productFlatIndexerFull = $this->getMockBuilder(
-            Full::class
+            \Magento\Catalog\Model\Indexer\Product\Flat\Action\Full::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            Flat::class,
+            \Magento\Catalog\Model\Indexer\Product\Flat::class,
             [
                 'productFlatIndexerRow' => $this->productFlatIndexerRow,
                 'productFlatIndexerRows' => $this->productFlatIndexerRows,
@@ -75,10 +64,10 @@ class FlatTest extends TestCase
             ]
         );
 
-        $this->cacheContextMock = $this->createMock(CacheContext::class);
+        $this->cacheContextMock = $this->createMock(\Magento\Framework\Indexer\CacheContext::class);
 
         $cacheContextProperty = new \ReflectionProperty(
-            Flat::class,
+            \Magento\Catalog\Model\Indexer\Product\Flat::class,
             'cacheContext'
         );
         $cacheContextProperty->setAccessible(true);
@@ -88,11 +77,11 @@ class FlatTest extends TestCase
     public function testExecute()
     {
         $ids = [1, 2, 3];
-        $this->productFlatIndexerRows->expects($this->any())->method('execute')->with($ids);
+        $this->productFlatIndexerRows->expects($this->any())->method('execute')->with($this->equalTo($ids));
 
         $this->cacheContextMock->expects($this->once())
             ->method('registerEntities')
-            ->with(Product::CACHE_TAG, $ids);
+            ->with(\Magento\Catalog\Model\Product::CACHE_TAG, $ids);
 
         $this->model->execute($ids);
     }
@@ -100,7 +89,7 @@ class FlatTest extends TestCase
     public function testExecuteList()
     {
         $ids = [1, 2, 3];
-        $this->productFlatIndexerRows->expects($this->any())->method('execute')->with($ids);
+        $this->productFlatIndexerRows->expects($this->any())->method('execute')->with($this->equalTo($ids));
 
         $result = $this->model->executeList($ids);
         $this->assertNull($result);
@@ -114,8 +103,8 @@ class FlatTest extends TestCase
             ->method('registerTags')
             ->with(
                 [
-                    Category::CACHE_TAG,
-                    Product::CACHE_TAG
+                    \Magento\Catalog\Model\Category::CACHE_TAG,
+                    \Magento\Catalog\Model\Product::CACHE_TAG
                 ]
             );
 
@@ -125,7 +114,7 @@ class FlatTest extends TestCase
     public function testExecuteRow()
     {
         $except = 5;
-        $this->productFlatIndexerRow->expects($this->any())->method('execute')->with($except);
+        $this->productFlatIndexerRow->expects($this->any())->method('execute')->with($this->equalTo($except));
 
         $result = $this->model->executeRow($except);
         $this->assertNull($result);

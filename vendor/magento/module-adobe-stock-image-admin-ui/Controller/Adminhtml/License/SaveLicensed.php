@@ -10,7 +10,6 @@ namespace Magento\AdobeStockImageAdminUi\Controller\Adminhtml\License;
 
 use Magento\AdobeStockImageApi\Api\SaveLicensedImageInterface;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -19,7 +18,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Backend controller for saving licensed image
  */
-class SaveLicensed extends Action implements HttpPostActionInterface
+class SaveLicensed extends Action
 {
     private const HTTP_OK = 200;
     private const HTTP_INTERNAL_ERROR = 500;
@@ -42,17 +41,17 @@ class SaveLicensed extends Action implements HttpPostActionInterface
 
     /**
      * @param Action\Context $context
-     * @param SaveLicensedImageInterface $saveLicensed
+     * @param SaveLicensedImageInterface $saveLicensedImage
      * @param LoggerInterface $logger
      */
     public function __construct(
         Action\Context $context,
-        SaveLicensedImageInterface $saveLicensed,
+        SaveLicensedImageInterface $saveLicensedImage,
         LoggerInterface $logger
     ) {
         parent::__construct($context);
 
-        $this->saveLicensedImage = $saveLicensed;
+        $this->saveLicensedImage = $saveLicensedImage;
         $this->logger = $logger;
     }
 

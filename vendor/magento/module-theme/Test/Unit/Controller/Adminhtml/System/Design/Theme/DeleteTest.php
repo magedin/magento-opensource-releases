@@ -3,69 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Theme;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Framework\View\Design\ThemeInterface;
 use Magento\Theme\Controller\Adminhtml\System\Design\Theme\Delete;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DeleteTest extends TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var FileFactory|MockObject
+     * @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fileFactory;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repository;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystem;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManager;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactory;
 
@@ -74,18 +58,15 @@ class DeleteTest extends TestCase
      */
     protected $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
-            ->getMock();
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
-            ->getMock();
-        $this->resultFactory = $this->getMockBuilder(ResultFactory::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)->getMock();
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)->getMock();
+        $this->resultFactory = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $context->expects($this->any())
@@ -102,20 +83,19 @@ class DeleteTest extends TestCase
             ->willReturn($this->resultFactory);
 
         $this->registry = $this->getMockBuilder(
-            Registry::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->fileFactory = $this->getMockBuilder(FileFactory::class)
+            \Magento\Framework\Registry::class
+        )->disableOriginalConstructor()->getMock();
+        $this->fileFactory = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->repository = $this->getMockBuilder(Repository::class)
+        $this->repository = $this->getMockBuilder(\Magento\Framework\View\Asset\Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var Context $context */
+        /** @var \Magento\Backend\App\Action\Context $context */
         $this->controller = new Delete(
             $context,
             $this->registry,
@@ -129,7 +109,7 @@ class DeleteTest extends TestCase
     {
         $path = 'adminhtml/*/';
         $themeId = 1;
-        $theme = $this->getMockBuilder(ThemeInterface::class)
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)
             ->setMethods(['load', 'getId', 'isVirtual', 'delete'])
             ->getMockForAbstractClass();
         $this->request->expects($this->any())
@@ -140,12 +120,12 @@ class DeleteTest extends TestCase
                     ['back', false, true],
                 ]
             );
-        $redirect = $this->getMockBuilder(Redirect::class)
+        $redirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with(ThemeInterface::class)
+            ->with(\Magento\Framework\View\Design\ThemeInterface::class)
             ->willReturn($theme);
         $theme->expects($this->once())
             ->method('load')
@@ -172,7 +152,7 @@ class DeleteTest extends TestCase
             ->with($path)
             ->willReturnSelf();
 
-        $this->assertInstanceOf(Redirect::class, $this->controller->execute());
+        $this->assertInstanceOf(\Magento\Framework\Controller\Result\Redirect::class, $this->controller->execute());
     }
 
     /**
@@ -197,7 +177,7 @@ class DeleteTest extends TestCase
     {
         $path = 'adminhtml/*/';
         $themeId = 1;
-        $theme = $this->getMockBuilder(ThemeInterface::class)
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)
             ->setMethods(['load', 'getId', 'isVirtual'])
             ->getMockForAbstractClass();
         $this->request->expects($this->any())
@@ -208,14 +188,13 @@ class DeleteTest extends TestCase
                     ['back', false, false],
                 ]
             );
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->getMock();
-        $redirect = $this->getMockBuilder(Redirect::class)
+        $logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
+        $redirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with(ThemeInterface::class)
+            ->with(\Magento\Framework\View\Design\ThemeInterface::class)
             ->willReturn($theme);
         $theme->expects($this->once())
             ->method('load')
@@ -239,7 +218,7 @@ class DeleteTest extends TestCase
             ->method('addException');
         $this->objectManager->expects($this->once())
             ->method('get')
-            ->with(LoggerInterface::class)
+            ->with(\Psr\Log\LoggerInterface::class)
             ->willReturn($logger);
         $logger->expects($this->once())
             ->method('critical');
@@ -263,13 +242,13 @@ class DeleteTest extends TestCase
                     ['back', false, false],
                 ]
             );
-        $redirect = $this->getMockBuilder(Redirect::class)
+        $redirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with(ThemeInterface::class)
-            ->willThrowException(new LocalizedException(__('localized exception')));
+            ->with(\Magento\Framework\View\Design\ThemeInterface::class)
+            ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('localized exception')));
         $this->resultFactory->expects($this->once())
             ->method('create')
             ->with(ResultFactory::TYPE_REDIRECT)
@@ -281,6 +260,6 @@ class DeleteTest extends TestCase
         $this->messageManager->expects($this->once())
             ->method('addError');
 
-        $this->assertInstanceOf(Redirect::class, $this->controller->execute());
+        $this->assertInstanceOf(\Magento\Framework\Controller\Result\Redirect::class, $this->controller->execute());
     }
 }

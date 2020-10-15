@@ -3,78 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Html;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Phrase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title as PageTitle;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Theme\Block\Html\Title;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * Test class for \Magento\Theme\Block\Html\Title
- */
-class TitleTest extends TestCase
+class TitleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Config path to 'Translate Title' header settings
-     */
-    private const XML_PATH_HEADER_TRANSLATE_TITLE = 'design/header/translate_title';
-
     /**
      * @var ObjectManagerHelper
      */
-    private $objectManagerHelper;
+    protected $objectManagerHelper;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageConfigMock;
+    protected $pageConfigMock;
 
     /**
-     * @var PageTitle|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $pageTitleMock;
+    protected $pageTitleMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Theme\Block\Html\Title
      */
-    private $scopeConfigMock;
-
-    /**
-     * @var Title
-     */
-    private $htmlTitle;
+    protected $htmlTitle;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->pageConfigMock = $this->createMock(Config::class);
-        $this->pageTitleMock = $this->createMock(PageTitle::class);
+        $this->pageConfigMock = $this->createMock(\Magento\Framework\View\Page\Config::class);
+        $this->pageTitleMock = $this->createMock(\Magento\Framework\View\Page\Title::class);
 
         $context = $this->objectManagerHelper->getObject(
-            Context::class,
+            \Magento\Framework\View\Element\Template\Context::class,
             ['pageConfig' => $this->pageConfigMock]
         );
 
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-
         $this->htmlTitle = $this->objectManagerHelper->getObject(
-            Title::class,
-            [
-                'context' => $context,
-                'scopeConfig' => $this->scopeConfigMock
-            ]
+            \Magento\Theme\Block\Html\Title::class,
+            ['context' => $context]
         );
     }
 
@@ -93,16 +64,10 @@ class TitleTest extends TestCase
     }
 
     /**
-     * @param bool $shouldTranslateTitle
-     *
      * @return void
-     * @dataProvider dataProviderShouldTranslateTitle
      */
-    public function testGetPageTitle($shouldTranslateTitle)
+    public function testGetPageTitle()
     {
-        $this->scopeConfigMock->method('isSetFlag')
-            ->with(static::XML_PATH_HEADER_TRANSLATE_TITLE, ScopeInterface::SCOPE_STORE)
-            ->willReturn($shouldTranslateTitle);
         $title = 'some title';
 
         $this->pageTitleMock->expects($this->once())
@@ -112,58 +77,28 @@ class TitleTest extends TestCase
             ->method('getTitle')
             ->willReturn($this->pageTitleMock);
 
-        $result = $this->htmlTitle->getPageTitle();
-
-        if ($shouldTranslateTitle) {
-            $this->assertInstanceOf(Phrase::class, $result);
-        } else {
-            $this->assertIsString($result);
-        }
-
-        $this->assertEquals($title, $result);
+        $this->assertEquals($title, $this->htmlTitle->getPageTitle());
     }
 
     /**
-     * @param bool $shouldTranslateTitle
-     *
      * @return void
-     * @dataProvider dataProviderShouldTranslateTitle
      */
-    public function testGetPageHeadingWithSetPageTitle($shouldTranslateTitle)
+    public function testGetPageHeadingWithSetPageTitle()
     {
-        $this->scopeConfigMock->method('isSetFlag')
-            ->with(static::XML_PATH_HEADER_TRANSLATE_TITLE, ScopeInterface::SCOPE_STORE)
-            ->willReturn($shouldTranslateTitle);
-
         $title = 'some title';
 
         $this->htmlTitle->setPageTitle($title);
         $this->pageConfigMock->expects($this->never())
             ->method('getTitle');
 
-        $result = $this->htmlTitle->getPageHeading();
-
-        if ($shouldTranslateTitle) {
-            $this->assertInstanceOf(Phrase::class, $result);
-        } else {
-            $this->assertIsString($result);
-        }
-
-        $this->assertEquals($title, $result);
+        $this->assertEquals($title, $this->htmlTitle->getPageHeading());
     }
 
     /**
-     * @param bool $shouldTranslateTitle
-     *
      * @return void
-     * @dataProvider dataProviderShouldTranslateTitle
      */
-    public function testGetPageHeading($shouldTranslateTitle)
+    public function testGetPageHeading()
     {
-        $this->scopeConfigMock->method('isSetFlag')
-            ->with(static::XML_PATH_HEADER_TRANSLATE_TITLE, ScopeInterface::SCOPE_STORE)
-            ->willReturn($shouldTranslateTitle);
-
         $title = 'some title';
 
         $this->pageTitleMock->expects($this->once())
@@ -173,29 +108,6 @@ class TitleTest extends TestCase
             ->method('getTitle')
             ->willReturn($this->pageTitleMock);
 
-        $result = $this->htmlTitle->getPageHeading();
-
-        if ($shouldTranslateTitle) {
-            $this->assertInstanceOf(Phrase::class, $result);
-        } else {
-            $this->assertIsString($result);
-        }
-
-        $this->assertEquals($title, $result);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataProviderShouldTranslateTitle(): array
-    {
-        return [
-            [
-                true
-            ],
-            [
-                false
-            ]
-        ];
+        $this->assertEquals($title, $this->htmlTitle->getPageHeading());
     }
 }

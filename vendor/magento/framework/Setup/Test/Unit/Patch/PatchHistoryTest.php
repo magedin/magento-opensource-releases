@@ -3,20 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Patch;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Patch\PatchHistory;
 use Magento\Framework\Setup\Patch\PatchInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PatchHistoryTest extends TestCase
+/**
+ * Class PatchHistoryTest
+ * @package Magento\Framework\Setup\Test\Unit\Patch
+ */
+class PatchHistoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PatchHistory
@@ -24,11 +24,11 @@ class PatchHistoryTest extends TestCase
     private $patchHistory;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->resourceConnectionMock = $this->createMock(ResourceConnection::class);
@@ -45,12 +45,12 @@ class PatchHistoryTest extends TestCase
      */
     public function testFixPatch()
     {
-        /** @var PatchInterface|MockObject $patch1 */
-        $patch1 = $this->getMockForAbstractClass(PatchInterface::class);
-        /** @var AdapterInterface|MockObject $adapterMock */
-        $adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        /** @var PatchInterface|\PHPUnit_Framework_MockObject_MockObject $patch1 */
+        $patch1 = $this->createMock(PatchInterface::class);
+        /** @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject $adapterMock */
+        $adapterMock = $this->createMock(AdapterInterface::class);
         $this->resourceConnectionMock->expects($this->any())->method('getConnection')->willReturn($adapterMock);
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $selectMock->expects($this->once())->method('from');
         $adapterMock->expects($this->any())->method('select')->willReturn($selectMock);
         $adapterMock->expects($this->once())->method('fetchCol')->willReturn([]);
@@ -62,16 +62,18 @@ class PatchHistoryTest extends TestCase
         $this->patchHistory->fixPatch(get_class($patch1));
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessageRegExp "Patch [a-zA-Z0-9\_]+ cannot be applied twice"
+     */
     public function testFixAppliedPatch()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessageMatches('"Patch [a-zA-Z0-9\_]+ cannot be applied twice"');
-        /** @var PatchInterface|MockObject $patch1 */
-        $patch1 = $this->getMockForAbstractClass(PatchInterface::class);
-        /** @var AdapterInterface|MockObject $adapterMock */
-        $adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        /** @var PatchInterface|\PHPUnit_Framework_MockObject_MockObject $patch1 */
+        $patch1 = $this->createMock(PatchInterface::class);
+        /** @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject $adapterMock */
+        $adapterMock = $this->createMock(AdapterInterface::class);
         $this->resourceConnectionMock->expects($this->any())->method('getConnection')->willReturn($adapterMock);
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $selectMock->expects($this->once())->method('from');
         $adapterMock->expects($this->any())->method('select')->willReturn($selectMock);
         $adapterMock->expects($this->once())->method('fetchCol')->willReturn([get_class($patch1)]);
@@ -82,19 +84,21 @@ class PatchHistoryTest extends TestCase
         $this->patchHistory->fixPatch(get_class($patch1));
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessageRegExp "Patch [a-zA-Z0-9\_]+ cannot be applied twice"
+     */
     public function testFixPatchTwice()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessageMatches('"Patch [a-zA-Z0-9\_]+ cannot be applied twice"');
-        /** @var PatchInterface|MockObject $patch1 */
-        $patch = $this->getMockForAbstractClass(PatchInterface::class);
-        /** @var AdapterInterface|MockObject $adapterMock */
-        $adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        /** @var PatchInterface|\PHPUnit_Framework_MockObject_MockObject $patch1 */
+        $patch = $this->createMock(PatchInterface::class);
+        /** @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject $adapterMock */
+        $adapterMock = $this->createMock(AdapterInterface::class);
         $this->resourceConnectionMock->expects($this->any())->method('getConnection')->willReturn($adapterMock);
         $this->resourceConnectionMock->expects($this->any())
             ->method('getTableName')
             ->willReturn(PatchHistory::TABLE_NAME);
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $selectMock->expects($this->once())->method('from');
         $adapterMock->expects($this->any())->method('select')->willReturn($selectMock);
         $adapterMock->expects($this->once())->method('fetchCol')->willReturn([]);

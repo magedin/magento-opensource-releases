@@ -109,7 +109,7 @@ class Adminhtml extends \PHPUnit\Framework\TestCase
 
     /**
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         // These mocks are accessed via context
         $this->_designMock          = $this->_makeMock(\Magento\Framework\View\DesignInterface::class);
@@ -146,8 +146,8 @@ class Adminhtml extends \PHPUnit\Framework\TestCase
             $this->any()
         )->method(
             'translate'
-        )->willReturnCallback(
-            [$this, 'translateCallback']
+        )->will(
+            $this->returnCallback([$this, 'translateCallback'])
         );
 
         $this->_context = new \Magento\Backend\Block\Template\Context(
@@ -202,7 +202,7 @@ class Adminhtml extends \PHPUnit\Framework\TestCase
      * @return \PHPUnit\Framework\MockObject\Builder\InvocationMocker
      */
     protected function _setStub(
-        \PHPUnit\Framework\MockObject\MockObject $object,
+        \PHPUnit_Framework_MockObject_MockObject $object,
         $stubName,
         $return = null,
         $expects = null

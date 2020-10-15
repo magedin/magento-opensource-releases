@@ -3,108 +3,90 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Multishipping\Test\Unit\Controller\Checkout\Address;
 
-use Magento\Customer\Block\Address\Edit;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\ViewInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Layout;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\Page;
-use Magento\Multishipping\Controller\Checkout\Address\NewBilling;
-use Magento\Multishipping\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class NewBillingTest extends TestCase
+class NewBillingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NewBilling
+     * @var \Magento\Multishipping\Controller\Checkout\Address\NewBilling
      */
     protected $controller;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $addressFormMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $titleMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->configMock = $this->createMock(Config::class);
-        $this->titleMock = $this->createMock(Title::class);
-        $this->layoutMock = $this->createMock(Layout::class);
-        $this->viewMock = $this->getMockForAbstractClass(ViewInterface::class);
-        $request = $this->getMockBuilder(RequestInterface::class)
+        $this->configMock = $this->createMock(\Magento\Framework\View\Page\Config::class);
+        $this->titleMock = $this->createMock(\Magento\Framework\View\Page\Title::class);
+        $this->layoutMock = $this->createMock(\Magento\Framework\View\Layout::class);
+        $this->viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMockForAbstractClass();
-        $response = $this->getMockBuilder(ResponseInterface::class)
+        $response = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMockForAbstractClass();
-        $contextMock = $this->createMock(Context::class);
+        $contextMock = $this->createMock(\Magento\Framework\App\Action\Context::class);
         $contextMock->expects($this->atLeastOnce())
             ->method('getRequest')
-            ->willReturn($request);
+            ->will($this->returnValue($request));
         $contextMock->expects($this->atLeastOnce())
             ->method('getResponse')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
         $contextMock->expects($this->any())->method('getView')->willReturn($this->viewMock);
+        $methods = ['setTitle', 'getTitle', 'setSuccessUrl', 'setErrorUrl', 'setBackUrl', '__wakeUp'];
         $this->addressFormMock =
-            $this->getMockBuilder(Edit::class)
-                ->addMethods(['setTitle', 'setSuccessUrl', 'setErrorUrl', 'setBackUrl'])
-                ->onlyMethods(['getTitle'])
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->urlMock = $this->getMockForAbstractClass(UrlInterface::class);
+            $this->createPartialMock(\Magento\Customer\Block\Address\Edit::class, $methods);
+        $this->urlMock = $this->createMock(\Magento\Framework\UrlInterface::class);
         $contextMock->expects($this->any())->method('getUrl')->willReturn($this->urlMock);
-        $this->pageMock = $this->createMock(Page::class);
+        $this->pageMock = $this->createMock(\Magento\Framework\View\Result\Page::class);
         $this->pageMock->expects($this->any())->method('getConfig')->willReturn($this->configMock);
         $this->configMock->expects($this->any())->method('getTitle')->willReturn($this->titleMock);
         $this->viewMock->expects($this->any())->method('getPage')->willReturn($this->pageMock);
         $this->controller = $objectManager->getObject(
-            NewBilling::class,
+            \Magento\Multishipping\Controller\Checkout\Address\NewBilling::class,
             ['context' => $contextMock]
         );
     }
@@ -123,10 +105,7 @@ class NewBillingTest extends TestCase
             ->method('setTitle')
             ->with('Create Billing Address')
             ->willReturnSelf();
-        $helperMock = $this->getMockBuilder(Data::class)
-            ->addMethods(['__'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helperMock = $this->createPartialMock(\Magento\Multishipping\Helper\Data::class, ['__']);
         $helperMock->expects($this->any())->method('__')->willReturn('Create Billing Address');
         $valueMap = [
             ['*/*/selectBilling', null, 'success/url'],

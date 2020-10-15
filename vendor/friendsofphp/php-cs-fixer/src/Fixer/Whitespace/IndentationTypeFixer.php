@@ -47,9 +47,6 @@ final class IndentationTypeFixer extends AbstractFixer implements WhitespacesAwa
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before PhpdocIndentFixer.
-     * Must run after ClassAttributesSeparationFixer, MethodSeparationFixer.
      */
     public function getPriority()
     {
@@ -87,7 +84,8 @@ final class IndentationTypeFixer extends AbstractFixer implements WhitespacesAwa
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return Token
      */
@@ -103,15 +101,16 @@ final class IndentationTypeFixer extends AbstractFixer implements WhitespacesAwa
         $indent = $this->indent;
 
         // change indent to expected one
-        $content = Preg::replaceCallback('/^(?:    )+/m', function ($matches) use ($indent) {
-            return $this->getExpectedIndent($matches[0], $indent);
+        $content = Preg::replaceCallback('/^(?:    )+/m', static function ($matches) use ($indent) {
+            return str_replace('    ', $indent, $matches[0]);
         }, $content);
 
         return new Token([$tokens[$index]->getId(), $content]);
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return Token
      */
@@ -129,12 +128,12 @@ final class IndentationTypeFixer extends AbstractFixer implements WhitespacesAwa
         $indent = $this->indent;
         $newContent = Preg::replaceCallback(
             '/(\R)(\h+)/', // find indent
-            function (array $matches) use ($indent) {
+            static function (array $matches) use ($indent) {
                 // normalize mixed indent
                 $content = Preg::replace('/(?:(?<! ) {1,3})?\t/', '    ', $matches[2]);
 
                 // change indent to expected one
-                return $matches[1].$this->getExpectedIndent($content, $indent);
+                return $matches[1].str_replace('    ', $indent, $content);
             },
             $content
         );
@@ -144,20 +143,5 @@ final class IndentationTypeFixer extends AbstractFixer implements WhitespacesAwa
         }
 
         return new Token([T_WHITESPACE, $newContent]);
-    }
-
-    /**
-     * @param string $content
-     * @param string $indent
-     *
-     * @return string mixed
-     */
-    private function getExpectedIndent($content, $indent)
-    {
-        if ("\t" === $indent) {
-            $content = str_replace('    ', $indent, $content);
-        }
-
-        return $content;
     }
 }

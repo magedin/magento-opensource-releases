@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit;
 
 use Magento\Framework\Phrase;
-use Magento\Framework\Phrase\Renderer\Placeholder;
-use Magento\Framework\Phrase\RendererInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PhraseTest extends TestCase
+class PhraseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RendererInterface
+     * @var \Magento\Framework\Phrase\RendererInterface
      */
     protected $defaultRenderer;
 
     /**
-     * @var RendererInterface|MockObject
+     * @var \Magento\Framework\Phrase\RendererInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rendererMock;
 
@@ -30,10 +24,10 @@ class PhraseTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->defaultRenderer = Phrase::getRenderer();
-        $this->rendererMock = $this->getMockBuilder(RendererInterface::class)
+        $this->rendererMock = $this->getMockBuilder(\Magento\Framework\Phrase\RendererInterface::class)
             ->getMock();
     }
 
@@ -42,7 +36,7 @@ class PhraseTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Phrase::setRenderer($this->defaultRenderer);
     }
@@ -149,6 +143,6 @@ class PhraseTest extends TestCase
      */
     public function testDefaultRenderer()
     {
-        $this->assertInstanceOf(Placeholder::class, Phrase::getRenderer());
+        $this->assertInstanceOf(\Magento\Framework\Phrase\Renderer\Placeholder::class, Phrase::getRenderer());
     }
 }

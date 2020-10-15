@@ -21,7 +21,7 @@
 
         <before>
             <!-- log in as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!-- create new product -->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
@@ -37,7 +37,7 @@
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createSimpleProduct" stepKey="deleteProduct"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
 
@@ -62,7 +62,7 @@
         </actionGroup>
 
         <!-- Cancel order -->
-        <actionGroup ref="CancelPendingOrderActionGroup" stepKey="cancelOrder"/>
+        <actionGroup ref="cancelPendingOrder" stepKey="cancelOrder"/>
 
         <!-- Generate Order report for statuses  -->
         <amOnPage url="{{OrdersReportPage.url}}" stepKey="goToOrdersReportPage1"/>
@@ -89,9 +89,6 @@
         <grabTextFrom selector="{{GeneratedReportSection.ordersCount}}" stepKey="grabCanceledOrdersAny"/>
 
         <!-- Compare canceled orders price -->
-        <assertEquals stepKey="assertEquals">
-			<actualResult type="string">{$grabCanceledOrdersAny}</actualResult>
-			<expectedResult type="string">{$grabCanceledOrdersSpecified}</expectedResult>
-        </assertEquals>
+        <assertEquals expected="{$grabCanceledOrdersSpecified}" expectedType="string" actual="{$grabCanceledOrdersAny}" actualType="string"  stepKey="assertEquals"/>
     </test>
 </tests>

@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Model\DeploymentConfig;
 
-use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
-use Magento\Deploy\Model\DeploymentConfig\DataCollector;
-use Magento\Deploy\Model\DeploymentConfig\Hash;
 use Magento\Deploy\Model\DeploymentConfig\Hash\Generator as HashGenerator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Deploy\Model\DeploymentConfig\Hash;
+use Magento\Deploy\Model\DeploymentConfig\DataCollector;
+use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 
-class ChangeDetectorTest extends TestCase
+class ChangeDetectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Hash|MockObject
+     * @var Hash|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configHashMock;
 
     /**
-     * @var HashGenerator|MockObject
+     * @var HashGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $hashGeneratorMock;
 
     /**
-     * @var DataCollector|MockObject
+     * @var DataCollector|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataConfigCollectorMock;
 
@@ -39,7 +35,7 @@ class ChangeDetectorTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configHashMock = $this->getMockBuilder(Hash::class)
             ->disableOriginalConstructor()

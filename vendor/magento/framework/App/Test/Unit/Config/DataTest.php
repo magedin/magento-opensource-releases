@@ -3,32 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Config;
 
-use Magento\Framework\App\Config\Data;
-use Magento\Framework\App\Config\MetadataProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Framework\App\Config\Data
      */
     protected $_model;
 
     /**
-     * @var MetadataProcessor|MockObject
+     * @var \Magento\Framework\App\Config\MetadataProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_metaDataProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_metaDataProcessor = $this->createMock(MetadataProcessor::class);
-        $this->_metaDataProcessor->expects($this->any())->method('process')->willReturnArgument(0);
-        $this->_model = new Data($this->_metaDataProcessor, []);
+        $this->_metaDataProcessor = $this->createMock(\Magento\Framework\App\Config\MetadataProcessor::class);
+        $this->_metaDataProcessor->expects($this->any())->method('process')->will($this->returnArgument(0));
+        $this->_model = new \Magento\Framework\App\Config\Data($this->_metaDataProcessor, []);
     }
 
     /**
@@ -55,7 +48,7 @@ class DataTest extends TestCase
 
     public function testGetData()
     {
-        $model = new Data(
+        $model = new \Magento\Framework\App\Config\Data(
             $this->_metaDataProcessor,
             ['test' => ['path' => 'value']]
         );

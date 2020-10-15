@@ -3,23 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Reflection\Test\Unit;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Reflection\ExtensionAttributesProcessor;
-use Magento\Framework\Reflection\FieldNamer;
-use Magento\Framework\Reflection\MethodsMap;
-use Magento\Framework\Reflection\TypeCaster;
-use Magento\Framework\Reflection\TypeProcessor;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataObjectProcessorTest extends TestCase
+class DataObjectProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataObjectProcessor
@@ -27,21 +17,21 @@ class DataObjectProcessorTest extends TestCase
     private $dataObjectProcessor;
 
     /**
-     * @var ExtensionAttributesProcessor|MockObject
+     * @var ExtensionAttributesProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionAttributesProcessorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $methodsMapProcessor = $objectManager->getObject(
-            MethodsMap::class,
+            \Magento\Framework\Reflection\MethodsMap::class,
             [
-                'fieldNamer' => $objectManager->getObject(FieldNamer::class),
-                'typeProcessor' => $objectManager->getObject(TypeProcessor::class),
+                'fieldNamer' => $objectManager->getObject(\Magento\Framework\Reflection\FieldNamer::class),
+                'typeProcessor' => $objectManager->getObject(\Magento\Framework\Reflection\TypeProcessor::class),
             ]
         );
-        $serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $serializerMock = $this->createMock(SerializerInterface::class);
         $serializerMock->method('serialize')
             ->willReturn('serializedData');
         $serializerMock->method('unserialize')
@@ -58,11 +48,11 @@ class DataObjectProcessorTest extends TestCase
             ->getMock();
 
         $this->dataObjectProcessor = $objectManager->getObject(
-            DataObjectProcessor::class,
+            \Magento\Framework\Reflection\DataObjectProcessor::class,
             [
                 'methodsMapProcessor' => $methodsMapProcessor,
-                'typeCaster' => $objectManager->getObject(TypeCaster::class),
-                'fieldNamer' => $objectManager->getObject(FieldNamer::class),
+                'typeCaster' => $objectManager->getObject(\Magento\Framework\Reflection\TypeCaster::class),
+                'fieldNamer' => $objectManager->getObject(\Magento\Framework\Reflection\FieldNamer::class),
                 'extensionAttributesProcessor' => $this->extensionAttributesProcessorMock
             ]
         );
@@ -76,13 +66,13 @@ class DataObjectProcessorTest extends TestCase
      */
     public function testBuildOutputDataArray($extensionAttributes, $expectedOutputDataArray)
     {
-        $objectManager =  new ObjectManager($this);
-        /** @var TestDataObject $testDataObject */
+        $objectManager =  new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Framework\Reflection\Test\Unit\TestDataObject $testDataObject */
         $testDataObject = $objectManager->getObject(
-            TestDataObject::class,
+            \Magento\Framework\Reflection\Test\Unit\TestDataObject::class,
             [
                 'extensionAttributes' => $this->getMockForAbstractClass(
-                    ExtensionAttributesInterface::class
+                    \Magento\Framework\Api\ExtensionAttributesInterface::class
                 )
             ]
         );
@@ -92,7 +82,7 @@ class DataObjectProcessorTest extends TestCase
             ->willReturn($extensionAttributes);
 
         $outputData = $this->dataObjectProcessor
-            ->buildOutputDataArray($testDataObject, TestDataInterface::class);
+            ->buildOutputDataArray($testDataObject, \Magento\Framework\Reflection\Test\Unit\TestDataInterface::class);
         $this->assertEquals($expectedOutputDataArray, $outputData);
     }
 

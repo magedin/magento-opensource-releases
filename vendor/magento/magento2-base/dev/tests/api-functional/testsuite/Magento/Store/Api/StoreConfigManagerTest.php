@@ -39,7 +39,7 @@ class StoreConfigManagerTest extends WebapiAbstract
         ];
         $storeConfigs = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertNotNull($storeConfigs);
-        $this->assertCount(1, $storeConfigs);
+        $this->assertEquals(1, count($storeConfigs));
         $expectedKeys = [
             'id',
             'code',

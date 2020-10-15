@@ -20,8 +20,8 @@
             <group value="product_attributes"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-            <actionGroup ref="DeleteAllProductsUsingProductGridActionGroup" stepKey="deleteAllProducts"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+            <actionGroup ref="deleteAllProductsUsingProductGrid" stepKey="deleteAllProducts"/>
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView" />
             <createData entity="_defaultCategory" stepKey="createCategory"/>
             <createData entity="ApiSimpleProduct" stepKey="createProductOne">
@@ -30,7 +30,6 @@
             <createData entity="ApiSimpleProduct" stepKey="createProductTwo">
                 <requiredEntity createDataKey="createCategory"/>
             </createData>
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
         </before>
         <after>
             <deleteData createDataKey="createProductOne" stepKey="deleteProductOne"/>
@@ -39,17 +38,16 @@
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="AdminDeleteStoreViewActionGroup"/>
             <click selector="{{AdminStoresGridSection.resetButton}}" stepKey="resetSearchFilter"/>
             <actionGroup ref="ClearProductsFilterActionGroup" stepKey="clearProductFilter"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="amOnLogoutPage"/>
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndicesAfterDelete"/>
+            <actionGroup ref="logout" stepKey="amOnLogoutPage"/>
         </after>
 
         <!-- Search and select products -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="navigateToProductIndex"/>
         <waitForPageLoad stepKey="waitForProductIndexPageLoad"/>
-        <actionGroup ref="SearchProductGridByKeyword2ActionGroup" stepKey="searchByKeyword">
+        <actionGroup ref="searchProductGridByKeyword2" stepKey="searchByKeyword">
             <argument name="keyword" value="api-simple-product"/>
         </actionGroup>
-        <actionGroup ref="SortProductsByIdDescendingActionGroup" stepKey="sortProductsByIdDescending"/>
+        <actionGroup ref="sortProductsByIdDescending" stepKey="sortProductsByIdDescending"/>
         <click selector="{{AdminProductGridSection.productGridCheckboxOnRow('1')}}" stepKey="clickCheckbox1"/>
         <click selector="{{AdminProductGridSection.productGridCheckboxOnRow('2')}}" stepKey="clickCheckbox2"/>
         <!-- Mass update attributes -->
@@ -67,9 +65,13 @@
         <see selector="{{AdminMessagesSection.success}}" userInput="Message is added to queue" stepKey="seeAttributeUpdateSuccessMsg"/>
 
         <!-- Start message queue for product attribute consumer -->
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="startMessageQueue">
+        <actionGroup ref="CliConsumerStartActionGroup" stepKey="runCron1">
             <argument name="consumerName" value="{{AdminProductAttributeUpdateMessageConsumerData.consumerName}}"/>
             <argument name="maxMessages" value="{{AdminProductAttributeUpdateMessageConsumerData.messageLimit}}"/>
+        </actionGroup>
+        <magentoCLI command="cron:run --group=index" stepKey="runCron2"/>
+        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
+            <argument name="indices" value=""/>
         </actionGroup>
 
         <!-- Assert on storefront default view -->

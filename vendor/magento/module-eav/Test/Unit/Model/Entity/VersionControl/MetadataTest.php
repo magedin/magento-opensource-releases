@@ -3,55 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\VersionControl;
 
-use Magento\Eav\Model\Entity\VersionControl\Metadata;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for version control metadata model.
  */
-class MetadataTest extends TestCase
+class MetadataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Metadata
+     * @var \Magento\Eav\Model\Entity\VersionControl\Metadata
      */
     protected $metadata;
 
     /**
-     * @var AbstractModel|MockObject
+     * @var \Magento\Framework\Model\AbstractModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->model = $this->getMockBuilder(AbstractModel::class)
-            ->addMethods(['getAttributes'])
-            ->onlyMethods(['getResource'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->model = $this->createPartialMock(
+            \Magento\Framework\Model\AbstractModel::class,
+            ['getResource', 'getAttributes']
+        );
 
         $this->resource = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -61,7 +52,7 @@ class MetadataTest extends TestCase
         );
 
         $this->connection = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -73,7 +64,7 @@ class MetadataTest extends TestCase
         $this->resource->expects($this->any())->method('getConnection')->willReturn($this->connection);
 
         $this->metadata = $objectManager->getObject(
-            Metadata::class
+            \Magento\Eav\Model\Entity\VersionControl\Metadata::class
         );
     }
 

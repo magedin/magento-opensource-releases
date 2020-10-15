@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model\ItemProvider;
 
@@ -15,10 +14,8 @@ use Magento\Sitemap\Model\ResourceModel\Catalog\Product as ProductResource;
 use Magento\Sitemap\Model\ResourceModel\Catalog\ProductFactory;
 use Magento\Sitemap\Model\SitemapItem;
 use Magento\Sitemap\Model\SitemapItemInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetItemsEmpty()
     {
@@ -46,7 +43,7 @@ class ProductTest extends TestCase
         $resolver = new ProductItemResolver($configReaderMock, $productFactoryMock, $itemFactoryMock);
         $items = $resolver->getItems(1);
 
-        self::assertCount(count($products), $items);
+        self::assertTrue(count($items) == count($products));
         foreach ($products as $index => $product) {
             self::assertSame($product->getUpdatedAt(), $items[$index]->getUpdatedAt());
             self::assertSame('daily', $items[$index]->getChangeFrequency());
@@ -101,7 +98,7 @@ class ProductTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getProductFactoryMock($returnValue)
     {
@@ -118,7 +115,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getItemFactoryMock()
     {
@@ -139,7 +136,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getConfigReaderMock()
     {
@@ -156,7 +153,7 @@ class ProductTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getProductCollectionMock($returnValue)
     {

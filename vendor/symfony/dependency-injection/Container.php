@@ -45,7 +45,7 @@ class_exists(ArgumentServiceLocator::class);
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Container implements ContainerInterface, ResetInterface
+class Container implements ResettableContainerInterface
 {
     protected $parameterBag;
     protected $services = [];
@@ -113,7 +113,7 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @throws InvalidArgumentException if the parameter is not defined
      */
-    public function getParameter(string $name)
+    public function getParameter($name)
     {
         return $this->parameterBag->get($name);
     }
@@ -125,7 +125,7 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @return bool The presence of parameter in container
      */
-    public function hasParameter(string $name)
+    public function hasParameter($name)
     {
         return $this->parameterBag->has($name);
     }
@@ -136,7 +136,7 @@ class Container implements ContainerInterface, ResetInterface
      * @param string $name  The parameter name
      * @param mixed  $value The parameter value
      */
-    public function setParameter(string $name, $value)
+    public function setParameter($name, $value)
     {
         $this->parameterBag->set($name, $value);
     }
@@ -146,8 +146,11 @@ class Container implements ContainerInterface, ResetInterface
      *
      * Setting a synthetic service to null resets it: has() returns false and get()
      * behaves in the same way as if the service was never created.
+     *
+     * @param string      $id      The service identifier
+     * @param object|null $service The service instance
      */
-    public function set(string $id, ?object $service)
+    public function set($id, $service)
     {
         // Runs the internal initializer; used by the dumped container to include always-needed files
         if (isset($this->privates['service_container']) && $this->privates['service_container'] instanceof \Closure) {
@@ -221,11 +224,17 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @see Reference
      */
-    public function get($id, int $invalidBehavior = /* self::EXCEPTION_ON_INVALID_REFERENCE */ 1)
+    public function get($id, $invalidBehavior = /* self::EXCEPTION_ON_INVALID_REFERENCE */ 1)
     {
-        return $this->services[$id]
+        $service = $this->services[$id]
             ?? $this->services[$id = $this->aliases[$id] ?? $id]
             ?? ('service_container' === $id ? $this : ($this->factories[$id] ?? [$this, 'make'])($id, $invalidBehavior));
+
+        if (!\is_object($service) && null !== $service) {
+            @trigger_error(sprintf('Non-object services are deprecated since Symfony 4.4, please fix the "%s" service which is of type "%s" right now.', $id, \gettype($service)), E_USER_DEPRECATED);
+        }
+
+        return $service;
     }
 
     /**
@@ -290,7 +299,7 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @return bool true if service has already been initialized, false otherwise
      */
-    public function initialized(string $id)
+    public function initialized($id)
     {
         if (isset($this->aliases[$id])) {
             $id = $this->aliases[$id];

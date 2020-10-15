@@ -3,13 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentCommentCreationInterface;
 use Magento\Sales\Api\Data\ShipmentCreationArgumentsInterface;
@@ -18,123 +15,120 @@ use Magento\Sales\Api\Data\ShipmentPackageInterface;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Exception\CouldNotShipException;
-use Magento\Sales\Exception\DocumentValidationException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Config as OrderConfig;
 use Magento\Sales\Model\Order\OrderStateResolverInterface;
+use Magento\Sales\Model\Order\ShipmentDocumentFactory;
 use Magento\Sales\Model\Order\Shipment\NotifierInterface;
 use Magento\Sales\Model\Order\Shipment\OrderRegistrarInterface;
-use Magento\Sales\Model\Order\ShipmentDocumentFactory;
 use Magento\Sales\Model\Order\Validation\ShipOrderInterface;
-use Magento\Sales\Model\ShipOrder;
 use Magento\Sales\Model\ValidatorResultInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Sales\Model\ShipOrder;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Class ShipOrderTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class ShipOrderTest extends TestCase
+class ShipOrderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
     /**
-     * @var OrderRepositoryInterface|MockObject
+     * @var OrderRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderRepositoryMock;
 
     /**
-     * @var ShipmentDocumentFactory|MockObject
+     * @var ShipmentDocumentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentDocumentFactoryMock;
 
     /**
-     * @var ShipOrderInterface|MockObject
+     * @var ShipOrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipOrderValidatorMock;
 
     /**
-     * @var OrderRegistrarInterface|MockObject
+     * @var OrderRegistrarInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderRegistrarMock;
 
     /**
-     * @var OrderStateResolverInterface|MockObject
+     * @var OrderStateResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderStateResolverMock;
 
     /**
-     * @var OrderConfig|MockObject
+     * @var OrderConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var ShipmentRepositoryInterface|MockObject
+     * @var ShipmentRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentRepositoryMock;
 
     /**
-     * @var NotifierInterface|MockObject
+     * @var NotifierInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $notifierInterfaceMock;
 
     /**
-     * @var ShipOrder|MockObject
+     * @var ShipOrder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $model;
 
     /**
-     * @var ShipmentCreationArgumentsInterface|MockObject
+     * @var ShipmentCreationArgumentsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentCommentCreationMock;
 
     /**
-     * @var ShipmentCommentCreationInterface|MockObject
+     * @var ShipmentCommentCreationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentCreationArgumentsMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var ShipmentInterface|MockObject
+     * @var ShipmentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $adapterMock;
 
     /**
-     * @var ShipmentTrackCreationInterface|MockObject
+     * @var ShipmentTrackCreationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $trackMock;
 
     /**
-     * @var ShipmentPackageInterface|MockObject
+     * @var ShipmentPackageInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $packageMock;
 
     /**
-     * @var ValidatorResultInterface|MockObject
+     * @var ValidatorResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validationMessagesMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
             ->disableOriginalConstructor()
@@ -186,12 +180,12 @@ class ShipOrderTest extends TestCase
             ->getMockForAbstractClass();
         $this->shipOrderValidatorMock = $this->getMockBuilder(ShipOrderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->validationMessagesMock = $this->getMockBuilder(ValidatorResultInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['hasMessages', 'getMessages', 'addMessage'])
-            ->getMockForAbstractClass();
-        $helper = new ObjectManager($this);
+            ->getMock();
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->model = $helper->getObject(
             ShipOrder::class,
@@ -215,8 +209,8 @@ class ShipOrderTest extends TestCase
      * @param array $items
      * @param bool $notify
      * @param bool $appendComment
-     * @throws CouldNotShipException
-     * @throws DocumentValidationException
+     * @throws \Magento\Sales\Exception\CouldNotShipException
+     * @throws \Magento\Sales\Exception\DocumentValidationException
      * @dataProvider dataProvider
      */
     public function testExecute($orderId, $items, $notify, $appendComment)
@@ -309,9 +303,11 @@ class ShipOrderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Sales\Api\Exception\DocumentValidationExceptionInterface
+     */
     public function testDocumentValidationException()
     {
-        $this->expectException('Magento\Sales\Api\Exception\DocumentValidationExceptionInterface');
         $orderId = 1;
         $items = [1 => 2];
         $notify = true;
@@ -365,9 +361,11 @@ class ShipOrderTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Sales\Api\Exception\CouldNotShipExceptionInterface
+     */
     public function testCouldNotShipException()
     {
-        $this->expectException('Magento\Sales\Api\Exception\CouldNotShipExceptionInterface');
         $orderId = 1;
         $items = [1 => 2];
         $notify = true;

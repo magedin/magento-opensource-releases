@@ -33,8 +33,7 @@ define([
 
             translation = {
                 'Hello World!': 'Hallo Welt!',
-                'Some text with symbols!-+"%#*': 'Ein Text mit Symbolen!-+"%#*',
-                'Text with empty value': ''
+                'Some text with symbols!-+"%#*': 'Ein Text mit Symbolen!-+"%#*'
             };
 
             $.mage.translate.add(translation);

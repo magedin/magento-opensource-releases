@@ -3,26 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit\Config;
 
-use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Config\FileIterator;
-use Magento\Framework\Config\FileIteratorFactory;
-use Magento\Framework\Config\FileResolverByModule;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Module\Dir\Reader;
+use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FileResolverByModuleTest extends TestCase
+class FileResolverByModuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FileResolverByModule
+     * @var \Magento\Framework\Config\FileResolverByModule
      */
     private $model;
 
@@ -32,50 +22,50 @@ class FileResolverByModuleTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readerMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystemMock;
 
     /**
-     * @var FileIteratorFactory|MockObject
+     * @var \Magento\Framework\Config\FileIteratorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileIteratorFactoryMock;
 
     /**
-     * @var ComponentRegistrar|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrar|\PHPUnit_Framework_MockObject_MockObject
      */
     private $componentRegistrarMock;
 
     /**
-     * @var File|MockObject
+     * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileDriver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->readerMock = $this->getMockBuilder(Reader::class)
+        $this->readerMock = $this->getMockBuilder(\Magento\Framework\Module\Dir\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $this->filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->fileIteratorFactoryMock = $this->getMockBuilder(FileIteratorFactory::class)
+        $this->fileIteratorFactoryMock = $this->getMockBuilder(\Magento\Framework\Config\FileIteratorFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->componentRegistrarMock = $this->getMockBuilder(ComponentRegistrar::class)
+        $this->componentRegistrarMock = $this->getMockBuilder(\Magento\Framework\Component\ComponentRegistrar::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->fileDriver = $this->getMockBuilder(File::class)
+        $this->fileDriver = $this->getMockBuilder(\Magento\Framework\Filesystem\Driver\File::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            FileResolverByModule::class,
+            \Magento\Framework\Config\FileResolverByModule::class,
             [
                 'moduleReader' => $this->readerMock,
                 'filesystem' => $this->filesystemMock,
@@ -104,9 +94,9 @@ class FileResolverByModuleTest extends TestCase
             ->willReturn([
                 '/www/app/etc/db_schema.xml' => '<xml>Primary Content</xml>'
             ]);
-        $directoryMock = $this->getMockBuilder(ReadInterface::class)
+        $directoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $directoryMock->expects(self::once())
             ->method('search')
             ->with('{db_schema.xml,*/db_schema.xml}')
@@ -137,9 +127,11 @@ class FileResolverByModuleTest extends TestCase
         );
     }
 
+    /**
+     * @expectedExceptionMessage Primary db_schema file doesn`t exist
+     */
     public function testGetWithException()
     {
-        $this->expectExceptionMessage('Primary db_schema file doesn`t exist');
         $iterator = $this->getMockBuilder(FileIterator::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -156,9 +148,9 @@ class FileResolverByModuleTest extends TestCase
             ->willReturn([
                 '/www/app/etc/db_schema.xml' => '<xml>Primary Content</xml>'
             ]);
-        $directoryMock = $this->getMockBuilder(ReadInterface::class)
+        $directoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $directoryMock->expects(self::once())
             ->method('search')
             ->with('{db_schema.xml,*/db_schema.xml}')
@@ -176,7 +168,7 @@ class FileResolverByModuleTest extends TestCase
         $this->fileDriver->expects(self::once())
             ->method('isFile')
             ->with('/www/app/etc/db_schema.xml')
-            ->willReturn(false);
+            ->willReturn(true);
         $this->filesystemMock->expects(self::once())
             ->method('getDirectoryRead')
             ->willReturn($directoryMock);
@@ -201,9 +193,9 @@ class FileResolverByModuleTest extends TestCase
             ->willReturn([
                 '/www/app/etc/db_schema.xml' => '<xml>Primary Content</xml>'
             ]);
-        $directoryMock = $this->getMockBuilder(ReadInterface::class)
+        $directoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $directoryMock->expects(self::once())
             ->method('search')
             ->with('{db_schema.xml,*/db_schema.xml}')

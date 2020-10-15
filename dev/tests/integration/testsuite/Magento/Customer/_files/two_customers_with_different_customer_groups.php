@@ -10,9 +10,8 @@ declare(strict_types = 1);
 use Magento\Customer\Model\Customer;
 use Magento\Store\Model\Store;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
+require 'customer.php';
 
 $customer = Bootstrap::getObjectManager()->create(
     Customer::class

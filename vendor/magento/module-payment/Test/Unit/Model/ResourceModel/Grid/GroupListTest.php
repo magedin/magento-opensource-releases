@@ -3,16 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\ResourceModel\Grid;
 
-use Magento\Payment\Helper\Data;
-use Magento\Payment\Model\ResourceModel\Grid\GroupList;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupListTest extends TestCase
+class GroupListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Payment\Model\ResourceModel\Grid\GroupsList
@@ -20,14 +14,14 @@ class GroupListTest extends TestCase
     protected $groupArrayModel;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helperMock = $this->createMock(Data::class);
-        $this->groupArrayModel = new GroupList($this->helperMock);
+        $this->helperMock = $this->createMock(\Magento\Payment\Helper\Data::class);
+        $this->groupArrayModel = new \Magento\Payment\Model\ResourceModel\Grid\GroupList($this->helperMock);
     }
 
     public function testToOptionArray()
@@ -36,7 +30,7 @@ class GroupListTest extends TestCase
             ->expects($this->once())
             ->method('getPaymentMethodList')
             ->with(true, true, true)
-            ->willReturn(['group data']);
+            ->will($this->returnValue(['group data']));
         $this->assertEquals(['group data'], $this->groupArrayModel->toOptionArray());
     }
 }

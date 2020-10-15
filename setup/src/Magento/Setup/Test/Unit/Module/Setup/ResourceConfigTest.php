@@ -3,15 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Setup;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Setup\Module\Setup\ResourceConfig;
-use PHPUnit\Framework\TestCase;
-
-class ResourceConfigTest extends TestCase
+class ResourceConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider getConnectionNameDataProvider
@@ -19,8 +14,8 @@ class ResourceConfigTest extends TestCase
      */
     public function testGetConnectionName($resourceName)
     {
-        $connectionName = ResourceConnection::DEFAULT_CONNECTION;
-        $resourceConfig = new ResourceConfig();
+        $connectionName = \Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION;
+        $resourceConfig = new \Magento\Setup\Module\Setup\ResourceConfig();
         $this->assertEquals($connectionName, $resourceConfig->getConnectionName($resourceName));
     }
 

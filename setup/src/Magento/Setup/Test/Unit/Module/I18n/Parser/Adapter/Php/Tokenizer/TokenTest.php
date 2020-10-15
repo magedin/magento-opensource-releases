@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter\Php\Tokenizer;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token
  */
-class TokenTest extends TestCase
+class TokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
     }
@@ -113,7 +110,7 @@ class TokenTest extends TestCase
     {
         $line = 110;
         return $this->objectManager->getObject(
-            Token::class,
+            \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token::class,
             [
                 'name' => $name,
                 'value' => $value,
@@ -124,13 +121,13 @@ class TokenTest extends TestCase
 
     public function testIsConcatenateOperatorTrue()
     {
-        $token = new Token('.', '.');
+        $token = new \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token('.', '.');
         $this->assertTrue($token->isConcatenateOperator());
     }
 
     public function testIsConcatenateOperatorFalse()
     {
-        $token = new Token(',', ',');
+        $token = new \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token(',', ',');
         $this->assertFalse($token->isConcatenateOperator());
     }
 }

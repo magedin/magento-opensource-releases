@@ -3,86 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Design\Config\FileUploader;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\UrlInterface;
-use Magento\MediaStorage\Model\File\Uploader;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Theme\Model\Design\Backend\File;
-use Magento\Theme\Model\Design\BackendModelFactory;
 use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
-use Magento\Theme\Model\Design\Config\MetadataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FileProcessorTest extends TestCase
+class FileProcessorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \Magento\MediaStorage\Model\File\UploaderFactory|MockObject */
+    /** @var \Magento\MediaStorage\Model\File\UploaderFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $uploaderFactory;
 
-    /** @var Uploader|MockObject */
+    /** @var \Magento\MediaStorage\Model\File\Uploader|\PHPUnit_Framework_MockObject_MockObject */
     protected $uploader;
 
-    /** @var BackendModelFactory|MockObject */
+    /** @var \Magento\Theme\Model\Design\BackendModelFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $backendModelFactory;
 
-    /** @var File|MockObject */
+    /** @var \Magento\Theme\Model\Design\Backend\File|\PHPUnit_Framework_MockObject_MockObject */
     protected $backendModel;
 
-    /** @var MetadataProvider|MockObject */
+    /** @var \Magento\Theme\Model\Design\Config\MetadataProvider|\PHPUnit_Framework_MockObject_MockObject */
     protected $metadataProvider;
 
-    /** @var WriteInterface|MockObject */
+    /** @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $directoryWrite;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var StoreInterface|MockObject */
+    /** @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $store;
 
     /** @var FileProcessor */
     protected $fileProcessor;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->uploaderFactory = $this->getMockBuilder(\Magento\MediaStorage\Model\File\UploaderFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->uploader = $this->getMockBuilder(Uploader::class)
+        $this->uploader = $this->getMockBuilder(\Magento\MediaStorage\Model\File\Uploader::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->backendModelFactory = $this->getMockBuilder(BackendModelFactory::class)
+        $this->backendModelFactory = $this->getMockBuilder(\Magento\Theme\Model\Design\BackendModelFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->backendModel = $this->getMockBuilder(File::class)
+        $this->backendModel = $this->getMockBuilder(\Magento\Theme\Model\Design\Backend\File::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->metadataProvider = $this->getMockBuilder(MetadataProvider::class)
+        $this->metadataProvider = $this->getMockBuilder(\Magento\Theme\Model\Design\Config\MetadataProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $filesystem = $this->getMockBuilder(Filesystem::class)
+        $filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->directoryWrite = $this->getMockBuilder(WriteInterface::class)
+        $this->directoryWrite = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMockForAbstractClass();
         $filesystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->with(DirectoryList::MEDIA)
             ->willReturn($this->directoryWrite);
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
-        $this->store = $this->getMockBuilder(StoreInterface::class)
+        $this->store = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->setMethods(['getBaseUrl'])
             ->getMockForAbstractClass();
 
@@ -102,7 +90,7 @@ class FileProcessorTest extends TestCase
         $metadata = [
             $fieldCode => [
                 'path' => $path,
-                'backend_model' => File::class
+                'backend_model' => \Magento\Theme\Model\Design\Backend\File::class
             ],
         ];
         $this->storeManager->expects($this->once())

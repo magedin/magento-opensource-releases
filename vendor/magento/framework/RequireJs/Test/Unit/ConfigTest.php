@@ -3,47 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\RequireJs\Test\Unit;
 
-use Magento\Framework\Code\Minifier\AdapterInterface;
-use Magento\Framework\Filesystem\File\Read;
-use Magento\Framework\Filesystem\File\ReadFactory;
-use Magento\Framework\RequireJs\Config;
-use Magento\Framework\RequireJs\Config\File\Collector\Aggregated;
-use Magento\Framework\View\Asset\ContextInterface;
-use Magento\Framework\View\Asset\Minification;
-use Magento\Framework\View\Asset\Repository;
+use \Magento\Framework\RequireJs\Config;
 use Magento\Framework\View\Asset\RepositoryMap;
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\DesignInterface;
-use Magento\Framework\View\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Aggregated|MockObject
+     * @var \Magento\Framework\RequireJs\Config\File\Collector\Aggregated|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileSource;
 
     /**
-     * @var DesignInterface|MockObject
+     * @var \Magento\Framework\View\DesignInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $design;
 
     /**
-     * @var Read|MockObject
+     * @var \Magento\Framework\Filesystem\File\Read|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileReader;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var \Magento\Framework\View\Asset\ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
@@ -53,31 +37,32 @@ class ConfigTest extends TestCase
     private $object;
 
     /**
-     * @var Minification|MockObject
+     * @var \Magento\Framework\View\Asset\Minification|\PHPUnit_Framework_MockObject_MockObject
      */
     private $minificationMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\Code\Minifier\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $minifyAdapterMock;
 
     /**
-     * @var RepositoryMap|MockObject
+     * @var RepositoryMap|\PHPUnit_Framework_MockObject_MockObject
      */
     private $repositoryMapMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->fileSource = $this->createMock(Aggregated::class);
-        $this->design = $this->getMockForAbstractClass(DesignInterface::class);
+        $this->fileSource = $this->createMock(\Magento\Framework\RequireJs\Config\File\Collector\Aggregated::class);
+        $this->design = $this->getMockForAbstractClass(\Magento\Framework\View\DesignInterface::class);
 
-        $readFactory = $this->createMock(ReadFactory::class);
-        $this->fileReader = $this->createMock(Read::class);
-        $readFactory->method('create')
-            ->willReturn($this->fileReader);
-        $repo = $this->createMock(Repository::class);
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $readFactory = $this->createMock(\Magento\Framework\Filesystem\File\ReadFactory::class);
+        $this->fileReader = $this->createMock(\Magento\Framework\Filesystem\File\Read::class);
+        $readFactory->expects($this->any())
+            ->method('create')
+            ->will($this->returnValue($this->fileReader));
+        $repo = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Asset\ContextInterface::class)
             ->setMethods(
                 [
                     'getConfigPath',
@@ -88,13 +73,13 @@ class ConfigTest extends TestCase
                     'getLocale'
                 ]
             )
-            ->getMockForAbstractClass();
-        $repo->expects($this->once())->method('getStaticViewFileContext')->willReturn($this->context);
-        $this->minificationMock = $this->getMockBuilder(Minification::class)
+            ->getMock();
+        $repo->expects($this->once())->method('getStaticViewFileContext')->will($this->returnValue($this->context));
+        $this->minificationMock = $this->getMockBuilder(\Magento\Framework\View\Asset\Minification::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->minifyAdapterMock = $this->getMockBuilder(AdapterInterface::class)
+        $this->minifyAdapterMock = $this->getMockBuilder(\Magento\Framework\Code\Minifier\AdapterInterface::class)
             ->getMockForAbstractClass();
 
         $this->repositoryMapMock = $this->getMockBuilder(RepositoryMap::class)
@@ -116,33 +101,38 @@ class ConfigTest extends TestCase
     {
         $this->fileReader->expects($this->any())
             ->method('readAll')
-            ->willReturnCallback(
-                function ($file) {
-                    return $file . ' content';
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($file) {
+                        return $file . ' content';
+                    }
+                )
             );
-        $fileOne = $this->createMock(File::class);
+        $fileOne = $this->createMock(\Magento\Framework\View\File::class);
         $fileOne->expects($this->once())
             ->method('getFilename')
-            ->willReturn('some/full/relative/path/file_one.js');
+            ->will($this->returnValue('some/full/relative/path/file_one.js'));
         $fileOne->expects($this->once())
             ->method('getName')
-            ->willReturn('file_one.js');
-        $fileTwo = $this->createMock(File::class);
+            ->will($this->returnValue('file_one.js'));
+        $fileOne->expects($this->once())
+            ->method('getModule')
+            ->will($this->returnValue('Module_One'));
+        $fileTwo = $this->createMock(\Magento\Framework\View\File::class);
         $fileTwo->expects($this->once())
             ->method('getFilename')
-            ->willReturn('some/full/relative/path/file_two.js');
+            ->will($this->returnValue('some/full/relative/path/file_two.js'));
         $fileTwo->expects($this->once())
             ->method('getName')
-            ->willReturn('file_two.js');
-        $theme = $this->getMockForAbstractClass(ThemeInterface::class);
+            ->will($this->returnValue('file_two.js'));
+        $theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
         $this->design->expects($this->once())
             ->method('getDesignTheme')
-            ->willReturn($theme);
+            ->will($this->returnValue($theme));
         $this->fileSource->expects($this->once())
             ->method('getFiles')
             ->with($theme, Config::CONFIG_FILE_NAME)
-            ->willReturn([$fileOne, $fileTwo]);
+            ->will($this->returnValue([$fileOne, $fileTwo]));
         $this->minificationMock
             ->expects($this->atLeastOnce())
             ->method('isEnabled')
@@ -215,7 +205,7 @@ code;
             ->expects($this->any())
             ->method('addMinifiedSign')
             ->willReturnArgument(0);
-        $this->context->expects($this->once())->method('getConfigPath')->willReturn('path');
+        $this->context->expects($this->once())->method('getConfigPath')->will($this->returnValue('path'));
         $actual = $this->object->getConfigFileRelativePath();
         $this->assertSame('path/requirejs-config.js', $actual);
     }
@@ -226,7 +216,7 @@ code;
             ->expects($this->any())
             ->method('addMinifiedSign')
             ->willReturnArgument(0);
-        $this->context->expects($this->once())->method('getPath')->willReturn('path');
+        $this->context->expects($this->once())->method('getPath')->will($this->returnValue('path'));
         $actual = $this->object->getMixinsFileRelativePath();
         $this->assertSame('path/mage/requirejs/mixins.js', $actual);
     }
@@ -237,17 +227,17 @@ code;
             ->expects($this->any())
             ->method('addMinifiedSign')
             ->willReturnArgument(0);
-        $this->context->expects($this->once())->method('getConfigPath')->willReturn('path');
+        $this->context->expects($this->once())->method('getConfigPath')->will($this->returnValue('path'));
         $actual = $this->object->getMinResolverRelativePath();
         $this->assertSame('path/requirejs-min-resolver.js', $actual);
     }
 
     public function testGetBaseConfig()
     {
-        $this->context->expects($this->once())->method('getPath')->willReturn('area/theme/locale');
+        $this->context->expects($this->once())->method('getPath')->will($this->returnValue('area/theme/locale'));
         $this->context->expects($this->once())
             ->method('getBaseUrl')
-            ->willReturn('http://base.url/');
+            ->will($this->returnValue('http://base.url/'));
         $expected = <<<expected
 require.config({"baseUrl":"http://base.url/area/theme/locale"});
 expected;

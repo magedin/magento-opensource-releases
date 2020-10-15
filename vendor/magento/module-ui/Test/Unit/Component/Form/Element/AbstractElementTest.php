@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Component\Form\Element\AbstractElement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\Processor;
 
-abstract class AbstractElementTest extends TestCase
+/**
+ * Class AbstractElementTest
+ */
+abstract class AbstractElementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -27,20 +26,19 @@ abstract class AbstractElementTest extends TestCase
     protected $model;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Processor|MockObject
+     * @var Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->contextMock = $this->getMockBuilder(ContextInterface::class)
-            ->getMockForAbstractClass();
+        $this->contextMock = $this->getMockBuilder(ContextInterface::class)->getMockForAbstractClass();
     }
 
     /**
@@ -74,21 +72,21 @@ abstract class AbstractElementTest extends TestCase
 
     public function testGetValue()
     {
-        $this->assertNull($this->getModel()->getValue());
+        $this->assertSame(null, $this->getModel()->getValue());
     }
 
     public function testGetFormInputName()
     {
-        $this->assertNull($this->getModel()->getFormInputName());
+        $this->assertSame(null, $this->getModel()->getFormInputName());
     }
 
     public function testIsReadonly()
     {
-        $this->assertFalse($this->getModel()->isReadonly());
+        $this->assertSame(false, $this->getModel()->isReadonly());
     }
 
     public function testGetCssClasses()
     {
-        $this->assertNull($this->getModel()->getCssClasses());
+        $this->assertSame(null, $this->getModel()->getCssClasses());
     }
 }

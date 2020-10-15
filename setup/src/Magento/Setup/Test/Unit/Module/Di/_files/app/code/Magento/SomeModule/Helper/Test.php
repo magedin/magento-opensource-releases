@@ -3,11 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SomeModule\Helper;
-
-use Magento\SomeModule\ElementFactory;
 
 /**
  * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
@@ -25,7 +21,7 @@ class Test
     protected $_elementFactory;
 
     /**
-     * @var ElementFactory
+     * @var \Magento\SomeModule\ElementFactory
      */
     protected $_newElementFactory;
 
@@ -33,12 +29,12 @@ class Test
      * Test constructor.
      * @param \Magento\SomeModule\Module\Factory $factory
      * @param \Magento\SomeModule\Element\Factory $elementFactory
-     * @param ElementFactory $rightElementFactory
+     * @param \Magento\SomeModule\ElementFactory $rightElementFactory
      */
     public function __construct(
         \Magento\SomeModule\Module\Factory $factory,
         \Magento\SomeModule\Element\Factory $elementFactory,
-        ElementFactory $rightElementFactory
+        \Magento\SomeModule\ElementFactory $rightElementFactory
     ) {
         $this->_factory = $factory;
         $this->_elementFactory = $elementFactory;
@@ -46,11 +42,11 @@ class Test
     }
 
     /**
-     * @param ElementFactory $factory
+     * @param \Magento\SomeModule\ElementFactory $factory
      * @param array $data
      */
-    public function testHelper(ElementFactory $factory, array $data = [])
+    public function testHelper(\Magento\SomeModule\ElementFactory $factory, array $data = [])
     {
-        $factory->create(ElementFactory::class, ['data' => $data]);
+        $factory->create(\Magento\SomeModule\ElementFactory::class, ['data' => $data]);
     }
 }

@@ -262,12 +262,3 @@ switch ($sContext)
         do_something();
     }
 }
-
-$foo = $foo ?
-    function () {
-        switch ($a) {
-            case 'a':
-                break;
-        }
-    } :
-    null;

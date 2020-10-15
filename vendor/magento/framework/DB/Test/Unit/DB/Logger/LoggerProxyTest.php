@@ -3,34 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\DB\Logger;
 
-use Magento\Framework\DB\Logger\File;
 use Magento\Framework\DB\Logger\FileFactory;
-use Magento\Framework\DB\Logger\LoggerProxy;
-use Magento\Framework\DB\Logger\Quiet;
 use Magento\Framework\DB\Logger\QuietFactory;
+use Magento\Framework\DB\Logger\LoggerProxy;
+use Magento\Framework\DB\Logger\File;
+use Magento\Framework\DB\Logger\Quiet;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class LoggerProxyTest extends TestCase
+class LoggerProxyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LoggerProxy
+     * @var \Magento\Framework\DB\Logger\LoggerProxy
      */
     private $loggerProxy;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
     }

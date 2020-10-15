@@ -3,38 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Cache;
 
-use Magento\Framework\App\Cache\Manager;
-use Magento\Framework\App\Cache\StateInterface;
-use Magento\Framework\App\Cache\Type\FrontendPool;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\Console\Response;
-use Magento\Framework\Cache\FrontendInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Cache\Manager;
 
-class ManagerTest extends TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|TypeListInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\TypeListInterface
      */
     private $cacheTypeList;
 
     /**
-     * @var MockObject|StateInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\StateInterface
      */
     private $cacheState;
 
     /**
-     * @var MockObject|Response
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Console\Response
      */
     private $response;
 
     /**
-     * @var MockObject|FrontendPool
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Type\FrontendPool
      */
     private $frontendPool;
 
@@ -43,12 +35,12 @@ class ManagerTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->cacheTypeList = $this->getMockForAbstractClass(TypeListInterface::class);
-        $this->cacheState = $this->getMockForAbstractClass(StateInterface::class);
-        $this->response = $this->createMock(Response::class);
-        $this->frontendPool = $this->createMock(FrontendPool::class);
+        $this->cacheTypeList = $this->getMockForAbstractClass(\Magento\Framework\App\Cache\TypeListInterface::class);
+        $this->cacheState = $this->getMockForAbstractClass(\Magento\Framework\App\Cache\StateInterface::class);
+        $this->response = $this->createMock(\Magento\Framework\App\Console\Response::class);
+        $this->frontendPool = $this->createMock(\Magento\Framework\App\Cache\Type\FrontendPool::class);
         $this->model = new Manager($this->cacheTypeList, $this->cacheState, $this->frontendPool);
     }
 
@@ -72,10 +64,10 @@ class ManagerTest extends TestCase
         $cacheStatusMap = [['foo', true], ['bar', false], ['baz', false]];
         $this->cacheState->expects($this->exactly(3))
             ->method('isEnabled')
-            ->willReturnMap($cacheStatusMap);
+            ->will($this->returnValueMap($cacheStatusMap));
         $this->cacheState->expects($this->exactly(2))
             ->method('setEnabled')
-            ->willReturnMap([['bar', true], ['baz', true]]);
+            ->will($this->returnValueMap([['bar', true], ['baz', true]]));
         $this->cacheState->expects($this->once())->method('persist');
         $this->assertEquals(['bar', 'baz'], $this->model->setEnabled($caches, true));
     }
@@ -93,7 +85,7 @@ class ManagerTest extends TestCase
         $cacheStatusMap = [['foo', true], ['bar', false], ['baz', false]];
         $this->cacheState->expects($this->exactly(3))
             ->method('isEnabled')
-            ->willReturnMap($cacheStatusMap);
+            ->will($this->returnValueMap($cacheStatusMap));
         $this->cacheState->expects($this->once())->method('setEnabled')->with('foo', false);
         $this->cacheState->expects($this->once())->method('persist');
         $this->frontendPool->expects($this->never())->method('get');
@@ -109,14 +101,14 @@ class ManagerTest extends TestCase
     public function testFlushAll()
     {
         $cacheTypes = ['foo', 'bar', 'baz'];
-        $frontendFoo = $this->getMockForAbstractClass(FrontendInterface::class);
-        $frontendBar = $this->getMockForAbstractClass(FrontendInterface::class);
-        $frontendBaz = $this->getMockForAbstractClass(FrontendInterface::class);
-        $this->frontendPool->expects($this->exactly(3))->method('get')->willReturnMap([
+        $frontendFoo = $this->getMockForAbstractClass(\Magento\Framework\Cache\FrontendInterface::class);
+        $frontendBar = $this->getMockForAbstractClass(\Magento\Framework\Cache\FrontendInterface::class);
+        $frontendBaz = $this->getMockForAbstractClass(\Magento\Framework\Cache\FrontendInterface::class);
+        $this->frontendPool->expects($this->exactly(3))->method('get')->will($this->returnValueMap([
             ['foo', $frontendFoo],
             ['bar', $frontendBar],
             ['baz', $frontendBaz],
-        ]);
+        ]));
         $backendOne = $this->getMockForAbstractClass(\Zend_Cache_Backend_Interface::class);
         $backendTwo = $this->getMockForAbstractClass(\Zend_Cache_Backend_Interface::class);
         $frontendFoo->expects($this->once())->method('getBackend')->willReturn($backendOne);

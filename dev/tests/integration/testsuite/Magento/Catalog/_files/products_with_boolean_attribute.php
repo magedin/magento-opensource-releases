@@ -5,14 +5,11 @@
  */
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Helper\CacheCleaner;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/products_for_search.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_boolean_attribute.php');
+require_once __DIR__ . '/products_for_search.php';
+require_once __DIR__ . '/product_boolean_attribute.php';
 
-$objectManager = Bootstrap::getObjectManager();
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
 
 $yesIds = [101, 102, 104];

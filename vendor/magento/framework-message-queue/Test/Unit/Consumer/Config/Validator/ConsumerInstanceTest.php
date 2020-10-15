@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Consumer\Config\Validator;
 
-use Magento\Framework\MessageQueue\BatchConsumer;
 use Magento\Framework\MessageQueue\Consumer\Config\Validator\ConsumerInstance as ConsumerInstanceValidator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class ConsumerInstanceTest extends TestCase
+class ConsumerInstanceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConsumerInstanceValidator
@@ -22,9 +17,9 @@ class ConsumerInstanceTest extends TestCase
     /**
      * Initialize parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->validator = $objectManager->getObject(ConsumerInstanceValidator::class);
     }
 
@@ -48,7 +43,7 @@ class ConsumerInstanceTest extends TestCase
                     'consumer1' => [
                         'name' => 'consumer1',
                         'queue' => 'queue1',
-                        'consumerInstance' => BatchConsumer::class,
+                        'consumerInstance' => \Magento\Framework\MessageQueue\BatchConsumer::class,
                         'handlers' => [
                             ['type' => 'handlerClassOne', 'method' => 'handlerMethodOne'],
                             ['type' => 'handlerClassTwo', 'method' => 'handlerMethodTwo'],

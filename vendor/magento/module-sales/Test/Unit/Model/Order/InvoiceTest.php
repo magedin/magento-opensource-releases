@@ -3,43 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Math\CalculatorFactory;
-use Magento\Framework\Model\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Address;
-use Magento\Sales\Model\Order\Config;
 use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Invoice\CommentFactory;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\OrderFactory as SalesOrderFactory;
 use Magento\Sales\Model\ResourceModel\Order\Invoice\Collection as InvoiceCollection;
-use Magento\Sales\Model\ResourceModel\Order\Invoice\Item\CollectionFactory;
 use Magento\Sales\Model\ResourceModel\OrderFactory;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
+ * Class InvoiceTest
  *
+ * @package Magento\Sales\Model\Order
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InvoiceTest extends TestCase
+class InvoiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Invoice
+     * @var \Magento\Sales\Model\Order\Invoice
      */
     protected $model;
 
     /**
      * Same as $model but Order was not set
-     * @var Invoice
+     * @var \Magento\Sales\Model\Order\Invoice
      */
     protected $modelWithoutOrder;
 
@@ -49,7 +38,7 @@ class InvoiceTest extends TestCase
     protected $entityType = 'invoice';
 
     /**
-     * @var OrderFactory|MockObject
+     * @var OrderFactory |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderFactory;
 
@@ -59,28 +48,28 @@ class InvoiceTest extends TestCase
     private $order;
 
     /**
-     * @var MockObject|Payment
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Sales\Model\Order\Payment
      */
     protected $paymentMock;
 
     /**
-     * @var MockObject|ManagerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Event\ManagerInterface
      */
     protected $eventManagerMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $helperManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helperManager = new ObjectManager($this);
+        $this->helperManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->order = $this->getMockBuilder(Order::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
-                    'getPayment', 'load', 'setHistoryEntityName', 'getStore', 'getBillingAddress',
+                    'getPayment', '__wakeup', 'load', 'setHistoryEntityName', 'getStore', 'getBillingAddress',
                     'getShippingAddress', 'getConfig',
                 ]
             )
@@ -90,16 +79,15 @@ class InvoiceTest extends TestCase
             ->willReturnSelf();
 
         $this->paymentMock = $this->getMockBuilder(
-            Payment::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['canVoid', 'canCapture', 'capture', 'pay', 'cancelInvoice']
-            )->getMock();
+            \Magento\Sales\Model\Order\Payment::class
+        )->disableOriginalConstructor()->setMethods(
+            ['canVoid', '__wakeup', 'canCapture', 'capture', 'pay', 'cancelInvoice']
+        )->getMock();
 
-        $this->orderFactory = $this->createPartialMock(SalesOrderFactory::class, ['create']);
+        $this->orderFactory = $this->createPartialMock(\Magento\Sales\Model\OrderFactory::class, ['create']);
 
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $contextMock = $this->createMock(Context::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\Context::class);
         $contextMock->expects($this->any())
             ->method('getEventDispatcher')
             ->willReturn($this->eventManagerMock);
@@ -107,17 +95,17 @@ class InvoiceTest extends TestCase
         $arguments = [
             'context' => $contextMock,
             'orderFactory' => $this->orderFactory,
-            'calculatorFactory' => $this->createMock(CalculatorFactory::class),
-            'invoiceItemCollectionFactory' => $this->createMock(CollectionFactory::class),
-            'invoiceCommentFactory' => $this->createMock(CommentFactory::class),
-            'commentCollectionFactory' => $this->createMock(
-                \Magento\Sales\Model\ResourceModel\Order\Invoice\Comment\CollectionFactory::class
-            ),
+            'calculatorFactory' => $this->createMock(\Magento\Framework\Math\CalculatorFactory::class),
+            'invoiceItemCollectionFactory' =>
+                $this->createMock(\Magento\Sales\Model\ResourceModel\Order\Invoice\Item\CollectionFactory::class),
+            'invoiceCommentFactory' => $this->createMock(\Magento\Sales\Model\Order\Invoice\CommentFactory::class),
+            'commentCollectionFactory' =>
+                $this->createMock(\Magento\Sales\Model\ResourceModel\Order\Invoice\Comment\CollectionFactory::class),
         ];
-        $this->model = $this->helperManager->getObject(Invoice::class, $arguments);
+        $this->model = $this->helperManager->getObject(\Magento\Sales\Model\Order\Invoice::class, $arguments);
         $this->model->setOrder($this->order);
         $this->modelWithoutOrder = $this->helperManager->getObject(
-            Invoice::class,
+            \Magento\Sales\Model\Order\Invoice::class,
             $arguments
         );
     }
@@ -130,10 +118,10 @@ class InvoiceTest extends TestCase
     {
         $this->order->expects($this->once())->method('getPayment')->willReturn($this->paymentMock);
         $this->paymentMock->expects($this->once())
-            ->method('canVoid')
+            ->method('canVoid', '__wakeup')
             ->willReturn($canVoid);
 
-        $this->model->setState(Invoice::STATE_PAID);
+        $this->model->setState(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
         $this->assertEquals($canVoid, $this->model->canVoid());
     }
 
@@ -143,7 +131,7 @@ class InvoiceTest extends TestCase
      */
     public function testDefaultCanVoid($canVoid)
     {
-        $this->model->setState(Invoice::STATE_PAID);
+        $this->model->setState(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
         $this->model->setCanVoidFlag($canVoid);
 
         $this->assertEquals($canVoid, $this->model->canVoid());
@@ -161,7 +149,8 @@ class InvoiceTest extends TestCase
     {
         $this->order->expects($this->once())
             ->method('setHistoryEntityName')
-            ->with($this->entityType)->willReturnSelf();
+            ->with($this->entityType)
+            ->will($this->returnSelf());
 
         $this->assertEquals($this->order, $this->model->getOrder());
     }
@@ -213,14 +202,14 @@ class InvoiceTest extends TestCase
 
     public function testGetStore()
     {
-        $store = $this->helperManager->getObject(Store::class, []);
+        $store = $this->helperManager->getObject(\Magento\Store\Model\Store::class, []);
         $this->order->expects($this->once())->method('getStore')->willReturn($store);
         $this->assertEquals($store, $this->model->getStore());
     }
 
     public function testGetShippingAddress()
     {
-        $address = $this->helperManager->getObject(Address::class, []);
+        $address = $this->helperManager->getObject(\Magento\Sales\Model\Order\Address::class, []);
         $this->order->expects($this->once())->method('getShippingAddress')->willReturn($address);
         $this->assertEquals($address, $this->model->getShippingAddress());
     }
@@ -386,7 +375,7 @@ class InvoiceTest extends TestCase
         self::assertTrue($this->model->wasPayCalled());
         self::assertEquals($expectedState, $this->model->getState());
 
-        //second call of pay() method must do nothing
+        #second call of pay() method must do nothing
         $this->model->pay();
 
         self::assertEquals($expectedBaseTotal, $this->order->getBaseTotalPaid());
@@ -428,9 +417,8 @@ class InvoiceTest extends TestCase
      */
     public function testCancelOpenInvoice()
     {
-        $orderConfigMock = $this->getMockBuilder(Config::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
+        $orderConfigMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Config::class)
+            ->disableOriginalConstructor()->setMethods(
                 ['getStateDefaultStatus']
             )->getMock();
 

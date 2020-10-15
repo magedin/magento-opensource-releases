@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © Magento, Inc. All rights reserved.
@@ -8,13 +8,14 @@ namespace Magento\Sales\Test\Unit\Model\Order;
 
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\StateResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StateResolverTest extends TestCase
+/**
+ * Class StateCheckerTest
+ */
+class StateResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Order
+     * @var \PHPUnit_Framework_MockObject_MockObject|Order
      */
     private $orderMock;
 
@@ -23,7 +24,7 @@ class StateResolverTest extends TestCase
      */
     private $orderStateResolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->orderMock = $this->getMockBuilder(Order::class)
             ->disableOriginalConstructor()

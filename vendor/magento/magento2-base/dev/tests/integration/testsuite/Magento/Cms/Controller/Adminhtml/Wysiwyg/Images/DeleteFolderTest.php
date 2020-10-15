@@ -11,8 +11,6 @@ use Magento\Framework\App\Response\HttpFactory as ResponseFactory;
 
 /**
  * Test for \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\DeleteFolder class.
- *
- * @magentoAppArea adminhtml
  */
 class DeleteFolderTest extends \PHPUnit\Framework\TestCase
 {
@@ -49,7 +47,7 @@ class DeleteFolderTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->filesystem = $objectManager->get(\Magento\Framework\Filesystem::class);
@@ -155,7 +153,7 @@ class DeleteFolderTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         $filesystem = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->get(\Magento\Framework\Filesystem::class);

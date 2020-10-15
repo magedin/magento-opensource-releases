@@ -3,49 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model;
 
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Payment\Model\CcConfig;
-use Magento\Payment\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class CcConfigTest extends TestCase
+class CcConfigTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CcConfig */
+    /** @var \Magento\Payment\Model\CcConfig */
     protected $model;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\Payment\Model\Config|\PHPUnit_Framework_MockObject_MockObject */
     protected $configMock;
 
-    /** @var Repository|MockObject */
+    /** @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject */
     protected $repositoryMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestMock;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $urlMock;
 
-    /** @var LoggerInterface|MockObject */
+    /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->createMock(Config::class);
-        $this->repositoryMock = $this->createMock(Repository::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->urlMock = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->configMock = $this->createMock(\Magento\Payment\Model\Config::class);
+        $this->repositoryMock = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->urlMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
 
-        $this->model = new CcConfig(
+        $this->model = new \Magento\Payment\Model\CcConfig(
             $this->configMock,
             $this->repositoryMock,
             $this->requestMock,
@@ -86,7 +76,7 @@ class CcConfigTest extends TestCase
 
     public function testHasVerification()
     {
-        $this->assertTrue($this->model->hasVerification());
+        $this->assertEquals(true, $this->model->hasVerification());
     }
 
     public function testGetCvvImageUrl()

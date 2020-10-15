@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Http\Converter\Soap;
 
 use Magento\Payment\Gateway\Http\Converter\Soap\ObjectToArrayConverter;
-use PHPUnit\Framework\TestCase;
 
-class ObjectToArrayConverterTest extends TestCase
+class ObjectToArrayConverterTest extends \PHPUnit\Framework\TestCase
 {
     public function testConvert()
     {

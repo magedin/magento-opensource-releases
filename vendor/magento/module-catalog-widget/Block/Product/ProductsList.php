@@ -8,7 +8,6 @@ namespace Magento\CatalogWidget\Block\Product;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Block\Product\AbstractProduct;
-use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Block\Product\Widget\Html\Pager;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Visibility;
@@ -17,7 +16,7 @@ use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\CatalogWidget\Model\Rule;
 use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Framework\App\Http\Context;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -28,7 +27,7 @@ use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Rule\Model\Condition\Combine;
-use Magento\Rule\Model\Condition\Sql\Builder as SqlBuilder;
+use Magento\Rule\Model\Condition\Sql\Builder;
 use Magento\Widget\Block\BlockInterface;
 use Magento\Widget\Helper\Conditions;
 
@@ -70,7 +69,7 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
     protected $pager;
 
     /**
-     * @var HttpContext
+     * @var Context
      */
     protected $httpContext;
 
@@ -89,7 +88,7 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
     protected $productCollectionFactory;
 
     /**
-     * @var SqlBuilder
+     * @var Builder
      */
     protected $sqlBuilder;
 
@@ -126,7 +125,7 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
     private $urlEncoder;
 
     /**
-     * @var RendererList
+     * @var \Magento\Framework\View\Element\RendererList
      */
     private $rendererListBlock;
 
@@ -136,34 +135,34 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
     private $categoryRepository;
 
     /**
-     * @param Context $context
+     * @param \Magento\Catalog\Block\Product\Context $context
      * @param CollectionFactory $productCollectionFactory
      * @param Visibility $catalogProductVisibility
-     * @param HttpContext $httpContext
-     * @param SqlBuilder $sqlBuilder
+     * @param Context $httpContext
+     * @param Builder $sqlBuilder
      * @param Rule $rule
      * @param Conditions $conditionsHelper
+     * @param CategoryRepositoryInterface $categoryRepository
      * @param array $data
      * @param Json|null $json
      * @param LayoutFactory|null $layoutFactory
      * @param EncoderInterface|null $urlEncoder
-     * @param CategoryRepositoryInterface|null $categoryRepository
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context $context,
+        \Magento\Catalog\Block\Product\Context $context,
         CollectionFactory $productCollectionFactory,
         Visibility $catalogProductVisibility,
-        HttpContext $httpContext,
-        SqlBuilder $sqlBuilder,
+        Context $httpContext,
+        Builder $sqlBuilder,
         Rule $rule,
         Conditions $conditionsHelper,
+        CategoryRepositoryInterface $categoryRepository,
         array $data = [],
         Json $json = null,
         LayoutFactory $layoutFactory = null,
-        EncoderInterface $urlEncoder = null,
-        CategoryRepositoryInterface $categoryRepository = null
+        EncoderInterface $urlEncoder = null
     ) {
         $this->productCollectionFactory = $productCollectionFactory;
         $this->catalogProductVisibility = $catalogProductVisibility;
@@ -174,8 +173,7 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
         $this->json = $json ?: ObjectManager::getInstance()->get(Json::class);
         $this->layoutFactory = $layoutFactory ?: ObjectManager::getInstance()->get(LayoutFactory::class);
         $this->urlEncoder = $urlEncoder ?: ObjectManager::getInstance()->get(EncoderInterface::class);
-        $this->categoryRepository = $categoryRepository ?? ObjectManager::getInstance()
-                ->get(CategoryRepositoryInterface::class);
+        $this->categoryRepository = $categoryRepository;
         parent::__construct(
             $context,
             $data
@@ -196,12 +194,14 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
             ->addColumnCountLayoutDepend('2columns-right', 4)
             ->addColumnCountLayoutDepend('3columns', 3);
 
-        $this->addData([
-            'cache_lifetime' => 86400,
-            'cache_tags' => [
-                Product::CACHE_TAG,
-            ],
-        ]);
+        $this->addData(
+            [
+                'cache_lifetime' => 86400,
+                'cache_tags' => [
+                    Product::CACHE_TAG,
+                ],
+            ]
+        );
     }
 
     /**
@@ -506,15 +506,14 @@ class ProductsList extends AbstractProduct implements BlockInterface, IdentityIn
      */
     public function getIdentities()
     {
-        $identities = [[]];
+        $identities = [];
         if ($this->getProductCollection()) {
             foreach ($this->getProductCollection() as $product) {
                 if ($product instanceof IdentityInterface) {
-                    $identities[] = $product->getIdentities();
+                    $identities += $product->getIdentities();
                 }
             }
         }
-        $identities = array_merge(...$identities);
 
         return $identities ?: [Product::CACHE_TAG];
     }

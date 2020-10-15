@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Controller\Adminhtml\Session;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ViewInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\DataObject;
 use Magento\Framework\Phrase;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Page\Title;
-use Magento\Security\Controller\Adminhtml\Session\Activity;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Controller\Adminhtml\Session\Activity testing
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ActivityTest extends TestCase
+class ActivityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var  \Magento\Security\Controller\Adminhtml\Session\Activity
@@ -29,17 +23,17 @@ class ActivityTest extends TestCase
     protected $controller;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     protected $contextMock;
 
     /**
-     * @var ViewInterface
+     * @var \Magento\Framework\App\ViewInterface
      */
     protected $viewMock;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -47,19 +41,19 @@ class ActivityTest extends TestCase
      * Init mocks for tests
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->viewMock = $this->getMockForAbstractClass(ViewInterface::class);
+        $this->viewMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
         $this->contextMock->expects($this->any())
             ->method('getView')
-            ->willReturn($this->viewMock);
+            ->will($this->returnValue($this->viewMock));
 
         $this->controller = $this->objectManager->getObject(
-            Activity::class,
+            \Magento\Security\Controller\Adminhtml\Session\Activity::class,
             [
                 'context' => $this->contextMock
             ]
@@ -71,7 +65,7 @@ class ActivityTest extends TestCase
      */
     public function testExecute()
     {
-        $titleMock = $this->getMockBuilder(Title::class)
+        $titleMock = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
         $titleMock

@@ -37,8 +37,6 @@ final class DescribeNameNotFoundException extends \InvalidArgumentException
     {
         $this->name = $name;
         $this->type = $type;
-
-        parent::__construct();
     }
 
     /**

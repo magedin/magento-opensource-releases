@@ -10,24 +10,15 @@
  * @see \Magento\Backend\Block\Template
  */
 
-/**
- * @var \Magento\Backend\Block\Template $block
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
 ?>
-<?php
-/** @var \Magento\Directory\Helper\Data $directoryHelper */
-$directoryHelper = $block->getData('directoryHelper');
-$countriesWithOptionalZip = /* @noEscape */ $directoryHelper->getCountriesWithOptionalZip(true);
-$scriptString = <<<script
-
+<script>
 require([
     "prototype",
     "mage/adminhtml/events"
 ], function(){
 
 //<![CDATA[
-optionalZipCountries = {$countriesWithOptionalZip};
+optionalZipCountries = <?= /* @noEscape */ $this->helper(\Magento\Directory\Helper\Data::class)->getCountriesWithOptionalZip(true) ?>;
 
 function onAddressCountryChanged (countryElement) {
     var zipElementId = countryElement.id.replace(/country_id/, 'postcode');
@@ -64,6 +55,4 @@ window.optionalZipCountries = optionalZipCountries;
 //]]>
 
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

@@ -14,7 +14,8 @@ use Magento\TestFramework\TestCase\WebapiAbstract;
 use Magento\Webapi\Model\Rest\Config as HttpConstants;
 
 /**
- * Tax Rule Repository API test
+ * Class TaxRuleRepositoryInterfaceTest
+ * @package Magento\Tax\Api
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
@@ -50,7 +51,7 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->searchCriteriaBuilder = Bootstrap::getObjectManager()->create(
             \Magento\Framework\Api\SearchCriteriaBuilder::class
@@ -83,7 +84,7 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
         $this->getFixtureTaxRules();
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $taxRules = $this->getFixtureTaxRules();
         if (count($taxRules)) {
@@ -194,15 +195,9 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
             $this->_webApiCall($serviceInfo, $requestData);
             $this->fail('Did not throw expected InputException');
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
-                'No such entity with customer_tax_class_ids = %fieldValue',
-                $e->getMessage()
-            );
+            $this->assertContains('No such entity with customer_tax_class_ids = %fieldValue', $e->getMessage());
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
-                'No such entity with customer_tax_class_ids = %fieldValue',
-                $e->getMessage()
-            );
+            $this->assertContains('No such entity with customer_tax_class_ids = %fieldValue', $e->getMessage());
         }
     }
 
@@ -237,7 +232,7 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
             $this->_webApiCall($serviceInfo, $requestData);
             $this->fail('Expected exception was not raised');
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 'SoapFault does not contain expected message.'
@@ -435,7 +430,7 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
         } catch (\Exception $e) {
             $expectedMessage = 'No such entity with %fieldName = %fieldValue';
 
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "Exception does not contain expected message."
@@ -547,7 +542,7 @@ class TaxRuleRepositoryInterfaceTest extends WebapiAbstract
         } catch (\Exception $e) {
             $expectedMessage = 'No such entity with %fieldName = %fieldValue';
 
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "Exception does not contain expected message."

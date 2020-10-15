@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AsynchronousOperations\Test\Unit\Model;
 
@@ -83,7 +82,7 @@ class BulkStatusTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->bulkCollectionFactory = $this->createPartialMock(BulkCollectionFactory::class, ['create']);
         $this->operationCollectionFactory = $this->createPartialMock(OperationCollectionFactory::class, ['create']);
@@ -110,7 +109,7 @@ class BulkStatusTest extends TestCase
      * @return void
      * @dataProvider getFailedOperationsByBulkIdDataProvider
      */
-    public function testGetFailedOperationsByBulkId($failureType, $failureCodes): void
+    public function testGetFailedOperationsByBulkId($failureType, $failureCodes)
     {
         $bulkUuid = 'bulk-1';
         $operationCollection = $this->createMock(OperationCollection::class);
@@ -132,7 +131,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return void
      */
-    public function testGetOperationsCountByBulkIdAndStatus(): void
+    public function testGetOperationsCountByBulkIdAndStatus()
     {
         $bulkUuid = 'bulk-1';
         $status = 1354;
@@ -160,7 +159,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return void
      */
-    public function testGetOperationsCountByBulkIdAndOpenStatus(): void
+    public function testGetOperationsCountByBulkIdAndOpenStatus()
     {
         $bulkUuid = 'bulk-2';
         $status = OperationInterface::STATUS_TYPE_OPEN;
@@ -194,7 +193,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return void
      */
-    public function testGetNotStartedOperationsCountByBulkIdAndOpenStatus(): void
+    public function testGetNotStartedOperationsCountByBulkIdAndOpenStatus()
     {
         $bulkUuid = 'bulk-3';
         $bulkOperationCount = 3;
@@ -258,7 +257,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return array
      */
-    public function getFailedOperationsByBulkIdDataProvider(): array
+    public function getFailedOperationsByBulkIdDataProvider()
     {
         return [
             [1, [1]],
@@ -275,7 +274,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return void
      */
-    public function testGetBulksByUser(): void
+    public function testGetBulksByUser()
     {
         $userId = 1;
         $selectMock = $this->createMock(Select::class);
@@ -292,7 +291,7 @@ class BulkStatusTest extends TestCase
     /**
      * @return void
      */
-    public function testGetBulksStatus(): void
+    public function testGetBulksStatus()
     {
         $bulkUuid = 'bulk-1';
         $allProcessedOperationCollection = $this->createMock(OperationCollection::class);
@@ -346,7 +345,7 @@ class BulkStatusTest extends TestCase
             ->method('addFieldToFilter')
             ->with('status', OperationInterface::STATUS_TYPE_COMPLETE)
             ->willReturnSelf();
-        $completeOperationCollection->method('getSize')->willReturn(5);
+        $completeOperationCollection->expects($this->any())->method('getSize')->willReturn(5);
         $this->assertEquals(BulkSummaryInterface::IN_PROGRESS, $this->model->getBulkStatus($bulkUuid));
     }
 }

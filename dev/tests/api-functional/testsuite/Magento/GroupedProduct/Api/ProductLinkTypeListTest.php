@@ -34,7 +34,7 @@ class ProductLinkTypeListTest extends \Magento\TestFramework\TestCase\WebapiAbst
          * Validate that product type links provided by Magento_GroupedProduct module are present
          */
         $expectedItems = ['name' => 'associated', 'code' => Link::LINK_TYPE_GROUPED];
-        $this->assertContainsEquals($expectedItems, $actual);
+        $this->assertContains($expectedItems, $actual);
     }
 
     public function testGetItemAttributes()

@@ -3,25 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Reader\InstancesNamesList;
 
-use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
-use Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator;
-use Magento\Setup\Module\Di\Code\Reader\Decorator\Area;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Module\Di\Code\Reader\Decorator\Area;
 
-class AreaTest extends TestCase
+/**
+ * Class AreaTest
+ *
+ * @package Magento\Setup\Module\Di\Code\Reader\Decorator
+ */
+class AreaTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClassesScanner|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Reader\ClassesScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classesScannerMock;
 
     /**
-     * @var ClassReaderDecorator|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classReaderDecoratorMock;
 
@@ -30,21 +29,21 @@ class AreaTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->classesScannerMock = $this->getMockBuilder(ClassesScanner::class)
+        $this->classesScannerMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Reader\ClassesScanner::class)
             ->disableOriginalConstructor()
             ->setMethods(['getList'])
             ->getMock();
 
         $this->classReaderDecoratorMock = $this->getMockBuilder(
-            ClassReaderDecorator::class
+            \Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['getConstructor'])
             ->getMock();
 
-        $this->model = new Area(
+        $this->model = new \Magento\Setup\Module\Di\Code\Reader\Decorator\Area(
             $this->classesScannerMock,
             $this->classReaderDecoratorMock
         );
@@ -68,7 +67,9 @@ class AreaTest extends TestCase
 
         $this->classReaderDecoratorMock->expects($this->exactly(count($classes)))
             ->method('getConstructor')
-            ->willReturnMap($constructors);
+            ->will($this->returnValueMap(
+                $constructors
+            ));
 
         $result = $this->model->getList($path);
 

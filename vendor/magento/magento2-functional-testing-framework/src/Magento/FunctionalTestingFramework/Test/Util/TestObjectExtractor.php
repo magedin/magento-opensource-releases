@@ -83,14 +83,13 @@ class TestObjectExtractor extends BaseObjectExtractor
      * This method takes and array of test data and strips away irrelevant tags. The data is converted into an array of
      * TestObjects.
      *
-     * @param array   $testData
-     * @param boolean $validateAnnotations
+     * @param array $testData
      * @return TestObject
      * @throws \Exception
      */
-    public function extractTestData($testData, $validateAnnotations = true)
+    public function extractTestData($testData)
     {
-        // validate the test name for blocklisted char (will cause allure report issues) MQE-483
+        // validate the test name for blacklisted char (will cause allure report issues) MQE-483
         NameValidationUtil::validateName($testData[self::NAME], "Test");
 
         $testAnnotations = [];
@@ -118,8 +117,7 @@ class TestObjectExtractor extends BaseObjectExtractor
 
         $testAnnotations = $this->annotationExtractor->extractAnnotations(
             $testData[self::TEST_ANNOTATIONS] ?? [],
-            $testData[self::NAME],
-            $validateAnnotations
+            $testData[self::NAME]
         );
 
         //Override features with module name if present, populates it otherwise
@@ -179,8 +177,7 @@ class TestObjectExtractor extends BaseObjectExtractor
                 $testAnnotations,
                 $testHooks,
                 $filename,
-                $testReference,
-                $deprecated
+                $testReference
             );
         } catch (XmlException $exception) {
             throw new XmlException($exception->getMessage() . ' in Test ' . $filename);

@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogSearch\Test\Unit\Model\Search\RequestGenerator;
 
 use Magento\CatalogSearch\Model\Search\RequestGenerator\GeneratorInterface;
 use Magento\CatalogSearch\Model\Search\RequestGenerator\GeneratorResolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GeneratorResolverTest extends TestCase
+class GeneratorResolverTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  GeneratorResolver */
     private $resolver;
 
-    /** @var  GeneratorInterface|MockObject */
+    /** @var  GeneratorInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $defaultGenerator;
 
-    /** @var  GeneratorInterface|MockObject */
+    /** @var  GeneratorInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $datetimeGenerator;
 
-    /** @var  GeneratorInterface|MockObject */
+    /** @var  GeneratorInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $rangeGenerator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->defaultGenerator = $this->getMockBuilder(GeneratorInterface::class)
             ->setMethods([])
@@ -44,7 +40,7 @@ class GeneratorResolverTest extends TestCase
         $invalidTypeGenerator = $this->getMockBuilder(\stdClass::class)
             ->setMethods([]);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->resolver = $objectManager->getObject(
             GeneratorResolver::class,
             [
@@ -69,9 +65,11 @@ class GeneratorResolverTest extends TestCase
         $this->assertEquals($this->defaultGenerator, $this->resolver->getGeneratorForType('unknown_type'));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testGetInvalidGeneratorType()
     {
-        $this->expectException('InvalidArgumentException');
         $this->resolver->getGeneratorForType('invalid_type');
     }
 }

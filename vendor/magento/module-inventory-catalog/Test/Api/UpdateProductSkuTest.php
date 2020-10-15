@@ -8,8 +8,8 @@ declare(strict_types=1);
 namespace Magento\InventoryCatalog\Test\Api;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\App\Cron;
 use Magento\Framework\MessageQueue\ConsumerFactory;
-use Magento\Framework\MessageQueue\QueueFactoryInterface;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\InventoryApi\Api\GetSourceItemsBySkuInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -35,14 +35,18 @@ class UpdateProductSkuTest extends WebapiAbstract
     private $productRepository;
 
     /**
+     * @var ConsumerFactory
+     */
+    private $consumerFactory;
+
+    /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->getSourceItemsBySku = Bootstrap::getObjectManager()->get(GetSourceItemsBySkuInterface::class);
         $this->productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
-
-        $this->rejectMessages();
+        $this->consumerFactory = Bootstrap::getObjectManager()->get(ConsumerFactory::class);
     }
 
     /**
@@ -74,7 +78,13 @@ class UpdateProductSkuTest extends WebapiAbstract
             $serviceInfo,
             ['product' => ['id' => $product->getId(), 'sku' => 'SKU-1_updated']]
         );
-        $this->runConsumers();
+        $cronObserver = Bootstrap::getObjectManager()->create(
+            Cron::class,
+            ['parameters' => ['group' => null, 'standaloneProcessStarted' => 0]]
+        );
+        $cronObserver->launch();
+        /*Wait till source items will be removed asynchronously.*/
+        sleep(10);
         $sourceItemsOldSku = $this->getSourceItemsBySku->execute('SKU-1');
         $sourceItemNewSku = $this->getSourceItemsBySku->execute('SKU-1_updated');
         self::assertEmpty($sourceItemsOldSku);
@@ -89,33 +99,5 @@ class UpdateProductSkuTest extends WebapiAbstract
         $product = $this->productRepository->get('SKU-1_updated');
         $product->setSku('SKU-1');
         $this->productRepository->save($product);
-    }
-
-    /**
-     * Run consumers to remove redundant inventory source items.
-     *
-     * @return void
-     */
-    private function runConsumers(): void
-    {
-        $consumerFactory = Bootstrap::getObjectManager()->get(ConsumerFactory::class);
-        $consumer = $consumerFactory->get('inventory.source.items.cleanup');
-        $consumer->process(1);
-        /*Wait till source items will be removed asynchronously.*/
-        sleep(20);
-    }
-
-    /**
-     * Reject all previously created messages.
-     *
-     * @return void
-     */
-    private function rejectMessages()
-    {
-        $queueFactory = Bootstrap::getObjectManager()->get(QueueFactoryInterface::class);
-        $queue = $queueFactory->create('inventory.source.items.cleanup', 'db');
-        while ($envelope = $queue->dequeue()) {
-            $queue->reject($envelope, false);
-        }
     }
 }

@@ -3,21 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Design\Config\DataProvider;
 
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ScopeFallbackResolverInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Theme\Api\Data\DesignConfigDataInterface;
-use Magento\Theme\Api\Data\DesignConfigInterface;
-use Magento\Theme\Api\DesignConfigRepositoryInterface;
 use Magento\Theme\Model\Design\Config\DataProvider\MetadataLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class MetadataLoaderTest extends TestCase
+class MetadataLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MetadataLoader
@@ -25,62 +17,62 @@ class MetadataLoaderTest extends TestCase
     protected $model;
 
     /**
-     * @var Http|MockObject
+     * @var Http|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ScopeFallbackResolverInterface|MockObject
+     * @var ScopeFallbackResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeFallbackResolver;
 
     /**
-     * @var DesignConfigRepositoryInterface|MockObject
+     * @var \Magento\Theme\Api\DesignConfigRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $designConfigRepository;
 
     /**
-     * @var DesignConfigInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $designConfig;
 
     /**
-     * @var DesignConfigDataInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigDataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $designConfigData;
 
     /**
-     * @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $designConfigExtension;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockBuilder(Http::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->scopeFallbackResolver = $this->getMockBuilder(
-            ScopeFallbackResolverInterface::class
+            \Magento\Framework\App\ScopeFallbackResolverInterface::class
         )->getMockForAbstractClass();
 
-        $this->designConfigRepository = $this->getMockBuilder(DesignConfigRepositoryInterface::class)
+        $this->designConfigRepository = $this->getMockBuilder(\Magento\Theme\Api\DesignConfigRepositoryInterface::class)
             ->getMockForAbstractClass();
-        $this->designConfig = $this->getMockBuilder(DesignConfigInterface::class)
+        $this->designConfig = $this->getMockBuilder(\Magento\Theme\Api\Data\DesignConfigInterface::class)
             ->getMockForAbstractClass();
-        $this->designConfigData = $this->getMockBuilder(DesignConfigDataInterface::class)
+        $this->designConfigData = $this->getMockBuilder(\Magento\Theme\Api\Data\DesignConfigDataInterface::class)
             ->getMockForAbstractClass();
         $this->designConfigExtension = $this->getMockBuilder(
             \Magento\Theme\Api\Data\DesignConfigExtensionInterface::class
         )
             ->setMethods(['getDesignConfigData'])
             ->getMockForAbstractClass();
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new MetadataLoader(

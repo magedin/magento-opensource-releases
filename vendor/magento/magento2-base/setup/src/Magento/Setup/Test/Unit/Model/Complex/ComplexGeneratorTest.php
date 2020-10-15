@@ -3,15 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model\Complex;
 
-use Magento\Setup\Model\Complex\Generator;
 use Magento\Setup\Model\Complex\Pattern;
-use PHPUnit\Framework\TestCase;
+use Magento\Setup\Model\Complex\Generator;
 
-class ComplexGeneratorTest extends TestCase
+/**
+ * Class ComplexGeneratorTest
+ *
+ */
+class ComplexGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Pattern instance

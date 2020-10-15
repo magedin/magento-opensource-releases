@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model\ResourceModel\Block\Relation\Store;
 
 use Magento\Cms\Model\ResourceModel\Block;
 use Magento\Cms\Model\ResourceModel\Block\Relation\Store\ReadHandler;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\EntityManager\MetadataPool;
 
-class ReadHandlerTest extends TestCase
+class ReadHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReadHandler
@@ -20,13 +17,13 @@ class ReadHandlerTest extends TestCase
     protected $model;
 
     /**
-     * @var Block|MockObject
+     * @var Block|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceBlock = $this->getMockBuilder(Block::class)
+        $this->resourceBlock = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Block::class)
             ->disableOriginalConstructor()
             ->getMock();
 

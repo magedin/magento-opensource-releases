@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Declaration;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\SqlVersionProvider;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\BooleanUtils;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Setup\Declaration\Schema\Declaration\SchemaBuilder;
 use Magento\Framework\Setup\Declaration\Schema\Declaration\ValidationComposite;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Integer;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Timestamp;
@@ -23,18 +19,18 @@ use Magento\Framework\Setup\Declaration\Schema\Dto\Index;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Schema;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Table;
 use Magento\Framework\Setup\Declaration\Schema\Sharding;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for SchemaBuilder.
  *
+ * @package Magento\Framework\Setup\Test\Unit\Declaration\Schema\Declaration
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SchemaBuilderTest extends TestCase
+class SchemaBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaBuilder
+     * @var \Magento\Framework\Setup\Declaration\Schema\Declaration\SchemaBuilder
      */
     private $model;
 
@@ -44,36 +40,31 @@ class SchemaBuilderTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ElementFactory|MockObject
+     * @var ElementFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $elementFactoryMock;
 
     /**
-     * @var BooleanUtils|MockObject
+     * @var BooleanUtils|\PHPUnit_Framework_MockObject_MockObject
      */
     private $booleanUtilsMock;
 
     /**
-     * @var Sharding|MockObject
+     * @var Sharding|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shardingMock;
 
     /**
-     * @var ValidationComposite|MockObject
+     * @var ValidationComposite|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validationCompositeMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
-    /**
-     * @var SqlVersionProvider|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $sqlVersionProvider;
-
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->elementFactoryMock = $this->getMockBuilder(ElementFactory::class)
             ->disableOriginalConstructor()
@@ -90,20 +81,16 @@ class SchemaBuilderTest extends TestCase
         $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->sqlVersionProvider = $this->getMockBuilder(SqlVersionProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            SchemaBuilder::class,
+            \Magento\Framework\Setup\Declaration\Schema\Declaration\SchemaBuilder::class,
             [
                 'elementFactory' => $this->elementFactoryMock,
                 'booleanUtils' => new BooleanUtils(),
                 'sharding' => $this->shardingMock,
                 'validationComposite' => $this->validationCompositeMock,
-                'resourceConnection' => $this->resourceConnectionMock,
-                'sqlVersionProvider' => $this->sqlVersionProvider
+                'resourceConnection' => $this->resourceConnectionMock
             ]
         );
     }
@@ -217,7 +204,7 @@ class SchemaBuilderTest extends TestCase
      *
      * @param string $name
      * @param Table $table
-     * @return Integer
+     * @return \Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Integer
      */
     private function createIntegerAIColumn($name, Table $table)
     {
@@ -237,7 +224,7 @@ class SchemaBuilderTest extends TestCase
      *
      * @param string $name
      * @param Table $table
-     * @return Integer
+     * @return \Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Integer
      */
     private function createIntegerColumn($name, Table $table)
     {
@@ -294,7 +281,7 @@ class SchemaBuilderTest extends TestCase
      *
      * @param string $name
      * @param Table $table
-     * @return Timestamp
+     * @return \Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Timestamp
      */
     private function createTimestampColumn($name, Table $table)
     {
@@ -303,7 +290,8 @@ class SchemaBuilderTest extends TestCase
             'timestamp',
             $table,
             'CURRENT_TIMESTAMP',
-            false
+            false,
+            true
         );
     }
 
@@ -311,7 +299,7 @@ class SchemaBuilderTest extends TestCase
      * @dataProvider tablesProvider
      * @param array $tablesData
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Setup\Exception
      */
     public function testBuild(array $tablesData)
     {

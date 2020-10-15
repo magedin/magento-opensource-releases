@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Pdf\Config;
 
-use Magento\Sales\Model\Order\Pdf\Config\Converter;
-use PHPUnit\Framework\TestCase;
-
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Converter
+     * @var \Magento\Sales\Model\Order\Pdf\Config\Converter
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Converter();
+        $this->_model = new \Magento\Sales\Model\Order\Pdf\Config\Converter();
     }
 
     public function testConvert()

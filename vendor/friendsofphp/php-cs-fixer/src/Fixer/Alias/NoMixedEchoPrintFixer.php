@@ -75,11 +75,10 @@ final class NoMixedEchoPrintFixer extends AbstractFixer implements Configuration
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after NoShortEchoTagFixer.
      */
     public function getPriority()
     {
+        // should run after NoShortEchoTagFixer.
         return -10;
     }
 
@@ -118,7 +117,8 @@ final class NoMixedEchoPrintFixer extends AbstractFixer implements Configuration
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixEchoToPrint(Tokens $tokens, $index)
     {
@@ -147,7 +147,8 @@ final class NoMixedEchoPrintFixer extends AbstractFixer implements Configuration
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixPrintToEcho(Tokens $tokens, $index)
     {

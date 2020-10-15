@@ -23,23 +23,19 @@
             <!-- Create category, flush cache and log in -->
             <comment userInput="Create category, flush cache and log in" stepKey="createCategoryAndLogIn"/>
             <createData entity="SimpleSubCategory" stepKey="simpleCategory"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="logInAsAdmin"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <actionGroup ref="LoginAsAdmin" stepKey="logInAsAdmin"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <!-- Delete category and log out -->
             <comment userInput="Delete category and log out" stepKey="deleteCategoryAndLogOut"/>
             <deleteData createDataKey="simpleCategory" stepKey="deleteCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logOutFromAdmin"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <actionGroup ref="logout" stepKey="logOutFromAdmin"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </after>
         <!-- Navigate to category details page -->
         <comment userInput="Navigate to category details page" stepKey="navigateToAdminCategoryPage"/>
-        <actionGroup ref="GoToAdminCategoryPageByIdActionGroup" stepKey="goToAdminCategoryPage">
+        <actionGroup ref="goToAdminCategoryPageById" stepKey="goToAdminCategoryPage">
             <argument name="id" value="$$simpleCategory.id$$"/>
         </actionGroup>
         <!-- Open design tab and set layout -->

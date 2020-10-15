@@ -91,7 +91,7 @@ class CreateAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->addressFactory = $this->objectManager->get(AddressInterfaceFactory::class);
@@ -107,7 +107,7 @@ class CreateAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         foreach ($this->createdAddressesIds as $createdAddressesId) {
             $this->addressRegistry->remove($createdAddressesId);

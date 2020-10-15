@@ -24,12 +24,12 @@ class TextTest extends \PHPUnit\Framework\TestCase
      */
     private $origRenderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->origRenderer = Phrase::getRenderer();
         /** @var RendererInterface|PHPUnit\Framework\MockObject_MockObject $rendererMock */
-        $rendererMock = $this->getMockForAbstractClass(RendererInterface::class);
+        $rendererMock = $this->createMock(RendererInterface::class);
         $rendererMock->expects($this->any())
             ->method('render')
             ->willReturnCallback(
@@ -40,7 +40,7 @@ class TextTest extends \PHPUnit\Framework\TestCase
         Phrase::setRenderer($rendererMock);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Phrase::setRenderer($this->origRenderer);
     }

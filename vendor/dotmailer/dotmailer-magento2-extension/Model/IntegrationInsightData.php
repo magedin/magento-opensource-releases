@@ -58,14 +58,12 @@ class IntegrationInsightData
                 continue;
             }
 
-            // @codingStandardsIgnoreStart
             $websiteData[$store->getWebsiteId()] = [
                 'recordId' => parse_url(
                     $store->getBaseUrl(UrlInterface::URL_TYPE_LINK, $store->isCurrentlySecure()),
                     PHP_URL_HOST
                 ),
             ] + $this->getIntegrationMetaData();
-            // @codingStandardsIgnoreEnd
         }
 
         return $websiteData;

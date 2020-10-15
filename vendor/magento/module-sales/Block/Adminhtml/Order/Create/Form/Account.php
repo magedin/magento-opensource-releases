@@ -40,7 +40,14 @@ class Account extends AbstractForm
      * @var \Magento\Framework\Api\ExtensibleDataObjectConverter
      */
     protected $_extensibleDataObjectConverter;
-    private const XML_PATH_EMAIL_REQUIRED_CREATE_ORDER = 'customer/create_account/email_required_create_order';
+
+    /**
+     * Group Management
+     *
+     * @var GroupManagementInterface
+     */
+    private $groupManagement;
+
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Model\Session\Quote $sessionQuote
@@ -82,13 +89,6 @@ class Account extends AbstractForm
             $data
         );
     }
-
-    /**
-     * Group Management
-     *
-     * @var GroupManagementInterface
-     */
-    private $groupManagement;
 
     /**
      * Return Header CSS Class
@@ -159,7 +159,7 @@ class Account extends AbstractForm
     {
         switch ($element->getId()) {
             case 'email':
-                $element->setRequired($this->isEmailRequiredToCreateOrder());
+                $element->setRequired(1);
                 $element->setClass('validate-email admin__control-text');
                 break;
         }
@@ -177,7 +177,7 @@ class Account extends AbstractForm
             $customer = $this->customerRepository->getById($this->getCustomerId());
             // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
         } catch (\Exception $e) {
-            $data = [];
+            /** If customer does not exist do nothing. */
         }
         $data = isset($customer)
             ? $this->_extensibleDataObjectConverter->toFlatArray(
@@ -220,18 +220,5 @@ class Account extends AbstractForm
         }
 
         return $formValues;
-    }
-
-    /**
-     * Retrieve email is required field for admin order creation
-     *
-     * @return bool
-     */
-    private function isEmailRequiredToCreateOrder()
-    {
-        return $this->_scopeConfig->getValue(
-            self::XML_PATH_EMAIL_REQUIRED_CREATE_ORDER,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
     }
 }

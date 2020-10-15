@@ -3,53 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Address;
 
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Address\Relation;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RelationTest extends TestCase
+class RelationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractModel|MockObject
+     * @var \Magento\Framework\Model\AbstractModel | \PHPUnit_Framework_MockObject_MockObject
      */
     private $modelMock;
 
     /**
-     * @var Relation
+     * @var \Magento\Quote\Model\Quote\Address\Relation
      */
     private $relation;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->modelMock = $this->getMockBuilder(AbstractModel::class)
-            ->addMethods(
-                [
-                    'getItemsCollection',
-                    'getShippingRatesCollection',
-                    'itemsCollectionWasSet',
-                    'shippingRatesCollectionWasSet'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->relation = $objectManager->getObject(Relation::class, []);
+        $this->modelMock = $this->createPartialMock(\Magento\Framework\Model\AbstractModel::class, [
+                'getItemsCollection',
+                'getShippingRatesCollection',
+                'itemsCollectionWasSet',
+                'shippingRatesCollectionWasSet'
+            ]);
+        $this->relation = $objectManager->getObject(\Magento\Quote\Model\Quote\Address\Relation::class, []);
     }
 
     public function testProcessRelation()
     {
         $itemsCollection = $this->createMock(
-            AbstractCollection::class
+            \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection::class
         );
         $shippingRatesCollection = $this->createMock(
-            AbstractCollection::class
+            \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection::class
         );
         $this->modelMock->expects($this->once())->method('itemsCollectionWasSet')->willReturn(true);
         $this->modelMock->expects($this->once())->method('getItemsCollection')->willReturn($itemsCollection);

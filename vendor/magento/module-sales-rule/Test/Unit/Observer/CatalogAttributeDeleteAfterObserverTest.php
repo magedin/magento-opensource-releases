@@ -3,38 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Observer;
 
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\SalesRule\Observer\CatalogAttributeDeleteAfterObserver;
-use Magento\SalesRule\Observer\CheckSalesRulesAvailability;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CatalogAttributeDeleteAfterObserverTest extends TestCase
+class CatalogAttributeDeleteAfterObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CatalogAttributeDeleteAfterObserver|MockObject
+     * @var \Magento\SalesRule\Observer\CatalogAttributeDeleteAfterObserver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var CheckSalesRulesAvailability|MockObject
+     * @var \Magento\SalesRule\Observer\CheckSalesRulesAvailability|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $checkSalesRulesAvailability;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->initMocks();
 
         $this->model = $helper->getObject(
-            CatalogAttributeDeleteAfterObserver::class,
+            \Magento\SalesRule\Observer\CatalogAttributeDeleteAfterObserver::class,
             [
                 'checkSalesRulesAvailability' => $this->checkSalesRulesAvailability
             ]
@@ -44,35 +33,32 @@ class CatalogAttributeDeleteAfterObserverTest extends TestCase
     protected function initMocks()
     {
         $this->checkSalesRulesAvailability = $this->createMock(
-            CheckSalesRulesAvailability::class
+            \Magento\SalesRule\Observer\CheckSalesRulesAvailability::class
         );
     }
 
     public function testCatalogAttributeDeleteAfter()
     {
         $attributeCode = 'attributeCode';
-        $observer = $this->createMock(Observer::class);
-        $event = $this->getMockBuilder(Event::class)
-            ->addMethods(['getAttribute'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $observer = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $event = $this->createPartialMock(\Magento\Framework\Event::class, ['getAttribute', '__wakeup']);
         $attribute = $this->createPartialMock(
-            Attribute::class,
-            ['dataHasChangedFor', 'getIsUsedForPromoRules', 'getAttributeCode']
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
+            ['dataHasChangedFor', 'getIsUsedForPromoRules', 'getAttributeCode', '__wakeup']
         );
 
         $observer->expects($this->once())
             ->method('getEvent')
-            ->willReturn($event);
+            ->will($this->returnValue($event));
         $event->expects($this->any())
             ->method('getAttribute')
-            ->willReturn($attribute);
+            ->will($this->returnValue($attribute));
         $attribute->expects($this->any())
             ->method('getIsUsedForPromoRules')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $attribute->expects($this->any())
             ->method('getAttributeCode')
-            ->willReturn($attributeCode);
+            ->will($this->returnValue($attributeCode));
 
         $this->checkSalesRulesAvailability
             ->expects($this->once())

@@ -30,7 +30,7 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
             $this->redisConfig = $arrayConfig;
         }
 
-        if(!$this->useStandalone && !extension_loaded('redis')) {
+        if($this->useStandalone && !extension_loaded('redis')) {
             $this->fail('The Redis extension is not loaded.');
         }
     }
@@ -65,11 +65,8 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
         $slaveConfig = new Credis_Client($this->slaveConfig['host'], $this->slaveConfig['port']);
         $slaveConfig->forceStandalone();
 
-        $start = microtime(true);
-        $timeout = $start + 60;
-        while (microtime(true) < $timeout)
+        while (true)
         {
-            usleep(100);
             $role = $slaveConfig->role();
             if ($role[0] !== 'slave')
             {
@@ -89,9 +86,9 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
                     return true;
                 }
             }
+            usleep(100);
         }
         // shouldn't get here
-        $this->fail("Timeout (".(microtime(true) - $start)." seconds) waiting for master-slave replication to finalize");
         return false;
     }
 
@@ -105,7 +102,8 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
             echo "\tredis-server redis-3.conf".PHP_EOL;
             echo "\tredis-server redis-4.conf".PHP_EOL;
             echo "\tredis-server redis-auth.conf".PHP_EOL;
-            echo "\tredis-server redis-socket.conf".PHP_EOL.PHP_EOL;
+            echo "\tredis-server redis-socket.conf".PHP_EOL;
+            echo "\tredis-sentinel redis-sentinel.conf".PHP_EOL.PHP_EOL;
         } else {
             chdir(__DIR__);
             $directoryIterator = new DirectoryIterator(__DIR__);
@@ -117,8 +115,10 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
             }
             copy('redis-master.conf','redis-master.conf.bak');
             copy('redis-slave.conf','redis-slave.conf.bak');
-            // wait for redis instances to initialize
-            sleep(1);
+            copy('redis-sentinel.conf','redis-sentinel.conf.bak');
+            exec('redis-sentinel redis-sentinel.conf');
+            // wait for redis to initialize
+            usleep(200);
         }
     }
 
@@ -144,8 +144,10 @@ class CredisTestCommon extends \PHPUnit\Framework\TestCase
             @unlink('dump.rdb');
             @unlink('redis-master.conf');
             @unlink('redis-slave.conf');
+            @unlink('redis-sentinel.conf');
             @copy('redis-master.conf.bak','redis-master.conf');
             @copy('redis-slave.conf.bak','redis-slave.conf');
+            @copy('redis-sentinel.conf.bak','redis-sentinel.conf');
         }
     }
 

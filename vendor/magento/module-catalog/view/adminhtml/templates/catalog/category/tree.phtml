@@ -5,48 +5,36 @@
  */
 
 /** @var $block \Magento\Catalog\Block\Adminhtml\Category\Tree */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
 <div class="categories-side-col">
     <div class="sidebar-actions">
-        <?php if ($block->getRoot()):?>
+        <?php if ($block->getRoot()) :?>
             <?= $block->getAddRootButtonHtml() ?><br/>
             <?= $block->getAddSubButtonHtml() ?>
         <?php endif; ?>
     </div>
     <div class="tree-actions">
-        <?php if ($block->getRoot()):?>
-            <a id="colapseAll" href="#"><?= $block->escapeHtml(__('Collapse All')) ?></a>
-            <span class="separator">|</span>
-            <a id="expandAll" href="#"><?= $block->escapeHtml(__('Expand All')) ?></a>
+        <?php if ($block->getRoot()) :?>
+            <?php //echo $block->getCollapseButtonHtml() ?>
+            <?php //echo $block->getExpandButtonHtml() ?>
+            <a href="#"
+               onclick="tree.collapseTree(); return false;"><?= $block->escapeHtml(__('Collapse All')) ?></a>
+            <span class="separator">|</span> <a href="#"
+                                                onclick="tree.expandTree(); return false;"><?= $block->escapeHtml(__('Expand All')) ?></a>
         <?php endif; ?>
     </div>
-    <?php if ($block->getRoot()):?>
-        <?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
-            'onclick',
-            'tree.collapseTree(); event.preventDefault();',
-            '#colapseAll'
-        ) ?>
-        <?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
-            'onclick',
-            'tree.expandTree();event.preventDefault();',
-            '#expandAll'
-        ) ?>
+    <?php if ($block->getRoot()) :?>
     <div class="tree-holder">
         <div id="tree-div" class="tree-wrapper"></div>
     </div>
 </div>
 
-    <div data-id="information-dialog-tree" class="messages">
+    <div data-id="information-dialog-tree" class="messages" style="display: none;">
         <div class="message message-notice">
             <div><?= $block->escapeHtml(__('This operation can take a long time')) ?></div>
         </div>
     </div>
-        <?= /* @noEscape */ $secureRenderer->renderStyleAsTag(
-            'display: none;',
-            'div[data-id="information-dialog-tree"]'
-        ) ?>
-        <?php $scriptString = <<<script
+    <script>
         var tree;
         require([
             "jquery",
@@ -183,7 +171,7 @@
 
                     if (!this.collapsed) {
                         this.collapsed = true;
-                        this.loader.dataUrl = '{$block->escapeJs($block->getLoadTreeUrl(false))}';
+                        this.loader.dataUrl = '<?= $block->escapeJs($block->escapeUrl($block->getLoadTreeUrl(false))) ?>';
                         this.request(this.loader.dataUrl, false);
                     }
                 },
@@ -192,7 +180,7 @@
                     this.expandAll();
                     if (this.collapsed) {
                         this.collapsed = false;
-                        this.loader.dataUrl = '{$block->escapeJs($block->getLoadTreeUrl(true))}';
+                        this.loader.dataUrl = '<?= $block->escapeJs($block->escapeUrl($block->getLoadTreeUrl(true))) ?>';
                         this.request(this.loader.dataUrl, false);
                     }
                 },
@@ -227,9 +215,7 @@
                 if (tree && switcherParams) {
                     var url;
                     if (switcherParams.useConfirm) {
-                        if (!confirm("{$block->escapeJs(__(
-    'Please confirm site switching. All data that hasn\'t been saved will be lost.'
-))}")) {
+                        if (!confirm("<?= $block->escapeJs(__('Please confirm site switching. All data that hasn\'t been saved will be lost.')) ?>")) {
                             return false;
                         }
                     }
@@ -272,7 +258,7 @@
                             }
                         });
                     } else {
-                        var baseUrl = '{$block->escapeJs($block->getEditUrl())}';
+                        var baseUrl = '<?= $block->escapeJs($block->escapeUrl($block->getEditUrl())) ?>';
                         var urlExt = switcherParams.scopeParams + 'id/' + tree.currentNodeId + '/';
                         url = parseSidUrl(baseUrl, urlExt);
                         setLocation(url);
@@ -309,22 +295,18 @@
                 if (scopeParams) {
                     url = url + scopeParams;
                 }
-script;
-        if ($block->isClearEdit()):
-            $scriptString .= <<<script
+                <?php if ($block->isClearEdit()) :?>
                 if (selectedNode) {
                     url = url + 'id/' + config.parameters.category_id;
                 }
-script;
-endif;
-        $scriptString .= <<<script
+                <?php endif;?>
                 //updateContent(url); //commented since ajax requests replaced with http ones to load a category
                 jQuery('#tree-div').find('.x-tree-node-el').first().remove();
             }
 
             jQuery(function () {
                 categoryLoader = new Ext.tree.TreeLoader({
-                    dataUrl: '{$block->escapeJs($block->getLoadTreeUrl())}'
+                    dataUrl: '<?= $block->escapeJs($block->escapeUrl($block->getLoadTreeUrl())) ?>'
                 });
 
                 categoryLoader.processResponse = function (response, parent, callback) {
@@ -406,32 +388,31 @@ endif;
                     enableDD: true,
                     containerScroll: true,
                     selModel: new Ext.tree.CheckNodeMultiSelectionModel(),
-script;
-        $scriptString .= '
-                    rootVisible: \'' . ($block->getRoot()->getIsVisible() ? 'true' : 'false') . '\',
-                    useAjax: ' . $block->escapeJs($block->getUseAjax()) . ',
-                    switchTreeUrl: \'' . $block->escapeJs($block->escapeUrl($block->getSwitchTreeUrl())) .'\',
-                    editUrl: \'' . $block->escapeJs($block->escapeUrl($block->getEditUrl())) .'\',
-                    currentNodeId: ' . (int)$block->getCategoryId() . ',
-                    baseUrl: \'' . $block->escapeJs($block->escapeUrl($block->getEditUrl())) . '\'
+                    rootVisible: '<?= (bool)$block->getRoot()->getIsVisible() ?>',
+                    useAjax: <?= $block->escapeJs($block->getUseAjax()) ?>,
+                    switchTreeUrl: '<?= $block->escapeJs($block->escapeUrl($block->getSwitchTreeUrl())) ?>',
+                    editUrl: '<?= $block->escapeJs($block->escapeUrl($block->getEditUrl())) ?>',
+                    currentNodeId: <?= (int)$block->getCategoryId() ?>,
+                    baseUrl: '<?= $block->escapeJs($block->escapeUrl($block->getEditUrl())) ?>'
                 };
 
                 defaultLoadTreeParams = {
                     parameters: {
-                        text: ' . /* @noEscape */ json_encode(htmlentities($block->getRoot()->getName())) . ',
+                        text: <?= /* @noEscape */ json_encode(htmlentities($block->getRoot()->getName())) ?>,
                         draggable: false,
-                        allowDrop: ' . ($block->getRoot()->getIsVisible() ? 'true' : 'false') . ',
-                        id: ' . (int)$block->getRoot()->getId() . ',
-                        expanded: ' . (int)$block->getIsWasExpanded() . ',
-                        store_id: ' . (int)$block->getStore()->getId() . ',
-                        category_id: ' . (int)$block->getCategoryId() . ',
-                        parent: ' . (int)$block->getRequest()->getParam('parent') . '
+                        allowDrop: <?php if ($block->getRoot()->getIsVisible()) :?>true<?php else :?>false<?php endif; ?>,
+                        id: <?= (int)$block->getRoot()->getId() ?>,
+                        expanded: <?= (int)$block->getIsWasExpanded() ?>,
+                        store_id: <?= (int)$block->getStore()->getId() ?>,
+                        category_id: <?= (int)$block->getCategoryId() ?>,
+                        parent: <?= (int)$block->getRequest()->getParam('parent') ?>
                     },
-                    data: ' . /* @noEscape */ $block->getTreeJson() . '
-                    };
-                    reRenderTree();
-                });' . PHP_EOL;
-        $scriptString .= <<<script
+                    data: <?= /* @noEscape */ $block->getTreeJson() ?>
+                };
+
+                reRenderTree();
+            });
+
             function addNew(url, isRoot) {
                 if (isRoot) {
                     tree.currentNodeId = tree.root.id;
@@ -504,7 +485,7 @@ script;
                         click: function () {
                             (function ($) {
                                 $.ajax({
-                                    url: '{$block->escapeJs($block->getMoveUrl())}',
+                                    url: '<?= $block->escapeJs($block->escapeUrl($block->getMoveUrl())) ?>',
                                     method: 'POST',
                                     data: registry.get('pd'),
                                     showLoader: true
@@ -540,7 +521,5 @@ script;
             window.addNew = addNew;
 
         });
-script;
-        ?>
-        <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
+    </script>
 <?php endif; ?>

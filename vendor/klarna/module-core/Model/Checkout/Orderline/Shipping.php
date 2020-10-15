@@ -55,52 +55,47 @@ class Shipping extends AbstractLine
             $totals = $object->getTotals();
             if (isset($totals['shipping'])) {
                 /** @var \Magento\Quote\Model\Quote\Address $total */
-                $total          = $totals['shipping'];
-                $address        = $object->getShippingAddress();
-                $discountAmount = $address->getBaseShippingDiscountAmount();
-                $amount         = $address->getBaseShippingAmount() - $discountAmount;
+                $total = $totals['shipping'];
+                $address = $object->getShippingAddress();
+                $amount = $address->getBaseShippingAmount();
 
                 if ($this->klarnaConfig->isSeparateTaxLine($store)) {
-                    $unitPrice = $address->getBaseShippingAmount();
+                    $unitPrice = $amount;
                     $taxRate = 0;
                     $taxAmount = 0;
                 } else {
                     $taxRate = $this->calculateShippingTax($checkout, $store);
-                    $taxAmount = $address->getBaseShippingTaxAmount();
-                    $unitPrice = $address->getBaseShippingInclTax();
-                    $amount    = $address->getBaseShippingInclTax() - $discountAmount;
+                    $unitPrice = $address->getShippingInclTax();
+                    $taxAmount = $unitPrice * ($taxRate / (100 + $taxRate));
                 }
 
                 $checkout->addData(
                     [
-                        'shipping_unit_price'      => $this->helper->toApiFloat($unitPrice),
-                        'shipping_tax_rate'        => $this->helper->toApiFloat($taxRate),
-                        'shipping_total_amount'    => $this->helper->toApiFloat($amount),
-                        'shipping_tax_amount'      => $this->helper->toApiFloat($taxAmount),
-                        'shipping_discount_amount' => $this->helper->toApiFloat($discountAmount),
-                        'shipping_title'           => (string)$total->getTitle(),
-                        'shipping_reference'       => (string)$object->getShippingAddress()->getShippingMethod()
+                        'shipping_unit_price'   => $this->helper->toApiFloat($unitPrice),
+                        'shipping_tax_rate'     => $this->helper->toApiFloat($taxRate),
+                        'shipping_total_amount' => $this->helper->toApiFloat($unitPrice),
+                        'shipping_tax_amount'   => $this->helper->toApiFloat($taxAmount),
+                        'shipping_title'        => (string)$total->getTitle(),
+                        'shipping_reference'    => (string)$object->getShippingAddress()->getShippingMethod()
 
                     ]
                 );
             }
         }
 
-        if ($object instanceof Invoice || $object instanceof Creditmemo) {
+        if (($object instanceof Invoice || $object instanceof Creditmemo) && !$object->getIsVirtual()) {
             $unitPrice = $object->getBaseShippingInclTax();
-            $taxRate = $this->calculateShippingTax($checkout, $object->getStore());
+            $taxRate   = $this->calculateShippingTax($checkout, $object->getStore());
             $taxAmount = $object->getShippingTaxAmount() + $object->getShippingHiddenTaxAmount();
 
             $checkout->addData(
                 [
-                    'shipping_unit_price'      => $this->helper->toApiFloat($unitPrice),
-                    'shipping_tax_rate'        => $this->helper->toApiFloat($taxRate),
-                    'shipping_total_amount'    => $this->helper->toApiFloat($unitPrice),
-                    'shipping_tax_amount'      => $this->helper->toApiFloat($taxAmount),
-                    'shipping_discount_amount' => 0,
-                    'shipping_title'           => 'Shipping',
-                    'shipping_reference'       => 'shipping'
-
+                    'shipping_unit_price'   => $this->helper->toApiFloat($unitPrice),
+                    'shipping_tax_rate'     => $this->helper->toApiFloat($taxRate),
+                    'shipping_total_amount' => $this->helper->toApiFloat($unitPrice),
+                    'shipping_tax_amount'   => $this->helper->toApiFloat($taxAmount),
+                    'shipping_title'        => __('Shipping & Handling')->getText(),
+                    'shipping_reference'    => $object->getOrder()->getShippingMethod()
                 ]
             );
         }
@@ -117,20 +112,17 @@ class Shipping extends AbstractLine
      */
     public function fetch(BuilderInterface $checkout)
     {
-        $object = $checkout->getObject();
-        $totals = $object->getTotals();
-        if (isset($totals['shipping']) && !$object->isVirtual()) {
+        if ($checkout->getShippingReference()) {
             $checkout->addOrderLine(
                 [
-                    'type'                  => self::ITEM_TYPE_SHIPPING,
-                    'reference'             => $checkout->getShippingReference(),
-                    'name'                  => $checkout->getShippingTitle(),
-                    'quantity'              => 1,
-                    'unit_price'            => $checkout->getShippingUnitPrice(),
-                    'tax_rate'              => $checkout->getShippingTaxRate(),
-                    'total_amount'          => $checkout->getShippingTotalAmount(),
-                    'total_tax_amount'      => $checkout->getShippingTaxAmount(),
-                    'total_discount_amount' => $checkout->getShippingDiscountAmount()
+                    'type'             => self::ITEM_TYPE_SHIPPING,
+                    'reference'        => $checkout->getShippingReference(),
+                    'name'             => $checkout->getShippingTitle(),
+                    'quantity'         => 1,
+                    'unit_price'       => $checkout->getShippingUnitPrice(),
+                    'tax_rate'         => $checkout->getShippingTaxRate(),
+                    'total_amount'     => $checkout->getShippingTotalAmount(),
+                    'total_tax_amount' => $checkout->getShippingTaxAmount(),
                 ]
             );
         }

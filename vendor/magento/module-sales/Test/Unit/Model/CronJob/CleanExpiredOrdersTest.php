@@ -3,39 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\CronJob;
 
-use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\CronJob\CleanExpiredOrders;
-use Magento\Sales\Model\ResourceModel\Order\Collection;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Magento\Store\Model\StoresConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CleanExpiredOrdersTest extends TestCase
+class CleanExpiredOrdersTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storesConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderManagementMock;
 
@@ -49,15 +41,15 @@ class CleanExpiredOrdersTest extends TestCase
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storesConfigMock = $this->createMock(StoresConfig::class);
+        $this->storesConfigMock = $this->createMock(\Magento\Store\Model\StoresConfig::class);
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\CollectionFactory::class,
             ['create']
         );
-        $this->orderCollectionMock = $this->createMock(Collection::class);
-        $this->orderManagementMock = $this->getMockForAbstractClass(OrderManagementInterface::class);
+        $this->orderCollectionMock = $this->createMock(\Magento\Sales\Model\ResourceModel\Order\Collection::class);
+        $this->orderManagementMock = $this->createMock(\Magento\Sales\Api\OrderManagementInterface::class);
 
         $this->model = new CleanExpiredOrders(
             $this->storesConfigMock,
@@ -85,17 +77,19 @@ class CleanExpiredOrdersTest extends TestCase
         $this->orderCollectionMock->expects($this->exactly(4))->method('addFieldToFilter');
         $this->orderManagementMock->expects($this->exactly(4))->method('cancel');
 
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $selectMock->expects($this->exactly(2))->method('where')->willReturnSelf();
         $this->orderCollectionMock->expects($this->exactly(2))->method('getSelect')->willReturn($selectMock);
 
         $this->model->execute();
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Error500
+     */
     public function testExecuteWithException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Error500');
         $schedule = [
             1 => 20,
         ];
@@ -114,7 +108,7 @@ class CleanExpiredOrdersTest extends TestCase
         $this->orderCollectionMock->expects($this->exactly(2))->method('addFieldToFilter');
         $this->orderManagementMock->expects($this->once())->method('cancel');
 
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $selectMock->expects($this->once())->method('where')->willReturnSelf();
         $this->orderCollectionMock->expects($this->once())->method('getSelect')->willReturn($selectMock);
 

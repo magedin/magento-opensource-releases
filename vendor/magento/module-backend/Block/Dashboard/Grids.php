@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Block\Dashboard;
-
-use Magento\Backend\Block\Dashboard\Tab\Products\Ordered;
-use Magento\Backend\Block\Widget\Tabs;
 
 /**
  * Adminhtml dashboard bottom tabs
  *
- * @api
  * @author      Magento Core Team <core@magentocommerce.com>
- * @since 100.0.2
  */
-class Grids extends Tabs
+class Grids extends \Magento\Backend\Block\Widget\Tabs
 {
     /**
      * @var string
@@ -25,8 +18,6 @@ class Grids extends Tabs
     protected $_template = 'Magento_Backend::widget/tabshoriz.phtml';
 
     /**
-     * Internal constructor, that is called from real constructor
-     *
      * @return void
      */
     protected function _construct()
@@ -58,7 +49,7 @@ class Grids extends Tabs
             [
                 'label' => __('Bestsellers'),
                 'content' => $this->getLayout()->createBlock(
-                    Ordered::class
+                    \Magento\Backend\Block\Dashboard\Tab\Products\Ordered::class
                 )->toHtml(),
                 'active' => true
             ]

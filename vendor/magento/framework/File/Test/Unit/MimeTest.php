@@ -3,35 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\File\Test\Unit;
-
-use Magento\Framework\File\Mime;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test mime type utility for correct
  */
-class MimeTest extends TestCase
+class MimeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Mime
+     * @var \Magento\Framework\File\Mime
      */
     private $object;
 
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->object = new Mime();
+        $this->object = new \Magento\Framework\File\Mime();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage File 'nonexistent.file' doesn't exist
+     */
     public function testGetMimeTypeNonexistentFileException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('File \'nonexistent.file\' doesn\'t exist');
         $file = 'nonexistent.file';
         $this->object->getMimeType($file);
     }

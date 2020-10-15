@@ -7,30 +7,25 @@ declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Framework\App\DeploymentConfig;
 use Magento\Setup\Console\Command\DbSchemaUpgradeCommand;
-use Magento\Setup\Model\Installer;
-use Magento\Setup\Model\InstallerFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class DbSchemaUpgradeCommandTest extends TestCase
+class DbSchemaUpgradeCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InstallerFactory|MockObject
+     * @var \Magento\Setup\Model\InstallerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $installerFactory;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->installerFactory = $this->createMock(InstallerFactory::class);
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
+        $this->installerFactory = $this->createMock(\Magento\Setup\Model\InstallerFactory::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
     }
 
     /**
@@ -40,9 +35,9 @@ class DbSchemaUpgradeCommandTest extends TestCase
      */
     public function testExecute($options, $expectedOptions)
     {
-        $this->deploymentConfig->expects($this->once())->method('isAvailable')->willReturn(true);
-        $installer = $this->createMock(Installer::class);
-        $this->installerFactory->expects($this->once())->method('create')->willReturn($installer);
+        $this->deploymentConfig->expects($this->once())->method('isAvailable')->will($this->returnValue(true));
+        $installer = $this->createMock(\Magento\Setup\Model\Installer::class);
+        $this->installerFactory->expects($this->once())->method('create')->will($this->returnValue($installer));
         $installer
             ->expects($this->once())
             ->method('installSchema')
@@ -75,7 +70,7 @@ class DbSchemaUpgradeCommandTest extends TestCase
 
     public function testExecuteNoConfig()
     {
-        $this->deploymentConfig->expects($this->once())->method('isAvailable')->willReturn(false);
+        $this->deploymentConfig->expects($this->once())->method('isAvailable')->will($this->returnValue(false));
         $this->installerFactory->expects($this->never())->method('create');
 
         $commandTester = new CommandTester(

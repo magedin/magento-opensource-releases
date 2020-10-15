@@ -10,15 +10,11 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductFactory;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/core_fixturestore.php');
+require __DIR__ . '/../../Store/_files/core_fixturestore.php';
 
 $objectManager = Bootstrap::getObjectManager();
-/** @var StoreManagerInterface $storeManager */
-$storeManager = Bootstrap::getObjectManager()->get(StoreManagerInterface::class);
 /** @var ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager->create(ProductRepositoryInterface::class);
 /** @var ProductFactory $productFactory */

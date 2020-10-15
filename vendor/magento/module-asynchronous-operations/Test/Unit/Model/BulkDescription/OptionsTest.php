@@ -3,44 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AsynchronousOperations\Test\Unit\Model\BulkDescription;
 
-use Magento\AsynchronousOperations\Model\BulkDescription\Options;
-use Magento\AsynchronousOperations\Model\BulkSummary;
-use Magento\AsynchronousOperations\Model\ResourceModel\Bulk\Collection;
-use Magento\AsynchronousOperations\Model\ResourceModel\Bulk\CollectionFactory;
-use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\DB\Select;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Options
+     * @var \Magento\AsynchronousOperations\Model\BulkDescription\Options
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $bulkCollectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $userContextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->bulkCollectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\AsynchronousOperations\Model\ResourceModel\Bulk\CollectionFactory::class,
             ['create']
         );
-        $this->userContextMock = $this->getMockForAbstractClass(UserContextInterface::class);
-        $this->model = new Options(
+        $this->userContextMock = $this->createMock(\Magento\Authorization\Model\UserContextInterface::class);
+        $this->model = new \Magento\AsynchronousOperations\Model\BulkDescription\Options(
             $this->bulkCollectionFactoryMock,
             $this->userContextMock
         );
@@ -49,8 +39,8 @@ class OptionsTest extends TestCase
     public function testToOptionsArray()
     {
         $userId = 100;
-        $collectionMock = $this->createMock(Collection::class);
-        $selectMock = $this->createMock(Select::class);
+        $collectionMock = $this->createMock(\Magento\AsynchronousOperations\Model\ResourceModel\Bulk\Collection::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->bulkCollectionFactoryMock->expects($this->once())->method('create')->willReturn($collectionMock);
 
         $this->userContextMock->expects($this->once())->method('getUserId')->willReturn($userId);
@@ -63,7 +53,7 @@ class OptionsTest extends TestCase
         $selectMock->expects($this->once())->method('where')->with('user_id = ?', $userId)->willReturnSelf();
 
         $itemMock = $this->createPartialMock(
-            BulkSummary::class,
+            \Magento\AsynchronousOperations\Model\BulkSummary::class,
             ['getDescription']
         );
         $itemMock->expects($this->exactly(2))->method('getDescription')->willReturn('description');

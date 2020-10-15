@@ -3,33 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design;
-
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Theme\Controller\Adminhtml\System\Design\Theme;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class ThemeTest extends TestCase
+abstract class ThemeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -37,96 +17,96 @@ abstract class ThemeTest extends TestCase
     protected $name = '';
 
     /**
-     * @var Theme
+     * @var \Magento\Theme\Controller\Adminhtml\System\Design\Theme
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_request;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManager;
 
     /**
-     * @var ViewInterface|MockObject
+     * @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $view;
 
-    /** @var \Magento\Framework\Message\ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $messageManager;
 
-    /** @var \Magento\Framework\Message\ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultFactory;
 
-    /** @var Repository|MockObject */
+    /** @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject */
     protected $assetRepo;
 
-    /** @var Filesystem|MockObject */
+    /** @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject */
     protected $appFileSystem;
 
-    /** @var FileFactory|MockObject */
+    /** @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $fileFactory;
 
-    /** @var Http|MockObject */
+    /** @var \Magento\Framework\App\Response\Http|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    /** @var RedirectInterface|MockObject */
+    /** @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $redirect;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $session;
 
-    /** @var ActionFlag|MockObject */
+    /** @var \Magento\Framework\App\ActionFlag|\PHPUnit_Framework_MockObject_MockObject */
     protected $actionFlag;
 
-    /** @var Data|MockObject */
+    /** @var \Magento\Backend\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $backendHelper;
 
-    /** @var Registry|MockObject */
+    /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $coreRegistry;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->_request = $this->createMock(\Magento\Framework\App\Request\Http::class);
-        $this->eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->view = $this->getMockForAbstractClass(ViewInterface::class);
+        $this->eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->view = $this->createMock(\Magento\Framework\App\ViewInterface::class);
         $this->messageManager = $this->getMockForAbstractClass(
             \Magento\Framework\Message\ManagerInterface::class,
             [],
             '',
             false
         );
-        $this->resultFactory = $this->createMock(ResultFactory::class);
-        $this->assetRepo = $this->createMock(Repository::class);
-        $this->appFileSystem = $this->createMock(Filesystem::class);
-        $this->fileFactory = $this->createMock(FileFactory::class);
-        $this->response = $this->createMock(Http::class);
+        $this->resultFactory = $this->createMock(\Magento\Framework\Controller\ResultFactory::class);
+        $this->assetRepo = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
+        $this->appFileSystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->fileFactory = $this->createMock(\Magento\Framework\App\Response\Http\FileFactory::class);
+        $this->response = $this->createMock(\Magento\Framework\App\Response\Http::class);
         $this->redirect = $this->getMockForAbstractClass(
-            RedirectInterface::class,
+            \Magento\Framework\App\Response\RedirectInterface::class,
             [],
             '',
             false
         );
-        $this->session = $this->getMockBuilder(Session::class)
-            ->addMethods(['setIsUrlNotice', 'setThemeData', 'setThemeCustomCssData'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->actionFlag = $this->createMock(ActionFlag::class);
-        $this->backendHelper = $this->createMock(Data::class);
-        $this->coreRegistry = $this->createMock(Registry::class);
+        $this->session = $this->createPartialMock(
+            \Magento\Backend\Model\Session::class,
+            ['setIsUrlNotice', 'setThemeData', 'setThemeCustomCssData']
+        );
+        $this->actionFlag = $this->createMock(\Magento\Framework\App\ActionFlag::class);
+        $this->backendHelper = $this->createMock(\Magento\Backend\Helper\Data::class);
+        $this->coreRegistry = $this->createMock(\Magento\Framework\Registry::class);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $helper->getObject(
             'Magento\Theme\Controller\Adminhtml\System\Design\Theme\\' . $this->name,
             [

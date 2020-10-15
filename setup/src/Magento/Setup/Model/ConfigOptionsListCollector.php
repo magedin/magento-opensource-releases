@@ -9,7 +9,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Module\FullModuleList;
 use Magento\Framework\Setup\ConfigOptionsListInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Collects all ConfigOptionsList class in modules and setup
@@ -76,11 +76,9 @@ class ConfigOptionsListCollector
 
     /**
      * Auto discover ConfigOptionsList class and collect them.
-     *
      * These classes should reside in <module>/Setup directories.
      *
-     * @return ConfigOptionsListInterface[]
-     * @throws \Magento\Setup\Exception
+     * @return \Magento\Framework\Setup\ConfigOptionsListInterface[]
      */
     public function collectOptionsLists()
     {

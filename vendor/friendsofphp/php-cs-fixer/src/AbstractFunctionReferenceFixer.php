@@ -35,6 +35,7 @@ abstract class AbstractFunctionReferenceFixer extends AbstractFixer
      * which can be supplied by other methods in this abstract class.
      *
      * @param string   $functionNameToSearch
+     * @param Tokens   $tokens
      * @param int      $start
      * @param null|int $end
      *

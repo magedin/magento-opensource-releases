@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow;
 
 use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\Info;
 use Magento\Paypal\Model\Payflow\AvsEmsCodeMapper;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class AvsEmsCodeMapperTest extends TestCase
+class AvsEmsCodeMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AvsEmsCodeMapper
@@ -24,7 +21,7 @@ class AvsEmsCodeMapperTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->mapper = new AvsEmsCodeMapper();
     }
@@ -43,7 +40,7 @@ class AvsEmsCodeMapperTest extends TestCase
         /** @var OrderPaymentInterface|MockObject $orderPayment */
         $orderPayment = $this->getMockBuilder(OrderPaymentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $orderPayment->expects(self::once())
             ->method('getMethod')
@@ -63,15 +60,15 @@ class AvsEmsCodeMapperTest extends TestCase
      * Checks a test case, when payment order is not Payflow payment method.
      *
      * @covers \Magento\Paypal\Model\Payflow\AvsEmsCodeMapper::getCode
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The "some_payment" does not supported by Payflow AVS mapper.
      */
     public function testGetCodeWithException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('The "some_payment" does not supported by Payflow AVS mapper.');
         /** @var OrderPaymentInterface|MockObject $orderPayment */
         $orderPayment = $this->getMockBuilder(OrderPaymentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $orderPayment->expects(self::exactly(2))
             ->method('getMethod')

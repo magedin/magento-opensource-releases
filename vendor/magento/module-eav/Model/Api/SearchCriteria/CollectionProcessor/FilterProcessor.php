@@ -11,9 +11,6 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 
-/**
- *  SearchCriteria FilterProcessor
- */
 class FilterProcessor implements CollectionProcessorInterface
 {
     /**
@@ -116,6 +113,6 @@ class FilterProcessor implements CollectionProcessorInterface
      */
     private function getFieldMapping($field)
     {
-        return $this->fieldMapping[$field] ?? $field;
+        return isset($this->fieldMapping[$field]) ? $this->fieldMapping[$field] : $field;
     }
 }

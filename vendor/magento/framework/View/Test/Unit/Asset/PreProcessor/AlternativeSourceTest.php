@@ -3,31 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset\PreProcessor;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Asset\ContentProcessorInterface;
+use Magento\Framework\Filesystem;
 use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\File\FallbackContext;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Asset\LocalInterface;
-use Magento\Framework\View\Asset\LockerProcessInterface;
-use Magento\Framework\View\Asset\PreProcessor\AlternativeSource;
-use Magento\Framework\View\Asset\PreProcessor\AlternativeSource\AssetBuilder;
 use Magento\Framework\View\Asset\PreProcessor\Chain;
+use Magento\Framework\View\Asset\File\FallbackContext;
+use Magento\Framework\View\Asset\LockerProcessInterface;
+use Magento\Framework\View\Asset\ContentProcessorInterface;
+use Magento\Framework\View\Asset\PreProcessor\AlternativeSource;
 use Magento\Framework\View\Asset\PreProcessor\FilenameResolverInterface;
 use Magento\Framework\View\Asset\PreProcessor\Helper\SortInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Asset\PreProcessor\AlternativeSource\AssetBuilder;
 
 /**
+ * Class AlternativeSourceTest
  *
  * @see \Magento\Framework\View\Asset\PreProcessor\AlternativeSource
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AlternativeSourceTest extends TestCase
+class AlternativeSourceTest extends \PHPUnit\Framework\TestCase
 {
     const AREA = 'test-area';
 
@@ -42,39 +40,39 @@ class AlternativeSourceTest extends TestCase
     const NEW_CONTENT = 'test-new-content';
 
     /**
-     * @var SortInterface|MockObject
+     * @var SortInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sorterMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var LockerProcessInterface|MockObject
+     * @var LockerProcessInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lockerProcessMock;
 
     /**
-     * @var AssetBuilder|MockObject
+     * @var AssetBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetBuilderMock;
 
     /**
-     * @var ContentProcessorInterface|MockObject
+     * @var ContentProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $alternativeMock;
 
     /**
-     * @var FilenameResolverInterface|MockObject
+     * @var FilenameResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filenameResolverMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->sorterMock = $this->getMockBuilder(SortInterface::class)
             ->getMockForAbstractClass();
@@ -170,7 +168,7 @@ class AlternativeSourceTest extends TestCase
     {
         $alternatives = [
             'processor' => [
-                AlternativeSource::PROCESSOR_CLASS => ContentProcessorInterface::class
+                AlternativeSource::PROCESSOR_CLASS => \Magento\Framework\View\Asset\ContentProcessorInterface::class
             ]
         ];
 
@@ -218,7 +216,7 @@ class AlternativeSourceTest extends TestCase
 
         $this->objectManagerMock->expects(self::once())
             ->method('get')
-            ->with(ContentProcessorInterface::class)
+            ->with(\Magento\Framework\View\Asset\ContentProcessorInterface::class)
             ->willReturn($this->getProcessorMock($assetMock));
 
         $alternativeSource = new AlternativeSource(
@@ -272,8 +270,8 @@ class AlternativeSourceTest extends TestCase
     }
 
     /**
-     * @param MockObject $asset
-     * @return ContentProcessorInterface|MockObject
+     * @param \PHPUnit_Framework_MockObject_MockObject $asset
+     * @return ContentProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getProcessorMock($asset)
     {
@@ -289,7 +287,7 @@ class AlternativeSourceTest extends TestCase
     }
 
     /**
-     * @return Chain|MockObject
+     * @return Chain|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getChainMock()
     {
@@ -303,7 +301,7 @@ class AlternativeSourceTest extends TestCase
     /**
      * @param string $content
      * @param int $contentExactly
-     * @return Chain|MockObject
+     * @return Chain|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getChainMockExpects($content = '', $contentExactly = 1)
     {
@@ -323,7 +321,7 @@ class AlternativeSourceTest extends TestCase
     }
 
     /**
-     * @return File|MockObject
+     * @return File|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getAssetNew()
     {
@@ -335,19 +333,19 @@ class AlternativeSourceTest extends TestCase
     }
 
     /**
-     * @return LocalInterface|MockObject
+     * @return LocalInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getAssetMock()
     {
         $assetMock = $this->getMockBuilder(LocalInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         return $assetMock;
     }
 
     /**
-     * @return LocalInterface|MockObject
+     * @return LocalInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getAssetMockExpects()
     {
@@ -367,7 +365,7 @@ class AlternativeSourceTest extends TestCase
     }
 
     /**
-     * @return FallbackContext|MockObject
+     * @return FallbackContext|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getContextMock()
     {

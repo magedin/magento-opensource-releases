@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Magento\Ui\Controller\Index;
 
 use Magento\TestFramework\TestCase\AbstractController;
-use Laminas\Http\Headers;
+use Zend\Http\Headers;
 
 /**
  * Test component rendering on storefront.

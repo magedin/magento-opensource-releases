@@ -47,7 +47,7 @@ class GuestCouponManagementTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->management = $this->objectManager->get(GuestCouponManagementInterface::class);

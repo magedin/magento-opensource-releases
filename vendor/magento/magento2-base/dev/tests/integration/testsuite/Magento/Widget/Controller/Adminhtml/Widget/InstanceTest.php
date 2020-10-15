@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Widget\Controller\Adminhtml\Widget;
 
 /**
@@ -11,7 +10,7 @@ namespace Magento\Widget\Controller\Adminhtml\Widget;
  */
 class InstanceTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -34,10 +33,7 @@ class InstanceTest extends \Magento\TestFramework\TestCase\AbstractBackendContro
     public function testEditAction()
     {
         $this->dispatch('backend/admin/widget_instance/edit');
-        $this->assertRegExp(
-            '/<option value="cms_page_link".*?selected="selected"\>/is',
-            $this->getResponse()->getBody()
-        );
+        $this->assertContains('<option value="cms_page_link" selected="selected">', $this->getResponse()->getBody());
     }
 
     public function testBlocksAction()

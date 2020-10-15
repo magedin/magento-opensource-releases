@@ -3,23 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit;
 
-use Magento\Framework\Api\CriteriaInterface;
-use Magento\Framework\Data\AbstractSearchResult;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Magento\Framework\Data\SearchResultIteratorFactory;
-use Magento\Framework\Data\Test\Unit\Stub\SearchResult;
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\QueryInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\AbstractSearchResult;
 
-class AbstractSearchResultTest extends TestCase
+/**
+ * Class AbstractSearchResultTest
+ */
+class AbstractSearchResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AbstractSearchResult
@@ -27,51 +18,50 @@ class AbstractSearchResultTest extends TestCase
     protected $searchResult;
 
     /**
-     * @var QueryInterface|MockObject
+     * @var \Magento\Framework\DB\QueryInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $query;
 
     /**
-     * @var EntityFactoryInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactoryInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityFactory;
 
     /**
-     * @var CriteriaInterface|MockObject
+     * @var \Magento\Framework\Api\CriteriaInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $criteria;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchResultIteratorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->criteria = $this->getMockForAbstractClass(CriteriaInterface::class);
-        $this->query = $this->getMockForAbstractClass(QueryInterface::class);
+        $this->criteria = $this->getMockForAbstractClass(\Magento\Framework\Api\CriteriaInterface::class);
+        $this->query = $this->getMockForAbstractClass(\Magento\Framework\DB\QueryInterface::class);
         $this->query->expects($this->any())
             ->method('getCriteria')
             ->willReturn($this->criteria);
         $this->entityFactory = $this->getMockForAbstractClass(
-            EntityFactoryInterface::class
+            \Magento\Framework\Data\Collection\EntityFactoryInterface::class
         );
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->searchResultIteratorMock = $this->getMockBuilder(
-            SearchResultIteratorFactory::class
-        )->disableOriginalConstructor()
             ->getMock();
+        $this->searchResultIteratorMock = $this->getMockBuilder(
+            \Magento\Framework\Data\SearchResultIteratorFactory::class
+        )->disableOriginalConstructor()->getMock();
         $this->searchResult = $objectManager->getObject(
-            SearchResult::class,
+            \Magento\Framework\Data\Test\Unit\Stub\SearchResult::class,
             [
                 'query' => $this->query,
                 'entityFactory' => $this->entityFactory,
@@ -85,14 +75,14 @@ class AbstractSearchResultTest extends TestCase
     {
         $itemData = ['id' => 1];
 
-        $testItem = new DataObject($itemData);
+        $testItem = new \Magento\Framework\DataObject($itemData);
 
         $this->query->expects($this->once())
             ->method('fetchAll')
             ->willReturn([$itemData]);
         $this->entityFactory->expects($this->once())
             ->method('create')
-            ->with(DataObject::class, ['data' => $itemData])
+            ->with(\Magento\Framework\DataObject::class, ['data' => $itemData])
             ->willReturn($testItem);
 
         $items = $this->searchResult->getItems();

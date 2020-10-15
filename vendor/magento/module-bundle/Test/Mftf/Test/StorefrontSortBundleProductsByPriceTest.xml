@@ -95,9 +95,7 @@
             </createData>
 
             <!-- Perform CLI reindex -->
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value=""/>
-            </actionGroup>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
         </before>
         <after>
             <!-- Delete all created data -->
@@ -111,9 +109,6 @@
             <deleteData createDataKey="createFirstProductForBundle" stepKey="deleteFirstProductForBundle"/>
             <deleteData createDataKey="createSecondProductForBundle" stepKey="deleteSecondProductForBundle"/>
             <deleteData createDataKey="createThirdBundleProduct" stepKey="deleteThirdBundleProduct"/>
-
-            <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Open created category on Storefront -->
@@ -122,8 +117,8 @@
         </actionGroup>
 
         <!-- Assert first bundle products in category product grid -->
-        <actionGroup ref="AssertStorefrontProductIsPresentOnCategoryPageActionGroup" stepKey="assertFirstBundleProduct">
-            <argument name="productName" value="$$createFirstBundleProduct.name$$"/>
+        <actionGroup ref="AssertProductOnCategoryPageActionGroup" stepKey="assertFirstBundleProduct">
+            <argument name="product" value="$$createFirstBundleProduct$$"/>
         </actionGroup>
         <actionGroup ref="AssertStorefrontElementVisibleActionGroup" stepKey="seePriceRangeFromForFirstBundleProduct">
             <argument name="selector" value="{{StorefrontCategoryProductSection.priceFromByProductId($$createFirstBundleProduct.id$$)}}"/>
@@ -135,8 +130,8 @@
         </actionGroup>
 
         <!-- Assert second bundle products in category product grid -->
-        <actionGroup ref="AssertStorefrontProductIsPresentOnCategoryPageActionGroup" stepKey="assertSecondBundleProduct">
-            <argument name="productName" value="$$createSecondBundleProduct.name$$"/>
+        <actionGroup ref="AssertProductOnCategoryPageActionGroup" stepKey="assertSecondBundleProduct">
+            <argument name="product" value="$$createSecondBundleProduct$$"/>
         </actionGroup>
         <actionGroup ref="AssertStorefrontElementVisibleActionGroup" stepKey="seePriceRangeFromForSecondBundleProduct">
             <argument name="selector" value="{{StorefrontCategoryProductSection.priceFromByProductId($$createSecondBundleProduct.id$$)}}"/>
@@ -148,8 +143,8 @@
         </actionGroup>
 
         <!-- Assert third bundle products in category product grid -->
-        <actionGroup ref="AssertStorefrontProductIsPresentOnCategoryPageActionGroup" stepKey="assertThirdBundleProduct">
-            <argument name="productName" value="$$createThirdBundleProduct.name$$"/>
+        <actionGroup ref="AssertProductOnCategoryPageActionGroup" stepKey="assertThirdBundleProduct">
+            <argument name="product" value="$$createThirdBundleProduct$$"/>
         </actionGroup>
         <actionGroup ref="AssertStorefrontElementVisibleActionGroup" stepKey="seePriceRangeFromForThirdBundleProduct">
             <argument name="selector" value="{{StorefrontCategoryProductSection.priceFromByProductId($$createThirdBundleProduct.id$$)}}"/>
@@ -161,7 +156,7 @@
         </actionGroup>
 
         <!-- Switch category view to List mode -->
-        <actionGroup ref="StorefrontSwitchCategoryViewToListModeActionGroup" stepKey="switchCategoryViewToListMode"/>
+        <actionGroup ref="StorefrontSwitchCategoryViewToListMode" stepKey="switchCategoryViewToListMode"/>
 
         <!-- Sort products By Price -->
         <actionGroup ref="StorefrontCategoryPageSortProductActionGroup" stepKey="sortProductByPrice"/>

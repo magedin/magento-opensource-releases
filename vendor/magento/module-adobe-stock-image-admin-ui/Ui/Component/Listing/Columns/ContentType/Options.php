@@ -11,36 +11,26 @@ namespace Magento\AdobeStockImageAdminUi\Ui\Component\Listing\Columns\ContentTyp
 use Magento\Framework\Data\OptionSourceInterface;
 
 /**
- * Option Provider for ContentType filter
+ * Content Type Photo filter options provider
  */
 class Options implements OptionSourceInterface
 {
     /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
-     * Options constructor.
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @inheritdoc
+     * Get options
+     *
+     * @return array
      */
     public function toOptionArray(): array
     {
-        $options = [];
-        foreach ($this->options as $option) {
-            if (isset($option['label'])) {
-                $option['label'] = __($option['label']);
-            }
-            $options[] = $option;
-        }
-        return $options;
+        return [
+            [
+                'value' => 'photo',
+                'label' => __('Photo')
+            ],
+            [
+                'value' => 'illustration',
+                'label' => __('Illustration')
+            ]
+        ];
     }
 }

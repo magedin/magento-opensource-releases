@@ -9,8 +9,6 @@ use Magento\Framework\App\State;
 use Magento\Framework\View\Element\Template;
 
 /**
- * Block for Components
- *
  * @api
  * @since 100.0.2
  */

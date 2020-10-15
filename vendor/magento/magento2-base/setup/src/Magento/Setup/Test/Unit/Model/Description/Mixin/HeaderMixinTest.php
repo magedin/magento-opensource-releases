@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\Description\Mixin;
 
-use Magento\Setup\Model\Description\Mixin\HeaderMixin;
-use PHPUnit\Framework\TestCase;
-
-class HeaderMixinTest extends TestCase
+class HeaderMixinTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var HeaderMixin
+     * @var \Magento\Setup\Model\Description\Mixin\HeaderMixin
      */
     private $mixin;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->mixin = new HeaderMixin();
+        $this->mixin = new \Magento\Setup\Model\Description\Mixin\HeaderMixin();
     }
 
     /**

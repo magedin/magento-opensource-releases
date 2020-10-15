@@ -32,47 +32,30 @@ class Descriptor
      */
     public static function getTestSignatureUnique(\PHPUnit\Framework\SelfDescribing $testCase)
     {
-        $env     = '';
-        $example = '';
-
-        if (method_exists($testCase, 'getScenario')
-            && !empty($testCase->getScenario()->current('env'))
-        ) {
-            $env = ':' . $testCase->getScenario()->current('env');
-        }
+        $example = null;
 
         if (method_exists($testCase, 'getMetaData')
-            && !empty($testCase->getMetadata()->getCurrent('example'))
+            && $example = $testCase->getMetadata()->getCurrent('example')
         ) {
-            $example = ':' . substr(sha1(json_encode($testCase->getMetadata()->getCurrent('example'))), 0, 7);
+            $example = ':' . substr(sha1(json_encode($example)), 0, 7);
         }
 
-        return self::getTestSignature($testCase) . $env . $example;
+        return self::getTestSignature($testCase) . $example;
     }
 
     public static function getTestAsString(\PHPUnit\Framework\SelfDescribing $testCase)
     {
         if ($testCase instanceof \PHPUnit\Framework\TestCase) {
-            $text = self::getTestCaseNameAsString($testCase->getName());
+            $text = $testCase->getName();
+            $text = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $text);
+            $text = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $text);
+            $text = preg_replace('/^test /', '', $text);
+            $text = ucfirst(strtolower($text));
+            $text = str_replace(['::', 'with data set'], [':', '|'], $text);
             return ReflectionHelper::getClassShortName($testCase) . ': ' . $text;
         }
 
         return $testCase->toString();
-    }
-
-  /**
-   * @param string $testCaseName
-   * @return string
-   */
-    public static function getTestCaseNameAsString($testCaseName)
-    {
-        $text = $testCaseName;
-        $text = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $text);
-        $text = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $text);
-        $text = preg_replace('/^test /', '', $text);
-        $text = ucfirst(strtolower($text));
-        $text = str_replace(['::', 'with data set'], [':', '|'], $text);
-        return $text;
     }
 
     /**

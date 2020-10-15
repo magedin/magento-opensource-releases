@@ -3,50 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing\Column;
 
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Ui\Component\Listing\AttributeRepository;
 use Magento\Customer\Ui\Component\Listing\Column\AttributeColumn;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Framework\View\Element\UiComponentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AttributeColumnTest extends TestCase
+class AttributeColumnTest extends \PHPUnit\Framework\TestCase
 {
     /** @var AttributeColumn */
     protected $component;
 
-    /** @var ContextInterface|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var UiComponentFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $uiComponentFactory;
 
-    /** @var AttributeRepository|MockObject */
+    /** @var \Magento\Customer\Ui\Component\Listing\AttributeRepository|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeRepository;
 
-    /** @var AttributeMetadataInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\AttributeMetadataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeMetadata;
 
-    protected function setup(): void
+    public function setup()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->uiComponentFactory = $this->createMock(UiComponentFactory::class);
+        $this->uiComponentFactory = $this->createMock(\Magento\Framework\View\Element\UiComponentFactory::class);
         $this->attributeRepository = $this->createMock(
-            AttributeRepository::class
+            \Magento\Customer\Ui\Component\Listing\AttributeRepository::class
         );
         $this->attributeMetadata = $this->getMockForAbstractClass(
-            AttributeMetadataInterface::class,
+            \Magento\Customer\Api\Data\AttributeMetadataInterface::class,
             [],
             '',
             false

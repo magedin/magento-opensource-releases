@@ -11,18 +11,9 @@
  */
 namespace Magento\Catalog\Block\Adminhtml\Product\Helper\Form;
 
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
 class Apply extends \Magento\Framework\Data\Form\Element\Multiselect
 {
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
-     * Return html of the element.
-     *
      * @return string
      */
     public function getElementHtml()
@@ -37,19 +28,12 @@ class Apply extends \Magento\Framework\Data\Form\Element\Multiselect
             $elementAttributeHtml = $elementAttributeHtml . ' disabled="disabled"';
         }
 
-        $html = '<select id="' . $this->getHtmlId() . '"' . $elementAttributeHtml . '>'
+        $html = '<select onchange="toggleApplyVisibility(this)"' . $elementAttributeHtml . '>'
             . '<option value="0">' . $this->getModeLabels('all') . '</option>'
             . '<option value="1" ' . ($this->getValue() == null ? '' : 'selected') . '>'
             . $this->getModeLabels('custom') . '</option>' . '</select><br /><br />';
 
-        $html .= /* @noEscape */ $this->secureRenderer->renderEventListenerAsTag(
-            'onchange',
-            "toggleApplyVisibility(this)",
-            'select#' . $this->getHtmlId()
-        );
-
         $html .= parent::getElementHtml();
-
         return $html;
     }
 

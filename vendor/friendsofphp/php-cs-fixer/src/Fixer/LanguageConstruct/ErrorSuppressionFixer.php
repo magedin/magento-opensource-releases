@@ -101,7 +101,7 @@ final class ErrorSuppressionFixer extends AbstractFixer implements Configuration
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         $functionsAnalyzer = new FunctionsAnalyzer();
-        $excludedFunctions = array_map(static function ($function) {
+        $excludedFunctions = array_map(function ($function) {
             return strtolower($function);
         }, $this->configuration[self::OPTION_NOISE_REMAINING_USAGES_EXCLUDE]);
 
@@ -153,7 +153,8 @@ final class ErrorSuppressionFixer extends AbstractFixer implements Configuration
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */

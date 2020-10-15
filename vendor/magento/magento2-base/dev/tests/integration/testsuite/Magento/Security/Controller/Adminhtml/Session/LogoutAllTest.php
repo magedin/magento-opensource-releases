@@ -11,7 +11,7 @@ class LogoutAllTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->uri = 'backend/security/session/logoutAll';
         parent::setUp();

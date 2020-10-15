@@ -3,34 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ProductAlert\Test\Unit\Block\Product;
 
-use Magento\Framework\Data\Helper\PostHelper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ProductAlert\Block\Product\View;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $block;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $postHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->postHelper = $this->createMock(PostHelper::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->postHelper = $this->createMock(\Magento\Framework\Data\Helper\PostHelper::class);
         $this->block = $objectManager->getObject(
-            View::class,
+            \Magento\ProductAlert\Block\Product\View::class,
             ['coreHelper' => $this->postHelper]
         );
     }
@@ -41,7 +33,7 @@ class ViewTest extends TestCase
         $this->postHelper->expects($this->once())
             ->method('getPostData')
             ->with('someUrl')
-            ->willReturn('{parsedAction}');
+            ->will($this->returnValue('{parsedAction}'));
         $this->assertEquals('{parsedAction}', $this->block->getPostAction());
     }
 }

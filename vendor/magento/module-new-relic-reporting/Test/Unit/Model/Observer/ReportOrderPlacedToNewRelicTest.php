@@ -3,20 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\NewRelicReporting\Test\Unit\Model\Observer;
 
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\NewRelicReporting\Model\Config;
-use Magento\NewRelicReporting\Model\NewRelicWrapper;
 use Magento\NewRelicReporting\Model\Observer\ReportOrderPlacedToNewRelic;
-use Magento\Sales\Model\Order;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReportOrderPlacedToNewRelicTest extends TestCase
+/**
+ * Class ReportOrderPlacedToNewRelicTest
+ */
+class ReportOrderPlacedToNewRelicTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReportOrderPlacedToNewRelic
@@ -24,12 +18,12 @@ class ReportOrderPlacedToNewRelicTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\NewRelicReporting\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var NewRelicWrapper|MockObject
+     * @var \Magento\NewRelicReporting\Model\NewRelicWrapper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $newRelicWrapper;
 
@@ -38,13 +32,13 @@ class ReportOrderPlacedToNewRelicTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isNewRelicEnabled'])
             ->getMock();
-        $this->newRelicWrapper = $this->getMockBuilder(NewRelicWrapper::class)
+        $this->newRelicWrapper = $this->getMockBuilder(\Magento\NewRelicReporting\Model\NewRelicWrapper::class)
             ->disableOriginalConstructor()
             ->setMethods(['addCustomParameter'])
             ->getMock();
@@ -62,8 +56,8 @@ class ReportOrderPlacedToNewRelicTest extends TestCase
      */
     public function testReportOrderPlacedToNewRelicModuleDisabledFromConfig()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->config->expects($this->once())
@@ -84,23 +78,21 @@ class ReportOrderPlacedToNewRelicTest extends TestCase
         $testItemCount = null;
         $testTotalQtyOrderedCount = 1;
 
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->config->expects($this->once())
             ->method('isNewRelicEnabled')
             ->willReturn(true);
-        $event = $this->getMockBuilder(Event::class)
+        $event = $this->getMockBuilder(\Magento\Framework\Event::class)
             ->setMethods(['getOrder'])
             ->disableOriginalConstructor()
             ->getMock();
         $eventObserver->expects($this->once())
             ->method('getEvent')
             ->willReturn($event);
-        $order = $this->getMockBuilder(Order::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)->disableOriginalConstructor()->getMock();
         $event->expects($this->once())
             ->method('getOrder')
             ->willReturn($order);

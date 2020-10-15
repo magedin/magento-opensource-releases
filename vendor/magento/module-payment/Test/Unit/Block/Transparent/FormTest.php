@@ -3,84 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Block\Transparent;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Payment\Model\Config;
-use Magento\Payment\Model\Method\ConfigInterface;
 use Magento\Payment\Model\Method\TransparentInterface;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FormTesting|MockObject
+     * @var FormTesting | \PHPUnit_Framework_MockObject_MockObject
      */
     private $form;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var TransparentInterface|MockObject
+     * @var TransparentInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $methodMock;
 
     /**
-     * @var Session|MockObject
+     * @var Session | \PHPUnit_Framework_MockObject_MockObject
      */
     private $checkoutSessionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManager($this);
 
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->setMethods(['getParam'])
             ->getMockForAbstractClass();
 
-        $this->urlBuilderMock = $this->getMockBuilder(UrlInterface::class)
+        $this->urlBuilderMock = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->setMethods(['getUrl'])
             ->getMockForAbstractClass();
 
         $context = $objectManagerHelper->getObject(
-            Context::class,
+            \Magento\Framework\View\Element\Template\Context::class,
             [
                 'request' => $this->requestMock,
                 'urlBuilder' => $this->urlBuilderMock
             ]
         );
 
-        $this->methodMock = $this->getMockBuilder(TransparentInterface::class)
+        $this->methodMock = $this->getMockBuilder(\Magento\Payment\Model\Method\TransparentInterface::class)
             ->getMock();
 
-        $this->checkoutSessionMock = $this->getMockBuilder(Session::class)
+        $this->checkoutSessionMock = $this->getMockBuilder(\Magento\Checkout\Model\Session::class)
             ->setMethods([])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $paymentConfigMock = $this->getMockBuilder(Config::class)
+        $paymentConfigMock = $this->getMockBuilder(\Magento\Payment\Model\Config::class)
             ->setMethods([])
             ->disableOriginalConstructor()
             ->getMock();
@@ -126,7 +116,7 @@ class FormTest extends TestCase
      */
     private function initializeMethodWithConfigMock(array $configMap = [])
     {
-        $configInterface = $this->getMockBuilder(ConfigInterface::class)
+        $configInterface = $this->getMockBuilder(\Magento\Payment\Model\Method\ConfigInterface::class)
             ->getMock();
 
         $configInterface->expects($this->any())
@@ -247,10 +237,10 @@ class FormTest extends TestCase
 
     public function testToHtmlShouldRender()
     {
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $paymentMock = $this->getMockBuilder(Payment::class)
+        $paymentMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -278,7 +268,7 @@ class FormTest extends TestCase
 
     public function testToHtmlShouldNotRenderEmptyPayment()
     {
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -300,10 +290,10 @@ class FormTest extends TestCase
 
     public function testGetMethodNotTransparentInterface()
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage((string)__('We cannot retrieve the transparent payment method model object.'));
 
-        $methodMock = $this->getMockBuilder(MethodInterface::class)
+        $methodMock = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->getMockForAbstractClass();
 
         $this->form->setMethod($methodMock);

@@ -3,29 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Creditmemo\AbstractCreditmemo;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Message\Manager;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Api\CreditmemoManagementInterface;
 use Magento\Sales\Controller\Adminhtml\Creditmemo\AbstractCreditmemo\Email;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class EmailTest
+ *
+ * @package Magento\Sales\Controller\Adminhtml\Creditmemo\AbstractCreditmemo
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EmailTest extends TestCase
+class EmailTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Email
@@ -33,100 +24,96 @@ class EmailTest extends TestCase
     protected $creditmemoEmail;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $response;
 
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Message\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManager;
 
     /**
-     * @var \Magento\Framework\ObjectManager\ObjectManager|MockObject
+     * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $session;
 
     /**
-     * @var ActionFlag|MockObject
+     * @var \Magento\Framework\App\ActionFlag|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $actionFlag;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backend\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helper;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirectFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRedirectMock;
 
     /**
      * Test setup
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->context = $this->createPartialMock(Context::class, [
-            'getRequest',
-            'getResponse',
-            'getMessageManager',
-            'getRedirect',
-            'getObjectManager',
-            'getSession',
-            'getActionFlag',
-            'getHelper',
-            'getResultRedirectFactory'
-        ]);
-        $this->response = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setRedirect'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
+        $this->context = $this->createPartialMock(\Magento\Backend\App\Action\Context::class, [
+                'getRequest',
+                'getResponse',
+                'getMessageManager',
+                'getRedirect',
+                'getObjectManager',
+                'getSession',
+                'getActionFlag',
+                'getHelper',
+                'getResultRedirectFactory'
+            ]);
+        $this->response = $this->createPartialMock(
+            \Magento\Framework\App\ResponseInterface::class,
+            ['setRedirect', 'sendResponse']
+        );
 
-        $this->request = $this->getMockBuilder(Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+            ->disableOriginalConstructor()->getMock();
         $this->objectManager = $this->createPartialMock(
             \Magento\Framework\ObjectManager\ObjectManager::class,
             ['create']
         );
         $this->messageManager = $this->createPartialMock(
-            Manager::class,
+            \Magento\Framework\Message\Manager::class,
             ['addSuccessMessage']
         );
-        $this->session = $this->getMockBuilder(Session::class)
-            ->addMethods(['setIsUrlNotice'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->actionFlag = $this->createPartialMock(ActionFlag::class, ['get']);
-        $this->helper = $this->createPartialMock(Data::class, ['getUrl']);
+        $this->session = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['setIsUrlNotice']);
+        $this->actionFlag = $this->createPartialMock(\Magento\Framework\App\ActionFlag::class, ['get']);
+        $this->helper = $this->createPartialMock(\Magento\Backend\Helper\Data::class, ['getUrl']);
         $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            RedirectFactory::class
+            \Magento\Backend\Model\View\Result\RedirectFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->once())->method('getMessageManager')->willReturn($this->messageManager);
@@ -140,7 +127,7 @@ class EmailTest extends TestCase
             ->method('getResultRedirectFactory')
             ->willReturn($this->resultRedirectFactoryMock);
         $this->creditmemoEmail = $objectManagerHelper->getObject(
-            Email::class,
+            \Magento\Sales\Controller\Adminhtml\Creditmemo\AbstractCreditmemo\Email::class,
             [
                 'context' => $this->context
             ]
@@ -153,7 +140,7 @@ class EmailTest extends TestCase
     public function testEmail()
     {
         $cmId = 10000031;
-        $cmManagement = CreditmemoManagementInterface::class;
+        $cmManagement = \Magento\Sales\Api\CreditmemoManagementInterface::class;
         $cmManagementMock = $this->createMock($cmManagement);
         $this->prepareRedirect($cmId);
 
@@ -173,7 +160,7 @@ class EmailTest extends TestCase
             ->with('You sent the message.');
 
         $this->assertInstanceOf(
-            Redirect::class,
+            \Magento\Backend\Model\View\Result\Redirect::class,
             $this->creditmemoEmail->execute()
         );
         $this->assertEquals($this->response, $this->creditmemoEmail->getResponse());
@@ -187,7 +174,7 @@ class EmailTest extends TestCase
         $this->request->expects($this->once())
             ->method('getParam')
             ->with('creditmemo_id')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
 
         $this->assertNull($this->creditmemoEmail->execute());
     }

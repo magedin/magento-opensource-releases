@@ -224,12 +224,10 @@ class Bootstrap
     /**
      * Factory method for creating application instances
      *
-     * In case of failure,
-     * the application will be terminated by "exit(1)"
-     *
      * @param string $type
      * @param array $arguments
-     * @return \Magento\Framework\AppInterface | void
+     * @return \Magento\Framework\AppInterface
+     * @throws \InvalidArgumentException
      */
     public function createApplication($type, $arguments = [])
     {
@@ -270,7 +268,7 @@ class Bootstrap
                     throw $e;
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             $this->terminate($e);
         }
     } // phpcs:enable
@@ -421,12 +419,12 @@ class Bootstrap
     /**
      * Display an exception and terminate program execution
      *
-     * @param \Throwable $e
+     * @param \Exception $e
      * @return void
      *
      * phpcs:disable Magento2.Security.LanguageConstruct, Squiz.Commenting.FunctionCommentThrowTag
      */
-    protected function terminate(\Throwable $e)
+    protected function terminate(\Exception $e)
     {
 
         if ($this->isDeveloperMode()) {

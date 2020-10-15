@@ -207,12 +207,6 @@ class ValidationTest extends WebapiAbstract
                                 'field' => SourceInterface::SOURCE_CODE,
                             ],
                         ],
-                        [
-                            'message' => '"%field" can not contain whitespaces.',
-                            'parameters' => [
-                                'field' => SourceInterface::SOURCE_CODE,
-                            ],
-                        ],
                     ],
                 ],
             ],

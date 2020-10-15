@@ -9,9 +9,6 @@
  */
 namespace Magento\TestFramework\Inspection;
 
-/**
- * Abstract class for commands
- */
 abstract class AbstractCommand
 {
     /**
@@ -50,7 +47,6 @@ abstract class AbstractCommand
      * @param array $whiteList Files/directories to be inspected
      * @param array $blackList Files/directories to be excluded from the inspection
      * @return bool
-     * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
      */
     public function run(array $whiteList, array $blackList = [])
     {
@@ -122,9 +118,7 @@ abstract class AbstractCommand
     protected function _execShellCmd($shellCmd)
     {
         $output = [];
-        //phpcs:disable
         exec($shellCmd . ' 2>&1', $output, $this->_lastExitCode);
-        //phpcs:enable
         $this->_lastOutput = implode(PHP_EOL, $output);
         return $this->_lastExitCode === 0 ? $this->_lastOutput : false;
     }

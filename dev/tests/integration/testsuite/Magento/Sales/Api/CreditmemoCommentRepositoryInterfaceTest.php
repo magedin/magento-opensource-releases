@@ -19,7 +19,7 @@ class CreditmemoCommentRepositoryInterfaceTest extends \PHPUnit\Framework\TestCa
      */
     private $repository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->repository = Bootstrap::getObjectManager()->create(CreditmemoCommentRepositoryInterface::class);
     }
@@ -71,7 +71,7 @@ class CreditmemoCommentRepositoryInterfaceTest extends \PHPUnit\Framework\TestCa
         $searchResult = $this->repository->getList($searchCriteria);
 
         $items = array_values($searchResult->getItems());
-        $this->assertCount(1, $items);
+        $this->assertEquals(1, count($items));
         $this->assertEquals('comment 2', $items[0][CreditmemoCommentInterface::COMMENT]);
     }
 }

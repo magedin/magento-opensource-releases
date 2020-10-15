@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * test Magento\Customer\Model\Metadata\Form\AbstractData
  *
@@ -7,37 +7,26 @@
  */
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
 
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Api\Data\ValidationRuleInterface;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractDataTest extends TestCase
+class AbstractDataTest extends \PHPUnit\Framework\TestCase
 {
     const MODEL = 'MODEL';
 
-    /** @var ExtendsAbstractData */
+    /** @var \Magento\Customer\Test\Unit\Model\Metadata\Form\ExtendsAbstractData */
     protected $_model;
 
-    /** @var MockObject|TimezoneInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Stdlib\DateTime\TimezoneInterface */
     protected $_localeMock;
 
-    /** @var MockObject|ResolverInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Locale\ResolverInterface */
     protected $_localeResolverMock;
 
-    /** @var MockObject|LoggerInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Psr\Log\LoggerInterface */
     protected $_loggerMock;
 
-    /** @var MockObject|AttributeMetadataInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Api\Data\AttributeMetadataInterface */
     protected $_attributeMock;
 
     /** @var string */
@@ -49,19 +38,16 @@ class AbstractDataTest extends TestCase
     /** @var string */
     protected $_isAjax;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_localeMock = $this->getMockBuilder(
-            TimezoneInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Stdlib\DateTime\TimezoneInterface::class
+        )->disableOriginalConstructor()->getMock();
         $this->_localeResolverMock = $this->getMockBuilder(
-            ResolverInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->getMock();
-        $this->_attributeMock = $this->getMockForAbstractClass(AttributeMetadataInterface::class);
+            \Magento\Framework\Locale\ResolverInterface::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
+        $this->_attributeMock = $this->createMock(\Magento\Customer\Api\Data\AttributeMetadataInterface::class);
         $this->_value = 'VALUE';
         $this->_entityTypeCode = 'ENTITY_TYPE_CODE';
         $this->_isAjax = false;
@@ -82,11 +68,12 @@ class AbstractDataTest extends TestCase
         $this->assertSame($this->_attributeMock, $this->_model->getAttribute());
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Attribute object is undefined
+     */
     public function testGetAttributeException()
     {
-        $this->expectException(LocalizedException::class);
-        $this->expectExceptionMessage('Attribute object is undefined');
-
         $this->_model->setAttribute(false);
         $this->_model->getAttribute();
     }
@@ -121,7 +108,7 @@ class AbstractDataTest extends TestCase
         $this->assertSame($this->_model, $this->_model->setExtractedData($data));
         $this->assertSame($data, $this->_model->getExtractedData());
         $this->assertSame('VALUE', $this->_model->getExtractedData('KEY'));
-        $this->assertNull($this->_model->getExtractedData('BAD_KEY'));
+        $this->assertSame(null, $this->_model->getExtractedData('BAD_KEY'));
     }
 
     /**
@@ -133,7 +120,7 @@ class AbstractDataTest extends TestCase
     public function testApplyInputFilter($input, $output, $filter)
     {
         if ($input) {
-            $this->_attributeMock->expects($this->once())->method('getInputFilter')->willReturn($filter);
+            $this->_attributeMock->expects($this->once())->method('getInputFilter')->will($this->returnValue($filter));
         }
         $this->assertEquals($output, $this->_model->applyInputFilter($input));
     }
@@ -170,9 +157,9 @@ class AbstractDataTest extends TestCase
             )->method(
                 'getDateFormat'
             )->with(
-                \IntlDateFormatter::SHORT
-            )->willReturn(
-                $output
+                $this->equalTo(\IntlDateFormatter::SHORT)
+            )->will(
+                $this->returnValue($output)
             );
         }
         $actual = $this->_model->dateFilterFormat($format);
@@ -196,7 +183,7 @@ class AbstractDataTest extends TestCase
     public function testApplyOutputFilter($input, $output, $filter)
     {
         if ($input) {
-            $this->_attributeMock->expects($this->once())->method('getInputFilter')->willReturn($filter);
+            $this->_attributeMock->expects($this->once())->method('getInputFilter')->will($this->returnValue($filter));
         }
         $this->assertEquals($output, $this->_model->applyOutputFilter($input));
     }
@@ -228,7 +215,7 @@ class AbstractDataTest extends TestCase
      */
     public function testValidateInputRule($value, $label, $inputValidation, $expectedOutput): void
     {
-        $validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+        $validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getName', 'getValue'])
             ->getMockForAbstractClass();
@@ -328,7 +315,7 @@ class AbstractDataTest extends TestCase
     }
 
     /**
-     * @param RequestInterface $request
+     * @param \Magento\Framework\App\RequestInterface $request
      * @param string                        $attributeCode
      * @param bool|string                   $requestScope
      * @param bool                          $requestScopeOnly
@@ -341,8 +328,8 @@ class AbstractDataTest extends TestCase
             $this->once()
         )->method(
             'getAttributeCode'
-        )->willReturn(
-            $attributeCode
+        )->will(
+            $this->returnValue($attributeCode)
         );
         $this->_model->setRequestScope($requestScope);
         $this->_model->setRequestScopeOnly($requestScopeOnly);
@@ -355,52 +342,48 @@ class AbstractDataTest extends TestCase
     public function getRequestValueDataProvider()
     {
         $expectedValue = 'EXPECTED_VALUE';
-        $requestMockOne = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
+        $requestMockOne = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
         $requestMockOne->expects(
             $this->any()
         )->method(
             'getParam'
         )->with(
             'ATTR_CODE'
-        )->willReturn(
-            $expectedValue
+        )->will(
+            $this->returnValue($expectedValue)
         );
 
-        $requestMockTwo = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
+        $requestMockTwo = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
         $requestMockTwo->expects(
             $this->at(0)
         )->method(
             'getParam'
         )->with(
             'REQUEST_SCOPE'
-        )->willReturn(
-            ['ATTR_CODE' => $expectedValue]
+        )->will(
+            $this->returnValue(['ATTR_CODE' => $expectedValue])
         );
 
-        $requestMockFour = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
+        $requestMockFour = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
         $requestMockFour->expects(
             $this->at(0)
         )->method(
             'getParam'
         )->with(
             'REQUEST_SCOPE'
-        )->willReturn(
-            []
+        )->will(
+            $this->returnValue([])
         );
 
         $requestMockThree = $this->getMockBuilder(
-            Http::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\App\Request\Http::class
+        )->disableOriginalConstructor()->getMock();
         $requestMockThree->expects(
             $this->once()
         )->method(
             'getParams'
-        )->willReturn(
-            ['REQUEST' => ['SCOPE' => ['ATTR_CODE' => $expectedValue]]]
+        )->will(
+            $this->returnValue(['REQUEST' => ['SCOPE' => ['ATTR_CODE' => $expectedValue]]])
         );
         return [
             [$requestMockOne, 'ATTR_CODE', false, false, $expectedValue],

@@ -3,45 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block;
 
-use Magento\Catalog\Block\FrontendStorageManager;
 use Magento\Catalog\Model\FrontendStorageConfigurationInterface;
-use Magento\Catalog\Model\FrontendStorageConfigurationPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FrontendStorageManagerTest extends TestCase
+class FrontendStorageManagerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var FrontendStorageManager */
+    /** @var \Magento\Catalog\Block\FrontendStorageManager */
     protected $model;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var FrontendStorageConfigurationPool|MockObject */
+    /** @var \Magento\Catalog\Model\FrontendStorageConfigurationPool|\PHPUnit_Framework_MockObject_MockObject */
     protected $frontendStorageConfigurationPoolMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->frontendStorageConfigurationPoolMock = $this
-            ->getMockBuilder(FrontendStorageConfigurationPool::class)
+            ->getMockBuilder(\Magento\Catalog\Model\FrontendStorageConfigurationPool::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            FrontendStorageManager::class,
+            \Magento\Catalog\Block\FrontendStorageManager::class,
             [
                 'context' => $this->contextMock,
                 'storageConfigurationPool' => $this->frontendStorageConfigurationPoolMock

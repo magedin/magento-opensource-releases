@@ -4,6 +4,5 @@
  * See COPYING.txt for license details.
  */
 declare(strict_types=1);
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
+require 'default_rollback.php';

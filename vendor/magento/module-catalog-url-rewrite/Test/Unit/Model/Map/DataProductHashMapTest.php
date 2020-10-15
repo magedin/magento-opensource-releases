@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Map;
 
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
@@ -15,31 +13,32 @@ use Magento\CatalogUrlRewrite\Model\Map\HashMapPool;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProductHashMapTest extends TestCase
+/**
+ * Class DataProductHashMapTest
+ */
+class DataProductHashMapTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HashMapPool|MockObject */
+    /** @var HashMapPool|\PHPUnit_Framework_MockObject_MockObject */
     private $hashMapPoolMock;
 
-    /** @var DataCategoryHashMap|MockObject */
+    /** @var DataCategoryHashMap|\PHPUnit_Framework_MockObject_MockObject */
     private $dataCategoryMapMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactoryMock;
 
     /**
-     * @var ProductCollection|MockObject
+     * @var ProductCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productCollectionMock;
 
-    /** @var DataProductHashMap|MockObject */
+    /** @var DataProductHashMap|\PHPUnit_Framework_MockObject_MockObject */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->hashMapPoolMock = $this->createMock(HashMapPool::class);
         $this->dataCategoryMapMock = $this->createMock(DataCategoryHashMap::class);
@@ -74,7 +73,7 @@ class DataProductHashMapTest extends TestCase
         $productIds = ['1' => [1, 2, 3], '2' => [2, 3], '3' => 3];
         $productIdsOther = ['2' => [2, 3, 4]];
 
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(AdapterInterface::class);
         $selectMock = $this->createMock(Select::class);
 
         $this->productCollectionMock->expects($this->exactly(3))

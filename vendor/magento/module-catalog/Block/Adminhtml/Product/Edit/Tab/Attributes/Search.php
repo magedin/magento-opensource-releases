@@ -11,9 +11,6 @@
  */
 namespace Magento\Catalog\Block\Adminhtml\Product\Edit\Tab\Attributes;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Json\Helper\Data as JsonHelper;
-
 /**
  * Admin product attribute search block
  */
@@ -42,20 +39,17 @@ class Search extends \Magento\Backend\Block\Widget
      * @param \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $collectionFactory
      * @param \Magento\Framework\Registry $registry
      * @param array $data
-     * @param JsonHelper|null $jsonHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\DB\Helper $resourceHelper,
         \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $collectionFactory,
         \Magento\Framework\Registry $registry,
-        array $data = [],
-        ?JsonHelper $jsonHelper = null
+        array $data = []
     ) {
         $this->_resourceHelper = $resourceHelper;
         $this->_collectionFactory = $collectionFactory;
         $this->_coreRegistry = $registry;
-        $data['jsonHelper'] = $jsonHelper ?? ObjectManager::getInstance()->get(JsonHelper::class);
         parent::__construct($context, $data);
     }
 

@@ -58,7 +58,7 @@ abstract class PaypalExpressAbstractTest extends TestCase
      */
     protected $graphQlRequest;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -81,7 +81,7 @@ abstract class PaypalExpressAbstractTest extends TestCase
         $this->graphQlRequest = $this->objectManager->create(GraphQlRequest::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->disablePaypalPaymentMethods();
         $this->objectManager->removeSharedInstance(ApiFactory::class);

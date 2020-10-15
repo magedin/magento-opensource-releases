@@ -13,7 +13,7 @@
             <description>Fills in the provided User details on the New User creation page.</description>
         </annotations>
         <arguments>
-            <argument name="user" defaultValue="NewAdminUser"/>
+            <argument name="user" type="entity"/>
         </arguments>
 
         <fillField selector="{{AdminNewUserFormSection.username}}" userInput="{{user.username}}" stepKey="fillUser"/>

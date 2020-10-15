@@ -28,7 +28,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
      */
     protected $existingCookies;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->session = $this->objectManager->create(
@@ -37,7 +37,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $this->existingCookies = $_COOKIE;
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $_COOKIE = $this->existingCookies;
     }

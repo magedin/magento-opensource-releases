@@ -3,68 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Vault\Test\Unit\Plugin;
 
-use Magento\Checkout\Block\Checkout\LayoutProcessor;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Vault\Api\PaymentMethodListInterface;
-use Magento\Vault\Plugin\PaymentVaultConfigurationProcess;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PaymentVaultConfigurationProcessTest extends TestCase
+/**
+ * Class PaymentVaultConfigurationProcessTest.
+ */
+class PaymentVaultConfigurationProcessTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $store;
 
     /**
-     * @var PaymentMethodListInterface|MockObject
+     * @var \Magento\Vault\Api\PaymentMethodListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $vaultList;
 
     /**
-     * @var \Magento\Payment\Api\PaymentMethodListInterface|MockObject
+     * @var \Magento\Payment\Api\PaymentMethodListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMethodList;
 
     /**
-     * @var LayoutProcessor|MockObject
+     * @var \Magento\Checkout\Block\Checkout\LayoutProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layoutProcessor;
 
     /**
-     * @var PaymentVaultConfigurationProcess
+     * @var \Magento\Vault\Plugin\PaymentVaultConfigurationProcess
      */
     private $plugin;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->storeManager = $this
-            ->getMockBuilder(StoreManagerInterface::class)
+            ->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStore'])
             ->getMockForAbstractClass();
         $this->store = $this
-            ->getMockBuilder(StoreInterface::class)
+            ->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
             ->getMockForAbstractClass();
         $this->vaultList = $this
-            ->getMockBuilder(PaymentMethodListInterface::class)
+            ->getMockBuilder(\Magento\Vault\Api\PaymentMethodListInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getActiveList'])
             ->getMockForAbstractClass();
@@ -74,14 +66,14 @@ class PaymentVaultConfigurationProcessTest extends TestCase
             ->setMethods(['getActiveList'])
             ->getMockForAbstractClass();
         $this->layoutProcessor =  $this
-            ->getMockBuilder(LayoutProcessor::class)
+            ->getMockBuilder(\Magento\Checkout\Block\Checkout\LayoutProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods(['process'])
             ->getMockForAbstractClass();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->plugin = $objectManagerHelper->getObject(
-            PaymentVaultConfigurationProcess::class,
+            \Magento\Vault\Plugin\PaymentVaultConfigurationProcess::class,
             [
                 'vaultPaymentList' => $this->vaultList,
                 'paymentMethodList' => $this->paymentMethodList,
@@ -122,6 +114,12 @@ class PaymentVaultConfigurationProcessTest extends TestCase
             'vault' => [
                 'methods' => []
             ],
+            'braintree' => [
+                'methods' => [
+                    'braintree_paypal' => [],
+                    'braintree' => []
+                ]
+            ],
             'paypal-payments' => [
                 'methods' => [
                     'payflowpro' => [],
@@ -136,21 +134,21 @@ class PaymentVaultConfigurationProcessTest extends TestCase
             'vault' => [
                 'methods' => []
             ],
-            'paypal-payments' => [
+            'braintree' => [
                 'methods' => [
-                    'payflowpro' => [],
+                    'braintree_paypal' => []
                 ]
             ]
         ];
 
         $vaultPaymentMethod = $this
-            ->getMockBuilder(PaymentMethodListInterface::class)
+            ->getMockBuilder(\Magento\Vault\Api\PaymentMethodListInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCode', 'getProviderCode'])
             ->getMockForAbstractClass();
 
-        $vaultPaymentMethod->expects($this->any())->method('getCode')->willReturn('payflowpro_cc_vault');
-        $vaultPaymentMethod->expects($this->any())->method('getProviderCode')->willReturn('payflowpro');
+        $vaultPaymentMethod->expects($this->any())->method('getCode')->willReturn('braintree_paypal_vault');
+        $vaultPaymentMethod->expects($this->any())->method('getProviderCode')->willReturn('braintree_paypal');
 
         return [
             [$jsLayout, [], [], $result1],

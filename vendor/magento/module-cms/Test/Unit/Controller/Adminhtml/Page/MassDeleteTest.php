@@ -3,47 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Page;
 
-use Magento\Cms\Controller\Adminhtml\Page\MassDelete;
-use Magento\Cms\Model\ResourceModel\Page\Collection;
-use Magento\Cms\Model\ResourceModel\Page\CollectionFactory;
 use Magento\Cms\Test\Unit\Controller\Adminhtml\AbstractMassActionTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class MassDeleteTest extends AbstractMassActionTest
 {
     /**
-     * @var MassDelete
+     * @var \Magento\Cms\Controller\Adminhtml\Page\MassDelete
      */
     protected $massDeleteController;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Page\Collection|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageCollectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Cms\Model\ResourceModel\Page\CollectionFactory::class,
             ['create']
         );
 
         $this->pageCollectionMock =
-            $this->createMock(Collection::class);
+            $this->createMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class);
 
         $this->massDeleteController = $this->objectManager->getObject(
-            MassDelete::class,
+            \Magento\Cms\Controller\Adminhtml\Page\MassDelete::class,
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
@@ -89,14 +83,11 @@ class MassDeleteTest extends AbstractMassActionTest
     /**
      * Create Cms Page Collection Mock
      *
-     * @return \Magento\Cms\Model\ResourceModel\Page\Collection|MockObject
+     * @return \Magento\Cms\Model\ResourceModel\Page\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getPageMock()
     {
-        $pageMock = $this->getMockBuilder(Collection::class)
-            ->addMethods(['delete'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageMock = $this->createPartialMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class, ['delete']);
         $pageMock->expects($this->once())->method('delete')->willReturn(true);
 
         return $pageMock;

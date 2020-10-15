@@ -16,7 +16,7 @@ class CmsPageConfigReaderTest extends \PHPUnit\Framework\TestCase
      */
     private $model = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = Bootstrap::getObjectManager()->get(CmsPageConfigReader::class);
     }

@@ -3,73 +3,65 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Pricing\Price;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\LinkedProductSelectBuilderInterface;
-use Magento\ConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\ResourceModel\Product\LinkedProductSelectBuilderInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LowestPriceOptionsProviderTest extends TestCase
+class LowestPriceOptionsProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LowestPriceOptionsProvider
+     * @var \Magento\ConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider
      */
     private $model;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnection;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var LinkedProductSelectBuilderInterface|MockObject
+     * @var LinkedProductSelectBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $linkedProductSelectBuilder;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactory;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productCollection;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->connection = $this
-            ->getMockBuilder(AdapterInterface::class)
+            ->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->getMock();
         $this->resourceConnection = $this
-            ->getMockBuilder(ResourceConnection::class)
+            ->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection'])
             ->getMock();
@@ -77,14 +69,14 @@ class LowestPriceOptionsProviderTest extends TestCase
         $this->linkedProductSelectBuilder = $this
             ->getMockBuilder(LinkedProductSelectBuilderInterface::class)
             ->setMethods(['build'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->productCollection = $this
-            ->getMockBuilder(Collection::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['addAttributeToSelect', 'addIdFilter', 'getItems'])
             ->getMock();
         $this->collectionFactory = $this
-            ->getMockBuilder(CollectionFactory::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -97,7 +89,7 @@ class LowestPriceOptionsProviderTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->model = $objectManager->getObject(
-            LowestPriceOptionsProvider::class,
+            \Magento\ConfigurableProduct\Pricing\Price\LowestPriceOptionsProvider::class,
             [
                 'resourceConnection' => $this->resourceConnection,
                 'linkedProductSelectBuilder' => $this->linkedProductSelectBuilder,
@@ -110,11 +102,9 @@ class LowestPriceOptionsProviderTest extends TestCase
     public function testGetProducts()
     {
         $productId = 1;
-        $storeId = 1;
         $linkedProducts = ['some', 'linked', 'products', 'dataobjects'];
-        $product = $this->createMock(Product::class);
+        $product = $this->getMockBuilder(ProductInterface::class)->disableOriginalConstructor()->getMock();
         $product->expects($this->any())->method('getId')->willReturn($productId);
-        $product->expects($this->any())->method('getStoreId')->willReturn($storeId);
         $this->linkedProductSelectBuilder->expects($this->any())->method('build')->with($productId)->willReturn([]);
         $this->productCollection
             ->expects($this->once())

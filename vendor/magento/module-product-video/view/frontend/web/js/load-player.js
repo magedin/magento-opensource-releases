@@ -344,7 +344,6 @@ define([
                     .attr('mozallowfullscreen', '')
                     .attr('allowfullscreen', '')
                     .attr('referrerPolicy', 'origin')
-                    .attr('allow', 'autoplay')
             );
             this._player = window.$f(this.element.children(':first')[0]);
 

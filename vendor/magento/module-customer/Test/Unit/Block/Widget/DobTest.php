@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Block\Widget;
 
@@ -23,8 +22,8 @@ use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\Html\Date;
 use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Zend_Cache_Backend_BlackHole;
 use Zend_Cache_Core;
 
@@ -93,7 +92,7 @@ class DobTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $zendCacheCore = new Zend_Cache_Core();
         $zendCacheCore->setBackend(new Zend_Cache_Backend_BlackHole());
@@ -104,12 +103,12 @@ class DobTest extends TestCase
             '',
             false
         );
-        $frontendCache->expects($this->any())->method('getLowLevelFrontend')->willReturn($zendCacheCore);
-        $cache = $this->getMockForAbstractClass(CacheInterface::class);
-        $cache->expects($this->any())->method('getFrontend')->willReturn($frontendCache);
+        $frontendCache->expects($this->any())->method('getLowLevelFrontend')->will($this->returnValue($zendCacheCore));
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->any())->method('getFrontend')->will($this->returnValue($frontendCache));
 
         $objectManager = new ObjectManager($this);
-        $localeResolver = $this->getMockForAbstractClass(ResolverInterface::class);
+        $localeResolver = $this->createMock(ResolverInterface::class);
         $localeResolver->expects($this->any())
             ->method('getLocale')
             ->willReturnCallback(
@@ -124,12 +123,12 @@ class DobTest extends TestCase
 
         $this->_locale = Resolver::DEFAULT_LOCALE;
         $this->context = $this->createMock(Context::class);
-        $this->context->expects($this->any())->method('getLocaleDate')->willReturn($timezone);
+        $this->context->expects($this->any())->method('getLocaleDate')->will($this->returnValue($timezone));
         $this->escaper = $this->getMockBuilder(Escaper::class)
             ->disableOriginalConstructor()
             ->setMethods(['escapeHtml'])
             ->getMock();
-        $this->context->expects($this->any())->method('getEscaper')->willReturn($this->escaper);
+        $this->context->expects($this->any())->method('getEscaper')->will($this->returnValue($this->escaper));
 
         $this->attribute = $this->getMockBuilder(AttributeMetadataInterface::class)
             ->getMockForAbstractClass();
@@ -141,7 +140,7 @@ class DobTest extends TestCase
             ->getMockForAbstractClass();
         $this->customerMetadata->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willReturn($this->attribute);
+            ->will($this->returnValue($this->attribute));
 
         $this->filterFactory = $this->createMock(FilterFactory::class);
         $this->filterFactory
@@ -173,7 +172,7 @@ class DobTest extends TestCase
      */
     public function testIsEnabled($isVisible, $expectedValue)
     {
-        $this->attribute->expects($this->once())->method('isVisible')->willReturn($isVisible);
+        $this->attribute->expects($this->once())->method('isVisible')->will($this->returnValue($isVisible));
         $this->assertSame($expectedValue, $this->_block->isEnabled());
     }
 
@@ -192,15 +191,17 @@ class DobTest extends TestCase
     {
         $this->customerMetadata->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'field', 'fieldValue' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'field', 'fieldValue' => 'value']
+                        )
                     )
                 )
             );
-        $this->assertFalse($this->_block->isEnabled());
+        $this->assertSame(false, $this->_block->isEnabled());
     }
 
     /**
@@ -211,7 +212,7 @@ class DobTest extends TestCase
      */
     public function testIsRequired($isRequired, $expectedValue)
     {
-        $this->attribute->expects($this->once())->method('isRequired')->willReturn($isRequired);
+        $this->attribute->expects($this->once())->method('isRequired')->will($this->returnValue($isRequired));
         $this->assertSame($expectedValue, $this->_block->isRequired());
     }
 
@@ -219,15 +220,17 @@ class DobTest extends TestCase
     {
         $this->customerMetadata->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'field', 'fieldValue' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'field', 'fieldValue' => 'value']
+                        )
                     )
                 )
             );
-        $this->assertFalse($this->_block->isRequired());
+        $this->assertSame(false, $this->_block->isRequired());
     }
 
     /**
@@ -352,15 +355,7 @@ class DobTest extends TestCase
     public function getDateFormatDataProvider(): array
     {
         return [
-            [
-                'ar_SA',
-                preg_replace(
-                    '/[^MmDdYy\/\.\-]/',
-                    '',
-                    (new \IntlDateFormatter('ar_SA', \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE))
-                        ->getPattern()
-                )
-            ],
+            ['ar_SA', 'd/M/y'],
             [Resolver::DEFAULT_LOCALE, self::DATE_FORMAT],
         ];
     }
@@ -404,7 +399,7 @@ class DobTest extends TestCase
     {
         $this->attribute->expects($this->once())
             ->method('getValidationRules')
-            ->willReturn($validationRules);
+            ->will($this->returnValue($validationRules));
         $this->assertEquals($expectedValue, $this->_block->getMinDateRange());
     }
 
@@ -424,10 +419,10 @@ class DobTest extends TestCase
             ->getMockForAbstractClass();
         $validationRule->expects($this->any())
             ->method('getName')
-            ->willReturn(Dob::MIN_DATE_RANGE_KEY);
+            ->will($this->returnValue(Dob::MIN_DATE_RANGE_KEY));
         $validationRule->expects($this->any())
             ->method('getValue')
-            ->willReturn(strtotime(self::MIN_DATE));
+            ->will($this->returnValue(strtotime(self::MIN_DATE)));
 
         return [
             [
@@ -452,11 +447,13 @@ class DobTest extends TestCase
     {
         $this->customerMetadata->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'field', 'fieldValue' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'field', 'fieldValue' => 'value']
+                        )
                     )
                 )
             );
@@ -473,7 +470,7 @@ class DobTest extends TestCase
     {
         $this->attribute->expects($this->once())
             ->method('getValidationRules')
-            ->willReturn($validationRules);
+            ->will($this->returnValue($validationRules));
         $this->assertEquals($expectedValue, $this->_block->getMaxDateRange());
     }
 
@@ -493,10 +490,10 @@ class DobTest extends TestCase
             ->getMockForAbstractClass();
         $validationRule->expects($this->any())
             ->method('getName')
-            ->willReturn(Dob::MAX_DATE_RANGE_KEY);
+            ->will($this->returnValue(Dob::MAX_DATE_RANGE_KEY));
         $validationRule->expects($this->any())
             ->method('getValue')
-            ->willReturn(strtotime(self::MAX_DATE));
+            ->will($this->returnValue(strtotime(self::MAX_DATE)));
         return [
             [
                 [
@@ -520,11 +517,13 @@ class DobTest extends TestCase
     {
         $this->customerMetadata->expects($this->any())
             ->method('getAttributeMetadata')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'field', 'fieldValue' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'field', 'fieldValue' => 'value']
+                        )
                     )
                 )
             );
@@ -549,8 +548,8 @@ class DobTest extends TestCase
         $this->escaper->expects($this->any())
             ->method('escapeHtml')
             ->with($validation)
-            ->willReturn(
-                $validation
+            ->will(
+                $this->returnValue($validation)
             );
 
         $this->attribute->expects($this->once())
@@ -585,11 +584,11 @@ class DobTest extends TestCase
         $this->escaper->expects($this->any())
             ->method('escapeHtml')
             ->with($validation)
-            ->willReturn(
-                $validation
+            ->will(
+                $this->returnValue($validation)
             );
 
-        $this->context->expects($this->any())->method('getEscaper')->willReturn($this->escaper);
+        $this->context->expects($this->any())->method('getEscaper')->will($this->returnValue($this->escaper));
 
         $this->assertEquals(
             "data-validate=\"$validation\"",

@@ -3,46 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflinePayments\Test\Unit\Model;
 
-use Magento\Framework\Escaper;
-use Magento\OfflinePayments\Model\Checkmo;
 use Magento\OfflinePayments\Model\CheckmoConfigProvider;
-use Magento\Payment\Helper\Data as PaymentHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\OfflinePayments\Model\Checkmo;
+use Magento\Framework\Escaper;
 
-class CheckmoConfigProviderTest extends TestCase
+class CheckmoConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var CheckmoConfigProvider
-     */
-    private $model;
+    /** @var CheckmoConfigProvider */
+    protected $model;
 
-    /**
-     * @var Checkmo|MockObject
-     */
-    private $methodMock;
+    /** @var Checkmo|\PHPUnit_Framework_MockObject_MockObject */
+    protected $methodMock;
 
-    /**
-     * @var Escaper|MockObject
-     */
-    private $escaperMock;
+    /** @var Escaper|\PHPUnit_Framework_MockObject_MockObject */
+    protected $escaperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->methodMock = $this->createMock(Checkmo::class);
+        $this->methodMock = $this->createMock(\Magento\OfflinePayments\Model\Checkmo::class);
 
-        /** @var PaymentHelper|MockObject $paymentHelperMock */
-        $paymentHelperMock = $this->createMock(PaymentHelper::class);
+        $paymentHelperMock = $this->createMock(\Magento\Payment\Helper\Data::class);
         $paymentHelperMock->expects($this->once())
             ->method('getMethodInstance')
             ->with(Checkmo::PAYMENT_METHOD_CHECKMO_CODE)
             ->willReturn($this->methodMock);
 
-        $this->escaperMock = $this->createMock(Escaper::class);
+        $this->escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
         $this->escaperMock->expects($this->any())
             ->method('escapeHtml')
             ->willReturnArgument(0);

@@ -3,45 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Validator\Test\Unit;
-
-use Magento\Framework\Translate\AbstractAdapter;
-use Magento\Framework\Translate\AdapterInterface;
-use Magento\Framework\Validator\AbstractValidator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test case for \Magento\Framework\Validator\AbstractValidator
  */
-class ValidatorAbstractTest extends TestCase
+class ValidatorAbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var null|AdapterInterface
+     * @var null|\Magento\Framework\Translate\AdapterInterface
      */
     protected $_defaultTranslator = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_defaultTranslator = AbstractValidator::getDefaultTranslator();
+        $this->_defaultTranslator = \Magento\Framework\Validator\AbstractValidator::getDefaultTranslator();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
-        AbstractValidator::setDefaultTranslator($this->_defaultTranslator);
+        \Magento\Framework\Validator\AbstractValidator::setDefaultTranslator($this->_defaultTranslator);
     }
 
     /**
      * Get translator object
      *
-     * @return MockObject|AbstractAdapter
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Translate\AbstractAdapter
      */
     protected function _getTranslator()
     {
-        return $this->getMockBuilder(AdapterInterface::class)
-            ->getMockForAbstractClass();
+        return $this->getMockBuilder(\Magento\Framework\Translate\AdapterInterface::class)->getMockForAbstractClass();
     }
 
     /**
@@ -50,8 +42,8 @@ class ValidatorAbstractTest extends TestCase
     public function testDefaultTranslatorGetSet()
     {
         $translator = $this->_getTranslator();
-        AbstractValidator::setDefaultTranslator($translator);
-        $this->assertEquals($translator, AbstractValidator::getDefaultTranslator());
+        \Magento\Framework\Validator\AbstractValidator::setDefaultTranslator($translator);
+        $this->assertEquals($translator, \Magento\Framework\Validator\AbstractValidator::getDefaultTranslator());
     }
 
     /**
@@ -61,7 +53,7 @@ class ValidatorAbstractTest extends TestCase
     {
         /** @var \Magento\Framework\Validator\AbstractValidator $validator */
         $validator = $this->getMockBuilder(
-            AbstractValidator::class
+            \Magento\Framework\Validator\AbstractValidator::class
         )->getMockForAbstractClass();
         $translator = $this->_getTranslator();
         $validator->setTranslator($translator);
@@ -76,10 +68,10 @@ class ValidatorAbstractTest extends TestCase
     {
         /** @var \Magento\Framework\Validator\AbstractValidator $validator */
         $validator = $this->getMockBuilder(
-            AbstractValidator::class
+            \Magento\Framework\Validator\AbstractValidator::class
         )->getMockForAbstractClass();
         $translator = $this->_getTranslator();
-        AbstractValidator::setDefaultTranslator($translator);
+        \Magento\Framework\Validator\AbstractValidator::setDefaultTranslator($translator);
         $this->assertEquals($translator, $validator->getTranslator());
         $this->assertFalse($validator->hasTranslator());
     }

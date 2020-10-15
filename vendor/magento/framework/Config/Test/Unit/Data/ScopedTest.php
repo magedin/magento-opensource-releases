@@ -3,61 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit\Data;
 
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Config\Data\Scoped;
-use Magento\Framework\Config\ReaderInterface;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ScopedTest extends TestCase
+class ScopedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Scoped
+     * @var \Magento\Framework\Config\Data\Scoped
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_readerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_configScopeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_cacheMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->_readerMock = $this->getMockForAbstractClass(ReaderInterface::class);
-        $this->_configScopeMock = $this->getMockForAbstractClass(ScopeInterface::class);
-        $this->_cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_readerMock = $this->createMock(\Magento\Framework\Config\ReaderInterface::class);
+        $this->_configScopeMock = $this->createMock(\Magento\Framework\Config\ScopeInterface::class);
+        $this->_cacheMock = $this->createMock(\Magento\Framework\Config\CacheInterface::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
 
         $this->_model = $this->objectManager->getObject(
-            Scoped::class,
+            \Magento\Framework\Config\Data\Scoped::class,
             [
                 'reader' => $this->_readerMock,
                 'configScope' => $this->_configScopeMock,
@@ -119,8 +108,8 @@ class ScopedTest extends TestCase
             $this->any()
         )->method(
             'getCurrentScope'
-        )->willReturn(
-            'adminhtml'
+        )->will(
+            $this->returnValue('adminhtml')
         );
 
         /** set empty cache data */
@@ -130,8 +119,8 @@ class ScopedTest extends TestCase
             'load'
         )->with(
             'adminhtml::tag'
-        )->willReturn(
-            false
+        )->will(
+            $this->returnValue(false)
         );
 
         /** get data from reader  */
@@ -141,8 +130,8 @@ class ScopedTest extends TestCase
             'read'
         )->with(
             'adminhtml'
-        )->willReturn(
-            $testValue
+        )->will(
+            $this->returnValue($testValue)
         );
 
         $this->serializerMock->expects($this->once())
@@ -172,8 +161,8 @@ class ScopedTest extends TestCase
             $this->any()
         )->method(
             'getCurrentScope'
-        )->willReturn(
-            'adminhtml'
+        )->will(
+            $this->returnValue('adminhtml')
         );
 
         $this->serializerMock->expects($this->once())

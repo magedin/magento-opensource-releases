@@ -133,7 +133,7 @@ class Visibility extends \Magento\Framework\DataObject implements OptionSourceIn
     public static function getOptionText($optionId)
     {
         $options = self::getOptionArray();
-        return $options[$optionId] ?? null;
+        return isset($options[$optionId]) ? $options[$optionId] : null;
     }
     //phpcs:enable Magento2.Functions.StaticFunction
 

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Adminhtml AdminNotification Severity Renderer
  *
@@ -9,16 +7,9 @@ declare(strict_types=1);
  */
 namespace Magento\AdminNotification\Block\Grid\Renderer;
 
-use Magento\AdminNotification\Model\Inbox;
-use Magento\Backend\Block\Context;
-use Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer;
-use Magento\Framework\DataObject;
 use Magento\Framework\Notification\MessageInterface;
 
-/**
- * Renderer class for severity in the admin notifications grid
- */
-class Severity extends AbstractRenderer
+class Severity extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer
 {
     /**
      * @var \Magento\AdminNotification\Model\Inbox
@@ -30,8 +21,11 @@ class Severity extends AbstractRenderer
      * @param \Magento\AdminNotification\Model\Inbox $notice
      * @param array $data
      */
-    public function __construct(Context $context, Inbox $notice, array $data = [])
-    {
+    public function __construct(
+        \Magento\Backend\Block\Context $context,
+        \Magento\AdminNotification\Model\Inbox $notice,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->_notice = $notice;
     }
@@ -42,14 +36,12 @@ class Severity extends AbstractRenderer
      * @param   \Magento\Framework\DataObject $row
      * @return  string
      */
-    public function render(DataObject $row)
+    public function render(\Magento\Framework\DataObject $row)
     {
         $class = '';
         $value = '';
 
-        $column = $this->getColumn();
-        $index  = $column->getIndex();
-        switch ($row->getData($index)) {
+        switch ($row->getData($this->getColumn()->getIndex())) {
             case MessageInterface::SEVERITY_CRITICAL:
                 $class = 'critical';
                 $value = $this->_notice->getSeverities(MessageInterface::SEVERITY_CRITICAL);
@@ -67,7 +59,6 @@ class Severity extends AbstractRenderer
                 $value = $this->_notice->getSeverities(MessageInterface::SEVERITY_NOTICE);
                 break;
         }
-
         return '<span class="grid-severity-' . $class . '"><span>' . $value . '</span></span>';
     }
 }

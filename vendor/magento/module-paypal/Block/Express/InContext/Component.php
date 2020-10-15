@@ -5,16 +5,14 @@
  */
 namespace Magento\Paypal\Block\Express\InContext;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\ConfigFactory;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 /**
- * Paypal Express InContext Component.
+ * Class Component
  *
  * @api
  * @since 100.1.0
@@ -34,20 +32,15 @@ class Component extends Template
     private $config;
 
     /**
-     * @param Context $context
+     * @inheritdoc
      * @param ResolverInterface $localeResolver
-     * @param ConfigFactory $configFactory
-     * @param array $data
-     * @param JsonHelper|null $jsonHelper
      */
     public function __construct(
         Context $context,
         ResolverInterface $localeResolver,
         ConfigFactory $configFactory,
-        array $data = [],
-        ?JsonHelper $jsonHelper = null
+        array $data = []
     ) {
-        $data['jsonHelper'] = $jsonHelper ?? ObjectManager::getInstance()->get(JsonHelper::class);
         parent::__construct($context, $data);
         $this->localeResolver = $localeResolver;
         $this->config = $configFactory->create();
@@ -69,8 +62,6 @@ class Component extends Template
     }
 
     /**
-     * Check if is in Context.
-     *
      * @return bool
      */
     private function isInContext()
@@ -79,8 +70,6 @@ class Component extends Template
     }
 
     /**
-     * Return environment.
-     *
      * @return string
      * @since 100.1.0
      */
@@ -90,8 +79,6 @@ class Component extends Template
     }
 
     /**
-     * Return locale.
-     *
      * @return string
      * @since 100.1.0
      */
@@ -101,8 +88,6 @@ class Component extends Template
     }
 
     /**
-     * Return merchant id.
-     *
      * @return string
      * @since 100.1.0
      */
@@ -112,8 +97,6 @@ class Component extends Template
     }
 
     /**
-     * Check if button is in context.
-     *
      * @return bool
      * @since 100.1.0
      */

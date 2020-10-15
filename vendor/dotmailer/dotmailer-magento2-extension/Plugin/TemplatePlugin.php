@@ -161,7 +161,6 @@ class TemplatePlugin
      */
     private function isStringCompressed($string)
     {
-        //@codingStandardsIgnoreLine
         return @gzuncompress(base64_decode($string)) !== false;
     }
 
@@ -171,7 +170,6 @@ class TemplatePlugin
      */
     private function compressString($templateText)
     {
-        //@codingStandardsIgnoreLine
         return base64_encode(gzcompress($templateText, 9));
     }
 
@@ -181,7 +179,6 @@ class TemplatePlugin
      */
     private function decompressString($templateText)
     {
-        //@codingStandardsIgnoreLine
         return gzuncompress(base64_decode($templateText));
     }
 }

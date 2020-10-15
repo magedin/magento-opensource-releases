@@ -43,7 +43,7 @@ class PlaceOrderTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->getMaskedQuoteIdByReservedOrderId = $objectManager->get(GetMaskedQuoteIdByReservedOrderId::class);
@@ -61,6 +61,7 @@ class PlaceOrderTest extends GraphQlAbstract
      * @magentoConfigFixture default_store payment/cashondelivery/active 1
      * @magentoConfigFixture default_store payment/checkmo/active 1
      * @magentoConfigFixture default_store payment/purchaseorder/active 1
+     * @magentoConfigFixture default_store payment/authorizenet_acceptjs/active 1
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/set_guest_email.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
@@ -83,12 +84,11 @@ class PlaceOrderTest extends GraphQlAbstract
     }
 
     /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Required parameter "cart_id" is missing
      */
     public function testPlaceOrderIfCartIdIsEmpty()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Required parameter "cart_id" is missing');
-
         $maskedQuoteId = '';
         $query = $this->getQuery($maskedQuoteId);
 
@@ -104,6 +104,7 @@ class PlaceOrderTest extends GraphQlAbstract
      * @magentoConfigFixture default_store payment/cashondelivery/active 1
      * @magentoConfigFixture default_store payment/checkmo/active 1
      * @magentoConfigFixture default_store payment/purchaseorder/active 1
+     * @magentoConfigFixture default_store payment/authorizenet_acceptjs/active 1
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/set_new_shipping_address.php
@@ -111,12 +112,11 @@ class PlaceOrderTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/set_flatrate_shipping_method.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/set_checkmo_payment_method.php
      *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Guest email for cart is missing.
      */
     public function testPlaceOrderWithNoEmail()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Guest email for cart is missing.');
-
         $reservedOrderId = 'test_quote';
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute($reservedOrderId);
         $query = $this->getQuery($maskedQuoteId);
@@ -195,7 +195,7 @@ class PlaceOrderTest extends GraphQlAbstract
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute($reservedOrderId);
         $query = $this->getQuery($maskedQuoteId);
 
-        self::expectExceptionMessageMatches(
+        self::expectExceptionMessageRegExp(
             '/Unable to place order: Please check the billing address information*/'
         );
         $this->graphQlMutation($query);
@@ -257,6 +257,7 @@ class PlaceOrderTest extends GraphQlAbstract
      * @magentoConfigFixture default_store payment/cashondelivery/active 1
      * @magentoConfigFixture default_store payment/checkmo/active 1
      * @magentoConfigFixture default_store payment/purchaseorder/active 1
+     * @magentoConfigFixture default_store payment/authorizenet_acceptjs/active 1
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/customer/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/set_new_shipping_address.php
@@ -270,7 +271,7 @@ class PlaceOrderTest extends GraphQlAbstract
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute($reservedOrderId);
         $query = $this->getQuery($maskedQuoteId);
 
-        self::expectExceptionMessageMatches('/The current user cannot perform operations on cart*/');
+        self::expectExceptionMessageRegExp('/The current user cannot perform operations on cart*/');
         $this->graphQlMutation($query);
     }
 
@@ -294,7 +295,7 @@ QUERY;
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->registry->unregister('isSecureArea');
         $this->registry->register('isSecureArea', true);

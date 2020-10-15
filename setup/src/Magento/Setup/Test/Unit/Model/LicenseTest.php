@@ -3,36 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Setup\Model\License;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Model\License;
 
-class LicenseTest extends TestCase
+class LicenseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Read
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem\Directory\Read
      */
     private $directoryReadMock;
 
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem
      */
     private $filesystemMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->directoryReadMock = $this->createMock(Read::class);
-        $this->filesystemMock = $this->createMock(Filesystem::class);
+        $this->directoryReadMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
+        $this->filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->filesystemMock
             ->expects($this->once())
             ->method('getDirectoryRead')
-            ->willReturn($this->directoryReadMock);
+            ->will($this->returnValue($this->directoryReadMock));
     }
 
     public function testGetContents()
@@ -40,11 +35,11 @@ class LicenseTest extends TestCase
         $this->directoryReadMock
             ->expects($this->atLeastOnce())
             ->method('readFile')
-            ->willReturn('License text');
+            ->will($this->returnValue('License text'));
         $this->directoryReadMock
             ->expects($this->atLeastOnce())
             ->method('isFile')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $license = new License($this->filesystemMock);
         $this->assertSame('License text', $license->getContents());
@@ -55,7 +50,7 @@ class LicenseTest extends TestCase
         $this->directoryReadMock
             ->expects($this->atLeastOnce())
             ->method('isFile')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
 
         $license = new License($this->filesystemMock);
         $this->assertFalse($license->getContents());

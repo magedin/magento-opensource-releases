@@ -29,7 +29,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->layout = $this->objectManager->get(LayoutInterface::class);
@@ -46,6 +46,6 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $block->setTemplate('Magento_Sales::order/create/billing/method/form.phtml');
 
         $html = $block->toHtml();
-        $this->assertStringContainsString('mage.apply()', $html);
+        $this->assertContains('mage.apply()', $html);
     }
 }

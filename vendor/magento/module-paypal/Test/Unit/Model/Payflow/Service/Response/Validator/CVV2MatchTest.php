@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Response\Validator;
 
-use Magento\Framework\DataObject;
-use Magento\Payment\Model\Method\ConfigInterface;
 use Magento\Paypal\Model\Payflow\Service\Response\Validator\CVV2Match;
 use Magento\Paypal\Model\Payflow\Transparent;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Payment\Model\Method\ConfigInterface;
 
 /**
  * Class CVV2MatchTest
  *
  * Test class for \Magento\Paypal\Model\Payflow\Service\Response\Validator\CVV2Match
  */
-class CVV2MatchTest extends TestCase
+class CVV2MatchTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CVV2Match
@@ -27,12 +22,12 @@ class CVV2MatchTest extends TestCase
     protected $validator;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Payment\Model\Method\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var Transparent|MockObject
+     * @var Transparent|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $payflowproFacade;
 
@@ -41,7 +36,7 @@ class CVV2MatchTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configMock = $this->getMockBuilder(ConfigInterface::class)
             ->getMockForAbstractClass();
@@ -55,14 +50,14 @@ class CVV2MatchTest extends TestCase
 
     /**
      * @param bool $expectedResult
-     * @param DataObject $response
+     * @param \Magento\Framework\DataObject $response
      * @param string $avsSecurityCodeFlag
      *
      * @dataProvider validationDataProvider
      */
     public function testValidation(
         $expectedResult,
-        DataObject $response,
+        \Magento\Framework\DataObject $response,
         $avsSecurityCodeFlag
     ) {
         $this->payflowproFacade->expects(static::once())
@@ -89,7 +84,7 @@ class CVV2MatchTest extends TestCase
         return [
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'cvv2match' => 'Y',
                     ]
@@ -98,7 +93,7 @@ class CVV2MatchTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'cvv2match' => 'Y',
                     ]
@@ -107,7 +102,7 @@ class CVV2MatchTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'cvv2match' => 'X',
                     ]
@@ -116,7 +111,7 @@ class CVV2MatchTest extends TestCase
             ],
             [
                 'expectedResult' => false,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'cvv2match' => 'N',
                     ]
@@ -125,7 +120,7 @@ class CVV2MatchTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(
+                'response' => new \Magento\Framework\DataObject(
                     [
                         'cvv2match' => null,
                     ]
@@ -134,7 +129,7 @@ class CVV2MatchTest extends TestCase
             ],
             [
                 'expectedResult' => true,
-                'response' => new DataObject(),
+                'response' => new \Magento\Framework\DataObject(),
                 'configValue' => '1',
             ],
         ];

@@ -20,7 +20,7 @@
             <group value="create"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
             <actionGroup ref="AdminCustomerShowDateOfBirthActionGroup" stepKey="showDateOfBirth">
                 <argument name="value" value="{{ShowDateOfBirth.required}}"/>
             </actionGroup>
@@ -29,15 +29,13 @@
             <actionGroup ref="AdminCustomerShowDateOfBirthActionGroup" stepKey="hideDateOfBirth">
                 <argument name="value" value="{{ShowDateOfBirth.no}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <actionGroup ref="StorefrontCustomerCreateAccountWithDateOfBirthActionGroup" stepKey="SignUpNewUser">
             <argument name="Customer" value="CustomerEntityOne"/>
             <argument name="dob" value="{{EN_US_DATE.short4DigitYear}}"/>
         </actionGroup>
-        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-            <argument name="indices" value=""/>
-        </actionGroup>
+        <magentoCLI command="indexer:reindex" stepKey="reindex"/>
         <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteNewUser">
             <argument name="email" value="{{CustomerEntityOne.email}}"/>
         </actionGroup>

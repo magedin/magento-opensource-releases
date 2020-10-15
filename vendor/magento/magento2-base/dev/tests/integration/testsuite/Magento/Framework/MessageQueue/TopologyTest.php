@@ -26,7 +26,7 @@ class TopologyTest extends \PHPUnit\Framework\TestCase
      */
     private $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helper = Bootstrap::getObjectManager()->create(\Magento\TestFramework\Helper\Amqp::class);
 

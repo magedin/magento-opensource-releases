@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form;
 
-use Magento\Framework\Data\Form\Filter\Date;
-use Magento\Framework\Data\Form\Filter\FilterInterface;
 use Magento\Framework\Data\Form\FilterFactory;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FilterFactoryTest extends TestCase
+class FilterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FilterFactory
@@ -22,13 +15,13 @@ class FilterFactoryTest extends TestCase
     protected $factory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->factory = new FilterFactory($this->objectManager);
@@ -40,7 +33,7 @@ class FilterFactoryTest extends TestCase
         $filterCode = 'Date';
         $data = [];
 
-        $filterMock = $this->getMockBuilder(Date::class)
+        $filterMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -50,12 +43,14 @@ class FilterFactoryTest extends TestCase
             ->willReturn($filterMock);
 
         $result = $this->factory->create($filterCode, $data);
-        $this->assertInstanceOf(FilterInterface::class, $result);
+        $this->assertInstanceOf(\Magento\Framework\Data\Form\Filter\FilterInterface::class, $result);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateWithException()
     {
-        $this->expectException('InvalidArgumentException');
         $filterClassPrefix = 'Magento\\Framework\\Data\\Form\\Filter\\';
         $filterCode = 'Undefined';
         $data = [];

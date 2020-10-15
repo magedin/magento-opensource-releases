@@ -1,4 +1,5 @@
 Magento/Adminhtml
+Magento/Authorizenet/Model
 Magento/Backend
 Magento/Bundle
 Magento/Catalog/Block/Product/ProductList

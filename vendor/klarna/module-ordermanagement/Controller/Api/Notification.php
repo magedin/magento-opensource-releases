@@ -88,7 +88,7 @@ class Notification extends Action implements CsrfAwareActionInterface
         MageOrderRepository $mageOrderRepository,
         ConfigHelper $configHelper,
         DataObjectFactory $dataObjectFactory,
-        Ordermanagement $orderManagement
+        Ordermanagement $orderManagement = null
     ) {
         parent::__construct($context);
         $this->resultJsonFactory   = $resultJsonFactory;
@@ -97,7 +97,7 @@ class Notification extends Action implements CsrfAwareActionInterface
         $this->configHelper        = $configHelper;
         $this->logger              = $logger;
         $this->dataObjectFactory   = $dataObjectFactory;
-        $this->orderManagement     = $orderManagement;
+        $this->orderManagement     = $orderManagement ?: $this->_objectManager->create(Ordermanagement::class);
     }
 
     /**

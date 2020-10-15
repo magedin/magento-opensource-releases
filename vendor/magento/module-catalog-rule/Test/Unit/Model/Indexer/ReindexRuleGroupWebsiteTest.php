@@ -3,64 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Model\Indexer;
 
 use Magento\Catalog\Model\ResourceModel\Indexer\ActiveTableSwitcher;
 use Magento\CatalogRule\Model\Indexer\IndexerTableSwapperInterface;
-use Magento\CatalogRule\Model\Indexer\ReindexRuleGroupWebsite;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReindexRuleGroupWebsiteTest extends TestCase
+class ReindexRuleGroupWebsiteTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReindexRuleGroupWebsite
+     * @var \Magento\CatalogRule\Model\Indexer\ReindexRuleGroupWebsite
      */
     private $model;
 
     /**
-     * @var DateTime|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dateTimeMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceMock;
 
     /**
-     * @var ActiveTableSwitcher|MockObject
+     * @var ActiveTableSwitcher|\PHPUnit_Framework_MockObject_MockObject
      */
     private $activeTableSwitcherMock;
 
     /**
-     * @var IndexerTableSwapperInterface|MockObject
+     * @var IndexerTableSwapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tableSwapperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dateTimeMock = $this->getMockBuilder(DateTime::class)
+        $this->dateTimeMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->activeTableSwitcherMock =
             $this->getMockBuilder(ActiveTableSwitcher::class)
-                ->disableOriginalConstructor()
-                ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->tableSwapperMock = $this->getMockForAbstractClass(
             IndexerTableSwapperInterface::class
         );
-        $this->model = new ReindexRuleGroupWebsite(
+        $this->model = new \Magento\CatalogRule\Model\Indexer\ReindexRuleGroupWebsite(
             $this->dateTimeMock,
             $this->resourceMock,
             $this->activeTableSwitcherMock,
@@ -72,8 +63,7 @@ class ReindexRuleGroupWebsiteTest extends TestCase
     {
         $timeStamp = (int)gmdate('U');
         $insertString = 'insert_string';
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
-            ->getMock();
+        $connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)->getMock();
         $this->resourceMock->expects($this->at(0))->method('getConnection')->willReturn($connectionMock);
         $this->dateTimeMock->expects($this->once())->method('gmtTimestamp')->willReturn($timeStamp);
 
@@ -97,7 +87,7 @@ class ReindexRuleGroupWebsiteTest extends TestCase
                 ]
             );
 
-        $selectMock = $this->getMockBuilder(Select::class)
+        $selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
 

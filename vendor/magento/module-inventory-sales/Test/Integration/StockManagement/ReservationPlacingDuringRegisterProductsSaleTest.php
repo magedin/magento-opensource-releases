@@ -40,7 +40,6 @@ use PHPUnit\Framework\TestCase;
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class ReservationPlacingDuringRegisterProductsSaleTest extends TestCase
 {
@@ -129,7 +128,7 @@ class ReservationPlacingDuringRegisterProductsSaleTest extends TestCase
      */
     private $storeRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->appendReservations = Bootstrap::getObjectManager()->get(AppendReservationsInterface::class);
         $this->cartItemFactory = Bootstrap::getObjectManager()->get(CartItemInterfaceFactory::class);
@@ -153,21 +152,21 @@ class ReservationPlacingDuringRegisterProductsSaleTest extends TestCase
     /**
      * We broke transaction during indexation so we need to clean db state manually
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->cleanupReservations->execute();
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/websites_with_stores.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/stock_website_sales_channels.php
-     * @magentoDataFixture Magento_InventorySalesApi::Test/_files/quote.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/websites_with_stores.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/stock_website_sales_channels.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventorySalesApi/Test/_files/quote.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @magentoDbIsolation disabled
      */
@@ -191,7 +190,7 @@ class ReservationPlacingDuringRegisterProductsSaleTest extends TestCase
         self::assertEquals(5, $this->getProductSalableQty->execute($sku, $stockId));
         self::assertEquals(-3.5, $this->getReservationsQuantity->execute($sku, $stockId));
         self::assertEquals(
-            '{"event_type":"order_placed","object_type":"order","object_id":"","object_increment_id":"test_order_1"}',
+            '{"event_type":"order_placed","object_type":"order","object_id":"' . $orderId . '"}',
             $this->getReservationMetadata()
         );
 

@@ -3,117 +3,105 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Model\Api;
 
-use Magento\Customer\Helper\Address;
-use Magento\Directory\Model\CountryFactory;
-use Magento\Directory\Model\RegionFactory;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\LocalizedExceptionFactory;
-use Magento\Framework\HTTP\Adapter\Curl;
-use Magento\Framework\HTTP\Adapter\CurlFactory;
-use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Payment\Model\Method\Logger;
-use Magento\Paypal\Model\Api\Nvp;
-use Magento\Paypal\Model\Api\ProcessableException;
-use Magento\Paypal\Model\Api\ProcessableExceptionFactory;
-use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\Info;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class NvpTest extends TestCase
+class NvpTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Nvp */
+    /** @var \Magento\Paypal\Model\Api\Nvp */
     protected $model;
 
-    /** @var Address|MockObject */
+    /** @var \Magento\Customer\Helper\Address|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerAddressHelper;
 
-    /** @var LoggerInterface|MockObject */
+    /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $logger;
 
-    /** @var ResolverInterface|MockObject */
+    /** @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $resolver;
 
-    /** @var RegionFactory|MockObject */
+    /** @var \Magento\Directory\Model\RegionFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $regionFactory;
 
-    /** @var CountryFactory|MockObject */
+    /** @var \Magento\Directory\Model\CountryFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $countryFactory;
 
-    /** @var ProcessableException|MockObject */
+    /** @var \Magento\Paypal\Model\Api\ProcessableException|\PHPUnit_Framework_MockObject_MockObject */
     protected $processableException;
 
-    /** @var LocalizedException|MockObject */
+    /** @var LocalizedException|\PHPUnit_Framework_MockObject_MockObject */
     protected $exception;
 
-    /** @var Curl|MockObject */
+    /** @var \Magento\Framework\HTTP\Adapter\Curl|\PHPUnit_Framework_MockObject_MockObject */
     protected $curl;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\Paypal\Model\Config|\PHPUnit_Framework_MockObject_MockObject */
     protected $config;
 
-    /** @var Logger|MockObject */
+    /** @var \Magento\Payment\Model\Method\Logger|\PHPUnit_Framework_MockObject_MockObject */
     protected $customLoggerMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerAddressHelper = $this->createMock(Address::class);
-        $this->logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->customLoggerMock = $this->getMockBuilder(Logger::class)
-            ->setConstructorArgs([$this->getMockForAbstractClass(LoggerInterface::class)])
+        $this->customerAddressHelper = $this->createMock(\Magento\Customer\Helper\Address::class);
+        $this->logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->customLoggerMock = $this->getMockBuilder(\Magento\Payment\Model\Method\Logger::class)
+            ->setConstructorArgs([$this->getMockForAbstractClass(\Psr\Log\LoggerInterface::class)])
             ->setMethods(['debug'])
             ->getMock();
-        $this->resolver = $this->getMockForAbstractClass(ResolverInterface::class);
-        $this->regionFactory = $this->createMock(RegionFactory::class);
-        $this->countryFactory = $this->createMock(CountryFactory::class);
+        $this->resolver = $this->createMock(\Magento\Framework\Locale\ResolverInterface::class);
+        $this->regionFactory = $this->createMock(\Magento\Directory\Model\RegionFactory::class);
+        $this->countryFactory = $this->createMock(\Magento\Directory\Model\CountryFactory::class);
         $processableExceptionFactory = $this->createPartialMock(
-            ProcessableExceptionFactory::class,
+            \Magento\Paypal\Model\Api\ProcessableExceptionFactory::class,
             ['create']
         );
         $processableExceptionFactory->expects($this->any())
             ->method('create')
-            ->willReturnCallback(
-                function ($arguments) {
-                    $this->processableException = $this->getMockBuilder(
-                        ProcessableException::class
-                    )->setConstructorArgs([$arguments['phrase'], null, $arguments['code']])->getMock();
-                    return $this->processableException;
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($arguments) {
+                        $this->processableException = $this->getMockBuilder(
+                            \Magento\Paypal\Model\Api\ProcessableException::class
+                        )->setConstructorArgs([$arguments['phrase'], null, $arguments['code']])->getMock();
+                        return $this->processableException;
+                    }
+                )
             );
         $exceptionFactory = $this->createPartialMock(
-            LocalizedExceptionFactory::class,
+            \Magento\Framework\Exception\LocalizedExceptionFactory::class,
             ['create']
         );
         $exceptionFactory->expects($this->any())
             ->method('create')
-            ->willReturnCallback(
-                function ($arguments) {
-                    $this->exception = $this->getMockBuilder(LocalizedException::class)
-                        ->setConstructorArgs([$arguments['phrase']])
-                        ->getMock();
-                    return $this->exception;
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($arguments) {
+                        $this->exception = $this->getMockBuilder(LocalizedException::class)
+                            ->setConstructorArgs([$arguments['phrase']])
+                            ->getMock();
+                        return $this->exception;
+                    }
+                )
             );
-        $this->curl = $this->createMock(Curl::class);
-        $curlFactory = $this->createPartialMock(CurlFactory::class, ['create']);
-        $curlFactory->expects($this->any())->method('create')->willReturn($this->curl);
-        $this->config = $this->createMock(Config::class);
+        $this->curl = $this->createMock(\Magento\Framework\HTTP\Adapter\Curl::class);
+        $curlFactory = $this->createPartialMock(\Magento\Framework\HTTP\Adapter\CurlFactory::class, ['create']);
+        $curlFactory->expects($this->any())->method('create')->will($this->returnValue($this->curl));
+        $this->config = $this->createMock(\Magento\Paypal\Model\Config::class);
 
         $helper = new ObjectManagerHelper($this);
         $this->model = $helper->getObject(
-            Nvp::class,
+            \Magento\Paypal\Model\Api\Nvp::class,
             [
                 'customerAddress' => $this->customerAddressHelper,
                 'logger' => $this->logger,
@@ -130,11 +118,11 @@ class NvpTest extends TestCase
     }
 
     /**
-     * @param Nvp $nvpObject
+     * @param \Magento\Paypal\Model\Api\Nvp $nvpObject
      * @param string $property
      * @return mixed
      */
-    protected function _invokeNvpProperty(Nvp $nvpObject, $property)
+    protected function _invokeNvpProperty(\Magento\Paypal\Model\Api\Nvp $nvpObject, $property)
     {
         $object = new \ReflectionClass($nvpObject);
         $property = $object->getProperty($property);
@@ -160,7 +148,7 @@ class NvpTest extends TestCase
         }
         $this->curl->expects($this->once())
             ->method('read')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
         $this->model->setProcessableErrors($processableErrors);
         $this->customLoggerMock->expects($this->once())
             ->method('debug');
@@ -184,7 +172,7 @@ class NvpTest extends TestCase
             [
                 "\r\n" . 'ACK=Failure&L_ERRORCODE0=10417&L_SHORTMESSAGE0=Message.&L_LONGMESSAGE0=Long%20Message.',
                 [10417, 10422],
-                ProcessableException::class,
+                \Magento\Paypal\Model\Api\ProcessableException::class,
                 'PayPal gateway has rejected request. Long Message (#10417: Message).',
                 10417
             ],
@@ -192,14 +180,14 @@ class NvpTest extends TestCase
                 "\r\n" . 'ACK[7]=Failure&L_ERRORCODE0[5]=10417'
                     . '&L_SHORTMESSAGE0[8]=Message.&L_LONGMESSAGE0[15]=Long%20Message.',
                 [10417, 10422],
-                ProcessableException::class,
+                \Magento\Paypal\Model\Api\ProcessableException::class,
                 'PayPal gateway has rejected request. Long Message (#10417: Message).',
                 10417
             ],
             [
                 "\r\n" . 'ACK[7]=Failure&L_ERRORCODE0[5]=10417&L_SHORTMESSAGE0[8]=Message.',
                 [10417, 10422],
-                ProcessableException::class,
+                \Magento\Paypal\Model\Api\ProcessableException::class,
                 'PayPal gateway has rejected request. #10417: Message.',
                 10417
             ],
@@ -217,7 +205,7 @@ class NvpTest extends TestCase
     {
         $this->curl->expects($this->once())
             ->method('read')
-            ->willReturn($input);
+            ->will($this->returnValue($input));
         $this->model->callGetExpressCheckoutDetails();
         $address = $this->model->getExportedShippingAddress();
         $this->assertEquals($expected['firstName'], $address->getData('firstname'));
@@ -315,7 +303,7 @@ class NvpTest extends TestCase
         $processableErrors =[10415];
         $this->curl->expects($this->once())
             ->method('read')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
         $this->model->setProcessableErrors($processableErrors);
         $this->customLoggerMock->expects($this->once())
             ->method('debug');

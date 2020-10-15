@@ -22,7 +22,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
      */
     private $configReader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->configWriter = $objectManager->create(

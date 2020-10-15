@@ -3,31 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Indexer;
 
-use Magento\Catalog\Model\ResourceModel\Indexer\ActiveTableSwitcher;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use PHPUnit\Framework\TestCase;
-
-class ActiveTableSwitcherTest extends TestCase
+class ActiveTableSwitcherTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ActiveTableSwitcher
+     * @var \Magento\Catalog\Model\ResourceModel\Indexer\ActiveTableSwitcher
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new ActiveTableSwitcher();
+        $this->model = new \Magento\Catalog\Model\ResourceModel\Indexer\ActiveTableSwitcher();
     }
 
     public function testSwitch()
     {
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
+        $connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $tableName = 'tableName';
 
         $connectionMock->expects($this->once())->method('renameTablesBatch')->with(

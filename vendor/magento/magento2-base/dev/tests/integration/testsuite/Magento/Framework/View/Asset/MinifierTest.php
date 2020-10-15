@@ -39,7 +39,7 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = Bootstrap::getInstance()->getObjectManager();
@@ -60,7 +60,7 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritDoc}
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var \Magento\TestFramework\App\State $appState */
         $appState = $this->objectManager->get(\Magento\TestFramework\App\State::class);
@@ -132,7 +132,7 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
         $response
             ->expects($this->any())
             ->method('setFilePath')
-            ->willReturnCallback($assertionCallback);
+            ->will($this->returnCallback($assertionCallback));
 
         /** @var \Magento\Framework\App\StaticResource $staticResourceApp */
         $staticResourceApp = $this->objectManager->create(
@@ -153,7 +153,7 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
             function ($path) {
                 $content = file_get_contents($path);
                 $this->assertNotEmpty($content);
-                $this->assertStringContainsString('FrameworkViewMinifier/frontend', $content);
+                $this->assertContains('FrameworkViewMinifier/frontend', $content);
                 $this->assertNotEquals(
                     file_get_contents(
                         dirname(__DIR__)
@@ -196,8 +196,8 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
             function ($path) {
                 $content = file_get_contents($path);
                 $this->assertNotEmpty($content);
-                $this->assertStringContainsString('Magento/backend', $content);
-                $this->assertStringContainsString('semi-minified file', $content);
+                $this->assertContains('Magento/backend', $content);
+                $this->assertContains('semi-minified file', $content);
             }
         );
     }
@@ -215,24 +215,24 @@ class MinifierTest extends \PHPUnit\Framework\TestCase
         $omFactory = $this->createPartialMock(\Magento\Framework\App\ObjectManagerFactory::class, ['create']);
         $omFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->objectManager);
+            ->will($this->returnValue($this->objectManager));
 
         $filesUtil = $this->createMock(\Magento\Framework\App\Utility\Files::class);
         $filesUtil->expects($this->any())
             ->method('getStaticLibraryFiles')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $filesUtil->expects($this->any())
             ->method('getPhtmlFiles')
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $filesUtil->expects($this->any())
             ->method('getStaticPreProcessingFiles')
-            ->willReturn(
+            ->will($this->returnValue(
                 [
                     ['frontend', 'FrameworkViewMinifier/default', '', '', 'css/styles.css', $fileToTestPublishing]
                 ]
-            );
+            ));
 
         $this->objectManager->addSharedInstance($filesUtil, \Magento\Framework\App\Utility\Files::class);
 

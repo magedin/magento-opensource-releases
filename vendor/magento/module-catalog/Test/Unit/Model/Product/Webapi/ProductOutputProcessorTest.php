@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Webapi;
 
@@ -11,9 +10,8 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Webapi\ProductOutputProcessor;
 use Magento\Framework\Webapi\Request;
 use Magento\Framework\Webapi\Rest\Request\DeserializerInterface;
-use PHPUnit\Framework\TestCase;
 
-class ProductOutputProcessorTest extends TestCase
+class ProductOutputProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Request
@@ -30,7 +28,7 @@ class ProductOutputProcessorTest extends TestCase
      */
     private $productOutputProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->requestMock = $this->createPartialMock(
             Request::class,
@@ -123,15 +121,15 @@ class ProductOutputProcessorTest extends TestCase
                     ]
                 ),
                 'result' => [
-                    'sku' => 'MH01',
-                    'status' => 1,
-                    'product_links' => [],
-                    'tier_prices' => []
+                            'sku' => 'MH01',
+                            'status' => 1,
+                            'product_links' => [],
+                            'tier_prices' => []
                 ],
                 'expectedResult' => [
-                    'sku' => 'MH01',
-                    'status' => 1,
-                    'product_links' => []
+                            'sku' => 'MH01',
+                            'status' => 1,
+                            'product_links' => []
                 ]
             ],
             'request object SKU does not match with product object SKU' => [
@@ -183,10 +181,10 @@ class ProductOutputProcessorTest extends TestCase
                     ]
                 ),
                 'result' => [
-                    'sku' => 'MH01',
-                    'status' => 1,
-                    'product_links' => [],
-                    'tier_prices' => []
+                        'sku' => 'MH01',
+                        'status' => 1,
+                        'product_links' => [],
+                        'tier_prices' => []
                 ],
                 'expectedResult' => [
                     'sku' => 'MH01',

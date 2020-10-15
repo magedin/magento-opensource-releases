@@ -10,48 +10,29 @@ namespace Magento\MediaGallery\Model;
 
 use Magento\MediaGalleryApi\Api\Data\KeywordExtensionInterface;
 use Magento\MediaGalleryApi\Api\Data\KeywordInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 
 /**
  * Asset's Keyword
  */
-class Keyword implements KeywordInterface
+class Keyword extends AbstractExtensibleModel implements KeywordInterface
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private const ID = 'id';
 
-    /**
-     * @var string
-     */
-    private $keyword;
-
-    /**
-     * @var KeywordExtensionInterface|null
-     */
-    private $extensionAttributes;
-
-    /**
-     * @param string $keyword
-     * @param int|null $id
-     * @param KeywordExtensionInterface|null $extensionAttributes
-     */
-    public function __construct(
-        string $keyword,
-        ?int $id = null,
-        ?KeywordExtensionInterface $extensionAttributes = null
-    ) {
-        $this->keyword = $keyword;
-        $this->id = $id;
-        $this->extensionAttributes = $extensionAttributes;
-    }
+    private const KEYWORD = 'keyword';
 
     /**
      * @inheritdoc
      */
     public function getId(): ?int
     {
-        return $this->id;
+        $id = $this->getData(self::ID);
+
+        if (!$id) {
+            return null;
+        }
+
+        return (int) $id;
     }
 
     /**
@@ -59,22 +40,22 @@ class Keyword implements KeywordInterface
      */
     public function getKeyword(): string
     {
-        return $this->keyword;
+        return (string)$this->getData(self::KEYWORD);
     }
 
     /**
      * @inheritdoc
      */
-    public function getExtensionAttributes(): ?KeywordExtensionInterface
+    public function getExtensionAttributes(): KeywordExtensionInterface
     {
-        return $this->extensionAttributes;
+        return $this->_getExtensionAttributes();
     }
 
     /**
      * @inheritdoc
      */
-    public function setExtensionAttributes(?KeywordExtensionInterface $extensionAttributes): void
+    public function setExtensionAttributes(KeywordExtensionInterface $extensionAttributes): void
     {
-        $this->extensionAttributes = $extensionAttributes;
+        $this->_setExtensionAttributes($extensionAttributes);
     }
 }

@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Bundle/_files/multiple_products_rollback.php');
+require __DIR__ . '/multiple_products_rollback.php';
 
 /** @var \Magento\Framework\Registry $registry */
 $registry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\Registry::class);

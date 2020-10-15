@@ -3,41 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Method;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Payment\Model\Info;
-use Magento\Payment\Model\Method\Substitution;
-use PHPUnit\Framework\TestCase;
-
-class SubstitutionTest extends TestCase
+class SubstitutionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Substitution
+     * @var \Magento\Payment\Model\Method\Substitution
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->model = $this->objectManager->getObject(Substitution::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->model = $this->objectManager->getObject(\Magento\Payment\Model\Method\Substitution::class);
     }
 
     public function testGetTitle()
     {
         $infoMock = $this->getMockBuilder(
-            Info::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                []
-            )->getMock();
+            \Magento\Payment\Model\Info::class
+        )->disableOriginalConstructor()->setMethods(
+            []
+        )->getMock();
 
         $this->model->setInfoInstance($infoMock);
         $expectedResult = 'StringTitle';
@@ -46,9 +39,11 @@ class SubstitutionTest extends TestCase
         )->method(
             'getAdditionalInformation'
         )->with(
-            Substitution::INFO_KEY_TITLE
-        )->willReturn(
-            $expectedResult
+            \Magento\Payment\Model\Method\Substitution::INFO_KEY_TITLE
+        )->will(
+            $this->returnValue(
+                $expectedResult
+            )
         );
 
         $this->assertEquals($expectedResult, $this->model->getTitle());

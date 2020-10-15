@@ -3,53 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Asset\PreProcessor;
 
-use Magento\Framework\Code\Minifier\AdapterInterface;
-use Magento\Framework\View\Asset\Minification;
-use Magento\Framework\View\Asset\PreProcessor\Chain;
-use Magento\Framework\View\Asset\PreProcessor\MinificationConfigProvider;
 use Magento\Framework\View\Asset\PreProcessor\Minify;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Asset\PreProcessor\MinificationConfigProvider;
 
 /**
  * Unit test for Magento\Framework\View\Asset\PreProcessor\Minify
  */
-class MinifyTest extends TestCase
+class MinifyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Minify
+     * @var \Magento\Framework\View\Asset\PreProcessor\Minify
      */
     protected $minify;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\Code\Minifier\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $adapterMock;
 
     /**
-     * @var Minification|MockObject
+     * @var \Magento\Framework\View\Asset\Minification|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $minificationMock;
 
     /**
-     * @var MinificationConfigProvider|MockObject
+     * @var MinificationConfigProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $minificationConfigMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->adapterMock = $this->getMockBuilder(AdapterInterface::class)
+        $this->adapterMock = $this->getMockBuilder(\Magento\Framework\Code\Minifier\AdapterInterface::class)
             ->setMethods(['minify'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->minificationMock = $this->getMockBuilder(Minification::class)
+        $this->minificationMock = $this->getMockBuilder(\Magento\Framework\View\Asset\Minification::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->minificationConfigMock = $this->getMockBuilder(MinificationConfigProvider::class)
@@ -74,7 +68,7 @@ class MinifyTest extends TestCase
      */
     public function testProcess($targetPath, $originalPath, $minifyCalls, $setContentCalls, $isEnabled)
     {
-        $chainMock = $this->getMockBuilder(Chain::class)
+        $chainMock = $this->getMockBuilder(\Magento\Framework\View\Asset\PreProcessor\Chain::class)
             ->disableOriginalConstructor()
             ->getMock();
         $chainMock

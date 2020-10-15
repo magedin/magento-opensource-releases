@@ -3,14 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/**
- * @var \Magento\Shipping\Block\Adminhtml\Create\Form $block
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
-
-/** @var \Magento\Tax\Helper\Data $taxHelper */
-$taxHelper = $block->getData('taxHelper');
+//phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+//phpcs:disable Magento2.Files.LineLength.MaxExceeded
 ?>
 <form id="edit_form" method="post" action="<?= $block->escapeUrl($block->getSaveUrl()) ?>">
     <?= $block->getBlockHtml('formkey') ?>
@@ -28,9 +22,7 @@ $taxHelper = $block->getData('taxHelper');
                 </div>
                 <div class="admin__page-section-item-content">
                     <div><?= $block->getPaymentHtml() ?></div>
-                    <div class="order-payment-currency">
-                        <?= $block->escapeHtml(__('The order was placed using %1.', $_order->getOrderCurrencyCode())) ?>
-                    </div>
+                    <div class="order-payment-currency"><?= $block->escapeHtml(__('The order was placed using %1.', $_order->getOrderCurrencyCode())) ?></div>
                 </div>
             </div>
             <div class="admin__page-section-item order-shipping-address">
@@ -45,15 +37,15 @@ $taxHelper = $block->getData('taxHelper');
                     <div class="shipping-description-content">
                         <?= $block->escapeHtml(__('Total Shipping Charges')) ?>:
 
-                        <?php if ($taxHelper->displayShippingPriceIncludingTax()): ?>
+                        <?php if ($this->helper(Magento\Tax\Helper\Data::class)->displayShippingPriceIncludingTax()) : ?>
                             <?php $_excl = $block->displayShippingPriceInclTax($_order); ?>
-                        <?php else: ?>
+                        <?php else : ?>
                             <?php $_excl = $block->displayPriceAttribute('shipping_amount', false, ' '); ?>
                         <?php endif; ?>
                         <?php $_incl = $block->displayShippingPriceInclTax($_order); ?>
                         <?= /** @noEscape */ $_excl ?>
-                        <?php if ($taxHelper->displayShippingBothPrices()
-                            && $_incl != $_excl): ?>
+                        <?php if ($this->helper(Magento\Tax\Helper\Data::class)->displayShippingBothPrices()
+                            && $_incl != $_excl) : ?>
                         (<?= $block->escapeHtml(__('Incl. Tax')) ?> <?= /** @noEscape */ $_incl ?>)
                         <?php endif; ?>
                     </div>
@@ -67,8 +59,7 @@ $taxHelper = $block->getData('taxHelper');
         <?= $block->getItemsHtml() ?>
     </div>
 </form>
-<?php $scriptString = <<<script
-
+<script>
 require([
     "jquery",
     "mage/mage",
@@ -77,8 +68,5 @@ require([
     jQuery('#edit_form').mage('form').mage('validation');
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>
 <?= $block->getChildHtml('shipment_packaging');

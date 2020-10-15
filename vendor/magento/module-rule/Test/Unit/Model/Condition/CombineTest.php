@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Rule\Test\Unit\Model\Condition;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Rule\Model\Condition\Combine;
-use Magento\Rule\Model\ConditionFactory;
-use Magento\SalesRule\Model\Rule\Condition\Product;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class CombineTest extends TestCase
+class CombineTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Combine|MockObject
+     * @var \Magento\Rule\Model\Condition\Combine | \PHPUnit_Framework_MockObject_MockObject
      */
     private $combine;
 
     /**
-     * @var ConditionFactory|MockObject
+     * @var \Magento\Rule\Model\ConditionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $conditionFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var  Product|MockObject
+     * @var  \Magento\SalesRule\Model\Rule\Condition\Product | \PHPUnit_Framework_MockObject_MockObject
      */
     private $conditionObjectMock;
 
@@ -41,25 +34,25 @@ class CombineTest extends TestCase
      * Sets up the Mocks.
      * This method is called before a test is executed.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->conditionFactoryMock = $this->getMockBuilder(ConditionFactory::class)
+        $this->conditionFactoryMock = $this->getMockBuilder(\Magento\Rule\Model\ConditionFactory::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->conditionObjectMock = $this->getMockBuilder(Product::class)
+        $this->conditionObjectMock = $this->getMockBuilder(\Magento\SalesRule\Model\Rule\Condition\Product::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
         $this->combine = (new ObjectManagerHelper($this))->getObject(
-            Combine::class,
+            \Magento\Rule\Model\Condition\Combine::class,
             [
                 "conditionFactory"    => $this->conditionFactoryMock,
                 "logger"    => $this->loggerMock,
@@ -123,7 +116,7 @@ class CombineTest extends TestCase
 
         $result = $this->combine->loadArray($array);
 
-        $this->assertInstanceOf(Combine::class, $result);
+        $this->assertInstanceOf(\Magento\Rule\Model\Condition\Combine::class, $result);
     }
 
     public function testLoadArrayLoggerCatchException()
@@ -151,6 +144,6 @@ class CombineTest extends TestCase
 
         $result = $this->combine->loadArray($array);
 
-        $this->assertInstanceOf(Combine::class, $result);
+        $this->assertInstanceOf(\Magento\Rule\Model\Condition\Combine::class, $result);
     }
 }

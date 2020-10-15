@@ -3,67 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ProductVideo\Test\Unit\Model\Plugin\Catalog\Product\Gallery;
-
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Gallery;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ProductVideo\Model\Plugin\Catalog\Product\Gallery\ReadHandler;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for plugin for catalog product gallery read handler.
  */
-class ReadHandlerTest extends TestCase
+class ReadHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Subject of testing.
      *
-     * @var ReadHandler|MockObject
+     * @var \Magento\ProductVideo\Model\Plugin\Catalog\Product\Gallery\ReadHandler
+     *      |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $attribute;
 
     /**
-     * @var Gallery|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Gallery|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceModel;
 
     /**
-     * @var \Magento\Catalog\Model\Product\Gallery\ReadHandler|MockObject
+     * @var \Magento\Catalog\Model\Product\Gallery\ReadHandler|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaGalleryReadHandler;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->product = $this->createMock(Product::class);
+        $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
 
-        $this->attribute = $this->createMock(Attribute::class);
+        $this->attribute = $this->createMock(\Magento\Eav\Model\Entity\Attribute::class);
         $this->attribute->expects($this->any())
             ->method('getAttributeCode')
             ->willReturn('media_gallery');
 
-        $this->resourceModel = $this->createMock(Gallery::class);
+        $this->resourceModel = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Gallery::class);
 
         $this->mediaGalleryReadHandler = $this->createMock(\Magento\Catalog\Model\Product\Gallery\ReadHandler::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->subject = $objectManager->getObject(
-            ReadHandler::class,
+            \Magento\ProductVideo\Model\Plugin\Catalog\Product\Gallery\ReadHandler::class,
             [
                 'resourceModel' => $this->resourceModel
             ]

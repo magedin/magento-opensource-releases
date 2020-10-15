@@ -15,33 +15,32 @@ use Magento\Framework\View\LayoutInterface;
 use Magento\GoogleAnalytics\Helper\Data as GaDataHelper;
 use Magento\GoogleAnalytics\Observer\SetGoogleAnalyticsOnOrderSuccessPageViewObserver;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SetGoogleAnalyticsOnOrderSuccessPageViewObserverTest extends TestCase
 {
     /**
-     * @var Event|MockObject
+     * @var Event|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventMock;
 
     /**
-     * @var Observer|MockObject
+     * @var Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $observerMock;
 
     /**
-     * @var GaDataHelper|MockObject
+     * @var GaDataHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $googleAnalyticsDataMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layoutMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
@@ -53,21 +52,19 @@ class SetGoogleAnalyticsOnOrderSuccessPageViewObserverTest extends TestCase
     /**
      * Test setUp
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->googleAnalyticsDataMock = $this->getMockBuilder(GaDataHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->observerMock = $this->getMockBuilder(Observer::class)
             ->getMock();
-        $this->eventMock = $this->getMockBuilder(Event::class)
-            ->getMock();
+        $this->observerMock = $this->getMockBuilder(Observer::class)->getMock();
+        $this->eventMock = $this->getMockBuilder(Event::class)->getMock();
 
         $objectManager = new ObjectManager($this);
 
@@ -92,7 +89,7 @@ class SetGoogleAnalyticsOnOrderSuccessPageViewObserverTest extends TestCase
         $this->eventMock->expects($this->once())
             ->method('__call')
             ->with(
-                'getOrderIds'
+                $this->equalTo('getOrderIds')
             )
             ->willReturn([]);
         $this->layoutMock->expects($this->never())
@@ -117,7 +114,7 @@ class SetGoogleAnalyticsOnOrderSuccessPageViewObserverTest extends TestCase
         $this->eventMock->expects($this->once())
             ->method('__call')
             ->with(
-                'getOrderIds'
+                $this->equalTo('getOrderIds')
             )
             ->willReturn($orderIds);
         $this->layoutMock->expects($this->once())
@@ -126,8 +123,8 @@ class SetGoogleAnalyticsOnOrderSuccessPageViewObserverTest extends TestCase
         $blockMock->expects($this->once())
             ->method('__call')
             ->with(
-                'setOrderIds',
-                [$orderIds]
+                $this->equalTo('setOrderIds'),
+                $this->equalTo([$orderIds])
             );
 
         $this->orderSuccessObserver->execute($this->observerMock);

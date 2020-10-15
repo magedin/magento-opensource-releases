@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Observer;
 
 use Magento\Framework\Event;
@@ -17,14 +15,12 @@ use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\ResourceModel\Order\Invoice\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class SubmitObserverTest
  */
-class SubmitObserverTest extends TestCase
+class SubmitObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SubmitObserver
@@ -32,43 +28,43 @@ class SubmitObserverTest extends TestCase
     private $model;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var OrderSender|MockObject
+     * @var OrderSender|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderSenderMock;
 
     /**
-     * @var InvoiceSender|MockObject
+     * @var InvoiceSender|\PHPUnit_Framework_MockObject_MockObject
      */
     private $invoiceSender;
 
     /**
-     * @var Observer|MockObject
+     * @var Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $observerMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var Order|MockObject
+     * @var Order|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var Payment|MockObject
+     * @var Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->quoteMock = $this->createMock(Quote::class);
         $this->orderMock = $this->createMock(Order::class);
         $this->paymentMock = $this->createMock(Payment::class);

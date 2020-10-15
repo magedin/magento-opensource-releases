@@ -3,19 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Asset\PreProcessor;
 
-use Magento\Framework\View\Asset\LocalInterface;
 use Magento\Framework\View\Asset\PreProcessor\Chain;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ChainTest extends TestCase
+/**
+ * Class ChainTest
+ *
+ * @package Magento\Framework\View\Asset\PreProcessor
+ */
+class ChainTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LocalInterface|MockObject
+     * @var \Magento\Framework\View\Asset\LocalInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $asset;
 
@@ -24,10 +25,10 @@ class ChainTest extends TestCase
      */
     private $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->asset = $this->getMockForAbstractClass(LocalInterface::class);
-        $this->asset->expects($this->once())->method('getContentType')->willReturn('assetType');
+        $this->asset = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\LocalInterface::class);
+        $this->asset->expects($this->once())->method('getContentType')->will($this->returnValue('assetType'));
         $this->object = new Chain($this->asset, 'origContent', 'origType', 'origPath');
     }
 
@@ -54,10 +55,12 @@ class ChainTest extends TestCase
         $this->assertEquals('assetType', $this->object->getTargetContentType());
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage The requested asset type was 'assetType', but ended up with 'type'
+     */
     public function testAssertValid()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('The requested asset type was \'assetType\', but ended up with \'type\'');
         $this->object->setContentType('type');
         $this->object->assertValid();
     }

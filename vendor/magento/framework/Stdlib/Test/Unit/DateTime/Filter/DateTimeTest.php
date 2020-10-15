@@ -3,15 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Stdlib\Test\Unit\DateTime\Filter;
 
-use Magento\Framework\Stdlib\DateTime\Filter\DateTime;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Stdlib\DateTime\Filter\DateTime;
 
-class DateTimeTest extends TestCase
+class DateTimeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $inputData
@@ -21,15 +17,15 @@ class DateTimeTest extends TestCase
      */
     public function testFilter($inputData, $expectedDate)
     {
-        $localeMock = $this->getMockForAbstractClass(TimezoneInterface::class);
+        $localeMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
         $localeMock->expects(
             $this->once()
         )->method(
             'getDateTimeFormat'
         )->with(
             \IntlDateFormatter::SHORT
-        )->willReturn(
-            'HH:mm:ss MM-dd-yyyy'
+        )->will(
+            $this->returnValue('HH:mm:ss MM-dd-yyyy')
         );
 
         $model = new DateTime($localeMock);
@@ -58,15 +54,15 @@ class DateTimeTest extends TestCase
     {
         $this->expectException('\Exception');
 
-        $localeMock = $this->getMockForAbstractClass(TimezoneInterface::class);
+        $localeMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
         $localeMock->expects(
             $this->once()
         )->method(
             'getDateFormat'
         )->with(
             \IntlDateFormatter::SHORT
-        )->willReturn(
-            'MM-dd-yyyy'
+        )->will(
+            $this->returnValue('MM-dd-yyyy')
         );
         $model = new DateTime($localeMock);
 

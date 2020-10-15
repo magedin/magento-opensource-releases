@@ -32,15 +32,18 @@ class ReviewRenderer extends AbstractYotpoReviewsSummary
             return $proceed($product, $templateType, $displayIfNoReviews);
         }
 
-        $currentProduct = $this->_coreRegistry->registry('current_product');
-        if (!$currentProduct || $currentProduct->getId() !== $product->getId()) {
-            if ($this->_yotpoConfig->isCategoryBottomlineEnabled()) {
+        $currentPage = $this->_context->getRequest()->getFullActionName();
+
+        if ($this->_yotpoConfig->isCategoryBottomlineEnabled()) {
+            if (in_array($currentPage, ['cms_index_index', 'catalog_category_view'])) {
                 return $this->_getCategoryBottomLineHtml($product);
-            } elseif (!$this->_yotpoConfig->isMdrEnabled()) {
+            }
+        } elseif (!$this->_yotpoConfig->isMdrEnabled()) {
+            if (in_array($currentPage, ['cms_index_index', 'catalog_category_view'])) {
                 return $proceed($product, $templateType, $displayIfNoReviews);
             }
+        } else {
+            return '';
         }
-
-        return '';
     }
 }

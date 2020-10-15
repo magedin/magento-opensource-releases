@@ -14,14 +14,14 @@
             <title value="Delete System Product Attribute"/>
             <description value="Admin should not be able to see Delete Attribute button"/>
             <testCaseId value="MC-10893"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <amOnPage url="{{AdminProductAttributeGridPage.url}}" stepKey="navigateToProductAttribute"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>

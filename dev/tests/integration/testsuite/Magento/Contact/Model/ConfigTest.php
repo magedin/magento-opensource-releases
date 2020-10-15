@@ -15,7 +15,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     private $configModel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configModel = Bootstrap::getObjectManager()->create(\Magento\Contact\Model\ConfigInterface::class);
     }

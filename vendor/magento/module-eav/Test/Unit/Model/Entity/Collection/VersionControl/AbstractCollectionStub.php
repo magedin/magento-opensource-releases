@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Collection\VersionControl;
-
-use Magento\Eav\Model\Entity\Collection\VersionControl\AbstractCollection;
-use Magento\Framework\DataObject;
 
 /**
  * Stub for version control abstract collection model.
  */
-class AbstractCollectionStub extends AbstractCollection
+class AbstractCollectionStub extends \Magento\Eav\Model\Entity\Collection\VersionControl\AbstractCollection
 {
     /**
      * Retrieve item by id
      *
      * @param   mixed $id
-     * @return  DataObject
+     * @return  \Magento\Framework\DataObject
      */
     public function getItemById($id)
     {
@@ -36,6 +31,6 @@ class AbstractCollectionStub extends AbstractCollection
      */
     protected function _construct()
     {
-        return $this->_init(DataObject::class, 'test_entity_model');
+        return $this->_init(\Magento\Framework\DataObject::class, 'test_entity_model');
     }
 }

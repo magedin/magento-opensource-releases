@@ -3,27 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Translation\Model\Inline;
 
-use Magento\Backend\App\Area\FrontNameResolver;
-use Magento\Framework\Translate\Inline\ParserInterface;
-use Magento\Translation\Model\ResourceModel\StringFactory;
-use Magento\Translation\Model\ResourceModel\StringUtils;
 use Magento\Translation\Model\ResourceModel\StringUtilsFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\Translate\InlineInterface;
 use Magento\Framework\Escaper;
+use Magento\Framework\App\ObjectManager;
+use Magento\Translation\Model\Inline\CacheManager;
 
 /**
  * Parses content and applies necessary html element wrapping and client scripts for inline translation.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Parser implements ParserInterface
+class Parser implements \Magento\Framework\Translate\Inline\ParserInterface
 {
     /**
      * data-translate html element attribute name
@@ -108,7 +105,7 @@ class Parser implements ParserInterface
     ];
 
     /**
-     * @var StringFactory
+     * @var \Magento\Translation\Model\ResourceModel\StringFactory
      */
     protected $_resourceFactory;
 
@@ -148,6 +145,23 @@ class Parser implements ParserInterface
     private $relatedCacheTypes;
 
     /**
+     * Return cache manager
+     *
+     * @return CacheManager
+     *
+     * @deprecated 100.1.0
+     */
+    private function getCacheManger()
+    {
+        if (!$this->cacheManager instanceof CacheManager) {
+            $this->cacheManager = ObjectManager::getInstance()->get(
+                CacheManager::class
+            );
+        }
+        return $this->cacheManager;
+    }
+
+    /**
      * Initialize base inline translation model
      *
      * @param StringUtilsFactory $resource
@@ -156,9 +170,8 @@ class Parser implements ParserInterface
      * @param State $appState
      * @param TypeListInterface $appCache
      * @param InlineInterface $translateInline
-     * @param Escaper $escaper
-     * @param CacheManager $cacheManager
      * @param array $relatedCacheTypes
+     * @param Escaper|null $escaper
      */
     public function __construct(
         StringUtilsFactory $resource,
@@ -167,9 +180,8 @@ class Parser implements ParserInterface
         State $appState,
         TypeListInterface $appCache,
         InlineInterface $translateInline,
-        Escaper $escaper,
-        CacheManager $cacheManager,
-        array $relatedCacheTypes = []
+        array $relatedCacheTypes = [],
+        Escaper $escaper = null
     ) {
         $this->_resourceFactory = $resource;
         $this->_storeManager = $storeManager;
@@ -177,16 +189,16 @@ class Parser implements ParserInterface
         $this->_appState = $appState;
         $this->_appCache = $appCache;
         $this->_translateInline = $translateInline;
-        $this->escaper = $escaper;
-        $this->cacheManager = $cacheManager;
         $this->relatedCacheTypes = $relatedCacheTypes;
+        $this->escaper = $escaper ?? ObjectManager::getInstance()->get(
+            Escaper::class
+        );
     }
 
     /**
      * Parse and save edited translation
      *
      * @param array $translateParams
-     *
      * @return array
      */
     public function processAjaxPost(array $translateParams)
@@ -194,7 +206,6 @@ class Parser implements ParserInterface
         if (!$this->_translateInline->isAllowed()) {
             return ['inline' => 'not allowed'];
         }
-
         if (!empty($this->relatedCacheTypes)) {
             $this->_appCache->invalidate($this->relatedCacheTypes);
         }
@@ -205,16 +216,18 @@ class Parser implements ParserInterface
         /** @var $validStoreId int */
         $validStoreId = $this->_storeManager->getStore()->getId();
 
-        /** @var $resource StringUtils */
+        /** @var $resource \Magento\Translation\Model\ResourceModel\StringUtils */
         $resource = $this->_resourceFactory->create();
         foreach ($translateParams as $param) {
-            if ($this->_appState->getAreaCode() == FrontNameResolver::AREA_CODE) {
-                $storeId = 0;
-            } elseif (empty($param['perstore'])) {
-                $resource->deleteTranslate($param['original'], null, false);
+            if ($this->_appState->getAreaCode() == \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE) {
                 $storeId = 0;
             } else {
-                $storeId = $validStoreId;
+                if (empty($param['perstore'])) {
+                    $resource->deleteTranslate($param['original'], null, false);
+                    $storeId = 0;
+                } else {
+                    $storeId = $validStoreId;
+                }
             }
             $resource->saveTranslate(
                 $param['original'],
@@ -224,14 +237,13 @@ class Parser implements ParserInterface
             );
         }
 
-        return $this->cacheManager->updateAndGetTranslations();
+        return $this->getCacheManger()->updateAndGetTranslations();
     }
 
     /**
      * Validate the structure of translation parameters
      *
      * @param array $translateParams
-     *
      * @return void
      * @throws \InvalidArgumentException
      */
@@ -251,7 +263,6 @@ class Parser implements ParserInterface
      *
      * @param array $translateParams
      * @param array $fieldNames Names of fields values of which are to be filtered
-     *
      * @return void
      */
     protected function _filterTranslationParams(array &$translateParams, array $fieldNames)
@@ -267,7 +278,6 @@ class Parser implements ParserInterface
      * Replace html body with translation wrapping.
      *
      * @param string $body
-     *
      * @return string
      */
     public function processResponseBodyString($body)
@@ -295,7 +305,6 @@ class Parser implements ParserInterface
      * Sets the body content that is being parsed passed upon the passed in string.
      *
      * @param string $content
-     *
      * @return void
      */
     public function setContent($content)
@@ -307,7 +316,6 @@ class Parser implements ParserInterface
      * Set flag about parsed content is Json
      *
      * @param bool $flag
-     *
      * @return $this
      */
     public function setIsJson($flag)
@@ -321,9 +329,7 @@ class Parser implements ParserInterface
      *
      * @param array $matches
      * @param array $options
-     *
      * @return string
-     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getAttributeLocation($matches, $options)
@@ -337,25 +343,26 @@ class Parser implements ParserInterface
      *
      * @param array $matches
      * @param array $options
-     *
      * @return string
-     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getTagLocation($matches, $options)
     {
         $tagName = strtolower($options['tagName']);
 
-        return $options['tagList'][$tagName] ?? (ucfirst($tagName) . ' Text');
+        if (isset($options['tagList'][$tagName])) {
+            return $options['tagList'][$tagName];
+        }
+
+        return ucfirst($tagName) . ' Text';
     }
 
     /**
-     * Format translation for special tags. Adding translate mode attribute for vde requests.
+     * Format translation for special tags.  Adding translate mode attribute for vde requests.
      *
      * @param string $tagHtml
      * @param string $tagName
      * @param array $trArr
-     *
      * @return string
      */
     protected function _applySpecialTagsFormat($tagHtml, $tagName, $trArr)
@@ -371,7 +378,6 @@ class Parser implements ParserInterface
             $specialTags .= '>' . strtoupper($tagName);
         }
         $specialTags .= '</span>';
-
         return $specialTags;
     }
 
@@ -381,7 +387,6 @@ class Parser implements ParserInterface
      * @param string $tagHtml
      * @param string $tagName
      * @param array $trArr
-     *
      * @return string
      */
     protected function _applySimpleTagsFormat($tagHtml, $tagName, $trArr)
@@ -399,7 +404,6 @@ class Parser implements ParserInterface
             $simpleTags .= ' ' . $additionalAttr;
         }
         $simpleTags .= substr($tagHtml, strlen($tagName) + 1);
-
         return $simpleTags;
     }
 
@@ -410,7 +414,6 @@ class Parser implements ParserInterface
      * @param string $text
      * @param callable $locationCallback
      * @param array $options
-     *
      * @return array
      */
     private function _getTranslateData(string $regexp, string &$text, callable $locationCallback, array $options = [])
@@ -446,7 +449,6 @@ class Parser implements ParserInterface
      * Prepare tags inline translates for the content
      *
      * @param string &$content
-     *
      * @return void
      */
     private function _prepareTagAttributesForContent(&$content)
@@ -492,7 +494,6 @@ class Parser implements ParserInterface
      *
      * @param string $name
      * @param string $value
-     *
      * @return string
      */
     private function _getHtmlAttribute($name, $value)
@@ -504,7 +505,6 @@ class Parser implements ParserInterface
      * Add data-translate-mode attribute
      *
      * @param string $trAttr
-     *
      * @return string
      */
     private function _addTranslateAttribute($trAttr)
@@ -514,7 +514,6 @@ class Parser implements ParserInterface
         if ($additionalAttr !== null) {
             $translateAttr .= ' ' . $additionalAttr . ' ';
         }
-
         return $translateAttr;
     }
 
@@ -527,9 +526,9 @@ class Parser implements ParserInterface
     {
         if ($this->_isJson) {
             return '\"';
+        } else {
+            return '"';
         }
-
-        return '"';
     }
 
     /**
@@ -561,7 +560,6 @@ class Parser implements ParserInterface
      * @param string $content
      * @param array $tagsList
      * @param callable $formatCallback
-     *
      * @return void
      */
     private function _translateTags(string &$content, array $tagsList, callable $formatCallback)
@@ -644,7 +642,6 @@ class Parser implements ParserInterface
      * @param string $body
      * @param string $tagName
      * @param int $from
-     *
      * @return bool|int return false if end of tag is not found
      */
     private function _findEndOfTag($body, $tagName, $from)
@@ -661,11 +658,11 @@ class Parser implements ParserInterface
             }
             $length = $end - $from + $tagLength + 3;
         }
-        if (preg_match('#<\\\\?\/' . $tagName . '\s*?>#i', $body, $tagMatch, 0, $end)) {
+        if (preg_match('#<\\\\?\/' . $tagName . '\s*?>#i', $body, $tagMatch, null, $end)) {
             return $end + strlen($tagMatch[0]);
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     /**
@@ -703,7 +700,6 @@ class Parser implements ParserInterface
      *
      * @param string $data
      * @param string $text
-     *
      * @return string
      */
     protected function _getDataTranslateSpan($data, $text)
@@ -721,7 +717,6 @@ class Parser implements ParserInterface
      * Add an additional html attribute if needed.
      *
      * @param mixed $tagName
-     *
      * @return string
      */
     protected function _getAdditionalHtmlAttribute($tagName = null)

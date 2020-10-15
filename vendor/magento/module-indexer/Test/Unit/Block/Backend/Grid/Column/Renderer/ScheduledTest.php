@@ -3,16 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Block\Backend\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Context;
-use Magento\Framework\DataObject;
-use Magento\Indexer\Block\Backend\Grid\Column\Renderer\Scheduled;
-use PHPUnit\Framework\TestCase;
-
-class ScheduledTest extends TestCase
+class ScheduledTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param bool $rowValue
@@ -23,13 +16,13 @@ class ScheduledTest extends TestCase
     public function testRender($rowValue, $class, $text)
     {
         $html = '<span class="' . $class . '"><span>' . $text . '</span></span>';
-        $row = new DataObject();
-        $column = new DataObject();
-        $context = $this->getMockBuilder(Context::class)
+        $row = new \Magento\Framework\DataObject();
+        $column = new \Magento\Framework\DataObject();
+        $context = $this->getMockBuilder(\Magento\Backend\Block\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $model = new Scheduled($context);
+        $model = new \Magento\Indexer\Block\Backend\Grid\Column\Renderer\Scheduled($context);
         $column->setGetter('getValue');
         $row->setValue($rowValue);
         $model->setColumn($column);

@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test converting a Document from the search result to Adobe Stock asset
+ * Document to asset test.
  */
 class DocumentToAssetTest extends TestCase
 {

@@ -26,11 +26,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
      *
      * @dataProvider providerNotValidFiles
      * @param string $path
+     * @expectedException \Magento\Framework\Exception\FileSystemException
      */
     public function testAssertValid($path)
     {
-        $this->expectException(\Magento\Framework\Exception\FileSystemException::class);
-
         $this->getFileInstance($path);
     }
 
@@ -152,7 +151,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ];
         $result = $file->stat();
         foreach ($expectedInfo as $key) {
-            $this->assertArrayHasKey($key, $result);
+            $this->assertTrue(array_key_exists($key, $result));
         }
     }
 

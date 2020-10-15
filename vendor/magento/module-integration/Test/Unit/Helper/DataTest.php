@@ -3,24 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Helper;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Integration\Helper\Data;
 use Magento\Integration\Model\Integration;
-use PHPUnit\Framework\TestCase;
 
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Data */
+    /** @var \Magento\Integration\Helper\Data */
     protected $dataHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
-        $this->dataHelper = $helper->getObject(Data::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->dataHelper = $helper->getObject(\Magento\Integration\Helper\Data::class);
     }
 
     public function testMapResources()

@@ -3,49 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Adminhtml\From\Element;
-
-use Magento\Backend\Helper\Data;
-use Magento\Customer\Block\Adminhtml\Form\Element\Image;
-use Magento\Framework\Data\Form;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\EncoderInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Customer\Block\Adminhtml\From\Element\Image
  */
-class ImageTest extends TestCase
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Image
+     * @var \Magento\Customer\Block\Adminhtml\Form\Element\Image
      */
     protected $image;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $backendHelperMock;
 
     /**
-     * @var EncoderInterface|MockObject
+     * @var \Magento\Framework\Url\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlEncoder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->backendHelperMock = $this->getMockBuilder(Data::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->backendHelperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->urlEncoder = $this->getMockBuilder(EncoderInterface::class)
+        $this->urlEncoder = $this->getMockBuilder(\Magento\Framework\Url\EncoderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->image = $objectManager->getObject(
-            Image::class,
+            \Magento\Customer\Block\Adminhtml\Form\Element\Image::class,
             [
                 'adminhtmlData' => $this->backendHelperMock,
                 'urlEncoder' => $this->urlEncoder,
@@ -57,7 +47,7 @@ class ImageTest extends TestCase
     {
         $value = 'image.jpg';
         $url = 'http://example.com/backend/customer/index/viewfile/' . $value;
-        $formMock = $this->getMockBuilder(Form::class)
+        $formMock = $this->getMockBuilder(\Magento\Framework\Data\Form::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->image->setForm($formMock);
@@ -66,12 +56,12 @@ class ImageTest extends TestCase
         $this->urlEncoder->expects($this->once())
             ->method('encode')
             ->with($value)
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
         $this->backendHelperMock->expects($this->once())
             ->method('getUrl')
             ->with('customer/index/viewfile', ['image' => $value])
-            ->willReturn($url);
+            ->will($this->returnValue($url));
 
-        $this->assertStringContainsString($url, $this->image->getElementHtml());
+        $this->assertContains($url, $this->image->getElementHtml());
     }
 }

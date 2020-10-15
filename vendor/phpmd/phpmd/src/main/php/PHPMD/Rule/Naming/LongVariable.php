@@ -57,17 +57,16 @@ class LongVariable extends AbstractRule implements ClassAware, MethodAware, Func
                     $this->checkNodeImage($declarator);
                 }
             }
-            $this->resetProcessed();
-            return;
-        }
-        $declarators = $node->findChildrenOfType('VariableDeclarator');
-        foreach ($declarators as $declarator) {
-            $this->checkNodeImage($declarator);
-        }
+        } else {
+            $declarators = $node->findChildrenOfType('VariableDeclarator');
+            foreach ($declarators as $declarator) {
+                $this->checkNodeImage($declarator);
+            }
 
-        $variables = $node->findChildrenOfType('Variable');
-        foreach ($variables as $variable) {
-            $this->checkNodeImage($variable);
+            $variables = $node->findChildrenOfType('Variable');
+            foreach ($variables as $variable) {
+                $this->checkNodeImage($variable);
+            }
         }
 
         $this->resetProcessed();

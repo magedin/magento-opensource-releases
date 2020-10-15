@@ -9,7 +9,8 @@ use Magento\Config\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+
+require __DIR__ . '/process_config_data.php';
 
 $objectManager = Bootstrap::getObjectManager();
 
@@ -26,7 +27,4 @@ $configData = [
 /** @var Config $defConfig */
 $defConfig = $objectManager->create(Config::class);
 $defConfig->setScope(ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
-foreach ($configData as $key => $value) {
-    $defConfig->setDataByPath($key, $value);
-    $defConfig->save();
-}
+$processConfigData($defConfig, $configData);

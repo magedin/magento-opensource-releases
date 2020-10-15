@@ -3,100 +3,88 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Category;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Catalog\Block\Adminhtml\Category\AbstractCategory;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractCategoryTest extends TestCase
+class AbstractCategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var AbstractCategory
+     * @var \Magento\Catalog\Block\Adminhtml\Category\AbstractCategory
      */
     protected $category;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->contextMock = $this->createMock(Context::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\Block\Template\Context::class);
 
         $this->requestMock = $this->getMockBuilder(
-            RequestInterface::class
+            \Magento\Framework\App\RequestInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->contextMock->expects($this->any())
             ->method('getRequest')
-            ->willReturn($this->requestMock);
+            ->will($this->returnValue($this->requestMock));
 
         $this->urlBuilderMock = $this->getMockBuilder(
-            UrlInterface::class
+            \Magento\Framework\UrlInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->storeManagerMock = $this->getMockBuilder(
-            StoreManagerInterface::class
+            \Magento\Store\Model\StoreManagerInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->contextMock->expects($this->any())
             ->method('getStoreManager')
-            ->willReturn($this->storeManagerMock);
+            ->will($this->returnValue($this->storeManagerMock));
 
-        $this->storeMock = $this->getMockBuilder(Store::class)
+        $this->storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->contextMock->expects($this->any())
             ->method('getUrlBuilder')
-            ->willReturn($this->urlBuilderMock);
+            ->will($this->returnValue($this->urlBuilderMock));
 
         $this->category = $this->objectManager->getObject(
-            AbstractCategory::class,
+            \Magento\Catalog\Block\Adminhtml\Category\AbstractCategory::class,
             [
                 'context' => $this->contextMock,
             ]
@@ -141,6 +129,6 @@ class AbstractCategoryTest extends TestCase
         $this->storeManagerMock->expects($this->once())->method('getGroups')->willReturn([$this->storeMock]);
         $this->storeMock->expects($this->once())->method('getRootCategoryId')->willReturn('storeId');
 
-        $this->assertEquals([Category::TREE_ROOT_ID, 'storeId'], $this->category->getRootIds());
+        $this->assertEquals([\Magento\Catalog\Model\Category::TREE_ROOT_ID, 'storeId'], $this->category->getRootIds());
     }
 }

@@ -7,17 +7,12 @@ namespace Magento\Framework\TestFramework\Unit\Listener;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestListener;
-use PHPUnit\Framework\TestListenerDefaultImplementation;
 
 /**
  * The event listener which instantiates ObjectManager before test run
  */
-class ReplaceObjectManager implements TestListener
+class ReplaceObjectManager extends \PHPUnit\Framework\BaseTestListener
 {
-    use TestListenerDefaultImplementation;
     /**
      * Replaces ObjectManager before run for each test
      *
@@ -26,13 +21,13 @@ class ReplaceObjectManager implements TestListener
      * This avoids the issue with a not initialized ObjectManager
      * and makes working with ObjectManager predictable as it always contains clear mock for each test
      *
-     * @param Test $test
+     * @param \PHPUnit\Framework\Test $test
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function startTest(Test $test): void
+    public function startTest(\PHPUnit\Framework\Test $test)
     {
-        if ($test instanceof TestCase) {
+        if ($test instanceof \PHPUnit\Framework\TestCase) {
             $objectManagerMock = $test->getMockBuilder(ObjectManagerInterface::class)
                 ->getMockForAbstractClass();
             $createMockCallback = function ($type) use ($test) {

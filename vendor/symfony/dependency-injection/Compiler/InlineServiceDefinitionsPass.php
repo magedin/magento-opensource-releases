@@ -22,9 +22,10 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class InlineServiceDefinitionsPass extends AbstractRecursivePass
+class InlineServiceDefinitionsPass extends AbstractRecursivePass implements RepeatablePassInterface
 {
     private $analyzingPass;
+    private $repeatedPass;
     private $cloningIds = [];
     private $connectedIds = [];
     private $notInlinedIds = [];
@@ -34,6 +35,15 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
     public function __construct(AnalyzeServiceReferencesPass $analyzingPass = null)
     {
         $this->analyzingPass = $analyzingPass;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRepeatedPass(RepeatedPass $repeatedPass)
+    {
+        @trigger_error(sprintf('The "%s()" method is deprecated since Symfony 4.2.', __METHOD__), E_USER_DEPRECATED);
+        $this->repeatedPass = $repeatedPass;
     }
 
     public function process(ContainerBuilder $container)
@@ -84,6 +94,10 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
                 }
             } while ($this->inlinedIds && $this->analyzingPass);
 
+            if ($this->inlinedIds && $this->repeatedPass) {
+                $this->repeatedPass->setRepeat();
+            }
+
             foreach ($remainingInlinedIds as $id) {
                 $definition = $container->getDefinition($id);
 
@@ -101,7 +115,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass
     /**
      * {@inheritdoc}
      */
-    protected function processValue($value, bool $isRoot = false)
+    protected function processValue($value, $isRoot = false)
     {
         if ($value instanceof ArgumentInterface) {
             // Reference found in ArgumentInterface::getValues() are not inlineable

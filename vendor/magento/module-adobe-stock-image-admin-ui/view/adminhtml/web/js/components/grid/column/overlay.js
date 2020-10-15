@@ -1,13 +1,14 @@
+// jscs:disable
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+// jscs:enable
 define([
-    'jquery',
-    'underscore',
     'Magento_Ui/js/grid/columns/overlay',
-    'Magento_AdobeStockImageAdminUi/js/action/getLicenseStatus'
-], function ($, _, overlay, getLicenseStatus) {
+    'jquery',
+    'underscore'
+], function (overlay, $, _) {
     'use strict';
 
     return overlay.extend({
@@ -18,14 +19,12 @@ define([
             getImagesUrl: 'adobe_stock/license/getlist',
             licensed: {},
             modules: {
-                login: '${ $.loginProvider }'
+                login: '${ $.loginProvider }',
+                masonry: '${ $.parentName }'
             },
             listens: {
-                '${ $.provider }:data.items': 'handleItemsUpdate',
-                '${ $.loginProvider }:user': 'handleUserUpdate'
-            },
-            imports: {
-                rows: '${ $.provider }:data.items'
+                '${ $.provider }:data.items': 'updateLicensed',
+                '${ $.loginProvider }:user': 'updateLicensed'
             }
         },
 
@@ -43,61 +42,51 @@ define([
         },
 
         /**
-         * Updates the licensed data when items data is updated.
-         *
-         * @param {Array} items
-         */
-        handleItemsUpdate: function (items) {
-            var ids = this.getIds(items);
-
-            this.updateLicensed(ids);
-        },
-
-        /**
-         * Updates the licensed data when user data is updated.
-         */
-        handleUserUpdate: function () {
-            var ids = this.getIds(this.rows);
-
-            this.updateLicensed(ids);
-        },
-
-        /**
          * Set Licensed images data.
-         *
-         * @param {Array} ids
          */
-        updateLicensed: function (ids) {
-            if (!this.isUserAuthorized() || ids.length === 0) {
+        updateLicensed: function () {
+            if (_.isUndefined(this.login()) || !this.login().user().isAuthorized) {
                 this.licensed({});
 
                 return;
             }
 
-            getLicenseStatus(this.getImagesUrl, ids).then(function (licensed) {
-                this.licensed(licensed);
-            }.bind(this));
+            $.ajax({
+                type: 'GET',
+                url: this.getImagesUrl + '?ids=' + this.getIds().join(','),
+                data: {
+                    'form_key': window.FORM_KEY
+                },
+                dataType: 'json',
+                context: this,
+
+                /**
+                 * @param {Object} response
+                 * @returns void
+                 */
+                success: function (response) {
+                    this.licensed(response.result);
+                },
+
+                /**
+                 * @param {Object} response
+                 * @returns {String}
+                 */
+                error: function (response) {
+                    return response.message;
+                }
+            });
         },
 
         /**
-         * Checks if user is logged in and authorized
+         * Get all ids from data provider
          *
-         * @returns {Boolean}
-         */
-        isUserAuthorized: function () {
-            return !_.isUndefined(this.login()) && this.login().user().isAuthorized;
-        },
-
-        /**
-         * Get all ids from items array
-         *
-         * @param {Array} items
          * @returns {Number[]}
          */
-        getIds: function (items) {
+        getIds: function () {
             var ids = [];
 
-            items.forEach(function (record) {
+            this.masonry().rows().forEach(function (record) {
                 ids.push(record.id);
             });
 
@@ -111,7 +100,7 @@ define([
          * @returns {Object}
          */
         getStyles: function (record) {
-            var height = record.styles().height.replace('px', '') - 40;
+            var height = record.styles().height.replace('px', '') - 50;
 
             return {
                 top: height + 'px'

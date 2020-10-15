@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity;
 
+use Magento\Eav\Model\Attribute;
 use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity;
 use Magento\Eav\Model\Entity\AbstractEntity;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute as EntityAttribute;
 use Magento\Eav\Model\Entity\AttributeLoader;
 use Magento\Eav\Model\Entity\Type;
 use Magento\Framework\DataObject;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AttributeLoaderTest extends TestCase
+class AttributeLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var AbstractEntity|MockObject
+     * @var AbstractEntity|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityMock;
 
     /**
-     * @var Type|MockObject
+     * @var Type|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityTypeMock;
 
@@ -46,7 +40,7 @@ class AttributeLoaderTest extends TestCase
      */
     private $attributeLoader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configMock = $this->createMock(Config::class, [], [], '', false);
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
@@ -72,16 +66,15 @@ class AttributeLoaderTest extends TestCase
         $this->configMock->expects($this->once())->method('getEntityAttributes')->willReturn([]);
         $this->entityMock->expects($this->once())->method('unsetAttributes')->willReturnSelf();
         $this->entityTypeMock->expects($this->once())
-            ->method('getAttributeModel')->willReturn(Entity::DEFAULT_ATTRIBUTE_MODEL);
-        $attributeMock = $this->getMockBuilder(EntityAttribute::class)
+            ->method('getAttributeModel')->willReturn(\Magento\Eav\Model\Entity::DEFAULT_ATTRIBUTE_MODEL);
+        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
             ->setMethods(['setAttributeCode', 'setBackendType', 'setIsGlobal', 'setEntityType', 'setEntityTypeId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->objectManagerMock->expects($this->once())
-            ->method('create')->with(Entity::DEFAULT_ATTRIBUTE_MODEL)->willReturn($attributeMock);
+            ->method('create')->with(\Magento\Eav\Model\Entity::DEFAULT_ATTRIBUTE_MODEL)->willReturn($attributeMock);
         $attributeMock->expects($this->once())->method('setAttributeCode')->with($attributeCode)->willReturnSelf();
         $attributeMock->expects($this->once())->method('setBackendType')
-            ->with(AbstractAttribute::TYPE_STATIC)->willReturnSelf();
+            ->with(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::TYPE_STATIC)->willReturnSelf();
         $attributeMock->expects($this->once())->method('setIsGlobal')->with(1)->willReturnSelf();
         $attributeMock->expects($this->once())->method('setEntityType')->with($this->entityTypeMock)->willReturnSelf();
         $attributeMock->expects($this->once())->method('setEntityTypeId')->with($entityTypeId)->willReturnSelf();
@@ -90,10 +83,16 @@ class AttributeLoaderTest extends TestCase
 
     public function testLoadAllAttributesAttributeCodesPresentInDefaultAttributes()
     {
-        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Attribute::class)->addMethods(['setIsGlobal'])
-            ->onlyMethods(['setAttributeCode', 'setBackendType', 'setEntityType', 'setEntityTypeId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $attributeMock = $this->createPartialMock(
+            \Magento\Eav\Model\Attribute::class,
+            [
+                'setAttributeCode',
+                'setBackendType',
+                'setIsGlobal',
+                'setEntityType',
+                'setEntityTypeId'
+            ]
+        );
         $attributeCodes = ['bar' => $attributeMock];
         $defaultAttributes = ['bar'];
         $dataObject = new DataObject();

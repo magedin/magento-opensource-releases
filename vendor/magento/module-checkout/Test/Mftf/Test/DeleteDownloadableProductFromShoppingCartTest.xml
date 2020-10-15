@@ -39,12 +39,13 @@
         <!-- Add downloadable product to the cart -->
         <amOnPage url="{{StorefrontProductPage.url($$createDownloadableProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToDownloadableProductPage"/>
         <waitForPageLoad stepKey="waitForDownloadableProductPageLoad"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartDownloadableProductFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartDownloadableProductFromStorefrontProductPage">
             <argument name="productName" value="$$createDownloadableProduct.name$$"/>
         </actionGroup>
 
         <!-- Remove product from cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="goToCart"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCart"/>
+        <waitForPageLoad stepKey="waitForCartPageLoad"/>
         <actionGroup ref="DeleteProductFromShoppingCartActionGroup" stepKey="deleteProduct">
             <argument name="productName" value="$$createDownloadableProduct.name$$"/>
         </actionGroup>

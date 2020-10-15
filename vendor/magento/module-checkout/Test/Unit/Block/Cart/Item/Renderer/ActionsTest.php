@@ -3,20 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Block\Cart\Item\Renderer;
 
 use Magento\Checkout\Block\Cart\Item\Renderer\Actions;
 use Magento\Checkout\Block\Cart\Item\Renderer\Actions\Generic;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\LayoutInterface;
 use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ActionsTest extends TestCase
+class ActionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Actions
@@ -24,30 +17,30 @@ class ActionsTest extends TestCase
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
+        $this->layoutMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = $objectManagerHelper->getObject(
-            Actions::class,
+            \Magento\Checkout\Block\Cart\Item\Renderer\Actions::class,
             [
                 'scopeConfig' => $this->scopeConfigMock,
                 'layout' => $this->layoutMock,
@@ -58,9 +51,9 @@ class ActionsTest extends TestCase
     public function testGetItem()
     {
         /**
-         * @var Item|MockObject $itemMock
+         * @var Item|\PHPUnit_Framework_MockObject_MockObject $itemMock
          */
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -80,9 +73,9 @@ class ActionsTest extends TestCase
             ->willReturn(false);
 
         /**
-         * @var Item|MockObject $itemMock
+         * @var Item|\PHPUnit_Framework_MockObject_MockObject $itemMock
          */
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->model->setItem($itemMock);
@@ -92,8 +85,8 @@ class ActionsTest extends TestCase
             ->with($this->model->getNameInLayout())
             ->willReturn($childNames);
 
-        /** @var Generic|MockObject $childMockOne */
-        $childMockOne = $this->getMockBuilder(Generic::class)
+        /** @var Generic|\PHPUnit_Framework_MockObject_MockObject $childMockOne */
+        $childMockOne = $this->getMockBuilder(\Magento\Checkout\Block\Cart\Item\Renderer\Actions\Generic::class)
             ->disableOriginalConstructor()
             ->getMock();
         $childMockOne->expects($this->once())

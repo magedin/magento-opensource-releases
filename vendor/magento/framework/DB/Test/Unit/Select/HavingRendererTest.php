@@ -3,25 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\HavingRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class HavingRendererTest extends TestCase
+/**
+ * Class HavingRendererTest
+ */
+class HavingRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var HavingRenderer
+     * @var \Magento\Framework\DB\Select\HavingRenderer
      */
     protected $model;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
@@ -30,11 +28,11 @@ class HavingRendererTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
-        $this->model = $objectManager->getObject(HavingRenderer::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
+        $this->model = $objectManager->getObject(\Magento\Framework\DB\Select\HavingRenderer::class);
     }
 
     /**

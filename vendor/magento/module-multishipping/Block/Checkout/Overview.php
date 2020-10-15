@@ -6,10 +6,10 @@
 
 namespace Magento\Multishipping\Block\Checkout;
 
+use Magento\Captcha\Block\Captcha;
+use Magento\Checkout\Model\CaptchaPaymentProcessingRateLimiter;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Model\Quote\Address;
-use Magento\Checkout\Helper\Data as CheckoutHelper;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Multishipping checkout overview information
@@ -59,7 +59,6 @@ class Overview extends \Magento\Sales\Block\Items\AbstractItems
      * @param \Magento\Quote\Model\Quote\TotalsCollector               $totalsCollector
      * @param \Magento\Quote\Model\Quote\TotalsReader                  $totalsReader
      * @param array                                                    $data
-     * @param CheckoutHelper|null                                      $checkoutHelper
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -68,14 +67,11 @@ class Overview extends \Magento\Sales\Block\Items\AbstractItems
         PriceCurrencyInterface $priceCurrency,
         \Magento\Quote\Model\Quote\TotalsCollector $totalsCollector,
         \Magento\Quote\Model\Quote\TotalsReader $totalsReader,
-        array $data = [],
-        ?CheckoutHelper $checkoutHelper = null
+        array $data = []
     ) {
         $this->_taxHelper = $taxHelper;
         $this->_multishipping = $multishipping;
         $this->priceCurrency = $priceCurrency;
-        $data['taxHelper'] = $this->_taxHelper;
-        $data['checkoutHelper'] = $checkoutHelper ?? ObjectManager::getInstance()->get(CheckoutHelper::class);
         parent::__construct($context, $data);
         $this->_isScopePrivate = true;
         $this->totalsCollector = $totalsCollector;
@@ -123,6 +119,20 @@ class Overview extends \Magento\Sales\Block\Items\AbstractItems
         $this->pageConfig->getTitle()->set(
             __('Review Order - %1', $this->pageConfig->getTitle()->getDefault())
         );
+        if (!$this->getChildBlock('captcha')) {
+            $this->addChild(
+                'captcha',
+                Captcha::class,
+                [
+                    'cacheable' => false,
+                    'after' => '-',
+                    'form_id' => CaptchaPaymentProcessingRateLimiter::CAPTCHA_FORM,
+                    'image_width' => 230,
+                    'image_height' => 230
+                ]
+            );
+        }
+
         return parent::_prepareLayout();
     }
 
@@ -400,8 +410,7 @@ class Overview extends \Magento\Sales\Block\Items\AbstractItems
      * Get billin address totals
      *
      * @return     mixed
-     * @deprecated 100.2.3
-     * typo in method name, see getBillingAddressTotals()
+     * @deprecated 100.2.3 typo in method name, see getBillingAddressTotals()
      */
     public function getBillinAddressTotals()
     {

@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Model\Indexer;
 
 use Magento\CatalogRule\Model\Indexer\AbstractIndexer;
-use Magento\CatalogRule\Model\Indexer\IndexBuilder;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AbstractIndexerTest extends TestCase
+class AbstractIndexerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var IndexBuilder|MockObject
+     * @var \Magento\CatalogRule\Model\Indexer\IndexBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexBuilder;
 
     /**
-     * @var AbstractIndexer|MockObject
+     * @var AbstractIndexer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexer;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_eventManagerMock;
 
@@ -38,10 +30,10 @@ class AbstractIndexerTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->indexBuilder = $this->createMock(IndexBuilder::class);
+        $this->_eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->indexBuilder = $this->createMock(\Magento\CatalogRule\Model\Indexer\IndexBuilder::class);
 
         $this->indexer = $this->getMockForAbstractClass(
             AbstractIndexer::class,
@@ -50,7 +42,7 @@ class AbstractIndexerTest extends TestCase
                 $this->_eventManagerMock
             ]
         );
-        $cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
+        $cacheMock = $this->createMock(\Magento\Framework\App\CacheInterface::class);
         $reflection = new \ReflectionClass(AbstractIndexer::class);
         $reflectionProperty = $reflection->getProperty('cacheManager');
         $reflectionProperty->setAccessible(true);
@@ -89,18 +81,18 @@ class AbstractIndexerTest extends TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Could not rebuild index for empty products array
      *
      * @return void
      */
     public function testExecuteListWithEmptyIds()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Could not rebuild index for empty products array');
         $this->indexer->executeList([]);
     }
 
     /**
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      *
      * @return void
      */
@@ -113,18 +105,18 @@ class AbstractIndexerTest extends TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage We can't rebuild the index for an undefined product.
      *
      * @return void
      */
     public function testExecuteRowWithEmptyId()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('We can\'t rebuild the index for an undefined product.');
         $this->indexer->executeRow(null);
     }
 
     /**
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      *
      * @return void
      */

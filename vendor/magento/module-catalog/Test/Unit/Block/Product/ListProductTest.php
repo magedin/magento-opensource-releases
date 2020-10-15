@@ -3,136 +3,114 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Product;
 
 use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Block\Product\ListProduct;
-use Magento\Catalog\Block\Product\ProductList\Toolbar;
-use Magento\Catalog\Model\Layer;
-use Magento\Catalog\Model\Layer\Resolver;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type\Simple;
-use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
-use Magento\Catalog\Model\ResourceModel\Category\Collection;
-use Magento\Checkout\Helper\Cart;
-use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Pricing\Render;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Url\Helper\Data;
 use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ListProductTest extends TestCase
+class ListProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ListProduct
+     * @var \Magento\Catalog\Block\Product\ListProduct
      */
     protected $block;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $layerMock;
 
     /**
-     * @var PostHelper|MockObject
+     * @var \Magento\Framework\Data\Helper\PostHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $postDataHelperMock;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var Cart|MockObject
+     * @var \Magento\Checkout\Helper\Cart|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cartHelperMock;
 
     /**
-     * @var Simple|MockObject
+     * @var \Magento\Catalog\Model\Product\Type\Simple|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeInstanceMock;
 
     /**
-     * @var Data|MockObject
+     * @var Data | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlHelperMock;
 
     /**
-     * @var CategoryResourceModel|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Category | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $catCollectionMock;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $prodCollectionMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var Toolbar|MockObject
+     * @var \Magento\Catalog\Block\Product\ProductList\Toolbar | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $toolbarMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
     /**
-     * @var Render|MockObject
+     * @var Render|\PHPUnit_Framework_MockObject_MockObject
      */
     private $renderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->layerMock = $this->createMock(Layer::class);
-        /** @var MockObject|Resolver $layerResolver */
-        $layerResolver = $this->getMockBuilder(Resolver::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->layerMock = $this->createMock(\Magento\Catalog\Model\Layer::class);
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Layer\Resolver $layerResolver */
+        $layerResolver = $this->getMockBuilder(\Magento\Catalog\Model\Layer\Resolver::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'create'])
             ->getMock();
         $layerResolver->expects($this->any())
             ->method($this->anything())
-            ->willReturn($this->layerMock);
-        $this->postDataHelperMock = $this->createMock(PostHelper::class);
-        $this->typeInstanceMock = $this->createMock(Simple::class);
-        $this->productMock = $this->createMock(Product::class);
-        $this->cartHelperMock = $this->createMock(Cart::class);
-        $this->catCollectionMock = $this->createMock(Collection::class);
+            ->will($this->returnValue($this->layerMock));
+        $this->postDataHelperMock = $this->createMock(\Magento\Framework\Data\Helper\PostHelper::class);
+        $this->typeInstanceMock = $this->createMock(\Magento\Catalog\Model\Product\Type\Simple::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->cartHelperMock = $this->createMock(\Magento\Checkout\Helper\Cart::class);
+        $this->catCollectionMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Category\Collection::class);
         $this->prodCollectionMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
-        $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
-        $this->toolbarMock = $this->createMock(Toolbar::class);
+        $this->layoutMock = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
+        $this->toolbarMock = $this->createMock(\Magento\Catalog\Block\Product\ProductList\Toolbar::class);
 
-        $this->urlHelperMock = $this->getMockBuilder(Data::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->context = $this->getMockBuilder(Context::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->renderer = $this->getMockBuilder(Render::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->urlHelperMock = $this->getMockBuilder(Data::class)->disableOriginalConstructor()->getMock();
+        $this->context = $this->getMockBuilder(Context::class)->disableOriginalConstructor()->getMock();
+        $this->renderer = $this->getMockBuilder(Render::class)->disableOriginalConstructor()->getMock();
         $eventManager = $this->getMockForAbstractClass(ManagerInterface::class, [], '', false);
 
         $this->context->expects($this->any())->method('getRegistry')->willReturn($this->registryMock);
@@ -141,7 +119,7 @@ class ListProductTest extends TestCase
         $this->context->expects($this->any())->method('getEventManager')->willReturn($eventManager);
 
         $this->block = $objectManager->getObject(
-            ListProduct::class,
+            \Magento\Catalog\Block\Product\ListProduct::class,
             [
                 'registry' => $this->registryMock,
                 'context' => $this->context,
@@ -154,7 +132,7 @@ class ListProductTest extends TestCase
         $this->block->setToolbarBlockName('mock');
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->block = null;
     }
@@ -166,48 +144,52 @@ class ListProductTest extends TestCase
 
         $this->productMock->expects($this->once())
             ->method('getIdentities')
-            ->willReturn([$productTag]);
+            ->will($this->returnValue([$productTag]));
 
         $this->productMock->expects($this->once())
             ->method('getCategoryCollection')
-            ->willReturn($this->catCollectionMock);
+            ->will($this->returnValue($this->catCollectionMock));
 
         $this->catCollectionMock->expects($this->once())
             ->method('load')
-            ->willReturn($this->catCollectionMock);
+            ->will($this->returnValue($this->catCollectionMock));
 
         $this->catCollectionMock->expects($this->once())
             ->method('setPage')
-            ->willReturn($this->catCollectionMock);
+            ->will($this->returnValue($this->catCollectionMock));
 
         $this->catCollectionMock->expects($this->once())
             ->method('count')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
         $this->registryMock->expects($this->any())
             ->method('registry')
-            ->willReturn($this->productMock);
+            ->will($this->returnValue($this->productMock));
 
         $currentCategory = $this->createMock(\Magento\Catalog\Model\Category::class);
         $currentCategory->expects($this->any())
             ->method('getId')
-            ->willReturn('1');
+            ->will($this->returnValue('1'));
 
         $this->catCollectionMock->expects($this->once())
             ->method('getIterator')
-            ->willReturn([$currentCategory]);
+            ->will($this->returnValue([$currentCategory]));
 
         $this->prodCollectionMock->expects($this->any())
             ->method('getIterator')
-            ->willReturn(new \ArrayIterator([$this->productMock]));
+            ->will($this->returnValue(new \ArrayIterator([$this->productMock])));
 
         $this->layerMock->expects($this->any())
             ->method('getCurrentCategory')
-            ->willReturn($currentCategory);
+            ->will($this->returnValue($currentCategory));
 
         $this->layerMock->expects($this->once())
             ->method('getProductCollection')
-            ->willReturn($this->prodCollectionMock);
+            ->will($this->returnValue($this->prodCollectionMock));
+
+        $this->layoutMock->expects($this->once())
+            ->method('getBlock')
+            ->will($this->returnValue($this->toolbarMock));
 
         $this->assertEquals(
             [$categoryTag, $productTag],
@@ -231,22 +213,22 @@ class ListProductTest extends TestCase
 
         $this->typeInstanceMock->expects($this->once())
             ->method('isPossibleBuyFromList')
-            ->with($this->productMock)
-            ->willReturn(true);
+            ->with($this->equalTo($this->productMock))
+            ->will($this->returnValue(true));
         $this->cartHelperMock->expects($this->any())
             ->method('getAddUrl')
-            ->with($this->productMock, ['_escape' => false])
-            ->willReturn($url);
+            ->with($this->equalTo($this->productMock), $this->equalTo(['_escape' => false]))
+            ->will($this->returnValue($url));
         $this->productMock->expects($this->once())
             ->method('getEntityId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $this->productMock->expects($this->once())
             ->method('getTypeInstance')
-            ->willReturn($this->typeInstanceMock);
+            ->will($this->returnValue($this->typeInstanceMock));
         $this->urlHelperMock->expects($this->once())
             ->method('getEncodedUrl')
-            ->with($url)
-            ->willReturn($uenc);
+            ->with($this->equalTo($url))
+            ->will($this->returnValue($uenc));
         $result = $this->block->getAddToCartPostParams($this->productMock);
         $this->assertEquals($expectedPostData, $result);
     }

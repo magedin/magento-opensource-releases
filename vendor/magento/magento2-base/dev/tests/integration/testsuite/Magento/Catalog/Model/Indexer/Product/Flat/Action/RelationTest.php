@@ -43,7 +43,7 @@ class RelationTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -105,7 +105,7 @@ class RelationTest extends \Magento\TestFramework\Indexer\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         foreach ($this->flatUpdated as $flatTable) {
             $this->connection->dropColumn($flatTable, 'child_id');

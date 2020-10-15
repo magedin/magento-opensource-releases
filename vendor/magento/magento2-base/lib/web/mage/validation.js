@@ -1130,7 +1130,7 @@ define([
         ],
         'validate-state': [
             function (v) {
-                return v !== 0;
+                return v !== 0 || v === '';
             },
             $.mage.__('Please select State/Province.')
         ],
@@ -1971,7 +1971,7 @@ define([
             }
 
             if (firstActive.length) {
-                $('html, body').stop().animate({
+                $('body').stop().animate({
                     scrollTop: firstActive.offset().top - windowHeight / 2
                 });
                 firstActive.focus();

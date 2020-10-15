@@ -13,20 +13,15 @@ class InsertEmailOrderTable extends AbstractDataMigration implements InsertTypeI
     protected $tableName = Schema::EMAIL_ORDER_TABLE;
 
     /**
-     * @var string
-     */
-    protected $resourceName = 'sales';
-
-    /**
      * @inheritdoc
      */
     protected function getSelectStatement()
     {
         return $this->resourceConnection
-            ->getConnection($this->resourceName)
+            ->getConnection('sales')
             ->select()
             ->from([
-                $this->resourceConnection->getTableName('sales_order', $this->resourceName),
+                $this->resourceConnection->getTableName('sales_order', 'sales'),
             ], [
                 'order_id' => 'entity_id',
                 'quote_id',
@@ -52,31 +47,5 @@ class InsertEmailOrderTable extends AbstractDataMigration implements InsertTypeI
             'updated_at',
             'order_status',
         ];
-    }
-
-    /**
-     * For email_order, we must retrieve records first using the 'sales' connection.
-     * Fetched records are then inserted into the target db/table as an array.
-     * This alternate approach is required to support split databases.
-     *
-     * @param Select $selectStatement
-     * @return int
-     */
-    protected function insertData(Select $selectStatement)
-    {
-        $fetched = $this->resourceConnection->getConnection($this->resourceName)
-            ->fetchAll($selectStatement);
-
-        if (empty($fetched)) {
-            return 0;
-        }
-
-        return $this->resourceConnection
-            ->getConnection()
-            ->insertArray(
-                $this->resourceConnection->getTableName($this->tableName),
-                $this->getInsertArray(),
-                $fetched
-            );
     }
 }

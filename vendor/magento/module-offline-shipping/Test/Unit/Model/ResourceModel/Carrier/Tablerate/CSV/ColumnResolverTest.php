@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\OfflineShipping\Test\Unit\Model\ResourceModel\Carrier\Tablerate\CSV;
 
-use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnResolver;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnResolver
  */
-class ColumnResolverTest extends TestCase
+class ColumnResolverTest extends \PHPUnit\Framework\TestCase
 {
     const CUSTOM_FIELD = 'custom_field';
 
-    // phpstan:ignore
     private $values = [
         ColumnResolver::COLUMN_COUNTRY => 'country value',
         ColumnResolver::COLUMN_REGION => 'region value',
@@ -32,7 +28,7 @@ class ColumnResolverTest extends TestCase
     /**
      * @param $column
      * @param $expectedValue
-     * @throws ColumnNotFoundException
+     * @throws \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
      * @dataProvider getColumnValueDataProvider
      */
     public function testGetColumnValueByPosition($column, $expectedValue)
@@ -87,7 +83,6 @@ class ColumnResolverTest extends TestCase
                 ColumnResolver::COLUMN_ZIP,
                 $this->values[ColumnResolver::COLUMN_ZIP],
             ],
-            // phpstan:ignore
             ColumnResolver::COLUMN_WEIGHT => [
                 ColumnResolver::COLUMN_WEIGHT,
                 $this->values[ColumnResolver::COLUMN_WEIGHT],
@@ -118,28 +113,24 @@ class ColumnResolverTest extends TestCase
     }
 
     /**
-     * @throws ColumnNotFoundException
+     * @throws \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
+     * @expectedException \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
+     * @expectedExceptionMessage Requested column "custom_field" cannot be resolved
      */
     public function testGetColumnValueWithUnknownColumn()
     {
-        $this->expectException(
-            'Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException'
-        );
-        $this->expectExceptionMessage('Requested column "custom_field" cannot be resolved');
         $columnResolver = $this->createColumnResolver();
         $values = array_values($this->values);
         $columnResolver->getColumnValue(self::CUSTOM_FIELD, $values);
     }
 
     /**
-     * @throws ColumnNotFoundException
+     * @throws \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
+     * @expectedException \Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException
+     * @expectedExceptionMessage Column "new_custom_column" not found
      */
     public function testGetColumnValueWithUndefinedValue()
     {
-        $this->expectException(
-            'Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\CSV\ColumnNotFoundException'
-        );
-        $this->expectExceptionMessage('Column "new_custom_column" not found');
         $columnName = 'new_custom_column';
 
         $headers = array_keys($this->values);

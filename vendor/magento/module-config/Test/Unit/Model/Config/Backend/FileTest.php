@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Backend;
 
 use Magento\Config\Model\Config\Backend\File;
@@ -18,68 +16,67 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use Magento\MediaStorage\Model\File\Uploader;
 use Magento\MediaStorage\Model\File\UploaderFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class FileTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /** @var File */
     protected $model;
 
-    /** @var Context|MockObject */
+    /** @var Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var Registry|MockObject */
+    /** @var Registry|\PHPUnit_Framework_MockObject_MockObject */
     protected $registryMock;
 
-    /** @var ScopeConfigInterface|MockObject */
+    /** @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $scopeConfigMock;
 
-    /** @var TypeListInterface|MockObject */
+    /** @var TypeListInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $typeListMock;
 
-    /** @var UploaderFactory|MockObject */
+    /** @var UploaderFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $uploaderFactoryMock;
 
-    /** @var RequestDataInterface|MockObject */
+    /** @var RequestDataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestDataMock;
 
-    /** @var Filesystem|MockObject */
+    /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject */
     protected $filesystemMock;
 
-    /** @var WriteInterface|MockObject */
+    /** @var WriteInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $writeMock;
 
-    /** @var Uploader|MockObject */
+    /** @var Uploader|\PHPUnit_Framework_MockObject_MockObject */
     protected $uploaderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->getMockForAbstractClass();
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
-        $this->typeListMock = $this->getMockBuilder(TypeListInterface::class)
+        $this->typeListMock = $this->getMockBuilder(\Magento\Framework\App\Cache\TypeListInterface::class)
             ->getMockForAbstractClass();
-        $this->uploaderFactoryMock = $this->getMockBuilder(UploaderFactory::class)
+        $this->uploaderFactoryMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\UploaderFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->requestDataMock
-            = $this->getMockBuilder(RequestDataInterface::class)
-                ->getMockForAbstractClass();
-        $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
+            = $this->getMockBuilder(\Magento\Config\Model\Config\Backend\File\RequestData\RequestDataInterface::class)
+            ->getMockForAbstractClass();
+        $this->filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->writeMock = $this->getMockBuilder(WriteInterface::class)
+        $this->writeMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMock();
-        $this->uploaderMock = $this->getMockBuilder(Uploader::class)
+        $this->uploaderMock = $this->getMockBuilder(\Magento\MediaStorage\Model\File\Uploader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -256,10 +253,12 @@ class FileTest extends TestCase
         $this->assertEquals($this->model->getValue(), '');
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Exception!
+     */
     public function testBeforeSaveWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Exception!');
         $value = 'value';
         $groupId = 1;
         $field = 'field';

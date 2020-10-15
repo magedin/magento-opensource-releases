@@ -5,18 +5,10 @@
  */
 declare(strict_types=1);
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
-
-$objectManager = Bootstrap::getObjectManager();
 /** @var $productFactory Magento\Catalog\Model\ProductFactory */
 $productFactory = $objectManager->create(\Magento\Catalog\Model\ProductFactory::class);
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
 /** @var $bundleProduct \Magento\Catalog\Model\Product */
 $bundleProduct = $productFactory->create();
 $bundleProduct->setTypeId('bundle')

@@ -3,37 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment\Track;
 
-use Magento\Sales\Model\Order\Shipment\Track;
-use Magento\Sales\Model\Order\Shipment\Track\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+/**
+ * Class ValidatorTest
+ */
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Sales\Model\Order\Shipment\Track\Validator
      */
     protected $validator;
 
     /**
-     * @var \Magento\Sales\Model\Order\Shipment\Track|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment\Track|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $trackModelMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->trackModelMock = $this->createPartialMock(
-            Track::class,
-            ['hasData', 'getData']
+            \Magento\Sales\Model\Order\Shipment\Track::class,
+            ['hasData', 'getData', '__wakeup']
         );
-        $this->validator = new Validator();
+        $this->validator = new \Magento\Sales\Model\Order\Shipment\Track\Validator();
     }
 
     /**
@@ -48,10 +44,10 @@ class ValidatorTest extends TestCase
     {
         $this->trackModelMock->expects($this->any())
             ->method('hasData')
-            ->willReturnMap($trackDataMap);
+            ->will($this->returnValueMap($trackDataMap));
         $this->trackModelMock->expects($this->once())
             ->method('getData')
-            ->willReturn($trackData);
+            ->will($this->returnValue($trackData));
         $actualWarnings = $this->validator->validate($this->trackModelMock);
         $this->assertEquals($expectedWarnings, $actualWarnings);
     }

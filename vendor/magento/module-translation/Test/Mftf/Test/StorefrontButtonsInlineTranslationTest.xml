@@ -8,56 +8,61 @@
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
-    <test name="StorefrontButtonsInlineTranslationTest">
+    <test name="StorefrontButtonsInlineTranslationTest" deprecated="Use StorefrontButtonsInlineTranslation2Test instead.">
         <annotations>
             <features value="Translation"/>
             <stories value="Inline Translation"/>
-            <title value="Buttons inline translation"/>
-            <description value="A merchant should be able to translate buttons by an inline translation tool"/>
+            <title value="DEPRECATED [Inline Translation] Buttons inline translation"/>
+            <description value="DEPRECATED [Inline Translation] Buttons inline translation"/>
             <severity value="CRITICAL"/>
-            <testCaseId value="MC-27118"/>
-            <useCaseId value="MC-24186"/>
+            <testCaseId value="MC-12735"/>
             <group value="translation"/>
-            <group value="catalog"/>
-            <group value="developer_mode_only"/>
+            <skip>
+                <issueId value="DEPRECATED">Use StorefrontButtonsInlineTranslation2Test instead.</issueId>
+            </skip>
         </annotations>
         <before>
-            <!-- Enable Translate Inline For Storefront -->
-            <magentoCLI command="config:set {{EnableTranslateInlineForStorefront.path}} {{EnableTranslateInlineForStorefront.value}}" stepKey="enableTranslateInlineForStorefront"/>
-            <!-- Create Category -->
-            <createData entity="ApiCategory" stepKey="createCategory"/>
             <!-- Create Simple Product -->
-            <createData entity="ApiSimpleProduct" stepKey="createProduct">
-                <requiredEntity createDataKey="createCategory"/>
-            </createData>
+            <createData entity="SimpleProduct2" stepKey="createProduct"/>
+            <!-- Enable Translate Inline For Storefront-->
+            <magentoCLI
+                    command="config:set {{EnableTranslateInlineForStorefront.path}} {{EnableTranslateInlineForStorefront.value}}"
+                    stepKey="enableTranslateInlineForStorefront"/>
+            <!-- Set developer mode -->
+            <magentoCLI command="deploy:mode:set developer" stepKey="setDeveloperMode"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <!-- Disable Translate Inline For Storefront -->
-            <magentoCLI command="config:set {{DisableTranslateInlineForStorefront.path}} {{DisableTranslateInlineForStorefront.value}}" stepKey="disableTranslateInlineForStorefront"/>
+            <magentoCLI
+                    command="config:set {{DisableTranslateInlineForStorefront.path}} {{DisableTranslateInlineForStorefront.value}}"
+                    stepKey="disableTranslateInlineForStorefront"/>
+            <!-- Set production mode -->
+            <magentoCLI command="deploy:mode:set production" stepKey="setProductionMode"/>
+
             <!-- Delete Simple Product -->
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
-            <!-- Delete Category -->
-            <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
         </after>
 
         <!-- Add product to cart on storefront -->
-        <amOnPage url="{{StorefrontCategoryPage.url($createCategory.custom_attributes[url_key]$)}}" stepKey="goToCategoryPage"/>
-        <waitForPageLoad stepKey="waitForCategoryPageLoad"/>
-        <actionGroup ref="StorefrontAddProductToCartFromCategoryActionGroup" stepKey="addProductToCart">
-            <argument name="productName" value="$createProduct.name$"/>
+        <actionGroup ref="AddSimpleProductToCart" stepKey="addProductToCart">
+            <argument name="product" value="$$createProduct$$"/>
         </actionGroup>
 
-        <!-- Open Mini Cart -->
-        <actionGroup ref="StorefrontOpenMiniCartActionGroup" stepKey="openMiniCart"/>
+        <!-- Click on cart button on the top -->
+        <click selector="{{StorefrontMiniCartSection.show}}" stepKey="showMiniCart"/>
+
+        <!-- Small cart popup appeared. -->
+        <waitForElementVisible selector="{{StorefrontMinicartSection.productName}}" stepKey="seeProductNameAppeared"/>
 
         <!-- Check button "Proceed to Checkout". There must be red borders and "book" icons on labels that can be translated. -->
         <actionGroup ref="AssertElementInTranslateInlineModeActionGroup" stepKey="assertRedBordersAndBookIcon">
             <argument name="elementSelector" value="{{StorefrontMinicartSection.goToCheckout}}"/>
         </actionGroup>
 
-        <!-- Open Inline Translation popup -->
-        <actionGroup ref="StorefrontOpenInlineTranslationPopupActionGroup" stepKey="openInlineTranslationPopup">
+        <actionGroup ref="AdminTranslateElementActionGroup" stepKey="translateProceedToCheckoutButtonText">
             <argument name="elementSelector" value="{{StorefrontMinicartSection.goToCheckout}}"/>
+            <argument name="translateText" value="Proceed to Checkout Translated"/>
         </actionGroup>
     </test>
 </tests>

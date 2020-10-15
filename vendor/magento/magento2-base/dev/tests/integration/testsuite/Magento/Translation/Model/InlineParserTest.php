@@ -15,7 +15,7 @@ class InlineParserTest extends \PHPUnit\Framework\TestCase
     /** @var string */
     protected $_storeId = 'default';
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var $inline \Magento\Framework\Translate\Inline */
         $inline = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

@@ -3,104 +3,93 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test theme model
  */
 namespace Magento\Theme\Test\Unit\Model;
 
-use Magento\Framework\App\State;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Design\Theme\CustomizationInterface;
-use Magento\Framework\View\Design\Theme\Domain\Factory;
-use Magento\Framework\View\Design\Theme\FlyweightFactory;
-use Magento\Framework\View\Design\Theme\ImageFactory;
-use Magento\Framework\View\Design\Theme\Validator;
 use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Theme\Model\Config\Customization;
-use Magento\Theme\Model\ResourceModel\Theme\Collection;
 use Magento\Theme\Model\Theme;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ThemeTest extends TestCase
+class ThemeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Theme|MockObject
+     * @var \Magento\Theme\Model\Theme|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_imageFactory;
 
     /**
-     * @var MockObject|FlyweightFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\FlyweightFactory
      */
     protected $themeFactory;
 
     /**
-     * @var MockObject|Collection
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Theme\Model\ResourceModel\Theme\Collection
      */
     protected $resourceCollection;
 
     /**
-     * @var MockObject|Factory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\Domain\Factory
      */
     protected $domainFactory;
 
     /**
-     * @var MockObject|Validator
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\Validator
      */
     protected $validator;
 
     /**
-     * @var MockObject|\Magento\Framework\View\Design\Theme\CustomizationFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Design\Theme\CustomizationFactory
      */
     protected $customizationFactory;
 
     /**
-     * @var MockObject|State
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\State
      */
     protected $appState;
 
     /**
-     * @var MockObject|\Magento\Theme\Model\ThemeFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Theme\Model\ThemeFactory
      */
     private $themeModelFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $customizationConfig = $this->createMock(Customization::class);
+        $customizationConfig = $this->createMock(\Magento\Theme\Model\Config\Customization::class);
         $this->customizationFactory = $this->createPartialMock(
             \Magento\Framework\View\Design\Theme\CustomizationFactory::class,
             ['create']
         );
-        $this->resourceCollection = $this->createMock(Collection::class);
+        $this->resourceCollection = $this->createMock(\Magento\Theme\Model\ResourceModel\Theme\Collection::class);
         $this->_imageFactory = $this->createPartialMock(
-            ImageFactory::class,
+            \Magento\Framework\View\Design\Theme\ImageFactory::class,
             ['create']
         );
         $this->themeFactory = $this->createPartialMock(
-            FlyweightFactory::class,
+            \Magento\Framework\View\Design\Theme\FlyweightFactory::class,
             ['create']
         );
         $this->domainFactory = $this->createPartialMock(
-            Factory::class,
+            \Magento\Framework\View\Design\Theme\Domain\Factory::class,
             ['create']
         );
         $this->themeModelFactory = $this->createPartialMock(\Magento\Theme\Model\ThemeFactory::class, ['create']);
-        $this->validator = $this->createMock(Validator::class);
-        $this->appState = $this->createMock(State::class);
+        $this->validator = $this->createMock(\Magento\Framework\View\Design\Theme\Validator::class);
+        $this->appState = $this->createMock(\Magento\Framework\App\State::class);
 
         $objectManagerHelper = new ObjectManager($this);
         $arguments = $objectManagerHelper->getConstructArguments(
-            Theme::class,
+            \Magento\Theme\Model\Theme::class,
             [
                 'customizationFactory' => $this->customizationFactory,
                 'customizationConfig' => $customizationConfig,
@@ -114,10 +103,10 @@ class ThemeTest extends TestCase
             ]
         );
 
-        $this->_model = $objectManagerHelper->getObject(Theme::class, $arguments);
+        $this->_model = $objectManagerHelper->getObject(\Magento\Theme\Model\Theme::class, $arguments);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_model = null;
     }
@@ -213,12 +202,9 @@ class ThemeTest extends TestCase
      */
     public function testIsDeletable($themeType, $isDeletable)
     {
-        $themeModel = $this->getMockBuilder(Theme::class)
-            ->addMethods(['getType'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $themeModel->expects($this->once())->method('getType')->willReturn($themeType);
-        /** @var \Magento\Theme\Model\Theme $themeModel */
+        $themeModel = $this->createPartialMock(\Magento\Theme\Model\Theme::class, ['getType']);
+        $themeModel->expects($this->once())->method('getType')->will($this->returnValue($themeType));
+        /** @var $themeModel \Magento\Theme\Model\Theme */
         $this->assertEquals($isDeletable, $themeModel->isDeletable());
     }
 
@@ -263,8 +249,7 @@ class ThemeTest extends TestCase
      */
     public function testGetInheritedThemes()
     {
-        $inheritedTheme = $this->getMockBuilder(ThemeInterface::class)
-            ->getMock();
+        $inheritedTheme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)->getMock();
 
         $this->_model->setParentId(10);
         $this->themeFactory->expects($this->once())
@@ -273,7 +258,7 @@ class ThemeTest extends TestCase
             ->willReturn($inheritedTheme);
 
         $this->assertContainsOnlyInstancesOf(
-            ThemeInterface::class,
+            \Magento\Framework\View\Design\ThemeInterface::class,
             $this->_model->getInheritedThemes()
         );
         $this->assertCount(2, $this->_model->getInheritedThemes());
@@ -286,7 +271,7 @@ class ThemeTest extends TestCase
     public function testAfterDelete()
     {
         $expectId = 101;
-        $theme = $this->getMockBuilder(ThemeInterface::class)
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)
             ->setMethods(['delete', 'getId'])
             ->getMockForAbstractClass();
         $theme->expects($this->once())
@@ -321,7 +306,7 @@ class ThemeTest extends TestCase
      */
     public function testGetStagingVersion()
     {
-        $theme = $this->getMockBuilder(ThemeInterface::class)
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)
             ->setMethods(['getId'])
             ->getMockForAbstractClass();
         $theme->expects($this->once())
@@ -369,22 +354,22 @@ class ThemeTest extends TestCase
 
     /**
      * @test
+     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function testGetDomainModelWithIncorrectType()
     {
-        $this->expectException('InvalidArgumentException');
         $this->_model->getDomainModel('bla-bla-bla');
     }
 
     /**
      * @test
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage testMessage
      * @return void
      */
     public function testValidate()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('testMessage');
         $this->validator->expects($this->once())
             ->method('validate')
             ->with($this->_model)
@@ -438,11 +423,10 @@ class ThemeTest extends TestCase
         $this->customizationFactory->expects($this->once())
             ->method('create')
             ->willReturn(
-                $this->getMockBuilder(CustomizationInterface::class)
-                    ->getMock()
+                $this->getMockBuilder(\Magento\Framework\View\Design\Theme\CustomizationInterface::class)->getMock()
             );
         $this->assertInstanceOf(
-            CustomizationInterface::class,
+            \Magento\Framework\View\Design\Theme\CustomizationInterface::class,
             $this->_model->getCustomization()
         );
     }
@@ -502,7 +486,7 @@ class ThemeTest extends TestCase
      */
     public function toArrayDataProvider()
     {
-        $parentTheme = $this->getMockBuilder(Theme::class)
+        $parentTheme = $this->getMockBuilder(\Magento\Theme\Model\Theme::class)
             ->disableOriginalConstructor()
             ->getMock();
         $childTheme = clone $parentTheme;
@@ -559,7 +543,7 @@ class ThemeTest extends TestCase
      */
     public function testPopulateFromArray(array $value, array $expected, $expectedCallCount = 0)
     {
-        $themeMock = $this->getMockBuilder(Theme::class)
+        $themeMock = $this->getMockBuilder(\Magento\Theme\Model\Theme::class)
             ->disableOriginalConstructor()
             ->getMock();
         $themeMock->expects($this->exactly($expectedCallCount))
@@ -586,16 +570,16 @@ class ThemeTest extends TestCase
             ],
             'valid data with parent' => [
                 'value' => [
-                    'theme_data' => 'theme_data',
-                    'parent_theme' => [
-                        'theme_data' => 'theme_data'
-                    ]
-                ],
+                        'theme_data' => 'theme_data',
+                        'parent_theme' => [
+                            'theme_data' => 'theme_data'
+                        ]
+                    ],
                 'expected' => [
                     'theme_data' => 'theme_data',
                     'parent_theme' => 'theme_instance'
                 ],
-                'expected call count' => 1
+                    'expected call count' => 1
             ],
             'valid data with children' => [
                 'value' => [

@@ -9,6 +9,8 @@ namespace Magento\Elasticsearch7\Model\Adapter\FieldMapper\Product\FieldProvider
 
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeAdapter;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\ResolverInterface;
+use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver
+    as DefaultFiledNameResolver;
 
 /**
  * Default name resolver for Elasticsearch 7
@@ -16,15 +18,15 @@ use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldN
 class DefaultResolver implements ResolverInterface
 {
     /**
-     * @var ResolverInterface
+     * @var DefaultFiledNameResolver
      */
     private $baseResolver;
 
     /**
      * DefaultResolver constructor.
-     * @param ResolverInterface $baseResolver
+     * @param DefaultFiledNameResolver $baseResolver
      */
-    public function __construct(ResolverInterface $baseResolver)
+    public function __construct(DefaultFiledNameResolver $baseResolver)
     {
         $this->baseResolver = $baseResolver;
     }

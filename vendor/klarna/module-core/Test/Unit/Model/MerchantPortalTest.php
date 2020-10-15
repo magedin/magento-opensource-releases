@@ -106,7 +106,7 @@ class MerchantPortalTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $mockFactory           = new MockFactory();
         $objectFactory         = new TestObjectFactory($mockFactory);

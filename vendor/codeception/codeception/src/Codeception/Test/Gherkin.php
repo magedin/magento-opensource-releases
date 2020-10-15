@@ -40,8 +40,8 @@ class Gherkin extends Test implements ScenarioDriven, Reported
         $this->steps = $steps;
         $this->setMetadata(new Metadata());
         $this->scenario = new Scenario($this);
-        $this->getMetadata()->setName($scenarioNode->getTitle());
-        $this->getMetadata()->setFeature($featureNode->getTitle());
+        $this->getMetadata()->setName($featureNode->getTitle());
+        $this->getMetadata()->setFeature($scenarioNode->getTitle());
         $this->getMetadata()->setFilename($featureNode->getFile());
     }
 
@@ -67,7 +67,7 @@ class Gherkin extends Test implements ScenarioDriven, Reported
     
     public function getSignature()
     {
-        return basename($this->getFileName(), '.feature') . ':' . $this->getScenarioTitle();
+        return basename($this->getFileName(), '.feature') . ':' . $this->getFeature();
     }
 
     public function test()
@@ -164,17 +164,12 @@ class Gherkin extends Test implements ScenarioDriven, Reported
 
     public function toString()
     {
-        return $this->getFeature() . ': ' . $this->getScenarioTitle();
+        return $this->featureNode->getTitle() . ': ' . $this->getFeature();
     }
 
     public function getFeature()
     {
         return $this->getMetadata()->getFeature();
-    }
-
-    public function getScenarioTitle()
-    {
-        return $this->getMetadata()->getName();
     }
 
     /**

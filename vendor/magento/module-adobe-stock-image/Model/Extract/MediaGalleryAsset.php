@@ -48,14 +48,6 @@ class MediaGalleryAsset
             $assetData[$key] = $value;
         }
 
-        return $this->assetFactory->create([
-            'path' => $assetData['path'],
-            'title' => $assetData['title'],
-            'width' => $assetData['width'],
-            'height' => $assetData['height'],
-            'size' => $assetData['size'],
-            'contentType' => $assetData['content_type'],
-            'source' => $assetData['source']
-        ]);
+        return $this->assetFactory->create(['data' => $assetData]);
     }
 }

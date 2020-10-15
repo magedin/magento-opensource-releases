@@ -3,13 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/**
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
 ?>
-
-<?php $scriptString = <<<script
+<script>
 require([
     'prototype'
 ], function () {
@@ -120,6 +115,4 @@ CountryModel.prototype = {
 }
 countryApply = new CountryModel();
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
+</script>

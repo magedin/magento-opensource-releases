@@ -3,50 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Address\Config;
 
-use Magento\Customer\Model\Address\Config\Converter;
-use Magento\Customer\Model\Address\Config\Reader;
-use Magento\Customer\Model\Address\Config\SchemaLocator;
-use Magento\Framework\Config\FileResolverInterface;
-use Magento\Framework\Config\ValidationStateInterface;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Customer\Model\Address\Config\Reader
      */
     protected $_model;
 
     /**
-     * @var FileResolverInterface|MockObject
+     * @var \Magento\Framework\Config\FileResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_fileResolverMock;
 
     /**
-     * @var Converter|MockObject
+     * @var \Magento\Customer\Model\Address\Config\Converter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_converter;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\Customer\Model\Address\Config\SchemaLocator
      */
     protected $_schemaLocator;
 
     /**
-     * @var ValidationStateInterface|MockObject
+     * @var \Magento\Framework\Config\ValidationStateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_validationState;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_fileResolverMock = $this->getMockForAbstractClass(FileResolverInterface::class);
+        $this->_fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
         $this->_fileResolverMock->expects(
             $this->once()
         )->method(
@@ -54,15 +42,17 @@ class ReaderTest extends TestCase
         )->with(
             'address_formats.xml',
             'scope'
-        )->willReturn(
-            [
-                file_get_contents(__DIR__ . '/_files/formats_one.xml'),
-                file_get_contents(__DIR__ . '/_files/formats_two.xml'),
-            ]
+        )->will(
+            $this->returnValue(
+                [
+                    file_get_contents(__DIR__ . '/_files/formats_one.xml'),
+                    file_get_contents(__DIR__ . '/_files/formats_two.xml'),
+                ]
+            )
         );
 
         $this->_converter = $this->createPartialMock(
-            Converter::class,
+            \Magento\Customer\Model\Address\Config\Converter::class,
             ['convert']
         );
 
@@ -75,17 +65,17 @@ class ReaderTest extends TestCase
         )->with(
             'etc',
             'Magento_Customer'
-        )->willReturn(
-            'stub'
+        )->will(
+            $this->returnValue('stub')
         );
 
-        $this->_schemaLocator = new SchemaLocator($moduleReader);
-        $this->_validationState = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $this->_schemaLocator = new \Magento\Customer\Model\Address\Config\SchemaLocator($moduleReader);
+        $this->_validationState = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $this->_validationState->expects($this->any())
             ->method('isValidationRequired')
             ->willReturn(false);
 
-        $this->_model = new Reader(
+        $this->_model = new \Magento\Customer\Model\Address\Config\Reader(
             $this->_fileResolverMock,
             $this->_converter,
             $this->_schemaLocator,
@@ -99,9 +89,9 @@ class ReaderTest extends TestCase
         $constraint = function (\DOMDocument $actual) {
             try {
                 $expected = __DIR__ . '/_files/formats_merged.xml';
-                Assert::assertXmlStringEqualsXmlFile($expected, $actual->saveXML());
+                \PHPUnit\Framework\Assert::assertXmlStringEqualsXmlFile($expected, $actual->saveXML());
                 return true;
-            } catch (AssertionFailedError $e) {
+            } catch (\PHPUnit\Framework\AssertionFailedError $e) {
                 return false;
             }
         };
@@ -112,8 +102,8 @@ class ReaderTest extends TestCase
             'convert'
         )->with(
             $this->callback($constraint)
-        )->willReturn(
-            $expectedResult
+        )->will(
+            $this->returnValue($expectedResult)
         );
 
         $this->assertSame($expectedResult, $this->_model->read('scope'));

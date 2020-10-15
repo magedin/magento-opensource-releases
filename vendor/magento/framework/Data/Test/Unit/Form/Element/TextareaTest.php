@@ -3,44 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
-
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Textarea;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Textarea class.
  */
-class TextareaTest extends TestCase
+class TextareaTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Textarea
+     * @var \Magento\Framework\Data\Form\Element\Textarea
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $escaperMock = $this->createMock(Escaper::class);
-        $this->_model = new Textarea(
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->_model = new \Magento\Framework\Data\Form\Element\Textarea(
             $factoryMock,
             $collectionFactoryMock,
             $escaperMock
         );
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->getHtmlIdPrefix('id_prefix');
         $formMock->getHtmlIdPrefix('id_suffix');
         $this->_model->setForm($formMock);
@@ -63,10 +54,10 @@ class TextareaTest extends TestCase
     public function testGetElementHtml()
     {
         $html = $this->_model->getElementHtml();
-        $this->assertStringContainsString('</textarea>', $html);
-        $this->assertStringContainsString('rows="2"', $html);
-        $this->assertStringContainsString('cols="15"', $html);
-        $this->assertGreaterThan(0, preg_match('/class=\".*textarea.*\"/i', $html));
+        $this->assertContains('</textarea>', $html);
+        $this->assertContains('rows="2"', $html);
+        $this->assertContains('cols="15"', $html);
+        $this->assertTrue(preg_match('/class=\".*textarea.*\"/i', $html) > 0);
     }
 
     /**

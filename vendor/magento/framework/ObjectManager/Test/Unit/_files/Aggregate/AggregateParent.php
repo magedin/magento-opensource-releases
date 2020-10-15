@@ -3,15 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Test\Di\Aggregate;
 
-use Magento\Test\Di\Child;
-use Magento\Test\Di\DiInterface;
-use Magento\Test\Di\DiParent;
-
-class AggregateParent implements AggregateInterface
+class AggregateParent implements \Magento\Test\Di\Aggregate\AggregateInterface
 {
     public $interface;
 
@@ -25,16 +19,16 @@ class AggregateParent implements AggregateInterface
 
     /**
      * AggregateParent constructor.
-     * @param DiInterface $interface
-     * @param DiParent $parent
-     * @param Child $child
+     * @param \Magento\Test\Di\DiInterface $interface
+     * @param \Magento\Test\Di\DiParent $parent
+     * @param \Magento\Test\Di\Child $child
      * @param $scalar
      * @param int $optionalScalar
      */
     public function __construct(
-        DiInterface $interface,
-        DiParent $parent,
-        Child $child,
+        \Magento\Test\Di\DiInterface $interface,
+        \Magento\Test\Di\DiParent $parent,
+        \Magento\Test\Di\Child $child,
         $scalar,
         $optionalScalar = 1
     ) {

@@ -3,22 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Link;
-use Magento\Catalog\Model\Product\Link\SaveHandler;
-use Magento\Catalog\Model\ResourceModel\Product\Link\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Link\CollectionFactory;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Model\Product\Link;
 
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Link
@@ -26,70 +15,71 @@ class LinkTest extends TestCase
     protected $model;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
     /**
-     * @var SaveHandler|MockObject
+     * @var \Magento\Catalog\Model\Product\Link\SaveHandler|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $saveProductLinksMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $linkCollection = $this->getMockBuilder(
-            Collection::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['setLinkModel']
-            )->getMock();
-        $linkCollection->expects($this->any())->method('setLinkModel')->willReturnSelf();
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Collection::class
+        )->disableOriginalConstructor()->setMethods(
+            ['setLinkModel']
+        )->getMock();
+        $linkCollection->expects($this->any())->method('setLinkModel')->will($this->returnSelf());
         $linkCollectionFactory = $this->getMockBuilder(
-            CollectionFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['create']
-            )->getMock();
+            \Magento\Catalog\Model\ResourceModel\Product\Link\CollectionFactory::class
+        )->disableOriginalConstructor()->setMethods(
+            ['create']
+        )->getMock();
         $linkCollectionFactory->expects($this->any())
             ->method('create')
-            ->willReturn($linkCollection);
+            ->will($this->returnValue($linkCollection));
         $this->productCollection = $this->getMockBuilder(
             \Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['setLinkModel']
-            )->getMock();
-        $this->productCollection->expects($this->any())->method('setLinkModel')->willReturnSelf();
+        )->disableOriginalConstructor()->setMethods(
+            ['setLinkModel']
+        )->getMock();
+        $this->productCollection->expects($this->any())->method('setLinkModel')->will($this->returnSelf());
         $productCollectionFactory = $this->getMockBuilder(
             \Magento\Catalog\Model\ResourceModel\Product\Link\Product\CollectionFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['create']
-            )->getMock();
+        )->disableOriginalConstructor()->setMethods(
+            ['create']
+        )->getMock();
         $productCollectionFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->productCollection);
+            ->will($this->returnValue($this->productCollection));
 
-        $this->resource = $this->getMockBuilder(AbstractResource::class)
-            ->addMethods(
-                ['saveProductLinks', 'getAttributeTypeTable', 'getAttributesByType', 'getTable', 'getIdFieldName']
-            )
-            ->onlyMethods(['getConnection'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->resource = $this->createPartialMock(
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
+            [
+                'saveProductLinks',
+                'getAttributeTypeTable',
+                'getAttributesByType',
+                'getTable',
+                'getConnection',
+                '_construct',
+                'getIdFieldName',
+            ]
+        );
 
-        $this->saveProductLinksMock = $this->getMockBuilder(SaveHandler::class)
+        $this->saveProductLinksMock = $this->getMockBuilder(\Magento\Catalog\Model\Product\Link\SaveHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Link::class,
+            \Magento\Catalog\Model\Product\Link::class,
             [
                 'linkCollectionFactory' => $linkCollectionFactory,
                 'productCollectionFactory' => $productCollectionFactory,
@@ -126,12 +116,12 @@ class LinkTest extends TestCase
             ->expects($this->any())
             ->method('getTable')
             ->with($attributeTypeTable)
-            ->willReturn($attributeTypeTable);
+            ->will($this->returnValue($attributeTypeTable));
         $this->resource
             ->expects($this->any())
             ->method('getAttributeTypeTable')
             ->with($attributeType)
-            ->willReturn($attributeTypeTable);
+            ->will($this->returnValue($attributeTypeTable));
         $this->assertEquals($attributeTypeTable, $this->model->getAttributeTypeTable($attributeType));
     }
 
@@ -146,7 +136,7 @@ class LinkTest extends TestCase
     public function testGetLinkCollection()
     {
         $this->assertInstanceOf(
-            Collection::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Collection::class,
             $this->model->getLinkCollection()
         );
     }
@@ -158,20 +148,20 @@ class LinkTest extends TestCase
         $this->resource
             ->expects($this->any())->method('getAttributesByType')
             ->with($typeId)
-            ->willReturn($linkAttributes);
+            ->will($this->returnValue($linkAttributes));
         $this->model->setData('link_type_id', $typeId);
         $this->assertEquals($linkAttributes, $this->model->getAttributes());
     }
 
     public function testSaveProductRelations()
     {
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->saveProductLinksMock
             ->expects($this->once())
             ->method('execute')
-            ->with(ProductInterface::class, $product);
+            ->with(\Magento\Catalog\Api\Data\ProductInterface::class, $product);
         $this->model->saveProductRelations($product);
     }
 }

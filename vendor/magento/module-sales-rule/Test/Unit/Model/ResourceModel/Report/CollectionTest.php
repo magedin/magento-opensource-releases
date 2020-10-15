@@ -3,109 +3,95 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\SalesRule\Test\Unit\Model\ResourceModel\Report;
 
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Sales\Model\ResourceModel\Report;
-use Magento\SalesRule\Model\ResourceModel\Report\Collection;
-use Magento\SalesRule\Model\ResourceModel\Report\Rule;
-use Magento\SalesRule\Model\ResourceModel\Report\RuleFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\SalesRule\Model\ResourceModel\Report\Collection
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var MockObject
+     * \PHPUnit_Framework_MockObject_MockObject
      */
     protected $fetchStrategy;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $reportResource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->entityFactory = $this->createMock(EntityFactory::class);
+        $this->entityFactory = $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class);
 
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
 
-        $this->fetchStrategy = $this->getMockForAbstractClass(FetchStrategyInterface::class);
+        $this->fetchStrategy = $this->createMock(\Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class);
 
-        $this->eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
 
         $this->reportResource = $this->createPartialMock(
-            Report::class,
+            \Magento\Sales\Model\ResourceModel\Report::class,
             ['getConnection', 'getMainTable']
         );
 
         $this->connection = $this->createPartialMock(
-            Mysql::class,
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['select', 'getDateFormatSql', 'quoteInto']
         );
 
-        $this->selectMock = $this->createPartialMock(Select::class, ['from', 'where', 'group']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['from', 'where', 'group']);
 
         $this->connection->expects($this->any())
             ->method('select')
-            ->willReturn($this->selectMock);
+            ->will($this->returnValue($this->selectMock));
 
         $this->reportResource->expects($this->any())
             ->method('getConnection')
-            ->willReturn($this->connection);
+            ->will($this->returnValue($this->connection));
         $this->reportResource->expects($this->any())
             ->method('getMainTable')
-            ->willReturn('test_main_table');
+            ->will($this->returnValue('test_main_table'));
 
         $this->ruleFactory = $this->createPartialMock(
-            RuleFactory::class,
+            \Magento\SalesRule\Model\ResourceModel\Report\RuleFactory::class,
             ['create']
         );
 
-        $this->object = new Collection(
+        $this->object = new \Magento\SalesRule\Model\ResourceModel\Report\Collection(
             $this->entityFactory,
             $this->loggerMock,
             $this->fetchStrategy,
@@ -124,7 +110,7 @@ class CollectionTest extends TestCase
     {
         $this->selectMock->expects($this->once())
             ->method('group')
-            ->with([null, 'coupon_code']);
+            ->with($this->equalTo([null, 'coupon_code']));
         $this->assertInstanceOf(get_class($this->object), $this->object->loadWithFilter());
     }
 
@@ -132,7 +118,7 @@ class CollectionTest extends TestCase
     {
         $this->selectMock->expects($this->once())
             ->method('group')
-            ->with(null);
+            ->with($this->equalTo(null));
 
         $this->object->setIsSubTotals(true);
         $this->assertInstanceOf(get_class($this->object), $this->object->loadWithFilter());
@@ -152,11 +138,11 @@ class CollectionTest extends TestCase
         $ruleMock = $this->getRuleMock();
         $ruleMock->expects($this->once())
             ->method('getUniqRulesNamesList')
-            ->willReturn($rulesList);
+            ->will($this->returnValue($rulesList));
 
         $this->ruleFactory->expects($this->once())
             ->method('create')
-            ->willReturn($ruleMock);
+            ->will($this->returnValue($ruleMock));
 
         $ruleFilter = [1,2,3];
         $this->object->addRuleFilter($ruleFilter);
@@ -168,25 +154,28 @@ class CollectionTest extends TestCase
         $rulesList = [1 => 'test rule 1', 10 => 'test rule 10', 30 => 'test rule 30'];
         $this->connection->expects($this->at(1))
             ->method('quoteInto')
-            ->with('rule_name = ?', $rulesList[1])
-            ->willReturn('test_1');
+            ->with($this->equalTo('rule_name = ?'), $this->equalTo($rulesList[1]))
+            ->will($this->returnValue('test_1'));
         $this->connection->expects($this->at(2))
             ->method('quoteInto')
-            ->with('rule_name = ?', $rulesList[30])
-            ->willReturn('test_2');
+            ->with($this->equalTo('rule_name = ?'), $this->equalTo($rulesList[30]))
+            ->will($this->returnValue('test_2'));
 
         $this->selectMock->expects($this->at(3))
             ->method('where')
-            ->with(implode(' OR ', ['test_1', 'test_2']));
+            ->with($this->equalTo(implode([
+                'test_1',
+                'test_2',
+            ], ' OR ')));
 
         $ruleMock = $this->getRuleMock();
         $ruleMock->expects($this->once())
             ->method('getUniqRulesNamesList')
-            ->willReturn($rulesList);
+            ->will($this->returnValue($rulesList));
 
         $this->ruleFactory->expects($this->once())
             ->method('create')
-            ->willReturn($ruleMock);
+            ->will($this->returnValue($ruleMock));
 
         $ruleFilter = [1,2,30];
         $this->object->addRuleFilter($ruleFilter);
@@ -194,12 +183,12 @@ class CollectionTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getRuleMock()
     {
         return $this->createPartialMock(
-            Rule::class,
+            \Magento\SalesRule\Model\ResourceModel\Report\Rule::class,
             ['getUniqRulesNamesList']
         );
     }

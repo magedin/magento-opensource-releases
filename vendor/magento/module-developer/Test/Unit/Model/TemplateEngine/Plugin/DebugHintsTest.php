@@ -3,103 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Developer\Test\Unit\Model\TemplateEngine\Plugin;
 
-use Magento\Developer\Helper\Data;
-use Magento\Developer\Model\TemplateEngine\Decorator\DebugHints as DebugHintsDecorator;
 use Magento\Developer\Model\TemplateEngine\Decorator\DebugHintsFactory;
 use Magento\Developer\Model\TemplateEngine\Plugin\DebugHints;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\TemplateEngineFactory;
-use Magento\Framework\View\TemplateEngineInterface;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class DebugHintsTest extends TestCase
+class DebugHintsTest extends \PHPUnit\Framework\TestCase
 {
-    private const STORE_CODE = 'default';
+    /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $scopeConfigMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $objectManager;
+    protected $storeManager;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Developer\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $scopeConfigMock;
+    protected $devHelperMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var DebugHintsFactory | \PHPUnit_Framework_MockObject_MockObject
      */
-    private $storeManagerMock;
-
-    /**
-     * @var Data|MockObject
-     */
-    private $devHelperMock;
-
-    /**
-     * @var DebugHintsFactory|MockObject
-     */
-    private $debugHintsFactoryMock;
-
-    /**
-     * @var Http|MockObject
-     */
-    private $httpMock;
+    protected $debugHintsFactory;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $this->devHelperMock = $this->getMockBuilder(Data::class)
+        $this->devHelperMock = $this->getMockBuilder(\Magento\Developer\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->debugHintsFactoryMock = $this->getMockBuilder(
-            DebugHintsFactory::class
+        $this->debugHintsFactory = $this->getMockBuilder(
+            \Magento\Developer\Model\TemplateEngine\Decorator\DebugHintsFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->httpMock = $this->createMock(Http::class);
-
-        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
-        $storeMock->expects($this->once())
-            ->method('getCode')
-            ->willReturn(static::STORE_CODE);
-        $this->storeManagerMock->expects($this->once())
-            ->method('getStore')
-            ->willReturn($storeMock);
-
-        $this->objectManager = new ObjectManager($this);
     }
 
     /**
      * @param string $debugHintsPath
      * @param bool $showBlockHints
-     * @param bool $debugHintsWithParam
-     * @param bool $debugHintsParameter
-     *
      * @return void
      * @dataProvider afterCreateActiveDataProvider
      */
@@ -115,41 +72,40 @@ class DebugHintsTest extends TestCase
 
         $this->setupConfigFixture($debugHintsPath, true, $showBlockHints);
 
-        $engine = $this->getMockForAbstractClass(TemplateEngineInterface::class);
+        $engine = $this->createMock(\Magento\Framework\View\TemplateEngineInterface::class);
 
-        $debugHintsDecoratorMock = $this->getMockBuilder(
-            DebugHintsDecorator::class
+        $debugHintsDecorator = $this->getMockBuilder(
+            \Magento\Developer\Model\TemplateEngine\Decorator\DebugHints::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->debugHintsFactoryMock->expects($this->once())
+        $this->debugHintsFactory->expects($this->once())
             ->method('create')
             ->with([
                 'subject' => $engine,
                 'showBlockHints' => $showBlockHints,
             ])
-            ->willReturn($debugHintsDecoratorMock);
+            ->willReturn($debugHintsDecorator);
 
-        $subjectMock = $this->getMockBuilder(TemplateEngineFactory::class)
+        $subjectMock = $this->getMockBuilder(\Magento\Framework\View\TemplateEngineFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $debugHints = $this->objectManager->getObject(
-            DebugHints::class,
-            [
-                'scopeConfig' => $this->scopeConfigMock,
-                'storeManager' => $this->storeManagerMock,
-                'devHelper' => $this->devHelperMock,
-                'debugHintsFactory' => $this->debugHintsFactoryMock,
-                'http' => $this->httpMock,
-                'debugHintsPath' => $debugHintsPath,
-                'debugHintsWithParam' => $debugHintsWithParam,
-                'debugHintsParameter' => $debugHintsParameter
-            ]
+        $this->httpMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+
+        $debugHints = new DebugHints(
+            $this->scopeConfigMock,
+            $this->storeManager,
+            $this->devHelperMock,
+            $this->debugHintsFactory,
+            $debugHintsPath,
+            $this->httpMock,
+            $debugHintsWithParam,
+            $debugHintsParameter
         );
 
-        $this->assertEquals($debugHintsDecoratorMock, $debugHints->afterCreate($subjectMock, $engine));
+        $this->assertEquals($debugHintsDecorator, $debugHints->afterCreate($subjectMock, $engine));
     }
 
     /**
@@ -169,9 +125,6 @@ class DebugHintsTest extends TestCase
      * @param string $debugHintsPath
      * @param bool $isDevAllowed
      * @param bool $showTemplateHints
-     * @param bool $debugHintsWithParam
-     * @param bool $debugHintsParameter
-     *
      * @return void
      * @dataProvider afterCreateInactiveDataProvider
      */
@@ -182,30 +135,29 @@ class DebugHintsTest extends TestCase
         $debugHintsWithParam,
         $debugHintsParameter
     ) {
-        $this->devHelperMock
+        $this->devHelperMock->expects($this->any())
             ->method('isDevAllowed')
             ->willReturn($isDevAllowed);
 
         $this->setupConfigFixture($debugHintsPath, $showTemplateHints, true);
 
-        $engine = $this->getMockForAbstractClass(TemplateEngineInterface::class);
+        $engine = $this->createMock(\Magento\Framework\View\TemplateEngineInterface::class);
 
-        $subjectMock = $this->getMockBuilder(TemplateEngineFactory::class)
+        $subjectMock = $this->getMockBuilder(\Magento\Framework\View\TemplateEngineFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $debugHints = $this->objectManager->getObject(
-            DebugHints::class,
-            [
-                'scopeConfig' => $this->scopeConfigMock,
-                'storeManager' => $this->storeManagerMock,
-                'devHelper' => $this->devHelperMock,
-                'debugHintsFactory' => $this->debugHintsFactoryMock,
-                'http' => $this->httpMock,
-                'debugHintsPath' => $debugHintsPath,
-                'debugHintsWithParam' => $debugHintsWithParam,
-                'debugHintsParameter' => $debugHintsParameter
-            ]
+        $this->httpMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+
+        $debugHints = new DebugHints(
+            $this->scopeConfigMock,
+            $this->storeManager,
+            $this->devHelperMock,
+            $this->debugHintsFactory,
+            $debugHintsPath,
+            $this->httpMock,
+            $debugHintsWithParam,
+            $debugHintsParameter
         );
 
         $this->assertSame($engine, $debugHints->afterCreate($subjectMock, $engine));
@@ -232,24 +184,32 @@ class DebugHintsTest extends TestCase
      * @param string $debugHintsPath
      * @param bool $showTemplateHints
      * @param bool $showBlockHints
-     *
      * @return void
      */
-    private function setupConfigFixture($debugHintsPath, $showTemplateHints, $showBlockHints): void
+    protected function setupConfigFixture($debugHintsPath, $showTemplateHints, $showBlockHints)
     {
+        $storeCode = 'default';
+        $storeMock = $this->createMock(\Magento\Store\Api\Data\StoreInterface::class);
+        $storeMock->expects($this->once())
+            ->method('getCode')
+            ->willReturn($storeCode);
+        $this->storeManager->expects($this->once())
+            ->method('getStore')
+            ->willReturn($storeMock);
+
         $this->scopeConfigMock->expects($this->atLeastOnce())
             ->method('getValue')
             ->willReturnMap([
                 [
                     $debugHintsPath,
                     ScopeInterface::SCOPE_STORE,
-                    static::STORE_CODE,
+                    $storeCode,
                     $showTemplateHints,
                 ],
                 [
                     DebugHints::XML_PATH_DEBUG_TEMPLATE_HINTS_BLOCKS,
                     ScopeInterface::SCOPE_STORE,
-                    static::STORE_CODE,
+                    $storeCode,
                     $showBlockHints
                 ]
             ]);

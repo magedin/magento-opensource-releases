@@ -6,9 +6,7 @@
 
 namespace Magento\Framework\Data\Form\Element;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * Form time element
@@ -18,28 +16,19 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
 class Time extends AbstractElement
 {
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
      * @param Factory $factoryElement
      * @param CollectionFactory $factoryCollection
      * @param Escaper $escaper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
      */
     public function __construct(
         Factory $factoryElement,
         CollectionFactory $factoryCollection,
         Escaper $escaper,
-        $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
+        $data = []
     ) {
-        $secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data, $secureRenderer);
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
         $this->setType('time');
-        $this->secureRenderer = $secureRenderer;
     }
 
     /**
@@ -62,7 +51,6 @@ class Time extends AbstractElement
     public function getElementHtml()
     {
         $this->addClass('select admin__control-select');
-        $this->addClass('select80wide');
 
         $valueHrs = 0;
         $valueMin = 0;
@@ -78,7 +66,7 @@ class Time extends AbstractElement
         }
 
         $html = '<input type="hidden" id="' . $this->getHtmlId() . '" ' . $this->_getUiId() . '/>';
-        $html .= '<select name="' . $this->getName() . '" '
+        $html .= '<select name="' . $this->getName() . '" style="width:80px" '
             . $this->serialize($this->getHtmlAttributes())
             . $this->_getUiId('hour') . '>' . "\n";
         for ($i = 0; $i < 24; $i++) {
@@ -89,7 +77,7 @@ class Time extends AbstractElement
         $html .= '</select>' . "\n";
 
         $html .= '<span class="time-separator">:&nbsp;</span><select name="'
-            . $this->getName() . '" '
+            . $this->getName() . '" style="width:80px" '
             . $this->serialize($this->getHtmlAttributes())
             . $this->_getUiId('minute') . '>' . "\n";
         for ($i = 0; $i < 60; $i++) {
@@ -100,7 +88,7 @@ class Time extends AbstractElement
         $html .= '</select>' . "\n";
 
         $html .= '<span class="time-separator">:&nbsp;</span><select name="'
-            . $this->getName() . '" '
+            . $this->getName() . '" style="width:80px" '
             . $this->serialize($this->getHtmlAttributes())
             . $this->_getUiId('second') . '>' . "\n";
         for ($i = 0; $i < 60; $i++) {
@@ -110,18 +98,6 @@ class Time extends AbstractElement
         }
         $html .= '</select>' . "\n";
         $html .= $this->getAfterElementHtml();
-        $html .= $this->secureRenderer->renderTag(
-            'style',
-            [],
-            <<<style
-                .select80wide {
-                    width: 80px;
-                }
-style
-            ,
-            false
-        );
-
         return $html;
     }
 }

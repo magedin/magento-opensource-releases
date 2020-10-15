@@ -32,7 +32,7 @@ class CarrierTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->carrier = Bootstrap::getObjectManager()->get(Carrier::class);
         $this->httpClient = Bootstrap::getObjectManager()->get(AsyncClientInterface::class);

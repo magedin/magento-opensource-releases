@@ -154,7 +154,7 @@ class RouteMapper
      * @param string $routeId
      * @param string $controllerName
      * @param string $actionName
-     * @return string[]
+     * @return array
      * @throws NoSuchActionException
      * @throws \Exception
      */

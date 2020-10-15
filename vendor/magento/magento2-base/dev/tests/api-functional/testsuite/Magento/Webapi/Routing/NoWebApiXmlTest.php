@@ -20,7 +20,7 @@ class NoWebApiXmlTest extends \Magento\Webapi\Routing\BaseService
      */
     private $_restResourcePath;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_version = 'V1';
         $this->_restResourcePath = "/{$this->_version}/testModule2NoWebApiXml/";

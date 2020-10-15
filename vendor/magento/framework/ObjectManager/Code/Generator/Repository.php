@@ -11,8 +11,8 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\InputException;
-use Laminas\Code\Reflection\MethodReflection;
-use Laminas\Code\Reflection\ParameterReflection;
+use Zend\Code\Reflection\MethodReflection;
+use Zend\Code\Reflection\ParameterReflection;
 
 /**
  * Class Repository
@@ -22,7 +22,7 @@ use Laminas\Code\Reflection\ParameterReflection;
 class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
 {
     /**
-     * Entity type repository
+     * Entity type
      */
     const ENTITY_TYPE = 'repository';
 
@@ -129,7 +129,6 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
 
     /**
      * Returns source collection factory property name
-     *
      * @return string
      */
     protected function _getSourceCollectionFactoryPropertyName()
@@ -245,11 +244,11 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
             'parameters' => [
                 [
                     'name' => 'id',
-                    'type' => $this->getTypeHintText($parameterReflection->getType()),
+                    'type' => $parameterReflection->getType(),
                 ],
             ],
             'body' => $body,
-            'returnType' => $this->getTypeHintText($methodReflection->getReturnType()),
+            'returnType' => $methodReflection->getReturnType(),
             'docblock' => [
                 'shortDescription' => 'load entity',
                 'tags' => [
@@ -620,7 +619,7 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function _validateData()
     {
@@ -721,9 +720,9 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
         if (!empty($params[0])) {
             /** @var ParameterReflection $parameterReflection */
             $parameterReflection = $params[0];
-            $result['paramType'] = $this->getTypeHintText($parameterReflection->getType());
+            $result['paramType'] = $parameterReflection->getType();
         }
-        $result['returnType'] = $this->getTypeHintText($methodReflection->getReturnType());
+        $result['returnType'] = $methodReflection->getReturnType();
 
         return $result;
     }
@@ -740,16 +739,5 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
             $this->methodList = get_class_methods($name);
         }
         return $this->methodList;
-    }
-
-    /**
-     * Get the text of the type hint.
-     *
-     * @param \ReflectionType|null $type
-     * @return string|null
-     */
-    private function getTypeHintText($type)
-    {
-        return $type instanceof \ReflectionType ? $type->getName() : $type;
     }
 }

@@ -118,7 +118,7 @@ class CountryInformationAcquirerTest extends WebapiAbstract
     /**
      * Remove test store
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
         /** @var \Magento\Framework\Registry $registry */

@@ -77,6 +77,7 @@ class ColumnFactory
                 'component' => $this->getJsComponent(
                     $this->getDataType($attributeData[AttributeMetadata::FRONTEND_INPUT])
                 ),
+                '__disableTmpl' => 'true'
             ],
             $config
         );
@@ -129,6 +130,8 @@ class ColumnFactory
      */
     protected function getDataType($frontendType)
     {
-        return $this->dataTypeMap[$frontendType] ?? $this->dataTypeMap['default'];
+        return isset($this->dataTypeMap[$frontendType])
+            ? $this->dataTypeMap[$frontendType]
+            : $this->dataTypeMap['default'];
     }
 }

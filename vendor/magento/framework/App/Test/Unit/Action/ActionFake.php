@@ -3,15 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Action;
 
-use Magento\Framework\App\Action\Action;
+use \Magento\Framework\App\Action\Action;
 
-/**
- * @SuppressWarnings(PHPMD.AllPurposeAction)
- */
 class ActionFake extends Action
 {
     /**
@@ -26,5 +22,6 @@ class ActionFake extends Action
             ActionTest::$actionParams
         );
         $this->_redirect(ActionTest::FULL_ACTION_NAME, ActionTest::$actionParams);
+        return;
     }
 }

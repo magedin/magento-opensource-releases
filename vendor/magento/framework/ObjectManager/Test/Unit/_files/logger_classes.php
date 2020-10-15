@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 //@codingStandardsIgnoreStart
 namespace Magento\Test\Di {
@@ -13,6 +12,7 @@ namespace Magento\Test\Di {
      */
     class WrappedClass
     {
+
     }
 }
 
@@ -20,6 +20,7 @@ namespace Magento\Test\Di\WrappedClass {
 
     class Logger
     {
+
     }
 }
 //@codingStandardsIgnoreEnd

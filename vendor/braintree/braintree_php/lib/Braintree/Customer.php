@@ -12,28 +12,28 @@ namespace Braintree;
  * @package    Braintree
  * @category   Resources
  *
- * @property-read \Braintree\Address[] $addresses
- * @property-read \Braintree\AndroidPayCard[] $androidPayCards
- * @property-read \Braintree\AmexExpressCheckoutCard[] $amexExpressCheckoutCards
- * @property-read \Braintree\ApplePayCard[] $applePayCards
+ * @property-read array  $addresses
+ * @property-read array  $paymentMethods
  * @property-read string $company
- * @property-read \DateTime $createdAt
- * @property-read \Braintree\CreditCard[] $creditCards
+ * @property-read string $createdAt
+ * @property-read array  $creditCards
+ * @property-read array  $paypalAccounts
+ * @property-read array  $applePayCards
+ * @property-read array  $androidPayCards
+ * @property-read array  $amexExpressCheckoutCards
+ * @property-read array  $venmoAccounts
+ * @property-read array  $visaCheckoutCards
+ * @property-read array  $masterpassCards
+ * @property-read array  $samsungPayCards
+ * @property-read array  $coinbaseAccounts
  * @property-read array  $customFields custom fields passed with the request
  * @property-read string $email
  * @property-read string $fax
  * @property-read string $firstName
  * @property-read string $id
  * @property-read string $lastName
- * @property-read \Braintree\MasterpassCard[] $masterpassCards
- * @property-read \Braintree\PaymentMethod[] $paymentMethods
- * @property-read \Braintree\PayPalAccount[] $paypalAccounts
  * @property-read string $phone
- * @property-read \Braintree\SamsungPayCard[] $samsungPayCards
- * @property-read \DateTime $updatedAt
- * @property-read \Braintree\UsBankAccount[] $usBankAccounts
- * @property-read \Braintree\VenmoAccount[] $venmoAccounts
- * @property-read \Braintree\VisaCheckoutCard[] $visaCheckoutCards
+ * @property-read string $updatedAt
  * @property-read string $website
  */
 class Customer extends Base
@@ -76,6 +76,25 @@ class Customer extends Base
     public static function createNoValidate($attribs = [])
     {
         return Configuration::gateway()->customer()->createNoValidate($attribs);
+    }
+
+    /**
+     * @deprecated since version 2.3.0
+     * @param string $queryString
+     * @return Result\Successful
+     */
+    public static function createFromTransparentRedirect($queryString)
+    {
+        return Configuration::gateway()->customer()->createFromTransparentRedirect($queryString);
+    }
+
+    /**
+     * @deprecated since version 2.3.0
+     * @return string
+     */
+    public static function createCustomerUrl()
+    {
+        return Configuration::gateway()->customer()->createCustomerUrl();
     }
 
     /**
@@ -180,6 +199,27 @@ class Customer extends Base
         return Configuration::gateway()->customer()->updateNoValidate($customerId, $attributes);
     }
 
+    /**
+     *
+     * @deprecated since version 2.3.0
+     * @return string
+     */
+    public static function updateCustomerUrl()
+    {
+        return Configuration::gateway()->customer()->updateCustomerUrl();
+    }
+
+    /**
+     *
+     * @deprecated since version 2.3.0
+     * @param string $queryString
+     * @return Result\Successful|Result\Error
+     */
+    public static function updateFromTransparentRedirect($queryString)
+    {
+        return Configuration::gateway()->customer()->updateFromTransparentRedirect($queryString);
+    }
+
     /* instance methods */
 
     /**
@@ -209,6 +249,14 @@ class Customer extends Base
             }
         }
         $this->_set('creditCards', $creditCardArray);
+
+        $coinbaseAccountArray = [];
+        if (isset($customerAttribs['coinbaseAccounts'])) {
+            foreach ($customerAttribs['coinbaseAccounts'] AS $coinbaseAccount) {
+                $coinbaseAccountArray[] = CoinbaseAccount::factory($coinbaseAccount);
+            }
+        }
+        $this->_set('coinbaseAccounts', $coinbaseAccountArray);
 
         $paypalAccountArray = [];
         if (isset($customerAttribs['paypalAccounts'])) {
@@ -286,6 +334,7 @@ class Customer extends Base
             $this->creditCards,
             $this->paypalAccounts,
             $this->applePayCards,
+            $this->coinbaseAccounts,
             $this->androidPayCards,
             $this->amexExpressCheckoutCards,
             $this->venmoAccounts,
@@ -294,12 +343,6 @@ class Customer extends Base
             $this->samsungPayCards,
             $this->usBankAccounts
         ));
-
-        $customFields = [];
-        if (isset($customerAttribs['customFields'])) {
-            $customFields = $customerAttribs['customFields'];
-        }
-        $this->_set('customFields', $customFields);
     }
 
     /**
@@ -322,6 +365,18 @@ class Customer extends Base
     public function isEqual($otherCust)
     {
         return !($otherCust instanceof Customer) ? false : $this->id === $otherCust->id;
+    }
+
+    /**
+     * returns an array containt all of the customer's payment methods
+     *
+     * @deprecated since version 3.1.0 - use the paymentMethods property directly
+     *
+     * @return array
+     */
+    public function paymentMethods()
+    {
+        return $this->paymentMethods;
     }
 
     /**

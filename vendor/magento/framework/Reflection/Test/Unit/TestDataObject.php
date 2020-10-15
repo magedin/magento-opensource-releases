@@ -3,11 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Reflection\Test\Unit;
-
-use Magento\Framework\Api\ExtensionAttributesInterface;
 
 class TestDataObject implements TestDataInterface
 {
@@ -55,7 +51,7 @@ class TestDataObject implements TestDataInterface
     }
 
     /**
-     * @return ExtensionAttributesInterface|null
+     * @return \Magento\Framework\Api\ExtensionAttributesInterface|null
      */
     public function getExtensionAttributes()
     {

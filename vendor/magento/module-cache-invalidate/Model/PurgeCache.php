@@ -8,7 +8,7 @@ namespace Magento\CacheInvalidate\Model;
 use Magento\Framework\Cache\InvalidateLogger;
 
 /**
- * PurgeCache model
+ * Class PurgeCache
  */
 class PurgeCache
 {
@@ -110,8 +110,8 @@ class PurgeCache
     /**
      * Send curl purge request to servers to invalidate cache by tags pattern
      *
-     * @param \Laminas\Http\Client\Adapter\Socket $socketAdapter
-     * @param \Laminas\Uri\Uri[] $servers
+     * @param \Zend\Http\Client\Adapter\Socket $socketAdapter
+     * @param \Zend\Uri\Uri[] $servers
      * @param string $formattedTagsChunk
      * @return bool Return true if successful; otherwise return false
      */

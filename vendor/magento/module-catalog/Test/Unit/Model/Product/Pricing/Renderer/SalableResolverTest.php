@@ -3,38 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Pricing\Renderer;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Pricing\Renderer\SalableResolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SalableResolverTest extends TestCase
+class SalableResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SalableResolver
+     * @var \Magento\Catalog\Model\Product\Pricing\Renderer\SalableResolver
      */
     protected $object;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->product = $this->getMockBuilder(Product::class)
-            ->addMethods(['getCanShowPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->product = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            ['__wakeup', 'getCanShowPrice']
+        );
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->object = $objectManager->getObject(
-            SalableResolver::class
+            \Magento\Catalog\Model\Product\Pricing\Renderer\SalableResolver::class
         );
     }
 

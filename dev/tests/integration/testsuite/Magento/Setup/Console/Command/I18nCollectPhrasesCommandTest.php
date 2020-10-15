@@ -19,13 +19,13 @@ class I18nCollectPhrasesCommandTest extends \PHPUnit\Framework\TestCase
      */
     private $tester;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->command = new I18nCollectPhrasesCommand();
         $this->tester = new CommandTester($this->command);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $property = new \ReflectionProperty(\Magento\Setup\Module\I18n\ServiceLocator::class, '_dictionaryGenerator');
         $property->setAccessible(true);
@@ -64,12 +64,11 @@ class I18nCollectPhrasesCommandTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Specified path doesn't exist
      */
     public function testExecuteNonExistingPath()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Specified path doesn\'t exist');
-
         $this->tester->execute(
             [
                 'directory' => BP . '/dev/tests/integration/testsuite/Magento/Setup/Console/Command/_files/non_exist',
@@ -78,22 +77,20 @@ class I18nCollectPhrasesCommandTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Directory path is not needed when --magento flag is set.
      */
     public function testExecuteMagentoFlagDirectoryPath()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Directory path is not needed when --magento flag is set.');
-
         $this->tester->execute(['directory' => 'a', '--magento' => true]);
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Directory path is needed when --magento flag is not set.
      */
     public function testExecuteNoMagentoFlagNoDirectoryPath()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Directory path is needed when --magento flag is not set.');
-
         $this->tester->execute([]);
     }
 }

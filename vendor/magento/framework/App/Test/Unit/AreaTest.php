@@ -3,76 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\DesignInterface;
-use Magento\Framework\App\ObjectManager\ConfigLoader;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ScopeInterface;
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Phrase;
-use Magento\Framework\Phrase\RendererInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\TranslateInterface;
-use Magento\Framework\View\DesignExceptions;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use \Magento\Framework\App\Area;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AreaTest extends TestCase
+class AreaTest extends \PHPUnit\Framework\TestCase
 {
     const SCOPE_ID = '1';
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var ConfigLoader|MockObject
+     * @var \Magento\Framework\App\ObjectManager\ConfigLoader | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $diConfigLoaderMock;
 
     /**
-     * @var TranslateInterface|MockObject
+     * @var \Magento\Framework\TranslateInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $translatorMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var DesignInterface|MockObject
+     * @var \Magento\Framework\App\DesignInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $designMock;
 
     /**
-     * @var ScopeResolverInterface|MockObject
+     * @var \Magento\Framework\App\ScopeResolverInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeResolverMock;
 
     /**
-     * @var DesignExceptions|MockObject
+     * @var \Magento\Framework\View\DesignExceptions | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $designExceptionsMock;
 
@@ -86,50 +70,50 @@ class AreaTest extends TestCase
      */
     protected $object;
 
-    /** @var RendererInterface */
+    /** @var \Magento\Framework\Phrase\RendererInterface */
     private $defaultRenderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->defaultRenderer = Phrase::getRenderer();
-        $this->objectManager = new ObjectManager($this);
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->translatorMock = $this->getMockBuilder(TranslateInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->diConfigLoaderMock = $this->getMockBuilder(ConfigLoader::class)
+        $this->defaultRenderer = \Magento\Framework\Phrase::getRenderer();
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->designMock = $this->getMockBuilder(DesignInterface::class)
+            ->getMock();
+        $this->translatorMock = $this->getMockBuilder(\Magento\Framework\TranslateInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->scopeResolverMock = $this->getMockBuilder(ScopeResolverInterface::class)
+            ->getMock();
+        $this->diConfigLoaderMock = $this->getMockBuilder(\Magento\Framework\App\ObjectManager\ConfigLoader::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $scopeMock = $this->getMockBuilder(ScopeInterface::class)
+            ->getMock();
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
+        $this->designMock = $this->getMockBuilder(\Magento\Framework\App\DesignInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->scopeResolverMock = $this->getMockBuilder(\Magento\Framework\App\ScopeResolverInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $scopeMock = $this->getMockBuilder(\Magento\Framework\App\ScopeInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $scopeMock->expects($this->any())
             ->method('getId')
-            ->willReturn(self::SCOPE_ID);
+            ->will($this->returnValue(self::SCOPE_ID));
         $this->scopeResolverMock->expects($this->any())
             ->method('getScope')
-            ->willReturn($scopeMock);
-        $this->designExceptionsMock = $this->getMockBuilder(DesignExceptions::class)
+            ->will($this->returnValue($scopeMock));
+        $this->designExceptionsMock = $this->getMockBuilder(\Magento\Framework\View\DesignExceptions::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->areaCode = Area::AREA_FRONTEND;
 
         $this->object = $this->objectManager->getObject(
-            Area::class,
+            \Magento\Framework\App\Area::class,
             [
                 'logger' => $this->loggerMock,
                 'objectManager' => $this->objectManagerMock,
@@ -144,9 +128,9 @@ class AreaTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
-        Phrase::setRenderer($this->defaultRenderer);
+        \Magento\Framework\Phrase::setRenderer($this->defaultRenderer);
     }
 
     public function testLoadConfig()
@@ -159,13 +143,13 @@ class AreaTest extends TestCase
     {
         $this->translatorMock->expects($this->once())
             ->method('loadData');
-        $renderMock = $this->getMockBuilder(RendererInterface::class)
+        $renderMock = $this->getMockBuilder(\Magento\Framework\Phrase\RendererInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(RendererInterface::class)
-            ->willReturn($renderMock);
+            ->with(\Magento\Framework\Phrase\RendererInterface::class)
+            ->will($this->returnValue($renderMock));
         $this->object->load(Area::PART_TRANSLATE);
     }
 
@@ -177,7 +161,7 @@ class AreaTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with(\Magento\Framework\View\DesignInterface::class)
-            ->willReturn($designMock);
+            ->will($this->returnValue($designMock));
         $designMock->expects($this->once())
             ->method('setArea')
             ->with($this->areaCode)
@@ -201,9 +185,9 @@ class AreaTest extends TestCase
         $this->verifyLoadConfig();
         $this->translatorMock->expects($this->once())
             ->method('loadData');
-        $renderMock = $this->getMockBuilder(RendererInterface::class)
+        $renderMock = $this->getMockBuilder(\Magento\Framework\Phrase\RendererInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $designMock = $this->getMockBuilder(\Magento\Framework\View\DesignInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -215,10 +199,12 @@ class AreaTest extends TestCase
             ->method('setDefaultDesignTheme');
         $this->objectManagerMock->expects($this->exactly(2))
             ->method('get')
-            ->willReturnMap([
-                [RendererInterface::class, $renderMock],
-                [\Magento\Framework\View\DesignInterface::class, $designMock],
-            ]);
+            ->will($this->returnValueMap(
+                [
+                    [\Magento\Framework\Phrase\RendererInterface::class, $renderMock],
+                    [\Magento\Framework\View\DesignInterface::class, $designMock],
+                ]
+            ));
         $this->object->load();
     }
 
@@ -228,7 +214,7 @@ class AreaTest extends TestCase
         $this->diConfigLoaderMock->expects($this->once())
             ->method('load')
             ->with($this->areaCode)
-            ->willReturn($configs);
+            ->will($this->returnValue($configs));
         $this->objectManagerMock->expects($this->once())
             ->method('configure')
             ->with($configs);
@@ -248,7 +234,7 @@ class AreaTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with(\Magento\Framework\View\DesignInterface::class)
-            ->willReturn($designMock);
+            ->will($this->returnValue($designMock));
         $this->designMock->expects($this->once())
             ->method('changeDesign')
             ->with($designMock)
@@ -266,7 +252,7 @@ class AreaTest extends TestCase
     {
         $this->designExceptionsMock->expects($this->once())
             ->method('getThemeByRequest')
-            ->willReturn($value);
+            ->will($this->returnValue($value));
         $designMock = $this->getMockBuilder(\Magento\Framework\View\DesignInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -275,7 +261,7 @@ class AreaTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with(\Magento\Framework\View\DesignInterface::class)
-            ->willReturn($designMock);
+            ->will($this->returnValue($designMock));
         $this->designMock->expects($this->exactly($callNum2))
             ->method('loadChange')
             ->with(self::SCOPE_ID)
@@ -284,7 +270,7 @@ class AreaTest extends TestCase
             ->method('changeDesign')
             ->with($designMock)
             ->willReturnSelf();
-        $requestMock = $this->getMockBuilder(Http::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->object->detectDesign($requestMock);
@@ -306,7 +292,7 @@ class AreaTest extends TestCase
         $exception = new \Exception('exception');
         $this->designExceptionsMock->expects($this->once())
             ->method('getThemeByRequest')
-            ->willThrowException($exception);
+            ->will($this->throwException($exception));
         $designMock = $this->getMockBuilder(\Magento\Framework\View\DesignInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -315,7 +301,7 @@ class AreaTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with(\Magento\Framework\View\DesignInterface::class)
-            ->willReturn($designMock);
+            ->will($this->returnValue($designMock));
         $this->designMock->expects($this->once())
             ->method('loadChange')
             ->with(self::SCOPE_ID)
@@ -324,7 +310,7 @@ class AreaTest extends TestCase
             ->method('changeDesign')
             ->with($designMock)
             ->willReturnSelf();
-        $requestMock = $this->getMockBuilder(Http::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->loggerMock->expects($this->once())

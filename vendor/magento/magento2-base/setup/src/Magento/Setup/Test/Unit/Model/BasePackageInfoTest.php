@@ -3,11 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Magento\Setup\Model\BasePackageInfo;
+use \Magento\Setup\Model\BasePackageInfo;
 
 /**
  * Tests BasePackageInfo
@@ -16,21 +15,21 @@ use Magento\Setup\Model\BasePackageInfo;
 class BasePackageInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\FileSystem\Directory\ReadFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\FileSystem\Directory\ReadFactory
      */
     private $readFactoryMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\FileSystem\Directory\ReadInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\FileSystem\Directory\ReadInterface
      */
     private $readerMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Model\BasePackageInfo
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\BasePackageInfo
      */
     private $basePackageInfo;
 
-    protected function setup(): void
+    public function setup()
     {
         $this->readFactoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
         $this->readerMock = $this->getMockForAbstractClass(
@@ -76,7 +75,8 @@ class BasePackageInfoTest extends \PHPUnit\Framework\TestCase
         $this->readerMock->expects($this->once())->method('isReadable')->willReturn(true);
         $jsonData = json_encode(
             [
-                BasePackageInfo::COMPOSER_KEY_EXTRA => [
+                BasePackageInfo::COMPOSER_KEY_EXTRA =>
+                [
                     __FILE__,
                     __FILE__
                 ]
@@ -95,8 +95,10 @@ class BasePackageInfoTest extends \PHPUnit\Framework\TestCase
         $this->readerMock->expects($this->once())->method('isReadable')->willReturn(true);
         $jsonData = json_encode(
             [
-                BasePackageInfo::COMPOSER_KEY_EXTRA => [
-                    BasePackageInfo::COMPOSER_KEY_MAP => [
+                BasePackageInfo::COMPOSER_KEY_EXTRA =>
+                [
+                    BasePackageInfo::COMPOSER_KEY_MAP =>
+                    [
                         [
                             __FILE__,
                             __FILE__

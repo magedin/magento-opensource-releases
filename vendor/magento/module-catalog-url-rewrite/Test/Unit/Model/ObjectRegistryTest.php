@@ -3,29 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model;
 
-use Magento\CatalogUrlRewrite\Model\ObjectRegistry;
 use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ObjectRegistryTest extends TestCase
+class ObjectRegistryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectRegistry */
+    /** @var \Magento\CatalogUrlRewrite\Model\ObjectRegistry */
     protected $objectRegistry;
 
-    /** @var DataObject|MockObject */
+    /** @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject */
     protected $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->object = new DataObject(['id' => 1]);
+        $this->object = new \Magento\Framework\DataObject(['id' => 1]);
         $this->objectRegistry = (new ObjectManager($this))->getObject(
-            ObjectRegistry::class,
+            \Magento\CatalogUrlRewrite\Model\ObjectRegistry::class,
             ['entities' => [$this->object]]
         );
     }
@@ -37,7 +32,7 @@ class ObjectRegistryTest extends TestCase
 
     public function testGetNotExistObject()
     {
-        $this->assertNull($this->objectRegistry->get('no-id'));
+        $this->assertEquals(null, $this->objectRegistry->get('no-id'));
     }
 
     public function testGetList()
@@ -48,7 +43,7 @@ class ObjectRegistryTest extends TestCase
     public function testGetEmptyList()
     {
         $objectRegistry = (new ObjectManager($this))->getObject(
-            ObjectRegistry::class,
+            \Magento\CatalogUrlRewrite\Model\ObjectRegistry::class,
             ['entities' => []]
         );
         $this->assertEquals([], $objectRegistry->getList());

@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Translate\Test\Unit;
 
-use Magento\Framework\Translate\Adapter;
-use PHPUnit\Framework\TestCase;
-
-class AdapterTest extends TestCase
+class AdapterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Check that translate calls are passed to given translator
@@ -22,18 +17,17 @@ class AdapterTest extends TestCase
      */
     public function testTranslate($method, $strToTranslate, $translatedStr)
     {
-        $translatorMock = $this->getMockBuilder('stdClass')
-            ->setMethods(['translate'])->getMock();
+        $translatorMock = $this->getMockBuilder('stdClass')->setMethods(['translate'])->getMock();
         $translatorMock->expects(
             $this->once()
         )->method(
             'translate'
         )->with(
             $strToTranslate
-        )->willReturn(
-            $translatedStr
+        )->will(
+            $this->returnValue($translatedStr)
         );
-        $translator = new Adapter(
+        $translator = new \Magento\Framework\Translate\Adapter(
             ['translator' => [$translatorMock, 'translate']]
         );
 
@@ -53,7 +47,7 @@ class AdapterTest extends TestCase
      */
     public function testTranslateNoProxy()
     {
-        $translator = new Adapter();
+        $translator = new \Magento\Framework\Translate\Adapter();
         $this->assertEquals('test string', $translator->translate('test string'));
     }
 

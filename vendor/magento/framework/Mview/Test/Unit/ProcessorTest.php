@@ -3,45 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mview\Test\Unit;
 
-use Magento\Framework\Mview\Processor;
-use Magento\Framework\Mview\View\Collection;
-use Magento\Framework\Mview\View\CollectionFactory;
-use Magento\Framework\Mview\ViewInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Framework\Mview\Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Framework\Mview\View\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewsFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->viewsFactoryMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
-        $this->model = new Processor($this->viewsFactoryMock);
+            $this->createPartialMock(\Magento\Framework\Mview\View\CollectionFactory::class, ['create']);
+        $this->model = new \Magento\Framework\Mview\Processor($this->viewsFactoryMock);
     }
 
     /**
      * Return array of mocked views
      *
      * @param string $method
-     * @return ViewInterface[]|MockObject[]
+     * @return \Magento\Framework\Mview\ViewInterface[]|\PHPUnit_Framework_MockObject_MockObject[]
      */
     protected function getViews($method)
     {
-        $viewMock = $this->getMockForAbstractClass(ViewInterface::class);
+        $viewMock = $this->createMock(\Magento\Framework\Mview\ViewInterface::class);
         $viewMock->expects($this->exactly(2))->method($method);
         return [$viewMock, $viewMock];
     }
@@ -49,19 +40,19 @@ class ProcessorTest extends TestCase
     /**
      * Return view collection mock
      *
-     * @return Collection|MockObject
+     * @return \Magento\Framework\Mview\View\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getViewsMock()
     {
-        $viewsMock = $this->createMock(Collection::class);
-        $this->viewsFactoryMock->expects($this->once())->method('create')->willReturn($viewsMock);
+        $viewsMock = $this->createMock(\Magento\Framework\Mview\View\Collection::class);
+        $this->viewsFactoryMock->expects($this->once())->method('create')->will($this->returnValue($viewsMock));
         return $viewsMock;
     }
 
     public function testUpdate()
     {
         $viewsMock = $this->getViewsMock();
-        $viewsMock->expects($this->once())->method('getItems')->willReturn($this->getViews('update'));
+        $viewsMock->expects($this->once())->method('getItems')->will($this->returnValue($this->getViews('update')));
         $viewsMock->expects($this->never())->method('getItemsByColumnValue');
 
         $this->model->update();
@@ -78,8 +69,8 @@ class ProcessorTest extends TestCase
             'getItemsByColumnValue'
         )->with(
             $group
-        )->willReturn(
-            $this->getViews('update')
+        )->will(
+            $this->returnValue($this->getViews('update'))
         );
 
         $this->model->update($group);
@@ -92,8 +83,8 @@ class ProcessorTest extends TestCase
             $this->once()
         )->method(
             'getItems'
-        )->willReturn(
-            $this->getViews('clearChangelog')
+        )->will(
+            $this->returnValue($this->getViews('clearChangelog'))
         );
         $viewsMock->expects($this->never())->method('getItemsByColumnValue');
 
@@ -111,8 +102,8 @@ class ProcessorTest extends TestCase
             'getItemsByColumnValue'
         )->with(
             $group
-        )->willReturn(
-            $this->getViews('clearChangelog')
+        )->will(
+            $this->returnValue($this->getViews('clearChangelog'))
         );
 
         $this->model->clearChangelog($group);

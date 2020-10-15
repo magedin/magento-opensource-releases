@@ -132,7 +132,6 @@ class Meta extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             || $object->getData('store_id') === null
             || !$object->getData('sequence_table')
         ) {
-            // phpcs:ignore Magento2.Exceptions.DirectThrow
             throw new Exception(__('Not enough arguments'));
         }
 

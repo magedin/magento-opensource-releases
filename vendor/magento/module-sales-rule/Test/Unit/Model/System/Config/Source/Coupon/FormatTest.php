@@ -3,36 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\SalesRule\Test\Unit\Model\System\Config\Source\Coupon;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\SalesRule\Helper\Coupon;
-use Magento\SalesRule\Model\System\Config\Source\Coupon\Format;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FormatTest extends TestCase
+class FormatTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Format|MockObject
+     * @var \Magento\SalesRule\Model\System\Config\Source\Coupon\Format|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $model;
 
     /**
-     * @var Coupon|MockObject
+     * @var \Magento\SalesRule\Helper\Coupon|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $salesRuleCoupon;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->salesRuleCoupon = $this->createMock(Coupon::class);
+        $this->salesRuleCoupon = $this->createMock(\Magento\SalesRule\Helper\Coupon::class);
 
         $this->model = $objectManager->getObject(
-            Format::class,
+            \Magento\SalesRule\Model\System\Config\Source\Coupon\Format::class,
             [
                 'salesRuleCoupon' => $this->salesRuleCoupon
             ]
@@ -50,7 +43,7 @@ class FormatTest extends TestCase
         ];
         $this->salesRuleCoupon->expects($this->once())
             ->method('getFormatsList')
-            ->willReturn([$formatTitle]);
+            ->will($this->returnValue([$formatTitle]));
 
         $this->assertEquals($expected, $this->model->toOptionArray());
     }

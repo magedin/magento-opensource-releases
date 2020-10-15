@@ -5,16 +5,13 @@
  */
 namespace Magento\ConfigurableProduct\Block\Adminhtml\Product\Steps;
 
-use Magento\Backend\Helper\Js;
 use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Media\Config;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Eav\Model\Entity\Attribute;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 /**
  * Adminhtml block for fieldset of configurable product
@@ -44,26 +41,21 @@ class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
      * @param Image $image
      * @param Config $catalogProductMediaConfig
      * @param ProductFactory $productFactory
-     * @param array $data
-     * @param JsonHelper|null $jsonHelper
      */
     public function __construct(
         Context $context,
         Image $image,
         Config $catalogProductMediaConfig,
-        ProductFactory $productFactory,
-        array $data = [],
-        JsonHelper $jsonHelper = null
+        ProductFactory $productFactory
     ) {
-        $data['jsonHelper'] = $jsonHelper ?? ObjectManager::getInstance()->get(JsonHelper::class);
-        parent::__construct($context, $data);
+        parent::__construct($context);
         $this->image = $image;
         $this->productFactory = $productFactory;
         $this->catalogProductMediaConfig = $catalogProductMediaConfig;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCaption()
     {
@@ -71,8 +63,6 @@ class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
     }
 
     /**
-     * Return no image url.
-     *
      * @return string
      */
     public function getNoImageUrl()
@@ -102,8 +92,6 @@ class Bulk extends \Magento\Ui\Block\Component\StepsWizard\StepAbstract
     }
 
     /**
-     * Return media attributes.
-     *
      * @return array
      */
     public function getMediaAttributes()

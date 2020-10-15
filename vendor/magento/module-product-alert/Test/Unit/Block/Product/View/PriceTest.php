@@ -3,89 +3,76 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ProductAlert\Test\Unit\Block\Product\View;
-
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\ProductAlert\Block\Product\View\Price;
-use Magento\ProductAlert\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\ProductAlert\Block\Product\View\Price
  */
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Data
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\ProductAlert\Helper\Data
      */
     protected $_helper;
 
     /**
-     * @var MockObject|Product
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Product
      */
     protected $_product;
 
     /**
-     * @var MockObject|Registry
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Registry
      */
     protected $_registry;
 
     /**
-     * @var MockObject|Price
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\ProductAlert\Block\Product\View\Price
      */
     protected $_block;
 
     /**
-     * @var MockObject|Layout
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Layout
      */
     protected $_layout;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_helper = $this->createPartialMock(
-            Data::class,
+            \Magento\ProductAlert\Helper\Data::class,
             ['isPriceAlertAllowed', 'getSaveUrl']
         );
-        $this->_product = $this->getMockBuilder(Product::class)
-            ->addMethods(['getCanShowPrice'])
-            ->onlyMethods(['getId', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_product->expects($this->any())->method('getId')->willReturn(1);
+        $this->_product = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            ['getCanShowPrice', 'getId', '__wakeup']
+        );
+        $this->_product->expects($this->any())->method('getId')->will($this->returnValue(1));
         $this->_registry = $this->getMockBuilder(
-            Registry::class
-        )->disableOriginalConstructor()
-            ->setMethods(
+            \Magento\Framework\Registry::class
+        )->disableOriginalConstructor()->setMethods(
             ['registry']
         )->getMock();
         $this->_block = $objectManager->getObject(
-            Price::class,
+            \Magento\ProductAlert\Block\Product\View\Price::class,
             ['helper' => $this->_helper, 'registry' => $this->_registry]
         );
-        $this->_layout = $this->createMock(Layout::class);
+        $this->_layout = $this->createMock(\Magento\Framework\View\Layout::class);
     }
 
     public function testSetTemplatePriceAlertAllowed()
     {
-        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->willReturn(true);
+        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->will($this->returnValue(true));
         $this->_helper->expects(
             $this->once()
         )->method(
             'getSaveUrl'
         )->with(
             'price'
-        )->willReturn(
-            'http://url'
+        )->will(
+            $this->returnValue('http://url')
         );
 
-        $this->_product->expects($this->once())->method('getCanShowPrice')->willReturn(true);
+        $this->_product->expects($this->once())->method('getCanShowPrice')->will($this->returnValue(true));
 
         $this->_registry->expects(
             $this->any()
@@ -93,8 +80,8 @@ class PriceTest extends TestCase
             'registry'
         )->with(
             'current_product'
-        )->willReturn(
-            $this->_product
+        )->will(
+            $this->returnValue($this->_product)
         );
 
         $this->_block->setLayout($this->_layout);
@@ -112,10 +99,10 @@ class PriceTest extends TestCase
      */
     public function testSetTemplatePriceAlertNotAllowed($priceAllowed, $showProductPrice)
     {
-        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->willReturn($priceAllowed);
+        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->will($this->returnValue($priceAllowed));
         $this->_helper->expects($this->never())->method('getSaveUrl');
 
-        $this->_product->expects($this->any())->method('getCanShowPrice')->willReturn($showProductPrice);
+        $this->_product->expects($this->any())->method('getCanShowPrice')->will($this->returnValue($showProductPrice));
 
         $this->_registry->expects(
             $this->any()
@@ -123,8 +110,8 @@ class PriceTest extends TestCase
             'registry'
         )->with(
             'current_product'
-        )->willReturn(
-            $this->_product
+        )->will(
+            $this->returnValue($this->_product)
         );
 
         $this->_block->setLayout($this->_layout);
@@ -148,7 +135,7 @@ class PriceTest extends TestCase
 
     public function testSetTemplateNoProduct()
     {
-        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->willReturn(true);
+        $this->_helper->expects($this->once())->method('isPriceAlertAllowed')->will($this->returnValue(true));
         $this->_helper->expects($this->never())->method('getSaveUrl');
 
         $this->_registry->expects(
@@ -157,8 +144,8 @@ class PriceTest extends TestCase
             'registry'
         )->with(
             'current_product'
-        )->willReturn(
-            null
+        )->will(
+            $this->returnValue(null)
         );
 
         $this->_block->setLayout($this->_layout);

@@ -3,99 +3,93 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sitemap\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\App\Area;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sitemap\Model\EmailNotification;
-use Magento\Sitemap\Model\Observer;
-use Magento\Sitemap\Model\ResourceModel\Sitemap\Collection;
-use Magento\Sitemap\Model\ResourceModel\Sitemap\CollectionFactory;
-use Magento\Sitemap\Model\Sitemap;
 use Magento\Store\Model\App\Emulation;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class ObserverTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ObserverTest extends TestCase
+class ObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Observer
+     * @var \Magento\Sitemap\Model\Observer
      */
     private $observer;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Sitemap\Model\ResourceModel\Sitemap\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Sitemap\Model\ResourceModel\Sitemap\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sitemapCollectionMock;
 
     /**
-     * @var Sitemap|MockObject
+     * @var \Magento\Sitemap\Model\Sitemap|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sitemapMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var Emulation|MockObject
+     * @var Emulation|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appEmulationMock;
 
     /**
-     * @var EmailNotification|MockObject
+     * @var EmailNotification|\PHPUnit_Framework_MockObject_MockObject
      */
     private $emailNotificationMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMock();
         $this->collectionFactoryMock = $this->getMockBuilder(
-            CollectionFactory::class
+            \Magento\Sitemap\Model\ResourceModel\Sitemap\CollectionFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->sitemapCollectionMock = $this->createPartialMock(
-            Collection::class,
+            \Magento\Sitemap\Model\ResourceModel\Sitemap\Collection::class,
             ['getIterator']
         );
-        $this->sitemapMock = $this->getMockBuilder(Sitemap::class)
-            ->addMethods(['getStoreId'])
-            ->onlyMethods(['generateXml'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->sitemapMock = $this->createPartialMock(
+            \Magento\Sitemap\Model\Sitemap::class,
+            [
+                'generateXml',
+                'getStoreId',
+            ]
+        );
         $this->appEmulationMock = $this->createMock(Emulation::class);
         $this->emailNotificationMock = $this->createMock(EmailNotification::class);
         $this->objectManager = new ObjectManager($this);
 
         $this->observer = $this->objectManager->getObject(
-            Observer::class,
+            \Magento\Sitemap\Model\Observer::class,
             [
                 'scopeConfig' => $this->scopeConfigMock,
                 'collectionFactory' => $this->collectionFactoryMock,
@@ -131,14 +125,10 @@ class ObserverTest extends TestCase
         $this->scopeConfigMock->expects($this->at(0))
             ->method('getValue')
             ->with(
-                Observer::XML_PATH_ERROR_RECIPIENT,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Sitemap\Model\Observer::XML_PATH_ERROR_RECIPIENT,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn('error-recipient@example.com');
-
-        $this->emailNotificationMock->expects($this->once())
-            ->method('sendErrors')
-            ->with([$exception]);
 
         $this->observer->scheduledGenerateSitemaps();
     }

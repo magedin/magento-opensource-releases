@@ -18,7 +18,7 @@ class SnakeToCamelCaseConverterTest extends TestCase
      */
     private $snakeToCamelCaseConverter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->snakeToCamelCaseConverter = (new ObjectManager($this))->getObject(SnakeToCamelCaseConverter::class);
     }

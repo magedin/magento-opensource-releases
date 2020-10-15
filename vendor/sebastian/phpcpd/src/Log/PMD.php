@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of PHP Copy/Paste Detector (PHPCPD).
  *
@@ -12,12 +12,14 @@ namespace SebastianBergmann\PHPCPD\Log;
 
 use SebastianBergmann\PHPCPD\CodeCloneMap;
 
-final class PMD extends AbstractXmlLogger
+class PMD extends AbstractXmlLogger
 {
     /**
      * Processes a list of clones.
+     *
+     * @param CodeCloneMap $clones
      */
-    public function processClones(CodeCloneMap $clones): void
+    public function processClones(CodeCloneMap $clones)
     {
         $cpd = $this->document->createElement('pmd-cpd');
         $this->document->appendChild($cpd);
@@ -27,8 +29,8 @@ final class PMD extends AbstractXmlLogger
                 $this->document->createElement('duplication')
             );
 
-            $duplication->setAttribute('lines', (string) $clone->getSize());
-            $duplication->setAttribute('tokens', (string) $clone->getTokens());
+            $duplication->setAttribute('lines', $clone->getSize());
+            $duplication->setAttribute('tokens', $clone->getTokens());
 
             foreach ($clone->getFiles() as $codeCloneFile) {
                 $file = $duplication->appendChild(
@@ -36,7 +38,7 @@ final class PMD extends AbstractXmlLogger
                 );
 
                 $file->setAttribute('path', $codeCloneFile->getName());
-                $file->setAttribute('line', (string) $codeCloneFile->getStartLine());
+                $file->setAttribute('line', $codeCloneFile->getStartLine());
             }
 
             $duplication->appendChild(

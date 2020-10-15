@@ -33,10 +33,8 @@
         </after>
 
         <!--check admin for valid Enable Status label-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="goToEditPage">
-            <argument name="productId" value="$$createSimpleProduct.id$$"/>
-        </actionGroup>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+        <amOnPage url="{{AdminProductEditPage.url($$createSimpleProduct.id$$)}}" stepKey="goToEditPage"/>
         <waitForPageLoad stepKey="wait1"/>
         <seeCheckboxIsChecked selector="{{AdminProductFormSection.productStatus}}" stepKey="seeCheckboxEnableProductIsChecked"/>
 

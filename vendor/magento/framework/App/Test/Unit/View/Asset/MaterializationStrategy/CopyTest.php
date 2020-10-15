@@ -3,32 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\View\Asset\MaterializationStrategy;
 
-use Magento\Framework\App\View\Asset\MaterializationStrategy\Copy;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\View\Asset\LocalInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\View\Asset\MaterializationStrategy\Copy;
 
-class CopyTest extends TestCase
+class CopyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Copy
      */
     private $copyPublisher;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->copyPublisher = new Copy();
+        $this->copyPublisher = new Copy;
     }
 
     public function testPublishFile()
     {
-        $rootDir = $this->getMockBuilder(WriteInterface::class)
+        $rootDir = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMock();
-        $targetDir = $this->getMockBuilder(WriteInterface::class)
+        $targetDir = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMock();
         $sourcePath = 'source/path/file';
         $destinationPath = 'destination/path/file';
@@ -46,7 +42,7 @@ class CopyTest extends TestCase
 
     public function testIsSupported()
     {
-        $asset = $this->getMockBuilder(LocalInterface::class)
+        $asset = $this->getMockBuilder(\Magento\Framework\View\Asset\LocalInterface::class)
             ->getMock();
         $this->assertTrue($this->copyPublisher->isSupported($asset));
     }

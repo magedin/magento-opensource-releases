@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Marketplace\Test\Unit\Helper;
 
-use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Marketplace\Helper\Cache;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Config\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cache;
 
     /**
-     * @var  SerializerInterface|MockObject
+     * @var  SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializer;
 
     /**
-     * @var Cache
+     * @var \Magento\Marketplace\Helper\Cache
      */
     private $cacheHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->cache = $this->getMockForAbstractClass(CacheInterface::class);
+        $this->cache = $this->getMockForAbstractClass(\Magento\Framework\Config\CacheInterface::class);
         $this->serializer = $this->getMockForAbstractClass(SerializerInterface::class);
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->cacheHelper = $objectManagerHelper->getObject(
-            Cache::class,
+            \Magento\Marketplace\Helper\Cache::class,
             [
                 'cache' => $this->cache,
                 'serializer' => $this->serializer,
@@ -70,7 +64,7 @@ class CacheTest extends TestCase
         $this->serializer->expects($this->never())
             ->method('unserialize');
 
-        $this->assertFalse($this->cacheHelper->loadPartnersFromCache());
+        $this->assertSame(false, $this->cacheHelper->loadPartnersFromCache());
     }
 
     public function testSavePartnersToCache()

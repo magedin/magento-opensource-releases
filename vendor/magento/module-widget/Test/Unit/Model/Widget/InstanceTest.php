@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * \Magento\Widget\Model\Widget\Instance
  *
@@ -7,96 +7,78 @@
  */
 namespace Magento\Widget\Test\Unit\Model\Widget;
 
-use Magento\Cms\Block\Adminhtml\Page\Widget\Chooser;
-use Magento\Cms\Block\Widget\Page\Link;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\FileSystem as FilesystemView;
-use Magento\Widget\Model\Config\Data;
-use Magento\Widget\Model\Config\Reader;
-use Magento\Widget\Model\NamespaceResolver;
-use Magento\Widget\Model\Widget;
-use Magento\Widget\Model\Widget\Instance;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InstanceTest extends TestCase
+class InstanceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data|MockObject
+     * @var \Magento\Widget\Model\Config\Data|PHPUnit_Framework_MockObject_MockObject
      */
     protected $_widgetModelMock;
 
     /**
-     * @var FilesystemView|MockObject
+     * @var \Magento\Framework\View\FileSystem|PHPUnit_Framework_MockObject_MockObject
      */
     protected $_viewFileSystemMock;
 
-    /** @var  NamespaceResolver|MockObject */
+    /** @var  \Magento\Widget\Model\NamespaceResolver |PHPUnit_Framework_MockObject_MockObject */
     protected $_namespaceResolver;
 
     /**
-     * @var Instance
+     * @var \Magento\Widget\Model\Widget\Instance
      */
     protected $_model;
 
-    /** @var  Reader */
+    /** @var  \Magento\Widget\Model\Config\Reader */
     protected $_readerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_cacheTypesListMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_directoryMock;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Serialize\Serializer\Json | \PHPUnit_Framework_MockObject_MockObject */
     private $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_widgetModelMock = $this->getMockBuilder(
-            Widget::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Widget\Model\Widget::class
+        )->disableOriginalConstructor()->getMock();
         $this->_viewFileSystemMock = $this->getMockBuilder(
-            FilesystemView::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\FileSystem::class
+        )->disableOriginalConstructor()->getMock();
         $this->_namespaceResolver = $this->getMockBuilder(
-            NamespaceResolver::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_cacheTypesListMock = $this->getMockForAbstractClass(TypeListInterface::class);
+            \Magento\Widget\Model\NamespaceResolver::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_cacheTypesListMock = $this->createMock(\Magento\Framework\App\Cache\TypeListInterface::class);
         $this->_readerMock = $this->getMockBuilder(
-            Reader::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Widget\Model\Config\Reader::class
+        )->disableOriginalConstructor()->getMock();
 
-        $filesystemMock = $this->createMock(Filesystem::class);
-        $this->_directoryMock = $this->createMock(Read::class);
+        $filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->_directoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
         $filesystemMock->expects(
             $this->any()
         )->method(
             'getDirectoryRead'
-        )->willReturn(
-            $this->_directoryMock
+        )->will(
+            $this->returnValue($this->_directoryMock)
         );
-        $this->_directoryMock->expects($this->any())->method('isReadable')->willReturnArgument(0);
-        $this->_directoryMock->expects($this->any())->method('getRelativePath')->willReturnArgument(0);
-        $objectManagerHelper = new ObjectManager($this);
+        $this->_directoryMock->expects($this->any())->method('isReadable')->will($this->returnArgument(0));
+        $this->_directoryMock->expects($this->any())->method('getRelativePath')->will($this->returnArgument(0));
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->serializer = $this->createMock(Json::class);
         $args = $objectManagerHelper->getConstructArguments(
-            Instance::class,
+            \Magento\Widget\Model\Widget\Instance::class,
             [
                 'filesystem' => $filesystemMock,
                 'viewFileSystem' => $this->_viewFileSystemMock,
@@ -108,8 +90,8 @@ class InstanceTest extends TestCase
             ]
         );
 
-        /** @var Instance _model */
-        $this->_model = $this->getMockBuilder(Instance::class)
+        /** @var \Magento\Widget\Model\Widget\Instance _model */
+        $this->_model = $this->getMockBuilder(\Magento\Widget\Model\Widget\Instance::class)
             ->setMethods(['_construct'])
             ->setConstructorArgs($args)
             ->getMock();
@@ -118,7 +100,7 @@ class InstanceTest extends TestCase
     public function testGetWidgetConfigAsArray()
     {
         $widget = [
-            '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+            '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
             'name' => 'CMS Page Link',
             'description' => 'Link to a CMS Page',
             'is_email_compatible' => 'true',
@@ -128,7 +110,7 @@ class InstanceTest extends TestCase
                     '@' => ['type' => 'complex'],
                     'type' => 'label',
                     'helper_block' => [
-                        'type' => Chooser::class,
+                        'type' => \Magento\Cms\Block\Adminhtml\Page\Widget\Chooser::class,
                         'data' => ['button' => ['open' => 'Select Page...']],
                     ],
                     'visible' => 'true',
@@ -142,11 +124,11 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
         $xmlFile = __DIR__ . '/../_files/widget.xml';
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn($xmlFile);
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue($xmlFile));
         $themeConfigFile = __DIR__ . '/../_files/mappedConfigArrayAll.php';
         $themeConfig = include $themeConfigFile;
         $this->_readerMock->expects(
@@ -155,8 +137,8 @@ class InstanceTest extends TestCase
             'readFile'
         )->with(
             $this->equalTo($xmlFile)
-        )->willReturn(
-            $themeConfig
+        )->will(
+            $this->returnValue($themeConfig)
         );
 
         $result = $this->_model->getWidgetConfigAsArray();
@@ -174,10 +156,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [
             'default' => [
                 'value' => 'product/widget/link/link_block.phtml',
@@ -194,7 +176,7 @@ class InstanceTest extends TestCase
     public function testGetWidgetTemplatesValueOnly()
     {
         $widget = [
-            '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+            '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
             'name' => 'CMS Page Link',
             'description' => 'Link to a CMS Page',
             'is_email_compatible' => 'true',
@@ -215,10 +197,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [
             'default' => ['value' => 'product/widget/link/link_block.phtml', 'label' => 'Template'],
         ];
@@ -228,7 +210,7 @@ class InstanceTest extends TestCase
     public function testGetWidgetTemplatesNoTemplate()
     {
         $widget = [
-            '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+            '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
             'name' => 'CMS Page Link',
             'description' => 'Link to a CMS Page',
             'is_email_compatible' => 'true',
@@ -239,10 +221,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [];
         $this->assertEquals($expectedTemplates, $this->_model->getWidgetTemplates());
     }
@@ -255,10 +237,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedContainers = ['left', 'content'];
         $this->assertEquals($expectedContainers, $this->_model->getWidgetSupportedContainers());
     }
@@ -266,7 +248,7 @@ class InstanceTest extends TestCase
     public function testGetWidgetSupportedContainersNoContainer()
     {
         $widget = [
-            '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+            '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
             'name' => 'CMS Page Link',
             'description' => 'Link to a CMS Page',
             'is_email_compatible' => 'true',
@@ -276,10 +258,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedContainers = [];
         $this->assertEquals($expectedContainers, $this->_model->getWidgetSupportedContainers());
     }
@@ -292,10 +274,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [
             ['value' => 'product/widget/link/link_block.phtml', 'label' => 'Product Link Block Template'],
             ['value' => 'product/widget/link/link_inline.phtml', 'label' => 'Product Link Inline Template'],
@@ -311,10 +293,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [
             ['value' => 'product/widget/link/link_block.phtml', 'label' => 'Product Link Block Template'],
         ];
@@ -324,7 +306,7 @@ class InstanceTest extends TestCase
     public function testGetWidgetSupportedTemplatesByContainersNoSupportedContainersSpecified()
     {
         $widget = [
-            '@' => ['type' => Link::class, 'module' => 'Magento_Cms'],
+            '@' => ['type' => \Magento\Cms\Block\Widget\Page\Link::class, 'module' => 'Magento_Cms'],
             'name' => 'CMS Page Link',
             'description' => 'Link to a CMS Page',
             'is_email_compatible' => 'true',
@@ -345,10 +327,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedContainers = [
             'default' => ['value' => 'product/widget/link/link_block.phtml', 'label' => 'Template'],
         ];
@@ -363,10 +345,10 @@ class InstanceTest extends TestCase
             $this->once()
         )->method(
             'getWidgetByClassType'
-        )->willReturn(
-            $widget
+        )->will(
+            $this->returnValue($widget)
         );
-        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->willReturn('');
+        $this->_viewFileSystemMock->expects($this->once())->method('getFilename')->will($this->returnValue(''));
         $expectedTemplates = [];
         $this->assertEquals($expectedTemplates, $this->_model->getWidgetSupportedTemplatesByContainer('unknown'));
     }

@@ -3,43 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Data\Test\Unit\Tree\Node;
 
-use Magento\Framework\Data\Tree;
-use Magento\Framework\Data\Tree\Node;
-use Magento\Framework\Data\Tree\Node\Collection;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Tree\Node\Collection;
 
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Framework\Data\Tree\Node\Collection
      */
     protected $collection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $tree = new Tree();
-        $node = new Node(['id' => 'root'], 'id', $tree);
+        $tree = new \Magento\Framework\Data\Tree();
+        $node = new \Magento\Framework\Data\Tree\Node(['id' => 'root'], 'id', $tree);
         $this->collection = new Collection($node);
     }
 
     public function testAdd()
     {
-        $tree = new Tree();
+        $tree = new \Magento\Framework\Data\Tree();
         $this->assertSame($this->collection->count(), 0);
-        $node = new Node(['id' => 'node1'], 'id', $tree);
+        $node = new \Magento\Framework\Data\Tree\Node(['id' => 'node1'], 'id', $tree);
         $this->collection->add($node);
         $this->assertSame($this->collection->count(), 1);
     }
 
     public function testOffsets()
     {
-        $tree = new Tree();
+        $tree = new \Magento\Framework\Data\Tree();
         $this->assertSame($this->collection->count(), 0);
-        $node = new Node(['id' => 'node1'], 'id', $tree);
+        $node = new \Magento\Framework\Data\Tree\Node(['id' => 'node1'], 'id', $tree);
         $this->collection->add($node);
         $this->assertSame($this->collection->offsetExists('node1'), true);
         $this->collection->offsetSet('node1', 'Hello');
@@ -51,9 +47,9 @@ class CollectionTest extends TestCase
 
     public function testDelete()
     {
-        $tree = new Tree();
+        $tree = new \Magento\Framework\Data\Tree();
         $this->assertSame($this->collection->count(), 0);
-        $node = new Node(['id' => 'node1'], 'id', $tree);
+        $node = new \Magento\Framework\Data\Tree\Node(['id' => 'node1'], 'id', $tree);
         $this->collection->add($node);
         $this->assertSame($this->collection->count(), 1);
         $this->collection->delete($node);
@@ -62,13 +58,13 @@ class CollectionTest extends TestCase
 
     public function testLastNode()
     {
-        $tree = new Tree();
-        $node1 = new Node(['id' => 'node1'], 'id', $tree);
+        $tree = new \Magento\Framework\Data\Tree();
+        $node1 = new \Magento\Framework\Data\Tree\Node(['id' => 'node1'], 'id', $tree);
         $this->collection->add($node1);
-        $node2 = new Node(['id' => 'node2'], 'id', $tree);
+        $node2 = new \Magento\Framework\Data\Tree\Node(['id' => 'node2'], 'id', $tree);
         $this->collection->add($node2);
         $this->assertSame($this->collection->lastNode(), $node2);
-        $node3 = new Node(['id' => 'node3'], 'id', $tree);
+        $node3 = new \Magento\Framework\Data\Tree\Node(['id' => 'node3'], 'id', $tree);
         $this->collection->add($node3);
 
         $this->assertSame($this->collection->lastNode(), $node3);
@@ -80,13 +76,13 @@ class CollectionTest extends TestCase
 
     public function testSearchById()
     {
-        $tree = new Tree();
-        $node1 = new Node(['id' => 'node1'], 'id', $tree);
+        $tree = new \Magento\Framework\Data\Tree();
+        $node1 = new \Magento\Framework\Data\Tree\Node(['id' => 'node1'], 'id', $tree);
         $this->collection->add($node1);
-        $node2 = new Node(['id' => 'node2'], 'id', $tree);
+        $node2 = new \Magento\Framework\Data\Tree\Node(['id' => 'node2'], 'id', $tree);
         $this->collection->add($node2);
         $this->assertSame($this->collection->lastNode(), $node2);
-        $node3 = new Node(['id' => 'node3'], 'id', $tree);
+        $node3 = new \Magento\Framework\Data\Tree\Node(['id' => 'node3'], 'id', $tree);
         $this->collection->add($node3);
 
         $this->assertSame($this->collection->searchById('node2'), $node2);

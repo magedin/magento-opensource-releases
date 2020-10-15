@@ -3,34 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Url;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\View\Url\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Framework\View\Url\Config
      */
     protected $_model;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_scopeConfig = $this->getMockBuilder(
-            ScopeConfigInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_model = new Config($this->_scopeConfig);
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_model = new \Magento\Framework\View\Url\Config($this->_scopeConfig);
     }
 
     /**
@@ -47,8 +39,8 @@ class ConfigTest extends TestCase
             'getValue'
         )->with(
             $path
-        )->willReturn(
-            $expectedValue
+        )->will(
+            $this->returnValue($expectedValue)
         );
         $actual = $this->_model->getValue($path);
         $this->assertEquals($expectedValue, $actual);

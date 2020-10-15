@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Paypal\Model\Pro
@@ -11,33 +10,24 @@ declare(strict_types=1);
  */
 namespace Magento\Paypal\Test\Unit\Model;
 
-use Magento\Framework\HTTP\Adapter\Curl;
-use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Payment\Model\Info;
-use Magento\Paypal\Model\Api\Nvp;
 use Magento\Paypal\Model\Config as PaypalConfig;
-use Magento\Paypal\Model\Config\Factory;
-use Magento\Paypal\Model\InfoFactory;
-use Magento\Paypal\Model\Pro;
-use Magento\Sales\Model\Order;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class ProTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProTest extends TestCase
+class ProTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Pro
+     * @var \Magento\Paypal\Model\Pro
      */
     protected $pro;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $apiMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectHelper = new ObjectManager($this);
         $infoFactory = $this->getInfoFactory();
@@ -46,15 +36,15 @@ class ProTest extends TestCase
         $configFactory = $this->getConfigFactory($storeId);
         $apiFactory = $this->getApiFactory($objectHelper);
         $args = $objectHelper->getConstructArguments(
-            Pro::class,
+            \Magento\Paypal\Model\Pro::class,
             [
                 'configFactory' => $configFactory,
                 'infoFactory' => $infoFactory,
                 'apiFactory' => $apiFactory
             ]
         );
-        /** @var \Magento\Paypal\Model\Pro $pro */
-        $this->pro = $this->getMockBuilder(Pro::class)
+        /** @var $pro \Magento\Paypal\Model\Pro */
+        $this->pro = $this->getMockBuilder(\Magento\Paypal\Model\Pro::class)
             ->setMethods(['_isPaymentReviewRequired'])
             ->setConstructorArgs($args)
             ->getMock();
@@ -73,23 +63,22 @@ class ProTest extends TestCase
             $this->any()
         )->method(
             '_isPaymentReviewRequired'
-        )->willReturn(
-            $isReviewRequired
+        )->will(
+            $this->returnValue($isReviewRequired)
         );
         $payment = $this->getMockBuilder(
-            Info::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getAdditionalInformation', '__wakeup']
-            )->getMock();
+            \Magento\Payment\Model\Info::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getAdditionalInformation', '__wakeup']
+        )->getMock();
         $payment->expects(
             $this->once()
         )->method(
             'getAdditionalInformation'
         )->with(
-            \Magento\Paypal\Model\Info::PENDING_REASON_GLOBAL
-        )->willReturn(
-            $pendingReason
+            $this->equalTo(\Magento\Paypal\Model\Info::PENDING_REASON_GLOBAL)
+        )->will(
+            $this->returnValue($pendingReason)
         );
 
         $this->assertEquals($expected, $this->pro->canReviewPayment($payment));
@@ -146,11 +135,11 @@ class ProTest extends TestCase
 
     /**
      * Create and return mock of info factory
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getInfoFactory()
     {
-        $infoFactory = $this->getMockBuilder(InfoFactory::class)
+        $infoFactory = $this->getMockBuilder(\Magento\Paypal\Model\InfoFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -165,7 +154,7 @@ class ProTest extends TestCase
     /**
      * Create and return mock of config factory
      * @param $storeId
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getConfigFactory($storeId)
     {
@@ -173,7 +162,7 @@ class ProTest extends TestCase
         $configMock = $this->getMockBuilder($configType)
             ->disableOriginalConstructor()
             ->getMock();
-        $configFactory = $this->getMockBuilder(Factory::class)
+        $configFactory = $this->getMockBuilder(\Magento\Paypal\Model\Config\Factory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -191,7 +180,7 @@ class ProTest extends TestCase
     /**
      * Create mock object for paypal api factory
      * @param ObjectManager $objectHelper
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getApiFactory(ObjectManager $objectHelper)
     {
@@ -200,23 +189,23 @@ class ProTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $httpClient = $this->getMockBuilder(Curl::class)
+        $httpClient = $this->getMockBuilder(\Magento\Framework\HTTP\Adapter\Curl::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $httpClient->expects(static::any())
             ->method('read')
-            ->willReturn(
+            ->will(static::returnValue(
                 "\r\n" . 'ACK=Success&CORRELATIONID=32342431'
-            );
+            ));
 
-        $curlFactory = $this->getMockBuilder(CurlFactory::class)
+        $curlFactory = $this->getMockBuilder(\Magento\Framework\HTTP\Adapter\CurlFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $curlFactory->expects(static::any())->method('create')->willReturn($httpClient);
 
-        $apiType = Nvp::class;
+        $apiType = \Magento\Paypal\Model\Api\Nvp::class;
         $args = $objectHelper->getConstructArguments(
             $apiType,
             [
@@ -243,11 +232,11 @@ class ProTest extends TestCase
 
     /**
      * Create mock object for payment model
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getPaymentMock()
     {
-        $paymentMock = $this->getMockBuilder(Info::class)
+        $paymentMock = $this->getMockBuilder(\Magento\Payment\Model\Info::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getParentTransactionId', 'getOrder', 'getShouldCloseParentTransaction', 'isCaptureFinal',
@@ -263,7 +252,7 @@ class ProTest extends TestCase
 
     /**
      * Create mock object for order model
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getOrderMock()
     {
@@ -272,7 +261,7 @@ class ProTest extends TestCase
             'id' => 4,
             'increment_id' => '0000004'
         ];
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['getBaseCurrencyCode', 'getIncrementId', 'getId', 'getBillingAddress', 'getShippingAddress'])
             ->getMock();

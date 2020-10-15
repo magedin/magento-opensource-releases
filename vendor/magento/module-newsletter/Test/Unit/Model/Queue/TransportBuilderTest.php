@@ -11,7 +11,6 @@ namespace Magento\Newsletter\Test\Unit\Model\Queue;
 use Magento\Email\Model\Template;
 use Magento\Email\Model\Template\Filter;
 use Magento\Framework\App\TemplateTypesInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\EmailMessageInterfaceFactory;
 use Magento\Framework\Mail\Message;
@@ -27,9 +26,10 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Newsletter\Model\Queue\TransportBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * @covers \Magento\Newsletter\Model\Queue\TransportBuilder
+ * Class TransportBuilderTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -38,40 +38,40 @@ class TransportBuilderTest extends TestCase
     /**
      * @var string
      */
-    private $builderClassName = TransportBuilder::class;
+    protected $builderClassName = TransportBuilder::class;
 
     /**
      * @var TransportBuilder
      */
-    private $builder;
+    protected $builder;
 
     /**
-     * @var FactoryInterface|MockObject
+     * @var FactoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
-    private $templateFactoryMock;
+    protected $templateFactoryMock;
 
     /**
-     * @var Message|MockObject
+     * @var Message|PHPUnit_Framework_MockObject_MockObject
      */
-    private $messageMock;
+    protected $messageMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|PHPUnit_Framework_MockObject_MockObject
      */
-    private $objectManagerMock;
+    protected $objectManagerMock;
 
     /**
-     * @var SenderResolverInterface|MockObject
+     * @var SenderResolverInterface|PHPUnit_Framework_MockObject_MockObject
      */
-    private $senderResolverMock;
+    protected $senderResolverMock;
 
     /**
-     * @var MockObject
+     * @var PHPUnit_Framework_MockObject_MockObject
      */
-    private $mailTransportFactoryMock;
+    protected $mailTransportFactoryMock;
 
     /**
-     * @var MessageInterfaceFactory|MockObject
+     * @var MessageInterfaceFactory|PHPUnit_Framework_MockObject_MockObject
      */
     private $messageFactoryMock;
 
@@ -88,10 +88,10 @@ class TransportBuilderTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    public function setUp(): void
     {
         $objectManagerHelper = new ObjectManager($this);
-        $this->templateFactoryMock = $this->getMockForAbstractClass(FactoryInterface::class);
+        $this->templateFactoryMock = $this->createMock(FactoryInterface::class);
         $this->messageMock = $this->getMockBuilder(MessageInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['setBodyHtml', 'setSubject'])
@@ -100,8 +100,8 @@ class TransportBuilderTest extends TestCase
         $this->emailMessageInterfaceFactoryMock = $this->createMock(EmailMessageInterfaceFactory::class);
         $this->mimePartFactoryMock = $this->createMock(MimePartInterfaceFactory::class);
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->senderResolverMock = $this->getMockForAbstractClass(SenderResolverInterface::class);
+        $this->objectManagerMock = $this->createMock(ObjectManagerInterface::class);
+        $this->senderResolverMock = $this->createMock(SenderResolverInterface::class);
         $this->mailTransportFactoryMock = $this->getMockBuilder(TransportInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
@@ -127,7 +127,7 @@ class TransportBuilderTest extends TestCase
      * @param string $bodyText
      * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testGetTransport(
         $templateType = TemplateTypesInterface::TYPE_HTML,
@@ -145,14 +145,14 @@ class TransportBuilderTest extends TestCase
         $options = ['area' => 'frontend', 'store' => 1];
 
         /** @var MimePartInterface|MockObject $mimePartMock */
-        $mimePartMock = $this->getMockForAbstractClass(MimePartInterface::class);
+        $mimePartMock = $this->createMock(MimePartInterface::class);
 
         $this->mimePartFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($mimePartMock);
 
         /** @var EmailMessageInterface|MockObject $emailMessage */
-        $emailMessage = $this->getMockForAbstractClass(EmailMessageInterface::class);
+        $emailMessage = $this->createMock(EmailMessageInterface::class);
 
         $this->emailMessageInterfaceFactoryMock->expects($this->any())
             ->method('create')
@@ -160,13 +160,13 @@ class TransportBuilderTest extends TestCase
 
         $template = $this->createMock(Template::class);
         $template->expects($this->once())->method('setVars')
-            ->with($vars)->willReturnSelf();
+            ->with($this->equalTo($vars))->will($this->returnSelf());
         $template->expects($this->once())->method('setOptions')
-            ->with($options)->willReturnSelf();
+            ->with($this->equalTo($options))->will($this->returnSelf());
         $template->expects($this->once())->method('getSubject')
             ->willReturn('Email Subject');
         $template->expects($this->once())->method('setData')
-            ->with($data)->willReturnSelf();
+            ->with($this->equalTo($data))->will($this->returnSelf());
         $template->expects($this->once())->method('getProcessedTemplate')
             ->with($vars)->willReturn($bodyText);
         $template->expects($this->once())->method('setTemplateFilter')
@@ -174,7 +174,7 @@ class TransportBuilderTest extends TestCase
 
         $this->templateFactoryMock->expects($this->once())
             ->method('get')
-            ->with('identifier')
+            ->with($this->equalTo('identifier'))
             ->willReturn($template);
 
         $this->builder->setTemplateIdentifier(

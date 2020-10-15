@@ -8,10 +8,6 @@ declare(strict_types=1);
 
 namespace Magento\Customer\Ui\Component\Listing\Column;
 
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
@@ -20,8 +16,6 @@ use Magento\Framework\Escaper;
 
 /**
  * Class GroupActions
- *
- * Customer Groups actions column
  */
 class GroupActions extends Column
 {
@@ -30,11 +24,6 @@ class GroupActions extends Column
      */
     const URL_PATH_EDIT = 'customer/group/edit';
     const URL_PATH_DELETE = 'customer/group/delete';
-
-    /**
-     * @var GroupManagementInterface
-     */
-    private $groupManagement;
 
     /**
      * @var UrlInterface
@@ -55,7 +44,6 @@ class GroupActions extends Column
      * @param Escaper $escaper
      * @param array $components
      * @param array $data
-     * @param GroupManagementInterface $groupManagement
      */
     public function __construct(
         ContextInterface $context,
@@ -63,13 +51,10 @@ class GroupActions extends Column
         UrlInterface $urlBuilder,
         Escaper $escaper,
         array $components = [],
-        array $data = [],
-        GroupManagementInterface $groupManagement = null
+        array $data = []
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->escaper = $escaper;
-        $this->groupManagement = $groupManagement ?: ObjectManager::getInstance()->get(GroupManagementInterface::class);
-
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -78,8 +63,6 @@ class GroupActions extends Column
      *
      * @param array $dataSource
      * @return array
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function prepareDataSource(array $dataSource)
     {
@@ -96,28 +79,33 @@ class GroupActions extends Column
                                 ]
                             ),
                             'label' => __('Edit'),
+                            '__disableTmpl' => true
                         ],
                     ];
 
-                    if (!$this->groupManagement->isReadonly($item['customer_group_id'])) {
-                        $item[$this->getData('name')]['delete'] = [
-                            'href' => $this->urlBuilder->getUrl(
-                                static::URL_PATH_DELETE,
-                                [
-                                    'id' => $item['customer_group_id']
-                                ]
-                            ),
-                            'label' => __('Delete'),
-                            'confirm' => [
-                                'title' => __('Delete %1', $this->escaper->escapeHtml($title)),
-                                'message' => __(
-                                    'Are you sure you want to delete a %1 record?',
-                                    $this->escaper->escapeHtml($title)
-                                )
-                            ],
-                            'post' => true,
-                        ];
+                    // hide delete action for 'NOT LOGGED IN' group
+                    if ($item['customer_group_id'] == 0 && $item['customer_group_code']) {
+                        continue;
                     }
+
+                    $item[$this->getData('name')]['delete'] = [
+                        'href' => $this->urlBuilder->getUrl(
+                            static::URL_PATH_DELETE,
+                            [
+                                'id' => $item['customer_group_id']
+                            ]
+                        ),
+                        'label' => __('Delete'),
+                        'confirm' => [
+                            'title' => __('Delete %1', $this->escaper->escapeHtml($title)),
+                            'message' => __(
+                                'Are you sure you want to delete a %1 record?',
+                                $this->escaper->escapeHtml($title)
+                            )
+                        ],
+                        'post' => true,
+                        '__disableTmpl' => true
+                    ];
                 }
             }
         }

@@ -44,7 +44,6 @@ class Link extends \Magento\Framework\View\Element\Template
         \Magento\Framework\Url\EncoderInterface $urlEncoder,
         array $data = []
     ) {
-        $data['wishlistHelper'] = $this->wishlistHelper;
         parent::__construct($context, $data);
         $this->wishlistHelper = $wishlistHelper;
         $this->rssUrlBuilder = $rssUrlBuilder;
@@ -52,8 +51,6 @@ class Link extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Return link.
-     *
      * @return string
      */
     public function getLink()
@@ -75,8 +72,6 @@ class Link extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Return link params.
-     *
      * @return array
      */
     protected function getLinkParams()

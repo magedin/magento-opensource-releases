@@ -3,20 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-declare(strict_types=1);
-
 namespace Magento\Developer\Test\Unit\Model\TemplateEngine\Decorator;
 
-use Magento\Developer\Model\TemplateEngine\Decorator\DebugHints;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\TemplateEngineInterface;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\DataObject;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
-class DebugHintsTest extends TestCase
+class DebugHintsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param bool $showBlockHints
@@ -24,10 +13,10 @@ class DebugHintsTest extends TestCase
      */
     public function testRender($showBlockHints)
     {
-        $subject = $this->getMockForAbstractClass(TemplateEngineInterface::class);
-        $block = $this->getMockBuilder(BlockInterface::class)
+        $subject = $this->createMock(\Magento\Framework\View\TemplateEngineInterface::class);
+        $block = $this->getMockBuilder(\Magento\Framework\View\Element\BlockInterface::class)
             ->setMockClassName('TestBlock')
-            ->getMockForAbstractClass();
+            ->getMock();
         $subject->expects(
             $this->once()
         )->method(
@@ -36,33 +25,10 @@ class DebugHintsTest extends TestCase
             $this->identicalTo($block),
             'template.phtml',
             ['var' => 'val']
-        )->willReturn(
-            '<div id="fixture"/>'
+        )->will(
+            $this->returnValue('<div id="fixture"/>')
         );
-        $randomMock = $this->createMock(Random::class);
-        $randomMock->method('getRandomString')->willReturn('random');
-        $secureRendererMock = $this->createMock(SecureHtmlRenderer::class);
-        $secureRendererMock->method('renderTag')
-            ->willReturnCallback(
-                function (string $tag, array $attributes, string $content): string {
-                    $attributes = new DataObject($attributes);
-
-                    return "<$tag {$attributes->serialize()}>$content</$tag>";
-                }
-            );
-        $secureRendererMock->method('renderEventListenerAsTag')
-            ->willReturnCallback(
-                function (string $event, string $js, string $selector): string {
-                    return "<script>document.querySelector('$selector').$event = function () { $js };</script>";
-                }
-            );
-        $secureRendererMock->method('renderStyleAsTag')
-            ->willReturnCallback(
-                function (string $style, string $selector): string {
-                    return "<style>$selector { $style }</style>";
-                }
-            );
-        $model = new DebugHints($subject, $showBlockHints, $secureRendererMock, $randomMock);
+        $model = new \Magento\Developer\Model\TemplateEngine\Decorator\DebugHints($subject, $showBlockHints);
         $actualResult = $model->render($block, 'template.phtml', ['var' => 'val']);
         $this->assertNotNull($actualResult);
     }

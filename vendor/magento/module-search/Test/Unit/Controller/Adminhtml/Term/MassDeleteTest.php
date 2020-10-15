@@ -3,85 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Search\Test\Unit\Controller\Adminhtml\Term;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Search\Controller\Adminhtml\Term\MassDelete;
-use Magento\Search\Model\Query;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Controller\ResultFactory;
 
-class MassDeleteTest extends TestCase
+class MassDeleteTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $messageManager;
 
-    /** @var  ObjectManagerInterface|MockObject */
+    /** @var  \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $objectManager;
 
-    /** @var MassDelete */
+    /** @var \Magento\Search\Controller\Adminhtml\Term\MassDelete */
     private $controller;
 
     /** @var ObjectManagerHelper */
     private $objectManagerHelper;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $context;
 
-    /** @var PageFactory|MockObject */
+    /** @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $pageFactory;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $request;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockBuilder(RequestInterface::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMockForAbstractClass();
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['addSuccessMessage', 'addErrorMessage'])
             ->getMockForAbstractClass();
-        $this->pageFactory = $this->getMockBuilder(PageFactory::class)
+        $this->pageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->setMethods([])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resultFactoryMock->expects($this->any())
             ->method('create')
             ->with(ResultFactory::TYPE_REDIRECT, [])
             ->willReturn($this->resultRedirectMock);
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->atLeastOnce())
@@ -99,7 +88,7 @@ class MassDeleteTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->controller = $this->objectManagerHelper->getObject(
-            MassDelete::class,
+            \Magento\Search\Controller\Adminhtml\Term\MassDelete::class,
             [
                 'context' => $this->context,
                 'resultPageFactory' => $this->pageFactory,
@@ -113,12 +102,13 @@ class MassDeleteTest extends TestCase
         $this->request->expects($this->once())
             ->method('getParam')
             ->with('search')
-            ->willReturn($ids);
+            ->will($this->returnValue($ids));
 
         $this->createQuery(0, 1);
         $this->createQuery(1, 2);
         $this->messageManager->expects($this->once())
-            ->method('addSuccessMessage')->willReturnSelf();
+            ->method('addSuccessMessage')
+            ->will($this->returnSelf());
         $this->resultRedirectMock->expects($this->once())
             ->method('setPath')
             ->with('search/*/')
@@ -130,23 +120,25 @@ class MassDeleteTest extends TestCase
     /**
      * @param $index
      * @param $id
-     * @return Query|MockObject
+     * @return \Magento\Search\Model\Query|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createQuery($index, $id)
     {
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(\Magento\Search\Model\Query::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'delete'])
             ->getMock();
         $query->expects($this->at(0))
-            ->method('delete')->willReturnSelf();
+            ->method('delete')
+            ->will($this->returnSelf());
         $query->expects($this->at(0))
             ->method('load')
-            ->with($id)->willReturnSelf();
+            ->with($id)
+            ->will($this->returnSelf());
         $this->objectManager->expects($this->at($index))
             ->method('create')
-            ->with(Query::class)
-            ->willReturn($query);
+            ->with(\Magento\Search\Model\Query::class)
+            ->will($this->returnValue($query));
         return $query;
     }
 }

@@ -24,7 +24,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     private $origMode;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $params = ['layout' => $this->objectManager->create(\Magento\Framework\View\Layout::class, [])];
@@ -45,7 +45,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritDoc}
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var \Magento\TestFramework\App\State $appState */
         $appState = $this->objectManager->get(\Magento\TestFramework\App\State::class);

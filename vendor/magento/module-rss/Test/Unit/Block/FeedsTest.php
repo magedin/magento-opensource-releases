@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Rss\Test\Unit\Block;
 
-use Magento\Framework\App\Rss\DataProviderInterface;
-use Magento\Framework\App\Rss\RssManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Rss\Block\Feeds;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FeedsTest extends TestCase
+/**
+ * Class FeedsTest
+ * @package Magento\Rss\Block
+ */
+class FeedsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Feeds
+     * @var \Magento\Rss\Block\Feeds
      */
     protected $block;
 
@@ -28,23 +24,23 @@ class FeedsTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var RssManagerInterface|MockObject
+     * @var \Magento\Framework\App\Rss\RssManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rssManagerInterface;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->createMock(Context::class);
-        $this->rssManagerInterface = $this->getMockForAbstractClass(RssManagerInterface::class);
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->rssManagerInterface = $this->createMock(\Magento\Framework\App\Rss\RssManagerInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->block = $this->objectManagerHelper->getObject(
-            Feeds::class,
+            \Magento\Rss\Block\Feeds::class,
             [
                 'context' => $this->context,
                 'rssManager' => $this->rssManagerInterface
@@ -54,8 +50,8 @@ class FeedsTest extends TestCase
 
     public function testGetFeeds()
     {
-        $provider1 = $this->getMockForAbstractClass(DataProviderInterface::class);
-        $provider2 = $this->getMockForAbstractClass(DataProviderInterface::class);
+        $provider1 = $this->createMock(\Magento\Framework\App\Rss\DataProviderInterface::class);
+        $provider2 = $this->createMock(\Magento\Framework\App\Rss\DataProviderInterface::class);
         $feed1 = [
             'group' => 'Some Group',
             'feeds' => [
@@ -63,10 +59,10 @@ class FeedsTest extends TestCase
             ],
         ];
         $feed2 = ['link' => 'feed 2 link', 'label' => 'Feed 2 Label'];
-        $provider1->expects($this->once())->method('getFeeds')->willReturn($feed1);
-        $provider2->expects($this->once())->method('getFeeds')->willReturn($feed2);
+        $provider1->expects($this->once())->method('getFeeds')->will($this->returnValue($feed1));
+        $provider2->expects($this->once())->method('getFeeds')->will($this->returnValue($feed2));
         $this->rssManagerInterface->expects($this->once())->method('getProviders')
-            ->willReturn([$provider1, $provider2]);
+            ->will($this->returnValue([$provider1, $provider2]));
 
         $this->assertEquals([$feed2, $feed1], $this->block->getFeeds());
     }

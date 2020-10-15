@@ -3,75 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml;
 
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\Manager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Controller\Adminhtml\Order\PdfDocumentsMassAction;
-use Magento\Sales\Controller\Adminhtml\Order\Pdfinvoices;
-use Magento\Sales\Model\ResourceModel\Order\Collection;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use Magento\Ui\Component\MassAction\Filter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class PdfDocumentsMassActionTest extends TestCase
+class PdfDocumentsMassActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PdfDocumentsMassAction
+     * @var \Magento\Sales\Controller\Adminhtml\Order\PdfDocumentsMassAction
      */
     private $controller;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirect;
 
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Message\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderCollectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $filterMock;
 
     /**
      * Test setup
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
 
         $this->messageManager = $this->createPartialMock(
-            Manager::class,
+            \Magento\Framework\Message\Manager::class,
             ['addSuccessMessage', 'addErrorMessage']
         );
 
-        $this->orderCollectionMock = $this->createMock(Collection::class);
-        $this->filterMock = $this->createMock(Filter::class);
+        $this->orderCollectionMock = $this->createMock(\Magento\Sales\Model\ResourceModel\Order\Collection::class);
+        $this->filterMock = $this->createMock(\Magento\Ui\Component\MassAction\Filter::class);
 
         $this->orderCollectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\CollectionFactory::class,
             ['create']
         );
 
@@ -79,11 +64,11 @@ class PdfDocumentsMassActionTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->willReturn($this->orderCollectionMock);
-        $this->resultRedirect = $this->createMock(Redirect::class);
-        $resultRedirectFactory = $this->createMock(ResultFactory::class);
+        $this->resultRedirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
+        $resultRedirectFactory = $this->createMock(\Magento\Framework\Controller\ResultFactory::class);
         $resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
         $this->controller = $objectManagerHelper->getObject(
-            Pdfinvoices::class,
+            \Magento\Sales\Controller\Adminhtml\Order\Pdfinvoices::class,
             [
                 'filter' => $this->filterMock,
                 'resultFactory' => $resultRedirectFactory,
@@ -99,7 +84,7 @@ class PdfDocumentsMassActionTest extends TestCase
     }
 
     /**
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testExecute()
     {

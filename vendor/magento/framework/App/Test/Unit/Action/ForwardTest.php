@@ -3,56 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Action;
 
-use Magento\Framework\App\Action\Forward;
-use Magento\Framework\App\Http\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test Forward
  *
  * getRequest,getResponse of AbstractAction class is also tested
  */
-class ForwardTest extends TestCase
+class ForwardTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Forward
+     * @var \Magento\Framework\App\Action\Forward
      */
     protected $actionAbstract;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\RequestInterface
      */
     protected $request;
 
     /**
-     * @var ResponseInterface
+     * @var \Magento\Framework\App\ResponseInterface
      */
     protected $response;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $cookieMetadataFactoryMock = $this->getMockBuilder(
-            CookieMetadataFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
-        $contextMock = $this->getMockBuilder(Context::class)
-            ->disableOriginalConstructor()
+            \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory::class
+        )->disableOriginalConstructor()->getMock();
+        $cookieManagerMock = $this->createMock(\Magento\Framework\Stdlib\CookieManagerInterface::class);
+        $contextMock = $this->getMockBuilder(\Magento\Framework\App\Http\Context::class)->disableOriginalConstructor()
             ->getMock();
         $this->response = $objectManager->getObject(
-            Http::class,
+            \Magento\Framework\App\Response\Http::class,
             [
                 'cookieManager' => $cookieManagerMock,
                 'cookieMetadataFactory' => $cookieMetadataFactoryMock,
@@ -61,11 +48,10 @@ class ForwardTest extends TestCase
         );
 
         $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
 
         $this->actionAbstract = $objectManager->getObject(
-            Forward::class,
+            \Magento\Framework\App\Action\Forward::class,
             [
                 'request' => $this->request,
                 'response' => $this->response

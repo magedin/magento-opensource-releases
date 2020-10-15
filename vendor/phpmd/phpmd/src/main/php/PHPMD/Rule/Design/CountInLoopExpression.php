@@ -21,7 +21,6 @@ use PDepend\Source\AST\AbstractASTNode;
 use PHPMD\AbstractNode;
 use PHPMD\AbstractRule;
 use PHPMD\Node\ASTNode;
-use PHPMD\Node\ClassNode;
 use PHPMD\Rule\ClassAware;
 
 /**
@@ -68,10 +67,6 @@ class CountInLoopExpression extends AbstractRule implements ClassAware
      */
     public function apply(AbstractNode $node)
     {
-        if ($node instanceof ClassNode) {
-            return $this->applyOnClassMethods($node);
-        }
-
         $this->currentNamespace = $node->getNamespaceName() . '\\';
         $loops = array_merge(
             $node->findChildrenOfType('ForStatement'),

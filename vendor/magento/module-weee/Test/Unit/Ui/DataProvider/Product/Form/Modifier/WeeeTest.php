@@ -3,41 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
+use Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier\AbstractModifierTest;
+use Magento\Weee\Ui\DataProvider\Product\Form\Modifier\Weee;
+use Magento\Directory\Model\Config\Source\Country as SourceCountry;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory as EavAttributeFactory;
-use Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier\AbstractModifierTest;
-use Magento\Directory\Model\Config\Source\Country as SourceCountry;
 use Magento\Weee\Ui\DataProvider\Product\Form\Modifier\Manager\Website as WebsiteManager;
-use Magento\Weee\Ui\DataProvider\Product\Form\Modifier\Weee;
-use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class WeeeTest
+ */
 class WeeeTest extends AbstractModifierTest
 {
     /**
-     * @var SourceCountry|MockObject
+     * @var SourceCountry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $sourceCountryMock;
 
     /**
-     * @var EavAttributeFactory|MockObject
+     * @var EavAttributeFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavAttributeFactoryMock;
 
     /**
-     * @var EavAttribute|MockObject
+     * @var EavAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavAttributeMock;
 
     /**
-     * @var WebsiteManager|MockObject
+     * @var WebsiteManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $websiteManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->sourceCountryMock = $this->getMockBuilder(SourceCountry::class)

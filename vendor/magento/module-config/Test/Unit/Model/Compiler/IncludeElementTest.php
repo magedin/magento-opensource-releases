@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Compiler;
 
-use Magento\Config\Model\Config\Compiler\IncludeElement;
-use Magento\Framework\DataObject;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Framework\View\TemplateEngine\Xhtml\CompilerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IncludeElementTest extends TestCase
+/**
+ * Class IncludeElementTest
+ */
+class IncludeElementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var IncludeElement
+     * @var \Magento\Config\Model\Config\Compiler\IncludeElement
      */
     protected $includeElement;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $moduleReaderMock;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readFactoryMock;
 
@@ -38,16 +30,16 @@ class IncludeElementTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->moduleReaderMock = $this->getMockBuilder(Reader::class)
+        $this->moduleReaderMock = $this->getMockBuilder(\Magento\Framework\Module\Dir\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->readFactoryMock = $this->getMockBuilder(ReadFactory::class)
+        $this->readFactoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->includeElement = new IncludeElement(
+        $this->includeElement = new \Magento\Config\Model\Config\Compiler\IncludeElement(
             $this->moduleReaderMock,
             $this->readFactoryMock
         );
@@ -63,9 +55,9 @@ class IncludeElementTest extends TestCase
         $document = new \DOMDocument();
         $document->loadXML($xmlContent);
 
-        $compilerMock = $this->getMockBuilder(CompilerInterface::class)
+        $compilerMock = $this->getMockBuilder(\Magento\Framework\View\TemplateEngine\Xhtml\CompilerInterface::class)
             ->getMockForAbstractClass();
-        $processedObjectMock = $this->getMockBuilder(DataObject::class)
+        $processedObjectMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -88,18 +80,20 @@ class IncludeElementTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The "adminhtml/path/to/file.xml" file doesn't exist.
+     */
     public function testCompileException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The "adminhtml/path/to/file.xml" file doesn\'t exist.');
         $xmlContent = '<rootConfig><include path="Module_Name::path/to/file.xml"/></rootConfig>';
 
         $document = new \DOMDocument();
         $document->loadXML($xmlContent);
 
-        $compilerMock = $this->getMockBuilder(CompilerInterface::class)
+        $compilerMock = $this->getMockBuilder(\Magento\Framework\View\TemplateEngine\Xhtml\CompilerInterface::class)
             ->getMockForAbstractClass();
-        $processedObjectMock = $this->getMockBuilder(DataObject::class)
+        $processedObjectMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -125,7 +119,7 @@ class IncludeElementTest extends TestCase
         $resultPath = 'adminhtml/path/to/file.xml';
         $includeXmlContent = '<config><item id="1"><test/></item><item id="2"></item></config>';
 
-        $modulesDirectoryMock = $this->getMockBuilder(ReadInterface::class)
+        $modulesDirectoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->getMockForAbstractClass();
 
         $this->readFactoryMock->expects($this->once())

@@ -6,7 +6,7 @@
 namespace Magento\Config\Model\Config\Structure\Element;
 
 /**
- * Element section
+ * Section
  *
  * @api
  * @since 100.0.2
@@ -43,7 +43,7 @@ class Section extends AbstractComposite
      */
     public function getHeaderCss()
     {
-        return $this->_data['header_css'] ?? '';
+        return isset($this->_data['header_css']) ? $this->_data['header_css'] : '';
     }
 
     /**

@@ -3,22 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Helper;
 
-use Magento\Catalog\Helper\Product;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Product
+     * @var \Magento\Catalog\Helper\Product
      */
     protected $_productHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $arguments = [
             'reindexPriceIndexerData' => [
@@ -27,8 +21,8 @@ class ProductTest extends TestCase
             ],
         ];
 
-        $objectManager = new ObjectManager($this);
-        $this->_productHelper = $objectManager->getObject(Product::class, $arguments);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_productHelper = $objectManager->getObject(\Magento\Catalog\Helper\Product::class, $arguments);
     }
 
     /**
@@ -49,36 +43,33 @@ class ProductTest extends TestCase
     {
         $product1 = $this->getMockBuilder(
             \Magento\Catalog\Model\Product::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $product2 = $this->getMockBuilder(
             \Magento\Catalog\Model\Product::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $product2->expects(
             $this->once()
         )->method(
             'getData'
         )->with(
-            'attribute'
-        )->willReturn(
-            true
+            $this->equalTo('attribute')
+        )->will(
+            $this->returnValue(true)
         );
 
         $product3 = $this->getMockBuilder(
             \Magento\Catalog\Model\Product::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $product3->expects(
             $this->once()
         )->method(
             'dataHasChangedFor'
         )->with(
-            'attribute'
-        )->willReturn(
-            true
+            $this->equalTo('attribute')
+        )->will(
+            $this->returnValue(true)
         );
 
         return [

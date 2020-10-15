@@ -3,21 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Model;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\ConfigurableProduct\Model\Product\Type\VariationMatrix;
-use Magento\ConfigurableProduct\Model\ProductVariationsBuilder;
-use Magento\Framework\Api\AttributeInterface;
-use Magento\Framework\Api\AttributeValueFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProductVariationsBuilderTest extends TestCase
+class ProductVariationsBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductVariationsBuilder
@@ -25,41 +14,41 @@ class ProductVariationsBuilderTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $customAttributeFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $variationMatrix;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customAttributeFactory = $this->createMock(AttributeValueFactory::class);
+        $this->customAttributeFactory = $this->createMock(\Magento\Framework\Api\AttributeValueFactory::class);
 
         $this->product = $this->createPartialMock(
-            Product::class,
-            ['getData', 'getPrice', 'getName', 'getSku', 'getCustomAttributes']
+            \Magento\Catalog\Model\Product::class,
+            ['getData', 'getPrice', 'getName', 'getSku', '__wakeup', 'getCustomAttributes']
         );
 
-        $this->productFactory = $this->createPartialMock(ProductFactory::class, ['create']);
+        $this->productFactory = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
 
         $this->variationMatrix = $this->createMock(
-            VariationMatrix::class
+            \Magento\ConfigurableProduct\Model\Product\Type\VariationMatrix::class
         );
 
-        $this->model = new ProductVariationsBuilder(
+        $this->model = new \Magento\ConfigurableProduct\Model\ProductVariationsBuilder(
             $this->productFactory,
             $this->customAttributeFactory,
             $this->variationMatrix
@@ -69,8 +58,8 @@ class ProductVariationsBuilderTest extends TestCase
     public function testCreate()
     {
         $output = $this->createPartialMock(
-            Product::class,
-            ['setPrice', 'setData', 'getCustomAttributes', 'setName', 'setSku', 'setVisibility']
+            \Magento\Catalog\Model\Product::class,
+            ['setPrice', '__wakeup', 'setData', 'getCustomAttributes', 'setName', 'setSku', 'setVisibility']
         );
         $attributes = [10 => ['attribute_code' => 'sort_order']];
         $variations = [
@@ -90,7 +79,7 @@ class ProductVariationsBuilderTest extends TestCase
 
         $output->expects($this->at(0))->method('setData')->with($productData);
 
-        $attribute = $this->getMockForAbstractClass(AttributeInterface::class);
+        $attribute = $this->createMock(\Magento\Framework\Api\AttributeInterface::class);
         $attribute->expects($this->once())
             ->method('setAttributeCode')
             ->with('sort_order')
@@ -112,7 +101,7 @@ class ProductVariationsBuilderTest extends TestCase
         $output->expects($this->once())->method('setName')->with('simple-15');
         $output->expects($this->once())->method('setSku')->with('simple-sku-15');
         $output->expects($this->once())->method('setVisibility')
-            ->with(Visibility::VISIBILITY_NOT_VISIBLE);
+            ->with(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE);
 
         $this->assertEquals([$output], $this->model->create($this->product, $attributes));
     }

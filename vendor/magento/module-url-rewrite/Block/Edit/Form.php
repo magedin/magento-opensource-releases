@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Block\Edit;
 
 /**
@@ -97,7 +95,6 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
 
     /**
      * Initialize form values
-     *
      * Set form data either from model values or from session
      *
      * @return $this
@@ -197,7 +194,7 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 'label' => __('Redirect Type'),
                 'title' => __('Redirect Type'),
                 'name' => 'redirect_type',
-                'options' => $this->optionProvider->getOptions(),
+                'options' => $this->optionProvider->toOptionArray(),
                 'value' => $this->_formValues['redirect_type']
             ]
         );

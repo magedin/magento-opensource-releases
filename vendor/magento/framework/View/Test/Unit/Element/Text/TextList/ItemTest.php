@@ -3,28 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test for view BlockPool model
  */
 namespace Magento\Framework\View\Test\Unit\Element\Text\TextList;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Text\TextList\Item;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Element\Text\TextList\Item;
 
-class ItemTest extends TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Item
      */
     protected $item;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->item = $objectManager->getObject(Item::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->item = $objectManager->getObject(\Magento\Framework\View\Element\Text\TextList\Item::class);
     }
 
     public function testSetLink()

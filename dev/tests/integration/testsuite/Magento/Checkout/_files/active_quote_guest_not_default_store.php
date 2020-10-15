@@ -3,19 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+include 'testsuite/Magento/Store/_files/second_store.php';
 
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Store\Api\StoreRepositoryInterface;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_store.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var StoreRepositoryInterface $storeRepository */
-$storeRepository = $objectManager->get(StoreRepositoryInterface::class);
-$store = $storeRepository->get('fixture_second_store');
-$quote = $objectManager->create(\Magento\Quote\Model\Quote::class);
+$quote = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Quote\Model\Quote::class);
 $quote->setStoreId($store->getId())
     ->setIsActive(true)
     ->setIsMultiShipping(false)
@@ -23,7 +13,7 @@ $quote->setStoreId($store->getId())
     ->save();
 
 /** @var \Magento\Quote\Model\QuoteIdMask $quoteIdMask */
-$quoteIdMask = $objectManager
+$quoteIdMask = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Quote\Model\QuoteIdMaskFactory::class)
     ->create();
 $quoteIdMask->setQuoteId($quote->getId());

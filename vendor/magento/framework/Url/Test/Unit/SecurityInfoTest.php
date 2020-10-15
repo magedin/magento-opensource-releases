@@ -3,29 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Url\Test\Unit;
 
-use Magento\Framework\Url\SecurityInfo;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SecurityInfoTest extends TestCase
+class SecurityInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_scopeConfigMock;
 
     /**
-     * @var SecurityInfo
+     * @var \Magento\Framework\Url\SecurityInfo
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new SecurityInfo(['/account', '/cart'], ['/cart/remove', 'customer']);
+        $this->_model = new \Magento\Framework\Url\SecurityInfo(['/account', '/cart'], ['/cart/remove', 'customer']);
     }
 
     /**

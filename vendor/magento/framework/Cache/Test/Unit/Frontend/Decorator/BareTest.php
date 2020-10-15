@@ -3,16 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Cache\Test\Unit\Frontend\Decorator;
 
-use Magento\Framework\Cache\Frontend\Decorator\Bare;
-use Magento\Framework\Cache\FrontendInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ProxyTesting;
-use PHPUnit\Framework\TestCase;
-
-class BareTest extends TestCase
+class BareTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $method
@@ -22,10 +15,10 @@ class BareTest extends TestCase
      */
     public function testProxyMethod($method, $params, $expectedResult)
     {
-        $frontendMock = $this->getMockForAbstractClass(FrontendInterface::class);
+        $frontendMock = $this->createMock(\Magento\Framework\Cache\FrontendInterface::class);
 
-        $object = new Bare($frontendMock);
-        $helper = new ProxyTesting();
+        $object = new \Magento\Framework\Cache\Frontend\Decorator\Bare($frontendMock);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ProxyTesting();
         $result = $helper->invokeWithExpectations($object, $frontendMock, $method, $params, $expectedResult);
         $this->assertSame($expectedResult, $result);
     }

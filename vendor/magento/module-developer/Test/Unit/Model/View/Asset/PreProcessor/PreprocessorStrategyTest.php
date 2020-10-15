@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Developer\Test\Unit\Model\View\Asset\PreProcessor;
 
 use Magento\Developer\Model\Config\Source\WorkflowType;
@@ -15,14 +13,14 @@ use Magento\Framework\App\State;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Asset\PreProcessor\AlternativeSourceInterface;
 use Magento\Framework\View\Asset\PreProcessor\Chain;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class PreprocessorStrategyTest
+ *
  * @see \Magento\Developer\Model\View\Asset\PreProcessor\PreprocessorStrategy
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PreprocessorStrategyTest extends TestCase
+class PreprocessorStrategyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PreprocessorStrategy
@@ -30,34 +28,34 @@ class PreprocessorStrategyTest extends TestCase
     private $preprocessorStrategy;
 
     /**
-     * @var FrontendCompilation|MockObject
+     * @var FrontendCompilation|\PHPUnit_Framework_MockObject_MockObject
      */
     private $frontendCompilationMock;
 
     /**
-     * @var AlternativeSourceInterface|MockObject
+     * @var AlternativeSourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $alternativeSourceMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $stateMock;
 
     /**
-     * @var \Magento\Framework\App\ObjectManager|MockObject
+     * @var \Magento\Framework\App\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectMangerMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->alternativeSourceMock = $this->getMockBuilder(AlternativeSourceInterface::class)
             ->getMockForAbstractClass();
@@ -73,15 +71,12 @@ class PreprocessorStrategyTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->preprocessorStrategy = (new ObjectManager($this))->getObject(
-            PreprocessorStrategy::class,
-            [
-                'alternativeSource' => $this->alternativeSourceMock,
-                'frontendCompilation' => $this->frontendCompilationMock,
-                'scopeConfig' => $this->scopeConfigMock,
-                'state' => $this->stateMock,
-            ]
-        );
+        $this->preprocessorStrategy = (new ObjectManager($this))->getObject(PreprocessorStrategy::class, [
+            'alternativeSource' => $this->alternativeSourceMock,
+            'frontendCompilation' => $this->frontendCompilationMock,
+            'scopeConfig' => $this->scopeConfigMock,
+            'state' => $this->stateMock,
+        ]);
     }
 
     /**
@@ -153,12 +148,14 @@ class PreprocessorStrategyTest extends TestCase
     }
 
     /**
-     * @return Chain|MockObject
+     * @return Chain|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getChainMock()
     {
-        return $this->getMockBuilder(Chain::class)
+        $chainMock = $this->getMockBuilder(Chain::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        return $chainMock;
     }
 }

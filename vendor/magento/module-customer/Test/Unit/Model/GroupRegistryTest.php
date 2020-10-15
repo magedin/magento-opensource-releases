@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model;
-
-use Magento\Customer\Model\Group;
-use Magento\Customer\Model\GroupFactory;
-use Magento\Customer\Model\GroupRegistry;
-use Magento\Framework\Exception\NoSuchEntityException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for registry \Magento\Customer\Model\GroupRegistry
  */
-class GroupRegistryTest extends TestCase
+class GroupRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GroupRegistry
+     * @var \Magento\Customer\Model\GroupRegistry
      */
     private $unit;
 
     /**
-     * @var \Magento\Customer\Model\CustomerGroupFactory|MockObject
+     * @var \Magento\Customer\Model\CustomerGroupFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->groupFactory = $this->getMockBuilder(GroupFactory::class)
+        $this->groupFactory = $this->getMockBuilder(\Magento\Customer\Model\GroupFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->unit = new GroupRegistry($this->groupFactory);
+        $this->unit = new \Magento\Customer\Model\GroupRegistry($this->groupFactory);
     }
 
     /**
@@ -46,20 +37,20 @@ class GroupRegistryTest extends TestCase
     public function testRetrieve()
     {
         $groupId = 1;
-        $group = $this->getMockBuilder(Group::class)
+        $group = $this->getMockBuilder(\Magento\Customer\Model\Group::class)
             ->setMethods(['load', 'getId', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
         $group->expects($this->once())
             ->method('load')
             ->with($groupId)
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $group->expects($this->exactly(2))
             ->method('getId')
-            ->willReturn($groupId);
+            ->will($this->returnValue($groupId));
         $this->groupFactory->expects($this->once())
             ->method('create')
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $actual = $this->unit->retrieve($groupId);
         $this->assertEquals($group, $actual);
         $actualCached = $this->unit->retrieve($groupId);
@@ -70,26 +61,25 @@ class GroupRegistryTest extends TestCase
      * Tests that attempting to retrieve a non-existing entity will result in an exception.
      *
      * @return void
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testRetrieveException()
     {
-        $this->expectException(NoSuchEntityException::class);
-
         $groupId = 1;
-        $group = $this->getMockBuilder(Group::class)
+        $group = $this->getMockBuilder(\Magento\Customer\Model\Group::class)
             ->setMethods(['load', 'getId', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
         $group->expects($this->once())
             ->method('load')
             ->with($groupId)
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $group->expects($this->once())
             ->method('getId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->groupFactory->expects($this->once())
             ->method('create')
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $this->unit->retrieve($groupId);
     }
 
@@ -101,20 +91,20 @@ class GroupRegistryTest extends TestCase
     public function testRemove()
     {
         $groupId = 1;
-        $group = $this->getMockBuilder(Group::class)
+        $group = $this->getMockBuilder(\Magento\Customer\Model\Group::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', '__wakeup'])
             ->getMock();
         $group->expects($this->exactly(2))
             ->method('load')
             ->with($groupId)
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $group->expects($this->exactly(4))
             ->method('getId')
-            ->willReturn($groupId);
+            ->will($this->returnValue($groupId));
         $this->groupFactory->expects($this->exactly(2))
             ->method('create')
-            ->willReturn($group);
+            ->will($this->returnValue($group));
         $actual = $this->unit->retrieve($groupId);
         $this->assertSame($group, $actual);
         $this->unit->remove($groupId);

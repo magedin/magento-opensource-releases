@@ -8,9 +8,6 @@ namespace Magento\Framework\Image;
 
 use Magento\Framework\ObjectManagerInterface;
 
-/**
- * Factory for object to manipulate images
- */
 class Factory
 {
     /**

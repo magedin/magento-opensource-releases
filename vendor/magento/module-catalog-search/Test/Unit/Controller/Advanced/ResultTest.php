@@ -3,36 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Controller\Advanced;
-
-use Magento\CatalogSearch\Controller\Advanced\Result;
-use Magento\CatalogSearch\Model\Advanced;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Console\Request;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\View;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\Manager;
-use Magento\Framework\Phrase;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url;
-use Magento\Framework\UrlFactory;
-use Magento\Framework\View\Model\Layout\Merge;
-use Magento\Framework\View\Result\Layout;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\Webapi\Response;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ResultTest extends TestCase
+class ResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test result action filters set before load layout scenario
@@ -45,50 +21,48 @@ class ResultTest extends TestCase
         $expectedQuery = 'filtersData';
 
         $view = $this->createPartialMock(
-            View::class,
+            \Magento\Framework\App\View::class,
             ['loadLayout', 'renderLayout', 'getPage', 'getLayout']
         );
-        $update = $this->createPartialMock(Merge::class, ['getHandles']);
-        $update->expects($this->once())->method('getHandles')->willReturn([]);
-        $layout = $this->getMockBuilder(Layout::class)
-            ->addMethods(['getUpdate'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $layout->expects($this->once())->method('getUpdate')->willReturn($update);
-        $view->expects($this->once())->method('getLayout')->willReturn($layout);
-        $page = $this->createPartialMock(Page::class, ['initLayout']);
-        $view->expects($this->once())->method('getPage')->willReturn($page);
-        $view->expects($this->once())->method('loadLayout')->willReturnCallback(
-            function () use (&$filters, $expectedQuery) {
-                $this->assertEquals($expectedQuery, $filters);
-            }
+        $update = $this->createPartialMock(\Magento\Framework\View\Model\Layout\Merge::class, ['getHandles']);
+        $update->expects($this->once())->method('getHandles')->will($this->returnValue([]));
+        $layout = $this->createPartialMock(\Magento\Framework\View\Result\Layout::class, ['getUpdate']);
+        $layout->expects($this->once())->method('getUpdate')->will($this->returnValue($update));
+        $view->expects($this->once())->method('getLayout')->will($this->returnValue($layout));
+        $page = $this->createPartialMock(\Magento\Framework\View\Result\Page::class, ['initLayout']);
+        $view->expects($this->once())->method('getPage')->will($this->returnValue($page));
+        $view->expects($this->once())->method('loadLayout')->will(
+            $this->returnCallback(
+                function () use (&$filters, $expectedQuery) {
+                    $this->assertEquals($expectedQuery, $filters);
+                }
+            )
         );
 
-        $request = $this->getMockBuilder(Request::class)
-            ->addMethods(['getQueryValue'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $request->expects($this->once())->method('getQueryValue')->willReturn($expectedQuery);
+        $request = $this->createPartialMock(\Magento\Framework\App\Console\Request::class, ['getQueryValue']);
+        $request->expects($this->once())->method('getQueryValue')->will($this->returnValue($expectedQuery));
 
         $catalogSearchAdvanced = $this->createPartialMock(
-            Advanced::class,
+            \Magento\CatalogSearch\Model\Advanced::class,
             ['addFilters', '__wakeup']
         );
-        $catalogSearchAdvanced->expects($this->once())->method('addFilters')->willReturnCallback(
-            function ($added) use (&$filters) {
-                $filters = $added;
-            }
+        $catalogSearchAdvanced->expects($this->once())->method('addFilters')->will(
+            $this->returnCallback(
+                function ($added) use (&$filters) {
+                    $filters = $added;
+                }
+            )
         );
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $context = $objectManager->getObject(
-            Context::class,
+            \Magento\Framework\App\Action\Context::class,
             ['view' => $view, 'request' => $request]
         );
 
-        /** @var Result $instance */
+        /** @var \Magento\CatalogSearch\Controller\Advanced\Result $instance */
         $instance = $objectManager->getObject(
-            Result::class,
+            \Magento\CatalogSearch\Controller\Advanced\Result::class,
             ['context' => $context, 'catalogSearchAdvanced' => $catalogSearchAdvanced]
         );
         $instance->execute();
@@ -101,11 +75,11 @@ class ResultTest extends TestCase
      */
     public function testUrlSetOnException()
     {
-        $redirectResultMock = $this->createMock(Redirect::class);
+        $redirectResultMock = $this->createMock(\Magento\Framework\Controller\Result\Redirect::class);
         $redirectResultMock->expects($this->once())
             ->method('setUrl');
 
-        $redirectFactoryMock = $this->getMockBuilder(RedirectFactory::class)
+        $redirectFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\RedirectFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -115,31 +89,31 @@ class ResultTest extends TestCase
             ->willReturn($redirectResultMock);
 
         $catalogSearchAdvanced = $this->createPartialMock(
-            Advanced::class,
+            \Magento\CatalogSearch\Model\Advanced::class,
             ['addFilters']
         );
 
-        $catalogSearchAdvanced->expects($this->once())->method('addFilters')->willThrowException(
-            new LocalizedException(
-                new Phrase("Test Exception")
-            )
+        $catalogSearchAdvanced->expects($this->once())->method('addFilters')->will(
+            $this->throwException(new \Magento\Framework\Exception\LocalizedException(
+                new \Magento\Framework\Phrase("Test Exception")
+            ))
         );
 
-        $responseMock = $this->createMock(Response::class);
+        $responseMock = $this->createMock(\Magento\Framework\Webapi\Response::class);
         $requestMock = $this->createPartialMock(
-            Http::class,
+            \Magento\Framework\App\Request\Http::class,
             ['getQueryValue']
         );
         $requestMock->expects($this->any())->method('getQueryValue')->willReturn(['key' => 'value']);
 
-        $redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
+        $redirectMock = $this->createMock(\Magento\Framework\App\Response\RedirectInterface::class);
         $redirectMock->expects($this->any())->method('error')->with('urlstring');
 
-        $messageManagerMock = $this->createMock(Manager::class);
+        $messageManagerMock = $this->createMock(\Magento\Framework\Message\Manager::class);
 
-        $eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
 
-        $contextMock = $this->createMock(Context::class);
+        $contextMock = $this->createMock(\Magento\Framework\App\Action\Context::class);
         $contextMock->expects($this->any())
             ->method('getRequest')
             ->willReturn($requestMock);
@@ -159,7 +133,7 @@ class ResultTest extends TestCase
             ->method('getResultRedirectFactory')
             ->willReturn($redirectFactoryMock);
 
-        $urlMock = $this->createMock(Url::class);
+        $urlMock = $this->createMock(\Magento\Framework\Url::class);
         $urlMock->expects($this->once())
             ->method('addQueryParams')
             ->willReturnSelf();
@@ -167,16 +141,16 @@ class ResultTest extends TestCase
             ->method('getUrl')
             ->willReturn("urlstring");
 
-        $urlFactoryMock = $this->createMock(UrlFactory::class);
+        $urlFactoryMock = $this->createMock(\Magento\Framework\UrlFactory::class);
         $urlFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($urlMock);
+            ->will($this->returnValue($urlMock));
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        /** @var Result $instance */
+        /** @var \Magento\CatalogSearch\Controller\Advanced\Result $instance */
         $instance = $objectManager->getObject(
-            Result::class,
+            \Magento\CatalogSearch\Controller\Advanced\Result::class,
             [
                 'context'               => $contextMock,
                 'catalogSearchAdvanced' => $catalogSearchAdvanced,
@@ -195,48 +169,42 @@ class ResultTest extends TestCase
     {
         $expectedQuery = 'notExistTerm';
 
-        $update = $this->createPartialMock(Merge::class, ['getHandles']);
-        $update->expects($this->once())->method('getHandles')->willReturn([]);
+        $update = $this->createPartialMock(\Magento\Framework\View\Model\Layout\Merge::class, ['getHandles']);
+        $update->expects($this->once())->method('getHandles')->will($this->returnValue([]));
 
-        $layout = $this->getMockBuilder(Layout::class)
-            ->addMethods(['getUpdate'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $layout->expects($this->once())->method('getUpdate')->willReturn($update);
+        $layout = $this->createPartialMock(\Magento\Framework\View\Result\Layout::class, ['getUpdate']);
+        $layout->expects($this->once())->method('getUpdate')->will($this->returnValue($update));
 
-        $page = $this->createPartialMock(Page::class, ['initLayout']);
+        $page = $this->createPartialMock(\Magento\Framework\View\Result\Page::class, ['initLayout']);
 
         $view = $this->createPartialMock(
-            View::class,
+            \Magento\Framework\App\View::class,
             ['loadLayout', 'renderLayout', 'getPage', 'getLayout']
         );
 
         $view->expects($this->once())->method('loadLayout')
-            ->with([Result::DEFAULT_NO_RESULT_HANDLE]);
+            ->with([\Magento\CatalogSearch\Controller\Advanced\Result::DEFAULT_NO_RESULT_HANDLE]);
 
-        $view->expects($this->once())->method('getPage')->willReturn($page);
-        $view->expects($this->once())->method('getLayout')->willReturn($layout);
+        $view->expects($this->once())->method('getPage')->will($this->returnValue($page));
+        $view->expects($this->once())->method('getLayout')->will($this->returnValue($layout));
 
-        $request = $this->getMockBuilder(Request::class)
-            ->addMethods(['getQueryValue'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $request->expects($this->once())->method('getQueryValue')->willReturn($expectedQuery);
+        $request = $this->createPartialMock(\Magento\Framework\App\Console\Request::class, ['getQueryValue']);
+        $request->expects($this->once())->method('getQueryValue')->will($this->returnValue($expectedQuery));
 
         $catalogSearchAdvanced = $this->createPartialMock(
-            Advanced::class,
+            \Magento\CatalogSearch\Model\Advanced::class,
             ['addFilters', '__wakeup', 'getProductCollection']
         );
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $context = $objectManager->getObject(
-            Context::class,
+            \Magento\Framework\App\Action\Context::class,
             ['view' => $view, 'request' => $request]
         );
 
-        /** @var Result $instance */
+        /** @var \Magento\CatalogSearch\Controller\Advanced\Result $instance */
         $instance = $objectManager->getObject(
-            Result::class,
+            \Magento\CatalogSearch\Controller\Advanced\Result::class,
             ['context' => $context, 'catalogSearchAdvanced' => $catalogSearchAdvanced]
         );
         $instance->execute();

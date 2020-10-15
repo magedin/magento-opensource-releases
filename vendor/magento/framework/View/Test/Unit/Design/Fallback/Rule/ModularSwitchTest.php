@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Fallback\Rule;
 
-use Magento\Framework\View\Design\Fallback\Rule\ModularSwitch;
-use Magento\Framework\View\Design\Fallback\Rule\RuleInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Design\Fallback\Rule\ModularSwitch;
 
-class ModularSwitchTest extends TestCase
+class ModularSwitchTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ModularSwitch
@@ -20,27 +15,27 @@ class ModularSwitchTest extends TestCase
     protected $object;
 
     /**
-     * @var MockObject|RuleInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|RuleInterface
      */
     protected $ruleNonModular;
 
     /**
-     * @var MockObject|RuleInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|RuleInterface
      */
     protected $ruleModular;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->ruleNonModular = $this->getMockForAbstractClass(
-            RuleInterface::class
+            \Magento\Framework\View\Design\Fallback\Rule\RuleInterface::class
         );
         $this->ruleModular = $this->getMockForAbstractClass(
-            RuleInterface::class
+            \Magento\Framework\View\Design\Fallback\Rule\RuleInterface::class
         );
         $this->object = new ModularSwitch($this->ruleNonModular, $this->ruleModular);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->object = null;
         $this->ruleNonModular = null;
@@ -57,8 +52,8 @@ class ModularSwitchTest extends TestCase
             'getPatternDirs'
         )->with(
             $inputParams
-        )->willReturn(
-            $expectedResult
+        )->will(
+            $this->returnValue($expectedResult)
         );
 
         $this->ruleModular->expects($this->never())->method('getPatternDirs');
@@ -78,8 +73,8 @@ class ModularSwitchTest extends TestCase
             'getPatternDirs'
         )->with(
             $inputParams
-        )->willReturn(
-            $expectedResult
+        )->will(
+            $this->returnValue($expectedResult)
         );
 
         $this->assertSame($expectedResult, $this->object->getPatternDirs($inputParams));

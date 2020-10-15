@@ -34,7 +34,6 @@ class LowercaseFunctionKeywordsUnitTest extends AbstractSniffUnitTest
             23 => 1,
             24 => 3,
             25 => 4,
-            28 => 1,
         ];
 
     }//end getErrorList()

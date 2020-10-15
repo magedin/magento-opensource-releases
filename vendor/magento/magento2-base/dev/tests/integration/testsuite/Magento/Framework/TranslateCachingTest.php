@@ -24,14 +24,14 @@ class TranslateCachingTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->renderer = Phrase::getRenderer();
         Phrase::setRenderer($this->objectManager->get(\Magento\Framework\Phrase\RendererInterface::class));
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Phrase::setRenderer($this->renderer);
 

@@ -3,42 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model;
 
 use Magento\Backend\Model\Session\Quote;
-use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\CustomerGroupRetriever;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for class CustomerGroupRetriever.
  */
-class CustomerGroupRetrieverTest extends TestCase
+class CustomerGroupRetrieverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerGroupRetriever
+     * @var \Magento\Sales\Model\CustomerGroupRetriever
      */
     private $retriever;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteSession;
 
     /**
-     * @var GroupManagementInterface|MockObject
+     * @var GroupManagementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupManagement;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->quoteSession = $this->getMockBuilder(Quote::class)
             ->disableOriginalConstructor()
@@ -48,9 +41,9 @@ class CustomerGroupRetrieverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->retriever = $helper->getObject(
-            CustomerGroupRetriever::class,
+            \Magento\Sales\Model\CustomerGroupRetriever::class,
             [
                 'quoteSession' => $this->quoteSession,
                 'groupManagement' => $this->groupManagement
@@ -80,7 +73,7 @@ class CustomerGroupRetrieverTest extends TestCase
     {
         $this->quoteSession->expects($this->atLeastOnce())->method('getQuoteId')->willReturn(0);
         $this->quoteSession->expects($this->never())->method('getQuote');
-        $group = $this->getMockBuilder(GroupInterface::class)
+        $group = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->groupManagement->expects($this->once())->method('getNotLoggedInGroup')->willReturn($group);

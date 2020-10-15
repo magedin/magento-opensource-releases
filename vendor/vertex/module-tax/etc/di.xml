@@ -20,6 +20,7 @@
     <preference for="Vertex\Utility\SoapClientFactory" type="Vertex\Tax\Service\SoapClientFactory"/>
     <preference for="Vertex\Utility\ServiceActionPerformerFactory" type="Vertex\Tax\Service\ServiceActionPerformerFactory"/>
 
+    <preference for="Vertex\Tax\Api\ClientInterface" type="Vertex\Tax\Model\ApiClient"/>
     <preference for="Vertex\Tax\Api\InvoiceInterface" type="Vertex\Tax\Service\InvoiceProxy"/>
     <preference for="Vertex\Tax\Api\QuoteInterface" type="Vertex\Tax\Service\QuoteProxy"/>
     <preference for="Vertex\Tax\Api\TaxAreaLookupInterface" type="Vertex\Tax\Service\TaxAreaLookupProxy"/>
@@ -380,13 +381,6 @@
                     <item name="sort-order" xsi:type="number">11</item>
                     <item name="processor" xsi:type="object">Vertex\Tax\Model\FlexField\Processor\ProductCustomOptionProcessor</item>
                 </item>
-            </argument>
-        </arguments>
-    </type>
-    <type name="Magento\Framework\Setup\Declaration\Schema\Operations\CreateTable">
-        <arguments>
-            <argument name="triggers" xsi:type="array">
-                <item name="migrateVertexInvoiceSent" xsi:type="object">Vertex\Tax\Setup\Schema\Triggers\MigrateVertexInvoiceSent</item>
             </argument>
         </arguments>
     </type>

@@ -30,7 +30,7 @@ class LinkTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->block = $this->objectManager->get(LayoutInterface::class)->createBlock(Link::class);
@@ -41,7 +41,7 @@ class LinkTest extends TestCase
      */
     public function testWishListLinkVisible(): void
     {
-        $this->assertStringContainsString('My Wish List', strip_tags($this->block->toHtml()));
+        $this->assertContains('My Wish List', strip_tags($this->block->toHtml()));
     }
 
     /**

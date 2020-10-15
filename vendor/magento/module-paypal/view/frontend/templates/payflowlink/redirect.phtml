@@ -8,15 +8,13 @@
 
 /**
  * @var \Magento\Paypal\Block\Payflow\Link\Iframe $block
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  */
 ?>
 <html>
 <head>
 </head>
 <body>
-<?php $scriptString= <<<script
-
+<script>
     (function() {
         'use strict';
 
@@ -31,13 +29,13 @@
             }
         }
 
-        var cartUrl = '{$block->escapeJs($block->getUrl('checkout/cart'))}',
-            successUrl = '{$block->escapeJs($block->getUrl('checkout/onepage/success'))}',
-            goToSuccessPage = '{$block->escapeJs($block->getGotoSuccessPage())}',
+        var cartUrl = '<?= $block->escapeUrl($block->getUrl('checkout/cart')) ?>',
+            successUrl = '<?= $block->escapeUrl($block->getUrl('checkout/onepage/success')) ?>',
+            goToSuccessPage = '<?= $block->escapeUrl($block->getGotoSuccessPage()) ?>',
             require = window.top.require,
             windowContext = window,
             errorMessage = {
-                message: '{$block->escapeJs($block->getErrorMsg())}'
+                message: '<?= $block->escapeHtml($block->getErrorMsg()) ?>'
             };
 
         if(typeof(require) == "undefined") {
@@ -51,10 +49,8 @@
             })
         }
 
-    })();
 
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+    })();
+</script>
 </body>
 </html>

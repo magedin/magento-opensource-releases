@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Mapper;
 
-use Magento\Config\Model\Config\Structure\Mapper\ExtendsMapper;
-use Magento\Config\Model\Config\Structure\Mapper\Helper\RelativePathConverter;
-use PHPUnit\Framework\TestCase;
-
-class ExtendsTest extends TestCase
+class ExtendsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ExtendsMapper
+     * @var \Magento\Config\Model\Config\Structure\Mapper\ExtendsMapper
      */
     protected $_sut;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_sut = new ExtendsMapper(
-            new RelativePathConverter()
+        $this->_sut = new \Magento\Config\Model\Config\Structure\Mapper\ExtendsMapper(
+            new \Magento\Config\Model\Config\Structure\Mapper\Helper\RelativePathConverter()
         );
     }
 

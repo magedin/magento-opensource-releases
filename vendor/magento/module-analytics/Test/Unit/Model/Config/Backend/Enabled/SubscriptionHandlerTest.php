@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Analytics\Test\Unit\Model\Config\Backend\Enabled;
 
@@ -13,23 +12,21 @@ use Magento\Analytics\Model\Config\Backend\Enabled\SubscriptionHandler;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\FlagManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SubscriptionHandlerTest extends TestCase
+class SubscriptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FlagManager|MockObject
+     * @var FlagManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $flagManagerMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var WriterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configWriterMock;
 
     /**
-     * @var AnalyticsToken|MockObject
+     * @var AnalyticsToken|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tokenMock;
 
@@ -48,13 +45,19 @@ class SubscriptionHandlerTest extends TestCase
      */
     private $subscriptionHandler;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->flagManagerMock = $this->createMock(FlagManager::class);
+        $this->flagManagerMock = $this->getMockBuilder(FlagManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->configWriterMock = $this->getMockForAbstractClass(WriterInterface::class);
+        $this->configWriterMock = $this->getMockBuilder(WriterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->tokenMock = $this->createMock(AnalyticsToken::class);
+        $this->tokenMock = $this->getMockBuilder(AnalyticsToken::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

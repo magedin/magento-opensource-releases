@@ -27,7 +27,7 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         self::$reportDir = BP . '/dev/tests/static/report';
         if (!is_dir(self::$reportDir)) {

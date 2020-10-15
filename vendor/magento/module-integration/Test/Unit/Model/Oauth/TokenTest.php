@@ -3,117 +3,106 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Model\Oauth;
 
-use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Oauth\Exception;
-use Magento\Framework\Oauth\Helper\Oauth as OauthHelper;
-use Magento\Framework\Registry;
-use Magento\Framework\Url\Validator;
-use Magento\Integration\Helper\Oauth\Data;
-use Magento\Integration\Model\Oauth\Consumer\Validator\KeyLength;
 use Magento\Integration\Model\Oauth\Consumer\Validator\KeyLengthFactory;
-use Magento\Integration\Model\Oauth\ConsumerFactory;
 use Magento\Integration\Model\Oauth\Token;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Oauth\Helper\Oauth as OauthHelper;
+use Magento\Authorization\Model\UserContextInterface;
+use Magento\Framework\TestFramework\Unit\Matcher\MethodInvokedAtIndex;
 
 /**
  * Unit test for \Magento\Integration\Model\Oauth\Nonce
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TokenTest extends TestCase
+class TokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Token
+     * @var \Magento\Integration\Model\Oauth\Token
      */
     protected $tokenModel;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var KeyLengthFactory|MockObject
+     * @var KeyLengthFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $keyLengthFactoryMock;
 
     /**
-     * @var KeyLength|MockObject
+     * @var \Magento\Integration\Model\Oauth\Consumer\Validator\KeyLength|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validatorKeyLengthMock;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Framework\Url\Validator|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validatorMock;
 
     /**
-     * @var ConsumerFactory|MockObject
+     * @var \Magento\Integration\Model\Oauth\ConsumerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $consumerFactoryMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Integration\Helper\Oauth\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $oauthDataMock;
 
     /**
-     * @var \Magento\Framework\Oauth\Helper\Oauth|MockObject
+     * @var \Magento\Framework\Oauth\Helper\Oauth|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $oauthHelperMock;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->setMethods(['getEventDispatcher'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->validatorKeyLengthMock = $this->getMockBuilder(
-            KeyLength::class
+            \Magento\Integration\Model\Oauth\Consumer\Validator\KeyLength::class
         )
             ->setMethods(['isValid', 'setLength', 'setName', 'getMessages'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->keyLengthFactoryMock = $this->getMockBuilder(
-            KeyLengthFactory::class
+            \Magento\Integration\Model\Oauth\Consumer\Validator\KeyLengthFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->validatorMock = $this->getMockBuilder(Validator::class)
+        $this->validatorMock = $this->getMockBuilder(\Magento\Framework\Url\Validator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->consumerFactoryMock = $this->getMockBuilder(ConsumerFactory::class)
+        $this->consumerFactoryMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\ConsumerFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->oauthDataMock = $this->getMockBuilder(Data::class)
+        $this->oauthDataMock = $this->getMockBuilder(\Magento\Integration\Helper\Oauth\Data::class)
             ->setMethods(['isCleanupProbability', 'getCleanupExpirationPeriod'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -122,7 +111,7 @@ class TokenTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resourceMock = $this->getMockBuilder(AbstractResource::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\AbstractResource::class)
             ->setMethods(
                 [
                     'getIdFieldName',
@@ -144,16 +133,16 @@ class TokenTest extends TestCase
             ->method('getIdFieldName')
             ->willReturn('id');
 
-        $eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->setMethods(['dispatch'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->contextMock->expects($this->once())
             ->method('getEventDispatcher')
             ->willReturn($eventManagerMock);
 
-        $this->tokenModel = new Token(
+        $this->tokenModel = new \Magento\Integration\Model\Oauth\Token(
             $this->contextMock,
             $this->registryMock,
             $this->keyLengthFactoryMock,
@@ -229,10 +218,12 @@ class TokenTest extends TestCase
         $this->assertEquals($this->tokenModel, $this->tokenModel->createVerifierToken($consumerId));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Oauth\Exception
+     * @expectedExceptionMessage Cannot convert to access token due to token is not request type
+     */
     public function testConvertToAccessIfIsNotRequestType()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
-        $this->expectExceptionMessage('Cannot convert to access token due to token is not request type');
         $this->tokenModel->setType('isNotRequestType');
         $this->tokenModel->convertToAccess();
     }
@@ -393,7 +384,7 @@ class TokenTest extends TestCase
         $this->validatorMock->expects($this->once())->method('isValid')->willReturn(false);
         $this->validatorMock->expects($this->once())->method('getMessages')->willReturn([$exceptionMessage]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->tokenModel->validate();
@@ -412,7 +403,7 @@ class TokenTest extends TestCase
         $this->validatorKeyLengthMock->expects($this->once())->method('isValid')->willReturn(false);
         $this->validatorKeyLengthMock->expects($this->once())->method('getMessages')->willReturn([$exceptionMessage]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->tokenModel->validate();
@@ -440,7 +431,7 @@ class TokenTest extends TestCase
             ]
         );
         $this->validatorKeyLengthMock->expects($this->once())->method('getMessages')->willReturn([$exceptionMessage]);
-        $this->expectException(Exception::class);
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->tokenModel->validate();
@@ -471,7 +462,7 @@ class TokenTest extends TestCase
             ]
         );
         $this->validatorKeyLengthMock->expects($this->once())->method('getMessages')->willReturn([$exceptionMessage]);
-        $this->expectException(Exception::class);
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->tokenModel->validate();

@@ -9,20 +9,17 @@ namespace Magento\AdobeStockImageAdminUi\Controller\Adminhtml\Preview;
 
 use Magento\AdobeStockImageApi\Api\GetRelatedImagesInterface;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
 use Psr\Log\LoggerInterface;
 
 /**
- * Controller providing related images (same model and same series) for the provided Adobe Stock asset id
+ * Class RelatedImages
  */
-class RelatedImages extends Action implements HttpGetActionInterface
+class RelatedImages extends Action
 {
     private const HTTP_OK = 200;
     private const HTTP_INTERNAL_ERROR = 500;
-    private const IMAGE_ID = 'image_id';
-    private const LIMIT = 'limit';
 
     /**
      * @see _isAllowed()
@@ -61,16 +58,16 @@ class RelatedImages extends Action implements HttpGetActionInterface
     public function execute()
     {
         try {
-            $params = $this->getRequest()->getParams();
-            $imageId = (int) $params[self::IMAGE_ID];
-            $limit = (int) ($params[self::LIMIT] ?? 4);
+            $params = $params = $this->getRequest()->getParams();
+            $imageId = (int) $params['image_id'];
+            $limit = (int) ($params['limit'] ?? 4);
             $relatedImages = $this->getRelatedImages->execute($imageId, $limit);
 
             $responseCode = self::HTTP_OK;
             $responseContent = [
                 'success' => true,
                 'message' => __('Get related images finished successfully'),
-                'result' => $relatedImages
+                'result' => $relatedImages,
             ];
         } catch (\Exception $exception) {
             $responseCode = self::HTTP_INTERNAL_ERROR;

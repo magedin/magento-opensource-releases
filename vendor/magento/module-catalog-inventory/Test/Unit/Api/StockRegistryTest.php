@@ -3,68 +3,57 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Api;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\CatalogInventory\Api\Data\StockInterface;
-use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Api\Data\StockStatusInterface;
-use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
-use Magento\CatalogInventory\Api\StockRegistryInterface;
-use Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface;
-use Magento\CatalogInventory\Model\StockRegistry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class StockRegistryTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StockRegistryTest extends TestCase
+class StockRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var StockRegistryInterface
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
      */
     protected $stockRegistry;
 
     /**
-     * @var StockRegistryProviderInterface|MockObject
+     * @var \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stockRegistryProvider;
 
     /**
-     * @var StockInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stock;
 
     /**
-     * @var StockItemInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockItemInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stockItem;
 
     /**
-     * @var StockStatusInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockStatusInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stockStatus;
 
     /**
-     * @var ProductFactory|MockObject
+     * @var \Magento\Catalog\Model\ProductFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productFactory;
 
     /**
-     * @var StockItemRepositoryInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\StockItemRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stockItemRepository;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
@@ -72,65 +61,65 @@ class StockRegistryTest extends TestCase
     protected $productSku = 'simple';
     protected $websiteId = 111;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->product = $this->createPartialMock(Product::class, ['__wakeup', 'getIdBySku']);
+        $this->product = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['__wakeup', 'getIdBySku']);
         $this->product->expects($this->any())
             ->method('getIdBySku')
             ->willReturn($this->productId);
         //getIdBySku
-        $this->productFactory = $this->createPartialMock(ProductFactory::class, ['create']);
+        $this->productFactory = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
         $this->productFactory->expects($this->any())
             ->method('create')
-            ->willReturn($this->product);
+            ->will($this->returnValue($this->product));
 
         $this->stock = $this->getMockForAbstractClass(
-            StockInterface::class,
+            \Magento\CatalogInventory\Api\Data\StockInterface::class,
             ['__wakeup'],
             '',
             false
         );
-        $this->stockItem = $this->getMockBuilder(StockItemInterface::class)
+        $this->stockItem = $this->getMockBuilder(\Magento\CatalogInventory\Api\Data\StockItemInterface::class)
             ->setMethods(['setProductId', 'getData', 'addData', 'getItemId', 'getWebsiteId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->stockStatus = $this->getMockForAbstractClass(
-            StockStatusInterface::class,
+            \Magento\CatalogInventory\Api\Data\StockStatusInterface::class,
             ['__wakeup'],
             '',
             false
         );
 
         $this->stockRegistryProvider = $this->getMockForAbstractClass(
-            StockRegistryProviderInterface::class,
+            \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface::class,
             ['getStock', 'getStockItem', 'getStockStatus'],
             '',
             false
         );
         $this->stockRegistryProvider->expects($this->any())
             ->method('getStock')
-            ->willReturn($this->stock);
+            ->will($this->returnValue($this->stock));
         $this->stockRegistryProvider->expects($this->any())
             ->method('getStockItem')
-            ->willReturn($this->stockItem);
+            ->will($this->returnValue($this->stockItem));
         $this->stockRegistryProvider->expects($this->any())
             ->method('getStockStatus')
-            ->willReturn($this->stockStatus);
+            ->will($this->returnValue($this->stockStatus));
 
         $this->stockItemRepository = $this->getMockForAbstractClass(
-            StockItemRepositoryInterface::class,
+            \Magento\CatalogInventory\Api\StockItemRepositoryInterface::class,
             ['save'],
             '',
             false
         );
         $this->stockItemRepository->expects($this->any())
             ->method('save')
-            ->willReturn($this->stockItem);
+            ->will($this->returnValue($this->stockItem));
 
         $this->stockRegistry = $this->objectManagerHelper->getObject(
-            StockRegistry::class,
+            \Magento\CatalogInventory\Model\StockRegistry::class,
             [
                 'stockRegistryProvider' => $this->stockRegistryProvider,
                 'productFactory' => $this->productFactory,
@@ -139,7 +128,7 @@ class StockRegistryTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->stockRegistry = null;
     }

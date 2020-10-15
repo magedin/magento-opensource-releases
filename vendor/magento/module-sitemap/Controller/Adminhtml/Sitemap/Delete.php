@@ -3,45 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sitemap\Controller\Adminhtml\Sitemap;
 
-use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Sitemap\Controller\Adminhtml\Sitemap;
-use Magento\Sitemap\Model\SitemapFactory;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Controller class Delete. Represents adminhtml request flow for a sitemap deletion
  */
-class Delete extends Sitemap implements HttpPostActionInterface
+class Delete extends \Magento\Sitemap\Controller\Adminhtml\Sitemap implements HttpPostActionInterface
 {
     /**
-     * @var SitemapFactory
-     */
-    private $sitemapFactory;
-
-    /**
-     * @var Filesystem
+     * @var \Magento\Framework\Filesystem
      */
     private $filesystem;
 
     /**
-     * @param Context $context
-     * @param SitemapFactory $sitemapFactory
-     * @param Filesystem $filesystem
+     * @var \Magento\Sitemap\Model\SitemapFactory
+     */
+    private $sitemapFactory;
+
+    /**
+     * Constructor
+     *
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Sitemap\Model\SitemapFactory|null $sitemapFactory
      */
     public function __construct(
-        Context $context,
-        SitemapFactory $sitemapFactory,
-        Filesystem $filesystem
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Sitemap\Model\SitemapFactory $sitemapFactory = null
     ) {
         parent::__construct($context);
-        $this->sitemapFactory = $sitemapFactory;
-        $this->filesystem = $filesystem;
+        $this->sitemapFactory = $sitemapFactory ?: ObjectManager::getInstance()
+            ->get(\Magento\Sitemap\Model\SitemapFactory::class);
     }
 
     /**
@@ -51,7 +46,7 @@ class Delete extends Sitemap implements HttpPostActionInterface
      */
     public function execute()
     {
-        $directory = $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
+        $directory = $this->getFilesystem()->getDirectoryWrite(DirectoryList::ROOT);
         // check if we know what should be deleted
         $id = $this->getRequest()->getParam('sitemap_id');
         if ($id) {
@@ -90,5 +85,21 @@ class Delete extends Sitemap implements HttpPostActionInterface
         $this->messageManager->addErrorMessage(__('We can\'t find a sitemap to delete.'));
         // go to grid
         $this->_redirect('adminhtml/*/');
+    }
+
+    /**
+     * The getter function to get Filesystem object for real application code
+     *
+     * @return \Magento\Framework\Filesystem
+     * @deprecated 100.2.0
+     */
+    private function getFilesystem()
+    {
+        if (null === $this->filesystem) {
+            $this->filesystem = \Magento\Framework\App\ObjectManager::getInstance()->get(
+                \Magento\Framework\Filesystem::class
+            );
+        }
+        return $this->filesystem;
     }
 }

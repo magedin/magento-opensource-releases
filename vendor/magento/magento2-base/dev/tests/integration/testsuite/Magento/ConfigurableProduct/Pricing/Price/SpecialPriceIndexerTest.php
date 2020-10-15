@@ -30,7 +30,7 @@ class SpecialPriceIndexerTest extends \PHPUnit\Framework\TestCase
      */
     private $indexerProcessor;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
         $this->productCollectionFactory = Bootstrap::getObjectManager()->get(CollectionFactory::class);

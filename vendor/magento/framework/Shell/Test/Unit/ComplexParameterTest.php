@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Shell\Test\Unit;
 
-use Magento\Framework\Shell\ComplexParameter;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Shell\ComplexParameter;
 
-class ComplexParameterTest extends TestCase
+class ComplexParameterTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetFromArray()
     {

@@ -3,39 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Account;
 
-use Magento\Customer\Block\Account\Link;
-use Magento\Customer\Model\Url;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\TestCase;
-
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetHref()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $helper = $this->getMockBuilder(
-            Url::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['getAccountUrl']
-            )->getMock();
+            \Magento\Customer\Model\Url::class
+        )->disableOriginalConstructor()->setMethods(
+            ['getAccountUrl']
+        )->getMock();
         $layout = $this->getMockBuilder(
-            Layout::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['helper']
-            )->getMock();
+            \Magento\Framework\View\Layout::class
+        )->disableOriginalConstructor()->setMethods(
+            ['helper']
+        )->getMock();
 
         $block = $objectManager->getObject(
-            Link::class,
+            \Magento\Customer\Block\Account\Link::class,
             ['layout' => $layout, 'customerUrl' => $helper]
         );
-        $helper->expects($this->any())->method('getAccountUrl')->willReturn('account url');
+        $helper->expects($this->any())->method('getAccountUrl')->will($this->returnValue('account url'));
 
         $this->assertEquals('account url', $block->getHref());
     }

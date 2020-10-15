@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Dictionary;
 
-use Magento\Setup\Module\I18n\Dictionary\Phrase;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Module\I18n\Dictionary\Phrase;
 
-class PhraseTest extends TestCase
+class PhraseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param array $constructArguments
@@ -121,10 +118,12 @@ class PhraseTest extends TestCase
         $this->assertEquals(['context_value1'], $phrase->getContextValue());
     }
 
+    /**
+     * @expectedException \DomainException
+     * @expectedExceptionMessage Context value is empty
+     */
     public function testAddEmptyContextValue()
     {
-        $this->expectException('DomainException');
-        $this->expectExceptionMessage('Context value is empty');
         $phrase = new Phrase('phrase', 'translation', 'context_type', 'context_value1');
         $phrase->addContextValue(null);
     }

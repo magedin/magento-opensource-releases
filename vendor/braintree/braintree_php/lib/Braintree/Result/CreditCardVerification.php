@@ -2,7 +2,6 @@
 namespace Braintree\Result;
 
 use Braintree\RiskData;
-use Braintree\ThreeDSecureInfo;
 use Braintree\Util;
 
 /**
@@ -15,7 +14,7 @@ use Braintree\Util;
  * @package    Braintree
  * @subpackage Result
  *
- * @property-read string|null $avsErrorResponseCode
+ * @property-read string $avsErrorResponseCode
  * @property-read string $avsPostalCodeResponseCode
  * @property-read string $avsStreetAddressResponseCode
  * @property-read string $cvvResponseCode
@@ -62,9 +61,6 @@ class CreditCardVerification
             $attributes['riskData'] = RiskData::factory($attributes['riskData']);
         }
 
-        if(isset($attributes['threeDSecureInfo'])) {
-            $attributes['threeDSecureInfo'] = ThreeDSecureInfo::factory($attributes['threeDSecureInfo']);
-        }
         $this->_attributes = $attributes;
         foreach($attributes AS $name => $value) {
             $varName = "_$name";

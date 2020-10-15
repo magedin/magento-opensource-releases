@@ -3,21 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Weee\Test\Unit\Observer;
 
-use Magento\Bundle\Model\Product\Type;
-use Magento\Catalog\Model\Product\Type\Simple;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Weee\Helper\Data;
-use Magento\Weee\Observer\GetPriceConfigurationObserver;
-use PHPUnit\Framework\TestCase;
 
-class GetPriceConfigurationObserverTest extends TestCase
+class GetPriceConfigurationObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests the methods that rely on the ScopeConfigInterface object to provide their return values
@@ -28,79 +19,79 @@ class GetPriceConfigurationObserverTest extends TestCase
      */
     public function testGetPriceConfiguration($hasWeeeAttributes, $testArray, $expectedArray)
     {
-        $configObj = new DataObject(
+        $configObj = new \Magento\Framework\DataObject(
             [
                 'config' => $testArray,
             ]
         );
 
-        $weeeObject1 = new DataObject(
+        $weeeObject1 = new \Magento\Framework\DataObject(
             [
                 'code' => 'fpt1',
                 'amount' => '15.0000',
             ]
         );
 
-        $weeeObject2 = new DataObject(
+        $weeeObject2 = new \Magento\Framework\DataObject(
             [
                 'code' => 'fpt2',
                 'amount' => '16.0000',
             ]
         );
 
-        $weeeHelper=$this->createMock(Data::class);
+        $weeeHelper=$this->createMock(\Magento\Weee\Helper\Data::class);
         $weeeHelper->expects($this->any())
             ->method('isEnabled')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
-        $observerObject=$this->createMock(Observer::class);
+        $observerObject=$this->createMock(\Magento\Framework\Event\Observer::class);
         $observerObject->expects($this->any())
             ->method('getData')
             ->with('configObj')
-            ->willReturn($configObj);
+            ->will($this->returnValue($configObj));
 
-        $productInstance=$this->createMock(Simple::class);
+        $productInstance=$this->createMock(\Magento\Catalog\Model\Product\Type\Simple::class);
 
-        $product = $this->getMockBuilder(Type::class)
-            ->addMethods(['getTypeInstance', 'getTypeId', 'getStoreId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $product = $this->createPartialMock(
+            \Magento\Bundle\Model\Product\Type::class,
+            ['getTypeInstance', 'getTypeId', 'getStoreId']
+        );
         $product->expects($this->any())
             ->method('getTypeInstance')
-            ->willReturn($productInstance);
+            ->will($this->returnValue($productInstance));
         $product->expects($this->any())
             ->method('getTypeId')
-            ->willReturn('simple');
+            ->will($this->returnValue('simple'));
         $product->expects($this->any())
             ->method('getStoreId')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
 
-        $registry=$this->createMock(Registry::class);
+        $registry=$this->createMock(\Magento\Framework\Registry::class);
         $registry->expects($this->any())
             ->method('registry')
             ->with('current_product')
-            ->willReturn($product);
+            ->will($this->returnValue($product));
 
         if ($hasWeeeAttributes) {
             $weeeHelper->expects($this->any())
                 ->method('getWeeeAttributesForBundle')
-                ->willReturn([
+                ->will($this->returnValue([
                     1 => ['fpt1' => $weeeObject1],
                     2 => [
                         'fpt1' => $weeeObject1,
                         'fpt2' => $weeeObject2
                     ]
-                ]);
+                ]));
         } else {
             $weeeHelper->expects($this->any())
                 ->method('getWeeeAttributesForBundle')
-                ->willReturn(null);
+                ->will($this->returnValue(null));
         }
 
         $objectManager = new ObjectManager($this);
-        /** @var GetPriceConfigurationObserver $weeeObserverObject */
+        /** @var \Magento\Weee\Observer\GetPriceConfigurationObserver $weeeObserverObject */
         $weeeObserverObject = $objectManager->getObject(
-            GetPriceConfigurationObserver::class,
+            \Magento\Weee\Observer\GetPriceConfigurationObserver::class,
             [
                 'weeeData' => $weeeHelper,
                 'registry' => $registry,
@@ -125,16 +116,16 @@ class GetPriceConfigurationObserverTest extends TestCase
                         [
                             'optionId' => 1,
                             'prices' => [
-                                'finalPrice' => ['amount' => 31.50],
-                                'basePrice' => ['amount' => 33.50],
-                            ],
+                                    'finalPrice' => ['amount' => 31.50],
+                                    'basePrice' => ['amount' => 33.50],
+                                ],
                         ],
                         [
                             'optionId' => 2,
                             'prices' => [
-                                'finalPrice' =>['amount' => 331.50],
-                                'basePrice' => ['amount' => 333.50],
-                            ],
+                                    'finalPrice' =>['amount' => 331.50],
+                                    'basePrice' => ['amount' => 333.50],
+                                ],
                         ],
                     ],
                 ],
@@ -143,21 +134,21 @@ class GetPriceConfigurationObserverTest extends TestCase
                         [
                             'optionId' => 1,
                             'prices' => [
-                                'finalPrice' => ['amount' => 31.50],
-                                'basePrice' => ['amount' => 33.50],
-                                'weeePrice' => ['amount' => 46.5],
-                                'weeePricefpt1' => ['amount' => 15],
-                            ],
+                                    'finalPrice' => ['amount' => 31.50],
+                                    'basePrice' => ['amount' => 33.50],
+                                    'weeePrice' => ['amount' => 46.5],
+                                    'weeePricefpt1' => ['amount' => 15],
+                                ],
                         ],
                         [
                             'optionId' => 2,
                             'prices' => [
-                                'finalPrice' =>['amount' => 331.50],
-                                'basePrice' => ['amount' => 333.50],
-                                'weeePrice' => ['amount' => 362.5],
-                                'weeePricefpt1' => ['amount' => 15],
-                                'weeePricefpt2' => ['amount' => 16],
-                            ],
+                                    'finalPrice' =>['amount' => 331.50],
+                                    'basePrice' => ['amount' => 333.50],
+                                    'weeePrice' => ['amount' => 362.5],
+                                    'weeePricefpt1' => ['amount' => 15],
+                                    'weeePricefpt2' => ['amount' => 16],
+                                ],
                         ],
                     ],
                 ],
@@ -177,8 +168,8 @@ class GetPriceConfigurationObserverTest extends TestCase
                             [
                                 [
                                     'prices' => [
-                                        'finalPrice' =>['amount' => 321.50],
-                                    ],
+                                            'finalPrice' =>['amount' => 321.50],
+                                        ],
                                 ],
                                 'otherkey' => [ 1, 2 , 3],
                             ]
@@ -198,9 +189,9 @@ class GetPriceConfigurationObserverTest extends TestCase
                             [
                                 [
                                     'prices' => [
-                                        'finalPrice' =>['amount' => 321.50],
-                                        'weeePrice' => ['amount' => 321.50],
-                                    ],
+                                            'finalPrice' =>['amount' => 321.50],
+                                            'weeePrice' => ['amount' => 321.50],
+                                        ],
                                 ],
                                 'otherkey' => [ 1, 2 , 3],
                             ]
@@ -216,9 +207,9 @@ class GetPriceConfigurationObserverTest extends TestCase
                         [
                             'optionId' => 1,
                             'prices' => [
-                                'basePrice' => ['amount' => 10],
-                                'finalPrice' => ['amount' => 11],
-                            ],
+                                    'basePrice' => ['amount' => 10],
+                                    'finalPrice' => ['amount' => 11],
+                                ],
                         ],
                     ],
                 ],
@@ -227,10 +218,10 @@ class GetPriceConfigurationObserverTest extends TestCase
                         [
                             'optionId' => 1,
                             'prices' => [
-                                'basePrice' => ['amount' => 10],
-                                'finalPrice' => ['amount' => 11],
-                                'weeePrice' => ['amount' => 11],
-                            ],
+                                    'basePrice' => ['amount' => 10],
+                                    'finalPrice' => ['amount' => 11],
+                                    'weeePrice' => ['amount' => 11],
+                                ],
                         ],
                     ],
                 ],

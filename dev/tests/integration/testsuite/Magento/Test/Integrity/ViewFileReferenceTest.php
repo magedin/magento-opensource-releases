@@ -57,7 +57,7 @@ class ViewFileReferenceTest extends \PHPUnit\Framework\TestCase
      */
     protected static $_componentRegistrar;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $objectManager->configure(

@@ -3,98 +3,80 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Gallery;
-
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Repository;
-use Magento\Catalog\Model\Product\Gallery\Processor;
-use Magento\Catalog\Model\Product\Media\Config;
-use Magento\Catalog\Model\ResourceModel\Product\Gallery;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Framework\DataObject;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for catalog product Media Gallery attribute processor.
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Processor
+     * @var \Magento\Catalog\Model\Product\Gallery\Processor
      */
     protected $model;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Catalog\Model\Product\Attribute\Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $attributeRepository;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectHelper;
 
     /**
-     * @var DataObject|MockObject
+     * @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObject;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Catalog\Model\Product\Media\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaConfig;
 
     /**
-     * @var Write|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Write|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaDirectory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectHelper = new ObjectManager($this);
+        $this->objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->attributeRepository = $this->createPartialMock(
-            Repository::class,
+            \Magento\Catalog\Model\Product\Attribute\Repository::class,
             ['get']
         );
 
-        $fileStorageDb = $this->createMock(Database::class);
+        $fileStorageDb = $this->createMock(\Magento\MediaStorage\Helper\File\Storage\Database::class);
 
-        $this->mediaConfig = $this->createMock(Config::class);
+        $this->mediaConfig = $this->createMock(\Magento\Catalog\Model\Product\Media\Config::class);
 
-        $this->mediaDirectory = $this->createMock(Write::class);
+        $this->mediaDirectory = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
 
-        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $filesystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->willReturn($this->mediaDirectory);
 
         $resourceModel = $this->createPartialMock(
-            Gallery::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Gallery::class,
             ['getMainTable']
         );
         $resourceModel->expects($this->any())
             ->method('getMainTable')
             ->willReturn(
-                Gallery::GALLERY_TABLE
+                \Magento\Catalog\Model\ResourceModel\Product\Gallery::GALLERY_TABLE
             );
 
-        $this->dataObject = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getIsDuplicate', 'isLockedAttribute', 'getMediaAttributes'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->dataObject = $this->createPartialMock(
+            \Magento\Framework\DataObject::class,
+            ['getIsDuplicate', 'isLockedAttribute', 'getMediaAttributes']
+        );
 
         $this->model = $this->objectHelper->getObject(
-            Processor::class,
+            \Magento\Catalog\Model\Product\Gallery\Processor::class,
             [
                 'attributeRepository' => $this->attributeRepository,
                 'fileStorageDb' => $fileStorageDb,
@@ -111,26 +93,26 @@ class ProcessorTest extends TestCase
         $attributeId = 345345;
 
         $attribute = $this->createPartialMock(
-            Attribute::class,
-            ['getBackendTable', 'isStatic', 'getAttributeId', 'getName']
+            \Magento\Eav\Model\Entity\Attribute::class,
+            ['getBackendTable', 'isStatic', 'getAttributeId', 'getName', '__wakeup']
         );
-        $attribute->expects($this->any())->method('getName')->willReturn('image');
-        $attribute->expects($this->any())->method('getAttributeId')->willReturn($attributeId);
-        $attribute->expects($this->any())->method('isStatic')->willReturn(false);
-        $attribute->expects($this->any())->method('getBackendTable')->willReturn('table');
+        $attribute->expects($this->any())->method('getName')->will($this->returnValue('image'));
+        $attribute->expects($this->any())->method('getAttributeId')->will($this->returnValue($attributeId));
+        $attribute->expects($this->any())->method('isStatic')->will($this->returnValue(false));
+        $attribute->expects($this->any())->method('getBackendTable')->will($this->returnValue('table'));
 
         $this->attributeRepository->expects($this->once())
             ->method('get')
             ->with('media_gallery')
             ->willReturn($attribute);
 
-        $object = new DataObject();
+        $object = new \Magento\Framework\DataObject();
         $object->setImage(['images' => [['value_id' => $valueId]]]);
         $object->setId(555);
 
         $this->assertEquals(
             [
-                Gallery::GALLERY_TABLE => [
+                \Magento\Catalog\Model\ResourceModel\Product\Gallery::GALLERY_TABLE => [
                     ['value_id' => $valueId, 'attribute_id' => 345345, 'entity_id' => $object->getId()],
                 ],
             ],
@@ -146,19 +128,19 @@ class ProcessorTest extends TestCase
     {
         $attributeCode = 'attr_code';
         $attribute = $this->createPartialMock(
-            Attribute::class,
-            ['getAttributeCode', 'getIsRequired', 'isValueEmpty', 'getIsUnique', 'getEntity']
+            \Magento\Eav\Model\Entity\Attribute::class,
+            ['getAttributeCode', 'getIsRequired', 'isValueEmpty', 'getIsUnique', 'getEntity', '__wakeup']
         );
-        $attributeEntity = $this->getMockBuilder(AbstractResource::class)
+        $attributeEntity = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\AbstractResource::class)
             ->setMethods(['checkAttributeUniqueValue'])
             ->getMockForAbstractClass();
 
-        $attribute->expects($this->any())->method('getAttributeCode')->willReturn($attributeCode);
-        $attribute->expects($this->any())->method('getIsRequired')->willReturn(true);
-        $attribute->expects($this->any())->method('isValueEmpty')->willReturn($value);
-        $attribute->expects($this->any())->method('getIsUnique')->willReturn(true);
-        $attribute->expects($this->any())->method('getEntity')->willReturn($attributeEntity);
-        $attributeEntity->expects($this->any())->method('checkAttributeUniqueValue')->willReturn(true);
+        $attribute->expects($this->any())->method('getAttributeCode')->will($this->returnValue($attributeCode));
+        $attribute->expects($this->any())->method('getIsRequired')->will($this->returnValue(true));
+        $attribute->expects($this->any())->method('isValueEmpty')->will($this->returnValue($value));
+        $attribute->expects($this->any())->method('getIsUnique')->will($this->returnValue(true));
+        $attribute->expects($this->any())->method('getEntity')->will($this->returnValue($attributeEntity));
+        $attributeEntity->expects($this->any())->method('checkAttributeUniqueValue')->will($this->returnValue(true));
 
         $this->attributeRepository->expects($this->once())
             ->method('get')
@@ -188,7 +170,7 @@ class ProcessorTest extends TestCase
      */
     public function testClearMediaAttribute($setDataExpectsCalls, $setDataArgument, $mediaAttribute)
     {
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -6,7 +6,6 @@
 namespace Magento\Customer\Block\Address;
 
 use Magento\Customer\Api\AddressMetadataInterface;
-use Magento\Customer\Helper\Address;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -70,7 +69,6 @@ class Edit extends \Magento\Directory\Block\Data
      * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
      * @param array $data
      * @param AddressMetadataInterface|null $addressMetadata
-     * @param Address|null $addressHelper
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -87,8 +85,7 @@ class Edit extends \Magento\Directory\Block\Data
         \Magento\Customer\Helper\Session\CurrentCustomer $currentCustomer,
         \Magento\Framework\Api\DataObjectHelper $dataObjectHelper,
         array $data = [],
-        AddressMetadataInterface $addressMetadata = null,
-        Address $addressHelper = null
+        AddressMetadataInterface $addressMetadata = null
     ) {
         $this->_customerSession = $customerSession;
         $this->_addressRepository = $addressRepository;
@@ -96,8 +93,6 @@ class Edit extends \Magento\Directory\Block\Data
         $this->currentCustomer = $currentCustomer;
         $this->dataObjectHelper = $dataObjectHelper;
         $this->addressMetadata = $addressMetadata ?: ObjectManager::getInstance()->get(AddressMetadataInterface::class);
-        $data['addressHelper'] = $addressHelper ?: ObjectManager::getInstance()->get(Address::class);
-        $data['directoryHelper'] = $directoryHelper;
         parent::__construct(
             $context,
             $directoryHelper,

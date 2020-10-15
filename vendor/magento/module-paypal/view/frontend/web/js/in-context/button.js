@@ -45,6 +45,7 @@ define([
         /** @inheritdoc */
         prepareClientConfig: function () {
             this._super();
+            this.clientConfig.commit = false;
 
             return this.clientConfig;
         }

@@ -25,10 +25,12 @@ define([
                 input = $('#custom_currency_symbol' + code);
 
             if (checkbox.is(':checked')) {
+                input.addClass('disabled');
                 input.val(value);
-                input.prop('disabled', true);
+                input.prop('readonly', true);
             } else {
-                input.prop('disabled', false);
+                input.removeClass('disabled');
+                input.prop('readonly', false);
             }
         }
 

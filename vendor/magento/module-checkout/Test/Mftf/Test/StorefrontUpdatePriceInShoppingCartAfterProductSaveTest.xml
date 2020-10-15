@@ -14,7 +14,7 @@
             <stories value="Checkout via the Storefront"/>
             <title value="Update price in shopping cart after product save"/>
             <description value="Price in shopping cart should be updated after product save with changed price"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MAGETWO-58179"/>
             <group value="checkout"/>
         </annotations>
@@ -22,7 +22,7 @@
             <createData entity="SimpleProduct2" stepKey="createSimpleProduct">
                 <field key="price">100</field>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <actionGroup ref="SetCustomerDataLifetimeActionGroup" stepKey="setCustomerDataLifetime">
                 <argument name="minutes" value="1"/>
             </actionGroup>
@@ -30,16 +30,14 @@
         <after>
             <deleteData createDataKey="createSimpleProduct" stepKey="deleteProduct"/>
             <actionGroup ref="SetCustomerDataLifetimeActionGroup" stepKey="setDefaultCustomerDataLifetime"/>
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexCustomerGrid">
-                <argument name="indices" value="customer_grid"/>
-            </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <magentoCLI command="indexer:reindex customer_grid" stepKey="reindexCustomerGrid"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!--Go to product page-->
         <amOnPage url="{{StorefrontProductPage.url($$createSimpleProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToSimpleProductPage"/>
 
         <!--Add Product to Shopping Cart-->
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFromStorefrontProductPage">
             <argument name="productName" value="$$createSimpleProduct.name$$"/>
         </actionGroup>
 
@@ -54,11 +52,9 @@
 
         <!--Edit product price via admin panel-->
         <openNewTab stepKey="openNewTab"/>
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="goToProductEditPage">
-            <argument name="productId" value="$$createSimpleProduct.id$$"/>
-        </actionGroup>
+        <amOnPage url="{{AdminProductEditPage.url($$createSimpleProduct.id$$)}}" stepKey="goToProductEditPage"/>
         <fillField userInput="120" selector="{{AdminProductFormSection.productPrice}}"  stepKey="setNewPrice"/>
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProduct"/>
         <closeTab stepKey="closeTab"/>
 
         <!--Check price-->

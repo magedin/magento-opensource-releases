@@ -21,12 +21,10 @@
         </annotations>
         <before>
             <createData entity="ApiCategory" stepKey="createCategory"/>
-
-            <magentoCLI command="cron:run --group=index" stepKey="runCronIndexer"/>
         </before>
         <after>
             <!-- Delete configurable product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="_defaultProduct"/>
             </actionGroup>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
@@ -34,7 +32,7 @@
 
         <!-- Create product -->
         <remove keyForRemoval="goToCreateProduct"/>
-        <actionGroup ref="CreateConfigurableProductActionGroup" stepKey="fillProductForm">
+        <actionGroup ref="createConfigurableProduct" stepKey="fillProductForm">
             <argument name="product" value="_defaultProduct"/>
             <argument name="category" value="$$createCategory$$"/>
         </actionGroup>

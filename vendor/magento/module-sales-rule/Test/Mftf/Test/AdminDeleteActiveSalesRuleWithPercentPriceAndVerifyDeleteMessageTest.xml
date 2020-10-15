@@ -20,15 +20,15 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!--Create active cart price rule-->
-            <actionGroup ref="AdminCreateCartPriceRuleWithCouponCodeActionGroup" stepKey="createActiveCartPriceRule">
+            <actionGroup ref="AdminCreateCartPriceRuleWithCouponCode" stepKey="createActiveCartPriceRule">
                 <argument name="ruleName" value="ActiveSalesRuleWithPercentPriceDiscountCoupon"/>
                 <argument name="couponCode" value="ActiveSalesRuleWithPercentPriceDiscountCoupon.coupon_code"/>
             </actionGroup>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Delete active cart price rule-->

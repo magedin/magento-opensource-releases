@@ -3,36 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Map;
 
-use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Catalog\Model\CategoryRepository;
-use Magento\Catalog\Model\ResourceModel\Category;
 use Magento\Catalog\Model\ResourceModel\CategoryFactory;
-use Magento\CatalogUrlRewrite\Model\Map\DataCategoryHashMap;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Catalog\Model\ResourceModel\Category;
 use Magento\Framework\DB\Select;
+use Magento\Catalog\Model\CategoryRepository;
+use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\CatalogUrlRewrite\Model\Map\DataCategoryHashMap;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 
-class DataCategoryHashMapTest extends TestCase
+/**
+ * Class DataCategoryHashMapTest
+ */
+class DataCategoryHashMapTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CategoryRepository|MockObject */
+    /** @var CategoryRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $categoryRepository;
 
-    /** @var CategoryResourceFactory|MockObject */
+    /** @var CategoryResourceFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $categoryResourceFactory;
 
-    /** @var Category|MockObject */
+    /** @var Category|\PHPUnit_Framework_MockObject_MockObject */
     private $categoryResource;
 
-    /** @var DataCategoryHashMap|MockObject */
+    /** @var DataCategoryHashMap|\PHPUnit_Framework_MockObject_MockObject */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
         $this->categoryResourceFactory = $this->createPartialMock(CategoryFactory::class, ['create']);
@@ -62,7 +61,7 @@ class DataCategoryHashMapTest extends TestCase
         $categoryMock = $this->getMockBuilder(CategoryInterface::class)
             ->setMethods(['getResource'])
             ->getMockForAbstractClass();
-        $connectionAdapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionAdapterMock = $this->createMock(AdapterInterface::class);
         $selectMock = $this->createMock(Select::class);
 
         $this->categoryRepository->expects($this->any())

@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Currency\Import;
 
-use Magento\Directory\Model\Currency\Import\Config;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Directory\Model\Currency\Import\Config
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Config(
+        $this->_model = new \Magento\Directory\Model\Currency\Import\Config(
             [
                 'service_one' => ['class' => 'Service_One', 'label' => 'Service One'],
                 'service_two' => ['class' => 'Service_Two', 'label' => 'Service Two'],
@@ -36,7 +31,7 @@ class ConfigTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage($expectedException);
-        new Config($configData);
+        new \Magento\Directory\Model\Currency\Import\Config($configData);
     }
 
     /**

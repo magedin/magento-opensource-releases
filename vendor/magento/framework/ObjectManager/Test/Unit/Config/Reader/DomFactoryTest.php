@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Config\Reader;
 
-use Magento\Framework\ObjectManager\Config\Reader\Dom;
-use Magento\Framework\ObjectManager\Config\Reader\DomFactory;
-use Magento\Framework\ObjectManager\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\ObjectManager\Config\Reader\DomFactory;
 
-class DomFactoryTest extends TestCase
+class DomFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DomFactory
@@ -21,20 +16,20 @@ class DomFactoryTest extends TestCase
     protected $_factory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_object;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_object = $this->createMock(Dom::class);
+        $this->_object = $this->createMock(\Magento\Framework\ObjectManager\Config\Reader\Dom::class);
         $this->_objectManager =
-            $this->createPartialMock(ObjectManager::class, ['create']);
+            $this->createPartialMock(\Magento\Framework\ObjectManager\ObjectManager::class, ['create']);
         $this->_factory = new DomFactory($this->_objectManager);
     }
 
@@ -42,8 +37,8 @@ class DomFactoryTest extends TestCase
     {
         $this->_objectManager->expects($this->once())
             ->method('create')
-            ->with(Dom::class)
-            ->willReturn($this->_object);
+            ->with(\Magento\Framework\ObjectManager\Config\Reader\Dom::class)
+            ->will($this->returnValue($this->_object));
 
         $this->_factory->create([1]);
     }

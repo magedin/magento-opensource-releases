@@ -3,31 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Platform\Quote;
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\FromRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FromRendererTest extends TestCase
+/**
+ * Class FromRendererTest
+ */
+class FromRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FromRenderer
+     * @var \Magento\Framework\DB\Select\FromRenderer
      */
     protected $model;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Framework\DB\Platform\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
@@ -36,14 +33,14 @@ class FromRendererTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->quoteMock =
-            $this->createPartialMock(Quote::class, ['quoteTableAs', 'quoteIdentifier']);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
+            $this->createPartialMock(\Magento\Framework\DB\Platform\Quote::class, ['quoteTableAs', 'quoteIdentifier']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
         $this->model = $objectManager->getObject(
-            FromRenderer::class,
+            \Magento\Framework\DB\Select\FromRenderer::class,
             ['quote' => $this->quoteMock]
         );
     }
@@ -73,7 +70,7 @@ class FromRendererTest extends TestCase
             ->method('quoteTableAs')
             ->willReturnCallback(
                 function ($tableName, $correlationName) {
-                    return $tableName . ' AS ' . $correlationName;
+                    return $tableName.' AS '.$correlationName;
                 }
             );
         $this->selectMock->expects($this->once())

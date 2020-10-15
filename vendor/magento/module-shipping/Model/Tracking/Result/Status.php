@@ -1,29 +1,21 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Shipping\Model\Tracking\Result;
 
 /**
- * Tracking Status DataObject
- *
- * @method string|null getCarrier()
- * @method Status setCarrier(string $carrierCode)
- * @method string|null getCarrierTitle()
- * @method Status setCarrierTitle(string $carrierTitle)
+ * Fields:
+ * - carrier: carrier code
+ * - carrierTitle: carrier title
  */
-class Status extends AbstractResult
+class Status extends \Magento\Shipping\Model\Tracking\Result\AbstractResult
 {
     /**
-     * Returns all Status data
-     *
      * @return array
      */
-    public function getAllData(): array
+    public function getAllData()
     {
         return $this->_data;
     }

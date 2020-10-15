@@ -30,7 +30,7 @@ class CollectionTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $scopeConfig = Bootstrap::getObjectManager()->get(ScopeConfigInterface::class);
         $this->defaultTimezone = $scopeConfig->getValue(AdminBackendConfig::XML_PATH_GENERAL_LOCALE_TIMEZONE);
@@ -176,7 +176,7 @@ class CollectionTest extends TestCase
                 $quote->getShippingAddress()
             )->getItems()
         );
-        $this->assertCount(3, $appliedRulesArray);
+        $this->assertEquals(3, count($appliedRulesArray));
     }
 
     /**
@@ -305,7 +305,7 @@ class CollectionTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         // restore default timezone
         $this->setSpecificTimezone($this->defaultTimezone);

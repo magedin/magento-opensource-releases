@@ -77,6 +77,7 @@ final class XmlReporter implements ReporterInterface
 
     /**
      * @param \DOMDocument $dom
+     * @param array        $fixResult
      *
      * @return \DOMElement
      */
@@ -94,6 +95,9 @@ final class XmlReporter implements ReporterInterface
     }
 
     /**
+     * @param \DOMDocument $dom
+     * @param array        $fixResult
+     *
      * @return \DOMElement
      */
     private function createDiffElement(\DOMDocument $dom, array $fixResult)
@@ -105,7 +109,8 @@ final class XmlReporter implements ReporterInterface
     }
 
     /**
-     * @param float $time
+     * @param float        $time
+     * @param \DOMDocument $dom
      *
      * @return \DOMElement
      */
@@ -123,7 +128,8 @@ final class XmlReporter implements ReporterInterface
     }
 
     /**
-     * @param float $memory
+     * @param float        $memory
+     * @param \DOMDocument $dom
      *
      * @return \DOMElement
      */

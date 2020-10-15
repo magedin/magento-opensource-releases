@@ -3,69 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Quote;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\ToOrder;
-use Magento\Sales\Api\Data\OrderExtensionFactory;
-use Magento\Sales\Api\Data\OrderExtensionInterface;
-use Magento\Sales\Model\Order;
-use Magento\Tax\Model\Quote\ToOrderConverter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
+ * Class ToOrderConverterTest
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
-class ToOrderConverterTest extends TestCase
+class ToOrderConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderExtensionFactory|MockObject
+     * @var \Magento\Sales\Api\Data\OrderExtensionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderExtensionFactoryMock;
 
     /**
-     * @var Address|MockObject
+     * @var \Magento\Quote\Model\Quote\Address|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteAddressMock;
 
     /**
-     * @var ToOrder|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\ToOrder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
     /**
-     * @var ToOrderConverter
+     * @var \Magento\Tax\Model\Quote\ToOrderConverter
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->orderExtensionFactoryMock = $this->getMockBuilder(
-            OrderExtensionFactory::class
+            \Magento\Sales\Api\Data\OrderExtensionFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->quoteAddressMock = $this->getMockBuilder(Address::class)
+        $this->quoteAddressMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAppliedTaxes', 'getItemsAppliedTaxes'])
             ->getMock();
-        $this->subjectMock = $this->getMockBuilder(ToOrder::class)
+        $this->subjectMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address\ToOrder::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManager($this);
         $this->model = $this->objectManagerHelper->getObject(
-            ToOrderConverter::class,
+            \Magento\Tax\Model\Quote\ToOrderConverter::class,
             [
                 'orderExtensionFactory' => $this->orderExtensionFactoryMock,
             ]
@@ -73,11 +65,11 @@ class ToOrderConverterTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function setupOrderExtensionAttributeMock()
     {
-        $orderExtensionAttributeMock = $this->getMockBuilder(OrderExtensionInterface::class)
+        $orderExtensionAttributeMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderExtensionInterface::class)
             ->setMethods(
                 [
                     'setAppliedTaxes',
@@ -111,7 +103,7 @@ class ToOrderConverterTest extends TestCase
             ->method('getItemsAppliedTaxes')
             ->willReturn($itemsAppliedTaxes);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -160,8 +152,8 @@ class ToOrderConverterTest extends TestCase
             ->willReturn($itemsAppliedTaxes);
 
         $orderExtensionAttributeMock = $this->setupOrderExtensionAttributeMock();
-
-        $orderMock = $this->getMockBuilder(Order::class)
+        
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -234,12 +226,12 @@ class ToOrderConverterTest extends TestCase
                             'item_type' => 'product',
                             'associated_item_id' => null,
                             'rates' => [
-                                [
-                                    'percent' => 6,
-                                    'code' => 'IL',
-                                    'title' => 'IL',
+                                    [
+                                        'percent' => 6,
+                                        'code' => 'IL',
+                                        'title' => 'IL',
+                                    ],
                                 ],
-                            ],
                         ],
                     ],
                     'shipping' => [
@@ -260,11 +252,11 @@ class ToOrderConverterTest extends TestCase
                 ],
                 'item_applied_taxes_expected' => [
                     'sequence-1' => [
-                        'item_id' => 146,
-                        'type' => 'product',
-                        'associated_item_id' => null,
-                        'applied_taxes' => [
-                            [
+                            'item_id' => 146,
+                            'type' => 'product',
+                            'associated_item_id' => null,
+                            'applied_taxes' => [
+                                [
                                 'amount' => 0.06,
                                 'item_id' => 146,
                                 'item_type' => 'product',
@@ -278,8 +270,8 @@ class ToOrderConverterTest extends TestCase
                                         ]
                                     ],
                                 ],
-                            ]
-                        ],
+                                ]
+                            ],
                     ],
                     'shipping' => [
                         'item_id' => 146,

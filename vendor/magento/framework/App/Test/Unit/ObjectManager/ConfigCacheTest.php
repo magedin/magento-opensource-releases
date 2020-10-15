@@ -3,44 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\ObjectManager;
 
-use Magento\Framework\App\ObjectManager\ConfigCache;
-use Magento\Framework\Cache\FrontendInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigCacheTest extends TestCase
+class ConfigCacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigCache
+     * @var \Magento\Framework\App\ObjectManager\ConfigCache
      */
     private $configCache;
 
     /**
-     * @var ConfigCache|MockObject
+     * @var \Magento\Framework\App\ObjectManager\ConfigCache|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheFrontendMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $this->cacheFrontendMock = $this->getMockForAbstractClass(FrontendInterface::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->cacheFrontendMock = $this->createMock(\Magento\Framework\Cache\FrontendInterface::class);
         $this->configCache = $objectManagerHelper->getObject(
-            ConfigCache::class,
+            \Magento\Framework\App\ObjectManager\ConfigCache::class,
             ['cacheFrontend' => $this->cacheFrontendMock]
         );
 
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->serializerMock = $this->createMock(SerializerInterface::class);
         $objectManagerHelper->setBackwardCompatibleProperty(
             $this->configCache,
             'serializer',
@@ -48,7 +41,7 @@ class ConfigCacheTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->configCache);
     }

@@ -3,63 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflinePayments\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflinePayments\Model\Checkmo;
-use Magento\Payment\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CheckmoTest extends TestCase
+class CheckmoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Checkmo
+     * @var \Magento\OfflinePayments\Model\Checkmo
      */
-    private $object;
+    protected $_object;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $scopeConfigMock;
+    protected $_scopeConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
-        $paymentDataMock = $this->createMock(Data::class);
-        $this->scopeConfigMock = $this->createPartialMock(ScopeConfigInterface::class, ['getValue', 'isSetFlag']);
-        $this->object = $objectManagerHelper->getObject(
-            Checkmo::class,
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $paymentDataMock = $this->createMock(\Magento\Payment\Helper\Data::class);
+        $this->_scopeConfig = $this->createPartialMock(
+            \Magento\Framework\App\Config\ScopeConfigInterface::class,
+            ['getValue', 'isSetFlag']
+        );
+        $this->_object = $objectManagerHelper->getObject(
+            \Magento\OfflinePayments\Model\Checkmo::class,
             [
                 'eventManager' => $eventManager,
                 'paymentData' => $paymentDataMock,
-                'scopeConfig' => $this->scopeConfigMock,
+                'scopeConfig' => $this->_scopeConfig,
             ]
         );
     }
 
     public function testGetPayableTo()
     {
-        $this->object->setStore(1);
-        $this->scopeConfigMock->expects($this->once())
+        $this->_object->setStore(1);
+        $this->_scopeConfig->expects($this->once())
             ->method('getValue')
             ->with('payment/checkmo/payable_to', 'store', 1)
             ->willReturn('payable');
-        $this->assertEquals('payable', $this->object->getPayableTo());
+        $this->assertEquals('payable', $this->_object->getPayableTo());
     }
 
     public function testGetMailingAddress()
     {
-        $this->object->setStore(1);
-        $this->scopeConfigMock->expects($this->once())
+        $this->_object->setStore(1);
+        $this->_scopeConfig->expects($this->once())
             ->method('getValue')
             ->with('payment/checkmo/mailing_address', 'store', 1)
             ->willReturn('blah@blah.com');
-        $this->assertEquals('blah@blah.com', $this->object->getMailingAddress());
+        $this->assertEquals('blah@blah.com', $this->_object->getMailingAddress());
     }
 }

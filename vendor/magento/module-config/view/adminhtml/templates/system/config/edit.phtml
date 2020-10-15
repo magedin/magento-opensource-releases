@@ -3,10 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/**
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
 ?>
 <?php
 /**
@@ -18,13 +14,11 @@
  *  getConfigSearchParamsJson() - string
  */
 ?>
-
-<?= /* @noEscape */ $secureRenderer->renderTag(
-    'style',
-    [],
-    '.highlighted { background-color: #DFF7FF!important; }'
-) ?>
-
+<style>
+    .highlighted {
+        background-color: #DFF7FF!important;
+    }
+</style>
 <form action="<?= $block->escapeUrl($block->getSaveUrl()) ?>" method="post" id="config-edit-form"
       enctype="multipart/form-data">
     <?= $block->getBlockHtml('formkey') ?>
@@ -32,8 +26,7 @@
         <?= $block->getChildHtml('form') ?>
     </div>
 </form>
-
-<?php $scriptString = <<<script
+<script>
 require([
     "jquery",
     "uiRegistry",
@@ -80,14 +73,14 @@ require([
             }
         },
         getUp: function (element, tag) {
-            var _element = Element.extend(element);
-            if (typeof _element.upTag == 'undefined') {
-                _element.upTag = {};
+            var $element = Element.extend(element);
+            if (typeof $element.upTag == 'undefined') {
+                $element.upTag = {};
             }
-            if (typeof _element.upTag[tag] == 'undefined') {
-                _element.upTag[tag] = Element.extend(_element.up(tag));
+            if (typeof $element.upTag[tag] == 'undefined') {
+                $element.upTag[tag] = Element.extend($element.up(tag));
             }
-            return _element.upTag[tag];
+            return $element.upTag[tag];
         },
         getUpTd: function (element) {
             return this.getUp(element, 'td');
@@ -96,26 +89,26 @@ require([
             return this.getUp(element, 'tr');
         },
         getScopeElement: function(element) {
-            var _element = Element.extend(element);
-            if (typeof _element.scopeElement == 'undefined') {
+            var $element = Element.extend(element);
+            if (typeof $element.scopeElement == 'undefined') {
                 var scopeElementName = element.getAttribute('name').replace(/\[value\]$/, '[inherit]');
-                _element.scopeElement = this.getUpTr(element).select('input[name="' + scopeElementName + '"]')[0];
-                if (typeof _element.scopeElement == 'undefined') {
-                    _element.scopeElement = false;
+                $element.scopeElement = this.getUpTr(element).select('input[name="' + scopeElementName + '"]')[0];
+                if (typeof $element.scopeElement == 'undefined') {
+                    $element.scopeElement = false;
                 }
             }
-            return _element.scopeElement;
+            return $element.scopeElement;
         },
         getDeleteElement: function(element) {
-            var _element = Element.extend(element);
-            if (typeof _element.deleteElement == 'undefined') {
-                _element.deleteElement = this.getUpTd(element)
+            var $element = Element.extend(element);
+            if (typeof $element.deleteElement == 'undefined') {
+                $element.deleteElement = this.getUpTd(element)
                     .select('input[name="'+ element.getAttribute('name') + '[delete]"]')[0];
-                if (typeof _element.deleteElement == 'undefined') {
-                    _element.deleteElement = false;
+                if (typeof $element.deleteElement == 'undefined') {
+                    $element.deleteElement = false;
                 }
             }
-            return _element.deleteElement;
+            return $element.deleteElement;
         },
         mapClasses: function(element, full, callback, classPrefix) {
             if (typeof classPrefix == 'undefined') {
@@ -166,11 +159,11 @@ require([
 
                     var tagName = el.tagName.toLowerCase();
                     if (tagName == 'input' && el.getAttribute('type') == 'file') {
-                        var _el = Element.extend(el);
+                        var $el = Element.extend(el);
                         var events = adminSystemConfig.getRegisteredEvents(el);
-                        _el.stopObserving('change');
-                        var elId = _el.id;
-                        _el.replace(_el.outerHTML);
+                        $el.stopObserving('change');
+                        var elId = $el.id;
+                        $el.replace($el.outerHTML);
                         events.each(function(event) {
                             Event.observe(
                                 Element.extend(document.getElementById(elId)), event.eventName, event.handler
@@ -183,9 +176,9 @@ require([
                                 Element.extend(el).click();
                             }
                         } else if (tagName == 'select') {
-                            var _el = Element.extend(el);
+                            var $el = Element.extend(el);
                             Element.extend(element).select('option').each(function(option) {
-                                var relatedOption = _el.select('option[value="' + option.value + '"]')[0];
+                                var relatedOption = $el.select('option[value="' + option.value + '"]')[0];
                                 if (typeof relatedOption != 'undefined') {
                                     relatedOption.selected = option.selected;
                                 }
@@ -399,8 +392,7 @@ require([
     handleHash();
 
     registry.set('adminSystemConfig', adminSystemConfig);
-script;
-$scriptString .= 'adminSystemConfig.navigateToElement(' . /* @noEscape */ $block->getConfigSearchParamsJson() . ');
-});';
 
-echo /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false);
+    adminSystemConfig.navigateToElement(<?= /* @noEscape */ $block->getConfigSearchParamsJson(); ?>);
+});
+</script>

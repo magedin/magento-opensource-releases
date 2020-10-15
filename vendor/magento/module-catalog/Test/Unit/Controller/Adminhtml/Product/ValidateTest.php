@@ -3,102 +3,84 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Backend\Model\View\Result\Page;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper;
-use Magento\Catalog\Controller\Adminhtml\Product\Validate;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Test\Unit\Controller\Adminhtml\ProductTest;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ValidateTest extends ProductTest
+class ValidateTest extends \Magento\Catalog\Test\Unit\Controller\Adminhtml\ProductTest
 {
-    /** @var Validate */
+    /** @var \Magento\Catalog\Controller\Adminhtml\Product\Validate */
     protected $action;
 
-    /** @var Page|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultPage;
 
-    /** @var Forward|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultForward;
 
-    /** @var Builder|MockObject */
+    /** @var \Magento\Catalog\Controller\Adminhtml\Product\Builder|\PHPUnit_Framework_MockObject_MockObject */
     protected $productBuilder;
 
-    /** @var Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject */
     protected $product;
 
-    /** @var RedirectFactory|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirectFactory;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirect;
 
-    /** @var Helper|MockObject */
+    /** @var Helper|\PHPUnit_Framework_MockObject_MockObject */
     protected $initializationHelper;
 
-    /** @var ProductFactory|MockObject */
+    /** @var \Magento\Catalog\Model\ProductFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $productFactory;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Controller\Result\Json|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultJson;
 
-    /** @var JsonFactory|MockObject */
+    /** @var \Magento\Framework\Controller\Result\JsonFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultJsonFactory;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productBuilder = $this->createPartialMock(
-            Builder::class,
+            \Magento\Catalog\Controller\Adminhtml\Product\Builder::class,
             ['build']
         );
-        $this->product = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)->disableOriginalConstructor()
             ->setMethods([
-                'addData', 'getSku', 'getTypeId', 'getStoreId', '__sleep', 'getAttributes',
+                'addData', 'getSku', 'getTypeId', 'getStoreId', '__sleep', '__wakeup', 'getAttributes',
                 'setAttributeSetId',
             ])
             ->getMock();
-        $this->product->expects($this->any())->method('getTypeId')->willReturn('simple');
-        $this->product->expects($this->any())->method('getStoreId')->willReturn('1');
-        $this->product->expects($this->any())->method('getAttributes')->willReturn([]);
-        $this->productBuilder->expects($this->any())->method('build')->willReturn($this->product);
+        $this->product->expects($this->any())->method('getTypeId')->will($this->returnValue('simple'));
+        $this->product->expects($this->any())->method('getStoreId')->will($this->returnValue('1'));
+        $this->product->expects($this->any())->method('getAttributes')->will($this->returnValue([]));
+        $this->productBuilder->expects($this->any())->method('build')->will($this->returnValue($this->product));
 
-        $this->resultPage = $this->getMockBuilder(Page::class)
+        $this->resultPage = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $resultPageFactory = $this->getMockBuilder(PageFactory::class)
+        $resultPageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $resultPageFactory->expects($this->any())->method('create')->willReturn($this->resultPage);
 
-        $this->resultForward = $this->getMockBuilder(Forward::class)
+        $this->resultForward = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $resultForwardFactory = $this->getMockBuilder(ForwardFactory::class)
+        $resultForwardFactory = $this->getMockBuilder(\Magento\Backend\Model\View\Result\ForwardFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -107,31 +89,31 @@ class ValidateTest extends ProductTest
             ->willReturn($this->resultForward);
         $this->resultPage->expects($this->any())->method('getLayout')->willReturn($this->layout);
         $this->resultRedirectFactory = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Backend\Model\View\Result\RedirectFactory::class,
             ['create']
         );
-        $this->resultRedirect = $this->createMock(Redirect::class);
+        $this->resultRedirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
         $this->resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
 
         $this->initializationHelper = $this->createMock(
-            Helper::class
+            \Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper::class
         );
 
-        $this->productFactory = $this->getMockBuilder(ProductFactory::class)
+        $this->productFactory = $this->getMockBuilder(\Magento\Catalog\Model\ProductFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->productFactory->expects($this->any())->method('create')->willReturn($this->product);
 
-        $this->resultJson = $this->createMock(Json::class);
-        $this->resultJsonFactory = $this->getMockBuilder(JsonFactory::class)
+        $this->resultJson = $this->createMock(\Magento\Framework\Controller\Result\Json::class);
+        $this->resultJsonFactory = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->resultJsonFactory->expects($this->any())->method('create')->willReturn($this->resultJson);
 
         $storeManagerInterfaceMock = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false,
@@ -141,11 +123,12 @@ class ValidateTest extends ProductTest
         );
 
         $storeManagerInterfaceMock->expects($this->any())
-            ->method('getStore')->willReturnSelf();
+            ->method('getStore')
+            ->will($this->returnSelf());
 
         $additionalParams = ['resultRedirectFactory' => $this->resultRedirectFactory];
         $this->action = (new ObjectManagerHelper($this))->getObject(
-            Validate::class,
+            \Magento\Catalog\Controller\Adminhtml\Product\Validate::class,
             [
                 'context' => $this->initContext($additionalParams),
                 'productBuilder' => $this->productBuilder,

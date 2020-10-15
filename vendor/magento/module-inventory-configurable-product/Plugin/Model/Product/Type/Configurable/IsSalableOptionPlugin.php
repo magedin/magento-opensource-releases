@@ -9,9 +9,8 @@ namespace Magento\InventoryConfigurableProduct\Plugin\Model\Product\Type\Configu
 
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
-use Magento\InventorySalesApi\Api\AreProductsSalableInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableResultInterface;
 use Magento\InventorySalesApi\Api\Data\SalesChannelInterface;
+use Magento\InventorySalesApi\Api\IsProductSalableInterface;
 use Magento\InventorySalesApi\Api\StockResolverInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -21,9 +20,9 @@ use Magento\Store\Model\StoreManagerInterface;
 class IsSalableOptionPlugin
 {
     /**
-     * @var AreProductsSalableInterface
+     * @var IsProductSalableInterface
      */
-    private $areProductsSalable;
+    private $isProductSalable;
 
     /**
      * @var StoreManagerInterface
@@ -41,23 +40,18 @@ class IsSalableOptionPlugin
     private $stockConfiguration;
 
     /**
-     * @var IsProductSalableResultInterface[]
-     */
-    private $productsSalableStatuses = [];
-
-    /**
-     * @param AreProductsSalableInterface $areProductsSalable
+     * @param IsProductSalableInterface $isProductSalable
      * @param StoreManagerInterface $storeManager
      * @param StockResolverInterface $stockResolver
      * @param StockConfigurationInterface $stockConfiguration
      */
     public function __construct(
-        AreProductsSalableInterface $areProductsSalable,
+        IsProductSalableInterface $isProductSalable,
         StoreManagerInterface $storeManager,
         StockResolverInterface $stockResolver,
         StockConfigurationInterface $stockConfiguration
     ) {
-        $this->areProductsSalable = $areProductsSalable;
+        $this->isProductSalable = $isProductSalable;
         $this->storeManager = $storeManager;
         $this->stockResolver = $stockResolver;
         $this->stockConfiguration = $stockConfiguration;
@@ -73,50 +67,18 @@ class IsSalableOptionPlugin
      */
     public function afterGetUsedProducts(Configurable $subject, array $products): array
     {
-        $skus = [];
-        foreach ($products as $product) {
-            foreach ($this->productsSalableStatuses as $isProductSalableResult) {
-                if ($isProductSalableResult->getSku() === $product->getSku()) {
-                    continue 2;
-                }
-            }
-            $skus[] = $product->getSku();
-        }
-
-        if (empty($skus)) {
-            $this->filterProducts($products, $this->productsSalableStatuses);
-            return $products;
-        }
-
         $website = $this->storeManager->getWebsite();
         $stock = $this->stockResolver->execute(SalesChannelInterface::TYPE_WEBSITE, $website->getCode());
 
-        $this->productsSalableStatuses = array_merge(
-            $this->productsSalableStatuses,
-            $this->areProductsSalable->execute($skus, $stock->getStockId())
-        );
-        $this->filterProducts($products, $this->productsSalableStatuses);
-        return $products;
-    }
-
-    /**
-     * Filter products according to the salability results.
-     *
-     * @param array $products
-     * @param array $isSalableResults
-     * @return void
-     */
-    private function filterProducts(array $products, array $isSalableResults) : void
-    {
         foreach ($products as $key => $product) {
-            foreach ($isSalableResults as $result) {
-                if ($result->getSku() === $product->getSku() && !$result->isSalable()) {
-                    $product->setIsSalable(0);
-                    if (!$this->stockConfiguration->isShowOutOfStock()) {
-                        unset($products[$key]);
-                    }
+            if (!$this->isProductSalable->execute($product->getSku(), $stock->getStockId())) {
+                $product->setIsSalable(0);
+                if (!$this->stockConfiguration->isShowOutOfStock()) {
+                    unset($products[$key]);
                 }
             }
         }
+
+        return $products;
     }
 }

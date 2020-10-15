@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\Captcha\Test\Unit\Model;
 
+use Magento\Authorization\Model\UserContextInterface;
 use Magento\Captcha\Block\Captcha\DefaultCaptcha;
 use Magento\Captcha\Helper\Data;
 use Magento\Captcha\Model\DefaultModel;
@@ -19,7 +20,6 @@ use Magento\Framework\Session\Storage;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -57,7 +57,7 @@ class DefaultTest extends TestCase
     ];
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_dirMock;
 
@@ -78,30 +78,35 @@ class DefaultTest extends TestCase
     protected $_object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_storeManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $session;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|LogFactory
      */
     protected $_resLogFactory;
+
+    /**
+     * @var UserContextInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $userContextMock;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->session = $this->_getSessionStub();
 
@@ -139,11 +144,18 @@ class DefaultTest extends TestCase
             $this->_getResourceModelStub()
         );
 
+        $randomMock = $this->createMock(Random::class);
+        $randomMock->method('getRandomString')->willReturn('random-string');
+
+        $this->userContextMock = $this->getMockForAbstractClass(UserContextInterface::class);
+
         $this->_object = new DefaultModel(
             $this->session,
             $this->_getHelperStub(),
             $this->_resLogFactory,
-            'user_create'
+            'user_create',
+            $randomMock,
+            $this->userContextMock
         );
     }
 
@@ -161,6 +173,19 @@ class DefaultTest extends TestCase
     public function testIsRequired()
     {
         $this->assertTrue($this->_object->isRequired());
+    }
+
+    /**
+     * Validate that CAPTCHA is disabled for integrations.
+     *
+     * @return void
+     */
+    public function testIsRequiredForIntegration(): void
+    {
+        $this->userContextMock->method('getUserType')->willReturn(UserContextInterface::USER_TYPE_INTEGRATION);
+        $this->userContextMock->method('getUserId')->willReturn(1);
+
+        $this->assertFalse($this->_object->isRequired());
     }
 
     /**
@@ -360,11 +385,7 @@ class DefaultTest extends TestCase
      */
     protected function _getStoreStub()
     {
-        $store = $this->getMockBuilder(Store::class)
-            ->addMethods(['isAdmin'])
-            ->onlyMethods(['getBaseUrl'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $store = $this->createPartialMock(Store::class, ['isAdmin', 'getBaseUrl']);
         $store->expects($this->any())->method('getBaseUrl')->willReturn('http://localhost/pub/media/');
         $store->expects($this->any())->method('isAdmin')->willReturn(false);
         return $store;

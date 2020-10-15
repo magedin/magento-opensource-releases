@@ -9,9 +9,8 @@
     <default>
         <catalog>
             <downloadable>
-                <order_item_status>9</order_item_status>
                 <downloads_number>0</downloads_number>
-                <shareable>0</shareable>
+                <order_item_status>9</order_item_status>
                 <samples_title>Samples</samples_title>
                 <links_title>Links</links_title>
                 <links_target_new_window>1</links_target_new_window>

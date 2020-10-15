@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Store\Test\Unit\Model;
 
 use Magento\Framework\App\Config;
 use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\BaseUrlChecker;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BaseUrlCheckerTest extends TestCase
+/**
+ * Class BaseUrlCheckerTest covers Magento\Store\Model\BaseUrlChecker.
+ */
+class BaseUrlCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Holder for BaseUrlChecker instance.
@@ -26,14 +25,14 @@ class BaseUrlCheckerTest extends TestCase
     /**
      * Holder for Config mock.
      *
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
     /**
      * Prepare subject for tests.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeConfig = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
@@ -52,7 +51,7 @@ class BaseUrlCheckerTest extends TestCase
         $scheme = 'testScheme';
         $host = 'testHost';
         $requestUri = 'testRequestUri';
-        /** @var Http|MockObject $request */
+        /** @var Http|\PHPUnit_Framework_MockObject_MockObject $request */
         $request = $this->getMockBuilder(Http::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -80,8 +79,8 @@ class BaseUrlCheckerTest extends TestCase
     {
         $this->scopeConfig->expects($this->once())
             ->method('isSetFlag')
-            ->with('web/url/redirect_to_base', ScopeInterface::SCOPE_STORE)
-            ->willReturn((bool)1);
+            ->with('web/url/redirect_to_base', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            ->willReturn(!!1);
         $this->assertTrue($this->baseUrlChecker->isEnabled());
     }
 
@@ -92,13 +91,13 @@ class BaseUrlCheckerTest extends TestCase
     {
         $this->scopeConfig->expects($this->once())
             ->method('getValue')
-            ->with('web/unsecure/base_url', ScopeInterface::SCOPE_STORE)
+            ->with('web/unsecure/base_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn('https://localhost');
 
         $this->scopeConfig->expects($this->once())
             ->method('isSetFlag')
-            ->with('web/secure/use_in_frontend', ScopeInterface::SCOPE_STORE)
-            ->willReturn((bool)1);
+            ->with('web/secure/use_in_frontend', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            ->willReturn(!!1);
 
         $this->assertTrue($this->baseUrlChecker->isFrontendSecure());
     }

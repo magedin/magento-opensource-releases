@@ -25,7 +25,7 @@ class DataTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Get required instance
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_wishlistHelper = $this->objectManager->get(\Magento\Wishlist\Helper\Data::class);
@@ -35,7 +35,7 @@ class DataTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * Clear wishlist helper property
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_wishlistHelper = null;
         if ($this->_customerSession->isLoggedIn()) {

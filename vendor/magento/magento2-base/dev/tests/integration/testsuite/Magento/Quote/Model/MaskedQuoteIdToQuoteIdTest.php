@@ -22,7 +22,7 @@ class MaskedQuoteIdToQuoteIdTest extends \PHPUnit\Framework\TestCase
      */
     private $guestCartManagement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = BootstrapHelper::getObjectManager();
         $this->maskedQuoteIdToQuoteId = $objectManager->create(MaskedQuoteIdToQuoteIdInterface::class);

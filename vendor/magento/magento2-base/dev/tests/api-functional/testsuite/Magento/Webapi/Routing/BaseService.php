@@ -43,7 +43,7 @@ abstract class BaseService extends \Magento\TestFramework\TestCase\WebapiAbstrac
         try {
             $this->_webApiCall($serviceInfo, $requestData);
         } catch (\Exception $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 '{"message":"The consumer isn\'t authorized to access %resources.',
                 $e->getMessage(),
                 sprintf(
@@ -111,7 +111,7 @@ abstract class BaseService extends \Magento\TestFramework\TestCase\WebapiAbstrac
             }
 
             if ($expectedMessage) {
-                $this->assertStringContainsString($expectedMessage, $e->getMessage());
+                $this->assertContains($expectedMessage, $e->getMessage());
             }
         }
     }

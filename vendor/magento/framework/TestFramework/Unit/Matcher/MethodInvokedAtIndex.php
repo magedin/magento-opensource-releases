@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\Invocation as BaseInvocation;
  *
  * @package Magento\TestFramework\Matcher
  */
-class MethodInvokedAtIndex extends \PHPUnit\Framework\MockObject\Rule\InvocationOrder
+class MethodInvokedAtIndex implements \PHPUnit\Framework\MockObject\Matcher\Invocation
 {
     /**
      * @var int
@@ -75,6 +75,15 @@ class MethodInvokedAtIndex extends \PHPUnit\Framework\MockObject\Rule\Invocation
     }
 
     /**
+     * @param BaseInvocation $invocation
+     * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function invoked(BaseInvocation $invocation)
+    {
+    }
+
+    /**
      * Verifies that the current expectation is valid. If everything is OK the
      * code should just return, if not it must throw an exception.
      *
@@ -90,9 +99,5 @@ class MethodInvokedAtIndex extends \PHPUnit\Framework\MockObject\Rule\Invocation
                 )
             );
         }
-    }
-
-    protected function invokedDo(BaseInvocation $invocation)
-    {
     }
 }

@@ -18,7 +18,7 @@ class GetSourceCodesBySkusTest extends TestCase
      */
     private $getSourceCodesBySkus;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -26,9 +26,9 @@ class GetSourceCodesBySkusTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
      */
     public function testExecute()
     {

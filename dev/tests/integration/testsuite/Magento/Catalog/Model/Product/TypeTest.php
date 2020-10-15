@@ -12,7 +12,7 @@ class TypeTest extends \PHPUnit\Framework\TestCase
      */
     protected $_productType;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_productType = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Catalog\Model\Product\Type::class
@@ -173,7 +173,7 @@ class TypeTest extends \PHPUnit\Framework\TestCase
     public function testGetCompositeTypes()
     {
         $types = $this->_productType->getCompositeTypes();
-        $this->assertIsArray($types);
+        $this->assertInternalType('array', $types);
         $this->assertContains(\Magento\Catalog\Model\Product\Type::TYPE_BUNDLE, $types);
     }
 
@@ -209,7 +209,7 @@ class TypeTest extends \PHPUnit\Framework\TestCase
      */
     protected function _assertOptions($options)
     {
-        $this->assertIsArray($options);
+        $this->assertInternalType('array', $options);
         $types = [];
         foreach ($options as $option) {
             $this->assertArrayHasKey('value', $option);

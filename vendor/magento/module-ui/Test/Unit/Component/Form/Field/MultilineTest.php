@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form\Field;
 
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Ui\Component\Form\Field;
+use Magento\Ui\Component\Form\Element\Multiline;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponentInterface;
-use Magento\Ui\Component\Form\Element\Multiline;
-use Magento\Ui\Component\Form\Field;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 
 /**
  * Class MultilineTest
  *
  * Test for class \Magento\Ui\Component\Form\Element\Multiline
  */
-class MultilineTest extends TestCase
+class MultilineTest extends \PHPUnit\Framework\TestCase
 {
     const NAME = 'test-name';
 
@@ -31,12 +26,12 @@ class MultilineTest extends TestCase
     protected $multiline;
 
     /**
-     * @var UiComponentFactory|MockObject
+     * @var UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $uiComponentFactoryMock;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
@@ -45,12 +40,12 @@ class MultilineTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->uiComponentFactoryMock = $this->getMockBuilder(UiComponentFactory::class)
+        $this->uiComponentFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->contextMock = $this->getMockBuilder(ContextInterface::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
         $this->multiline = new Multiline(
             $this->contextMock,
@@ -68,7 +63,7 @@ class MultilineTest extends TestCase
      */
     public function testPrepare(array $data)
     {
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processor);
@@ -87,11 +82,11 @@ class MultilineTest extends TestCase
 
     /**
      * @param int $exactly
-     * @return UiComponentInterface|MockObject
+     * @return UiComponentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getComponentMock($exactly)
     {
-        $componentMock = $this->getMockBuilder(UiComponentInterface::class)
+        $componentMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->getMockForAbstractClass();
 
         $componentMock->expects($this->exactly($exactly))

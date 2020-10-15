@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Model\Plugin\Frontend;
 
 use Magento\Bundle\Model\Plugin\Frontend\Product as ProductPlugin;
 use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Model\Product;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  \Magento\Bundle\Model\Plugin\Product */
     private $plugin;
@@ -24,7 +22,7 @@ class ProductTest extends TestCase
     /** @var  MockObject|\Magento\Catalog\Model\Product */
     private $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
@@ -64,11 +62,11 @@ class ProductTest extends TestCase
         ];
         $this->product->expects($this->once())
             ->method('getEntityId')
-            ->willReturn($id);
+            ->will($this->returnValue($id));
         $this->type->expects($this->once())
             ->method('getChildrenIds')
             ->with($id)
-            ->willReturn($childIds);
+            ->will($this->returnValue($childIds));
         $identities = $this->plugin->afterGetIdentities($this->product, $baseIdentities);
         $this->assertEquals($expectedIdentities, $identities);
     }

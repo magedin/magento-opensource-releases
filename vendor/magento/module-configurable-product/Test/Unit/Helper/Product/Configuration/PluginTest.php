@@ -3,42 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Helper\Product\Configuration;
 
-use Magento\Catalog\Helper\Product\Configuration;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Configuration\Item\ItemInterface;
-use Magento\ConfigurableProduct\Helper\Product\Configuration\Plugin;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PluginTest extends TestCase
+class PluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Plugin
+     * @var \Magento\ConfigurableProduct\Helper\Product\Configuration\Plugin
      */
     protected $plugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeInstanceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
@@ -47,20 +37,20 @@ class PluginTest extends TestCase
      */
     protected $closureMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->itemMock = $this->getMockForAbstractClass(ItemInterface::class);
-        $this->productMock = $this->createMock(Product::class);
+        $this->itemMock = $this->createMock(\Magento\Catalog\Model\Product\Configuration\Item\ItemInterface::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->typeInstanceMock = $this->createPartialMock(
-            Configurable::class,
-            ['getSelectedAttributesInfo']
+            \Magento\ConfigurableProduct\Model\Product\Type\Configurable::class,
+            ['getSelectedAttributesInfo', '__wakeup']
         );
-        $this->itemMock->expects($this->once())->method('getProduct')->willReturn($this->productMock);
+        $this->itemMock->expects($this->once())->method('getProduct')->will($this->returnValue($this->productMock));
         $this->closureMock = function () {
             return ['options'];
         };
-        $this->subjectMock = $this->createMock(Configuration::class);
-        $this->plugin = new Plugin();
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Helper\Product\Configuration::class);
+        $this->plugin = new \Magento\ConfigurableProduct\Helper\Product\Configuration\Plugin();
     }
 
     public function testAroundGetOptionsWhenProductTypeIsConfigurable()
@@ -69,15 +59,15 @@ class PluginTest extends TestCase
             $this->once()
         )->method(
             'getTypeId'
-        )->willReturn(
-            Configurable::TYPE_CODE
+        )->will(
+            $this->returnValue(\Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE)
         );
         $this->productMock->expects(
             $this->once()
         )->method(
             'getTypeInstance'
-        )->willReturn(
-            $this->typeInstanceMock
+        )->will(
+            $this->returnValue($this->typeInstanceMock)
         );
         $this->typeInstanceMock->expects(
             $this->once()
@@ -85,8 +75,8 @@ class PluginTest extends TestCase
             'getSelectedAttributesInfo'
         )->with(
             $this->productMock
-        )->willReturn(
-            ['attributes']
+        )->will(
+            $this->returnValue(['attributes'])
         );
         $this->assertEquals(
             ['attributes', 'options'],
@@ -96,7 +86,7 @@ class PluginTest extends TestCase
 
     public function testAroundGetOptionsWhenProductTypeIsSimple()
     {
-        $this->productMock->expects($this->once())->method('getTypeId')->willReturn('simple');
+        $this->productMock->expects($this->once())->method('getTypeId')->will($this->returnValue('simple'));
         $this->productMock->expects($this->never())->method('getTypeInstance');
         $this->assertEquals(
             ['options'],

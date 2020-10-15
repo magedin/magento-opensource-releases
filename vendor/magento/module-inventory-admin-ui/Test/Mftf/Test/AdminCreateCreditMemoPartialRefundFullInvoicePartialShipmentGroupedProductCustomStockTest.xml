@@ -32,12 +32,12 @@
             <createData entity="SimpleProduct" stepKey="product">
                 <requiredEntity createDataKey="category"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <amOnPage url="{{AdminProductEditPage.url($product.id$)}}" stepKey="openProductEditPage"/>
             <actionGroup ref="AdminAssignSourceToProductAndSetSourceQuantityActionGroup" stepKey="assignTestSourceToCreatedProduct">
                 <argument name="sourceCode" value="$additionalSource.source[source_code]$"/>
             </actionGroup>
-            <actionGroup ref="AdminFormSaveAndCloseActionGroup" stepKey="saveProduct"/>
+            <actionGroup ref="AdminFormSaveAndClose" stepKey="saveProduct"/>
             <!--Assign simple product to grouped product.-->
             <amOnPage url="{{AdminProductEditPage.url($$groupedProduct.id$$)}}" stepKey="openGroupedProductEditPage"/>
             <click selector="{{AdminProductFormGroupedProductsSection.addProductsToGroup}}" stepKey="clickAddProductsToGroup"/>
@@ -52,7 +52,7 @@
                 <argument name="productName" value="$$product.name$$"/>
                 <argument name="qty" value="{{tenPiecesAddToCart.value}}"/>
             </actionGroup>
-            <actionGroup ref="AdminFormSaveAndCloseActionGroup" stepKey="saveAndCloseGroupedProduct"/>
+            <actionGroup ref="AdminFormSaveAndClose" stepKey="saveAndCloseGroupedProduct"/>
         </before>
         <after>
             <deleteData createDataKey="customer" stepKey="deleteCustomer"/>
@@ -65,7 +65,7 @@
                 <argument name="websiteName" value="{{_defaultWebsite.name}}"/>
             </actionGroup>
             <deleteData createDataKey="additionalStock" stepKey="deleteStock"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutOfAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutOfAdmin"/>
         </after>
 
         <!--Login to storefront.-->
@@ -89,11 +89,11 @@
         <actionGroup ref="StartCreateInvoiceFromOrderPageActionGroup" stepKey="createInvoice"/>
         <actionGroup ref="SubmitInvoiceActionGroup" stepKey="submitInvoice"/>
         <!--Process partial shipment.-->
-        <actionGroup ref="GoToShipmentIntoOrderActionGroup" stepKey="clickShipAction"/>
+        <actionGroup ref="goToShipmentIntoOrder" stepKey="clickShipAction"/>
         <actionGroup ref="AdminFillPartialShipmentActionGroup" stepKey="fillShipmentQty">
             <argument name="quantity" value="{{fivePiecesAddToCart.value}}"/>
         </actionGroup>
-        <actionGroup ref="SubmitShipmentIntoOrderActionGroup" stepKey="submitShipment"/>
+        <actionGroup ref="submitShipmentIntoOrder" stepKey="submitShipment"/>
         <!--Process credit memo total refund.-->
         <actionGroup ref="AdminStartsCreatingCreditMemoOnOrderPageActionGroup" stepKey="startToCreateCreditMemo"/>
         <actionGroup ref="AdminFillQuantityForPartialCreditMemoReturnToStockActionGroup" stepKey="fillCreditMemoQuantity">

@@ -5,30 +5,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit\Rest\Response\Renderer;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\Webapi\Rest\Response\Renderer\Xml;
-use Magento\Framework\Xml\Generator;
-use PHPUnit\Framework\TestCase;
-
-class XmlTest extends TestCase
+class XmlTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Xml */
+    /** @var \Magento\Framework\Webapi\Rest\Response\Renderer\Xml */
     protected $_restXmlRenderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** Prepare object for SUT constructor. */
-        $xmlGenerator = new Generator();
+        $xmlGenerator = new \Magento\Framework\Xml\Generator();
         /** Initialize SUT. */
-        $this->_restXmlRenderer = new Xml($xmlGenerator);
+        $this->_restXmlRenderer = new \Magento\Framework\Webapi\Rest\Response\Renderer\Xml($xmlGenerator);
         parent::setUp();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_restXmlRenderer);
         parent::tearDown();
@@ -109,7 +102,7 @@ class XmlTest extends TestCase
                 'Invalid XML render with simple data.'
             ],
             [
-                new DataObject(['key' => 'value']),
+                new \Magento\Framework\DataObject(['key' => 'value']),
                 '<?xml version="1.0"?><response><key>value</key></response>',
                 'Invalid XML render with \Magento\Framework\DataObject data.'
             ]

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Query\Builder;
 
@@ -11,13 +10,15 @@ use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeAdapter;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeProvider;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\ResolverInterface
     as FieldNameResolver;
-use Magento\Elasticsearch\SearchAdapter\Query\Builder\Sort;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Magento\Elasticsearch\SearchAdapter\Query\Builder\Sort;
 
-class SortTest extends TestCase
+/**
+ * Class SortTest
+ */
+class SortTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeProvider
@@ -37,7 +38,7 @@ class SortTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attributeAdapterProvider = $this->getMockBuilder(AttributeProvider::class)
             ->disableOriginalConstructor()
@@ -103,7 +104,7 @@ class SortTest extends TestCase
         $this->fieldNameResolver->expects($this->any())
             ->method('getFieldName')
             ->with($this->anything())
-            ->willReturnCallback(
+            ->will($this->returnCallback(
                 function ($attribute, $context) use ($fieldName) {
                     if (empty($context)) {
                         return $fieldName;
@@ -111,7 +112,7 @@ class SortTest extends TestCase
                         return 'sort_' . $fieldName;
                     }
                 }
-            );
+            ));
 
         $this->assertEquals(
             $expected,
@@ -133,9 +134,9 @@ class SortTest extends TestCase
                         'direction' => 'DESC'
                     ]
                 ],
-                false,
-                false,
-                false,
+                null,
+                null,
+                null,
                 null,
                 []
             ],

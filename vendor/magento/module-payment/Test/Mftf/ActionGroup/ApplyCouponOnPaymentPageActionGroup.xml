@@ -20,7 +20,6 @@
         <fillField selector="{{ProductCardSection.addCode}}" userInput="{{couponCode}}" stepKey="TypeDiscountCode"/>
         <click selector="{{ProductCardSection.applyDiscount}}" stepKey="clickToApplyDiscount"/>
         <waitForPageLoad stepKey="WaitForDiscountToBeAdded"/>
-        <!-- Success message will change to display none so will check DOM instead -->
-        <seeElementInDOM selector="{{ProductCardSection.discountSuccessMsgInDOM}}" stepKey="discountApplyMessage"/>
+        <see selector="{{ProductCardSection.discountVerificationMsg}}" userInput="Your coupon was successfully applied" stepKey="discountApplyMessage"/>
     </actionGroup>
 </actionGroups>

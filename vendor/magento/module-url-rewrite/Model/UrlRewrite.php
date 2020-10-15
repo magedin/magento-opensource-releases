@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Model;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json;
 
 /**
- * UrlRewrite model class
- *
  * @method int getEntityId()
  * @method string getEntityType()
  * @method int getRedirectType()
@@ -36,7 +32,6 @@ class UrlRewrite extends \Magento\Framework\Model\AbstractModel
 
     /**
      * UrlRewrite constructor.
-     *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
@@ -68,8 +63,6 @@ class UrlRewrite extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
-     * Get metadata
-     *
      * @return array
      * @api
      */
@@ -83,6 +76,7 @@ class UrlRewrite extends \Magento\Framework\Model\AbstractModel
      * Overwrite Metadata in the object.
      *
      * @param array|string $metadata
+     *
      * @return $this
      */
     public function setMetadata($metadata)

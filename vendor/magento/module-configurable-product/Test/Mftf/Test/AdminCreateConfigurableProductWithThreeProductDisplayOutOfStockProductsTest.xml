@@ -57,14 +57,14 @@
             </createData>
 
             <createData entity="SimpleSubCategory" stepKey="createCategory"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Don't display out of stock product -->
-            <actionGroup ref="NoDisplayOutOfStockProductActionGroup" stepKey="revertDisplayOutOfStockProduct"/>
+            <actionGroup ref="noDisplayOutOfStockProduct" stepKey="revertDisplayOutOfStockProduct"/>
 
             <!-- Delete configurable product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="ApiConfigurableProduct"/>
             </actionGroup>
 
@@ -76,26 +76,26 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!--Create configurable product -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="amOnProductGridPage"/>
         <waitForPageLoad stepKey="waitForProductGridPageLoad"/>
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="createConfigurableProduct">
+        <actionGroup ref="goToCreateProductPage" stepKey="createConfigurableProduct">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
 
         <!--Fill configurable product values -->
-        <actionGroup ref="FillMainProductFormActionGroup" stepKey="fillConfigurableProductValues">
+        <actionGroup ref="fillMainProductForm" stepKey="fillConfigurableProductValues">
             <argument name="product" value="ApiConfigurableProduct"/>
         </actionGroup>
 
         <!-- Create product configurations and add attribute and select all options -->
-        <actionGroup ref="GenerateConfigurationsByAttributeCodeActionGroup" stepKey="generateConfigurationsByAttributeCode" after="fillConfigurableProductValues">
+        <actionGroup ref="generateConfigurationsByAttributeCode" stepKey="generateConfigurationsByAttributeCode" after="fillConfigurableProductValues">
             <argument name="attributeCode" value="$$createConfigProductAttribute.attribute_code$$"/>
         </actionGroup>
 
@@ -103,36 +103,34 @@
         <searchAndMultiSelectOption selector="{{AdminProductFormSection.categoriesDropdown}}" parameterArray="[$$createCategory.name$$]" stepKey="fillCategory" after="fillConfigurableProductValues"/>
 
         <!-- Add child products to configurations grid -->
-        <actionGroup ref="AddProductToConfigurationsGridActionGroup" stepKey="addFirstSimpleProduct">
+        <actionGroup ref="addProductToConfigurationsGrid" stepKey="addFirstSimpleProduct">
             <argument name="sku" value="$$createFirstSimpleProduct.sku$$"/>
             <argument name="name" value="$$createConfigProductAttributeOptionOne.option[store_labels][1][label]$$"/>
         </actionGroup>
 
-        <actionGroup ref="AddProductToConfigurationsGridActionGroup" stepKey="addSecondSimpleProduct">
+        <actionGroup ref="addProductToConfigurationsGrid" stepKey="addSecondSimpleProduct">
             <argument name="sku" value="$$createSecondSimpleProduct.sku$$"/>
             <argument name="name" value="$$createConfigProductAttributeOptionTwo.option[store_labels][1][label]$$"/>
         </actionGroup>
 
-        <actionGroup ref="AddProductToConfigurationsGridActionGroup" stepKey="addOutOfStockProduct">
+        <actionGroup ref="addProductToConfigurationsGrid" stepKey="addOutOfStockProduct">
             <argument name="sku" value="$$createSimpleOutOfStockProduct.sku$$"/>
             <argument name="name" value="$$createConfigProductAttributeOptionThree.option[store_labels][1][label]$$"/>
         </actionGroup>
 
         <!-- Save configurable product -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveConfigurableProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="saveConfigurableProduct"/>
 
         <!-- Display out of stock product -->
-        <actionGroup ref="DisplayOutOfStockProductActionGroup" stepKey="displayOutOfStockProduct"/>
+        <actionGroup ref="displayOutOfStockProduct" stepKey="displayOutOfStockProduct"/>
 
         <!-- Flash cache -->
-        <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-            <argument name="tags" value=""/>
-        </actionGroup>
+        <magentoCLI command="cache:flush" stepKey="flushCache"/>
 
         <!--Assert configurable product in category -->
         <amOnPage url="$$createCategory.name$$.html" stepKey="amOnCategoryPage"/>
         <waitForPageLoad stepKey="waitForCategoryPageLoad"/>
-        <actionGroup ref="StorefrontCheckCategoryConfigurableProductActionGroup" stepKey="assertConfigurableProductInCategory">
+        <actionGroup ref="StorefrontCheckCategoryConfigurableProduct" stepKey="assertConfigurableProductInCategory">
             <argument name="product" value="ApiConfigurableProduct"/>
             <argument name="optionProduct" value="$$createFirstSimpleProduct$$"/>
         </actionGroup>

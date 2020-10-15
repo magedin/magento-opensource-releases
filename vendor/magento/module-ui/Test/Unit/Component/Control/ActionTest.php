@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Control;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Component\Control\Action;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class ActionTest extends TestCase
+/**
+ * Class ActionTest
+ */
+class ActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Action
@@ -28,17 +26,17 @@ class ActionTest extends TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->getMockBuilder(ContextInterface::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $context->expects($this->never())->method('getProcessor')->willReturn($processor);
         $this->objectManager = new ObjectManager($this);
         $this->action = $this->objectManager->getObject(
-            Action::class,
+            \Magento\Ui\Component\Control\Action::class,
             ['context' => $context]
         );
     }
@@ -50,6 +48,6 @@ class ActionTest extends TestCase
      */
     public function testGetComponentName()
     {
-        $this->assertSame(Action::NAME, $this->action->getComponentName());
+        $this->assertTrue($this->action->getComponentName() === Action::NAME);
     }
 }

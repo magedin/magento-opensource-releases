@@ -31,7 +31,7 @@ class InterfaceTest extends \PHPUnit\Framework\TestCase
      */
     protected $_twoColumnIdxName;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var \Magento\Framework\Setup\ModuleDataSetupInterface $installer */
         $installer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -69,14 +69,14 @@ class InterfaceTest extends \PHPUnit\Framework\TestCase
     /**
      * Cleanup DDL cache for the fixture table
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_connection->dropTable($this->_tableName);
         $this->_connection->resetDdlCache($this->_tableName);
         $this->_connection = null;
     }
 
-    protected function assertPreConditions(): void
+    protected function assertPreConditions()
     {
         $this->assertTrue(
             $this->_connection->tableColumnExists($this->_tableName, 'column1'),
@@ -209,11 +209,10 @@ class InterfaceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \Zend_Db_Exception
      */
     public function testInsertArrayTwoColumnsWithSimpleData()
     {
-        $this->expectException(\Zend_Db_Exception::class);
-
         $this->_connection->insertArray($this->_tableName, ['column1', 'column2'], [1, 2]);
     }
 

@@ -3,81 +3,67 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ProductVideo\Test\Unit\Block\Adminhtml\Product\Edit;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\Json\EncoderInterface;
-use Magento\Framework\Math\Random;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo;
-use Magento\ProductVideo\Helper\Media;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NewVideoTest extends TestCase
+class NewVideoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\Block\Template\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
-    /**
-     * @var MockObject|UrlInterface
+    /*
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\UrlInterface
      */
     protected $urlBuilder;
 
     /**
-     * @var Random|MockObject
+     * @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mathRandom;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var FormFactory|MockObject
+     * @var \Magento\Framework\Data\FormFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $formFactoryMock;
 
     /**
-     * @var EncoderInterface|MockObject
+     * @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $jsonEncoderMock;
 
     /**
-     * @var Media|MockObject
+     * @var \Magento\ProductVideo\Helper\Media|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mediaHelper;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      * |\Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $this->mediaHelper = $this->createMock(Media::class);
-        $this->mathRandom = $this->createMock(Random::class);
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\Block\Template\Context::class);
+        $this->mediaHelper = $this->createMock(\Magento\ProductVideo\Helper\Media::class);
+        $this->mathRandom = $this->createMock(\Magento\Framework\Math\Random::class);
+        $this->urlBuilder = $this->createMock(\Magento\Framework\UrlInterface::class);
         $this->contextMock->expects($this->any())->method('getMathRandom')->willReturn($this->mathRandom);
         $this->contextMock->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilder);
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->formFactoryMock = $this->createMock(FormFactory::class);
-        $this->jsonEncoderMock = $this->getMockForAbstractClass(EncoderInterface::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->formFactoryMock = $this->createMock(\Magento\Framework\Data\FormFactory::class);
+        $this->jsonEncoderMock = $this->createMock(\Magento\Framework\Json\EncoderInterface::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->block = $objectManager->getObject(
-            NewVideo::class,
+            \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo::class,
             [
                 'context' => $this->contextMock,
                 'mediaHelper' => $this->mediaHelper,

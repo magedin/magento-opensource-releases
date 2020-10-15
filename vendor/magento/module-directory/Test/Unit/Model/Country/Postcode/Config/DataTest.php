@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Country\Postcode\Config;
 
-use Magento\Directory\Model\Country\Postcode\Config\Data;
-use Magento\Directory\Model\Country\Postcode\Config\Reader;
-use Magento\Framework\App\Cache\Type\Config;
-use Magento\Framework\Serialize\SerializerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Directory\Model\Country\Postcode\Config\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readerMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\App\Cache\Type\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->readerMock = $this->createMock(Reader::class);
-        $this->cacheMock = $this->createMock(Config::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->readerMock = $this->createMock(\Magento\Directory\Model\Country\Postcode\Config\Reader::class);
+        $this->cacheMock = $this->createMock(\Magento\Framework\App\Cache\Type\Config::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
     }
 
     public function testGet()
@@ -47,7 +38,7 @@ class DataTest extends TestCase
         $this->serializerMock->expects($this->once())
             ->method('unserialize')
             ->willReturn($expected);
-        $configData = new Data(
+        $configData = new \Magento\Directory\Model\Country\Postcode\Config\Data(
             $this->readerMock,
             $this->cacheMock,
             'country_postcodes',

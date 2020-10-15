@@ -4,37 +4,26 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require __DIR__ . '/../../Customer/_files/customer.php';
+require __DIR__ . '/../../Customer/_files/customer_address.php';
+require __DIR__ . '/../../../Magento/Catalog/_files/product_virtual.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_virtual.php');
-
-$objectManager = Bootstrap::getObjectManager();
 /** @var \Magento\Quote\Model\Quote\Address $quoteShippingAddress */
-$quoteShippingAddress = $objectManager->create(
+$quoteShippingAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Quote\Model\Quote\Address::class
 );
 /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */
-$customerRepository = $objectManager->create(
+$customerRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Customer\Api\CustomerRepositoryInterface::class
 );
 /** @var \Magento\Customer\Api\AddressRepositoryInterface $addressRepository */
-$addressRepository = $objectManager->create(
+$addressRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Customer\Api\AddressRepositoryInterface::class
 );
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('virtual-product');
 $quoteShippingAddress->importCustomerAddressData($addressRepository->getById(1));
-/** @var CustomerRegistry $customerRegistry */
-$customerRegistry = Bootstrap::getObjectManager()->create(CustomerRegistry::class);
-$customer = $customerRegistry->retrieve(1);
+
 /** @var \Magento\Quote\Model\Quote $quote */
-$quote = $objectManager->create(\Magento\Quote\Model\Quote::class);
+$quote = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Quote\Model\Quote::class);
 $quote->setStoreId(1)
     ->setIsActive(true)
     ->setIsMultiShipping(false)
@@ -50,7 +39,7 @@ $quote->setStoreId(1)
 $quote->collectTotals()->save();
 
 /** @var \Magento\Quote\Model\QuoteIdMask $quoteIdMask */
-$quoteIdMask = $objectManager
+$quoteIdMask = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Quote\Model\QuoteIdMaskFactory::class)
     ->create();
 $quoteIdMask->setQuoteId($quote->getId());

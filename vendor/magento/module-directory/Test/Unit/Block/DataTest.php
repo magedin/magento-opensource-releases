@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Block;
 
 use Magento\Directory\Block\Data;
@@ -14,72 +12,71 @@ use Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryCo
 use Magento\Framework\App\Cache\Type\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Html\Select;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  Data */
     private $block;
 
-    /** @var  Context|MockObject */
+    /** @var  Context |\PHPUnit_Framework_MockObject_MockObject */
     private $contextMock;
 
-    /** @var  HelperData|MockObject */
+    /** @var  HelperData |\PHPUnit_Framework_MockObject_MockObject */
     private $helperDataMock;
 
-    /** @var  Config|MockObject */
+    /** @var  Config |\PHPUnit_Framework_MockObject_MockObject */
     private $cacheTypeConfigMock;
 
-    /** @var  CountryCollectionFactory|MockObject */
+    /** @var  CountryCollectionFactory |\PHPUnit_Framework_MockObject_MockObject */
     private $countryCollectionFactoryMock;
 
-    /** @var  ScopeConfigInterface|MockObject */
+    /** @var  ScopeConfigInterface |\PHPUnit_Framework_MockObject_MockObject */
     private $scopeConfigMock;
 
-    /** @var  StoreManagerInterface|MockObject */
+    /** @var  StoreManagerInterface |\PHPUnit_Framework_MockObject_MockObject */
     private $storeManagerMock;
 
-    /** @var  Store|MockObject */
+    /** @var  Store |\PHPUnit_Framework_MockObject_MockObject */
     private $storeMock;
 
-    /** @var  CountryCollection|MockObject */
+    /** @var  CountryCollection |\PHPUnit_Framework_MockObject_MockObject */
     private $countryCollectionMock;
 
-    /** @var  LayoutInterface|MockObject */
+    /** @var  LayoutInterface |\PHPUnit_Framework_MockObject_MockObject */
     private $layoutMock;
 
-    /** @var SerializerInterface|MockObject */
+    /** @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $serializerMock;
 
-    /** @var \Magento\Framework\Escaper */
+    /**
+     * @var \Magento\Framework\Escaper
+     */
     private $escaper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->escaper = $this->getMockBuilder(Escaper::class)
             ->disableOriginalConstructor()
             ->setMethods(['escapeHtmlAttr'])
             ->getMock();
+
         $this->prepareContext();
 
         $this->helperDataMock = $this->getMockBuilder(\Magento\Directory\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->cacheTypeConfigMock = $this->getMockBuilder(Config::class)
+        $this->cacheTypeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Cache\Type\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -95,7 +92,7 @@ class DataTest extends TestCase
             ]
         );
 
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->serializerMock = $this->createMock(SerializerInterface::class);
         $objectManagerHelper->setBackwardCompatibleProperty(
             $this->block,
             'serializer',
@@ -105,24 +102,24 @@ class DataTest extends TestCase
 
     protected function prepareContext()
     {
-        $this->storeMock = $this->getMockBuilder(Store::class)
+        $this->storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
             ->willReturn($this->storeMock);
 
-        $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
+        $this->layoutMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->getMockForAbstractClass();
 
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -138,17 +135,14 @@ class DataTest extends TestCase
             ->method('getLayout')
             ->willReturn($this->layoutMock);
 
-        $this->contextMock->expects($this->once())
-            ->method('getEscaper')
-            ->willReturn($this->escaper);
+        $this->contextMock->expects($this->once())->method('getEscaper')->willReturn($this->escaper);
     }
 
     protected function prepareCountryCollection()
     {
         $this->countryCollectionMock = $this->getMockBuilder(
             \Magento\Directory\Model\ResourceModel\Country\Collection::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $this->countryCollectionFactoryMock = $this->getMockBuilder(
             \Magento\Directory\Model\ResourceModel\Country\CollectionFactory::class
@@ -296,7 +290,7 @@ class DataTest extends TestCase
      * @param $defaultCountry
      * @param $options
      * @param $resultHtml
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function mockElementHtmlSelect($defaultCountry, $options, $resultHtml)
     {
@@ -304,7 +298,7 @@ class DataTest extends TestCase
         $id = 'country';
         $title = 'Country';
 
-        $elementHtmlSelect = $this->getMockBuilder(Select::class)
+        $elementHtmlSelect = $this->getMockBuilder(\Magento\Framework\View\Element\Html\Select::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -314,7 +308,7 @@ class DataTest extends TestCase
                     'setValue',
                     'setOptions',
                     'setExtraParams',
-                    'getHtml',
+                    'getHtml'
                 ]
             )
             ->getMock();

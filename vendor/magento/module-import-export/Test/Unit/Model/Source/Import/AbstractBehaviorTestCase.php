@@ -3,26 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Abstract class for behavior tests
  */
 namespace Magento\ImportExport\Test\Unit\Model\Source\Import;
 
-use Magento\ImportExport\Model\Source\Import\AbstractBehavior;
-use PHPUnit\Framework\TestCase;
-
-abstract class AbstractBehaviorTestCase extends TestCase
+abstract class AbstractBehaviorTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Model for testing
      *
-     * @var AbstractBehavior
+     * @var \Magento\ImportExport\Model\Source\Import\AbstractBehavior
      */
     protected $_model;
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
     }

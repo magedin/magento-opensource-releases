@@ -9,18 +9,8 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require 'quote_with_address.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address.php');
-/** @var QuoteFactory $quoteFactory */
-$quoteFactory = Bootstrap::getObjectManager()->get(QuoteFactory::class);
-/** @var QuoteResource $quoteResource */
-$quoteResource = Bootstrap::getObjectManager()->get(QuoteResource::class);
-$quote = $quoteFactory->create();
-$quoteResource->load($quote, 'test_order_1', 'reserved_order_id');
 $quoteRepository = \Magento\Framework\App\ObjectManager::getInstance()->get(
     \Magento\Quote\Api\CartRepositoryInterface::class
 );

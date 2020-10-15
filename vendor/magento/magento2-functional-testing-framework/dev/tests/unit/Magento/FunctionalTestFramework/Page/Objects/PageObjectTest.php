@@ -7,7 +7,7 @@
 namespace tests\unit\Magento\FunctionalTestFramework\Page\Objects;
 
 use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 
 /**
  * Class PageObjectTest

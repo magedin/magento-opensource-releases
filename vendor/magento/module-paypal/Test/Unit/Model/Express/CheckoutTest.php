@@ -3,102 +3,74 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Model\Express;
 
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\AccountManagement;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Session;
-use Magento\Framework\DataObject\Copy;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Paypal\Model\Config;
-use Magento\Paypal\Model\Express\Checkout;
-use Magento\Quote\Api\Data\CartExtensionInterface;
 use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
 use Magento\Quote\Model\Shipping;
 use Magento\Quote\Model\ShippingAssignment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Api\Data\CartExtensionInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CheckoutTest extends TestCase
+class CheckoutTest extends \PHPUnit\Framework\TestCase
 {
     const SHIPPING_METHOD = 'new_shipping_method';
     /**
-     * @var Checkout|Checkout
+     * @var \Magento\Paypal\Model\Express\Checkout | \Magento\Paypal\Model\Express\Checkout
      */
     protected $checkoutModel;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var MockObject|Quote
+     * @var \PHPUnit_Framework_MockObject_MockObject | \'Magento\Quote\Model\Quote
      */
     protected $quoteMock;
 
     /**
-     * @var MockObject|AccountManagementInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Api\AccountManagementInterface
      */
     protected $customerAccountManagementMock;
 
     /**
-     * @var MockObject|Copy
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\DataObject\Copy
      */
     protected $objectCopyServiceMock;
 
     /**
-     * @var MockObject|Session
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Model\Session
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject|Customer
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Customer\Model\Customer
      */
     protected $customerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->customerMock = $this->createMock(Customer::class);
-        $this->quoteMock = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getCustomerData'])
-            ->onlyMethods(
-                [
-                    'getId',
-                    'assignCustomer',
-                    'assignCustomerWithAddressChange',
-                    'getBillingAddress',
-                    'getShippingAddress',
-                    'isVirtual',
-                    'addCustomerAddress',
-                    'collectTotals',
-                    '__wakeup',
-                    'save',
-                    'getIsVirtual',
-                    'getExtensionAttributes'
-                ]
-            )
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->customerMock = $this->createMock(\Magento\Customer\Model\Customer::class);
+        $this->quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, [
+                'getId', 'assignCustomer', 'assignCustomerWithAddressChange', 'getBillingAddress',
+                'getShippingAddress', 'isVirtual', 'addCustomerAddress', 'collectTotals', '__wakeup',
+                'save', 'getCustomerData', 'getIsVirtual', 'getExtensionAttributes'
+            ]);
+        $this->customerAccountManagementMock = $this->createMock(\Magento\Customer\Model\AccountManagement::class);
+        $this->objectCopyServiceMock = $this->getMockBuilder(\Magento\Framework\DataObject\Copy::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customerAccountManagementMock = $this->createMock(AccountManagement::class);
-        $this->objectCopyServiceMock = $this->getMockBuilder(Copy::class)
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $paypalConfigMock = $this->createMock(Config::class);
+        $paypalConfigMock = $this->createMock(\Magento\Paypal\Model\Config::class);
         $this->checkoutModel = $this->objectManager->getObject(
-            Checkout::class,
+            \Magento\Paypal\Model\Express\Checkout::class,
             [
                 'params'                 => [
                     'quote' => $this->quoteMock,
@@ -114,7 +86,7 @@ class CheckoutTest extends TestCase
 
     public function testSetCustomerData()
     {
-        $customerDataMock = $this->getMockForAbstractClass(CustomerInterface::class);
+        $customerDataMock = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
         $this->quoteMock->expects($this->once())->method('assignCustomer')->with($customerDataMock);
         $customerDataMock->expects($this->once())
             ->method('getId');
@@ -123,10 +95,10 @@ class CheckoutTest extends TestCase
 
     public function testSetCustomerWithAddressChange()
     {
-        /** @var CustomerInterface $customerDataMock */
-        $customerDataMock = $this->getMockForAbstractClass(CustomerInterface::class);
-        /** @var Address $customerDataMock */
-        $quoteAddressMock = $this->createMock(Address::class);
+        /** @var \Magento\Customer\Api\Data\CustomerInterface $customerDataMock */
+        $customerDataMock = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
+        /** @var \Magento\Quote\Model\Quote\Address $customerDataMock */
+        $quoteAddressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
         $this->quoteMock
             ->expects($this->once())
             ->method('assignCustomerWithAddressChange')
@@ -137,11 +109,11 @@ class CheckoutTest extends TestCase
 
     public function testUpdateShippingMethod()
     {
-        $shippingAddressMock = $this->getMockBuilder(Address::class)
+        $shippingAddressMock = $this->getMockBuilder(Quote\Address::class)
             ->setMethods(['setCollectShippingRates', 'getShippingMethod', 'setShippingMethod'])
             ->disableOriginalConstructor()
             ->getMock();
-        $billingAddressMock = $this->getMockBuilder(Address::class)
+        $billingAddressMock = $this->getMockBuilder(Quote\Address::class)
             ->disableOriginalConstructor()
             ->getMock();
         $shippingAddressMock->expects(static::once())

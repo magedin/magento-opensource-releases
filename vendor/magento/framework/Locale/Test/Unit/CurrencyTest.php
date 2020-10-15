@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Locale\Test\Unit;
 
-use Magento\Framework\CurrencyFactory;
-use Magento\Framework\Event\Manager;
 use Magento\Framework\Locale\Currency;
-use Magento\Framework\Locale\Resolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CurrencyTest extends TestCase
+class CurrencyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Event\Manager | \PHPUnit_Framework_MockObject_MockObject
      */
     private $mockEventManager;
 
     /**
-     * @var Resolver|MockObject
+     * @var \Magento\Framework\Locale\Resolver | \PHPUnit_Framework_MockObject_MockObject
      */
     private $mockLocaleResolver;
 
     /**
-     * @var CurrencyFactory|MockObject
+     * @var \Magento\Framework\CurrencyFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $mockCurrencyFactory;
 
     /**
-     * @var Currency
+     * @var \Magento\Framework\Locale\Currency
      */
     private $testCurrencyObject;
 
@@ -46,24 +39,24 @@ class CurrencyTest extends TestCase
     const TEST_EXCEPTION_CURRENCY = 'ZZZ';
     const TEST_EXCEPTION_CURRENCY_LOCALE = 'es_ES';
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->mockEventManager = $this
-            ->getMockBuilder(Manager::class)
+            ->getMockBuilder(\Magento\Framework\Event\Manager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->mockLocaleResolver = $this
-            ->getMockBuilder(Resolver::class)
+            ->getMockBuilder(\Magento\Framework\Locale\Resolver::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->mockCurrencyFactory = $this
-            ->getMockBuilder(CurrencyFactory::class)
+            ->getMockBuilder(\Magento\Framework\CurrencyFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->testCurrencyObject = (new ObjectManager($this))
+        $this->testCurrencyObject = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Currency::class,
+                \Magento\Framework\Locale\Currency::class,
                 [
                     'eventManager'     => $this->mockEventManager,
                     'localeResolver'   => $this->mockLocaleResolver,
@@ -86,7 +79,7 @@ class CurrencyTest extends TestCase
         $this->mockCurrencyFactory
             ->expects($this->once())
             ->method('create')
-            ->willReturn($options);
+            ->will($this->returnValue($options));
 
         $this->mockEventManager
             ->expects($this->once())
@@ -108,7 +101,7 @@ class CurrencyTest extends TestCase
         $this->mockCurrencyFactory
             ->expects($this->once())
             ->method('create')
-            ->willReturn($options);
+            ->will($this->returnValue($options));
 
         $this->mockEventManager
             ->expects($this->once())
@@ -131,7 +124,7 @@ class CurrencyTest extends TestCase
         $this->mockCurrencyFactory
             ->expects($this->never())
             ->method('create')
-            ->willReturn($options);
+            ->will($this->returnValue($options));
 
         $this->mockEventManager
             ->expects($this->never())
@@ -153,7 +146,7 @@ class CurrencyTest extends TestCase
         $this->mockCurrencyFactory
             ->expects($this->once())
             ->method('create')
-            ->willReturn($options);
+            ->will($this->returnValue($options));
 
         $this->mockEventManager
             ->expects($this->once())
@@ -179,12 +172,12 @@ class CurrencyTest extends TestCase
         $this->mockCurrencyFactory
             ->expects($this->at(0))
             ->method('create')
-            ->willThrowException(new \Exception());
+            ->will($this->throwException(new \Exception()));
 
         $this->mockCurrencyFactory
             ->expects($this->at(1))
             ->method('create')
-            ->willReturn($options);
+            ->will($this->returnValue($options));
 
         $this->mockEventManager
             ->expects($this->once())

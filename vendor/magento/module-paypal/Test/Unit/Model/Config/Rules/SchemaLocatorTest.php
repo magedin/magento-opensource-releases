@@ -3,29 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Config\Rules;
-
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Paypal\Model\Config\Rules\SchemaLocator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class SchemaLocatorTest
  *
  * Test for class \Magento\Paypal\Model\Config\Rules\SchemaLocator
  */
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Paypal\Model\Config\Rules\SchemaLocator
      */
     protected $schemaLocator;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerMock;
 
@@ -34,9 +27,9 @@ class SchemaLocatorTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->readerMock = $this->getMockBuilder(Reader::class)
+        $this->readerMock = $this->getMockBuilder(\Magento\Framework\Module\Dir\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -45,7 +38,7 @@ class SchemaLocatorTest extends TestCase
             ->with('etc', 'Magento_Paypal')
             ->willReturn('magento/path');
 
-        $this->schemaLocator = new SchemaLocator($this->readerMock);
+        $this->schemaLocator = new \Magento\Paypal\Model\Config\Rules\SchemaLocator($this->readerMock);
     }
 
     /**

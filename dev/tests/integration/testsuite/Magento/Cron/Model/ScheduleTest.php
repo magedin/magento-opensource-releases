@@ -25,7 +25,7 @@ class ScheduleTest extends \PHPUnit\Framework\TestCase
      */
     protected $dateTime;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->dateTime = Bootstrap::getObjectManager()->create(DateTime::class);
         $this->scheduleFactory = Bootstrap::getObjectManager()->create(ScheduleFactory::class);

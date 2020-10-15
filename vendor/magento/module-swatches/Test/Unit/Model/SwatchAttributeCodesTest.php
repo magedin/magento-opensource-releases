@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Model;
 
 use Magento\Eav\Model\Entity\Attribute;
@@ -14,10 +12,8 @@ use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Swatches\Model\SwatchAttributeCodes;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SwatchAttributeCodesTest extends TestCase
+class SwatchAttributeCodesTest extends \PHPUnit\Framework\TestCase
 {
     const ATTRIBUTE_TABLE = 'eav_attribute';
     const ATTRIBUTE_OPTION_TABLE = 'eav_attribute_option';
@@ -30,12 +26,12 @@ class SwatchAttributeCodesTest extends TestCase
     private $swatchAttributeCodesModel;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cache;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnection;
 
@@ -47,15 +43,15 @@ class SwatchAttributeCodesTest extends TestCase
         11 => 'image_swatch',
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->cache = $this->createPartialMock(CacheInterface::class, [
-            'getFrontend',
-            'load',
-            'save',
-            'remove',
-            'clean'
-        ]);
+                'getFrontend',
+                'load',
+                'save',
+                'remove',
+                'clean'
+            ]);
 
         $this->resourceConnection = $this->createPartialMock(
             ResourceConnection::class,

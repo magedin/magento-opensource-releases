@@ -22,14 +22,14 @@ class PhpserverTest extends \PHPUnit\Framework\TestCase
     private static $serverPid;
 
     /**
-     * @var \Laminas\Http\Client
+     * @var \Zend\Http\Client
      */
     private $httpClient;
 
     /**
      * Instantiate phpserver in the pub folder
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         if (!(defined('TRAVIS') && TRAVIS === true)) {
             self::markTestSkipped('Travis environment test');
@@ -42,7 +42,6 @@ class PhpserverTest extends \PHPUnit\Framework\TestCase
             $baseDir,
             static::BASE_URL
         );
-        // phpcs:ignore
         exec($command, $return);
         static::$serverPid = (int) $return[0];
     }
@@ -52,9 +51,9 @@ class PhpserverTest extends \PHPUnit\Framework\TestCase
         return sprintf('http://%s/%s', self::BASE_URL, ltrim($url, '/'));
     }
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->httpClient = new \Laminas\Http\Client(null, ['timeout' => 10]);
+        $this->httpClient = new \Zend\Http\Client(null, ['timeout' => 10]);
     }
 
     public function testServerHasPid()
@@ -87,7 +86,7 @@ class PhpserverTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith('image/gif', $response->getHeaders()->get('Content-Type')->getMediaType());
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         posix_kill(static::$serverPid, SIGKILL);
     }

@@ -20,7 +20,7 @@
         </annotations>
         <before>
             <!--Log In-->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="logIn"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="logIn"/>
             <!--Create category-->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
             <!--Create product-->
@@ -30,23 +30,23 @@
         </before>
 
         <!--Add new tax rates. Go to tax rule page -->
-        <actionGroup ref="AddNewTaxRuleActionGroup" stepKey="addFirstTaxRuleActionGroup"/>
+        <actionGroup ref="addNewTaxRuleActionGroup" stepKey="addFirstTaxRuleActionGroup"/>
         <fillField stepKey="fillRuleName" selector="{{AdminTaxRulesSection.ruleName}}" userInput="{{TaxRule.name}}"/>
 
         <!-- Add NY and CA tax rules -->
-        <actionGroup ref="AddNewTaxRateNoZipActionGroup" stepKey="addSimpleTaxUK">
+        <actionGroup ref="addNewTaxRateNoZip" stepKey="addSimpleTaxUK">
             <argument name="taxCode" value="SimpleTaxUK"/>
         </actionGroup>
         <click stepKey="clickSave" selector="{{AdminStoresMainActionsSection.saveButton}}"/>
         <waitForPageLoad stepKey="waitForNewTaxRuleCreated"/>
 
         <!-- Go to tax rule page to create second Tax Rule-->
-        <actionGroup ref="AddNewTaxRuleActionGroup" stepKey="addSecondTaxRuleActionGroup"/>
+        <actionGroup ref="addNewTaxRuleActionGroup" stepKey="addSecondTaxRuleActionGroup"/>
         <fillField stepKey="fillSecondRuleName" selector="{{AdminTaxRulesSection.ruleName}}" userInput="{{TaxRuleZeroRate.name}}"/>
-        <actionGroup ref="AddNewTaxRateNoZipActionGroup" stepKey="addSimpleTaxUKZeroRate">
+        <actionGroup ref="addNewTaxRateNoZip" stepKey="addSimpleTaxUKZeroRate">
             <argument name="taxCode" value="SimpleTaxUKZeroRate"/>
         </actionGroup>
-        <actionGroup ref="AddCustomerTaxClassActionGroup" stepKey="addCustomerTaxClass">
+        <actionGroup ref="addCustomerTaxClass" stepKey="addCustomerTaxClass">
             <argument name="customerTaxClassName" value="UK_zero"/>
         </actionGroup>
         <click stepKey="disableDefaultProdTaxClass" selector="{{AdminTaxRulesSection.defaultCustomerTaxClass}}"/>
@@ -67,14 +67,12 @@
         </actionGroup>
 
         <!--Register customer on storefront-->
-        <actionGroup ref="StorefrontOpenCustomerAccountCreatePageActionGroup" stepKey="openCreateAccountPage"/>
-        <actionGroup ref="StorefrontFillCustomerAccountCreationFormActionGroup" stepKey="fillCreateAccountForm">
-            <argument name="customer" value="CustomerEntityOne"/>
+        <actionGroup ref="SignUpNewCustomerStorefrontActionGroup" stepKey="createAnAccount">
+            <argument name="Customer" value="CustomerEntityOne"/>
         </actionGroup>
-        <actionGroup ref="StorefrontClickCreateAnAccountCustomerAccountCreationFormActionGroup" stepKey="submitCreateAccountForm"/>
 
         <!--Go to My account > Address book-->
-        <actionGroup ref="EnterCustomerAddressInfoFillStateActionGroup" stepKey="enterAddressInfo">
+        <actionGroup ref="EnterCustomerAddressInfoFillState" stepKey="enterAddressInfo">
             <argument name="Address" value="UK_Simple_Address"/>
         </actionGroup>
 
@@ -140,12 +138,12 @@
             <deleteData createDataKey="createProduct" stepKey="deleteSimpleProduct"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategoryFirst"/>
 
-            <actionGroup ref="DeleteProductTaxClassActionGroup" stepKey="deleteFirstProductTaxClass">
+            <actionGroup ref="deleteProductTaxClass" stepKey="deleteFirstProductTaxClass">
                 <argument name="taxClassName" value="UK_zero"/>
             </actionGroup>
 
            <!--Log Out-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
     </test>
 </tests>

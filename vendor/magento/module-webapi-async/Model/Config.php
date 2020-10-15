@@ -3,34 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 declare(strict_types=1);
 
 namespace Magento\WebapiAsync\Model;
 
-use Magento\AsynchronousOperations\Model\ConfigInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Webapi\Model\Cache\Type\Webapi as WebapiCache;
 use Magento\Webapi\Model\Config as WebapiConfig;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Webapi\Model\Config\Converter;
 
 /**
  * Class for accessing to Webapi_Async configuration.
  */
-class Config implements ConfigInterface
+class Config implements \Magento\AsynchronousOperations\Model\ConfigInterface
 {
     /**
-     * @var WebapiCache
+     * @var \Magento\Webapi\Model\Cache\Type\Webapi
      */
     private $cache;
 
     /**
-     * @var WebapiConfig
+     * @var \Magento\Webapi\Model\Config
      */
     private $webApiConfig;
 
     /**
-     * @var SerializerInterface
+     * @var \Magento\Framework\Serialize\SerializerInterface
      */
     private $serializer;
 
@@ -42,18 +43,18 @@ class Config implements ConfigInterface
     /**
      * Initialize dependencies.
      *
-     * @param WebapiCache $cache
-     * @param WebapiConfig $webApiConfig
-     * @param SerializerInterface $serializer
+     * @param \Magento\Webapi\Model\Cache\Type\Webapi $cache
+     * @param \Magento\Webapi\Model\Config $webApiConfig
+     * @param \Magento\Framework\Serialize\SerializerInterface|null $serializer
      */
     public function __construct(
         WebapiCache $cache,
         WebapiConfig $webApiConfig,
-        SerializerInterface $serializer
+        SerializerInterface $serializer = null
     ) {
         $this->cache = $cache;
         $this->webApiConfig = $webApiConfig;
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ? : ObjectManager::getInstance()->get(SerializerInterface::class);
     }
 
     /**

@@ -17,7 +17,6 @@
 
 namespace PHPMD\TextUI;
 
-use PHPMD\Renderer\AnsiRenderer;
 use PHPMD\Renderer\HTMLRenderer;
 use PHPMD\Renderer\JSONRenderer;
 use PHPMD\Renderer\TextRenderer;
@@ -27,8 +26,6 @@ use PHPMD\Rule;
 /**
  * This is a helper class that collects the specified cli arguments and puts them
  * into accessible properties.
- * 
- * @SuppressWarnings(PHPMD.LongVariable)
  */
 class CommandLineOptions
 {
@@ -390,8 +387,6 @@ class CommandLineOptions
                 return $this->createTextRenderer();
             case 'json':
                 return $this->createJsonRenderer();
-            case 'ansi':
-                return $this->createAnsiRenderer();
             default:
                 return $this->createCustomRenderer();
         }
@@ -411,14 +406,6 @@ class CommandLineOptions
     protected function createTextRenderer()
     {
         return new TextRenderer();
-    }
-
-    /**
-     * @return \PHPMD\Renderer\AnsiRenderer
-     */
-    protected function createAnsiRenderer()
-    {
-        return new AnsiRenderer();
     }
 
     /**

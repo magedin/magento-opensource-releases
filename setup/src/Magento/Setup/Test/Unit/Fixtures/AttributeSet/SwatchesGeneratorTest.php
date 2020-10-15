@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures\AttributeSet;
 
@@ -12,9 +11,8 @@ use Magento\Setup\Fixtures\ImagesGenerator\ImagesGenerator;
 use Magento\Setup\Fixtures\ImagesGenerator\ImagesGeneratorFactory;
 use Magento\Swatches\Helper\Media;
 use Magento\Swatches\Model\Swatch;
-use PHPUnit\Framework\TestCase;
 
-class SwatchesGeneratorTest extends TestCase
+class SwatchesGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SwatchesGenerator
@@ -30,7 +28,7 @@ class SwatchesGeneratorTest extends TestCase
         'option_3' => '/|o|'
     ];
 
-    protected function setUp(): void
+    public function setUp()
     {
         // Mock Swatch Media Helper
         $swatchHelperMock = $this->getMockBuilder(Media::class)

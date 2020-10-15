@@ -22,15 +22,10 @@ abstract class AbstractConfigurator
 {
     const FACTORY = 'unknown';
 
-    /**
-     * @var callable(mixed $value, bool $allowService)|null
-     */
-    public static $valuePreProcessor;
-
     /** @internal */
     protected $definition;
 
-    public function __call(string $method, array $args)
+    public function __call($method, $args)
     {
         if (method_exists($this, 'set'.$method)) {
             return $this->{'set'.$method}(...$args);
@@ -54,11 +49,7 @@ abstract class AbstractConfigurator
                 $value[$k] = static::processValue($v, $allowServices);
             }
 
-            return self::$valuePreProcessor ? (self::$valuePreProcessor)($value, $allowServices) : $value;
-        }
-
-        if (self::$valuePreProcessor) {
-            $value = (self::$valuePreProcessor)($value, $allowServices);
+            return $value;
         }
 
         if ($value instanceof ReferenceConfigurator) {
@@ -91,6 +82,6 @@ abstract class AbstractConfigurator
                 }
         }
 
-        throw new InvalidArgumentException(sprintf('Cannot use values of type "%s" in service configuration files.', get_debug_type($value)));
+        throw new InvalidArgumentException(sprintf('Cannot use values of type "%s" in service configuration files.', \is_object($value) ? \get_class($value) : \gettype($value)));
     }
 }

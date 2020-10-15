@@ -3,40 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity;
 
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\FrontendLabel;
-use Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
- * Test for EAV Entity attribute model
+ * Class AttributeTest.
  */
-class AttributeTest extends TestCase
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Attribute model to be tested
-     * @var Attribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_model;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = $this->createPartialMock(Attribute::class, ['__wakeup']);
+        $this->_model = $this->createPartialMock(\Magento\Eav\Model\Entity\Attribute::class, ['__wakeup']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_model = null;
     }
@@ -66,7 +57,6 @@ class AttributeTest extends TestCase
             ['image', 'text'],
             ['textarea', 'text'],
             ['date', 'datetime'],
-            ['datetime', 'datetime'],
             ['select', 'int'],
             ['boolean', 'int'],
             ['price', 'decimal'],
@@ -101,7 +91,6 @@ class AttributeTest extends TestCase
             ['weight', 'default_value_text'],
             ['textarea', 'default_value_textarea'],
             ['date', 'default_value_date'],
-            ['datetime', 'default_value_datetime'],
             ['boolean', 'default_value_yesno']
         ];
     }
@@ -141,7 +130,7 @@ class AttributeTest extends TestCase
     {
         $attributeId = 1;
         $storeLabels = ['test_attribute_store1'];
-        $frontendLabelFactory = $this->getMockBuilder(FrontendLabelFactory::class)
+        $frontendLabelFactory = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\FrontendLabelFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -153,15 +142,15 @@ class AttributeTest extends TestCase
             '_resource' => $resource,
             'frontendLabelFactory' => $frontendLabelFactory,
         ];
-        $objectManager = new ObjectManager($this);
-        $this->_model = $objectManager->getObject(Attribute::class, $arguments);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_model = $objectManager->getObject(\Magento\Eav\Model\Entity\Attribute::class, $arguments);
         $this->_model->setAttributeId($attributeId);
 
         $resource->expects($this->once())
             ->method('getStoreLabelsByAttributeId')
             ->with($attributeId)
             ->willReturn($storeLabels);
-        $frontendLabel = $this->getMockBuilder(FrontendLabel::class)
+        $frontendLabel = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\FrontendLabel::class)
             ->setMethods(['setStoreId', 'setLabel'])
             ->disableOriginalConstructor()
             ->getMock();

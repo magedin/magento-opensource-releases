@@ -4,14 +4,8 @@
  * See COPYING.txt for license details.
  */
 ?>
-<?php
-/**
- * @var $block Magento\Shipping\Block\Adminhtml\Order\Tracking
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
-?>
-<?php $scriptString = <<<script
-
+<?php /** @var $block Magento\Shipping\Block\Adminhtml\Order\Tracking */?>
+<script>
 require(['prototype'], function(){
 
     //<![CDATA[
@@ -63,11 +57,7 @@ require(['prototype'], function(){
     //]]>
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
-
+</script>
 <script id="track_row_template" type="text/x-magento-template">
     <tr>
         <td class="col-carrier">
@@ -75,7 +65,7 @@ script;
                     id="trackingC<%- data.index %>"
                     class="select admin__control-select carrier"
                     disabled="disabled">
-                <?php foreach ($block->getCarriers() as $_code => $_name): ?>
+                <?php foreach ($block->getCarriers() as $_code => $_name) : ?>
                     <option value="<?= $block->escapeHtmlAttr($_code) ?>"><?= $block->escapeHtml($_name) ?></option>
                 <?php endforeach; ?>
             </select>
@@ -126,8 +116,7 @@ script;
         </tbody>
     </table>
 </div>
-<?php $scriptString = <<<script
-
+<script>
 require([
     'mage/template',
     'prototype'
@@ -138,7 +127,4 @@ require([
     //]]>
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

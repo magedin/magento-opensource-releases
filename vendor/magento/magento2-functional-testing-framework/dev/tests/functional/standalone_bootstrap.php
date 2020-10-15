@@ -51,10 +51,7 @@ if (file_exists(ENV_FILE_PATH . '.env')) {
     $env->setEnvironmentVariable('DEFAULT_TIMEZONE', DEFAULT_TIMEZONE);
 
     defined('WAIT_TIMEOUT') || define('WAIT_TIMEOUT', 30);
-    $env->setEnvironmentVariable('WAIT_TIMEOUT', WAIT_TIMEOUT);
-
-    defined('VERBOSE_ARTIFACTS') || define('VERBOSE_ARTIFACTS', false);
-    $env->setEnvironmentVariable('VERBOSE_ARTIFACTS', VERBOSE_ARTIFACTS);
+    $env->setEnvironmentVariable('WAIT_TIMEOUT', 30);
 
     try {
         new DateTimeZone(DEFAULT_TIMEZONE);

@@ -20,11 +20,11 @@
         </annotations>
         <before>
             <magentoCLI command="config:set general/single_store_mode/enabled 1" stepKey="enabledSingleStoreMode"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
         </before>
         <after>
             <magentoCLI command="config:set general/single_store_mode/enabled 0" stepKey="enabledSingleStoreMode"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <actionGroup ref="AdminNavigateToNewRatingFormActionGroup" stepKey="navigateToNewRatingPage" />
         <actionGroup ref="AdminAssertStoreViewRatingTitleWhenSingleStoreModeIsYesActionGroup" stepKey="verifyForm" />

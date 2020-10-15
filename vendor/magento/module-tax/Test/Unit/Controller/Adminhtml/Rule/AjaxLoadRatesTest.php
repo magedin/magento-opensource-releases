@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Controller\Adminhtml\Rule;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -15,45 +13,44 @@ use Magento\Framework\App\Response\Http as Response;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Controller\Adminhtml\Rule\AjaxLoadRates;
 use Magento\Tax\Model\Rate\Provider as RatesProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Tax\Controller\Adminhtml\Rule\AjaxLoadRates;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test for AjaxLoadTest
  */
-class AjaxLoadRatesTest extends TestCase
+class AjaxLoadRatesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Request|MockObject
+     * @var Request | MockObject
      */
     private $request;
 
     /**
-     * @var Response|MockObject
+     * @var Response | MockObject
      */
     private $resultFactory;
 
     /**
-     * @var RatesProvider|MockObject
+     * @var RatesProvider | MockObject
      */
     private $ratesProvider;
 
     /**
-     * @var Context|MockObject
+     * @var Context | MockObject
      */
     private $context;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var SearchCriteriaBuilder | MockObject
      */
     private $searchCriteriaBuilder;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()

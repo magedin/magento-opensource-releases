@@ -17,7 +17,7 @@ class FullTest extends \Magento\TestFramework\Indexer\TestCase
      */
     protected $_processor;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $db = Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -30,7 +30,7 @@ class FullTest extends \Magento\TestFramework\Indexer\TestCase
         parent::setUpBeforeClass();
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_processor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Catalog\Model\Indexer\Product\Eav\Processor::class

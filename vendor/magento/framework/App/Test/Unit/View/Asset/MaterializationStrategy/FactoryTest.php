@@ -3,37 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\View\Asset\MaterializationStrategy;
 
-use Magento\Framework\App\View\Asset\MaterializationStrategy\Copy;
-use Magento\Framework\App\View\Asset\MaterializationStrategy\Factory;
-use Magento\Framework\App\View\Asset\MaterializationStrategy\StrategyInterface;
+use \Magento\Framework\App\View\Asset\MaterializationStrategy\Factory;
+
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Asset\LocalInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
     }
 
     public function testCreateEmptyStrategies()
     {
         $asset = $this->getAsset();
-        $copyStrategy = $this->getMockBuilder(Copy::class)
+        $copyStrategy = $this->getMockBuilder(\Magento\Framework\App\View\Asset\MaterializationStrategy\Copy::class)
             ->setMethods([])
             ->getMock();
         $copyStrategy->expects($this->once())
@@ -53,7 +47,7 @@ class FactoryTest extends TestCase
     public function testCreateSupported()
     {
         $asset = $this->getAsset();
-        $copyStrategy = $this->getMockBuilder(Copy::class)
+        $copyStrategy = $this->getMockBuilder(\Magento\Framework\App\View\Asset\MaterializationStrategy\Copy::class)
             ->setMethods([])
             ->getMock();
         $copyStrategy->expects($this->once())
@@ -62,7 +56,7 @@ class FactoryTest extends TestCase
             ->willReturn(false);
 
         $supportedStrategy = $this->getMockBuilder(
-            StrategyInterface::class
+            \Magento\Framework\App\View\Asset\MaterializationStrategy\StrategyInterface::class
         )
             ->setMethods([])
             ->getMock();
@@ -78,7 +72,7 @@ class FactoryTest extends TestCase
     public function testCreateException()
     {
         $asset = $this->getAsset();
-        $copyStrategy = $this->getMockBuilder(Copy::class)
+        $copyStrategy = $this->getMockBuilder(\Magento\Framework\App\View\Asset\MaterializationStrategy\Copy::class)
             ->setMethods([])
             ->getMock();
         $copyStrategy->expects($this->once())
@@ -99,12 +93,12 @@ class FactoryTest extends TestCase
     }
 
     /**
-     * @return LocalInterface|MockObject
+     * @return \Magento\Framework\View\Asset\LocalInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private function getAsset()
     {
-        return $this->getMockBuilder(LocalInterface::class)
+        return $this->getMockBuilder(\Magento\Framework\View\Asset\LocalInterface::class)
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
     }
 }

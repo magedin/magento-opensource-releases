@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Element\Iterator;
 
-use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Config\Model\Config\Structure\Element\Iterator\Field;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FieldTest extends TestCase
+class FieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Field
+     * @var \Magento\Config\Model\Config\Structure\Element\Iterator\Field
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_fieldMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_groupMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_fieldMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Field::class);
-        $this->_groupMock = $this->createMock(Group::class);
-        $this->_model = new Field(
+        $this->_groupMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class);
+        $this->_model = new \Magento\Config\Model\Config\Structure\Element\Iterator\Field(
             $this->_groupMock,
             $this->_fieldMock
         );
@@ -48,7 +41,7 @@ class FieldTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_fieldMock);
         unset($this->_groupMock);
@@ -73,7 +66,7 @@ class FieldTest extends TestCase
             ['_elementType' => 'group', 'id' => 'someGroup_2'],
             'scope'
         );
-        $this->_groupMock->expects($this->any())->method('isVisible')->willReturn(true);
+        $this->_groupMock->expects($this->any())->method('isVisible')->will($this->returnValue(true));
 
         $this->_fieldMock->expects(
             $this->at(0)
@@ -91,7 +84,7 @@ class FieldTest extends TestCase
             ['_elementType' => 'field', 'id' => 'someField_2'],
             'scope'
         );
-        $this->_fieldMock->expects($this->any())->method('isVisible')->willReturn(true);
+        $this->_fieldMock->expects($this->any())->method('isVisible')->will($this->returnValue(true));
 
         $items = [];
         foreach ($this->_model as $item) {

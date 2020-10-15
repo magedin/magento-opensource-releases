@@ -3,20 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Config\Test\Unit\Console\Command;
 
-use Magento\Config\Console\Command\ConfigSet\ProcessorFacade;
 use Magento\Config\Console\Command\ConfigSet\ProcessorFacadeFactory;
+use Magento\Config\Console\Command\ConfigSet\ProcessorFacade;
 use Magento\Config\Console\Command\ConfigSetCommand;
 use Magento\Config\Console\Command\EmulatedAdminhtmlAreaProcessor;
 use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\Exception\ValidatorException;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -24,7 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @see ConfigSetCommand
  */
-class ConfigSetCommandTest extends TestCase
+class ConfigSetCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConfigSetCommand
@@ -59,7 +57,7 @@ class ConfigSetCommandTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->emulatedAreProcessorMock = $this->getMockBuilder(EmulatedAdminhtmlAreaProcessor::class)
             ->disableOriginalConstructor()
@@ -111,7 +109,7 @@ class ConfigSetCommandTest extends TestCase
             ConfigSetCommand::ARG_VALUE => 'value'
         ]);
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Some message')->render(),
             $tester->getDisplay()
         );
@@ -132,7 +130,7 @@ class ConfigSetCommandTest extends TestCase
             ConfigSetCommand::ARG_VALUE => 'value'
         ]);
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('You cannot run this command because the Magento application is not installed.')->render(),
             $tester->getDisplay()
         );
@@ -156,7 +154,7 @@ class ConfigSetCommandTest extends TestCase
             ConfigSetCommand::ARG_VALUE => 'value'
         ]);
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('This command is unavailable right now.')->render(),
             $tester->getDisplay()
         );
@@ -181,7 +179,7 @@ class ConfigSetCommandTest extends TestCase
             ConfigSetCommand::ARG_VALUE => 'value'
         ]);
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('The "test/test/test" path does not exists')->render(),
             $tester->getDisplay()
         );

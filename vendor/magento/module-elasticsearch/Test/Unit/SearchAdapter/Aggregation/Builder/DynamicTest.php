@@ -3,24 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Aggregation\Builder;
 
 use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\Dynamic;
-use Magento\Elasticsearch\SearchAdapter\Dynamic\DataProvider;
-use Magento\Framework\Search\Dynamic\Algorithm\AlgorithmInterface;
-use Magento\Framework\Search\Dynamic\Algorithm\Repository;
-use Magento\Framework\Search\Dynamic\DataProviderInterface;
-use Magento\Framework\Search\Dynamic\EntityStorage;
-use Magento\Framework\Search\Dynamic\EntityStorageFactory;
-use Magento\Framework\Search\Request\Aggregation\DynamicBucket;
-use Magento\Framework\Search\Request\BucketInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DynamicTest extends TestCase
+class DynamicTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Dynamic
@@ -28,37 +16,37 @@ class DynamicTest extends TestCase
     private $model;
 
     /**
-     * @var BucketInterface|MockObject
+     * @var \Magento\Framework\Search\Request\BucketInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestBuckedInterface;
 
     /**
-     * @var DataProviderInterface|MockObject
+     * @var \Magento\Framework\Search\Dynamic\DataProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataProviderContainer;
 
     /**
-     * @var AlgorithmInterface|MockObject
+     * @var \Magento\Framework\Search\Dynamic\Algorithm\AlgorithmInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $algorithmRepository;
 
     /**
-     * @var EntityStorageFactory|MockObject
+     * @var \Magento\Framework\Search\Dynamic\EntityStorageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityStorageFactory;
 
     /**
-     * @var AlgorithmInterface|MockObject
+     * @var \Magento\Framework\Search\Dynamic\Algorithm\AlgorithmInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $algorithmInterface;
 
     /**
-     * @var DynamicBucket|MockObject
+     * @var \Magento\Framework\Search\Request\Aggregation\DynamicBucket|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $bucket;
 
     /**
-     * @var EntityStorage|MockObject
+     * @var \Magento\Framework\Search\Dynamic\EntityStorage|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityStorage;
 
@@ -67,40 +55,40 @@ class DynamicTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestBuckedInterface = $this->getMockBuilder(BucketInterface::class)
+        $this->requestBuckedInterface = $this->getMockBuilder(\Magento\Framework\Search\Request\BucketInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->dataProviderContainer = $this
-            ->getMockBuilder(DataProvider::class)
+            ->getMockBuilder(\Magento\Elasticsearch\SearchAdapter\Dynamic\DataProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->algorithmRepository = $this->getMockBuilder(
-            Repository::class
+            \Magento\Framework\Search\Dynamic\Algorithm\Repository::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->entityStorageFactory = $this->getMockBuilder(
-            EntityStorageFactory::class
+            \Magento\Framework\Search\Dynamic\EntityStorageFactory::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->algorithmInterface = $this
-            ->getMockBuilder(AlgorithmInterface::class)
+            ->getMockBuilder(\Magento\Framework\Search\Dynamic\Algorithm\AlgorithmInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->bucket = $this->getMockBuilder(DynamicBucket::class)
+        $this->bucket = $this->getMockBuilder(\Magento\Framework\Search\Request\Aggregation\DynamicBucket::class)
             ->setMethods(['getMethod'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->entityStorage = $this->getMockBuilder(EntityStorage::class)
+        $this->entityStorage = $this->getMockBuilder(\Magento\Framework\Search\Dynamic\EntityStorage::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -111,7 +99,7 @@ class DynamicTest extends TestCase
         $objectManagerHelper = new ObjectManagerHelper($this);
 
         $this->model = $objectManagerHelper->getObject(
-            Dynamic::class,
+            \Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\Dynamic::class,
             [
                 'algorithmRepository' => $this->algorithmRepository,
                 'entityStorageFactory' => $this->entityStorageFactory,

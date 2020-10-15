@@ -3,51 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model\ResourceModel;
 
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-abstract class AbstractCollectionTest extends TestCase
+abstract class AbstractCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $select;
 
     /**
-     * @var Mysql|MockObject
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->select = $this->getMockBuilder(Select::class)
+        $this->select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->connection = $this->getMockBuilder(Mysql::class)
+        $this->connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->connection->expects($this->any())->method('select')->willReturn($this->select);
 
-        $this->resource = $this->getMockBuilder(AbstractDb::class)
+        $this->resource = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection', 'getMainTable', 'getTable'])
             ->getMockForAbstractClass();
@@ -55,6 +46,6 @@ abstract class AbstractCollectionTest extends TestCase
         $this->resource->expects($this->any())->method('getMainTable')->willReturn('table_test');
         $this->resource->expects($this->any())->method('getTable')->willReturn('test');
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 }

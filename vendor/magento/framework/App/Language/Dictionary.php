@@ -104,9 +104,7 @@ class Dictionary
         foreach ($languages as $languageConfig) {
             $this->collectInheritedPacks($languageConfig, $packs);
         }
-
-        // Get sorted packs
-        $packs = $this->getSortedPacks($packs);
+        uasort($packs, [$this, 'sortInherited']);
 
         // Merge all packages of translation to one dictionary
         $result = [];
@@ -119,37 +117,6 @@ class Dictionary
             }
         }
         return $result;
-    }
-
-    /**
-     * Get sorted packs
-     *
-     * First level packs (inheritance_level eq 0) sort by 'sort order' (ascending)
-     * Inherited packs has the same order as declared in parent config (language.xml)
-     *
-     * @param array $allPacks
-     *
-     * @return array
-     */
-    private function getSortedPacks($allPacks)
-    {
-        // Get first level (inheritance_level) packs and sort by provided sort order (descending)
-        $firstLevelPacks = array_filter(
-            $allPacks,
-            function ($pack) {
-                return $pack['inheritance_level'] === 0;
-            }
-        );
-        uasort($firstLevelPacks, [$this, 'sortPacks']);
-
-        // Add inherited packs
-        $sortedPacks = [];
-        foreach ($firstLevelPacks as $pack) {
-            $this->addInheritedPacks($allPacks, $pack, $sortedPacks);
-        }
-
-        // Reverse array: the first element has the lowest priority, the last one - the highest
-        return array_reverse($sortedPacks, true);
     }
 
     /**
@@ -186,46 +153,28 @@ class Dictionary
     }
 
     /**
-     * Add inherited packs to sorted packs
+     * Sub-routine for custom sorting packs using inheritance level and sort order
      *
-     * @param array $packs
-     * @param array $pack
-     * @param array $sortedPacks
-     *
-     * @return void
-     */
-    private function addInheritedPacks($packs, $pack, &$sortedPacks)
-    {
-        if (isset($sortedPacks[$pack['key']])) {
-            return;
-        }
-
-        $sortedPacks[$pack['key']] = $pack;
-        foreach ($pack['language']->getUses() as $reuse) {
-            $packKey = implode('|', [$reuse['vendor'], $reuse['package']]);
-            if (isset($packs[$packKey])) {
-                $this->addInheritedPacks($packs, $packs[$packKey], $sortedPacks);
-            }
-        }
-    }
-
-    /**
-     * Sub-routine for custom sorting packs using sort order (descending)
+     * First sort by inheritance level descending, then by sort order ascending
      *
      * @param array $current
      * @param array $next
-     *
      * @return int
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function sortPacks($current, $next)
+    private function sortInherited($current, $next)
     {
-        if ($current['sort_order'] > $next['sort_order']) {
+        if ($current['inheritance_level'] > $next['inheritance_level']) {
             return -1;
-        } elseif ($current['sort_order'] < $next['sort_order']) {
+        } elseif ($current['inheritance_level'] < $next['inheritance_level']) {
             return 1;
         }
-        return strcmp($next['key'], $current['key']);
+        if ($current['sort_order'] > $next['sort_order']) {
+            return 1;
+        } elseif ($current['sort_order'] < $next['sort_order']) {
+            return -1;
+        }
+        return strcmp($current['key'], $next['key']);
     }
 
     /**

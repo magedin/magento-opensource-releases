@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument;
 
-use Magento\Framework\TestFramework\Unit\Utility\XsdValidator;
-use PHPUnit\Framework\TestCase;
-
-class XsdTest extends TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Path to xsd schema file for validating argument types
@@ -19,17 +14,17 @@ class XsdTest extends TestCase
     protected $_typesXsdSchema;
 
     /**
-     * @var XsdValidator
+     * @var \Magento\Framework\TestFramework\Unit\Utility\XsdValidator
      */
     protected $_xsdValidator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
         }
         $this->_typesXsdSchema = __DIR__ . "/_files/types_schema.xsd";
-        $this->_xsdValidator = new XsdValidator();
+        $this->_xsdValidator = new \Magento\Framework\TestFramework\Unit\Utility\XsdValidator();
     }
 
     /**

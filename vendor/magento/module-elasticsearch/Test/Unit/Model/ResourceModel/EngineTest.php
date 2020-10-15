@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Model\Product\Visibility;
 use Magento\Elasticsearch\Model\ResourceModel\Engine;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class EngineTest extends TestCase
+class EngineTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Engine
@@ -24,17 +16,17 @@ class EngineTest extends TestCase
     private $model;
 
     /**
-     * @var Visibility|MockObject
+     * @var \Magento\Catalog\Model\Product\Visibility|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $catalogProductVisibility;
 
     /**
-     * @var IndexScopeResolver|MockObject
+     * @var \Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexScopeResolver;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
@@ -43,31 +35,31 @@ class EngineTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->connection = $this->getMockBuilder(AdapterInterface::class)
+        $this->connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIfNullSql'])
             ->getMockForAbstractClass();
-        $resource = $this->getMockBuilder(ResourceConnection::class)
+        $resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection', 'getTableName'])
             ->getMock();
         $resource->expects($this->any())
             ->method('getConnection')
-            ->willReturn($this->connection);
+            ->will($this->returnValue($this->connection));
 
         $resource->expects($this->any())
             ->method('getTableName')
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
 
-        $this->catalogProductVisibility = $this->getMockBuilder(Visibility::class)
+        $this->catalogProductVisibility = $this->getMockBuilder(\Magento\Catalog\Model\Product\Visibility::class)
             ->disableOriginalConstructor()
             ->setMethods(['getVisibleInSiteIds'])
             ->getMock();
 
         $this->indexScopeResolver = $this->getMockBuilder(
-            IndexScopeResolver::class
+            \Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['getVisibleInSiteIds'])
@@ -75,7 +67,7 @@ class EngineTest extends TestCase
 
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            Engine::class,
+            \Magento\Elasticsearch\Model\ResourceModel\Engine::class,
             [
                 'catalogProductVisibility' => $this->catalogProductVisibility,
                 'indexScopeResolver' => $this->indexScopeResolver
@@ -98,7 +90,7 @@ class EngineTest extends TestCase
      */
     public function testAllowAdvancedIndex()
     {
-        $this->assertFalse($this->model->allowAdvancedIndex());
+        $this->assertEquals(false, $this->model->allowAdvancedIndex());
     }
 
     /**
@@ -106,7 +98,7 @@ class EngineTest extends TestCase
      */
     public function testIsAvailable()
     {
-        $this->assertTrue($this->model->isAvailable());
+        $this->assertEquals(true, $this->model->isAvailable());
     }
 
     /**

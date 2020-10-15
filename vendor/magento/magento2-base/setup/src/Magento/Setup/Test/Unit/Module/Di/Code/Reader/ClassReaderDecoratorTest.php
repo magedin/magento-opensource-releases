@@ -3,35 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Reader;
 
-use Magento\Framework\Code\Reader\ClassReader;
-use Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator;
 use Magento\Setup\Module\Di\Compiler\ConstructorArgument;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ClassReaderDecoratorTest extends TestCase
+class ClassReaderDecoratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClassReaderDecorator
+     * @var \Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator
      */
     private $model;
 
     /**
-     * @var ClassReader|MockObject
+     * @var \Magento\Framework\Code\Reader\ClassReader | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classReaderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->classReaderMock = $this->getMockBuilder(ClassReader::class)
+        $this->classReaderMock = $this->getMockBuilder(\Magento\Framework\Code\Reader\ClassReader::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->model = new ClassReaderDecorator($this->classReaderMock);
+        $this->model = new \Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator($this->classReaderMock);
     }
 
     /**

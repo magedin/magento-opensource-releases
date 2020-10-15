@@ -3,23 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\CopyConstructor;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CopyConstructor\Composite;
-use Magento\Catalog\Model\Product\CopyConstructorFactory;
-use Magento\Catalog\Model\Product\CopyConstructorInterface;
-use PHPUnit\Framework\TestCase;
-
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     public function testBuild()
     {
-        $factoryMock = $this->createMock(CopyConstructorFactory::class);
+        $factoryMock = $this->createMock(\Magento\Catalog\Model\Product\CopyConstructorFactory::class);
 
-        $constructorMock = $this->getMockForAbstractClass(CopyConstructorInterface::class);
+        $constructorMock = $this->createMock(\Magento\Catalog\Model\Product\CopyConstructorInterface::class);
 
         $factoryMock->expects(
             $this->exactly(2)
@@ -27,16 +19,16 @@ class CompositeTest extends TestCase
             'create'
         )->with(
             'constructorInstance'
-        )->willReturn(
-            $constructorMock
+        )->will(
+            $this->returnValue($constructorMock)
         );
 
-        $productMock = $this->createMock(Product::class);
-        $duplicateMock = $this->createMock(Product::class);
+        $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $duplicateMock = $this->createMock(\Magento\Catalog\Model\Product::class);
 
         $constructorMock->expects($this->exactly(2))->method('build')->with($productMock, $duplicateMock);
 
-        $model = new Composite(
+        $model = new \Magento\Catalog\Model\Product\CopyConstructor\Composite(
             $factoryMock,
             ['constructorInstance', 'constructorInstance']
         );

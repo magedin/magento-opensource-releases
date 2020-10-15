@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Analytics\Test\Unit\Model\Config\Backend\Baseurl;
 
@@ -13,28 +12,26 @@ use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\FlagManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SubscriptionUpdateHandlerTest extends TestCase
+class SubscriptionUpdateHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AnalyticsToken|MockObject
+     * @var AnalyticsToken|\PHPUnit_Framework_MockObject_MockObject
      */
     private $analyticsTokenMock;
 
     /**
-     * @var FlagManager|MockObject
+     * @var FlagManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $flagManagerMock;
 
     /**
-     * @var ReinitableConfigInterface|MockObject
+     * @var ReinitableConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $reinitableConfigMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var WriterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configWriterMock;
 
@@ -61,15 +58,19 @@ class SubscriptionUpdateHandlerTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->reinitableConfigMock = $this->getMockBuilder(ReinitableConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->analyticsTokenMock = $this->createMock(AnalyticsToken::class);
-
-        $this->flagManagerMock = $this->createMock(FlagManager::class);
+        $this->analyticsTokenMock = $this->getMockBuilder(AnalyticsToken::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        
+        $this->flagManagerMock = $this->getMockBuilder(FlagManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->configWriterMock = $this->getMockBuilder(WriterInterface::class)
             ->disableOriginalConstructor()

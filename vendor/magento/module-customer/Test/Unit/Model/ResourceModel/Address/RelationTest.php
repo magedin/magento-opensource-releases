@@ -3,36 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\ResourceModel\Address;
 
-use Magento\Customer\Model\Address;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Customer\Model\ResourceModel\Address\Relation;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Model\Address;
 
-class RelationTest extends TestCase
+/**
+ * Class AddressTest
+ */
+class RelationTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  CustomerFactory|MockObject */
+    /** @var  \Magento\Customer\Model\CustomerFactory | \PHPUnit_Framework_MockObject_MockObject */
     protected $customerFactoryMock;
 
-    /** @var  Relation */
+    /** @var  \Magento\Customer\Model\ResourceModel\Address\Relation */
     protected $relation;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customerFactoryMock = $this->createPartialMock(
-            CustomerFactory::class,
+            \Magento\Customer\Model\CustomerFactory::class,
             ['create']
         );
         $this->relation = (new ObjectManagerHelper($this))->getObject(
-            Relation::class,
+            \Magento\Customer\Model\ResourceModel\Address\Relation::class,
             [
                 'customerFactory' => $this->customerFactoryMock
             ]
@@ -47,39 +41,35 @@ class RelationTest extends TestCase
      */
     public function testProcessRelation($addressId, $isDefaultBilling, $isDefaultShipping)
     {
-        $addressModel = $this->getMockBuilder(Address::class)
-            ->addMethods(['getIsDefaultBilling', 'getIsDefaultShipping', 'getIsCustomerSaveTransaction'])
-            ->onlyMethods(
-                [
-                    '__wakeup',
-                    'getId',
-                    'getEntityTypeId',
-                    'hasDataChanges',
-                    'validateBeforeSave',
-                    'beforeSave',
-                    'afterSave',
-                    'isSaveAllowed'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
-        $customerModel = $this->getMockBuilder(Customer::class)
-            ->addMethods(['setDefaultBilling', 'setDefaultShipping'])
-            ->onlyMethods(
-                [
-                    '__wakeup',
-                    'save',
-                    'load',
-                    'getResource',
-                    'getId',
-                    'getDefaultShippingAddress',
-                    'getDefaultBillingAddress'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $addressModel = $this->createPartialMock(Address::class, [
+                '__wakeup',
+                'getId',
+                'getEntityTypeId',
+                'getIsDefaultBilling',
+                'getIsDefaultShipping',
+                'hasDataChanges',
+                'validateBeforeSave',
+                'beforeSave',
+                'afterSave',
+                'isSaveAllowed',
+                'getIsCustomerSaveTransaction'
+            ]);
+        $customerModel = $this->createPartialMock(
+            \Magento\Customer\Model\Customer::class,
+            [
+                '__wakeup',
+                'setDefaultBilling',
+                'setDefaultShipping',
+                'save',
+                'load',
+                'getResource',
+                'getId',
+                'getDefaultShippingAddress',
+                'getDefaultBillingAddress'
+            ]
+        );
         $customerResource = $this->getMockForAbstractClass(
-            AbstractDb::class,
+            \Magento\Framework\Model\ResourceModel\Db\AbstractDb::class,
             [],
             '',
             false,
@@ -88,7 +78,7 @@ class RelationTest extends TestCase
             ['getConnection', 'getTable']
         );
         $connectionMock = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -103,8 +93,8 @@ class RelationTest extends TestCase
         $addressModel->expects($this->any())->method('getIsCustomerSaveTransaction')->willReturn(false);
 
         $customerModel->expects($this->any())
-            ->method('load')
-            ->willReturnSelf();
+             ->method('load')
+             ->willReturnSelf();
 
         $this->customerFactoryMock->expects($this->any())
             ->method('create')

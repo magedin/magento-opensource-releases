@@ -7,40 +7,32 @@ declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment\Plugin;
 
-use Magento\Sales\Api\Data\ShipmentInterface;
-use Magento\Sales\Api\Data\ShipmentSearchResultInterface;
-use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Plugin\ShippingLabelConverter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
  * Unit test for plugin to convert shipping label from blob to base64encoded string
  */
-class ShippingLabelConverterTest extends TestCase
+class ShippingLabelConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ShippingLabelConverter
+     * @var \Magento\Sales\Plugin\ShippingLabelConverter
      */
     private $model;
 
     /**
-     * @var ShipmentInterface|MockObject
+     * @var \Magento\Sales\Api\Data\ShipmentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new ShippingLabelConverter();
+        $this->model = new \Magento\Sales\Plugin\ShippingLabelConverter();
 
         $shippingLabel = 'shipping_label_test';
         $shippingLabelEncoded = base64_encode('shipping_label_test');
-        $this->shipmentMock = $this->getMockBuilder(ShipmentInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->shipmentMock = $this->getMockBuilder(\Magento\Sales\Api\Data\ShipmentInterface::class)
+            ->disableOriginalConstructor()->getMock();
         $this->shipmentMock->expects($this->exactly(2))->method('getShippingLabel')->willReturn($shippingLabel);
         $this->shipmentMock->expects($this->once())
             ->method('setShippingLabel')
@@ -54,9 +46,8 @@ class ShippingLabelConverterTest extends TestCase
     public function testAfterGet()
     {
         $this->model->afterGet(
-            $this->getMockBuilder(ShipmentRepositoryInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass(),
+            $this->getMockBuilder(\Magento\Sales\Api\ShipmentRepositoryInterface::class)
+                ->disableOriginalConstructor()->getMock(),
             $this->shipmentMock
         );
     }
@@ -66,15 +57,13 @@ class ShippingLabelConverterTest extends TestCase
      */
     public function testAfterGetList()
     {
-        $searchResultMock = $this->getMockBuilder(ShipmentSearchResultInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $searchResultMock = $this->getMockBuilder(\Magento\Sales\Api\Data\ShipmentSearchResultInterface::class)
+            ->disableOriginalConstructor()->getMock();
         $searchResultMock->expects($this->once())->method('getItems')->willReturn([$this->shipmentMock]);
 
         $this->model->afterGetList(
-            $this->getMockBuilder(ShipmentRepositoryInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass(),
+            $this->getMockBuilder(\Magento\Sales\Api\ShipmentRepositoryInterface::class)
+                ->disableOriginalConstructor()->getMock(),
             $searchResultMock
         );
     }

@@ -1,11 +1,9 @@
-<?php declare(strict_types=1);
-
-use Magento\Config\Model\Config\Backend\Encrypted;
-
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 return [
     'config' => [
         'noNamespaceSchemaLocation' => 'urn:magento:module:Magento_Config:etc/system_file.xsd',
@@ -36,7 +34,7 @@ return [
                                     'showInWebsite' => '1',
                                     'type' => 'text',
                                     'label' => 'Field 2',
-                                    'backend_model' => Encrypted::class,
+                                    'backend_model' => \Magento\Config\Model\Config\Backend\Encrypted::class,
                                     '_elementType' => 'field',
                                 ],
                             ],
@@ -77,7 +75,8 @@ return [
                                                     'id' => 'field_3_1_1',
                                                     'translate' => 'label',
                                                     'showInWebsite' => '1',
-                                                    'backend_model' => Encrypted::class,
+                                                    'backend_model' =>
+                                                        \Magento\Config\Model\Config\Backend\Encrypted::class,
                                                     'type' => 'text',
                                                     'label' => 'Field 3.1.1',
                                                     '_elementType' => 'field',
@@ -140,7 +139,7 @@ return [
                                     'showInWebsite' => '1',
                                     'type' => 'text',
                                     'label' => 'Field 4',
-                                    'backend_model' => Encrypted::class,
+                                    'backend_model' => \Magento\Config\Model\Config\Backend\Encrypted::class,
                                     'attribute_1' => 'test_value_1',
                                     'attribute_2' => 'test_value_2',
                                     'attribute_text' => '<test_value>',
@@ -159,14 +158,14 @@ return [
                                     ],
                                     '_elementType' => 'field',
                                 ],
-                                'field_5' => [
+                                 'field_5' => [
                                     'id' => 'field_5',
                                     'translate' => 'label',
                                     'showInWebsite' => '1',
                                     'type' => 'text',
                                     'label' => '',
                                     '_elementType' => 'field',
-                                ],
+                                 ],
                             ],
                             '_elementType' => 'group',
                         ],
@@ -191,29 +190,6 @@ return [
                     ],
                     '_elementType' => 'section',
                 ],
-                'section_3' => [
-                    'id' => 'section_3',
-                    'type' => 'text',
-                    '_elementType' => 'section',
-                    'children' => [
-                        'group_5' => [
-                            'id' => 'group_5',
-                            'type' => 'text',
-                            'showInDefault' => 1,
-                            'showInWebsite' => 1,
-                            'showInStore' => 1,
-                            '_elementType' => 'group',
-                            'children' => [
-                                'field_5' => [
-                                    'id' => 'field_5',
-                                    'showInWebsite' => '1',
-                                    'type' => 'text',
-                                    '_elementType' => 'field',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
             ],
         ],
     ],

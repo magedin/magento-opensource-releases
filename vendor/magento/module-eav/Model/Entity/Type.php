@@ -264,7 +264,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     public function getEntityIdField()
     {
-        return $this->_data['entity_id_field'] ?? null;
+        return isset($this->_data['entity_id_field']) ? $this->_data['entity_id_field'] : null;
     }
 
     /**
@@ -319,7 +319,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     public function getDefaultAttributeSetId()
     {
-        return $this->_data['default_attribute_set_id'] ?? null;
+        return isset($this->_data['default_attribute_set_id']) ? $this->_data['default_attribute_set_id'] : null;
     }
 
     /**
@@ -329,7 +329,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     public function getEntityTypeId()
     {
-        return $this->_data['entity_type_id'] ?? null;
+        return isset($this->_data['entity_type_id']) ? $this->_data['entity_type_id'] : null;
     }
 
     /**
@@ -339,7 +339,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     public function getEntityTypeCode()
     {
-        return $this->_data['entity_type_code'] ?? null;
+        return isset($this->_data['entity_type_code']) ? $this->_data['entity_type_code'] : null;
     }
 
     /**

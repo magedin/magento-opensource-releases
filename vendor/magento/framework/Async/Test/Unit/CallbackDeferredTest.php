@@ -40,7 +40,7 @@ class CallbackDeferredTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->value = null;
         $this->function = function () {

@@ -47,7 +47,7 @@ class ProductGeneratorTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->get(ProductRepositoryInterface::class);
@@ -66,7 +66,7 @@ class ProductGeneratorTest extends \PHPUnit\Framework\TestCase
     /**
      * Return indexer to previous state
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $indexerRegistry = $this->objectManager->get(IndexerRegistry::class);
 

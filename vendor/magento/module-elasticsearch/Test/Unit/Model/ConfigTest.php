@@ -3,17 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model;
 
 use Magento\Elasticsearch\Model\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
-class ConfigTest extends TestCase
+/**
+ * Class ConfigTest
+ */
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -21,7 +20,7 @@ class ConfigTest extends TestCase
     protected $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
@@ -30,15 +29,15 @@ class ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            Config::class,
+            \Magento\Elasticsearch\Model\Config::class,
             [
                 'scopeConfig' => $this->scopeConfig
             ]
@@ -81,7 +80,7 @@ class ConfigTest extends TestCase
      */
     public function testGetEntityType()
     {
-        $this->assertIsString($this->model->getEntityType());
+        $this->assertInternalType('string', $this->model->getEntityType());
     }
 
     /**

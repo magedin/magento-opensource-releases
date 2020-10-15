@@ -3,40 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Items\Column;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn;
-use Magento\Sales\Model\Order\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DefaultColumnTest extends TestCase
+class DefaultColumnTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var DefaultColumn
+     * @var \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn
      */
     protected $defaultColumn;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->defaultColumn = $this->objectManagerHelper->getObject(
-            DefaultColumn::class
+            \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn::class
         );
-        $this->itemMock = $this->getMockBuilder(Item::class)
+        $this->itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getRowTotal', 'getDiscountAmount', 'getBaseRowTotal', 'getBaseDiscountAmount'])
+            ->setMethods(['getRowTotal', 'getDiscountAmount', 'getBaseRowTotal', 'getBaseDiscountAmount', '__wakeup'])
             ->getMock();
     }
 
@@ -47,10 +41,10 @@ class DefaultColumnTest extends TestCase
         $expectedResult = 8;
         $this->itemMock->expects($this->once())
             ->method('getRowTotal')
-            ->willReturn($rowTotal);
+            ->will($this->returnValue($rowTotal));
         $this->itemMock->expects($this->once())
             ->method('getDiscountAmount')
-            ->willReturn($discountAmount);
+            ->will($this->returnValue($discountAmount));
         $this->assertEquals($expectedResult, $this->defaultColumn->getTotalAmount($this->itemMock));
     }
 
@@ -61,10 +55,10 @@ class DefaultColumnTest extends TestCase
         $expectedResult = 8;
         $this->itemMock->expects($this->once())
             ->method('getBaseRowTotal')
-            ->willReturn($baseRowTotal);
+            ->will($this->returnValue($baseRowTotal));
         $this->itemMock->expects($this->once())
             ->method('getBaseDiscountAmount')
-            ->willReturn($baseDiscountAmount);
+            ->will($this->returnValue($baseDiscountAmount));
         $this->assertEquals($expectedResult, $this->defaultColumn->getBaseTotalAmount($this->itemMock));
     }
 }

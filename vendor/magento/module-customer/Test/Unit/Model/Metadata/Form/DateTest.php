@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * test Magento\Customer\Model\Metadata\Form\Date
  *
@@ -6,10 +6,6 @@
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
-
-use Magento\Customer\Api\Data\ValidationRuleInterface;
-use Magento\Customer\Model\Metadata\Form\Date;
-use Magento\Framework\App\RequestInterface;
 
 class DateTest extends AbstractFormTestCase
 {
@@ -19,31 +15,31 @@ class DateTest extends AbstractFormTestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->attributeMetadataMock->expects(
             $this->any()
         )->method(
             'getAttributeCode'
-        )->willReturn(
-            'date'
+        )->will(
+            $this->returnValue('date')
         );
         $this->attributeMetadataMock->expects(
             $this->any()
         )->method(
             'getStoreLabel'
-        )->willReturn(
-            'Space Date'
+        )->will(
+            $this->returnValue('Space Date')
         );
         $this->attributeMetadataMock->expects(
             $this->any()
         )->method(
             'getInputFilter'
-        )->willReturn(
-            'date'
+        )->will(
+            $this->returnValue('date')
         );
-        $this->date = new Date(
+        $this->date = new \Magento\Customer\Model\Metadata\Form\Date(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,
@@ -58,10 +54,10 @@ class DateTest extends AbstractFormTestCase
      */
     public function testExtractValue()
     {
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $requestMock->expects($this->once())->method('getParam')->willReturn('1999-1-2');
+            ->getMock();
+        $requestMock->expects($this->once())->method('getParam')->will($this->returnValue('1999-1-2'));
 
         // yyyy-MM-dd
         $actual = $this->date->extractValue($requestMock);
@@ -79,30 +75,30 @@ class DateTest extends AbstractFormTestCase
     public function testValidateValue($value, $validation, $required, $expected)
     {
         $validationRules = [];
-        $validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+        $validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getName', 'getValue'])
             ->getMockForAbstractClass();
         $validationRule->expects($this->any())
             ->method('getName')
-            ->willReturn('input_validation');
+            ->will($this->returnValue('input_validation'));
         $validationRule->expects($this->any())
             ->method('getValue')
-            ->willReturn('date');
+            ->will($this->returnValue('date'));
 
         $validationRules[] = $validationRule;
         if (is_array($validation)) {
             foreach ($validation as $ruleName => $ruleValue) {
-                $validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+                $validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
                     ->disableOriginalConstructor()
                     ->setMethods(['getName', 'getValue'])
                     ->getMockForAbstractClass();
                 $validationRule->expects($this->any())
                     ->method('getName')
-                    ->willReturn($ruleName);
+                    ->will($this->returnValue($ruleName));
                 $validationRule->expects($this->any())
                     ->method('getValue')
-                    ->willReturn($ruleValue);
+                    ->will($this->returnValue($ruleValue));
 
                 $validationRules[] = $validationRule;
             }
@@ -112,11 +108,11 @@ class DateTest extends AbstractFormTestCase
             $this->any()
         )->method(
             'getValidationRules'
-        )->willReturn(
-            $validationRules
+        )->will(
+            $this->returnValue($validationRules)
         );
 
-        $this->attributeMetadataMock->expects($this->any())->method('isRequired')->willReturn($required);
+        $this->attributeMetadataMock->expects($this->any())->method('isRequired')->will($this->returnValue($required));
 
         $actual = $this->date->validateValue($value);
         $this->assertEquals($expected, $actual);
@@ -206,8 +202,8 @@ class DateTest extends AbstractFormTestCase
      */
     public function testOutputValue()
     {
-        $this->assertNull($this->date->outputValue());
-        $date = new Date(
+        $this->assertEquals(null, $this->date->outputValue());
+        $date = new \Magento\Customer\Model\Metadata\Form\Date(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,

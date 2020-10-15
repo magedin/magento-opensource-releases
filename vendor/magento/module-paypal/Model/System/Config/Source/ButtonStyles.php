@@ -54,6 +54,20 @@ class ButtonStyles
     }
 
     /**
+     * Button size source getter
+     *
+     * @return array
+     */
+    public function getSize(): array
+    {
+        return [
+            'medium' => __('Medium'),
+            'large' => __('Large'),
+            'responsive' => __('Responsive')
+        ];
+    }
+
+    /**
      * Button label source getter
      *
      * @return array
@@ -66,6 +80,7 @@ class ButtonStyles
             'buynow' => __('Buy Now'),
             'paypal' => __('PayPal'),
             'installment' => __('Installment'),
+            'credit' => __('Credit')
         ];
     }
 

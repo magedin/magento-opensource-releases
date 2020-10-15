@@ -3,38 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model\ResourceModel\Layout\Update;
 
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Stdlib\DateTime;
-use Magento\Widget\Model\ResourceModel\Layout\Update\Collection;
-use Magento\Widget\Test\Unit\Model\ResourceModel\Layout\AbstractTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Log\LoggerInterface;
-
-class CollectionTest extends AbstractTestCase
+class CollectionTest extends \Magento\Widget\Test\Unit\Model\ResourceModel\Layout\AbstractTestCase
 {
     /**
      * Retrieve layout update collection instance
      *
-     * @param Select $select
-     * @return Collection
+     * @param \Magento\Framework\DB\Select $select
+     * @return \Magento\Widget\Model\ResourceModel\Layout\Update\Collection
      */
-    protected function _getCollection(Select $select)
+    protected function _getCollection(\Magento\Framework\DB\Select $select)
     {
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
 
-        return new Collection(
-            $this->createMock(EntityFactory::class),
-            $this->getMockForAbstractClass(LoggerInterface::class),
-            $this->getMockForAbstractClass(FetchStrategyInterface::class),
+        return new \Magento\Widget\Model\ResourceModel\Layout\Update\Collection(
+            $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class),
+            $this->createMock(\Psr\Log\LoggerInterface::class),
+            $this->getMockForAbstractClass(\Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class),
             $eventManager,
-            $this->createPartialMock(DateTime::class, []),
+            $this->createPartialMock(\Magento\Framework\Stdlib\DateTime::class, []),
             null,
             $this->_getResource($select)
         );
@@ -43,7 +31,7 @@ class CollectionTest extends AbstractTestCase
     public function testAddThemeFilter()
     {
         $themeId = 1;
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects($this->once())->method('where')->with('link.theme_id = ?', $themeId);
 
         $collection = $this->_getCollection($select);
@@ -53,7 +41,7 @@ class CollectionTest extends AbstractTestCase
     public function testAddStoreFilter()
     {
         $storeId = 1;
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects($this->once())->method('where')->with('link.store_id = ?', $storeId);
 
         $collection = $this->_getCollection($select);
@@ -65,7 +53,7 @@ class CollectionTest extends AbstractTestCase
      */
     public function testJoinWithLink()
     {
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects(
             $this->once()
         )->method(
@@ -83,7 +71,7 @@ class CollectionTest extends AbstractTestCase
 
     public function testAddNoLinksFilter()
     {
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects(
             $this->once()
         )->method(
@@ -97,7 +85,7 @@ class CollectionTest extends AbstractTestCase
 
         $collection = $this->_getCollection($select);
 
-        /** @var MockObject $connection */
+        /** @var $connection \PHPUnit_Framework_MockObject_MockObject */
         $connection = $collection->getResource()->getConnection();
         $connection->expects(
             $this->once()
@@ -106,8 +94,8 @@ class CollectionTest extends AbstractTestCase
         )->with(
             'link.layout_update_id',
             ['null' => true]
-        )->willReturn(
-            self::TEST_WHERE_CONDITION
+        )->will(
+            $this->returnValue(self::TEST_WHERE_CONDITION)
         );
 
         $collection->addNoLinksFilter();

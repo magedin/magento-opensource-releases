@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
+use Magento\Ui\DataProvider\Modifier\ModifierFactory;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Ui\DataProvider\Modifier\ModifierFactory;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FactoryTest extends TestCase
+/**
+ * Class FactoryTest
+ */
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ModifierFactory
@@ -27,16 +26,16 @@ class FactoryTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var ModifierInterface|MockObject
+     * @var ModifierInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataProviderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManagerHelper($this);
         $this->dataProviderMock = $this->getMockBuilder(ModifierInterface::class)
@@ -46,7 +45,7 @@ class FactoryTest extends TestCase
             ->getMock();
 
         $this->model = $this->objectManager->getObject(
-            ModifierFactory::class,
+            \Magento\Ui\DataProvider\Modifier\ModifierFactory::class,
             ['objectManager' => $this->objectManagerMock]
         );
     }
@@ -60,9 +59,11 @@ class FactoryTest extends TestCase
         $this->assertInstanceOf(ModifierInterface::class, $this->model->create(ModifierInterface::class));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateWithException()
     {
-        $this->expectException('InvalidArgumentException');
         $this->objectManagerMock->expects($this->once())
             ->method('create')
             ->willReturn(null);

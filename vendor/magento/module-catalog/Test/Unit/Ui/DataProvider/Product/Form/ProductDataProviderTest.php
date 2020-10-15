@@ -3,20 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form;
 
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Catalog\Ui\DataProvider\Product\Form\ProductDataProvider;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Ui\DataProvider\Modifier\ModifierInterface;
+use Magento\Catalog\Ui\DataProvider\Product\Form\ProductDataProvider;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Ui\DataProvider\Modifier\Pool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Ui\DataProvider\Modifier\ModifierInterface;
 
-class ProductDataProviderTest extends TestCase
+/**
+ * Class ProductDataProviderTest
+ */
+class ProductDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -24,22 +23,22 @@ class ProductDataProviderTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var ModifierInterface|MockObject
+     * @var ModifierInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $modifierMockOne;
 
     /**
-     * @var Pool|MockObject
+     * @var Pool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $poolMock;
 
@@ -48,7 +47,7 @@ class ProductDataProviderTest extends TestCase
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->collectionMock = $this->getMockBuilder(Collection::class)

@@ -3,72 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Review\Test\Unit\Block\Customer;
 
-use Magento\Customer\Helper\Session\CurrentCustomer;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Review\Block\Customer\Recent;
-use Magento\Review\Model\ResourceModel\Review\Product\Collection;
-use Magento\Review\Model\ResourceModel\Review\Product\CollectionFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RecentTest extends TestCase
+class RecentTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Recent */
+    /** @var \Magento\Review\Block\Customer\Recent */
     protected $object;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var Collection|MockObject */
+    /** @var \Magento\Review\Model\ResourceModel\Review\Product\Collection|\PHPUnit_Framework_MockObject_MockObject */
     protected $collection;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $collectionFactory;
 
-    /** @var CurrentCustomer|MockObject */
+    /** @var \Magento\Customer\Helper\Session\CurrentCustomer|\PHPUnit_Framework_MockObject_MockObject */
     protected $currentCustomer;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->context = $this->createMock(Context::class);
+        $this->storeManager = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
         $this->context->expects(
             $this->any()
         )->method(
             'getStoreManager'
-        )->willReturn(
-            $this->storeManager
+        )->will(
+            $this->returnValue($this->storeManager)
         );
-        $this->collection = $this->createMock(Collection::class);
+        $this->collection = $this->createMock(\Magento\Review\Model\ResourceModel\Review\Product\Collection::class);
         $this->collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Review\Model\ResourceModel\Review\Product\CollectionFactory::class,
             ['create']
         );
         $this->collectionFactory->expects(
             $this->once()
         )->method(
             'create'
-        )->willReturn(
-            $this->collection
+        )->will(
+            $this->returnValue($this->collection)
         );
-        $this->currentCustomer = $this->createMock(CurrentCustomer::class);
+        $this->currentCustomer = $this->createMock(\Magento\Customer\Helper\Session\CurrentCustomer::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->object = $this->objectManagerHelper->getObject(
-            Recent::class,
+            \Magento\Review\Block\Customer\Recent::class,
             [
                 'context' => $this->context,
                 'collectionFactory' => $this->collectionFactory,
@@ -83,10 +72,10 @@ class RecentTest extends TestCase
             $this->any()
         )->method(
             'getStore'
-        )->willReturn(
-            new DataObject(['id' => 42])
+        )->will(
+            $this->returnValue(new \Magento\Framework\DataObject(['id' => 42]))
         );
-        $this->currentCustomer->expects($this->any())->method('getCustomerId')->willReturn(4242);
+        $this->currentCustomer->expects($this->any())->method('getCustomerId')->will($this->returnValue(4242));
 
         $this->collection->expects(
             $this->any()
@@ -94,8 +83,8 @@ class RecentTest extends TestCase
             'addStoreFilter'
         )->with(
             42
-        )->willReturn(
-            $this->collection
+        )->will(
+            $this->returnValue($this->collection)
         );
         $this->collection->expects(
             $this->any()
@@ -103,15 +92,15 @@ class RecentTest extends TestCase
             'addCustomerFilter'
         )->with(
             4242
-        )->willReturn(
-            $this->collection
+        )->will(
+            $this->returnValue($this->collection)
         );
         $this->collection->expects(
             $this->any()
         )->method(
             'setDateOrder'
-        )->with()->willReturn(
-            $this->collection
+        )->with()->will(
+            $this->returnValue($this->collection)
         );
         $this->collection->expects(
             $this->any()
@@ -119,16 +108,16 @@ class RecentTest extends TestCase
             'setPageSize'
         )->with(
             5
-        )->willReturn(
-            $this->collection
+        )->will(
+            $this->returnValue($this->collection)
         );
-        $this->collection->expects($this->any())->method('load')->with()->willReturn($this->collection);
+        $this->collection->expects($this->any())->method('load')->with()->will($this->returnValue($this->collection));
         $this->collection->expects(
             $this->any()
         )->method(
             'addReviewSummary'
-        )->with()->willReturn(
-            $this->collection
+        )->with()->will(
+            $this->returnValue($this->collection)
         );
 
         $this->assertSame($this->collection, $this->object->getReviews());

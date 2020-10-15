@@ -32,7 +32,7 @@ class PartialInventoryTransferTest extends WebapiAbstract
     /** @var SearchCriteriaBuilder */
     private $searchCriteriaBuilder;
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->sourceItemRepository  = Bootstrap::getObjectManager()->get(SourceItemRepositoryInterface::class);
         $this->searchCriteriaBuilder = Bootstrap::getObjectManager()->get(SearchCriteriaBuilder::class);
@@ -101,11 +101,7 @@ class PartialInventoryTransferTest extends WebapiAbstract
                 ]
             ]
         ];
-        $this->webApiCallWithException(
-            $serviceInfo,
-            $this->getTransferItem('SKU-1', 1, 'eu-999', 'eu-2'),
-            $expectedError
-        );
+        $this->webApiCallWithException($serviceInfo, $this->getTransferItem('SKU-1', 1, 'eu-999', 'eu-2'), $expectedError);
     }
 
     /**
@@ -140,11 +136,7 @@ class PartialInventoryTransferTest extends WebapiAbstract
                 ]
             ]
         ];
-        $this->webApiCallWithException(
-            $serviceInfo,
-            $this->getTransferItem('SKU-1', 1, 'eu-3', 'eu-999'),
-            $expectedError
-        );
+        $this->webApiCallWithException($serviceInfo, $this->getTransferItem('SKU-1', 1, 'eu-3', 'eu-999'), $expectedError);
     }
 
     /**
@@ -171,11 +163,7 @@ class PartialInventoryTransferTest extends WebapiAbstract
                 ]
             ]
         ];
-        $this->webApiCallWithException(
-            $serviceInfo,
-            $this->getTransferItem('SKU-1', 1, 'eu-3', 'eu-3'),
-            $expectedError
-        );
+        $this->webApiCallWithException($serviceInfo, $this->getTransferItem('SKU-1', 1, 'eu-3', 'eu-3'), $expectedError);
     }
 
     /**
@@ -204,11 +192,7 @@ class PartialInventoryTransferTest extends WebapiAbstract
                 ]
             ]
         ];
-        $this->webApiCallWithException(
-            $serviceInfo,
-            $this->getTransferItem('SKU-1', 100, 'eu-3', 'eu-2'),
-            $expectedError
-        );
+        $this->webApiCallWithException($serviceInfo, $this->getTransferItem('SKU-1', 100, 'eu-3', 'eu-2'), $expectedError);
     }
 
     /**

@@ -3,40 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Link;
 
 use Magento\Downloadable\Api\Data\LinkInterface;
-use Magento\Downloadable\Helper\Download;
-use Magento\Downloadable\Helper\File;
 use Magento\Downloadable\Model\Link;
 use Magento\Downloadable\Model\Link\Builder;
-use Magento\Downloadable\Model\LinkFactory;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\DataObject\Copy;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Helper\Download;
 
 /**
- * Unit test for downloadable products' builder link class
+ * Class BuilderTest
  */
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $downloadFileMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $objectCopyServiceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $dataObjectHelperMock;
 
@@ -46,34 +36,31 @@ class BuilderTest extends TestCase
     private $service;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $mockComponentFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $linkMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->downloadFileMock = $this->getMockBuilder(
-            File::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Downloadable\Helper\File::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->objectCopyServiceMock = $this->getMockBuilder(
-            Copy::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\DataObject\Copy::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->dataObjectHelperMock = $this->getMockBuilder(
-            DataObjectHelper::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Api\DataObjectHelper::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->mockComponentFactory = $this->getMockBuilder(LinkFactory::class)
+        $this->mockComponentFactory = $this->getMockBuilder(\Magento\Downloadable\Model\LinkFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -81,7 +68,7 @@ class BuilderTest extends TestCase
         $this->linkMock = $this->getMockBuilder(LinkInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-
+        
         $this->service = $objectManagerHelper->getObject(
             Builder::class,
             [
@@ -97,7 +84,7 @@ class BuilderTest extends TestCase
      * @dataProvider buildProvider
      * @param array $data
      * @param float $expectedPrice
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testBuild($data, $expectedPrice)
     {
@@ -173,10 +160,6 @@ class BuilderTest extends TestCase
         if (isset($data['is_unlimited'])) {
             $this->linkMock->expects($this->once())->method('setNumberOfDownloads')->with(0);
         }
-        $useDefaultTitle = $data['use_default_title'] ?? false;
-        if ($useDefaultTitle) {
-            $this->linkMock->expects($this->once())->method('setTitle')->with(null);
-        }
         if (isset($data['price'])) {
             $this->linkMock->expects($this->once())->method('getPrice')->willReturn($data['price']);
         } else {
@@ -186,10 +169,12 @@ class BuilderTest extends TestCase
         $this->service->build($this->linkMock);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Link file not provided
+     */
     public function testBuildFileNotProvided()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Link file not provided');
         $data = [
             'type' => 'file',
             'sample' => [
@@ -234,7 +219,6 @@ class BuilderTest extends TestCase
                 [
                     'file' => 'cXVlIHRhbA==',
                     'type' => 'file',
-                    'use_default_title' => '1',
                     'sample' => [
                         'file' => 'cXVlIHRhbA==',
                         'type' => 'file'

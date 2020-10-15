@@ -38,6 +38,7 @@ var cleanOptions = {
                 "dot": true,
                 "src": [
                     "<%= path.tmp %>/cache/**/*",
+                    "<%= path.tmp %>/generation/**/*",
                     "<%= path.tmp %>/log/**/*",
                     "<%= path.tmp %>/maps/**/*",
                     "<%= path.tmp %>/page_cache/**/*",
@@ -88,6 +89,7 @@ var cleanOptions = {
                 "dot": true,
                 "src": [
                     "<%= path.tmp %>/cache/**/*",
+                    "<%= path.tmp %>/generation/**/*",
                     "<%= path.tmp %>/view_preprocessed/html/**/*",
                     "<%= path.tmp %>/page_cache/**/*"
                 ]
@@ -105,19 +107,6 @@ var cleanOptions = {
                     "<%= path.pub %>**/*.html",
                     "<%= path.pub %>_requirejs/**/*",
                     "<%= path.deployedVersion %>"
-                ]
-            }
-        ]
-    },
-    "generation": {
-        "force": true,
-        "files": [
-            {
-                "force": true,
-                "dot": true,
-                "src": [
-                    "<%= path.generation %>code/**/*",
-                    "<%= path.generation %>metadata/**/*"
                 ]
             }
         ]

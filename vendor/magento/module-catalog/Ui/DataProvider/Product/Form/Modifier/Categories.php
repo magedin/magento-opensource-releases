@@ -210,7 +210,6 @@ class Categories extends AbstractModifier
                                     'ns' => 'new_category_form',
                                     'externalProvider' => 'new_category_form.new_category_form_data_source',
                                     'toolbarContainer' => '${ $.parentName }',
-                                    '__disableTmpl' => ['toolbarContainer' => false],
                                     'formSubmitType' => 'ajax',
                                 ],
                             ],

@@ -3,38 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Imagefile
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Imagefile;
-use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ImagefileTest extends TestCase
+class ImagefileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Imagefile
+     * @var \Magento\Framework\Data\Form\Element\Imagefile
      */
     protected $_imagefile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $escaperMock = $this->createMock(Escaper::class);
-        $this->_imagefile = new Imagefile(
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->_imagefile = new \Magento\Framework\Data\Form\Element\Imagefile(
             $factoryMock,
             $collectionFactoryMock,
             $escaperMock

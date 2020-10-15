@@ -3,80 +3,73 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Page;
 
-use Magento\Cms\Controller\Page\View;
-use Magento\Cms\Helper\Page as PageHelper;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Forward;
-use Magento\Framework\Controller\Result\ForwardFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Result\Page;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
-    private const STUB_PAGE_ID = 2;
-
     /**
-     * @var View
+     * @var \Magento\Cms\Controller\Page\View
      */
     protected $controller;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $pageHelperMock;
+    protected $cmsHelperMock;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject|ForwardFactory
+     * @var \Magento\Framework\Controller\Result\ForwardFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $forwardFactoryMock;
 
     /**
-     * @var MockObject|Forward
+     * @var \Magento\Framework\Controller\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $forwardMock;
 
     /**
-     * @var MockObject|Page
+     * @var \Magento\Framework\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageMock;
 
-    protected function setUp(): void
-    {
-        $objectManager = new ObjectManagerHelper($this);
+    /**
+     * @var string
+     */
+    protected $pageId = '2';
 
-        $this->resultPageMock = $this->getMockBuilder(Page::class)
+    protected function setUp()
+    {
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $responseMock = $this->createMock(\Magento\Framework\App\Response\Http::class);
+        $this->resultPageMock = $this->getMockBuilder(\Magento\Framework\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->forwardFactoryMock = $this->getMockBuilder(ForwardFactory::class)
+        $this->forwardFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\ForwardFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->forwardMock = $this->getMockBuilder(Forward::class)
+        $this->forwardMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->forwardFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($this->forwardMock);
 
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->pageHelperMock = $this->createMock(PageHelper::class);
-
-        $this->controller = $objectManager->getObject(
-            View::class,
+        $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->cmsHelperMock = $this->createMock(\Magento\Cms\Helper\Page::class);
+        $objectManagerMock->expects($this->once())->method('get')->willReturn($this->cmsHelperMock);
+        $this->controller = $helper->getObject(
+            \Magento\Cms\Controller\Page\View::class,
             [
+                'response' => $responseMock,
+                'objectManager' => $objectManagerMock,
                 'request' => $this->requestMock,
-                'pageHelper' => $this->pageHelperMock,
                 'resultForwardFactory' => $this->forwardFactoryMock
             ]
         );
@@ -88,13 +81,13 @@ class ViewTest extends TestCase
             ->method('getParam')
             ->willReturnMap(
                 [
-                    ['page_id', null, self::STUB_PAGE_ID],
-                    ['id', null, self::STUB_PAGE_ID]
+                    ['page_id', $this->pageId, $this->pageId],
+                    ['id', false, $this->pageId]
                 ]
             );
-        $this->pageHelperMock->expects($this->once())
+        $this->cmsHelperMock->expects($this->once())
             ->method('prepareResultPage')
-            ->with($this->controller, self::STUB_PAGE_ID)
+            ->with($this->controller, $this->pageId)
             ->willReturn($this->resultPageMock);
         $this->assertSame($this->resultPageMock, $this->controller->execute());
     }
@@ -105,8 +98,8 @@ class ViewTest extends TestCase
             ->method('getParam')
             ->willReturnMap(
                 [
-                    ['page_id', null, self::STUB_PAGE_ID],
-                    ['id', null, self::STUB_PAGE_ID]
+                    ['page_id', $this->pageId, $this->pageId],
+                    ['id', false, $this->pageId]
                 ]
             );
         $this->forwardMock->expects($this->once())

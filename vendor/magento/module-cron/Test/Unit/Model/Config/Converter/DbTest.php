@@ -3,26 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cron\Test\Unit\Model\Config\Converter;
 
-use Magento\Cron\Model\Config\Converter\Db;
-use PHPUnit\Framework\TestCase;
-
-class DbTest extends TestCase
+class DbTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Db
+     * @var \Magento\Cron\Model\Config\Converter\Db
      */
     protected $_converter;
 
     /**
      * Prepare parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_converter = new Db();
+        $this->_converter = new \Magento\Cron\Model\Config\Converter\Db();
     }
 
     /**

@@ -74,12 +74,11 @@ class SomeClass
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoSuperfluousPhpdocTagsFixer.
-     * Must run after PhpdocToReturnTypeFixer.
      */
     public function getPriority()
     {
+        // should run after PhpdocToReturnTypeFixer
+        // should run before NoSuperfluousPhpdocTagsFixer
         return 7;
     }
 
@@ -112,7 +111,8 @@ class SomeClass
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixFunctionArguments(Tokens $tokens, $index)
     {
@@ -128,7 +128,8 @@ class SomeClass
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixFunctionReturnType(Tokens $tokens, $index)
     {
@@ -144,6 +145,10 @@ class SomeClass
         $this->detectAndReplaceTypeWithShortType($tokens, $returnType);
     }
 
+    /**
+     * @param Tokens       $tokens
+     * @param TypeAnalysis $type
+     */
     private function detectAndReplaceTypeWithShortType(
         Tokens $tokens,
         TypeAnalysis $type
@@ -153,11 +158,6 @@ class SomeClass
         }
 
         $typeName = $type->getName();
-
-        if (0 !== strpos($typeName, '\\')) {
-            return;
-        }
-
         $shortType = (new TypeShortNameResolver())->resolve($tokens, $typeName);
         if ($shortType === $typeName) {
             return;

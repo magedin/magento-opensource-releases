@@ -3,53 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Block\Shipping;
 
-use Magento\Checkout\Block\Shipping\Price;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address\Rate;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     const SUBTOTAL = 10;
 
     /**
-     * @var Price
+     * @var \Magento\Checkout\Block\Shipping\Price
      */
     protected $priceObj;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Quote\Model\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quote;
 
     /**
-     * @var Store|MockObject
+     * @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $store;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceCurrency;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->priceCurrency = $this->getMockBuilder(
-            PriceCurrencyInterface::class
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class
         )->getMock();
 
         $this->priceObj = $objectManager->getObject(
-            Price::class,
+            \Magento\Checkout\Block\Shipping\Price::class,
             ['priceCurrency'   => $this->priceCurrency]
         );
     }
@@ -59,13 +48,13 @@ class PriceTest extends TestCase
         $shippingPrice = 5;
         $convertedPrice = "$5";
 
-        $shippingRateMock = $this->getMockBuilder(Rate::class)
+        $shippingRateMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address\Rate::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getPrice'])
+            ->setMethods(['getPrice', '__wakeup'])
             ->getMock();
         $shippingRateMock->expects($this->once())
             ->method('getPrice')
-            ->willReturn($shippingPrice);
+            ->will($this->returnValue($shippingPrice));
 
         $this->priceCurrency->expects($this->once())
             ->method('convertAndFormat')

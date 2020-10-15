@@ -3,15 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Response\HeaderProvider;
 
-use Magento\Framework\App\Response\HeaderProvider\XFrameOptions;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Response\HeaderProvider\XFrameOptions;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-class XFrameOptionsTest extends TestCase
+class XFrameOptionsTest extends \PHPUnit\Framework\TestCase
 {
     /** X-Frame-Option Header name */
     const HEADER_NAME = 'X-Frame-Options';
@@ -26,11 +24,11 @@ class XFrameOptionsTest extends TestCase
      */
     protected $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManagerHelper($this);
         $this->object = $objectManager->getObject(
-            XFrameOptions::class,
+            \Magento\Framework\App\Response\HeaderProvider\XFrameOptions::class,
             ['xFrameOpt' => $this::HEADER_VALUE]
         );
     }

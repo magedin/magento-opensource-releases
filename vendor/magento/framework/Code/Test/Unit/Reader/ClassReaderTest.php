@@ -24,7 +24,7 @@ class ClassReaderTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new ClassReader();
     }

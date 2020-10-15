@@ -3,22 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Form;
 
-use Magento\Customer\Block\Form\Edit;
 use Magento\Customer\Model\AccountManagement;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Customer\Block\Form\Edit
  */
-class EditTest extends TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ScopeConfigInterface
@@ -26,7 +19,7 @@ class EditTest extends TestCase
     protected $scopeConfigMock;
 
     /**
-     * @var Edit
+     * @var \Magento\Customer\Block\Form\Edit
      */
     protected $block;
 
@@ -34,22 +27,22 @@ class EditTest extends TestCase
      * Init mocks for tests
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->scopeConfigMock =  $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        /** @var Context|MockObject $context */
-        $context = $this->createMock(Context::class);
+        /** @var \Magento\Framework\View\Element\Template\Context | \PHPUnit_Framework_MockObject_MockObject $context */
+        $context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
         $context->expects($this->any())
             ->method('getScopeConfig')
             ->willReturn($this->scopeConfigMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->block = $objectManager->getObject(
-            Edit::class,
+            \Magento\Customer\Block\Form\Edit::class,
             ['context' => $context]
         );
     }

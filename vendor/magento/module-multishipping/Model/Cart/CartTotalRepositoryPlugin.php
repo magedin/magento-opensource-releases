@@ -33,21 +33,21 @@ class CartTotalRepositoryPlugin
     }
 
     /**
-     * Check multishipping update shipping price after get cart total
+     * Overwrite the CartTotalRepository quoteTotal and update the shipping price
      *
-     * @param CartTotalRepository $subject
-     * @param Totals $quoteTotals
-     * @param int $cartId
-     * @return Totals
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @param                                         CartTotalRepository $subject
+     * @param                                         Totals              $quoteTotals
+     * @param                                         String              $cartId
+     * @return                                        Totals
+     * @throws                                        \Magento\Framework\Exception\NoSuchEntityException
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterGet(
         CartTotalRepository $subject,
         Totals $quoteTotals,
-        $cartId
-    ) : Totals {
+        String $cartId
+    ) {
         $quote = $this->quoteRepository->getActive($cartId);
         if ($quote->getIsMultiShipping()) {
             $shippingMethod = $quote->getShippingAddress()->getShippingMethod();

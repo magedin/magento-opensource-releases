@@ -25,15 +25,15 @@
             <getData entity="customerTaxClass" stepKey="customerTaxClassData">
                 <requiredEntity createDataKey="createCustomerTaxClass"/>
             </getData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <actionGroup ref="AdminDeleteCustomerGroupActionGroup" stepKey="deleteCustomerGroup">
                 <argument name="customerGroupName" value="{{CustomCustomerGroup.code}}"/>
             </actionGroup>
-            <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilters"/>
+            <actionGroup ref="clearFiltersAdminDataGrid" stepKey="clearFilters"/>
             <deleteData createDataKey="createCustomerTaxClass" stepKey="deleteCustomerTaxClass"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!-- Steps: 1. Log in to backend as admin user.
                     2. Navigate to Stores > Other Settings > Customer Groups.

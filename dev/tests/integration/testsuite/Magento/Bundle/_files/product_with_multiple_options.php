@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/multiple_products.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/multiple_products.php';
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

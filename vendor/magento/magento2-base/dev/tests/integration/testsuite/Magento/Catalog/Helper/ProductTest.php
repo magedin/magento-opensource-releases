@@ -17,7 +17,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      */
     protected $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\App\State::class)
             ->setAreaCode('frontend');
@@ -172,7 +172,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('multiselect', $types);
         $this->assertArrayHasKey('boolean', $types);
         foreach ($types as $type) {
-            $this->assertIsArray($type);
+            $this->assertInternalType('array', $type);
             $this->assertNotEmpty($type);
         }
 

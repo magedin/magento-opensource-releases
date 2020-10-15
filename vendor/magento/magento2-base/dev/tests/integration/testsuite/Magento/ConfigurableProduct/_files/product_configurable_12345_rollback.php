@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -30,7 +29,8 @@ foreach (['simple_30', 'simple_40', '12345'] as $sku) {
         //Product already removed
     }
 }
-Resolver::getInstance()->requireDataFixture('Magento/ConfigurableProduct/_files/configurable_attribute_rollback.php');
+
+require __DIR__ . '/configurable_attribute_rollback.php';
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

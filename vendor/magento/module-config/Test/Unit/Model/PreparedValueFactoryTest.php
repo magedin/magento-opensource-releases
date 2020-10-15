@@ -3,32 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model;
 
 use Magento\Config\Model\Config\BackendFactory;
+use Magento\Config\Model\PreparedValueFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Config\Model\Config\StructureFactory;
+use Magento\Framework\App\Config\Value;
 use Magento\Config\Model\Config\Structure;
 use Magento\Config\Model\Config\Structure\Element\Field;
 use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Config\Model\Config\StructureFactory;
-use Magento\Config\Model\PreparedValueFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Config\Value;
 use Magento\Framework\App\ScopeInterface;
+use Magento\Store\Model\ScopeInterface as StoreScopeInterface;
 use Magento\Framework\App\ScopeResolver;
 use Magento\Framework\App\ScopeResolverPool;
-use Magento\Store\Model\ScopeInterface as StoreScopeInterface;
 use Magento\Store\Model\ScopeTypeNormalizer;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * @inheritdoc
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
-class PreparedValueFactoryTest extends TestCase
+class PreparedValueFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StructureFactory|Mock
@@ -88,7 +85,7 @@ class PreparedValueFactoryTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->structureFactoryMock = $this->getMockBuilder(StructureFactory::class)
             ->disableOriginalConstructor()
@@ -384,10 +381,12 @@ class PreparedValueFactoryTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     * @expectedExceptionMessage Some exception
+     */
     public function testCreateWithException()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
-        $this->expectExceptionMessage('Some exception');
         $this->structureFactoryMock->expects($this->once())
             ->method('create')
             ->willThrowException(new \Exception('Some exception'));

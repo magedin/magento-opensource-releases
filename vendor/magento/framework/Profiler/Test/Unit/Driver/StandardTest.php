@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Profiler\Driver\Standard
  *
@@ -7,35 +7,27 @@
  */
 namespace Magento\Framework\Profiler\Test\Unit\Driver;
 
-use Magento\Framework\Profiler;
-use Magento\Framework\Profiler\Driver\Standard;
-use Magento\Framework\Profiler\Driver\Standard\Output\Factory;
-use Magento\Framework\Profiler\Driver\Standard\OutputInterface;
-use Magento\Framework\Profiler\Driver\Standard\Stat;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StandardTest extends TestCase
+class StandardTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Stat|MockObject
+     * @var \Magento\Framework\Profiler\Driver\Standard\Stat|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_stat;
 
     /**
-     * @var Standard
+     * @var \Magento\Framework\Profiler\Driver\Standard
      */
     protected $_driver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_stat = $this->createMock(Stat::class);
-        $this->_driver = new Standard(['stat' => $this->_stat]);
+        $this->_stat = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\Stat::class);
+        $this->_driver = new \Magento\Framework\Profiler\Driver\Standard(['stat' => $this->_stat]);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
-        Profiler::reset();
+        \Magento\Framework\Profiler::reset();
     }
 
     /**
@@ -43,10 +35,8 @@ class StandardTest extends TestCase
      */
     public function testDefaultConstructor()
     {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-
-        $driver = new Standard();
-        $this->assertAttributeInstanceOf(Stat::class, '_stat', $driver);
+        $driver = new \Magento\Framework\Profiler\Driver\Standard();
+        $this->assertAttributeInstanceOf(\Magento\Framework\Profiler\Driver\Standard\Stat::class, '_stat', $driver);
     }
 
     /**
@@ -99,9 +89,7 @@ class StandardTest extends TestCase
      */
     public function testInitOutputs()
     {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-
-        $outputFactory = $this->createMock(Factory::class);
+        $outputFactory = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\Output\Factory::class);
         $config = [
             'outputs' => [
                 'outputTypeOne' => ['baseDir' => '/custom/base/dir'],
@@ -111,8 +99,8 @@ class StandardTest extends TestCase
             'outputFactory' => $outputFactory,
         ];
 
-        $outputOne = $this->getMockForAbstractClass(OutputInterface::class);
-        $outputTwo = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputOne = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\OutputInterface::class);
+        $outputTwo = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\OutputInterface::class);
 
         $outputFactory->expects(
             $this->at(0)
@@ -120,8 +108,8 @@ class StandardTest extends TestCase
             'create'
         )->with(
             ['baseDir' => '/custom/base/dir', 'type' => 'outputTypeOne']
-        )->willReturn(
-            $outputOne
+        )->will(
+            $this->returnValue($outputOne)
         );
 
         $outputFactory->expects(
@@ -130,11 +118,11 @@ class StandardTest extends TestCase
             'create'
         )->with(
             ['type' => 'specificOutputTypeTwo', 'baseDir' => '/base/dir']
-        )->willReturn(
-            $outputTwo
+        )->will(
+            $this->returnValue($outputTwo)
         );
 
-        $driver = new Standard($config);
+        $driver = new \Magento\Framework\Profiler\Driver\Standard($config);
         $this->assertAttributeCount(2, '_outputs', $driver);
         $this->assertAttributeEquals([$outputOne, $outputTwo], '_outputs', $driver);
     }
@@ -144,16 +132,16 @@ class StandardTest extends TestCase
      */
     public function testDisplayAndRegisterOutput()
     {
-        $outputOne = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputOne = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\OutputInterface::class);
         $outputOne->expects($this->once())->method('display')->with($this->_stat);
-        $outputTwo = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputTwo = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\OutputInterface::class);
         $outputTwo->expects($this->once())->method('display')->with($this->_stat);
 
         $this->_driver->registerOutput($outputOne);
         $this->_driver->registerOutput($outputTwo);
-        Profiler::enable();
+        \Magento\Framework\Profiler::enable();
         $this->_driver->display();
-        Profiler::disable();
+        \Magento\Framework\Profiler::disable();
         $this->_driver->display();
     }
 
@@ -165,7 +153,7 @@ class StandardTest extends TestCase
         $method = new \ReflectionMethod($this->_driver, '_getOutputFactory');
         $method->setAccessible(true);
         $this->assertInstanceOf(
-            Factory::class,
+            \Magento\Framework\Profiler\Driver\Standard\Output\Factory::class,
             $method->invoke($this->_driver)
         );
     }

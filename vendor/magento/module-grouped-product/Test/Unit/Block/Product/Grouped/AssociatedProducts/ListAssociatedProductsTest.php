@@ -3,86 +3,72 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Block\Product\Grouped\AssociatedProducts;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\DataObject;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Registry;
-use Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts\ListAssociatedProducts;
-use Magento\GroupedProduct\Model\Product\Type\Grouped;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ListAssociatedProductsTest extends TestCase
+class ListAssociatedProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeInstanceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var ListAssociatedProducts
+     * @var \Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts\ListAssociatedProducts
      */
     protected $block;
 
     /**
-     * @var MockObject|PriceCurrencyInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Pricing\PriceCurrencyInterface
      */
     protected $priceCurrency;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->productMock = $this->createMock(Product::class);
-        $this->storeMock = $this->createMock(Store::class);
-        $this->storeManagerMock = $this->createMock(StoreManager::class);
-        $this->typeInstanceMock = $this->createMock(Grouped::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\Block\Template\Context::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->storeMock = $this->createMock(\Magento\Store\Model\Store::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $this->typeInstanceMock = $this->createMock(\Magento\GroupedProduct\Model\Product\Type\Grouped::class);
 
         $this->contextMock->expects(
             $this->any()
         )->method(
             'getStoreManager'
-        )->willReturn(
-            $this->storeManagerMock
+        )->will(
+            $this->returnValue($this->storeManagerMock)
         );
 
         $this->priceCurrency = $this->getMockBuilder(
-            PriceCurrencyInterface::class
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class
         )->getMock();
 
-        $this->block = new ListAssociatedProducts(
+        $this->block = new \Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts\ListAssociatedProducts(
             $this->contextMock,
             $this->registryMock,
             $this->priceCurrency
@@ -102,18 +88,18 @@ class ListAssociatedProductsTest extends TestCase
         )->with(
             '1.00',
             false
-        )->willReturn(
-            '1'
+        )->will(
+            $this->returnValue('1')
         );
 
-        $this->storeManagerMock->expects($this->any())->method('getStore')->willReturn($this->storeMock);
+        $this->storeManagerMock->expects($this->any())->method('getStore')->will($this->returnValue($this->storeMock));
 
         $this->productMock->expects(
             $this->once()
         )->method(
             'getTypeInstance'
-        )->willReturn(
-            $this->typeInstanceMock
+        )->will(
+            $this->returnValue($this->typeInstanceMock)
         );
 
         $this->registryMock->expects(
@@ -122,8 +108,8 @@ class ListAssociatedProductsTest extends TestCase
             'registry'
         )->with(
             'current_product'
-        )->willReturn(
-            $this->productMock
+        )->will(
+            $this->returnValue($this->productMock)
         );
 
         $this->typeInstanceMock->expects(
@@ -132,8 +118,8 @@ class ListAssociatedProductsTest extends TestCase
             'getAssociatedProducts'
         )->with(
             $this->productMock
-        )->willReturn(
-            [$this->generateAssociatedProduct(1), $this->generateAssociatedProduct(2)]
+        )->will(
+            $this->returnValue([$this->generateAssociatedProduct(1), $this->generateAssociatedProduct(2)])
         );
 
         $expectedResult = [
@@ -162,21 +148,21 @@ class ListAssociatedProductsTest extends TestCase
      * Generate associated product mock
      *
      * @param int $productKey
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function generateAssociatedProduct($productKey = 0)
     {
-        $associatedProduct = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getQty', 'getPosition', 'getId', 'getSku', 'getName', 'getPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $associatedProduct = $this->createPartialMock(
+            \Magento\Framework\DataObject::class,
+            ['getQty', 'getPosition', 'getId', 'getSku', 'getName', 'getPrice']
+        );
 
-        $associatedProduct->expects($this->once())->method('getId')->willReturn('id' . $productKey);
-        $associatedProduct->expects($this->once())->method('getSku')->willReturn('sku' . $productKey);
-        $associatedProduct->expects($this->once())->method('getName')->willReturn('name' . $productKey);
-        $associatedProduct->expects($this->once())->method('getQty')->willReturn($productKey);
-        $associatedProduct->expects($this->once())->method('getPosition')->willReturn($productKey);
-        $associatedProduct->expects($this->once())->method('getPrice')->willReturn('1.00');
+        $associatedProduct->expects($this->once())->method('getId')->will($this->returnValue('id' . $productKey));
+        $associatedProduct->expects($this->once())->method('getSku')->will($this->returnValue('sku' . $productKey));
+        $associatedProduct->expects($this->once())->method('getName')->will($this->returnValue('name' . $productKey));
+        $associatedProduct->expects($this->once())->method('getQty')->will($this->returnValue($productKey));
+        $associatedProduct->expects($this->once())->method('getPosition')->will($this->returnValue($productKey));
+        $associatedProduct->expects($this->once())->method('getPrice')->will($this->returnValue('1.00'));
 
         return $associatedProduct;
     }

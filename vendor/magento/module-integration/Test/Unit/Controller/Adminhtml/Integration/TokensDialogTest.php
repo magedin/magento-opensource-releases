@@ -3,14 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Controller\Adminhtml\Integration;
 
-use Magento\Integration\Controller\Adminhtml\Integration;
-use Magento\Integration\Test\Unit\Controller\Adminhtml\IntegrationTest;
-
-class TokensDialogTest extends IntegrationTest
+class TokensDialogTest extends \Magento\Integration\Test\Unit\Controller\Adminhtml\IntegrationTest
 {
     public function testTokensDialog()
     {
@@ -21,14 +17,16 @@ class TokensDialogTest extends IntegrationTest
             $this->any()
         )->method(
             'getParam'
-        )->willReturnMap(
-            [
+        )->will(
+            $this->returnValueMap(
                 [
-                    Integration::PARAM_INTEGRATION_ID,
-                    null,
-                    self::INTEGRATION_ID
-                ],[Integration::PARAM_REAUTHORIZE, 0, 0],
-            ]
+                    [
+                        \Magento\Integration\Controller\Adminhtml\Integration::PARAM_INTEGRATION_ID,
+                        null,
+                        self::INTEGRATION_ID
+                    ],[\Magento\Integration\Controller\Adminhtml\Integration::PARAM_REAUTHORIZE, 0, 0],
+                ]
+            )
         );
 
         $this->_integrationSvcMock->expects(
@@ -36,16 +34,16 @@ class TokensDialogTest extends IntegrationTest
         )->method(
             'get'
         )->with(
-            self::INTEGRATION_ID
-        )->willReturn(
-            $this->_getIntegrationModelMock()
+            $this->equalTo(self::INTEGRATION_ID)
+        )->will(
+            $this->returnValue($this->_getIntegrationModelMock())
         );
 
         $this->_escaper->expects($this->once())
             ->method('escapeHtml')
             ->willReturnArgument(0);
 
-        $this->_oauthSvcMock->expects($this->once())->method('createAccessToken')->willReturn(true);
+        $this->_oauthSvcMock->expects($this->once())->method('createAccessToken')->will($this->returnValue(true));
 
         $this->_viewMock->expects($this->any())->method('loadLayout');
         $this->_viewMock->expects($this->any())->method('renderLayout');

@@ -10,129 +10,35 @@ namespace Magento\MediaGallery\Model;
 
 use Magento\MediaGalleryApi\Api\Data\AssetExtensionInterface;
 use Magento\MediaGalleryApi\Api\Data\AssetInterface;
+use Magento\Framework\Model\AbstractExtensibleModel;
 
 /**
  * Media Gallery Asset
- * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  */
-class Asset implements AssetInterface
+class Asset extends AbstractExtensibleModel implements AssetInterface
 {
-    /**
-     * @var int|null
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var string|null
-     */
-    private $title;
-
-    /**
-     * @var string|null
-     */
-    private $description;
-
-    /**
-     * @var string|null
-     */
-    private $source;
-
-    /**
-     * @var string|null
-     */
-    private $hash;
-
-    /**
-     * @var string
-     */
-    private $contentType;
-
-    /**
-     * @var int
-     */
-    private $width;
-
-    /**
-     * @var int
-     */
-    private $height;
-
-    /**
-     * @var int
-     */
-    private $size;
-
-    /**
-     * @var string|null
-     */
-    private $createdAt;
-
-    /**
-     * @var string|null
-     */
-    private $updatedAt;
-
-    /**
-     * @var AssetExtensionInterface|null
-     */
-    private $extensionAttributes;
-
-    /**
-     * @param string $path
-     * @param string $contentType
-     * @param int $width
-     * @param int $height
-     * @param int $size
-     * @param int|null $id
-     * @param string|null $title
-     * @param string|null $description
-     * @param string|null $source
-     * @param string|null $hash
-     * @param string|null $createdAt
-     * @param string|null $updatedAt
-     * @param AssetExtensionInterface|null $extensionAttributes
-     */
-    public function __construct(
-        string $path,
-        string $contentType,
-        int $width,
-        int $height,
-        int $size,
-        ?int $id = null,
-        ?string $title = null,
-        ?string $description = null,
-        ?string $source = null,
-        ?string $hash = null,
-        ?string $createdAt = null,
-        ?string $updatedAt = null,
-        ?AssetExtensionInterface $extensionAttributes = null
-    ) {
-        $this->path = $path;
-        $this->contentType = $contentType;
-        $this->width = $width;
-        $this->height = $height;
-        $this->size = $size;
-        $this->id = $id;
-        $this->title = $title;
-        $this->description = $description;
-        $this->source = $source;
-        $this->hash = $hash;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->extensionAttributes = $extensionAttributes;
-    }
+    private const ID = 'id';
+    private const PATH = 'path';
+    private const TITLE = 'title';
+    private const SOURCE = 'source';
+    private const CONTENT_TYPE = 'content_type';
+    private const WIDTH = 'width';
+    private const HEIGHT = 'height';
+    private const CREATED_AT = 'created_at';
+    private const UPDATED_AT = 'updated_at';
 
     /**
      * @inheritdoc
      */
     public function getId(): ?int
     {
-        return $this->id;
+        $id = $this->getData(self::ID);
+
+        if (!$id) {
+            return null;
+        }
+
+        return (int) $id;
     }
 
     /**
@@ -140,7 +46,7 @@ class Asset implements AssetInterface
      */
     public function getPath(): string
     {
-        return $this->path;
+        return (string) $this->getData(self::PATH);
     }
 
     /**
@@ -148,15 +54,7 @@ class Asset implements AssetInterface
      */
     public function getTitle(): ?string
     {
-        return $this->title;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
+        return $this->getData(self::TITLE);
     }
 
     /**
@@ -164,15 +62,7 @@ class Asset implements AssetInterface
      */
     public function getSource(): ?string
     {
-        return $this->source;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHash(): ?string
-    {
-        return $this->hash;
+        return $this->getData(self::SOURCE);
     }
 
     /**
@@ -180,7 +70,7 @@ class Asset implements AssetInterface
      */
     public function getContentType(): string
     {
-        return $this->contentType;
+        return (string) $this->getData(self::CONTENT_TYPE);
     }
 
     /**
@@ -188,7 +78,7 @@ class Asset implements AssetInterface
      */
     public function getWidth(): int
     {
-        return $this->width;
+        return (int) $this->getData(self::WIDTH);
     }
 
     /**
@@ -196,46 +86,38 @@ class Asset implements AssetInterface
      */
     public function getHeight(): int
     {
-        return $this->height;
+        return (int) $this->getData(self::HEIGHT);
     }
 
     /**
      * @inheritdoc
      */
-    public function getSize(): int
+    public function getCreatedAt(): string
     {
-        return $this->size;
+        return (string) $this->getData(self::CREATED_AT);
     }
 
     /**
      * @inheritdoc
      */
-    public function getCreatedAt(): ?string
+    public function getUpdatedAt(): string
     {
-        return $this->createdAt;
+        return (string) $this->getData(self::UPDATED_AT);
     }
 
     /**
      * @inheritdoc
      */
-    public function getUpdatedAt(): ?string
+    public function getExtensionAttributes(): AssetExtensionInterface
     {
-        return $this->updatedAt;
+        return $this->_getExtensionAttributes();
     }
 
     /**
      * @inheritdoc
      */
-    public function getExtensionAttributes(): ?AssetExtensionInterface
+    public function setExtensionAttributes(AssetExtensionInterface $extensionAttributes): void
     {
-        return $this->extensionAttributes;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setExtensionAttributes(?AssetExtensionInterface $extensionAttributes): void
-    {
-        $this->extensionAttributes = $extensionAttributes;
+        $this->_setExtensionAttributes($extensionAttributes);
     }
 }

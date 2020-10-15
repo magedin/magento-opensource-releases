@@ -72,4 +72,3 @@ function self() {}
 function false() {}
 function true() {}
 function null() {}
-function fn() {}

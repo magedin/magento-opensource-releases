@@ -3,39 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Multishipping\Test\Unit\Model\Payment\Method\Specification;
-
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Multishipping\Model\Payment\Method\Specification\Enabled;
-use Magento\Payment\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Enabled method Test
  */
-class EnabledTest extends TestCase
+class EnabledTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Object Manager helper
      *
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
      * Payment config mock
      *
-     * @var MockObject|Config
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Payment\Model\Config
      */
     protected $paymentConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->paymentConfigMock = $this->createMock(Config::class);
-        $this->objectManager = new ObjectManager($this);
+        $this->paymentConfigMock = $this->createMock(\Magento\Payment\Model\Config::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     /**
@@ -54,12 +46,12 @@ class EnabledTest extends TestCase
             $this->once()
         )->method(
             'getMethodsInfo'
-        )->willReturn(
-            $methodsInfo
+        )->will(
+            $this->returnValue($methodsInfo)
         );
 
         $configSpecification = $this->objectManager->getObject(
-            Enabled::class,
+            \Magento\Multishipping\Model\Payment\Method\Specification\Enabled::class,
             ['paymentConfig' => $this->paymentConfigMock]
         );
 

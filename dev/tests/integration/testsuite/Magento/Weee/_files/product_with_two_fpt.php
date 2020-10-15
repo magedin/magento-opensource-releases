@@ -7,9 +7,8 @@ declare(strict_types=1);
 
 use Magento\Catalog\Model\Product;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Weee/_files/product_with_fpt.php');
+require __DIR__ . '/product_with_fpt.php';
 
 /** @var \Magento\Catalog\Setup\CategorySetup $installer */
 $installer = Bootstrap::getObjectManager()->create(

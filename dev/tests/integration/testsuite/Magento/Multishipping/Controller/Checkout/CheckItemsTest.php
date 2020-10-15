@@ -50,7 +50,7 @@ class CheckItemsTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 

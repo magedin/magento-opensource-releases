@@ -11,7 +11,7 @@ use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\Value;
 use Magento\Framework\Data\Form\FormKey;
 use Magento\TestFramework\Response;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 /**
  * Tests \Magento\Store\App\FrontController\Plugin\RequestPreprocessor.
@@ -32,7 +32,7 @@ class RequestPreprocessorTest extends \Magento\TestFramework\TestCase\AbstractCo
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->config = [];
@@ -41,7 +41,7 @@ class RequestPreprocessorTest extends \Magento\TestFramework\TestCase\AbstractCo
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->setConfig($this->config);
         parent::tearDown();
@@ -90,7 +90,6 @@ class RequestPreprocessorTest extends \Magento\TestFramework\TestCase\AbstractCo
      * @param array $config
      * @param string $requestUrl
      * @param string $redirectUrl
-     * @magentoAppArea frontend
      * @dataProvider autoRedirectToBaseURLDataProvider
      */
     public function testAutoRedirectToBaseURL(array $config, string $requestUrl, string $redirectUrl)

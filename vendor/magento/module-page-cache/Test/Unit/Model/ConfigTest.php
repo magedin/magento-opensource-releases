@@ -3,141 +3,128 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\PageCache\Test\Unit\Model;
 
-use Magento\Framework\App\Cache\StateInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\HTTP\PhpEnvironment\Request;
-use Magento\Framework\Module\Dir\Reader;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\PageCache\Model\Cache\Type;
 use Magento\PageCache\Model\Config;
-use Magento\PageCache\Model\Varnish\VclGenerator;
-use Magento\PageCache\Model\Varnish\VclGeneratorFactory;
-use Magento\PageCache\Model\Varnish\VclTemplateLocator;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\PageCache\Model\Config
      */
     private $config;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Config\ScopeConfigInterface
      */
     private $coreConfigMock;
 
     /**
-     * @var MockObject|StateInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\StateInterface
      */
     private $cacheState;
 
     /**
-     * @var MockObject|Reader
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Module\Dir\Reader
      */
     private $moduleReader;
 
     /**
-     * @var MockObject|Json
+     * @var \PHPUnit_Framework_MockObject_MockObject|Json
      */
     private $serializerMock;
 
     /**
      * setUp all mocks and data function
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $readFactoryMock = $this->createMock(ReadFactory::class);
-        $this->coreConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->cacheState = $this->getMockForAbstractClass(StateInterface::class);
+        $readFactoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
+        $this->coreConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->cacheState = $this->getMockForAbstractClass(\Magento\Framework\App\Cache\StateInterface::class);
 
-        $modulesDirectoryMock = $this->createMock(Write::class);
+        $modulesDirectoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
         $readFactoryMock->expects(
             $this->any()
         )->method(
             'create'
-        )->willReturn(
-            $modulesDirectoryMock
+        )->will(
+            $this->returnValue($modulesDirectoryMock)
         );
         $modulesDirectoryMock->expects(
             $this->any()
         )->method(
             'readFile'
-        )->willReturn(
-            file_get_contents(__DIR__ . '/_files/test.vcl')
+        )->will(
+            $this->returnValue(file_get_contents(__DIR__ . '/_files/test.vcl'))
         );
         $this->coreConfigMock->expects(
             $this->any()
         )->method(
             'getValue'
-        )->willReturnMap(
-            [
+        )->will(
+            $this->returnValueMap(
                 [
-                    Config::XML_VARNISH_PAGECACHE_BACKEND_HOST,
-                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                    null,
-                    'example.com',
-                ],
-                [
-                    Config::XML_VARNISH_PAGECACHE_BACKEND_PORT,
-                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                    null,
-                    '8080'
-                ],
-                [
-                    Config::XML_VARNISH_PAGECACHE_ACCESS_LIST,
-                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                    null,
-                    '127.0.0.1, 192.168.0.1,127.0.0.2'
-                ],
-                [
-                    Config::XML_VARNISH_PAGECACHE_DESIGN_THEME_REGEX,
-                    ScopeInterface::SCOPE_STORE,
-                    null,
-                    'serializedConfig'
-                ],
-                [
-                    Request::XML_PATH_OFFLOADER_HEADER,
-                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                    null,
-                    'X_Forwarded_Proto: https'
-                ],
-                [
-                    Config::XML_VARNISH_PAGECACHE_GRACE_PERIOD,
-                    ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                    null,
-                    120
-                ],
-            ]
+                    [
+                        \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_BACKEND_HOST,
+                        \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                        null,
+                        'example.com',
+                    ],
+                    [
+                        \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_BACKEND_PORT,
+                        \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                        null,
+                        '8080'
+                    ],
+                    [
+                        \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_ACCESS_LIST,
+                        \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                        null,
+                        '127.0.0.1, 192.168.0.1,127.0.0.2'
+                    ],
+                    [
+                        \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_DESIGN_THEME_REGEX,
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                        null,
+                        'serializedConfig'
+                    ],
+                    [
+                        \Magento\Framework\HTTP\PhpEnvironment\Request::XML_PATH_OFFLOADER_HEADER,
+                        \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                        null,
+                        'X_Forwarded_Proto: https'
+                    ],
+                    [
+                        \Magento\PageCache\Model\Config::XML_VARNISH_PAGECACHE_GRACE_PERIOD,
+                        \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                        null,
+                        120
+                    ],
+                ]
+            )
         );
 
-        $this->moduleReader = $this->createMock(Reader::class);
+        $this->moduleReader = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
         $this->serializerMock = $this->createMock(Json::class);
 
-        /** @var MockObject $vclTemplateLocator */
-        $vclTemplateLocator = $this->getMockBuilder(VclTemplateLocator::class)
+        /** @var \PHPUnit_Framework_MockObject_MockObject $vclTemplateLocator */
+        $vclTemplateLocator = $this->getMockBuilder(\Magento\PageCache\Model\Varnish\VclTemplateLocator::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTemplate'])
             ->getMock();
         $vclTemplateLocator->expects($this->any())
             ->method('getTemplate')
-            ->willReturn(file_get_contents(__DIR__ . '/_files/test.vcl'));
-        /** @var MockObject $vclTemplateLocator */
-        $vclGeneratorFactory = $this->getMockBuilder(VclGeneratorFactory::class)
+            ->will($this->returnValue(file_get_contents(__DIR__ . '/_files/test.vcl')));
+        /** @var \PHPUnit_Framework_MockObject_MockObject $vclTemplateLocator */
+        $vclGeneratorFactory = $this->getMockBuilder(\Magento\PageCache\Model\Varnish\VclGeneratorFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -152,7 +139,7 @@ class ConfigTest extends TestCase
         $vclGeneratorFactory->expects($this->any())
             ->method('create')
             ->with($expectedParams)
-            ->willReturn(new VclGenerator(
+            ->will($this->returnValue(new \Magento\PageCache\Model\Varnish\VclGenerator(
                 $vclTemplateLocator,
                 'example.com',
                 '8080',
@@ -160,9 +147,9 @@ class ConfigTest extends TestCase
                 120,
                 'X_Forwarded_Proto: https',
                 [['regexp' => '(?i)pattern', 'value' => 'value_for_pattern']]
-            ));
+            )));
         $this->config = $objectManager->getObject(
-            Config::class,
+            \Magento\PageCache\Model\Config::class,
             [
                 'readFactory' => $readFactoryMock,
                 'scopeConfig' => $this->coreConfigMock,
@@ -200,12 +187,12 @@ class ConfigTest extends TestCase
     {
         $this->cacheState->expects($this->at(0))
             ->method('isEnabled')
-            ->with(Type::TYPE_IDENTIFIER)
-            ->willReturn(true);
+            ->with(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER)
+            ->will($this->returnValue(true));
         $this->cacheState->expects($this->at(1))
             ->method('isEnabled')
-            ->with(Type::TYPE_IDENTIFIER)
-            ->willReturn(false);
+            ->with(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER)
+            ->will($this->returnValue(false));
         $this->assertTrue($this->config->isEnabled());
         $this->assertFalse($this->config->isEnabled());
     }

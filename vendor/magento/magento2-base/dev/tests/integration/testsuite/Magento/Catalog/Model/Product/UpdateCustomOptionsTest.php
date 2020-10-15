@@ -67,7 +67,7 @@ class UpdateCustomOptionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->get(ProductRepositoryInterface::class);
@@ -86,7 +86,7 @@ class UpdateCustomOptionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->storeManager->setCurrentStore($this->currentStoreId);
 

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier\AbstractModifierTest;
@@ -12,7 +10,7 @@ use Magento\ConfigurableProduct\Ui\DataProvider\Product\Form\Modifier\CustomOpti
 
 class CustomOptionsTest extends AbstractModifierTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->arrayManagerMock->expects($this->any())

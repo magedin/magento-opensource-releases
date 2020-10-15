@@ -8,8 +8,8 @@ use Dotdigitalgroup\Email\Helper\File;
 use Dotdigitalgroup\Email\Model\Apiconnector\Client;
 use Dotdigitalgroup\Email\Model\Importer as ImporterModel;
 use Dotdigitalgroup\Email\Model\ImporterFactory;
-use Magento\Framework\DataObject;
 use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\DataObject;
 
 class ImporterProgressHandler extends DataObject
 {
@@ -226,7 +226,7 @@ class ImporterProgressHandler extends DataObject
             if (! empty($reportData)) {
                 $contacts = [];
                 foreach ($reportData as $row) {
-                    if (empty($row) || strpos($row, ',') === false) {
+                    if (empty($row)) {
                         continue;
                     }
 
@@ -248,6 +248,9 @@ class ImporterProgressHandler extends DataObject
                 $recentlyResubscribed = array_filter(
                     $this->helper->contactResource->getLastSubscribedAtDates($contacts),
                     function ($contact) use ($lastSyncPeriod) {
+                        if ($contact['last_subscribed_at'] === null) {
+                            return false;
+                        }
                         $lastSubscribed = new \DateTime($contact['last_subscribed_at'], new \DateTimeZone('UTC'));
                         return $lastSubscribed >= $lastSyncPeriod;
                     }

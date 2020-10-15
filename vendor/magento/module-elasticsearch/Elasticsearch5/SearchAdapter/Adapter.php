@@ -5,13 +5,13 @@
  */
 namespace Magento\Elasticsearch\Elasticsearch5\SearchAdapter;
 
-use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
-use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Search\AdapterInterface;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Response\QueryResponse;
+use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
+use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
+use \Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -24,27 +24,27 @@ class Adapter implements AdapterInterface
      *
      * @var Mapper
      */
-    private $mapper;
+    protected $mapper;
 
     /**
      * Response Factory
      *
      * @var ResponseFactory
      */
-    private $responseFactory;
+    protected $responseFactory;
 
     /**
      * @var ConnectionManager
      */
-    private $connectionManager;
+    protected $connectionManager;
 
     /**
      * @var AggregationBuilder
      */
-    private $aggregationBuilder;
+    protected $aggregationBuilder;
 
     /**
-     * @var QueryContainerFactory
+     * @var \Magento\Elasticsearch\SearchAdapter\QueryContainerFactory
      */
     private $queryContainerFactory;
 
@@ -54,15 +54,19 @@ class Adapter implements AdapterInterface
      * @var array
      */
     private static $emptyRawResponse = [
-        'hits' => [
-            'hits' => []
-        ],
-        'aggregations' => [
-            'price_bucket' => [],
-            'category_bucket' => [
-                'buckets' => []
+        "hits" =>
+            [
+                "hits" => []
+            ],
+        "aggregations" =>
+            [
+                "price_bucket" => [],
+                "category_bucket" =>
+                    [
+                        "buckets" => []
+
+                    ]
             ]
-        ]
     ];
 
     /**
@@ -75,7 +79,7 @@ class Adapter implements AdapterInterface
      * @param Mapper $mapper
      * @param ResponseFactory $responseFactory
      * @param AggregationBuilder $aggregationBuilder
-     * @param QueryContainerFactory $queryContainerFactory
+     * @param \Magento\Elasticsearch\SearchAdapter\QueryContainerFactory $queryContainerFactory
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -83,15 +87,16 @@ class Adapter implements AdapterInterface
         Mapper $mapper,
         ResponseFactory $responseFactory,
         AggregationBuilder $aggregationBuilder,
-        QueryContainerFactory $queryContainerFactory,
-        LoggerInterface $logger
+        \Magento\Elasticsearch\SearchAdapter\QueryContainerFactory $queryContainerFactory,
+        LoggerInterface $logger = null
     ) {
         $this->connectionManager = $connectionManager;
         $this->mapper = $mapper;
         $this->responseFactory = $responseFactory;
         $this->aggregationBuilder = $aggregationBuilder;
         $this->queryContainerFactory = $queryContainerFactory;
-        $this->logger = $logger;
+        $this->logger = $logger ?: ObjectManager::getInstance()
+            ->get(LoggerInterface::class);
     }
 
     /**

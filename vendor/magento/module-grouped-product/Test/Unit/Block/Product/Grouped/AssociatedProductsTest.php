@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Block\Product\Grouped;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AssociatedProductsTest extends TestCase
+class AssociatedProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var AssociatedProducts
+     * @var \Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $this->block = new AssociatedProducts($this->contextMock);
+        $this->contextMock = $this->createMock(\Magento\Backend\Block\Template\Context::class);
+        $this->block = new \Magento\GroupedProduct\Block\Product\Grouped\AssociatedProducts($this->contextMock);
     }
 
     /**

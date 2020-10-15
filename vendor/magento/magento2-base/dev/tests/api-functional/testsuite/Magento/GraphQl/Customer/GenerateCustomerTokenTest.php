@@ -28,13 +28,14 @@ class GenerateCustomerTokenTest extends GraphQlAbstract
 
         $response = $this->graphQlMutation($mutation);
         $this->assertArrayHasKey('generateCustomerToken', $response);
-        $this->assertIsArray($response['generateCustomerToken']);
+        $this->assertInternalType('array', $response['generateCustomerToken']);
     }
 
     /**
      * Test customer with invalid data.
      *
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @expectedException \Exception
      *
      * @dataProvider dataProviderInvalidCustomerInfo
      * @param string $email
@@ -43,8 +44,6 @@ class GenerateCustomerTokenTest extends GraphQlAbstract
      */
     public function testGenerateCustomerTokenInvalidData(string $email, string $password, string $message)
     {
-        $this->expectException(\Exception::class);
-
         $mutation = $this->getQuery($email, $password);
         $this->expectExceptionMessage($message);
         $this->graphQlMutation($mutation);

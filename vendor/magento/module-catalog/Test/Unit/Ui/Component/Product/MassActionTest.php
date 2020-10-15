@@ -11,17 +11,14 @@ use Magento\Catalog\Ui\Component\Product\MassAction;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * MassAction test for Component Product
+ * MassAction test
  */
-class MassActionTest extends TestCase
+class MassActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
@@ -31,7 +28,7 @@ class MassActionTest extends TestCase
     private $objectManager;
 
     /**
-     * @var AuthorizationInterface|MockObject
+     * @var AuthorizationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $authorizationMock;
 
@@ -40,7 +37,7 @@ class MassActionTest extends TestCase
      */
     private $massAction;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -61,7 +58,7 @@ class MassActionTest extends TestCase
 
     public function testGetComponentName()
     {
-        $this->assertSame(MassAction::NAME, $this->massAction->getComponentName());
+        $this->assertTrue($this->massAction->getComponentName() === MassAction::NAME);
     }
 
     /**
@@ -74,7 +71,7 @@ class MassActionTest extends TestCase
      */
     public function testPrepare($componentName, $componentData, $isAllowed = true, $expectActionConfig = true)
     {
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock->expects($this->atLeastOnce())->method('getProcessor')->willReturn($processor);
@@ -242,7 +239,7 @@ class MassActionTest extends TestCase
     public function isActionAllowedDataProvider()
     {
         return [
-            'other' => [true, 'other', 0],
+            'other' => [true, 'other', 0,],
             'delete-allowed' => [true, 'delete', 1, 'Magento_Catalog::products'],
             'delete-not-allowed' => [false, 'delete', 1, 'Magento_Catalog::products', false],
             'status-allowed' => [true, 'status', 1, 'Magento_Catalog::products'],

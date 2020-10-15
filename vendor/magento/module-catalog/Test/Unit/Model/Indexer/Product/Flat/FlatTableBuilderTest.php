@@ -3,112 +3,92 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Flat;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Helper\Product\Flat\Indexer;
-use Magento\Catalog\Model\Indexer\Product\Flat\FlatTableBuilder;
-use Magento\Catalog\Model\Indexer\Product\Flat\TableDataInterface;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class FlatTableBuilderTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FlatTableBuilderTest extends TestCase
+class FlatTableBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Indexer|MockObject
+     * @var \Magento\Catalog\Helper\Product\Flat\Indexer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $flatIndexerMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var TableDataInterface|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\TableDataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tableDataMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var EntityMetadataInterface|MockObject
+     * @var \Magento\Framework\EntityManager\EntityMetadataInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataMock;
 
     /**
-     * @var FlatTableBuilder
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\FlatTableBuilder
      */
     private $flatTableBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $this->flatIndexerMock = $this->getMockBuilder(Indexer::class)
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->flatIndexerMock = $this->getMockBuilder(\Magento\Catalog\Helper\Product\Flat\Indexer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->tableDataMock = $this->getMockBuilder(
-            TableDataInterface::class
-        )->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->connectionMock = $this->getMockBuilder(AdapterInterface::class)
+            \Magento\Catalog\Model\Indexer\Product\Flat\TableDataInterface::class
+        )->disableOriginalConstructor()->getMockForAbstractClass();
+        $this->connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->metadataMock = $this->getMockBuilder(
-            EntityMetadataInterface::class
-        )->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            \Magento\Framework\EntityManager\EntityMetadataInterface::class
+        )->disableOriginalConstructor()->getMockForAbstractClass();
         $this->metadataMock->expects($this->any())->method('getLinkField')->willReturn('entity_id');
 
         $this->flatTableBuilder = $objectManagerHelper->getObject(
-            FlatTableBuilder::class,
+            \Magento\Catalog\Model\Indexer\Product\Flat\FlatTableBuilder::class,
             [
                 'productIndexerHelper' => $this->flatIndexerMock,
                 'resource' => $this->resourceMock,
@@ -144,10 +124,10 @@ class FlatTableBuilderTest extends TestCase
         $this->flatIndexerMock->expects($this->exactly(3))->method('getFlatColumns')
             ->willReturnOnConsecutiveCalls([], [$eavCustomValueField => []], [$eavCustomValueField => []]);
         $this->flatIndexerMock->expects($this->once())->method('getFlatIndexes')->willReturn([]);
-        $statusAttributeMock = $this->getMockBuilder(Attribute::class)
+        $statusAttributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $eavCustomAttributeMock = $this->getMockBuilder(Attribute::class)
+        $eavCustomAttributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->flatIndexerMock->expects($this->once())->method('getTablesStructure')
@@ -166,7 +146,7 @@ class FlatTableBuilderTest extends TestCase
         $this->flatIndexerMock->expects($this->once())->method('getAttribute')
             ->with('status')
             ->willReturn($statusAttributeMock);
-        $backendMock = $this->getMockBuilder(AbstractBackend::class)
+        $backendMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend::class)
             ->disableOriginalConstructor()
             ->getMock();
         $backendMock->expects($this->atLeastOnce())->method('getTable')->willReturn($attributeTable);
@@ -177,11 +157,11 @@ class FlatTableBuilderTest extends TestCase
             $backendMock
         );
         $statusAttributeMock->expects($this->atLeastOnce())->method('getId')->willReturn($statusId);
-        $tableMock = $this->getMockBuilder(Table::class)
+        $tableMock = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->connectionMock->expects($this->any())->method('newTable')->willReturn($tableMock);
-        $selectMock = $this->getMockBuilder(Select::class)
+        $selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->connectionMock->expects($this->atLeastOnce())->method('select')->willReturn($selectMock);
@@ -216,7 +196,7 @@ class FlatTableBuilderTest extends TestCase
             )->willReturnSelf();
         $this->metadataPoolMock->expects($this->atLeastOnce())->method('getMetadata')->with(ProductInterface::class)
             ->willReturn($this->metadataMock);
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->storeManagerMock->expects($this->once())->method('getStore')->with($storeId)->willReturn($storeMock);

@@ -2,7 +2,6 @@
 namespace Codeception\Command;
 
 use Codeception\Configuration;
-use Codeception\Event\DispatcherWrapper;
 use Codeception\Event\SuiteEvent;
 use Codeception\Event\TestEvent;
 use Codeception\Events;
@@ -30,7 +29,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class DryRun extends Command
 {
-    use DispatcherWrapper;
     use Shared\Config;
     use Shared\Style;
 
@@ -57,10 +55,6 @@ class DryRun extends Command
         $test = $input->getArgument('test');
 
         $config = $this->getGlobalConfig();
-        ini_set(
-            'memory_limit',
-            isset($config['settings']['memory_limit']) ? $config['settings']['memory_limit'] : '1024M'
-        );
         if (! Configuration::isEmpty() && ! $test && strpos($suite, $config['paths']['tests']) === 0) {
             list(, $suite, $test) = $this->matchTestFromFilename($suite, $config['paths']['tests']);
         }
@@ -82,8 +76,8 @@ class DryRun extends Command
         $suiteManager->loadTests($test);
         $tests = $suiteManager->getSuite()->tests();
 
-        $this->dispatch($dispatcher, Events::SUITE_INIT, new SuiteEvent($suiteManager->getSuite(), null, $settings));
-        $this->dispatch($dispatcher, Events::SUITE_BEFORE, new SuiteEvent($suiteManager->getSuite(), null, $settings));
+        $dispatcher->dispatch(Events::SUITE_INIT, new SuiteEvent($suiteManager->getSuite(), null, $settings));
+        $dispatcher->dispatch(Events::SUITE_BEFORE, new SuiteEvent($suiteManager->getSuite(), null, $settings));
         foreach ($tests as $test) {
             if ($test instanceof \PHPUnit\Framework\TestSuite\DataProvider) {
                 foreach ($test as $t) {
@@ -96,8 +90,7 @@ class DryRun extends Command
                 $this->dryRunTest($output, $dispatcher, $test);
             }
         }
-        $this->dispatch($dispatcher, Events::SUITE_AFTER, new SuiteEvent($suiteManager->getSuite()));
-        return 0;
+        $dispatcher->dispatch(Events::SUITE_AFTER, new SuiteEvent($suiteManager->getSuite()));
     }
 
 
@@ -119,14 +112,14 @@ class DryRun extends Command
      */
     protected function dryRunTest(OutputInterface $output, EventDispatcher $dispatcher, Test $test)
     {
-        $this->dispatch($dispatcher, Events::TEST_START, new TestEvent($test));
-        $this->dispatch($dispatcher, Events::TEST_BEFORE, new TestEvent($test));
+        $dispatcher->dispatch(Events::TEST_START, new TestEvent($test));
+        $dispatcher->dispatch(Events::TEST_BEFORE, new TestEvent($test));
         try {
             $test->test();
         } catch (\Exception $e) {
         }
-        $this->dispatch($dispatcher, Events::TEST_AFTER, new TestEvent($test));
-        $this->dispatch($dispatcher, Events::TEST_END, new TestEvent($test));
+        $dispatcher->dispatch(Events::TEST_AFTER, new TestEvent($test));
+        $dispatcher->dispatch(Events::TEST_END, new TestEvent($test));
         if ($test->getMetadata()->isBlocked()) {
             $output->writeln('');
             if ($skip = $test->getMetadata()->getSkip()) {

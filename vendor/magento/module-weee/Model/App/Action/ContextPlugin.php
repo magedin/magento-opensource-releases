@@ -6,92 +6,78 @@
 
 namespace Magento\Weee\Model\App\Action;
 
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Http\Context as HttpContext;
-use Magento\Framework\Module\Manager as ModuleManager;
-use Magento\PageCache\Model\Config as PageCacheConfig;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Tax\Helper\Data as TaxHelper;
-use Magento\Tax\Model\Config as TaxConfig;
-use Magento\Weee\Helper\Data as WeeeHelper;
-use Magento\Weee\Model\Tax;
-
 /**
- * Plugin to provide Context information to Weee Action
- *
+ * Class ContextPlugin
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ContextPlugin
 {
     /**
-     * @var CustomerSession
+     * @var \Magento\Customer\Model\Session
      */
     protected $customerSession;
 
     /**
-     * @var HttpContext
+     * @var \Magento\Framework\App\Http\Context
      */
     protected $httpContext;
 
     /**
-     * @var TaxHelper
+     * @var \Magento\Tax\Helper\Data
      */
     protected $taxHelper;
 
     /**
-     * @var WeeeHelper
+     * @var \Magento\Weee\Helper\Data
      */
     protected $weeeHelper;
 
     /**
-     * @var ModuleManager
+     * @var \Magento\Framework\Module\Manager
      */
     protected $moduleManager;
 
     /**
-     * @var Tax
+     * @var \Magento\Weee\Model\Tax
      */
     protected $weeeTax;
 
     /**
-     * @var PageCacheConfig
+     * @var \Magento\PageCache\Model\Config
      */
     protected $cacheConfig;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @param CustomerSession $customerSession
-     * @param HttpContext $httpContext
-     * @param Tax $weeeTax
-     * @param TaxHelper $taxHelper
-     * @param WeeeHelper $weeeHelper
-     * @param ModuleManager $moduleManager
-     * @param PageCacheConfig $cacheConfig
-     * @param StoreManagerInterface $storeManager
-     * @param ScopeConfigInterface $scopeConfig
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Magento\Framework\App\Http\Context $httpContext
+     * @param \Magento\Weee\Model\Tax $weeeTax
+     * @param \Magento\Tax\Helper\Data $taxHelper
+     * @param \Magento\Weee\Helper\Data $weeeHelper
+     * @param \Magento\Framework\Module\Manager $moduleManager
+     * @param \Magento\PageCache\Model\Config $cacheConfig
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        CustomerSession $customerSession,
-        HttpContext $httpContext,
-        Tax $weeeTax,
-        TaxHelper $taxHelper,
-        WeeeHelper $weeeHelper,
-        ModuleManager $moduleManager,
-        PageCacheConfig $cacheConfig,
-        StoreManagerInterface $storeManager,
-        ScopeConfigInterface $scopeConfig
+        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\App\Http\Context $httpContext,
+        \Magento\Weee\Model\Tax $weeeTax,
+        \Magento\Tax\Helper\Data $taxHelper,
+        \Magento\Weee\Helper\Data $weeeHelper,
+        \Magento\Framework\Module\Manager $moduleManager,
+        \Magento\PageCache\Model\Config $cacheConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->customerSession = $customerSession;
         $this->httpContext = $httpContext;
@@ -107,15 +93,18 @@ class ContextPlugin
     /**
      * Before dispatch.
      *
-     * @param ActionInterface $subject
+     * @param \Magento\Framework\App\ActionInterface $subject
+     * @param \Magento\Framework\App\RequestInterface $request
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function beforeExecute(ActionInterface $subject)
-    {
+    public function beforeDispatch(
+        \Magento\Framework\App\ActionInterface $subject,
+        \Magento\Framework\App\RequestInterface $request
+    ) {
         if (!$this->weeeHelper->isEnabled() ||
             !$this->customerSession->isLoggedIn() ||
             !$this->moduleManager->isEnabled('Magento_PageCache') ||
@@ -139,14 +128,26 @@ class ContextPlugin
         } elseif ($countryId && !$regionId) {
             // country exist and region does not exist
             $regionId = 0;
-            $exist = $this->weeeTax->isWeeeInLocation($countryId, $regionId, $websiteId);
+            $exist = $this->weeeTax->isWeeeInLocation(
+                $countryId,
+                $regionId,
+                $websiteId
+            );
         } else {
             // country and region exist
-            $exist = $this->weeeTax->isWeeeInLocation($countryId, $regionId, $websiteId);
+            $exist = $this->weeeTax->isWeeeInLocation(
+                $countryId,
+                $regionId,
+                $websiteId
+            );
             if (!$exist) {
                 // just check the country for weee
                 $regionId = 0;
-                $exist = $this->weeeTax->isWeeeInLocation($countryId, $regionId, $websiteId);
+                $exist = $this->weeeTax->isWeeeInLocation(
+                    $countryId,
+                    $regionId,
+                    $websiteId
+                );
             }
         }
 
@@ -170,13 +171,13 @@ class ContextPlugin
         $countryId = null;
         $regionId = null;
         $defaultCountryId = $this->scopeConfig->getValue(
-            TaxConfig::CONFIG_XML_PATH_DEFAULT_COUNTRY,
-            ScopeInterface::SCOPE_STORE,
+            \Magento\Tax\Model\Config::CONFIG_XML_PATH_DEFAULT_COUNTRY,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             null
         );
         $defaultRegionId = $this->scopeConfig->getValue(
-            TaxConfig::CONFIG_XML_PATH_DEFAULT_REGION,
-            ScopeInterface::SCOPE_STORE,
+            \Magento\Tax\Model\Config::CONFIG_XML_PATH_DEFAULT_REGION,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             null
         );
 

@@ -3,47 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Test\Unit;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Shell;
-use Magento\Framework\Shell\CommandRenderer;
-use Magento\Framework\Shell\CommandRendererInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class ShellTest extends TestCase
+class ShellTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CommandRendererInterface|MockObject
+     * @var \Magento\Framework\Shell\CommandRendererInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $commandRenderer;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $logger;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->logger = $this->getMockBuilder(LoggerInterface::class)
+        $this->logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->commandRenderer = new CommandRenderer();
+            ->getMock();
+        $this->commandRenderer = new \Magento\Framework\Shell\CommandRenderer();
     }
 
     /**
      * Test that a command with input arguments returns an expected result
      *
-     * @param Shell $shell
+     * @param \Magento\Framework\Shell $shell
      * @param string $command
      * @param array $commandArgs
      * @param string $expectedResult
      */
-    protected function _testExecuteCommand(Shell $shell, $command, $commandArgs, $expectedResult)
+    protected function _testExecuteCommand(\Magento\Framework\Shell $shell, $command, $commandArgs, $expectedResult)
     {
         $this->expectOutputString('');
         // nothing is expected to be ever printed to the standard output
@@ -60,7 +51,7 @@ class ShellTest extends TestCase
     public function testExecute($command, $commandArgs, $expectedResult)
     {
         $this->_testExecuteCommand(
-            new Shell($this->commandRenderer, $this->logger),
+            new \Magento\Framework\Shell($this->commandRenderer, $this->logger),
             $command,
             $commandArgs,
             $expectedResult
@@ -85,7 +76,7 @@ class ShellTest extends TestCase
                 ->with($expectedLogMessage);
         }
         $this->_testExecuteCommand(
-            new Shell($this->commandRenderer, $this->logger),
+            new \Magento\Framework\Shell($this->commandRenderer, $this->logger),
             $command,
             $commandArgs,
             $expectedResult
@@ -122,12 +113,14 @@ class ShellTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Command returned non-zero exit code:
+     * @expectedExceptionCode 0
+     */
     public function testExecuteFailure()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionCode('0');
-        $this->expectExceptionMessage('Command returned non-zero exit code:');
-        $shell = new Shell($this->commandRenderer, $this->logger);
+        $shell = new \Magento\Framework\Shell($this->commandRenderer, $this->logger);
         $shell->execute('non_existing_command');
     }
 
@@ -143,7 +136,7 @@ class ShellTest extends TestCase
             /* Force command to return non-zero exit code */
             $commandArgs[count($commandArgs) - 1] .= ' exit(42);';
             $this->testExecute($command, $commandArgs, ''); // no result is expected in a case of a command failure
-        } catch (LocalizedException $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->assertInstanceOf('Exception', $e->getPrevious());
             $this->assertEquals($expectedError, $e->getPrevious()->getMessage());
             $this->assertEquals(42, $e->getPrevious()->getCode());

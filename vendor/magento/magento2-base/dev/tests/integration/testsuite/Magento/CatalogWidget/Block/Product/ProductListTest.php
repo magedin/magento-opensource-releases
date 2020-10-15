@@ -34,7 +34,7 @@ class ProductListTest extends TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->block = $this->objectManager->create(ProductsList::class);
@@ -286,7 +286,7 @@ class ProductListTest extends TestCase
             },
             $productCollection->getItems()
         );
-        $this->assertEmpty(array_diff($matches, $skus));
+        $this->assertEquals($matches, $skus, '', 0.0, 10, true);
     }
 
     public function priceFilterDataProvider(): array

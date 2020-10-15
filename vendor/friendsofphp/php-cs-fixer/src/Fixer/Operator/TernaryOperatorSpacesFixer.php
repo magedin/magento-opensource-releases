@@ -36,16 +36,6 @@ final class TernaryOperatorSpacesFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after ArraySyntaxFixer, ListSyntaxFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {
@@ -99,8 +89,9 @@ final class TernaryOperatorSpacesFixer extends AbstractFixer
     }
 
     /**
-     * @param int  $index
-     * @param bool $after
+     * @param Tokens $tokens
+     * @param int    $index
+     * @param bool   $after
      */
     private function ensureWhitespaceExistence(Tokens $tokens, $index, $after)
     {

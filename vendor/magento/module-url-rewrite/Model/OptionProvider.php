@@ -5,16 +5,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Model;
 
-use Magento\Framework\Data\OptionSourceInterface;
+use Magento\Framework\Option\ArrayInterface;
 
 /**
- * Redirect type OptionProvider class
+ * @codeCoverageIgnore
  */
-class OptionProvider implements OptionSourceInterface
+class OptionProvider implements ArrayInterface
 {
     /**
      * Permanent redirect code
@@ -22,38 +20,19 @@ class OptionProvider implements OptionSourceInterface
     const PERMANENT = 301;
 
     /**
-     * Temporary redirect code
+     * Redirect code
      */
     const TEMPORARY = 302;
 
     /**
-     * Retrieve redirect type options
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function toOptionArray(): array
-    {
-        $options = [];
-        foreach ($this->getOptions() as $value => $label) {
-            $options[] = [
-                'label' => $label,
-                'value' => $value
-            ];
-        }
-        return $options;
-    }
-
-    /**
-     * Retrieve options for edit form
-     *
-     * @return array
-     */
-    public function getOptions(): array
+    public function toOptionArray()
     {
         return [
             0 => __('No'),
             self::TEMPORARY => __('Temporary (302)'),
-            self::PERMANENT => __('Permanent (301)')
+            self::PERMANENT => __('Permanent (301)'),
         ];
     }
 }

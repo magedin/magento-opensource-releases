@@ -8,14 +8,14 @@
  */
 define([
     'underscore',
+    'uiRegistry',
     './abstract'
-], function (_, Abstract) {
+], function (_, registry, Abstract) {
     'use strict';
 
     return Abstract.extend({
         defaults: {
             imports: {
-                countryOptions: '${ $.parentName }.country_id:indexedOptions',
                 update: '${ $.parentName }.country_id:value'
             }
         },
@@ -41,32 +41,31 @@ define([
         },
 
         /**
-         * Method called every time country selector's value gets changed.
-         * Updates all validations and requirements for certain country.
-         * @param {String} value - Selected country ID.
+         * @param {String} value
          */
         update: function (value) {
-            var isZipCodeOptional,
-                option;
+            var country = registry.get(this.parentName + '.' + 'country_id'),
+                options = country.indexedOptions,
+                option = null;
 
             if (!value) {
                 return;
             }
 
-            option = _.isObject(this.countryOptions) && this.countryOptions[value];
+            option = options[value];
 
             if (!option) {
                 return;
             }
 
-            isZipCodeOptional = !!option['is_zipcode_optional'];
-
-            if (isZipCodeOptional) {
+            if (option['is_zipcode_optional']) {
                 this.error(false);
+                this.validation = _.omit(this.validation, 'required-entry');
+            } else {
+                this.validation['required-entry'] = true;
             }
 
-            this.validation['required-entry'] = !isZipCodeOptional;
-            this.required(!isZipCodeOptional);
+            this.required(!option['is_zipcode_optional']);
         }
     });
 });

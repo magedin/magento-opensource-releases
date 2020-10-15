@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Review\Block\Product\View\ListView
  *
@@ -12,6 +12,9 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Review\Block\Product\View\ListView;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ViewTest
+ */
 class ListViewTest extends TestCase
 {
     /**
@@ -27,7 +30,7 @@ class ListViewTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->listView = $this->objectManager->getObject(

@@ -20,14 +20,12 @@
 
         <before>
             <createData entity="Simple_US_Customer_Multiple_Addresses" stepKey="createCustomer"/>
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value=""/>
-            </actionGroup>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
         </before>
         <after>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!-- -
         Step1. Login to admin and go to Customers > All Customerts.

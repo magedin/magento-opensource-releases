@@ -3,114 +3,91 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Reports\Test\Unit\Observer;
-
-use Magento\Catalog\Model\Product;
-use Magento\Customer\Model\Session;
-use Magento\Customer\Model\Visitor;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Model\Event;
-use Magento\Reports\Model\EventFactory;
-use Magento\Reports\Model\Product\Index\Compared;
-use Magento\Reports\Model\Product\Index\ComparedFactory;
-use Magento\Reports\Model\Product\Index\Viewed;
-use Magento\Reports\Model\Product\Index\ViewedFactory;
-use Magento\Reports\Observer\CustomerLoginObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CustomerLoginObserverTest extends TestCase
+class CustomerLoginObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerLoginObserver
+     * @var \Magento\Reports\Observer\CustomerLoginObserver
      */
     protected $observer;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var Visitor|MockObject
+     * @var \Magento\Customer\Model\Visitor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerVisitorMock;
 
     /**
-     * @var Viewed|MockObject
+     * @var \Magento\Reports\Model\Product\Index\Viewed|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productIndexMock;
 
     /**
-     * @var Event|MockObject
+     * @var \Magento\Reports\Model\Event|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $reportEventMock;
 
     /**
-     * @var ComparedFactory|MockObject
+     * @var \Magento\Reports\Model\Product\Index\ComparedFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productCompFactoryMock;
 
     /**
-     * @var Compared|MockObject
+     * @var \Magento\Reports\Model\Product\Index\Compared|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productCompModelMock;
 
     /**
-     * @var ViewedFactory|MockObject
+     * @var \Magento\Reports\Model\Product\Index\ViewedFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productIndexFactoryMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->customerVisitorMock = $this->getMockBuilder(Visitor::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->customerVisitorMock = $this->getMockBuilder(\Magento\Customer\Model\Visitor::class)
+            ->disableOriginalConstructor()->getMock();
 
         $this->productIndexFactoryMock = $this->getMockBuilder(
-            ViewedFactory::class
+            \Magento\Reports\Model\Product\Index\ViewedFactory::class
         )->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->productIndexMock = $this->getMockBuilder(Viewed::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
+        $this->productIndexMock = $this->getMockBuilder(\Magento\Reports\Model\Product\Index\Viewed::class)
+            ->disableOriginalConstructor()->getMock();
 
         $this->productIndexFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($this->productIndexMock);
 
-        $reportEventFactory = $this->getMockBuilder(EventFactory::class)
-            ->setMethods(['create'])->disableOriginalConstructor()
-            ->getMock();
-        $this->reportEventMock = $this->getMockBuilder(Event::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $reportEventFactory = $this->getMockBuilder(\Magento\Reports\Model\EventFactory::class)
+            ->setMethods(['create'])->disableOriginalConstructor()->getMock();
+        $this->reportEventMock = $this->getMockBuilder(\Magento\Reports\Model\Event::class)
+            ->disableOriginalConstructor()->getMock();
 
         $reportEventFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->reportEventMock);
 
-        $this->productCompModelMock = $this->getMockBuilder(Compared::class)
+        $this->productCompModelMock = $this->getMockBuilder(\Magento\Reports\Model\Product\Index\Compared::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->productCompFactoryMock = $this->getMockBuilder(
-            ComparedFactory::class
+            \Magento\Reports\Model\Product\Index\ComparedFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -119,7 +96,7 @@ class CustomerLoginObserverTest extends TestCase
             ->willReturn($this->productCompModelMock);
 
         $this->observer = $objectManager->getObject(
-            CustomerLoginObserver::class,
+            \Magento\Reports\Observer\CustomerLoginObserver::class,
             [
                 'event' => $reportEventFactory,
                 'productCompFactory' => $this->productCompFactoryMock,
@@ -178,17 +155,17 @@ class CustomerLoginObserverTest extends TestCase
 
     /**
      * @param int $productId
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getObserverMock($productId)
     {
-        $eventObserverMock = $this->getMockBuilder(Observer::class)
+        $eventObserverMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $eventMock = $this->getMockBuilder(\Magento\Framework\Event::class)
             ->disableOriginalConstructor()
             ->setMethods(['getProduct'])->getMock();
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 

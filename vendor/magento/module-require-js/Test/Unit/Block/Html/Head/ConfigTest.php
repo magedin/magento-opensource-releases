@@ -3,41 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\RequireJs\Test\Unit\Block\Html\Head;
 
-use Magento\Framework\View\Asset\ConfigInterface;
-use Magento\Framework\View\Asset\GroupedCollection;
-use Magento\Framework\View\Asset\LocalInterface;
-use Magento\Framework\View\Asset\Minification;
-use Magento\Framework\View\Element\Context;
-use Magento\Framework\View\LayoutInterface;
-use Magento\RequireJs\Block\Html\Head\Config;
-use Magento\RequireJs\Model\FileManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\RequireJs\Block\Html\Head\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\View\Element\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
     /**
-     * @var \Magento\Framework\RequireJs\Config|MockObject
+     * @var \Magento\Framework\RequireJs\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $config;
 
     /**
-     * @var FileManager|MockObject
+     * @var \Magento\RequireJs\Model\FileManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileManager;
 
     /**
-     * @var \Magento\Framework\View\Page\Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfig;
 
@@ -47,22 +36,22 @@ class ConfigTest extends TestCase
     protected $blockConfig;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\View\Asset\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $bundleConfig;
 
     /**
-     * @var Minification|MockObject
+     * @var \Magento\Framework\View\Asset\Minification|\PHPUnit_Framework_MockObject_MockObject
      */
     private $minificationMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->context = $this->createMock(Context::class);
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Context::class);
         $this->config = $this->createMock(\Magento\Framework\RequireJs\Config::class);
-        $this->fileManager = $this->createMock(FileManager::class);
+        $this->fileManager = $this->createMock(\Magento\RequireJs\Model\FileManager::class);
         $this->pageConfig = $this->createMock(\Magento\Framework\View\Page\Config::class);
-        $this->bundleConfig = $this->getMockForAbstractClass(ConfigInterface::class);
+        $this->bundleConfig = $this->createMock(\Magento\Framework\View\Asset\ConfigInterface::class);
     }
 
     public function testSetLayout()
@@ -72,16 +61,16 @@ class ConfigTest extends TestCase
             ->method('isBundlingJsFiles')
             ->willReturn(true);
         $filePath = 'require_js_fie_path';
-        $asset = $this->getMockForAbstractClass(LocalInterface::class);
+        $asset = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\LocalInterface::class);
         $asset->expects($this->atLeastOnce())
             ->method('getFilePath')
             ->willReturn($filePath);
-        $requireJsAsset = $this->getMockForAbstractClass(LocalInterface::class);
+        $requireJsAsset = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\LocalInterface::class);
         $requireJsAsset
             ->expects($this->atLeastOnce())
             ->method('getFilePath')
             ->willReturn('/path/to/require/require.js');
-        $minResolverAsset = $this->getMockForAbstractClass(LocalInterface::class);
+        $minResolverAsset = $this->getMockForAbstractClass(\Magento\Framework\View\Asset\LocalInterface::class);
         $minResolverAsset
             ->expects($this->atLeastOnce())
             ->method('getFilePath')
@@ -90,27 +79,27 @@ class ConfigTest extends TestCase
         $this->fileManager
             ->expects($this->once())
             ->method('createRequireJsConfigAsset')
-            ->willReturn($requireJsAsset);
+            ->will($this->returnValue($requireJsAsset));
         $this->fileManager
             ->expects($this->once())
             ->method('createRequireJsMixinsAsset')
-            ->willReturn($requireJsAsset);
+            ->will($this->returnValue($requireJsAsset));
         $this->fileManager
             ->expects($this->once())
             ->method('createStaticJsAsset')
-            ->willReturn($requireJsAsset);
+            ->will($this->returnValue($requireJsAsset));
         $this->fileManager
             ->expects($this->once())
             ->method('createBundleJsPool')
-            ->willReturn([$asset]);
+            ->will($this->returnValue([$asset]));
         $this->fileManager
             ->expects($this->once())
             ->method('createMinResolverAsset')
-            ->willReturn($minResolverAsset);
+            ->will($this->returnValue($minResolverAsset));
 
-        $layout = $this->getMockForAbstractClass(LayoutInterface::class);
+        $layout = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
 
-        $assetCollection = $this->getMockBuilder(GroupedCollection::class)
+        $assetCollection = $this->getMockBuilder(\Magento\Framework\View\Asset\GroupedCollection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->pageConfig->expects($this->atLeastOnce())
@@ -122,7 +111,7 @@ class ConfigTest extends TestCase
             ->method('insert')
             ->willReturn(true);
 
-        $this->minificationMock = $this->getMockBuilder(Minification::class)
+        $this->minificationMock = $this->getMockBuilder(\Magento\Framework\View\Asset\Minification::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->minificationMock

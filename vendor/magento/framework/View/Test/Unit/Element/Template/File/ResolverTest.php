@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Element\Template\File;
 
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\View\Element\Template\File\Resolver;
-use Magento\Framework\View\FileSystem;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ResolverTest extends TestCase
+/**
+ * Class ResolverTest
+ * @package Magento\Framework\View\Test\Unit\Element\Template\File
+ */
+class ResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Resolver object
@@ -25,12 +23,12 @@ class ResolverTest extends TestCase
     /**
      * Mock for view file system
      *
-     * @var FileSystem|MockObject
+     * @var \Magento\Framework\View\FileSystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_viewFileSystemMock;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
@@ -39,21 +37,23 @@ class ResolverTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_viewFileSystemMock = $this->createMock(FileSystem::class);
+        $this->_viewFileSystemMock = $this->createMock(\Magento\Framework\View\FileSystem::class);
         $this->serializerMock = $this->getMockBuilder(Json::class)
             ->setMethods(['serialize'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializerMock->expects($this->any())
             ->method('serialize')
-            ->willReturnCallback(
-                function ($value) {
-                    return json_encode($value);
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        return json_encode($value);
+                    }
+                )
             );
-        $this->_resolver = new Resolver(
+        $this->_resolver = new \Magento\Framework\View\Element\Template\File\Resolver(
             $this->_viewFileSystemMock,
             $this->serializerMock
         );
@@ -70,7 +70,7 @@ class ResolverTest extends TestCase
         $this->_viewFileSystemMock->expects($this->once())
             ->method('getTemplateFileName')
             ->with($template)
-            ->willReturn('path_to' . $template);
+            ->will($this->returnValue('path_to' . $template));
         $this->assertEquals('path_to' . $template, $this->_resolver->getTemplateFileName($template));
         $this->assertEquals('path_to' . $template, $this->_resolver->getTemplateFileName($template));
     }

@@ -3,32 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Arguments;
 
-use Magento\Framework\App\Arguments\ArgumentInterpreter;
-use Magento\Framework\Data\Argument\Interpreter\Constant;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Arguments\ArgumentInterpreter;
 
-class ArgumentInterpreterTest extends TestCase
+class ArgumentInterpreterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ArgumentInterpreter
+     * @var \Magento\Framework\App\Arguments\ArgumentInterpreter
      */
     private $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $const = $this->createPartialMock(Constant::class, ['evaluate']);
+        $const = $this->createPartialMock(\Magento\Framework\Data\Argument\Interpreter\Constant::class, ['evaluate']);
         $const->expects(
             $this->once()
         )->method(
             'evaluate'
         )->with(
             ['value' => 'FIXTURE_INIT_PARAMETER']
-        )->willReturn(
-            'init_param_value'
+        )->will(
+            $this->returnValue('init_param_value')
         );
         $this->object = new ArgumentInterpreter($const);
     }

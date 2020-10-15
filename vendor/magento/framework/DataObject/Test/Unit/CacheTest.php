@@ -3,34 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DataObject\Test\Unit;
 
-use Magento\Framework\DataObject\Cache;
-use PHPUnit\Framework\TestCase;
-
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Cache
+     * @var \Magento\Framework\DataObject\Cache
      */
     protected $cache;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->cache = new Cache();
+        $this->cache = new \Magento\Framework\DataObject\Cache();
     }
 
     public function testSaveWhenArgumentIsNotObject()
     {
-        $this->assertFalse($this->cache->save('string'));
+        $this->assertEquals(false, $this->cache->save('string'));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Object already exists in registry (#1). Old object class: stdClass
+     */
     public function testSaveWhenObjectAlreadyExistsInRegistry()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Object already exists in registry (#1). Old object class: stdClass');
         $object = new \stdClass();
         $hash = spl_object_hash($object);
         $newIdx = 'idx' . $hash;
@@ -55,17 +53,19 @@ class CacheTest extends TestCase
         $this->assertFalse($this->cache->delete('idx' . $hash));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The reference already exists: refName. New index: idx, old index: idx
+     */
     public function testReferenceWhenReferenceAlreadyExist()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The reference already exists: refName. New index: idx, old index: idx');
         $refName = ['refName', 'refName'];
         $this->cache->reference($refName, 'idx');
     }
 
     public function testReferenceWhenReferenceEmpty()
     {
-        $this->assertNull($this->cache->reference([], 'idx'));
+        $this->assertEquals(null, $this->cache->reference([], 'idx'));
     }
 
     public function testLoadWhenReferenceAndObjectAlreadyExists()
@@ -74,10 +74,10 @@ class CacheTest extends TestCase
         $this->cache->reference('refName', $idx);
         $object = new \stdClass();
         $hash = spl_object_hash($object);
-        $this->assertNull($this->cache->findByHash($hash));
+        $this->assertEquals(null, $this->cache->findByHash($hash));
         $this->cache->save($object, $idx);
         $this->assertEquals($object, $this->cache->load($idx));
-        $this->assertTrue($this->cache->has($idx));
+        $this->assertEquals(true, $this->cache->has($idx));
         $this->assertEquals($object, $this->cache->findByHash($hash));
         $this->assertEquals(['refName' => 'idx'], $this->cache->getAllReferences());
     }
@@ -119,7 +119,7 @@ class CacheTest extends TestCase
         $newIdx = 'idx' . $hash;
         $this->assertEquals($newIdx, $this->cache->save($object, 'idx{hash}'));
         $this->cache->debug($newIdx);
-        $this->assertArrayHasKey($newIdx, $this->cache->debugByIds($newIdx));
+        $this->assertTrue(array_key_exists($newIdx, $this->cache->debugByIds($newIdx)));
     }
 
     public function testGetAndDeleteTags()

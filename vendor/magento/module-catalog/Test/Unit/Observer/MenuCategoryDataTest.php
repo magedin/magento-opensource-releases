@@ -3,61 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Observer;
 
-use Magento\Catalog\Helper\Category;
-use Magento\Catalog\Helper\Data;
-use Magento\Catalog\Model\Indexer\Category\Flat\State;
-use Magento\Catalog\Model\Layer\Resolver;
-use Magento\Catalog\Observer\MenuCategoryData;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class MenuCategoryDataTest extends TestCase
+class MenuCategoryDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MenuCategoryData
+     * @var \Magento\Catalog\Observer\MenuCategoryData
      */
     protected $_observer;
 
     /**
-     * @var MockObject|Category
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Helper\Category
      */
     protected $_catalogCategory;
 
     /**
-     * @var MockObject|\Magento\Catalog\Model\Category
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Category
      */
     protected $_childrenCategory;
 
     /**
-     * @var MockObject|\Magento\Catalog\Model\Category
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Category
      */
     protected $_category;
 
     /**
-     * @var MockObject|State
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Indexer\Category\Flat\State
      */
     protected $_categoryFlatState;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_catalogCategory = $this->createPartialMock(
-            Category::class,
+            \Magento\Catalog\Helper\Category::class,
             ['getStoreCategories', 'getCategoryUrl']
         );
 
-        $layerResolver = $this->createMock(Resolver::class);
+        $layerResolver = $this->createMock(\Magento\Catalog\Model\Layer\Resolver::class);
         $layerResolver->expects($this->once())->method('get')->willReturn(null);
         $this->_observer = (new ObjectManager($this))->getObject(
-            MenuCategoryData::class,
+            \Magento\Catalog\Observer\MenuCategoryData::class,
             [
                 'layerResolver' => $layerResolver,
                 'catalogCategory' => $this->_catalogCategory,
-                'catalogData' => $this->createMock(Data::class),
+                'catalogData' => $this->createMock(\Magento\Catalog\Helper\Data::class),
             ]
         );
     }

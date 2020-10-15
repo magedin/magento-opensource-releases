@@ -156,16 +156,6 @@ mbereg_search_getregs();
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before ImplodeCallFixer, PhpUnitDedicateAssertFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {
@@ -187,7 +177,7 @@ mbereg_search_getregs();
     {
         $functionsAnalyzer = new FunctionsAnalyzer();
 
-        /** @var Token $token */
+        /** @var \PhpCsFixer\Tokenizer\Token $token */
         foreach ($tokens->findGivenKind(T_STRING) as $index => $token) {
             // check mapping hit
             $tokenContent = strtolower($token->getContent());

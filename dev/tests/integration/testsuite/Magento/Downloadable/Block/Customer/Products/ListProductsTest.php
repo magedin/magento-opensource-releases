@@ -55,7 +55,7 @@ class ListProductsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -69,7 +69,7 @@ class ListProductsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->customerSession->logout();
 
@@ -82,10 +82,7 @@ class ListProductsTest extends TestCase
     public function testNoItems(): void
     {
         $html = $this->createBlock()->toHtml();
-        $this->assertStringContainsString(
-            (string)__('You have not purchased any downloadable products yet.'),
-            strip_tags($html)
-        );
+        $this->assertContains((string)__('You have not purchased any downloadable products yet.'), strip_tags($html));
     }
 
     /**

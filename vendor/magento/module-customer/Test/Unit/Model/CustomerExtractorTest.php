@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model;
 
@@ -18,48 +17,46 @@ use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\RequestInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test CustomerExtractorTest
  */
-class CustomerExtractorTest extends TestCase
+class CustomerExtractorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var CustomerExtractor */
     protected $customerExtractor;
 
-    /** @var FormFactory|MockObject */
+    /** @var FormFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $formFactory;
 
-    /** @var CustomerInterfaceFactory|MockObject */
+    /** @var CustomerInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerFactory;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var GroupManagementInterface|MockObject */
+    /** @var GroupManagementInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerGroupManagement;
 
-    /** @var DataObjectHelper|MockObject */
+    /** @var DataObjectHelper|\PHPUnit_Framework_MockObject_MockObject */
     protected $dataObjectHelper;
 
-    /** @var RequestInterface|MockObject */
+    /** @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var Form|MockObject */
+    /** @var Form|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerForm;
 
-    /** @var CustomerInterface|MockObject */
+    /** @var CustomerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerData;
 
-    /** @var StoreInterface|MockObject */
+    /** @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $store;
 
-    /** @var GroupInterface|MockObject */
+    /** @var GroupInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $customerGroup;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->formFactory = $this->getMockForAbstractClass(
             FormFactory::class,
@@ -121,14 +118,27 @@ class CustomerExtractorTest extends TestCase
         );
     }
 
-    public function testExtract()
+    /**
+     * @param int $storeId
+     * @param int $websiteId
+     * @param array $customerData
+     * @dataProvider getDataProvider
+     * @return void
+     */
+    public function testExtract(int $storeId, int $websiteId, array $customerData)
     {
-        $customerData = [
-            'firstname' => 'firstname',
-            'lastname' => 'firstname',
-            'email' => 'email.example.com',
-        ];
+        $this->initializeExpectation($storeId, $websiteId, $customerData);
 
+        $this->assertSame($this->customerData, $this->customerExtractor->extract('form-code', $this->request));
+    }
+
+    /**
+     * @param int $storeId
+     * @param int $websiteId
+     * @param array $customerData
+     */
+    private function initializeExpectation(int $storeId, int $websiteId, array $customerData): void
+    {
         $this->formFactory->expects($this->once())
             ->method('create')
             ->with('customer', 'form-code')
@@ -156,17 +166,54 @@ class CustomerExtractorTest extends TestCase
             ->willReturn($this->store);
         $this->store->expects($this->once())
             ->method('getId')
-            ->willReturn(1);
+            ->willReturn($storeId);
         $this->store->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn(1);
+            ->willReturn($websiteId);
         $this->customerData->expects($this->once())
             ->method('setWebsiteId')
-            ->with(1);
+            ->with($websiteId);
         $this->customerData->expects($this->once())
             ->method('setStoreId')
-            ->with(1);
+            ->with($storeId);
+    }
 
-        $this->assertSame($this->customerData, $this->customerExtractor->extract('form-code', $this->request));
+    /**
+     * @return array
+     */
+    public function getDataProvider()
+    {
+        return [
+            'extract data when group id is null' => [
+                1,
+                1,
+                [
+                    'firstname' => 'firstname-1',
+                    'lastname' => 'firstname-1',
+                    'email' => 'email-1.example.com',
+                    'group_id' => null
+                ]
+            ],
+            'extract data when group id is not null and default' => [
+                1,
+                2,
+                [
+                    'firstname' => 'firstname-2',
+                    'lastname' => 'firstname-3',
+                    'email' => 'email-2.example.com',
+                    'group_id' => 1
+                ]
+            ],
+            'extract data when group id is different from default' => [
+                1,
+                1,
+                [
+                    'firstname' => 'firstname-3',
+                    'lastname' => 'firstname-3',
+                    'email' => 'email-3.example.com',
+                    'group_id' => 2
+                ]
+            ],
+        ];
     }
 }

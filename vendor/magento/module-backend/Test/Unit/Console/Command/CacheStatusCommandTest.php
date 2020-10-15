@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Backend\Test\Unit\Console\Command;
 
@@ -12,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class CacheStatusCommandTest extends AbstractCacheCommandTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->command = new CacheStatusCommand($this->cacheManagerMock);

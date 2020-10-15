@@ -46,13 +46,12 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before AlignMultilineCommentFixer, BinaryOperatorSpacesFixer.
-     * Must run after BracesFixer, MethodArgumentSpaceFixer, MethodChainingIndentationFixer.
      */
     public function getPriority()
     {
-        return -31;
+        // should run after BracesFixer, MethodChainingIndentationFixer
+        // should run before AlignMultilineCommentFixer and BinaryOperatorSpacesFixer
+        return -30;
     }
 
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
@@ -82,7 +81,7 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
                 $token = $tokens[$index];
                 if ($this->newlineIsInArrayScope($tokens, $index, $array)) {
                     $content = Preg::replace(
-                        '/(\R+)\h*$/',
+                        '/(\R+)[\t ]*$/',
                         '$1'.$arrayIndent.str_repeat($this->whitespacesConfig->getIndent(), $currentIndentLevel),
                         $token->getContent()
                     );
@@ -91,7 +90,7 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
                     $previousLineNewIndent = $this->extractIndent($content);
                 } else {
                     $content = Preg::replace(
-                        '/(\R)'.preg_quote($previousLineInitialIndent, '/').'(\h*)$/',
+                        '/(\R)'.preg_quote($previousLineInitialIndent, '/').'([\t ]*)$/',
                         '$1'.$previousLineNewIndent.'$2',
                         $token->getContent()
                     );
@@ -148,50 +147,11 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
     {
         $arrayTokenRanges = [];
         $currentArray = null;
-        $valueSinceIndex = null;
 
         for ($index = $from; $index <= $to; ++$index) {
             $token = $tokens[$index];
 
-            if ($token->isGivenKind([T_ARRAY, CT::T_ARRAY_SQUARE_BRACE_OPEN])) {
-                $arrayStartIndex = $index;
-
-                if ($token->isGivenKind(T_ARRAY)) {
-                    $index = $tokens->getNextTokenOfKind($index, ['(']);
-                }
-
-                $endIndex = $tokens->findBlockEnd(
-                    $tokens[$index]->equals('(') ? Tokens::BLOCK_TYPE_PARENTHESIS_BRACE : Tokens::BLOCK_TYPE_ARRAY_SQUARE_BRACE,
-                    $index
-                );
-
-                if (null === $currentArray) {
-                    $currentArray = [
-                        'start' => $index,
-                        'end' => $endIndex,
-                        'ignored_tokens_ranges' => [],
-                    ];
-                } else {
-                    if (null === $valueSinceIndex) {
-                        $valueSinceIndex = $arrayStartIndex;
-                    }
-
-                    $index = $endIndex;
-                }
-
-                continue;
-            }
-
-            if (null === $currentArray || $token->isWhitespace() || $token->isComment()) {
-                continue;
-            }
-
-            if ($currentArray['end'] === $index) {
-                if (null !== $valueSinceIndex) {
-                    $currentArray['ignored_tokens_ranges'][] = [$valueSinceIndex, $tokens->getPrevMeaningfulToken($index)];
-                    $valueSinceIndex = null;
-                }
-
+            if (null !== $currentArray && $currentArray['end'] === $index) {
                 $rangeIndexes = [$currentArray['start']];
                 foreach ($currentArray['ignored_tokens_ranges'] as list($start, $end)) {
                     $rangeIndexes[] = $start - 1;
@@ -212,23 +172,39 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
                 continue;
             }
 
-            if (null === $valueSinceIndex) {
-                $valueSinceIndex = $index;
+            if (null === $currentArray && $token->isGivenKind([T_ARRAY, CT::T_ARRAY_SQUARE_BRACE_OPEN])) {
+                if ($token->isGivenKind(T_ARRAY)) {
+                    $index = $tokens->getNextTokenOfKind($index, ['(']);
+                }
+
+                $currentArray = [
+                    'start' => $index,
+                    'end' => $tokens->findBlockEnd(
+                        $tokens[$index]->equals('(') ? Tokens::BLOCK_TYPE_PARENTHESIS_BRACE : Tokens::BLOCK_TYPE_ARRAY_SQUARE_BRACE,
+                        $index
+                    ),
+                    'ignored_tokens_ranges' => [],
+                ];
+
+                continue;
             }
 
             if (
-                ($token->equals('(') && !$tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind(T_ARRAY))
-                || $token->equals('{')
+                null !== $currentArray && (
+                    ($token->equals('(') && !$tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind(T_ARRAY))
+                    || $token->equals('{')
+                )
             ) {
-                $index = $tokens->findBlockEnd(
+                $endIndex = $tokens->findBlockEnd(
                     $token->equals('{') ? Tokens::BLOCK_TYPE_CURLY_BRACE : Tokens::BLOCK_TYPE_PARENTHESIS_BRACE,
                     $index
                 );
-            }
 
-            if ($token->equals(',')) {
-                $currentArray['ignored_tokens_ranges'][] = [$valueSinceIndex, $tokens->getPrevMeaningfulToken($index)];
-                $valueSinceIndex = null;
+                $currentArray['ignored_tokens_ranges'][] = [$index, $endIndex];
+
+                $index = $endIndex;
+
+                continue;
             }
         }
 
@@ -325,7 +301,7 @@ final class ArrayIndentationFixer extends AbstractFixer implements WhitespacesAw
 
     private function extractIndent($content)
     {
-        if (Preg::match('/\R(\h*)[^\r\n]*$/D', $content, $matches)) {
+        if (Preg::match('/\R([\t ]*)[^\r\n]*$/D', $content, $matches)) {
             return $matches[1];
         }
 

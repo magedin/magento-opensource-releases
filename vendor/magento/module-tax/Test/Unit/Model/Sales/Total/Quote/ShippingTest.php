@@ -3,69 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Sales\Total\Quote;
 
-use Magento\Customer\Api\Data\AddressInterfaceFactory;
-use Magento\Customer\Api\Data\RegionInterfaceFactory;
-use Magento\Quote\Api\Data\CartItemInterface;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\Total;
-use Magento\Tax\Api\Data\QuoteDetailsInterfaceFactory;
-use Magento\Tax\Api\Data\QuoteDetailsItemInterfaceFactory;
-use Magento\Tax\Api\Data\TaxClassKeyInterfaceFactory;
-use Magento\Tax\Api\TaxCalculationInterface;
-use Magento\Tax\Model\Config;
-use Magento\Tax\Model\Sales\Total\Quote\Shipping;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Tax\Model\Sales\Total\Quote\Shipping;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShippingTest extends TestCase
+class ShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $taxConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $taxCalculationMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteDetailsDataObjectFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $itemDetailsDataObjectFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $taxClassKeyDataObjectFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $addressFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $regionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
@@ -74,25 +58,25 @@ class ShippingTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->taxConfigMock = $this->createMock(Config::class);
-        $this->taxCalculationMock = $this->getMockForAbstractClass(TaxCalculationInterface::class);
+        $this->taxConfigMock = $this->createMock(\Magento\Tax\Model\Config::class);
+        $this->taxCalculationMock = $this->createMock(\Magento\Tax\Api\TaxCalculationInterface::class);
         $this->quoteDetailsDataObjectFactory = $this->createPartialMock(
-            QuoteDetailsInterfaceFactory::class,
+            \Magento\Tax\Api\Data\QuoteDetailsInterfaceFactory::class,
             ['create']
         );
         $this->itemDetailsDataObjectFactory = $this->createPartialMock(
-            QuoteDetailsItemInterfaceFactory::class,
+            \Magento\Tax\Api\Data\QuoteDetailsItemInterfaceFactory::class,
             ['create']
         );
         $this->taxClassKeyDataObjectFactory = $this->createPartialMock(
-            TaxClassKeyInterfaceFactory::class,
+            \Magento\Tax\Api\Data\TaxClassKeyInterfaceFactory::class,
             ['create']
         );
-        $this->addressFactoryMock = $this->createMock(AddressInterfaceFactory::class);
-        $this->regionFactoryMock = $this->createMock(RegionInterfaceFactory::class);
-        $this->quoteMock = $this->createMock(Quote::class);
+        $this->addressFactoryMock = $this->createMock(\Magento\Customer\Api\Data\AddressInterfaceFactory::class);
+        $this->regionFactoryMock = $this->createMock(\Magento\Customer\Api\Data\RegionInterfaceFactory::class);
+        $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
         $this->model = new Shipping(
             $this->taxConfigMock,
             $this->taxCalculationMock,
@@ -109,7 +93,7 @@ class ShippingTest extends TestCase
         $storeId = 1;
         $this->quoteMock->expects($this->once())->method('getStoreId')->willReturn($storeId);
 
-        $addressMock = $this->getMockObject(Address::class, [
+        $addressMock = $this->getMockObject(\Magento\Quote\Model\Quote\Address::class, [
             'all_items' => [],
             'shipping_tax_calculation_amount' => 100,
             'base_shipping_tax_calculation_amount' => 200,
@@ -119,15 +103,15 @@ class ShippingTest extends TestCase
         ]);
         $this->taxCalculationMock->expects($this->never())->method('calculateTax');
 
-        $shippingMock = $this->getMockForAbstractClass(ShippingInterface::class);
+        $shippingMock = $this->createMock(\Magento\Quote\Api\Data\ShippingInterface::class);
         $shippingMock->expects($this->atLeastOnce())->method('getAddress')->willReturn($addressMock);
-        $shippingAssignmentMock = $this->getMockForAbstractClass(ShippingAssignmentInterface::class);
+        $shippingAssignmentMock = $this->createMock(\Magento\Quote\Api\Data\ShippingAssignmentInterface::class);
         $shippingAssignmentMock->expects($this->atLeastOnce())->method('getShipping')->willReturn($shippingMock);
         $shippingAssignmentMock->expects($this->once())
             ->method('getItems')
-            ->willReturn([$this->getMockForAbstractClass(CartItemInterface::class)]);
+            ->willReturn([$this->createMock(\Magento\Quote\Api\Data\CartItemInterface::class)]);
 
-        $totalMock = $this->createMock(Total::class);
+        $totalMock = $this->createMock(\Magento\Quote\Model\Quote\Address\Total::class);
 
         $this->model->collect($this->quoteMock, $shippingAssignmentMock, $totalMock);
     }
@@ -142,25 +126,21 @@ class ShippingTest extends TestCase
      *
      * @param $className
      * @param array $objectState
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getMockObject($className, array $objectState)
     {
         $getterValueMap = [];
-        $methods = [];
+        $methods = ['__wakeup'];
         foreach ($objectState as $key => $value) {
             $getterName = 'get' . str_replace('_', '', ucwords($key, '_'));
             $getterValueMap[$getterName] = $value;
             $methods[] = $getterName;
         }
 
-        $mock = $this->getMockBuilder($className)
-            ->disableOriginalConstructor()
-            ->addMethods(array_diff($methods, get_class_methods($className)))
-            ->onlyMethods(get_class_methods($className))
-            ->getMock();
+        $mock = $this->createPartialMock($className, $methods);
         foreach ($getterValueMap as $getterName => $value) {
-            $mock->expects($this->any())->method($getterName)->willReturn($value);
+            $mock->expects($this->any())->method($getterName)->will($this->returnValue($value));
         }
 
         return $mock;
@@ -169,7 +149,7 @@ class ShippingTest extends TestCase
     public function testFetch()
     {
         $value = 42;
-        $total = new Total();
+        $total = new \Magento\Quote\Model\Quote\Address\Total();
         $total->setShippingInclTax($value);
         $expectedResult = [
             'code' => 'shipping',
@@ -182,7 +162,7 @@ class ShippingTest extends TestCase
     public function testFetchWithZeroShipping()
     {
         $value = 0;
-        $total = new Total();
+        $total = new \Magento\Quote\Model\Quote\Address\Total();
         $total->setShippingInclTax($value);
 
         $this->assertNull($this->model->fetch($this->quoteMock, $total));

@@ -90,7 +90,7 @@ class AllureAdapter implements TestListener
      * @param Exception $e
      * @param float $time
      */
-    public function addError(Test $test, \Throwable $e, float $time): void
+    public function addError(Test $test, Exception $e, $time)
     {
         $event = new TestCaseBrokenEvent();
         Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
@@ -103,7 +103,7 @@ class AllureAdapter implements TestListener
      * @param \PHPUnit\Framework\Warning $e
      * @param float $time
      */
-    public function addWarning(Test $test, Warning $e, float $time): void
+    public function addWarning(Test $test, Warning $e, $time)
     {
         // TODO: Implement addWarning() method.
     }
@@ -115,7 +115,7 @@ class AllureAdapter implements TestListener
      * @param AssertionFailedError $e
      * @param float $time
      */
-    public function addFailure(Test $test, AssertionFailedError $e, float $time): void
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
         $event = new TestCaseFailedEvent();
 
@@ -139,7 +139,7 @@ class AllureAdapter implements TestListener
      * @param Exception $e
      * @param float $time
      */
-    public function addIncompleteTest(Test $test, \Throwable $e, float $time): void
+    public function addIncompleteTest(Test $test, Exception $e, $time)
     {
         $event = new TestCasePendingEvent();
         Allure::lifecycle()->fire($event->withException($e));
@@ -153,7 +153,7 @@ class AllureAdapter implements TestListener
      * @param float $time
      * @since  Method available since Release 4.0.0
      */
-    public function addRiskyTest(Test $test, \Throwable $e, float $time): void
+    public function addRiskyTest(Test $test, Exception $e, $time)
     {
         $this->addIncompleteTest($test, $e, $time);
     }
@@ -166,7 +166,7 @@ class AllureAdapter implements TestListener
      * @param float $time
      * @since  Method available since Release 3.0.0
      */
-    public function addSkippedTest(Test $test, \Throwable $e, float $time): void
+    public function addSkippedTest(Test $test, Exception $e, $time)
     {
         $shouldCreateStartStopEvents = false;
         if ($test instanceof TestCase){
@@ -191,7 +191,7 @@ class AllureAdapter implements TestListener
      * @param TestSuite $suite
      * @since  Method available since Release 2.2.0
      */
-    public function startTestSuite(TestSuite $suite): void
+    public function startTestSuite(TestSuite $suite)
     {
         if ($suite instanceof DataProviderTestSuite) {
             return;
@@ -218,7 +218,7 @@ class AllureAdapter implements TestListener
      * @param TestSuite $suite
      * @since  Method available since Release 2.2.0
      */
-    public function endTestSuite(TestSuite $suite): void
+    public function endTestSuite(TestSuite $suite)
     {
         if ($suite instanceof DataProviderTestSuite) {
             return;
@@ -232,7 +232,7 @@ class AllureAdapter implements TestListener
      *
      * @param Test $test
      */
-    public function startTest(Test $test): void
+    public function startTest(Test $test)
     {
         if ($test instanceof TestCase) {
             $testName = $test->getName();
@@ -256,7 +256,7 @@ class AllureAdapter implements TestListener
      * @param float $time
      * @throws \Exception
      */
-    public function endTest(Test $test, float $time): void
+    public function endTest(Test $test, $time)
     {
         if ($test instanceof TestCase) {
             Allure::lifecycle()->fire(new TestCaseFinishedEvent());

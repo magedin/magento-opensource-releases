@@ -19,7 +19,6 @@ use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
-use PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use PhpCsFixer\Tokenizer\TokensAnalyzer;
@@ -274,7 +273,11 @@ final class PhpUnitTestCaseStaticMethodCallsFixer extends AbstractFixer implemen
      */
     public function getDefinition()
     {
-        $codeSample = '<?php
+        return new FixerDefinition(
+            'Calls to `PHPUnit\Framework\TestCase` static methods must all be of the same type, either `$this->`, `self::` or `static::`.',
+            [
+                new CodeSample(
+                    '<?php
 final class MyTest extends \PHPUnit_Framework_TestCase
 {
     public function testMe()
@@ -284,27 +287,12 @@ final class MyTest extends \PHPUnit_Framework_TestCase
         static::assertSame(1, 2);
     }
 }
-';
-
-        return new FixerDefinition(
-            'Calls to `PHPUnit\Framework\TestCase` static methods must all be of the same type, either `$this->`, `self::` or `static::`.',
-            [
-                new CodeSample($codeSample),
-                new CodeSample($codeSample, ['call_type' => self::CALL_TYPE_THIS]),
+'
+                ),
             ],
             null,
             'Risky when PHPUnit methods are overridden or not accessible, or when project has PHPUnit incompatibilities.'
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Must run before FinalStaticAccessFixer, SelfStaticAccessorFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
     }
 
     /**
@@ -381,8 +369,9 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function fixPhpUnitClass(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -436,7 +425,7 @@ final class MyTest extends \PHPUnit_Framework_TestCase
 
             $operatorIndex = $tokens->getPrevMeaningfulToken($index);
             $referenceIndex = $tokens->getPrevMeaningfulToken($operatorIndex);
-            if (!$this->needsConversion($tokens, $index, $referenceIndex, $callType)) {
+            if (!$this->needsConversion($tokens, $operatorIndex, $referenceIndex, $callType)) {
                 continue;
             }
 
@@ -446,22 +435,33 @@ final class MyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param int    $index
+     * @param Tokens $tokens
+     * @param int    $operatorIndex
      * @param int    $referenceIndex
      * @param string $callType
      *
      * @return bool
      */
-    private function needsConversion(Tokens $tokens, $index, $referenceIndex, $callType)
+    private function needsConversion(Tokens $tokens, $operatorIndex, $referenceIndex, $callType)
     {
-        $functionsAnalyzer = new FunctionsAnalyzer();
+        if ($tokens[$operatorIndex]->equals([T_DOUBLE_COLON, '::']) && $tokens[$referenceIndex]->equals([T_STATIC, 'static'])) {
+            return self::CALL_TYPE_STATIC !== $callType;
+        }
 
-        return $functionsAnalyzer->isTheSameClassCall($tokens, $index)
-            && !$tokens[$referenceIndex]->equals($this->conversionMap[$callType][1], false);
+        if ($tokens[$operatorIndex]->equals([T_OBJECT_OPERATOR, '->']) && $tokens[$referenceIndex]->equals([T_VARIABLE, '$this'])) {
+            return self::CALL_TYPE_THIS !== $callType;
+        }
+
+        if ($tokens[$operatorIndex]->equals([T_DOUBLE_COLON, '::']) && $tokens[$referenceIndex]->equals([T_STRING, 'self'])) {
+            return self::CALL_TYPE_SELF !== $callType;
+        }
+
+        return false;
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */

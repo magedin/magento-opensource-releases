@@ -15,7 +15,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected $block = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -45,6 +45,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $themeId = $themeToTest->load('Magento/blank', 'code')
             ->getId();
         $this->block->setTheme($themeId);
-        $this->assertStringContainsString('<option value="before.body.end" >', $this->block->toHtml());
+        $this->assertContains('<option value="before.body.end" >', $this->block->toHtml());
     }
 }

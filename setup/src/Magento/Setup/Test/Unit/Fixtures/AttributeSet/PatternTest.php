@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures\AttributeSet;
-
-use Magento\Setup\Fixtures\AttributeSet\Pattern;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD)
  */
-class PatternTest extends TestCase
+class PatternTest extends \PHPUnit\Framework\TestCase
 {
     public function testGenerateAttributeSet()
     {
@@ -49,7 +45,7 @@ class PatternTest extends TestCase
                 ]
             ]
         ];
-        $pattern = new Pattern();
+        $pattern = new \Magento\Setup\Fixtures\AttributeSet\Pattern();
         $this->assertEquals(
             $attributeSets,
             $pattern->generateAttributeSet(

@@ -3,64 +3,57 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Invoice\Validation;
 
-use Magento\Payment\Model\InfoInterface;
-use Magento\Payment\Model\MethodInterface;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\OrderPaymentRepositoryInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Invoice\Validation\CanRefund;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CanRefundTest extends TestCase
+/**
+ * Class CanRefundTest
+ */
+class CanRefundTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     private $invoiceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderPaymentRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $orderRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMock;
 
     /**
-     * @var CanRefund
+     * @var \Magento\Sales\Model\Order\Invoice\Validation\CanRefund
      */
     private $validator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->invoiceMock = $this->getMockBuilder(Invoice::class)
+        $this->invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->orderPaymentRepositoryMock = $this->getMockBuilder(
-            OrderPaymentRepositoryInterface::class
+            \Magento\Sales\Api\OrderPaymentRepositoryInterface::class
         )
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->orderRepositoryMock = $this->getMockBuilder(OrderRepositoryInterface::class)
+        $this->orderRepositoryMock = $this->getMockBuilder(\Magento\Sales\Api\OrderRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->paymentMock = $this->getMockBuilder(InfoInterface::class)
+        $this->paymentMock = $this->getMockBuilder(\Magento\Payment\Model\InfoInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->validator = new CanRefund(
+        $this->validator = new \Magento\Sales\Model\Order\Invoice\Validation\CanRefund(
             $this->orderPaymentRepositoryMock,
             $this->orderRepositoryMock
         );
@@ -71,8 +64,8 @@ class CanRefundTest extends TestCase
         $this->invoiceMock->expects($this->exactly(2))
             ->method('getState')
             ->willReturnOnConsecutiveCalls(
-                Invoice::STATE_OPEN,
-                Invoice::STATE_CANCELED
+                \Magento\Sales\Model\Order\Invoice::STATE_OPEN,
+                \Magento\Sales\Model\Order\Invoice::STATE_CANCELED
             );
         $this->assertEquals(
             [__('We can\'t create creditmemo for the invoice.')],
@@ -88,7 +81,7 @@ class CanRefundTest extends TestCase
     {
         $this->invoiceMock->expects($this->once())
             ->method('getState')
-            ->willReturn(Invoice::STATE_PAID);
+            ->willReturn(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
         $this->invoiceMock->expects($this->once())
             ->method('getBaseGrandTotal')
             ->willReturn(1);
@@ -105,7 +98,7 @@ class CanRefundTest extends TestCase
     {
         $this->invoiceMock->expects($this->once())
             ->method('getState')
-            ->willReturn(Invoice::STATE_PAID);
+            ->willReturn(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
         $orderMock = $this->getMockBuilder(OrderInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -115,7 +108,7 @@ class CanRefundTest extends TestCase
         $orderMock->expects($this->once())
             ->method('getPayment')
             ->willReturn($this->paymentMock);
-        $methodInstanceMock = $this->getMockBuilder(MethodInterface::class)
+        $methodInstanceMock = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->paymentMock->expects($this->once())

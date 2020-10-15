@@ -51,17 +51,6 @@ final class Sample
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * Must run before BracesFixer, IndentationTypeFixer.
-     * Must run after OrderedClassElementsFixer.
-     */
-    public function getPriority()
-    {
-        return parent::getPriority();
-    }
-
-    /**
      * Returns names of fixers to use instead, if any.
      *
      * @return string[]

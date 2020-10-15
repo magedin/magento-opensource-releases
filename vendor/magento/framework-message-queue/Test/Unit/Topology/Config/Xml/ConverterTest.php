@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Topology\Config\Xml;
 
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\MessageQueue\DefaultValueProvider;
 use Magento\Framework\MessageQueue\Topology\Config\Xml\Converter;
 use Magento\Framework\Stdlib\BooleanUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Data\Argument\InterpreterInterface;
 
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Converter
@@ -22,23 +17,23 @@ class ConverterTest extends TestCase
     private $converter;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $interpreter;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $defaultConfigProviderMock;
 
     /**
      * Initialize parameters
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->defaultConfigProviderMock =
-            $this->createMock(DefaultValueProvider::class);
-        $this->interpreter = $this->getMockForAbstractClass(InterpreterInterface::class);
+            $this->createMock(\Magento\Framework\MessageQueue\DefaultValueProvider::class);
+        $this->interpreter = $this->createMock(InterpreterInterface::class);
         $this->converter = new Converter(new BooleanUtils(), $this->interpreter, $this->defaultConfigProviderMock);
         $this->defaultConfigProviderMock->expects($this->any())->method('getConnection')->willReturn('amqp');
     }
@@ -53,7 +48,7 @@ class ConverterTest extends TestCase
         $this->interpreter->expects($this->any())->method('evaluate')->willReturn(10);
         $result = $this->converter->convert($dom);
 
-        $expectedData = include $fixtureDir . '/valid.php';
+        $expectedData = include($fixtureDir . '/valid.php');
         foreach ($expectedData as $key => $value) {
             $this->assertEquals($value, $result[$key], 'Invalid data for ' . $key);
         }

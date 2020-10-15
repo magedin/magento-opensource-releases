@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Bundle\Ui\DataProvider\Product\Form\Modifier\BundlePrice;
@@ -68,9 +66,8 @@ class BundlePriceTest extends AbstractModifierTest
         ];
         $priceParams = [
             'imports' => [
-                'disabled' => 'ns = ${ $.ns }, index = ' . BundlePrice::CODE_PRICE_TYPE . ':checked',
-                '__disableTmpl' => ['disabled' => false],
-            ]
+                    'disabled' => 'ns = ${ $.ns }, index = ' . BundlePrice::CODE_PRICE_TYPE . ':checked'
+                ]
         ];
         $priceMeta = [
             'product-details' => [
@@ -90,7 +87,7 @@ class BundlePriceTest extends AbstractModifierTest
             ]
         ];
 
-        $this->arrayManagerMock->expects($this->any())
+        $this->arrayManagerMock->expects(static::any())
             ->method('findPath')
             ->willReturnMap(
                 [

@@ -32,9 +32,9 @@ class InvalidFixerConfigurationException extends InvalidConfigurationException
     /**
      * @param string          $fixerName
      * @param string          $message
-     * @param null|\Throwable $previous
+     * @param null|\Exception $previous
      */
-    public function __construct($fixerName, $message, $previous = null)
+    public function __construct($fixerName, $message, \Exception $previous = null)
     {
         parent::__construct(
             sprintf('[%s] %s', $fixerName, $message),

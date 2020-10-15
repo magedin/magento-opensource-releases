@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Model\ResourceModel\Product\Link;
 
-use Magento\Catalog\Model\Product\Link;
+use Magento\GroupedProduct\Model\ResourceModel\Product\Link\RelationPersister;
 use Magento\Catalog\Model\ProductLink\LinkFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Link as LinkResourceModel;
+use Magento\Catalog\Model\Product\Link;
 use Magento\Catalog\Model\ResourceModel\Product\Relation;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GroupedProduct\Model\ResourceModel\Product\Link\RelationPersister;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Product\Link as LinkResourceModel;
 
-class RelationPersisterTest extends TestCase
+class RelationPersisterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RelationPersister|MockObject */
+    /** @var RelationPersister|PHPUnit_Framework_MockObject_MockObject */
     private $object;
 
     /** @var Link */
@@ -33,19 +29,19 @@ class RelationPersisterTest extends TestCase
     private $objectManager;
 
     /**
-     * @var LinkFactory|MockObject
+     * @var LinkFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $linkFactory;
 
     /**
-     * @var LinkResourceModel|MockObject
+     * @var LinkResourceModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subject;
 
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 

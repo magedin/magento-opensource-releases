@@ -3,124 +3,109 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sitemap\Test\Unit\Controller\Adminhtml\Sitemap;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\RequestInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Filesystem;
-use Magento\Framework\HTTP\PhpEnvironment\Request;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Validator\StringLength;
-use Magento\MediaStorage\Model\File\Validator\AvailablePath;
 use Magento\Sitemap\Controller\Adminhtml\Sitemap\Save;
-use Magento\Sitemap\Helper\Data;
-use Magento\Sitemap\Model\SitemapFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Save
+     * @var \Magento\Sitemap\Controller\Adminhtml\Sitemap\Save
      */
     private $saveController;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     private $contextMock;
 
     /**
-     * @var Request|MockObject
+     * @var \Magento\Framework\HTTP\PhpEnvironment\Request|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var Redirect|MockObject
+     * @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManagerMock;
 
     /**
-     * @var StringLength|MockObject
+     * @var \Magento\Framework\Validator\StringLength|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lengthValidator;
 
     /**
-     * @var AvailablePath|MockObject
+     * @var \Magento\MediaStorage\Model\File\Validator\AvailablePath|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pathValidator;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Sitemap\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helper;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileSystem;
 
     /**
-     * @var SitemapFactory|MockObject
+     * @var \Magento\Sitemap\Model\SitemapFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $siteMapFactory;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $session;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPostValue'])
             ->getMockForAbstractClass();
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMock();
-        $this->helper = $this->getMockBuilder(Data::class)
+        $this->helper = $this->getMockBuilder(\Magento\Sitemap\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resultFactoryMock->expects($this->once())
             ->method('create')
             ->with(ResultFactory::TYPE_REDIRECT)
             ->willReturn($this->resultRedirectMock);
-        $this->session = $this->getMockBuilder(Session::class)
+        $this->session = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['setFormData'])
             ->getMock();
@@ -138,15 +123,15 @@ class SaveTest extends TestCase
             ->method('getSession')
             ->willReturn($this->session);
 
-        $this->lengthValidator = $this->getMockBuilder(StringLength::class)
+        $this->lengthValidator = $this->getMockBuilder(\Magento\Framework\Validator\StringLength::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->pathValidator =
-            $this->getMockBuilder(AvailablePath::class)
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->fileSystem = $this->createMock(Filesystem::class);
-        $this->siteMapFactory = $this->createMock(SitemapFactory::class);
+            $this->getMockBuilder(\Magento\MediaStorage\Model\File\Validator\AvailablePath::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->fileSystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->siteMapFactory = $this->createMock(\Magento\Sitemap\Model\SitemapFactory::class);
 
         $this->saveController = new Save(
             $this->contextMock,

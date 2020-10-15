@@ -3,57 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Widget\Grid;
 
-use Magento\Backend\Model\Widget\Grid\Parser;
-use Magento\Backend\Model\Widget\Grid\Totals;
-use Magento\Framework\Data\Collection;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\DataObject\Factory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TotalsTest extends TestCase
+class TotalsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Totals $_model
+     * @var $_model \Magento\Backend\Model\Widget\Grid\Totals
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_parserMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_factoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         // prepare model
         $this->_parserMock = $this->createPartialMock(
-            Parser::class,
+            \Magento\Backend\Model\Widget\Grid\Parser::class,
             ['parseExpression']
         );
 
-        $this->_factoryMock = $this->createPartialMock(Factory::class, ['create']);
+        $this->_factoryMock = $this->createPartialMock(\Magento\Framework\DataObject\Factory::class, ['create']);
 
         $createValueMap = [
-            [['test1' => 3, 'test2' => 2], new DataObject(['test1' => 3, 'test2' => 2])],
-            [['test4' => 9, 'test5' => 2], new DataObject(['test4' => 9, 'test5' => 2])],
+            [['test1' => 3, 'test2' => 2], new \Magento\Framework\DataObject(['test1' => 3, 'test2' => 2])],
+            [['test4' => 9, 'test5' => 2], new \Magento\Framework\DataObject(['test4' => 9, 'test5' => 2])],
         ];
-        $this->_factoryMock->expects($this->any())->method('create')->willReturnMap($createValueMap);
+        $this->_factoryMock->expects($this->any())->method('create')->will($this->returnValueMap($createValueMap));
 
         $arguments = ['factory' => $this->_factoryMock, 'parser' => $this->_parserMock];
 
-        $objectManagerHelper = new ObjectManager($this);
-        $this->_model = $objectManagerHelper->getObject(Totals::class, $arguments);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_model = $objectManagerHelper->getObject(\Magento\Backend\Model\Widget\Grid\Totals::class, $arguments);
 
         // setup columns
         $columns = ['test1' => 'sum', 'test2' => 'avg'];
@@ -62,7 +50,7 @@ class TotalsTest extends TestCase
         }
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_parserMock);
         unset($this->_factoryMock);
@@ -71,19 +59,19 @@ class TotalsTest extends TestCase
     public function testCountTotals()
     {
         // prepare collection
-        $collection = new Collection(
-            $this->createMock(EntityFactory::class)
+        $collection = new \Magento\Framework\Data\Collection(
+            $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class)
         );
         $items = [
-            new DataObject(['test1' => '1', 'test2' => '2']),
-            new DataObject(['test1' => '1', 'test2' => '2']),
-            new DataObject(['test1' => '1', 'test2' => '2']),
+            new \Magento\Framework\DataObject(['test1' => '1', 'test2' => '2']),
+            new \Magento\Framework\DataObject(['test1' => '1', 'test2' => '2']),
+            new \Magento\Framework\DataObject(['test1' => '1', 'test2' => '2']),
         ];
         foreach ($items as $item) {
             $collection->addItem($item);
         }
 
-        $expected = new DataObject(['test1' => 3, 'test2' => 2]);
+        $expected = new \Magento\Framework\DataObject(['test1' => 3, 'test2' => 2]);
         $this->assertEquals($expected, $this->_model->countTotals($collection));
     }
 
@@ -94,37 +82,37 @@ class TotalsTest extends TestCase
         $this->_model->setColumn('test5', 'avg');
 
         // prepare collection
-        $collection = new Collection(
-            $this->createMock(EntityFactory::class)
+        $collection = new \Magento\Framework\Data\Collection(
+            $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class)
         );
         $items = [
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
-                    'children' => new DataObject(['test4' => '1', 'test5' => '2']),
+                    'children' => new \Magento\Framework\DataObject(['test4' => '1', 'test5' => '2']),
                 ]
             ),
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
-                    'children' => new DataObject(['test4' => '1', 'test5' => '2']),
+                    'children' => new \Magento\Framework\DataObject(['test4' => '1', 'test5' => '2']),
                 ]
             ),
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
-                    'children' => new DataObject(['test4' => '1', 'test5' => '2']),
+                    'children' => new \Magento\Framework\DataObject(['test4' => '1', 'test5' => '2']),
                 ]
             ),
         ];
         foreach ($items as $item) {
             // prepare sub-collection
-            $subCollection = new Collection(
-                $this->createMock(EntityFactory::class)
+            $subCollection = new \Magento\Framework\Data\Collection(
+                $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class)
             );
-            $subCollection->addItem(new DataObject(['test4' => '1', 'test5' => '2']));
-            $subCollection->addItem(new DataObject(['test4' => '2', 'test5' => '2']));
+            $subCollection->addItem(new \Magento\Framework\DataObject(['test4' => '1', 'test5' => '2']));
+            $subCollection->addItem(new \Magento\Framework\DataObject(['test4' => '2', 'test5' => '2']));
             $item->setChildren($subCollection);
             $collection->addItem($item);
         }
-        $expected = new DataObject(['test4' => 9, 'test5' => 2]);
+        $expected = new \Magento\Framework\DataObject(['test4' => 9, 'test5' => 2]);
         $this->assertEquals($expected, $this->_model->countTotals($collection));
     }
 }

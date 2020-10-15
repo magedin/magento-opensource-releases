@@ -3,40 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit;
 
-use Magento\Backend\Block\Widget\Form\Renderer\Element;
-use Magento\Backend\Block\Widget\Form\Renderer\Fieldset;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\Button;
-use Magento\Framework\Data\Form\Element\Collection;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Form;
 
 /**
  * Tests for \Magento\Framework\Data\FormFactory
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_factoryElementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_factoryCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_formKeyMock;
 
@@ -45,22 +33,22 @@ class FormTest extends TestCase
      */
     protected $_form;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_factoryElementMock = $this->createMock(Factory::class);
+        $this->_factoryElementMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
 
         $this->_factoryCollectionMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
+            $this->createPartialMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class, ['create']);
 
-        $objectManager = new ObjectManager($this);
-        $collectionModel = $objectManager->getObject(Collection::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $collectionModel = $objectManager->getObject(\Magento\Framework\Data\Form\Element\Collection::class);
 
         $this->_factoryCollectionMock
             ->expects($this->any())
             ->method('create')
-            ->willReturn($collectionModel);
+            ->will($this->returnValue($collectionModel));
 
-        $this->_formKeyMock = $this->createPartialMock(FormKey::class, ['getFormKey']);
+        $this->_formKeyMock = $this->createPartialMock(\Magento\Framework\Data\Form\FormKey::class, ['getFormKey']);
 
         $this->_form = new Form($this->_factoryElementMock, $this->_factoryCollectionMock, $this->_formKeyMock);
     }
@@ -68,16 +56,16 @@ class FormTest extends TestCase
     public function testFormKeyUsing()
     {
         $formKey = 'form-key';
-        $this->_formKeyMock->expects($this->once())->method('getFormKey')->willReturn($formKey);
+        $this->_formKeyMock->expects($this->once())->method('getFormKey')->will($this->returnValue($formKey));
 
         $this->_form->setUseContainer(true);
         $this->_form->setMethod('post');
-        $this->assertStringContainsString($formKey, $this->_form->toHtml());
+        $this->assertContains($formKey, $this->_form->toHtml());
     }
 
     public function testSettersGetters()
     {
-        $setElementRenderer = $this->getMockBuilder(Element::class)
+        $setElementRenderer = $this->getMockBuilder(\Magento\Backend\Block\Widget\Form\Renderer\Element::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -88,7 +76,7 @@ class FormTest extends TestCase
         // restore our Form to its earlier state
         $this->_form->setElementRenderer(null);
 
-        $setFieldsetRenderer = $this->getMockBuilder(Fieldset::class)
+        $setFieldsetRenderer = $this->getMockBuilder(\Magento\Backend\Block\Widget\Form\Renderer\Fieldset::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -96,7 +84,7 @@ class FormTest extends TestCase
         $getFieldsetRenderer = $this->_form->getFieldsetRenderer();
         $this->assertSame($setFieldsetRenderer, $getFieldsetRenderer);
 
-        $setFieldsetElementRenderer = $this->getMockBuilder(Fieldset::class)
+        $setFieldsetElementRenderer = $this->getMockBuilder(\Magento\Backend\Block\Widget\Form\Renderer\Fieldset::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -114,14 +102,16 @@ class FormTest extends TestCase
         $this->assertSame($result, 'abc[123]');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage An element with a "1" ID already exists.
+     */
     public function testElementExistsException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('An element with a "1" ID already exists.');
-        $buttonElement = $this->getMockBuilder(Button::class)
+        $buttonElement = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Button::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $buttonElement->expects($this->any())->method('getId')->willReturn('1');
+        $buttonElement->expects($this->any())->method('getId')->will($this->returnValue('1'));
 
         $this->_form->addElement($buttonElement);
         $this->_form->addElementToCollection($buttonElement);
@@ -131,11 +121,11 @@ class FormTest extends TestCase
 
     public function testElementOperations()
     {
-        $buttonElement = $this->getMockBuilder(Button::class)
+        $buttonElement = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Button::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $buttonElement->expects($this->any())->method('getId')->willReturn('1');
-        $buttonElement->expects($this->any())->method('getName')->willReturn('Hero');
+        $buttonElement->expects($this->any())->method('getId')->will($this->returnValue('1'));
+        $buttonElement->expects($this->any())->method('getName')->will($this->returnValue('Hero'));
 
         $this->_form->addElement($buttonElement);
         $this->_form->addElementToCollection($buttonElement);

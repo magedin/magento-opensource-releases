@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor;
 
 use Magento\Eav\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\AttributeGroupCodeFilter;
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Data\Collection\AbstractDb;
-use PHPUnit\Framework\TestCase;
 
-class AttributeGroupCodeFilterTest extends TestCase
+class AttributeGroupCodeFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeGroupCodeFilter
      */
     private $filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->filter = new AttributeGroupCodeFilter();
     }

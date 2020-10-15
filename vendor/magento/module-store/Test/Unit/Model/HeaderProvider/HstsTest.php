@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Store\Test\Unit\Model\HeaderProvider;
 
-use Magento\Framework\App\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\HeaderProvider\Hsts;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Store\Model\HeaderProvider\Hsts;
+use \Magento\Store\Model\Store;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use \Magento\Framework\App\Config\ScopeConfigInterface;
 
-class HstsTest extends TestCase
+class HstsTest extends \PHPUnit\Framework\TestCase
 {
     /** Strict-Transport-Security (HSTS) Header name */
     const HEADER_NAME = 'Strict-Transport-Security';
@@ -31,18 +27,18 @@ class HstsTest extends TestCase
     protected $object;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(Config::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
         $objectManager = new ObjectManagerHelper($this);
         $this->object = $objectManager->getObject(
-            Hsts::class,
+            \Magento\Store\Model\HeaderProvider\Hsts::class,
             ['scopeConfig' => $this->scopeConfigMock]
         );
     }
@@ -64,8 +60,8 @@ class HstsTest extends TestCase
      */
     public function testCanApply($configValuesMap, $expected)
     {
-        $this->scopeConfigMock->expects($this->any())->method('isSetFlag')->willReturnMap(
-            $configValuesMap
+        $this->scopeConfigMock->expects($this->any())->method('isSetFlag')->will(
+            $this->returnValueMap($configValuesMap)
         );
         $this->assertEquals($expected, $this->object->canApply(), 'Incorrect canApply result');
     }

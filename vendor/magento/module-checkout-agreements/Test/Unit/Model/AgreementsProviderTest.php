@@ -3,57 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CheckoutAgreements\Test\Unit\Model;
 
 use Magento\CheckoutAgreements\Model\AgreementModeOptions;
 use Magento\CheckoutAgreements\Model\AgreementsProvider;
-use Magento\CheckoutAgreements\Model\ResourceModel\Agreement\Collection;
-use Magento\CheckoutAgreements\Model\ResourceModel\Agreement\CollectionFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AgreementsProviderTest extends TestCase
+class AgreementsProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AgreementsProvider
+     * @var \Magento\CheckoutAgreements\Model\AgreementsProvider
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $agreementCollFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->agreementCollFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\CheckoutAgreements\Model\ResourceModel\Agreement\CollectionFactory::class,
             ['create']
         );
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
         $this->model = $objectManager->getObject(
-            AgreementsProvider::class,
+            \Magento\CheckoutAgreements\Model\AgreementsProvider::class,
             [
                 'agreementCollectionFactory' => $this->agreementCollFactoryMock,
                 'storeManager' => $this->storeManagerMock,
@@ -72,11 +62,11 @@ class AgreementsProviderTest extends TestCase
             ->willReturn(true);
 
         $agreementCollection = $this->createMock(
-            Collection::class
+            \Magento\CheckoutAgreements\Model\ResourceModel\Agreement\Collection::class
         );
         $this->agreementCollFactoryMock->expects($this->once())->method('create')->willReturn($agreementCollection);
 
-        $storeMock = $this->createMock(Store::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $storeMock->expects($this->once())->method('getId')->willReturn($storeId);
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
 

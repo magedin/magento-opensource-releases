@@ -120,8 +120,7 @@ class Customer extends ContactData
         \Dotdigitalgroup\Email\Helper\Config $configHelper,
         TimezoneInterfaceFactory $localeDateFactory,
         DateIntervalFactory $dateIntervalFactory,
-        Logger $logger,
-        \Magento\Eav\Model\Config $eavConfig
+        Logger $logger
     ) {
         $this->reviewCollection  = $reviewCollectionFactory;
         $this->orderCollection   = $collectionFactory;
@@ -141,8 +140,7 @@ class Customer extends ContactData
             $configHelper,
             $localeDateFactory,
             $dateIntervalFactory,
-            $logger,
-            $eavConfig
+            $logger
         );
     }
 

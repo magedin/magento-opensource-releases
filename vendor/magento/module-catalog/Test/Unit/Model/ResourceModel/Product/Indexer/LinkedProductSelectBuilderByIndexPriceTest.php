@@ -3,107 +3,75 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer;
 
 use Magento\Catalog\Model\ResourceModel\Product\BaseSelectProcessorInterface;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\LinkedProductSelectBuilderByIndexPrice;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Indexer\Dimension;
-use Magento\Framework\Indexer\DimensionFactory;
-use Magento\Framework\Search\Request\IndexScopeResolverInterface;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LinkedProductSelectBuilderByIndexPriceTest extends TestCase
+class LinkedProductSelectBuilderByIndexPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var BaseSelectProcessorInterface|MockObject
+     * @var BaseSelectProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $baseSelectProcessorMock;
 
     /**
-     * @var IndexScopeResolverInterface|MockObject
-     */
-    private $indexScopeResolverMock;
-
-    /**
-     * @var Dimension|MockObject
-     */
-    private $dimensionMock;
-
-    /**
-     * @var DimensionFactory|MockObject
-     */
-    private $dimensionFactoryMock;
-
-    /**
-     * @var LinkedProductSelectBuilderByIndexPrice
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Indexer\LinkedProductSelectBuilderByIndexPrice
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->baseSelectProcessorMock =
-            $this->getMockBuilder(BaseSelectProcessorInterface::class)
+            $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\BaseSelectProcessorInterface::class)
                 ->disableOriginalConstructor()
                 ->getMockForAbstractClass();
 
         $this->indexScopeResolverMock = $this->createMock(
-            IndexScopeResolverInterface::class
+            \Magento\Framework\Search\Request\IndexScopeResolverInterface::class
         );
-        $this->dimensionMock = $this->createMock(Dimension::class);
-        $this->dimensionFactoryMock = $this->createMock(DimensionFactory::class);
+        $this->dimensionMock = $this->createMock(\Magento\Framework\Indexer\Dimension::class);
+        $this->dimensionFactoryMock = $this->createMock(\Magento\Framework\Indexer\DimensionFactory::class);
         $this->dimensionFactoryMock->method('create')->willReturn($this->dimensionMock);
-        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock = $this->createMock(\Magento\Store\Api\Data\StoreInterface::class);
         $storeMock->method('getId')->willReturn(1);
         $storeMock->method('getWebsiteId')->willReturn(1);
         $this->storeManagerMock->method('getStore')->willReturn($storeMock);
 
-        $this->model = new LinkedProductSelectBuilderByIndexPrice(
+        $this->model = new \Magento\Catalog\Model\ResourceModel\Product\Indexer\LinkedProductSelectBuilderByIndexPrice(
             $this->storeManagerMock,
             $this->resourceMock,
             $this->customerSessionMock,
@@ -117,16 +85,15 @@ class LinkedProductSelectBuilderByIndexPriceTest extends TestCase
     public function testBuild()
     {
         $productId = 10;
-        $storeId = 1;
-        $metadata = $this->getMockBuilder(EntityMetadataInterface::class)
+        $metadata = $this->getMockBuilder(\Magento\Framework\EntityManager\EntityMetadataInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $connection = $this->getMockBuilder(AdapterInterface::class)
+        $connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->getMockForAbstractClass();
-        $select = $this->getMockBuilder(Select::class)
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->getMockForAbstractClass();
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
         $this->customerSessionMock->expects($this->once())->method('getCustomerGroupId')->willReturn(1);
@@ -141,6 +108,6 @@ class LinkedProductSelectBuilderByIndexPriceTest extends TestCase
         $metadata->expects($this->once())->method('getLinkField')->willReturn('row_id');
         $this->resourceMock->expects($this->any())->method('getTableName');
         $this->baseSelectProcessorMock->expects($this->once())->method('process')->willReturnSelf();
-        $this->model->build($productId, $storeId);
+        $this->model->build($productId);
     }
 }

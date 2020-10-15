@@ -3,64 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Address;
 
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\DataObject\Copy;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\ToOrder;
-use Magento\Quote\Model\Quote\Address\ToOrderAddress;
-use Magento\Sales\Api\Data\OrderAddressInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\AddressRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Address convert to order
  */
-class ToOrderAddressTest extends TestCase
+class ToOrderAddressTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Copy|MockObject
+     * @var \Magento\Framework\DataObject\Copy | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectCopyMock;
 
     /**
-     * @var AddressRepository|MockObject
+     * @var \Magento\Sales\Model\Order\AddressRepository | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderAddressRepositoryMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderInterfaceMock;
 
     /**
-     * @var ToOrder
+     * @var \Magento\Quote\Model\Quote\Address\ToOrder
      */
     protected $converter;
 
     /**
-     * @var DataObjectHelper
+     * @var \Magento\Framework\Api\DataObjectHelper
      */
     protected $dataObjectHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->orderAddressRepositoryMock = $this->createPartialMock(
-            AddressRepository::class,
+            \Magento\Sales\Model\Order\AddressRepository::class,
             ['create']
         );
-        $this->objectCopyMock = $this->createMock(Copy::class);
-        $this->orderInterfaceMock = $this->getMockForAbstractClass(OrderAddressInterface::class);
-        $this->dataObjectHelper = $this->createMock(DataObjectHelper::class);
+        $this->objectCopyMock = $this->createMock(\Magento\Framework\DataObject\Copy::class);
+        $this->orderInterfaceMock = $this->createMock(\Magento\Sales\Api\Data\OrderAddressInterface::class);
+        $this->dataObjectHelper = $this->createMock(\Magento\Framework\Api\DataObjectHelper::class);
         $objectManager = new ObjectManager($this);
         $this->converter = $objectManager->getObject(
-            ToOrderAddress::class,
+            \Magento\Quote\Model\Quote\Address\ToOrderAddress::class,
             [
                 'orderAddressRepository' => $this->orderAddressRepositoryMock,
                 'objectCopyService' => $this->objectCopyMock,
@@ -74,16 +62,16 @@ class ToOrderAddressTest extends TestCase
         $orderData = ['test' => 'test1'];
         $data = ['test' => 'beer'];
         /**
-         * @var Address $object
+         * @var \Magento\Quote\Model\Quote\Address $object
          */
-        $object = $this->createMock(Address::class);
+        $object = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
         $this->objectCopyMock->expects($this->once())->method('getDataFromFieldset')->with(
             'sales_convert_quote_address',
             'to_order_address',
             $object
         )->willReturn($orderData);
         $this->dataObjectHelper->expects($this->once())->method('populateWithArray')
-            ->with($this->orderInterfaceMock, ['test' => 'beer'], OrderAddressInterface::class)
+            ->with($this->orderInterfaceMock, ['test' => 'beer'], \Magento\Sales\Api\Data\OrderAddressInterface::class)
             ->willReturnSelf();
         $this->orderAddressRepositoryMock->expects($this->once())
             ->method('create')

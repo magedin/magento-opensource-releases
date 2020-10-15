@@ -79,14 +79,14 @@ class Summary extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * Append review summary fields to product collection
      *
      * @param \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection
-     * @param int $storeId
+     * @param string $storeId
      * @param string $entityCode
      * @return Summary
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function appendSummaryFieldsToCollection(
         \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection,
-        int $storeId,
+        string $storeId,
         string $entityCode
     ) {
         if (!$productCollection->isLoaded()) {

@@ -39,12 +39,10 @@ final class PhpdocSingleLineVarSpacingFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before PhpdocAlignFixer.
-     * Must run after CommentToPhpdocFixer, PhpdocIndentFixer, PhpdocNoAliasTagFixer, PhpdocScalarFixer, PhpdocToCommentFixer, PhpdocTypesFixer.
      */
     public function getPriority()
     {
+        // should be run after PhpdocNoAliasTagFixer.
         return -10;
     }
 
@@ -89,7 +87,7 @@ final class PhpdocSingleLineVarSpacingFixer extends AbstractFixer
     private function fixTokenContent($content)
     {
         return Preg::replaceCallback(
-            '#^/\*\*\h*@var\h+(\S+)\h*(\$\S+)?\h*([^\n]*)\*/$#',
+            '#^/\*\*[ \t]*@var[ \t]+(\S+)[ \t]*(\$\S+)?[ \t]*([^\n]*)\*/$#',
             static function (array $matches) {
                 $content = '/** @var';
                 for ($i = 1, $m = \count($matches); $i < $m; ++$i) {

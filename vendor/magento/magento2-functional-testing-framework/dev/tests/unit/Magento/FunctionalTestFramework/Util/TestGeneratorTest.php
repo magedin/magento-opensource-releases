@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace tests\unit\Magento\FunctionalTestFramework\Util;
+namespace Tests\unit\Magento\FunctionalTestFramework\Test\Handlers;
 
 use AspectMock\Test as AspectMock;
 
@@ -12,7 +12,7 @@ use Magento\FunctionalTestingFramework\Filter\FilterList;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestHookObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 
@@ -23,7 +23,7 @@ class TestGeneratorTest extends MagentoTestCase
      *
      * @return void
      */
-    public function tearDown(): void
+    public function tearDown()
     {
         AspectMock::clean();
     }
@@ -70,8 +70,8 @@ class TestGeneratorTest extends MagentoTestCase
         $testGeneratorObject = TestGenerator::getInstance("", ["sampleTest" => $testObject]);
         $output = $testGeneratorObject->assembleTestPhp($testObject);
 
-        $this->assertStringContainsString('This test is skipped', $output);
-        $this->assertStringNotContainsString($actionInput, $output);
+        $this->assertContains('This test is skipped', $output);
+        $this->assertNotContains($actionInput, $output);
     }
 
     /**
@@ -106,9 +106,9 @@ class TestGeneratorTest extends MagentoTestCase
         $testGeneratorObject = TestGenerator::getInstance("", ["sampleTest" => $testObject]);
         $output = $testGeneratorObject->assembleTestPhp($testObject);
 
-        $this->assertStringNotContainsString('This test is skipped', $output);
-        $this->assertStringContainsString($actionInput, $output);
-        $this->assertStringContainsString($beforeActionInput, $output);
+        $this->assertNotContains('This test is skipped', $output);
+        $this->assertContains($actionInput, $output);
+        $this->assertContains($beforeActionInput, $output);
     }
 
     /**

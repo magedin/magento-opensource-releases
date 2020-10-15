@@ -38,7 +38,7 @@
                 <requiredEntity createDataKey="additionalSource"/>
             </createData>
             <!--Assign created source to products.-->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminArea"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminArea"/>
             <amOnPage url="{{AdminProductEditPage.url($$simpleProduct1.id$$)}}" stepKey="openProduct1EditPageToAssignSource"/>
             <actionGroup ref="AssignSourceToProductActionGroup" stepKey="assignTestSourceToCreatedProduct1">
                 <argument name="sourceCode" value="$$additionalSource.source[source_code]$$"/>
@@ -51,10 +51,10 @@
             </actionGroup>
             <fillField selector="{{AdminProductSourcesGrid.rowQty('1')}}" userInput="100" stepKey="setProduct2Quantity"/>
             <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveEditedSimpleProduct2"/>
-
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
-            <magentoCLI command="indexer:reindex" arguments="catalogsearch_fulltext" stepKey="performReindexAfterElasticSearchEnable"/>
-            <magentoCLI command="cache:clean" arguments="full_page" stepKey="cleanCacheAfterElasticSearchEnable"/>
+            <!--Enable ElasticSearch as search engine.-->
+            <magentoCLI command="config:set {{SearchEngineElasticsearchConfigData.path}} {{SearchEngineElasticsearchConfigData.value}}" stepKey="enableElasticSearchAsSearchEngine"/>
+            <magentoCLI command="indexer:reindex" stepKey="performReindexAfterElasticSearchEnable"/>
+            <magentoCLI command="cache:flush" stepKey="cleanCacheAfterElasticSearchEnable"/>
         </before>
         <after>
             <!-- Assign Main Website to Default Stock -->
@@ -79,7 +79,7 @@
 
             <magentoCLI command="indexer:reindex" stepKey="performReindexAfterElasticSearchDisable"/>
             <magentoCLI command="cache:flush" stepKey="cleanCacheAfterElasticSearchDisable"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutOfAdmin1"/>
+            <actionGroup ref="logout" stepKey="logoutOfAdmin1"/>
         </after>
         <!--Quick search created product.-->
         <amOnPage url="{{StorefrontHomePage.url}}" stepKey="navigateToStorefront"/>

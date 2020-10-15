@@ -3,16 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Eav\Model\Config;
-use Magento\Catalog\Model\Product;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/multiselect_attribute.php');
+/**
+ * Create multiselect attribute
+ */
+require __DIR__ . '/multiselect_attribute.php';
 
 /** Create product with options and multiselect attribute */
-$eavConfig = Bootstrap::getObjectManager()->get(Config::class);
-$attribute = $eavConfig->getAttribute(Product::ENTITY, 'multiselect_attribute');
+
 /** @var $installer \Magento\Catalog\Setup\CategorySetup */
 $installer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Catalog\Setup\CategorySetup::class

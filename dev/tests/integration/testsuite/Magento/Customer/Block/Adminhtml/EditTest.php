@@ -9,7 +9,7 @@ use Magento\Customer\Controller\RegistryConstants;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
- * Test for \Magento\Customer\Block\Adminhtml\Edit
+ * Class EditTest
  *
  * @magentoAppArea adminhtml
  * @magentoDataFixture Magento/Customer/_files/customer.php
@@ -40,7 +40,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
@@ -60,7 +60,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute post class cleanup after all tests have executed.
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->coreRegistry->unregister(RegistryConstants::CURRENT_CUSTOMER_ID);
     }
@@ -78,7 +78,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetCreateOrderUrl()
     {
-        $this->assertStringContainsString(
+        $this->assertContains(
             'sales/order_create/start/customer_id/' . self::$customerId,
             $this->block->getCreateOrderUrl()
         );
@@ -106,7 +106,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetValidationUrl()
     {
-        $this->assertStringContainsString('customer/index/validate', $this->block->getValidationUrl());
+        $this->assertContains('customer/index/validate', $this->block->getValidationUrl());
     }
 
     /**
@@ -115,8 +115,8 @@ class EditTest extends \PHPUnit\Framework\TestCase
     public function testGetFormHtml()
     {
         $html = $this->block->getFormHtml();
-        $this->assertStringContainsString('<div class="entry-edit form-inline">', $html);
+        $this->assertContains('<div class="entry-edit form-inline">', $html);
         $this->assertStringMatchesFormat('%a name="customer_id" %s value="' . self::$customerId . '" %a', $html);
-        $this->assertStringContainsString('id="product_composite_configure_form"', $html);
+        $this->assertContains('id="product_composite_configure_form"', $html);
     }
 }

@@ -17,14 +17,14 @@ class ThrowsTest extends \PHPUnit\Framework\TestCase
     protected $throws;
 
     /**
-     * @var \Magento\TestFramework\Integrity\Library\PhpParser\Tokens|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Integrity\Library\PhpParser\Tokens|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $tokens;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->tokens = $this->getMockBuilder(
             \Magento\TestFramework\Integrity\Library\PhpParser\Tokens::class
@@ -48,20 +48,20 @@ class ThrowsTest extends \PHPUnit\Framework\TestCase
             6 => '(',
         ];
 
-        $this->tokens->expects($this->any())->method('getTokenCodeByKey')->willReturnCallback(
-            
+        $this->tokens->expects($this->any())->method('getTokenCodeByKey')->will(
+            $this->returnCallback(
                 function ($k) use ($tokens) {
                     return $tokens[$k][0];
                 }
-            
+            )
         );
 
-        $this->tokens->expects($this->any())->method('getTokenValueByKey')->willReturnCallback(
-            
+        $this->tokens->expects($this->any())->method('getTokenValueByKey')->will(
+            $this->returnCallback(
                 function ($k) use ($tokens) {
                     return $tokens[$k][1];
                 }
-            
+            )
         );
 
         $throws = new Throws($this->tokens);
@@ -73,9 +73,9 @@ class ThrowsTest extends \PHPUnit\Framework\TestCase
             \Magento\TestFramework\Integrity\Library\PhpParser\Uses::class
         )->disableOriginalConstructor()->getMock();
 
-        $uses->expects($this->once())->method('hasUses')->willReturn(true);
+        $uses->expects($this->once())->method('hasUses')->will($this->returnValue(true));
 
-        $uses->expects($this->once())->method('getClassNameWithNamespace')->willReturn('\Exception');
+        $uses->expects($this->once())->method('getClassNameWithNamespace')->will($this->returnValue('\Exception'));
 
         $this->assertEquals(['\Exception'], $throws->getDependencies($uses));
     }

@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sitemap\Controller\Adminhtml\Sitemap;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Filesystem;
 use Magento\Framework\Validator\StringLength;
 use Magento\MediaStorage\Model\File\Validator\AvailablePath;
-use Magento\Sitemap\Controller\Adminhtml\Sitemap;
-use Magento\Sitemap\Helper\Data;
 use Magento\Sitemap\Model\SitemapFactory;
 
 /**
  * Save sitemap controller.
  */
-class Save extends Sitemap implements HttpPostActionInterface
+class Save extends \Magento\Sitemap\Controller\Adminhtml\Sitemap implements HttpPostActionInterface
 {
     /**
      * Maximum length of sitemap filename
@@ -41,12 +34,12 @@ class Save extends Sitemap implements HttpPostActionInterface
     private $pathValidator;
 
     /**
-     * @var Data
+     * @var \Magento\Sitemap\Helper\Data
      */
     private $sitemapHelper;
 
     /**
-     * @var Filesystem
+     * @var \Magento\Framework\Filesystem
      */
     private $filesystem;
 
@@ -60,24 +53,24 @@ class Save extends Sitemap implements HttpPostActionInterface
      * @param Context $context
      * @param StringLength $stringValidator
      * @param AvailablePath $pathValidator
-     * @param Data $sitemapHelper
-     * @param Filesystem $filesystem
+     * @param \Magento\Sitemap\Helper\Data $sitemapHelper
+     * @param \Magento\Framework\Filesystem $filesystem
      * @param SitemapFactory $sitemapFactory
      */
     public function __construct(
         Context $context,
-        StringLength $stringValidator,
-        AvailablePath $pathValidator,
-        Data $sitemapHelper,
-        Filesystem $filesystem,
-        SitemapFactory $sitemapFactory
+        StringLength $stringValidator = null,
+        AvailablePath $pathValidator = null,
+        \Magento\Sitemap\Helper\Data $sitemapHelper = null,
+        \Magento\Framework\Filesystem $filesystem = null,
+        SitemapFactory $sitemapFactory = null
     ) {
         parent::__construct($context);
-        $this->stringValidator = $stringValidator;
-        $this->pathValidator = $pathValidator;
-        $this->sitemapHelper = $sitemapHelper;
-        $this->filesystem = $filesystem;
-        $this->sitemapFactory = $sitemapFactory;
+        $this->stringValidator = $stringValidator ?: $this->_objectManager->get(StringLength::class);
+        $this->pathValidator = $pathValidator ?: $this->_objectManager->get(AvailablePath::class);
+        $this->sitemapHelper = $sitemapHelper ?: $this->_objectManager->get(\Magento\Sitemap\Helper\Data::class);
+        $this->filesystem = $filesystem ?: $this->_objectManager->get(\Magento\Framework\Filesystem::class);
+        $this->sitemapFactory = $sitemapFactory ?: $this->_objectManager->get(SitemapFactory::class);
     }
 
     /**
@@ -122,12 +115,11 @@ class Save extends Sitemap implements HttpPostActionInterface
      * Clear sitemap
      *
      * @param \Magento\Sitemap\Model\Sitemap $model
-     *
      * @return void
      */
     protected function clearSiteMap(\Magento\Sitemap\Model\Sitemap $model)
     {
-        /** @var Filesystem $directory */
+        /** @var \Magento\Framework\Filesystem $directory */
         $directory = $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
 
         if ($this->getRequest()->getParam('sitemap_id')) {
@@ -177,13 +169,12 @@ class Save extends Sitemap implements HttpPostActionInterface
      * Get result after saving data
      *
      * @param string|bool $id
-     * @return ResultInterface
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     protected function getResult($id)
     {
-        /** @var Redirect $resultRedirect */
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(Controller\ResultFactory::TYPE_REDIRECT);
-
         if ($id) {
             // check if 'Save and Continue'
             if ($this->getRequest()->getParam('back')) {
@@ -203,20 +194,19 @@ class Save extends Sitemap implements HttpPostActionInterface
             'adminhtml/*/edit',
             ['sitemap_id' => $this->getRequest()->getParam('sitemap_id')]
         );
-
         return $resultRedirect;
     }
 
     /**
      * Save action
      *
-     * @return Redirect
+     * @return \Magento\Backend\Model\View\Result\Redirect
      */
     public function execute()
     {
         // check if data sent
         $data = $this->getRequest()->getPostValue();
-        /** @var Redirect $resultRedirect */
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(Controller\ResultFactory::TYPE_REDIRECT);
         if ($data) {
             if (!$this->validatePath($data)) {

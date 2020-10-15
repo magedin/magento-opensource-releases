@@ -3,64 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Downloadable\Test\Unit\Pricing\Price;
 
-use Magento\Catalog\Model\Product;
-use Magento\Downloadable\Model\ResourceModel\Link as LinkResourceModel;
-use Magento\Downloadable\Pricing\Price\LinkPrice;
-use Magento\Framework\Pricing\Adjustment\Calculator;
-use Magento\Framework\Pricing\Amount\Base;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LinkPriceTest extends TestCase
+/**
+ * Class LinkPriceTest
+ */
+class LinkPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LinkPrice
+     * @var \Magento\Downloadable\Pricing\Price\LinkPrice
      */
     protected $linkPrice;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\Amount\Base|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $amountMock;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $saleableItemMock;
 
     /**
-     * @var Calculator|MockObject
+     * @var \Magento\Framework\Pricing\Adjustment\Calculator|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $calculatorMock;
 
     /**
-     * @var LinkResourceModel|MockObject
+     * @var \Magento\Downloadable\Model\ResourceModel\Link|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $linkMock;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $priceCurrencyMock;
 
-    protected function setUp(): void
+    /**
+     * Test setUp
+     */
+    protected function setUp()
     {
-        $this->saleableItemMock = $this->createMock(Product::class);
-        $this->amountMock = $this->createMock(Base::class);
-        $this->calculatorMock = $this->createMock(Calculator::class);
-        $this->linkMock = $this->getMockBuilder(\Magento\Downloadable\Model\Link::class)->addMethods(['getProduct'])
-            ->onlyMethods(['getPrice', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->saleableItemMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->amountMock = $this->createMock(\Magento\Framework\Pricing\Amount\Base::class);
+        $this->calculatorMock = $this->createMock(\Magento\Framework\Pricing\Adjustment\Calculator::class);
+        $this->linkMock = $this->createPartialMock(
+            \Magento\Downloadable\Model\Link::class,
+            ['getPrice', 'getProduct', '__wakeup']
+        );
 
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
 
-        $this->linkPrice = new LinkPrice(
+        $this->linkPrice = new \Magento\Downloadable\Pricing\Price\LinkPrice(
             $this->saleableItemMock,
             1,
             $this->calculatorMock,
@@ -75,18 +71,18 @@ class LinkPriceTest extends TestCase
 
         $this->linkMock->expects($this->once())
             ->method('getPrice')
-            ->willReturn($amount);
+            ->will($this->returnValue($amount));
         $this->linkMock->expects($this->once())
             ->method('getProduct')
-            ->willReturn($this->saleableItemMock);
+            ->will($this->returnValue($this->saleableItemMock));
         $this->priceCurrencyMock->expects($this->once())
             ->method('convertAndRound')
             ->with($amount)
-            ->willReturn($convertedAmount);
+            ->will($this->returnValue($convertedAmount));
         $this->calculatorMock->expects($this->once())
             ->method('getAmount')
-            ->with($convertedAmount, $this->saleableItemMock)
-            ->willReturn($convertedAmount);
+            ->with($convertedAmount, $this->equalTo($this->saleableItemMock))
+            ->will($this->returnValue($convertedAmount));
 
         $result = $this->linkPrice->getLinkAmount($this->linkMock);
         $this->assertEquals($convertedAmount, $result);

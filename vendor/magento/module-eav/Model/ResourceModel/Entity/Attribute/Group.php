@@ -65,7 +65,7 @@ class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             'attribute_group_name = :attribute_group_name'
         );
 
-        return !empty($connection->fetchRow($select, $bind));
+        return $connection->fetchRow($select, $bind) > 0;
     }
 
     /**

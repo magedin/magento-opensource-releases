@@ -53,7 +53,7 @@ class UpdateTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->json = $this->_objectManager->get(Json::class);

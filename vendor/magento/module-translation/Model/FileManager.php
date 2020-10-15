@@ -3,14 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Translation\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Asset\Repository;
+use Magento\Translation\Model\Inline\File as TranslationFile;
 
 /**
  * A service for handling Translation config files.
@@ -38,6 +39,11 @@ class FileManager
     private $driverFile;
 
     /**
+     * @var TranslationFile
+     */
+    private $translationFile;
+
+    /**
      * @var Json
      */
     private $serializer;
@@ -46,22 +52,25 @@ class FileManager
      * @param Repository $assetRepo
      * @param DirectoryList $directoryList
      * @param File $driverFile
+     * @param TranslationFile $translationFile
      * @param Json $serializer
      */
     public function __construct(
         Repository $assetRepo,
         DirectoryList $directoryList,
         File $driverFile,
+        TranslationFile $translationFile,
         Json $serializer
     ) {
         $this->assetRepo = $assetRepo;
         $this->directoryList = $directoryList;
         $this->driverFile = $driverFile;
+        $this->translationFile = $translationFile;
         $this->serializer = $serializer;
     }
 
     /**
-     * Create a view asset representing the RequireJS config.config property for inline translation.
+     * Create a view asset representing the requirejs config.config property for inline translation
      *
      * @return \Magento\Framework\View\Asset\File
      */
@@ -90,7 +99,7 @@ class FileManager
     }
 
     /**
-     * Retrieve full path for translation file.
+     * Get translation file full path.
      *
      * @return string
      */
@@ -104,7 +113,7 @@ class FileManager
     }
 
     /**
-     * Retrieve path for translation file.
+     * Get translation file path.
      *
      * @return string
      */
@@ -114,7 +123,7 @@ class FileManager
     }
 
     /**
-     * Update translation file with content.
+     * Update content of translation file.
      *
      * @param array $content
      * @return void
@@ -124,7 +133,6 @@ class FileManager
         $translationDir = $this->directoryList->getPath(DirectoryList::STATIC_VIEW) .
             \DIRECTORY_SEPARATOR .
             $this->assetRepo->getStaticViewFileContext()->getPath();
-
         if (!$this->driverFile->isExists($this->getTranslationFileFullPath())) {
             $this->driverFile->createDirectory($translationDir);
             $originalFileContent = '';

@@ -29,7 +29,7 @@ class DateTimeTest extends \PHPUnit\Framework\TestCase
      */
     private $dateTimeFilter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

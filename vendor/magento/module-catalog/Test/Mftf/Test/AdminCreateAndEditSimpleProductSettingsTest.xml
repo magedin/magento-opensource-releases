@@ -14,13 +14,13 @@
             <stories value="Create/Edit simple product in Admin"/>
             <title value="Admin should be able to set/edit other product information when creating/editing a simple product"/>
             <description value="Admin should be able to set/edit product information when creating/editing a simple product"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-3241"/>
             <group value="Catalog"/>
         </annotations>
         <before>
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!-- Create related products -->
             <createData entity="SimpleProduct2" stepKey="createFirstRelatedProduct"/>
@@ -34,20 +34,20 @@
             <deleteData createDataKey="createThirdRelatedProduct" stepKey="deleteThirdRelatedProduct"/>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create new simple product -->
-        <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createSimpleProduct"/>
+        <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="createSimpleProduct"/>
 
         <!-- Fill all main fields -->
-        <actionGroup ref="FillMainProductFormActionGroup" stepKey="fillAllNecessaryFields"/>
+        <actionGroup ref="fillMainProductForm" stepKey="fillAllNecessaryFields"/>
 
         <!-- Add two related products -->
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addFirstRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addFirstRelatedProduct">
             <argument name="sku" value="$$createFirstRelatedProduct.sku$$"/>
         </actionGroup>
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addSecondRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addSecondRelatedProduct">
             <argument name="sku" value="$$createSecondRelatedProduct.sku$$"/>
         </actionGroup>
 
@@ -60,7 +60,7 @@
         </actionGroup>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveButton"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveButton"/>
 
         <!-- Open product page -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openStorefrontProductPage">
@@ -96,7 +96,7 @@
         </actionGroup>
 
         <!-- Edit related products -->
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addThirdRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addThirdRelatedProduct">
             <argument name="sku" value="$$createThirdRelatedProduct.sku$$"/>
         </actionGroup>
         <click selector="{{AdminProductFormRelatedUpSellCrossSellSection.removeRelatedProduct($$createFirstRelatedProduct.sku$$)}}" stepKey="removeFirstRelatedProduct"/>
@@ -110,7 +110,7 @@
         <actionGroup ref="AdminSwitchProductGiftMessageStatusActionGroup" stepKey="disableGiftMessageSettings"/>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveProduct"/>
 
         <!-- Verify Url Key after changing -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openProductPage">
@@ -129,7 +129,7 @@
         <dontSeeElement selector="{{StorefrontProductCartGiftOptionSection.giftOptions}}" stepKey="dontSeeGiftOptionBtn"/>
 
         <!-- Delete created simple product -->
-        <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+        <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
             <argument name="product" value="_defaultProduct"/>
         </actionGroup>
     </test>

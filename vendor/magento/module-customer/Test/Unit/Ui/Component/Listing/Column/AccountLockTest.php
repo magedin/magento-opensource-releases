@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Customer\Ui\Component\Listing\Column\AccountLock;
-use Magento\Framework\Phrase;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Framework\View\Element\UiComponentFactory;
-use PHPUnit\Framework\TestCase;
 
-class AccountLockTest extends TestCase
+class AccountLockTest extends \PHPUnit\Framework\TestCase
 {
     /** @var AccountLock */
     protected $component;
 
-    /** @var ContextInterface */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextInterface */
     protected $context;
 
-    /** @var UiComponentFactory */
+    /** @var \Magento\Framework\View\Element\UiComponentFactory */
     protected $uiComponentFactory;
 
-    protected function setup(): void
+    public function setup()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->uiComponentFactory = $this->createMock(UiComponentFactory::class);
+        $this->uiComponentFactory = $this->createMock(\Magento\Framework\View\Element\UiComponentFactory::class);
         $this->component = new AccountLock(
             $this->context,
             $this->uiComponentFactory
@@ -42,7 +35,7 @@ class AccountLockTest extends TestCase
 
     /**
      * @param string $lockExpirationDate
-     * @param Phrase $expectedResult
+     * @param \Magento\Framework\Phrase $expectedResult
      * @dataProvider testPrepareDataSourceDataProvider
      */
     public function testPrepareDataSource($lockExpirationDate, $expectedResult)
@@ -68,7 +61,7 @@ class AccountLockTest extends TestCase
                     'data' => [
                         'items' => [
                             [
-                                'lock_expires' => new Phrase('Unlocked')
+                                'lock_expires' => new \Magento\Framework\Phrase('Unlocked')
                             ],
                         ]
                     ]
@@ -84,7 +77,7 @@ class AccountLockTest extends TestCase
                     'data' => [
                         'items' => [
                             [
-                                'lock_expires' => new Phrase('Unlocked')
+                                'lock_expires' => new \Magento\Framework\Phrase('Unlocked')
                             ],
                         ]
                     ]
@@ -104,7 +97,7 @@ class AccountLockTest extends TestCase
                     'data' => [
                         'items' => [
                             [
-                                'lock_expires' => new Phrase('Unlocked')
+                                'lock_expires' => new \Magento\Framework\Phrase('Unlocked')
                             ],
                         ]
                     ]
@@ -124,7 +117,7 @@ class AccountLockTest extends TestCase
                     'data' => [
                         'items' => [
                             [
-                                'lock_expires' => new Phrase('Locked')
+                                'lock_expires' => new \Magento\Framework\Phrase('Locked')
                             ],
                         ]
                     ]

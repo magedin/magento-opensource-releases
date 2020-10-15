@@ -27,10 +27,8 @@
             <createData entity="DisableFlatRateShippingMethodConfig" stepKey="disableFlatRate"/>
             <createData entity="FreeShippinMethodConfig" stepKey="enableFreeShippingMethod"/>
             <createData entity="setFreeShippingSubtotal" stepKey="setFreeShippingSubtotal"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
@@ -39,17 +37,15 @@
             <createData entity="FlatRateShippingMethodConfig" stepKey="enableFlatRate"/>
             <createData entity="FreeShippinMethodDefault" stepKey="disableFreeShippingMethod"/>
             <createData entity="setFreeShippingSubtotalToDefault" stepKey="setFreeShippingSubtotalToDefault"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <actionGroup ref="logout" stepKey="logout"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache2"/>
         </after>
         <!--Create new order with existing customer-->
-        <actionGroup ref="NavigateToNewOrderPageExistingCustomerActionGroup" stepKey="goToCreateOrderPage">
+        <actionGroup ref="navigateToNewOrderPageExistingCustomer" stepKey="goToCreateOrderPage">
             <argument name="customer" value="$$createCustomer$$"/>
         </actionGroup>
         <!--Add product to order-->
-        <actionGroup ref="AddSimpleProductToOrderActionGroup" stepKey="addProductToOrder">
+        <actionGroup ref="addSimpleProductToOrder" stepKey="addProductToOrder">
             <argument name="product" value="$$createProduct$$"/>
         </actionGroup>
 

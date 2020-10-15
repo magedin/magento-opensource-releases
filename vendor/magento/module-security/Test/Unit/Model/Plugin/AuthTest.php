@@ -3,39 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Model\Plugin;
 
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Security\Model\AdminSessionInfo;
-use Magento\Security\Model\AdminSessionsManager;
-use Magento\Security\Model\Plugin\Auth;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Model\Plugin\Auth testing
  */
-class AuthTest extends TestCase
+class AuthTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var  Auth
+     * @var  \Magento\Security\Model\Plugin\Auth
      */
     protected $model;
 
     /**
-     * @var AdminSessionsManager
+     * @var \Magento\Security\Model\AdminSessionsManager
      */
     protected $sessionsManager;
 
     /**
-     * @var ManagerInterface
+     * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
 
     /**
-     * @var AdminSessionInfo
+     * @var \Magento\Security\Model\AdminSessionInfo
      */
     protected $currentSession;
 
@@ -45,7 +39,7 @@ class AuthTest extends TestCase
     protected $authMock;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -53,31 +47,31 @@ class AuthTest extends TestCase
      * Init mocks for tests
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->sessionsManager = $this->createPartialMock(
-            AdminSessionsManager::class,
+            \Magento\Security\Model\AdminSessionsManager::class,
             ['processLogin', 'processLogout', 'getCurrentSession']
         );
 
         $this->messageManager = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Message\ManagerInterface::class,
             ['addWarning'],
             '',
             false
         );
 
         $this->currentSession = $this->createPartialMock(
-            AdminSessionInfo::class,
+            \Magento\Security\Model\AdminSessionInfo::class,
             ['isOtherSessionsTerminated']
         );
 
         $this->authMock =  $this->createMock(\Magento\Backend\Model\Auth::class);
 
         $this->model = $this->objectManager->getObject(
-            Auth::class,
+            \Magento\Security\Model\Plugin\Auth::class,
             [
                 'sessionsManager' => $this->sessionsManager,
                 'messageManager' =>$this->messageManager

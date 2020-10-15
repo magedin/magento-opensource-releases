@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Status;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Config;
 use Magento\Sales\Model\Order\Status\History;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class HistoryTest extends TestCase
+/**
+ * Class HistoryTest
+ */
+class HistoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $order;
 
@@ -33,24 +29,24 @@ class HistoryTest extends TestCase
     protected $model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface |  \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->order = $this->createMock(Order::class);
+        $this->order = $this->createMock(\Magento\Sales\Model\Order::class);
         $this->storeManager = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false
         );
 
         $this->model = $this->objectManager->getObject(
-            History::class,
+            \Magento\Sales\Model\Order\Status\History::class,
             ['storeManager' => $this->storeManager]
         );
     }
@@ -66,7 +62,7 @@ class HistoryTest extends TestCase
     public function testSetIsCustomerNotified()
     {
         $this->model->setIsCustomerNotified(true);
-        $this->assertTrue($this->model->getIsCustomerNotified());
+        $this->assertEquals(true, $this->model->getIsCustomerNotified());
     }
 
     public function testSetIsCustomerNotifiedNotApplicable()
@@ -80,7 +76,7 @@ class HistoryTest extends TestCase
         $status = 'pending';
         $this->assertNull($this->model->getStatusLabel());
         $this->model->setStatus($status);
-        $config = $this->createMock(Config::class);
+        $config = $this->createMock(\Magento\Sales\Model\Order\Config::class);
         $config->expects($this->once())->method('getStatusLabel')->with($status)->willReturn($status);
         $this->order->expects($this->once())->method('getConfig')->willReturn($config);
         $this->model->setOrder($this->order);

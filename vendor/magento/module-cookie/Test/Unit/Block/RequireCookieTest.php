@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 declare(strict_types=1);
 
 namespace Magento\Cookie\Test\Unit\Block;
@@ -10,52 +11,46 @@ namespace Magento\Cookie\Test\Unit\Block;
 use Magento\Cookie\Block\RequireCookie;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Cookie\Test\Unit\Block\RequireCookieTest
+ * Class \Magento\Cookie\Test\Unit\Block\RequireCookieTest
  */
-class RequireCookieTest extends TestCase
+class RequireCookieTest extends \PHPUnit\Framework\TestCase
 {
-    private const STUB_NOCOOKIES_URL = 'http://magento.com/cookie/index/noCookies/';
-
     /**
-     * @var MockObject|RequireCookie
+     * @var \PHPUnit_Framework_MockObject_MockObject|RequireCookie
      */
     private $block;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|ScopeConfigInterface
      */
-    private $scopeConfigMock;
+    private $scopeConfig;
 
     /**
-     * @var MockObject|Context
+     * @var \PHPUnit_Framework_MockObject_MockObject|Context
      */
-    private $contextMock;
+    private $context;
 
     /**
      * Setup Environment
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMockForAbstractClass();
-
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->contextMock->expects($this->any())->method('getScopeConfig')
-            ->willReturn($this->scopeConfigMock);
-
+        $this->context->expects($this->any())->method('getScopeConfig')
+            ->willReturn($this->scopeConfig);
         $this->block = $this->getMockBuilder(RequireCookie::class)
             ->setMethods(['escapeHtml', 'escapeUrl', 'getUrl', 'getTriggers'])
             ->setConstructorArgs(
                 [
-                    'context' => $this->contextMock
+                    'context' => $this->context
                 ]
             )->getMock();
     }
@@ -63,20 +58,20 @@ class RequireCookieTest extends TestCase
     /**
      * Test getScriptOptions() when the settings "Redirect to CMS-page if Cookies are Disabled" is "Yes"
      */
-    public function testGetScriptOptionsWhenRedirectToCmsIsYes(): void
+    public function testGetScriptOptionsWhenRedirectToCmsIsYes()
     {
-        $this->scopeConfigMock->expects($this->any())->method('getValue')
+        $this->scopeConfig->expects($this->any())->method('getValue')
             ->with('web/browser_capabilities/cookies')
             ->willReturn('1');
 
         $this->block->expects($this->any())->method('getUrl')
             ->with('cookie/index/noCookies/')
-            ->willReturn(self::STUB_NOCOOKIES_URL);
+            ->willReturn('http://magento.com/cookie/index/noCookies/');
         $this->block->expects($this->any())->method('getTriggers')
             ->willReturn('test');
         $this->block->expects($this->any())->method('escapeUrl')
-            ->with(self::STUB_NOCOOKIES_URL)
-            ->willReturn(self::STUB_NOCOOKIES_URL);
+            ->with('http://magento.com/cookie/index/noCookies/')
+            ->willReturn('http://magento.com/cookie/index/noCookies/');
         $this->block->expects($this->any())->method('escapeHtml')
             ->with('test')
             ->willReturn('test');
@@ -91,20 +86,20 @@ class RequireCookieTest extends TestCase
     /**
      * Test getScriptOptions() when the settings "Redirect to CMS-page if Cookies are Disabled" is "No"
      */
-    public function testGetScriptOptionsWhenRedirectToCmsIsNo(): void
+    public function testGetScriptOptionsWhenRedirectToCmsIsNo()
     {
-        $this->scopeConfigMock->expects($this->any())->method('getValue')
+        $this->scopeConfig->expects($this->any())->method('getValue')
             ->with('web/browser_capabilities/cookies')
             ->willReturn('0');
 
         $this->block->expects($this->any())->method('getUrl')
             ->with('cookie/index/noCookies/')
-            ->willReturn(self::STUB_NOCOOKIES_URL);
+            ->willReturn('http://magento.com/cookie/index/noCookies/');
         $this->block->expects($this->any())->method('getTriggers')
             ->willReturn('test');
         $this->block->expects($this->any())->method('escapeUrl')
-            ->with(self::STUB_NOCOOKIES_URL)
-            ->willReturn(self::STUB_NOCOOKIES_URL);
+            ->with('http://magento.com/cookie/index/noCookies/')
+            ->willReturn('http://magento.com/cookie/index/noCookies/');
         $this->block->expects($this->any())->method('escapeHtml')
             ->with('test')
             ->willReturn('test');

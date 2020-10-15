@@ -23,6 +23,8 @@ use Symfony\Component\Finder\SplFileInfo;
 abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryInterface
 {
     /**
+     * @param SplFileInfo $file
+     *
      * @return IntegrationCase
      */
     public function create(SplFileInfo $file)
@@ -77,7 +79,8 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     /**
      * Parses the '--CONFIG--' block of a '.test' file.
      *
-     * @param string $config
+     * @param SplFileInfo $file
+     * @param string      $config
      *
      * @return array
      */
@@ -108,7 +111,8 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     /**
      * Parses the '--REQUIREMENTS--' block of a '.test' file and determines requirements.
      *
-     * @param string $config
+     * @param SplFileInfo $file
+     * @param string      $config
      *
      * @return array
      */
@@ -131,7 +135,8 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     /**
      * Parses the '--RULESET--' block of a '.test' file and determines what fixers should be used.
      *
-     * @param string $config
+     * @param SplFileInfo $file
+     * @param string      $config
      *
      * @return RuleSet
      */
@@ -143,7 +148,8 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     /**
      * Parses the '--TEST--' block of a '.test' file and determines title.
      *
-     * @param string $config
+     * @param SplFileInfo $file
+     * @param string      $config
      *
      * @return string
      */
@@ -155,7 +161,8 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     /**
      * Parses the '--SETTINGS--' block of a '.test' file and determines settings.
      *
-     * @param string $config
+     * @param SplFileInfo $file
+     * @param string      $config
      *
      * @return array
      */
@@ -176,6 +183,7 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     }
 
     /**
+     * @param SplFileInfo $file
      * @param null|string $code
      *
      * @return string
@@ -192,6 +200,7 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     }
 
     /**
+     * @param SplFileInfo $file
      * @param null|string $code
      *
      * @return null|string
@@ -202,6 +211,7 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
     }
 
     /**
+     * @param SplFileInfo $file
      * @param null|string $code
      * @param string      $suffix
      *
@@ -217,12 +227,11 @@ abstract class AbstractIntegrationCaseFactory implements IntegrationCaseFactoryI
         if ($candidateFile->isFile()) {
             return $candidateFile->getContents();
         }
-
-        return null;
     }
 
     /**
      * @param null|string $encoded
+     * @param null|array  $template
      *
      * @return array
      */

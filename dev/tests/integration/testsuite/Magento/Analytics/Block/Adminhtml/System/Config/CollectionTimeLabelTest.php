@@ -24,7 +24,7 @@ class CollectionTimeLabelTest extends TestCase
     public function testRenderWithDefaultLocale()
     {
         $result = $this->render();
-        $this->assertMatchesRegularExpression('/<span>Pacific Standard Time/', $result);
+        $this->assertRegExp('/<span>Pacific Standard Time/', $result);
     }
 
     /**
@@ -36,7 +36,7 @@ class CollectionTimeLabelTest extends TestCase
     public function testRenderWithNonDefaultLocale()
     {
         $result = $this->render();
-        $this->assertMatchesRegularExpression('/<span>Nordamerikanische Westküsten-Normalzeit/', $result);
+        $this->assertRegExp('/<span>Nordamerikanische Westküsten-Normalzeit/', $result);
     }
 
     /**

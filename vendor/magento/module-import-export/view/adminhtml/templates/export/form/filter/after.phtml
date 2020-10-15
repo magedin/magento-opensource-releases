@@ -3,12 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Backend\Block\Template $block */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-
-<?php $scriptString = <<<script
+<script>
 require([
     'mage/adminhtml/grid'
 ], function(){
@@ -21,6 +17,4 @@ require([
         };
     }
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

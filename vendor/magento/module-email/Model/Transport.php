@@ -13,12 +13,12 @@ use Magento\Framework\Mail\MessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\Phrase;
 use Magento\Store\Model\ScopeInterface;
-use Laminas\Mail\Message;
-use Laminas\Mail\Transport\Sendmail;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\Sendmail;
 
 /**
  * Class that responsible for filling some message data before transporting it.
- * @see \Laminas\Mail\Transport\Sendmail is used for transport
+ * @see \Zend\Mail\Transport\Sendmail is used for transport
  */
 class Transport implements TransportInterface
 {
@@ -53,7 +53,7 @@ class Transport implements TransportInterface
     /**
      * @var Sendmail
      */
-    private $laminasTransport;
+    private $zendTransport;
 
     /**
      * @var MessageInterface
@@ -79,7 +79,7 @@ class Transport implements TransportInterface
             ScopeInterface::SCOPE_STORE
         );
 
-        $this->laminasTransport = new Sendmail($parameters);
+        $this->zendTransport = new Sendmail($parameters);
         $this->message = $message;
     }
 
@@ -89,16 +89,16 @@ class Transport implements TransportInterface
     public function sendMessage()
     {
         try {
-            $laminasMessage = Message::fromString($this->message->getRawMessage())->setEncoding('utf-8');
+            $zendMessage = Message::fromString($this->message->getRawMessage())->setEncoding('utf-8');
             if (2 === $this->isSetReturnPath && $this->returnPathValue) {
-                $laminasMessage->setSender($this->returnPathValue);
-            } elseif (1 === $this->isSetReturnPath && $laminasMessage->getFrom()->count()) {
-                $fromAddressList = $laminasMessage->getFrom();
+                $zendMessage->setSender($this->returnPathValue);
+            } elseif (1 === $this->isSetReturnPath && $zendMessage->getFrom()->count()) {
+                $fromAddressList = $zendMessage->getFrom();
                 $fromAddressList->rewind();
-                $laminasMessage->setSender($fromAddressList->current()->getEmail());
+                $zendMessage->setSender($fromAddressList->current()->getEmail());
             }
 
-            $this->laminasTransport->send($laminasMessage);
+            $this->zendTransport->send($zendMessage);
         } catch (\Exception $e) {
             throw new MailException(new Phrase($e->getMessage()), $e);
         }

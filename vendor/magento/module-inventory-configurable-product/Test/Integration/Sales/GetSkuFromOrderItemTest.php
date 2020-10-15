@@ -14,7 +14,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class Test for GetSkuFromOrderItem service
+ * Class GetSkuFromOrderItemTest
  */
 class GetSkuFromOrderItemTest extends TestCase
 {
@@ -36,7 +36,7 @@ class GetSkuFromOrderItemTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class GetSkuFromOrderItemTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryConfigurableProduct::Test/_files/order_item_with_configurable_and_options.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryConfigurableProduct/Test/_files/order_item_with_configurable_and_options.php
      */
     public function testGetSkuFromConfigurableProductWithCustomOptionsOrderItem()
     {

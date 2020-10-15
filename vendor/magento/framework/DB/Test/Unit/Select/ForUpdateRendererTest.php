@@ -3,25 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\ForUpdateRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ForUpdateRendererTest extends TestCase
+/**
+ * Class ForUpdateRendererTest
+ */
+class ForUpdateRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ForUpdateRenderer
+     * @var \Magento\Framework\DB\Select\ForUpdateRenderer
      */
     protected $model;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
@@ -30,11 +28,11 @@ class ForUpdateRendererTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
-        $this->model = $objectManager->getObject(ForUpdateRenderer::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
+        $this->model = $objectManager->getObject(\Magento\Framework\DB\Select\ForUpdateRenderer::class);
     }
 
     public function testRenderNoPart()

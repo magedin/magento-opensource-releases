@@ -3,48 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AdvancedPricingImportExport\Test\Unit\Model\Import\AdvancedPricing\Validator;
 
 use Magento\AdvancedPricingImportExport\Model\Import\AdvancedPricing as AdvancedPricing;
-use Magento\AdvancedPricingImportExport\Model\Import\AdvancedPricing\Validator\Website as WebsiteValidator;
-use Magento\CatalogImportExport\Model\Import\Product\StoreResolver;
-use Magento\Directory\Model\Currency;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WebsiteTest extends TestCase
+class WebsiteTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Website|MockObject
+     * @var \Magento\Store\Model\WebSite|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $webSiteModel;
 
     /**
-     * @var StoreResolver|MockObject
+     * @var \Magento\CatalogImportExport\Model\Import\Product\StoreResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeResolver;
 
     /**
-     * @var  WebsiteValidator|MockObject
+     * @var  AdvancedPricing\Validator\Website|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $website;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->webSiteModel = $this->getMockBuilder(Website::class)
+        $this->webSiteModel = $this->getMockBuilder(\Magento\Store\Model\Website::class)
             ->setMethods(['getBaseCurrency'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->storeResolver = $this->createPartialMock(
-            StoreResolver::class,
+            \Magento\CatalogImportExport\Model\Import\Product\StoreResolver::class,
             ['getWebsiteCodeToId']
         );
 
         $this->website = $this->getMockBuilder(
-            WebsiteValidator::class
+            \Magento\AdvancedPricingImportExport\Model\Import\AdvancedPricing\Validator\Website::class
         )
             ->setMethods(['getAllWebsitesValue', '_clearMessages', '_addMessages'])
             ->setConstructorArgs([$this->storeResolver, $this->webSiteModel])
@@ -73,7 +66,7 @@ class WebsiteTest extends TestCase
         $expectedResult
     ) {
         $this->website->expects($this->once())->method('_clearMessages');
-        $this->website->method('getAllWebsitesValue')->willReturn($allWebsites);
+        $this->website->expects($this->any())->method('getAllWebsitesValue')->willReturn($allWebsites);
         $this->storeResolver->method('getWebsiteCodeToId')->willReturnMap([
             [$value[AdvancedPricing::COL_TIER_PRICE_WEBSITE], $colTierPriceWebsite],
         ]);
@@ -89,29 +82,29 @@ class WebsiteTest extends TestCase
         ];
         $allWebsitesValue = 'not tier|group price website value';
         $colTierPriceWebsite = false;
-        $expectedMessages = [WebsiteValidator::ERROR_INVALID_WEBSITE];
+        $expectedMessages = [AdvancedPricing\Validator\Website::ERROR_INVALID_WEBSITE];
 
         $this->website->expects($this->once())->method('_clearMessages');
-        $this->website->method('getAllWebsitesValue')->willReturn($allWebsitesValue);
+        $this->website->expects($this->any())->method('getAllWebsitesValue')->willReturn($allWebsitesValue);
         $this->storeResolver->method('getWebsiteCodeToId')->willReturnMap([
             [$value[AdvancedPricing::COL_TIER_PRICE_WEBSITE], $colTierPriceWebsite],
         ]);
 
-        $this->website->method('_addMessages')->with($expectedMessages);
+        $this->website->expects($this->any())->method('_addMessages')->with($expectedMessages);
         $this->website->isValid($value);
     }
 
     public function testGetAllWebsitesValue()
     {
         $currencyCode = 'currencyCodeValue';
-        $currency = $this->createPartialMock(Currency::class, ['getCurrencyCode']);
+        $currency = $this->createPartialMock(\Magento\Directory\Model\Currency::class, ['getCurrencyCode']);
         $currency->expects($this->once())->method('getCurrencyCode')->willReturn($currencyCode);
 
         $this->webSiteModel->expects($this->once())->method('getBaseCurrency')->willReturn($currency);
 
         $expectedResult = AdvancedPricing::VALUE_ALL_WEBSITES . ' [' . $currencyCode . ']';
         $websiteString = $this->getMockBuilder(
-            WebsiteValidator::class
+            \Magento\AdvancedPricingImportExport\Model\Import\AdvancedPricing\Validator\Website::class
         )
             ->setMethods(['_clearMessages', '_addMessages'])
             ->setConstructorArgs([$this->storeResolver, $this->webSiteModel])

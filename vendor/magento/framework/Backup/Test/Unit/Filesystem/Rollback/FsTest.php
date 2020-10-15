@@ -3,38 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Backup\Test\Unit\Filesystem\Rollback;
 
-use Magento\Framework\Backup\Filesystem;
-use Magento\Framework\Backup\Filesystem\Helper;
-use Magento\Framework\Backup\Filesystem\Rollback\Fs;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/_files/ioMock.php';
 
-class FsTest extends TestCase
+class FsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Backup\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $snapshotMock;
 
     /**
-     * @var Helper|MockObject
+     * @var \Magento\Framework\Backup\Filesystem\Helper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fsHelperMock;
 
     /**
-     * @var Fs
+     * @var \Magento\Framework\Backup\Filesystem\Rollback\Fs
      */
     private $fs;
 
@@ -53,14 +46,14 @@ class FsTest extends TestCase
      */
     private $ignorePaths;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->backupPath = '/some/test/path';
         $this->rootDir = '/';
         $this->ignorePaths = [];
 
         $this->objectManager = new ObjectManager($this);
-        $this->snapshotMock = $this->getMockBuilder(Filesystem::class)
+        $this->snapshotMock = $this->getMockBuilder(\Magento\Framework\Backup\Filesystem::class)
             ->setMethods(['getBackupPath', 'getRootDir', 'getIgnorePaths'])
             ->getMock();
         $this->snapshotMock->expects($this->any())
@@ -72,11 +65,11 @@ class FsTest extends TestCase
         $this->snapshotMock->expects($this->any())
             ->method('getIgnorePaths')
             ->willReturn($this->ignorePaths);
-        $this->fsHelperMock = $this->getMockBuilder(Helper::class)
+        $this->fsHelperMock = $this->getMockBuilder(\Magento\Framework\Backup\Filesystem\Helper::class)
             ->setMethods(['getInfo', 'rm'])
             ->getMock();
         $this->fs = $this->objectManager->getObject(
-            Fs::class,
+            \Magento\Framework\Backup\Filesystem\Rollback\Fs::class,
             [
                 'snapshotObject' => $this->snapshotMock,
                 'fsHelper' => $this->fsHelperMock,
@@ -84,10 +77,12 @@ class FsTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Backup\Exception\NotEnoughPermissions
+     * @expectedExceptionMessage You need write permissions for: test1, test2
+     */
     public function testRunNotEnoughPermissions()
     {
-        $this->expectException('Magento\Framework\Backup\Exception\NotEnoughPermissions');
-        $this->expectExceptionMessage('You need write permissions for: test1, test2');
         $fsInfo = [
             'writable' => false,
             'writableMeta' => ['test1', 'test2'],

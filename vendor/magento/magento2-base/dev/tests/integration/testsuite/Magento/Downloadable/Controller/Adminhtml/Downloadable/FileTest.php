@@ -23,7 +23,7 @@ class FileTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -33,7 +33,7 @@ class FileTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         // phpcs:ignore Magento2.Functions.DiscouragedFunction
         $filePath = dirname(__DIR__) . '/_files/sample.tmp';

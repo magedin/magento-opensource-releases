@@ -33,7 +33,7 @@
         <after>
             <deleteData createDataKey="createVirtualProduct" stepKey="deleteVirtualProduct"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="signOutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="signOutFromAdmin"/>
         </after>
 
         <!--Log in to store front as customer-->
@@ -47,7 +47,7 @@
         </actionGroup>
 
         <!--Add product to shopping cart-->
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFromStorefrontProductPage">
             <argument name="productName" value="$$createVirtualProduct.name$$"/>
         </actionGroup>
 
@@ -69,13 +69,10 @@
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderNumber"/>
 
         <!--Verify order summary in admin-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="OpenOrderByIdActionGroup" stepKey="goToOrderPage">
-            <argument name="orderId" value="{$grabOrderNumber}"/>
-        </actionGroup>
-        <actionGroup ref="ValidateAdminKlarnaOrderSummaryGrandTotal" stepKey="validateGrandTotal">
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+        <actionGroup ref="ValidateAdminKlarnaOrderSummaryWithoutShipping" stepKey="validateOrderSummary">
+            <argument name="orderNumber" value="{$grabOrderNumber}"/>
             <argument name="grandTotalAmount" value="{$grabTotalAmount}"/>
         </actionGroup>
-        <actionGroup ref="ValidateAdminKlarnaOrderSummaryWithoutShipping" stepKey="validateNoShipping"/>
     </test>
 </tests>

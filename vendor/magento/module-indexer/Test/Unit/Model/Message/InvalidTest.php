@@ -3,43 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model\Message;
 
-use Magento\Framework\Indexer\StateInterface;
-use Magento\Framework\UrlInterface;
-use Magento\Indexer\Model\Indexer;
-use Magento\Indexer\Model\Indexer\Collection;
-use Magento\Indexer\Model\Message\Invalid;
-use PHPUnit\Framework\TestCase;
-
-class InvalidTest extends TestCase
+class InvalidTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Indexer
+     * @var \Magento\Indexer\Model\Indexer
      */
     private $indexerMock = null;
 
     /**
-     * @var Invalid
+     * @var \Magento\Indexer\Model\Message\Invalid
      */
     protected $model;
 
     /**
      * Set up test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $collectionMock = $this->createPartialMock(Collection::class, ['getItems']);
+        $collectionMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\Collection::class, ['getItems']);
 
-        $this->indexerMock = $this->createPartialMock(Indexer::class, ['getStatus']);
+        $this->indexerMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer::class, ['getStatus']);
 
-        $urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $urlBuilder = $this->createMock(\Magento\Framework\UrlInterface::class);
 
         $collectionMock->expects($this->any())->method('getItems')->with()->willReturn([$this->indexerMock]);
 
-        $this->model = new Invalid(
+        $this->model = new \Magento\Indexer\Model\Message\Invalid(
             $collectionMock,
             $urlBuilder
         );
@@ -48,7 +39,7 @@ class InvalidTest extends TestCase
     public function testDisplayMessage()
     {
         $this->indexerMock->expects($this->any())->method('getStatus')->with()
-            ->willReturn(StateInterface::STATUS_INVALID);
+            ->willReturn(\Magento\Framework\Indexer\StateInterface::STATUS_INVALID);
 
         $this->assertTrue($this->model->isDisplayed());
     }

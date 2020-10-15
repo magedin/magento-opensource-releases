@@ -57,7 +57,7 @@ class ASTVariableDeclarator extends ASTExpression
     /**
      * The initial declaration value for this node or <b>null</b>.
      *
-     * @var \PDepend\Source\AST\ASTValue|null
+     * @var \PDepend\Source\AST\ASTValue
      */
     protected $value = null;
 
@@ -65,7 +65,7 @@ class ASTVariableDeclarator extends ASTExpression
      * Returns the initial declaration value for this node or <b>null</b> when
      * no default value exists.
      *
-     * @return \PDepend\Source\AST\ASTValue|null
+     * @return \PDepend\Source\AST\ASTValue
      */
     public function getValue()
     {
@@ -104,7 +104,7 @@ class ASTVariableDeclarator extends ASTExpression
      * before an instance of this class gets serialized. It should return an
      * array with those property names that should be serialized for this class.
      *
-     * @return array<string>
+     * @return array(string)
      * @since  0.10.0
      */
     public function __sleep()

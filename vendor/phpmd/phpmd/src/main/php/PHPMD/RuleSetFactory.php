@@ -61,9 +61,9 @@ class RuleSetFactory
         // PEAR installer workaround
         if (strpos($this->location, '@data_dir') === 0) {
             $this->location = __DIR__ . '/../../resources';
-            return;
+        } else {
+            $this->location .= '/PHPMD/resources';
         }
-        $this->location .= '/PHPMD/resources';
     }
 
     /**
@@ -248,13 +248,11 @@ class RuleSetFactory
     {
         if (substr($node['ref'], -3, 3) === 'xml') {
             $this->parseRuleSetReferenceNode($ruleSet, $node);
-            return;
-        }
-        if ('' === (string) $node['ref']) {
+        } elseif ('' === (string) $node['ref']) {
             $this->parseSingleRuleNode($ruleSet, $node);
-            return;
+        } else {
+            $this->parseRuleReferenceNode($ruleSet, $node);
         }
-        $this->parseRuleReferenceNode($ruleSet, $node);
     }
 
     /**
@@ -574,6 +572,6 @@ class RuleSetFactory
             $filePathParts[] = array($includePath, $fileName . '.xml');
         }
 
-        return array_map('implode', array_fill(0, count($filePathParts), DIRECTORY_SEPARATOR), $filePathParts);
+        return array_map('implode', $filePathParts, array_fill(0, count($filePathParts), DIRECTORY_SEPARATOR));
     }
 }

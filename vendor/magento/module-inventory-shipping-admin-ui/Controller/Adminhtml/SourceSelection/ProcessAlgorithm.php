@@ -15,10 +15,11 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\InventoryApi\Api\SourceRepositoryInterface;
+use Magento\InventorySourceSelectionApi\Api\Data\InventoryRequestInterfaceFactory;
 use Magento\InventorySourceSelectionApi\Api\Data\ItemRequestInterfaceFactory;
-use Magento\InventorySourceSelectionApi\Api\GetDefaultSourceSelectionAlgorithmCodeInterface;
 use Magento\InventorySourceSelectionApi\Api\SourceSelectionServiceInterface;
+use Magento\InventorySourceSelectionApi\Api\GetDefaultSourceSelectionAlgorithmCodeInterface;
+use Magento\InventoryApi\Api\SourceRepositoryInterface;
 use Magento\InventorySourceSelectionApi\Model\GetInventoryRequestFromOrder;
 
 /**
@@ -29,7 +30,7 @@ class ProcessAlgorithm extends Action implements HttpPostActionInterface
     /**
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magento_Sales::ship';
+    const ADMIN_RESOURCE = 'Magento_InventoryApi::source';
 
     /**
      * @var SourceSelectionServiceInterface
@@ -62,6 +63,8 @@ class ProcessAlgorithm extends Action implements HttpPostActionInterface
     private $getInventoryRequestFromOrder;
 
     /**
+     * ProcessAlgorithm constructor.
+     *
      * @param Context $context
      * @param null $stockByWebsiteIdResolver @deprecated
      * @param ItemRequestInterfaceFactory $itemRequestFactory
@@ -111,10 +114,8 @@ class ProcessAlgorithm extends Action implements HttpPostActionInterface
     }
 
     /**
-     * Process request with source selection algorithm.
-     *
+     * @inheritdoc
      * @throws NoSuchEntityException
-     * @return ResultInterface
      */
     public function execute(): ResultInterface
     {

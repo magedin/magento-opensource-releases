@@ -3,45 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing\Column;
 
-use Magento\Customer\Api\Data\ValidationRuleInterface;
-use Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater;
 use Magento\Customer\Ui\Component\Listing\Column\ValidationRules;
-use Magento\Framework\View\Element\UiComponentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Ui\Component\Listing\Column\InlineEditUpdater;
+use Magento\Customer\Api\Data\ValidationRuleInterface;
 
-class InlineEditUpdaterTest extends TestCase
+class InlineEditUpdaterTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ValidationRules|MockObject  */
+    /** @var ValidationRules|\PHPUnit_Framework_MockObject_MockObject  */
     protected $validationRules;
 
-    /** @var ValidationRuleInterface|MockObject */
+    /** @var ValidationRuleInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $validationRule;
 
-    /** @var UiComponentInterface|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponentInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $column;
 
     /** @var InlineEditUpdater */
     protected $component;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->validationRules = $this->getMockBuilder(
-            ValidationRules::class
-        )->disableOriginalConstructor()
+            \Magento\Customer\Ui\Component\Listing\Column\ValidationRules::class
+        )->disableOriginalConstructor()->getMock();
+
+        $this->validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $this->validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+        $this->column = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->column = $this->getMockBuilder(UiComponentInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->component = new InlineEditUpdater($this->validationRules);
     }

@@ -3,30 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ImportExport\Test\Unit\Model\Import\Source;
 
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\ImportExport\Model\Import\Source\Zip;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ZipTest extends TestCase
+class ZipTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Write|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Write|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directory;
 
     /**
-     * @var Zip|MockObject
+     * @var \Magento\ImportExport\Model\Import\Source\Zip|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $zip;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->directory = $this->getMockBuilder(Write::class)
+        $this->directory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Write::class)
             ->disableOriginalConstructor()
             ->setMethods(['getRelativePath'])
             ->getMock();
@@ -35,12 +29,11 @@ class ZipTest extends TestCase
     /**
      * Test destination argument for the second getRelativePath after preg_replace.
      *
+     * @depends testConstructorInternalCalls
      * @dataProvider constructorFileDestinationMatchDataProvider
      */
     public function testConstructorFileDestinationMatch($fileName, $expectedfileName)
     {
-        $this->markTestIncomplete('The implementation of constructor has changed. Rewrite test to cover changes.');
-
         $this->directory->expects($this->at(0))->method('getRelativePath')->with($fileName);
         $this->directory->expects($this->at(1))->method('getRelativePath')->with($expectedfileName);
         $this->_invokeConstructor($fileName);
@@ -76,7 +69,7 @@ class ZipTest extends TestCase
     {
         try {
             $this->zip = $this->getMockBuilder(
-                Zip::class
+                \Magento\ImportExport\Model\Import\Source\Zip::class
             )
                 ->setConstructorArgs(
                     [
@@ -88,19 +81,19 @@ class ZipTest extends TestCase
                 ->getMock();
 
             $reflectedClass = new \ReflectionClass(
-                Zip::class
+                \Magento\ImportExport\Model\Import\Source\Zip::class
             );
             $constructor = $reflectedClass->getConstructor();
             $constructor->invoke(
                 $this->zip,
                 [
-                    $fileName,
-                    $this->directory,
-                    [],
+                $fileName,
+                $this->directory,
+                [],
                 ]
             );
-        } catch (\Throwable $e) {
-            throw $e;
+        } catch (\PHPUnit\Framework\Error $e) {
+            // Suppress any errors due to no control of Zip object dependency instantiation.
         }
     }
 }

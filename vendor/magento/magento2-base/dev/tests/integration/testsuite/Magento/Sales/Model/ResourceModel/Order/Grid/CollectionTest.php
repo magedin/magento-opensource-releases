@@ -33,13 +33,13 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $mapper->setAccessible(true);
         $map = $mapper->invoke($gridCollection);
 
-        self::assertIsArray($map);
+        self::assertInternalType('array', $map);
         self::assertArrayHasKey('fields', $map);
-        self::assertIsArray($map['fields']);
+        self::assertInternalType('array', $map['fields']);
         self::assertCount(count($tableDescription), $map['fields']);
 
         foreach ($map['fields'] as $mappedName) {
-            self::assertStringContainsString('main_table.', $mappedName);
+            self::assertContains('main_table.', $mappedName);
         }
     }
 }

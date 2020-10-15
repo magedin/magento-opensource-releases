@@ -20,12 +20,14 @@ use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\CatalogSearch\Model\Search\RequestGenerator;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Exception\StateException;
+use Magento\Framework\Search\Response\QueryResponse;
 use Magento\Framework\Search\Request\EmptyRequestDataException;
 use Magento\Framework\Search\Request\NonExistingRequestNameException;
 use Magento\Framework\Api\Search\SearchResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\ObjectManager;
 use Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitationFactory;
+use Magento\Search\Model\EngineResolver;
 
 /**
  * Fulltext Collection
@@ -41,6 +43,37 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection\ProductLimitationFact
 class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
 {
     /**
+     * Config search engine path.
+     */
+    private const SEARCH_ENGINE_VALUE_PATH = 'catalog/search/engine';
+
+    /**
+     * @var  QueryResponse
+     * @deprecated 100.1.0
+     */
+    protected $queryResponse;
+
+    /**
+     * Catalog search data
+     *
+     * @var \Magento\Search\Model\QueryFactory
+     * @deprecated 100.1.0
+     */
+    protected $queryFactory = null;
+
+    /**
+     * @var \Magento\Framework\Search\Request\Builder
+     * @deprecated 100.1.0
+     */
+    private $requestBuilder;
+
+    /**
+     * @var \Magento\Search\Model\SearchEngine
+     * @deprecated 100.1.0
+     */
+    private $searchEngine;
+
+    /**
      * @var string
      */
     private $queryText;
@@ -49,6 +82,12 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      * @var string
      */
     private $searchRequestName;
+
+    /**
+     * @var \Magento\Framework\Search\Adapter\Mysql\TemporaryStorageFactory
+     * @deprecated 101.0.0 There must be no dependencies on specific adapter in generic search implementation
+     */
+    private $temporaryStorageFactory;
 
     /**
      * @var \Magento\Search\Api\SearchInterface
@@ -101,6 +140,8 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     private $defaultFilterStrategyApplyChecker;
 
     /**
+     * Collection constructor
+     *
      * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
@@ -120,10 +161,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Framework\Stdlib\DateTime $dateTime
      * @param \Magento\Customer\Api\GroupManagementInterface $groupManagement
-     * @param mixed $catalogSearchData
-     * @param mixed $requestBuilder
-     * @param mixed $searchEngine
-     * @param mixed $temporaryStorageFactory
+     * @param \Magento\Search\Model\QueryFactory $catalogSearchData
+     * @param \Magento\Framework\Search\Request\Builder $requestBuilder
+     * @param \Magento\Search\Model\SearchEngine $searchEngine
+     * @param \Magento\Framework\Search\Adapter\Mysql\TemporaryStorageFactory $temporaryStorageFactory
      * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param string $searchRequestName
      * @param SearchResultFactory|null $searchResultFactory
@@ -138,7 +179,6 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      * @param DefaultFilterStrategyApplyCheckerInterface|null $defaultFilterStrategyApplyChecker
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
         \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
@@ -160,10 +200,10 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\Stdlib\DateTime $dateTime,
         \Magento\Customer\Api\GroupManagementInterface $groupManagement,
-        $catalogSearchData = null,
-        $requestBuilder = null,
-        $searchEngine = null,
-        $temporaryStorageFactory = null,
+        \Magento\Search\Model\QueryFactory $catalogSearchData,
+        \Magento\Framework\Search\Request\Builder $requestBuilder,
+        \Magento\Search\Model\SearchEngine $searchEngine,
+        \Magento\Framework\Search\Adapter\Mysql\TemporaryStorageFactory $temporaryStorageFactory,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         $searchRequestName = 'catalog_view_container',
         SearchResultFactory $searchResultFactory = null,
@@ -177,6 +217,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         TotalRecordsResolverFactory $totalRecordsResolverFactory = null,
         DefaultFilterStrategyApplyCheckerInterface $defaultFilterStrategyApplyChecker = null
     ) {
+        $this->queryFactory = $catalogSearchData;
         $this->searchResultFactory = $searchResultFactory ?? \Magento\Framework\App\ObjectManager::getInstance()
                 ->get(\Magento\Framework\Api\Search\SearchResultFactory::class);
         parent::__construct(
@@ -203,6 +244,9 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
             $productLimitationFactory,
             $metadataPool
         );
+        $this->requestBuilder = $requestBuilder;
+        $this->searchEngine = $searchEngine;
+        $this->temporaryStorageFactory = $temporaryStorageFactory;
         $this->searchRequestName = $searchRequestName;
         $this->search = $search ?: ObjectManager::getInstance()->get(\Magento\Search\Api\SearchInterface::class);
         $this->searchCriteriaBuilder = $searchCriteriaBuilder ?: ObjectManager::getInstance()
@@ -366,6 +410,11 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
         $this->getEntity();
+
+        $currentSearchEngine = $this->_scopeConfig->getValue(self::SEARCH_ENGINE_VALUE_PATH);
+        if ($this->_pageSize && $currentSearchEngine === EngineResolver::CATALOG_SEARCH_MYSQL_ENGINE) {
+            $this->getSelect()->limitPage($this->getCurPage(), $this->_pageSize);
+        }
 
         $this->printLogQuery($printQuery, $logQuery);
 

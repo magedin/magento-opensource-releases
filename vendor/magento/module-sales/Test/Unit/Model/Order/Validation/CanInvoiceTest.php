@@ -3,58 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Validation;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Validation\CanInvoice;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Sales\Model\Order\OrderValidator class
  */
-class CanInvoiceTest extends TestCase
+class CanInvoiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CanInvoice|MockObject
+     * @var \Magento\Sales\Model\Order\Validation\CanInvoice|\PHPUnit_Framework_MockObject_MockObject
      */
     private $model;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var OrderItemInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderItemInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderItemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->orderMock = $this->getMockBuilder(OrderInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStatus', 'getItems'])
             ->getMockForAbstractClass();
 
-        $this->orderItemMock = $this->getMockBuilder(OrderItemInterface::class)
+        $this->orderItemMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderItemInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getQtyToInvoice', 'getLockedDoInvoice'])
             ->getMockForAbstractClass();
 
-        $this->model = new CanInvoice();
+        $this->model = new \Magento\Sales\Model\Order\Validation\CanInvoice();
     }
 
     /**

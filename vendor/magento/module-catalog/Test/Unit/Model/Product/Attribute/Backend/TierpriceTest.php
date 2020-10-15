@@ -3,48 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Backend;
-
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Backend\Tierprice;
-use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\Locale\FormatInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for Tierprice model.
  */
-class TierpriceTest extends TestCase
+class TierpriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Tierprice|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Attribute\Backend\Tierprice
+     *      |\PHPUnit_Framework_MockObject_MockObject
      */
     private $productAttributeBackendTierprice;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute\AbstractAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attribute;
 
     /**
-     * @var FormatInterface|MockObject
+     * @var \Magento\Framework\Locale\FormatInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $localeFormat;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var GroupManagementInterface|MockObject
+     * @var \Magento\Customer\Api\GroupManagementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupManagement;
 
@@ -58,27 +46,23 @@ class TierpriceTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productAttributeBackendTierprice = $this
-            ->getMockBuilder(Tierprice::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->attribute = $this->getMockBuilder(AbstractAttribute::class)
+            ->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Attribute\Backend\Tierprice::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->attribute = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->setMethods(['getName', 'isScopeGlobal'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->localeFormat = $this->getMockBuilder(FormatInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->groupManagement = $this->getMockBuilder(GroupManagementInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->localeFormat = $this->getMockBuilder(\Magento\Framework\Locale\FormatInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->groupManagement = $this->getMockBuilder(\Magento\Customer\Api\GroupManagementInterface::class)
+            ->disableOriginalConstructor()->getMock();
 
-        $objectHelper = new ObjectManager($this);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->tierprice = $objectHelper->getObject(
             \Magento\Catalog\Model\Product\Attribute\Backend\Tierprice::class,
             [
@@ -113,9 +97,8 @@ class TierpriceTest extends TestCase
                 'price_qty' => 1,
             ]
         ];
-        $object = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
+            ->disableOriginalConstructor()->getMock();
         $this->attribute->expects($this->atLeastOnce())->method('getName')->willReturn($attributeName);
         $object->expects($this->atLeastOnce())->method('getData')->with($attributeName)->willReturn($tierPrices);
         $this->localeFormat->expects($this->atLeastOnce())
@@ -128,11 +111,11 @@ class TierpriceTest extends TestCase
      * Test for validate method with exception.
      *
      * @return void
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Percentage value must be a number between 0 and 100.
      */
     public function testValidateWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Percentage value must be a number between 0 and 100.');
         $attributeName = 'tier_price';
         $tierPrices = [
             [
@@ -142,7 +125,7 @@ class TierpriceTest extends TestCase
                 'price_qty' => 1,
             ]
         ];
-        $object = $this->createMock(Product::class);
+        $object = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->attribute->expects($this->atLeastOnce())->method('getName')->willReturn($attributeName);
         $object->expects($this->atLeastOnce())->method('getData')->with($attributeName)->willReturn($tierPrices);
         $this->localeFormat->expects($this->once())->method('getNumber')->with(-10)->willReturnArgument(0);
@@ -193,12 +176,10 @@ class TierpriceTest extends TestCase
                 'website_price' => 18,
             ],
         ];
-        $object = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $allCustomersGroup = $this->getMockBuilder(GroupInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $object = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
+            ->disableOriginalConstructor()->getMock();
+        $allCustomersGroup = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
+            ->disableOriginalConstructor()->getMock();
         $this->groupManagement
             ->expects($this->exactly(2))
             ->method('getAllCustomersGroup')

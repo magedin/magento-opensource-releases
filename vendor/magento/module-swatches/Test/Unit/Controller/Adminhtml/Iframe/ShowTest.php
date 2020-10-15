@@ -3,93 +3,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Controller\Adminhtml\Iframe;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Catalog\Model\Product\Media\Config;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Image\Adapter\AdapterInterface;
-use Magento\Framework\Image\AdapterFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MediaStorage\Model\File\Uploader;
-use Magento\MediaStorage\Model\File\UploaderFactory;
-use Magento\Swatches\Controller\Adminhtml\Iframe\Show;
-use Magento\Swatches\Helper\Media;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class to show swatch image and save it on disk
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShowTest extends TestCase
+class ShowTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject|Context */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Backend\App\Action\Context */
     protected $contextMock;
 
-    /** @var MockObject|\Magento\Framework\App\Response */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Response */
     protected $responseMock;
 
-    /** @var MockObject|Media */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Swatches\Helper\Media */
     protected $swatchHelperMock;
 
-    /** @var MockObject|AdapterFactory */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Image\AdapterFactory */
     protected $adapterFactoryMock;
 
-    /** @var MockObject|\Magento\Framework\Image\Adapter */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Image\Adapter */
     protected $adapterMock;
 
-    /** @var MockObject|Config */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Catalog\Model\Product\Media\Config */
     protected $configMock;
 
-    /** @var MockObject|Filesystem */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem */
     protected $filesystemMock;
 
-    /** @var MockObject|Read */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filesystem\Directory\Read */
     protected $mediaDirectoryMock;
 
-    /** @var MockObject|UploaderFactory */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\MediaStorage\Model\File\UploaderFactory */
     protected $uploaderFactoryMock;
 
-    /** @var MockObject|Uploader */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\MediaStorage\Model\File\Uploader */
     protected $uploaderMock;
 
-    /** @var ObjectManager|Show */
+    /** @var ObjectManager|\Magento\Swatches\Controller\Adminhtml\Iframe\Show */
     protected $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
-        $observerMock = $this->createMock(Manager::class);
-        $this->responseMock = $this->createPartialMock(Http::class, ['setBody']);
+        $this->contextMock = $this->createMock(\Magento\Backend\App\Action\Context::class);
+        $observerMock = $this->createMock(\Magento\Framework\Event\Manager::class);
+        $this->responseMock = $this->createPartialMock(\Magento\Framework\App\Response\Http::class, ['setBody']);
         $this->contextMock->expects($this->once())->method('getEventManager')->willReturn($observerMock);
         $this->contextMock->expects($this->once())->method('getResponse')->willReturn($this->responseMock);
-        $this->swatchHelperMock = $this->createMock(Media::class);
+        $this->swatchHelperMock = $this->createMock(\Magento\Swatches\Helper\Media::class);
         $this->adapterFactoryMock = $this->createPartialMock(
-            AdapterFactory::class,
+            \Magento\Framework\Image\AdapterFactory::class,
             ['create']
         );
-        $this->configMock = $this->createMock(Config::class);
-        $this->filesystemMock = $this->createMock(Filesystem::class);
+        $this->configMock = $this->createMock(\Magento\Catalog\Model\Product\Media\Config::class);
+        $this->filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->uploaderFactoryMock = $this->createPartialMock(
-            UploaderFactory::class,
+            \Magento\MediaStorage\Model\File\UploaderFactory::class,
             ['create']
         );
 
-        $this->uploaderMock = $this->createMock(Uploader::class);
-        $this->adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
-        $this->mediaDirectoryMock = $this->createMock(Read::class);
+        $this->uploaderMock = $this->createMock(\Magento\MediaStorage\Model\File\Uploader::class);
+        $this->adapterMock = $this->createMock(\Magento\Framework\Image\Adapter\AdapterInterface::class);
+        $this->mediaDirectoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->controller = $objectManager->getObject(
-            Show::class,
+            \Magento\Swatches\Controller\Adminhtml\Iframe\Show::class,
             [
                 'context' => $this->contextMock,
                 'swatchHelper' => $this->swatchHelperMock,
@@ -106,7 +90,7 @@ class ShowTest extends TestCase
         $this->uploaderFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willThrowException(new \Exception());
+            ->will($this->throwException(new \Exception()));
         $this->controller->execute();
     }
 

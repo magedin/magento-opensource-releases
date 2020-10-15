@@ -3,9 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/multiple_products_rollback.php');
+include __DIR__ . '/multiple_products_rollback.php';
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -32,7 +31,7 @@ foreach (['simple_31', 'simple_32', 'configurable', 'simple_41', 'simple_42', 'c
     }
 }
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/configurable_attribute_rollback.php');
+require __DIR__ . '/configurable_attribute_rollback.php';
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

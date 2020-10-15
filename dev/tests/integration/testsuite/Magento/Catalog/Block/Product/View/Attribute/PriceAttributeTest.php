@@ -24,7 +24,7 @@ class PriceAttributeTest extends AbstractAttributeTest
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

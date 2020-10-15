@@ -3,16 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Block\Backend\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Context;
-use Magento\Framework\DataObject;
-use Magento\Indexer\Block\Backend\Grid\Column\Renderer\Updated;
-use PHPUnit\Framework\TestCase;
-
-class UpdatedTest extends TestCase
+class UpdatedTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $defaultValue
@@ -21,11 +14,11 @@ class UpdatedTest extends TestCase
      */
     public function testRender($defaultValue, $assert)
     {
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Backend\Block\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $model = new Updated($context);
-        $obj = new DataObject();
+        $model = new \Magento\Indexer\Block\Backend\Grid\Column\Renderer\Updated($context);
+        $obj = new \Magento\Framework\DataObject();
         $obj->setGetter('getValue');
         $obj->setDefault($defaultValue);
         $obj->setValue('');

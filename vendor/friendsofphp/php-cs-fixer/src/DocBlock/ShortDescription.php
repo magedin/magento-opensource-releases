@@ -59,7 +59,5 @@ final class ShortDescription
                 $reachedContent = true;
             }
         }
-
-        return null;
     }
 }

@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cron\Test\Unit\Console\Command;
 
+use Symfony\Component\Console\Tester\CommandTester;
 use Magento\Cron\Console\Command\CronRemoveCommand;
-use Magento\Framework\Console\Cli;
 use Magento\Framework\Crontab\CrontabManagerInterface;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 
-class CronRemoveCommandTest extends TestCase
+class CronRemoveCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CrontabManagerInterface|MockObject
+     * @var CrontabManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $crontabManagerMock;
 
@@ -31,7 +27,7 @@ class CronRemoveCommandTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->crontabManagerMock = $this->getMockBuilder(CrontabManagerInterface::class)
             ->getMockForAbstractClass();

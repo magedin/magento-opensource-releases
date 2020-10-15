@@ -3,71 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Data;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Payment\Gateway\Data\Order\OrderAdapter;
-use Magento\Payment\Gateway\Data\Order\OrderAdapterFactory;
-use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
-use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
-use Magento\Payment\Gateway\Data\Quote\QuoteAdapterFactory;
-use Magento\Quote\Model\Quote;
-use Magento\Sales\Model\Order;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Model\Order\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Payment\Gateway\Data\Order\OrderAdapter;
+use Magento\Sales\Model\Order;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class PaymentDataObjectFactoryTest
  */
-class PaymentDataObjectFactoryTest extends TestCase
+class PaymentDataObjectFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /** @var PaymentDataObjectFactory */
     protected $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var OrderAdapterFactory|MockObject
+     * @var \Magento\Payment\Gateway\Data\Order\OrderAdapterFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderAdapterFactoryMock;
 
     /**
-     * @var QuoteAdapterFactory|MockObject
+     * @var \Magento\Payment\Gateway\Data\Quote\QuoteAdapterFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteAdapterFactoryMock;
 
     /**
-     * @var PaymentDataObject|MockObject
+     * @var \Magento\Payment\Gateway\Data\PaymentDataObject|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $paymentDataObjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->orderAdapterFactoryMock =
-            $this->getMockBuilder(OrderAdapterFactory::class)
+            $this->getMockBuilder(\Magento\Payment\Gateway\Data\Order\OrderAdapterFactory::class)
                 ->setMethods(['create'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
         $this->quoteAdapterFactoryMock =
-            $this->getMockBuilder(QuoteAdapterFactory::class)
+            $this->getMockBuilder(\Magento\Payment\Gateway\Data\Quote\QuoteAdapterFactory::class)
                 ->setMethods(['create'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
         $this->paymentDataObjectMock =
-            $this->getMockForAbstractClass(PaymentDataObjectInterface::class);
+            $this->createMock(\Magento\Payment\Gateway\Data\PaymentDataObjectInterface::class);
 
         $this->model = new PaymentDataObjectFactory(
             $this->objectManagerMock,
@@ -79,17 +69,17 @@ class PaymentDataObjectFactoryTest extends TestCase
     public function testCreatePaymentDataObjectFromOrder()
     {
         /** @var Order $orderMock */
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         /** @var OrderAdapter $orderAdapterMock */
-        $orderAdapterMock = $this->getMockBuilder(OrderAdapter::class)
+        $orderAdapterMock = $this->getMockBuilder(\Magento\Payment\Gateway\Data\Order\OrderAdapter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var Payment $paymentInfoMock */
-        $paymentInfoMock = $this->getMockBuilder(Payment::class)
+        /** @var \Magento\Sales\Model\Order\Payment $paymentInfoMock */
+        $paymentInfoMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -105,7 +95,7 @@ class PaymentDataObjectFactoryTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('create')
             ->with(
-                PaymentDataObject::class,
+                \Magento\Payment\Gateway\Data\PaymentDataObject::class,
                 [
                     'order' => $orderAdapterMock,
                     'payment' => $paymentInfoMock
@@ -117,13 +107,13 @@ class PaymentDataObjectFactoryTest extends TestCase
 
     public function testCreatePaymentDataObjectFromQuote()
     {
-        /** @var Quote $quoteMock */
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        /** @var \Magento\Quote\Model\Quote $quoteMock */
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         /** @var OrderAdapter $orderAdapterMock */
-        $quoteAdapterMock = $this->getMockBuilder(QuoteAdapter::class)
+        $quoteAdapterMock = $this->getMockBuilder(\Magento\Payment\Gateway\Data\Quote\QuoteAdapter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -144,7 +134,7 @@ class PaymentDataObjectFactoryTest extends TestCase
         $this->objectManagerMock->expects($this->once())
             ->method('create')
             ->with(
-                PaymentDataObject::class,
+                \Magento\Payment\Gateway\Data\PaymentDataObject::class,
                 [
                     'order' => $quoteAdapterMock,
                     'payment' => $paymentInfoMock

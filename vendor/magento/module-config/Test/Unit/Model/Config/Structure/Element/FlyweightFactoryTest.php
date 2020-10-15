@@ -3,39 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Element;
 
-use Magento\Config\Model\Config\Structure\Element\Field;
-use Magento\Config\Model\Config\Structure\Element\FlyweightFactory;
-use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Config\Model\Config\Structure\Element\Section;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FlyweightFactoryTest extends TestCase
+class FlyweightFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FlyweightFactory
+     * @var \Magento\Config\Model\Config\Structure\Element\FlyweightFactory
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_model = new FlyweightFactory(
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_model = new \Magento\Config\Model\Config\Structure\Element\FlyweightFactory(
             $this->_objectManagerMock
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
         unset($this->_objectManagerMock);
@@ -47,12 +37,14 @@ class FlyweightFactoryTest extends TestCase
             $this->any()
         )->method(
             'create'
-        )->willReturnMap(
-            [
-                [Section::class, [], 'sectionObject'],
-                [Group::class, [], 'groupObject'],
-                [Field::class, [], 'fieldObject'],
-            ]
+        )->will(
+            $this->returnValueMap(
+                [
+                    [\Magento\Config\Model\Config\Structure\Element\Section::class, [], 'sectionObject'],
+                    [\Magento\Config\Model\Config\Structure\Element\Group::class, [], 'groupObject'],
+                    [\Magento\Config\Model\Config\Structure\Element\Field::class, [], 'fieldObject'],
+                ]
+            )
         );
         $this->assertEquals('sectionObject', $this->_model->create('section'));
         $this->assertEquals('groupObject', $this->_model->create('group'));

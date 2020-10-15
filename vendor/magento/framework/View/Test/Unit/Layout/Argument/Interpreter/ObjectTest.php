@@ -7,44 +7,39 @@ declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\BooleanUtils;
 use Magento\Framework\View\Layout\Argument\Interpreter\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests layout argument interpreter data object.
  */
-class ObjectTest extends TestCase
+class ObjectTest extends \PHPUnit\Framework\TestCase
 {
     const EXPECTED_CLASS = \Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter\ObjectTest::class;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var InterpreterInterface|MockObject
+     * @var \Magento\Framework\Data\Argument\InterpreterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_interpreter;
 
     /**
-     * @var BooleanUtils
+     * @var \Magento\Framework\Stdlib\BooleanUtils
      */
     protected $_booleanUtils;
 
     /**
-     * @var DataObject
+     * @var \Magento\Framework\View\Layout\Argument\Interpreter\DataObject
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_booleanUtils = $this->createMock(BooleanUtils::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_booleanUtils = $this->createMock(\Magento\Framework\Stdlib\BooleanUtils::class);
         $this->_model = new DataObject($this->_objectManager, self::EXPECTED_CLASS, $this->_booleanUtils);
     }
 
@@ -159,7 +154,7 @@ class ObjectTest extends TestCase
         return [
             'no class' => [[], '\InvalidArgumentException', 'Object class name is missing'],
             'unexpected class' => [
-                ['value' => ObjectManagerInterface::class],
+                ['value' => \Magento\Framework\ObjectManagerInterface::class],
                 '\UnexpectedValueException',
                 'Instance of ' . self::EXPECTED_CLASS . ' is expected',
             ]

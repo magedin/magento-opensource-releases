@@ -7,9 +7,6 @@
  */
 namespace Magento\Eav\Model\Entity\Setup;
 
-/**
- * @inheritdoc
- */
 abstract class PropertyMapperAbstract implements PropertyMapperInterface
 {
     /**
@@ -25,6 +22,6 @@ abstract class PropertyMapperAbstract implements PropertyMapperInterface
         if (isset($array[$key]) && is_bool($array[$key])) {
             $array[$key] = (int)$array[$key];
         }
-        return $array[$key] ?? $default;
+        return isset($array[$key]) ? $array[$key] : $default;
     }
 }

@@ -12,7 +12,7 @@ class InvoiceTest extends \PHPUnit\Framework\TestCase
      */
     private $_collection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_collection = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Sales\Model\ResourceModel\Order\Collection::class

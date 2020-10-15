@@ -3,43 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Model\Test\Unit\ResourceModel\Db;
-
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\Model\ResourceModel\Db\DeleteEntityRow;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for DeleteEntityRow class.
  */
-class DeleteEntityRowTest extends TestCase
+class DeleteEntityRowTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Subject of testing.
      *
-     * @var DeleteEntityRow
+     * @var \Magento\Framework\Model\ResourceModel\Db\DeleteEntityRow
      */
     protected $subject;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connection;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var \Magento\Framework\EntityManager\MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPool;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->connection = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -48,7 +39,7 @@ class DeleteEntityRowTest extends TestCase
             []
         );
 
-        $metadata = $this->createMock(EntityMetadata::class);
+        $metadata = $this->createMock(\Magento\Framework\EntityManager\EntityMetadata::class);
 
         $metadata->expects($this->any())
             ->method('getLinkField')
@@ -62,14 +53,14 @@ class DeleteEntityRowTest extends TestCase
             ->method('getEntityConnection')
             ->willReturn($this->connection);
 
-        $this->metadataPool = $this->createMock(MetadataPool::class);
+        $this->metadataPool = $this->createMock(\Magento\Framework\EntityManager\MetadataPool::class);
 
         $this->metadataPool->expects($this->any())
             ->method('getMetadata')
             ->with('Test\Entity\Type')
             ->willReturn($metadata);
 
-        $this->subject = new DeleteEntityRow(
+        $this->subject = new \Magento\Framework\Model\ResourceModel\Db\DeleteEntityRow(
             $this->metadataPool
         );
     }

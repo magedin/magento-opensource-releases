@@ -5,6 +5,8 @@
  */
 declare(strict_types=1);
 
+require __DIR__ . '/website_rollback.php';
+
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\CategoryRepository;
@@ -12,9 +14,6 @@ use Magento\Catalog\Model\ResourceModel\Category\Collection;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/website_rollback.php');
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var CategoryRepository $categoryRepository */

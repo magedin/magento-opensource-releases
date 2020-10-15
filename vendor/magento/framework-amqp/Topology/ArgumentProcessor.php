@@ -6,7 +6,7 @@
 namespace Magento\Framework\Amqp\Topology;
 
 /**
- * @deprecated 103.0.0
+ * @deprecated 102.0.5
  * see: https://github.com/php-amqplib/php-amqplib/issues/405
  */
 trait ArgumentProcessor

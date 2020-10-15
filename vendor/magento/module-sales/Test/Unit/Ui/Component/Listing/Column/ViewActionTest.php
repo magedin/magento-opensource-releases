@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Sales\Ui\Component\Listing\Column\ViewAction;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ViewActionTest extends TestCase
+/**
+ * Class ViewActionTest
+ */
+class ViewActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ViewAction
@@ -23,19 +20,19 @@ class ViewActionTest extends TestCase
     protected $model;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilder;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilder = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class);
     }
 
     /**
@@ -53,14 +50,14 @@ class ViewActionTest extends TestCase
         $expectedUrlPath,
         $expectedUrlParam
     ) {
-        $contextMock = $this->getMockBuilder(ContextInterface::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
         $this->model = $this->objectManager->getObject(
-            ViewAction::class,
+            \Magento\Sales\Ui\Component\Listing\Column\ViewAction::class,
             [
                 'urlBuilder' => $this->urlBuilder,
                 'data' => $data,

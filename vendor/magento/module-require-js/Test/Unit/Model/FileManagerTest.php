@@ -3,70 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\RequireJs\Test\Unit\Model;
 
+use \Magento\RequireJs\Model\FileManager;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\State;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\RequireJs\Config;
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\File\FallbackContext;
-use Magento\Framework\View\Asset\Repository;
-use Magento\RequireJs\Model\FileManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FileManagerTest extends TestCase
+class FileManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\RequireJs\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fileSystem;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dir;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appState;
 
     /**
-     * @var File|MockObject
+     * @var \Magento\Framework\View\Asset\File|\PHPUnit_Framework_MockObject_MockObject
      */
     private $asset;
 
     /**
-     * @var FileManager
+     * @var \Magento\RequireJs\Model\FileManager
      */
     private $object;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetRepoMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->createMock(Config::class);
-        $this->fileSystem = $this->createMock(Filesystem::class);
-        $this->appState = $this->createMock(State::class);
-        $this->assetRepoMock = $this->createMock(Repository::class);
+        $this->configMock = $this->createMock(\Magento\Framework\RequireJs\Config::class);
+        $this->fileSystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->appState = $this->createMock(\Magento\Framework\App\State::class);
+        $this->assetRepoMock = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
         $this->object = new FileManager($this->configMock, $this->fileSystem, $this->appState, $this->assetRepoMock);
-        $this->dir = $this->getMockForAbstractClass(WriteInterface::class);
-        $this->asset = $this->createMock(File::class);
+        $this->dir = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\Directory\WriteInterface::class);
+        $this->asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
     }
 
     /**
@@ -77,27 +65,27 @@ class FileManagerTest extends TestCase
     {
         $this->configMock->expects($this->once())
             ->method('getConfigFileRelativePath')
-            ->willReturn('requirejs/file.js');
+            ->will($this->returnValue('requirejs/file.js'));
         $this->fileSystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->with(DirectoryList::STATIC_VIEW)
-            ->willReturn($this->dir);
+            ->will($this->returnValue($this->dir));
         $this->assetRepoMock->expects($this->once())
             ->method('createArbitrary')
             ->with('requirejs/file.js', '')
-            ->willReturn($this->asset);
+            ->will($this->returnValue($this->asset));
 
-        $this->appState->expects($this->once())->method('getMode')->willReturn('anything');
+        $this->appState->expects($this->once())->method('getMode')->will($this->returnValue('anything'));
         $this->dir->expects($this->once())
             ->method('isExist')
             ->with('requirejs/file.js')
-            ->willReturn($exists);
+            ->will($this->returnValue($exists));
         if ($exists) {
             $this->configMock->expects($this->never())->method('getConfig');
             $this->dir->expects($this->never())->method('writeFile');
         } else {
             $data = 'requirejs config data';
-            $this->configMock->expects($this->once())->method('getConfig')->willReturn($data);
+            $this->configMock->expects($this->once())->method('getConfig')->will($this->returnValue($data));
             $this->dir->expects($this->once())->method('writeFile')->with('requirejs/file.js', $data);
         }
         $this->assertSame($this->asset, $this->object->createRequireJsConfigAsset());
@@ -115,22 +103,22 @@ class FileManagerTest extends TestCase
     {
         $this->configMock->expects($this->once())
             ->method('getConfigFileRelativePath')
-            ->willReturn('requirejs/file.js');
+            ->will($this->returnValue('requirejs/file.js'));
         $this->fileSystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->with(DirectoryList::STATIC_VIEW)
-            ->willReturn($this->dir);
+            ->will($this->returnValue($this->dir));
         $this->assetRepoMock->expects($this->once())
             ->method('createArbitrary')
             ->with('requirejs/file.js', '')
-            ->willReturn($this->asset);
+            ->will($this->returnValue($this->asset));
 
         $this->appState->expects($this->once())
             ->method('getMode')
-            ->willReturn(State::MODE_DEVELOPER);
+            ->will($this->returnValue(\Magento\Framework\App\State::MODE_DEVELOPER));
         $this->dir->expects($this->never())->method('isExist');
         $data = 'requirejs config data';
-        $this->configMock->expects($this->once())->method('getConfig')->willReturn($data);
+        $this->configMock->expects($this->once())->method('getConfig')->will($this->returnValue($data));
         $this->dir->expects($this->once())->method('writeFile')->with('requirejs/file.js', $data);
         $this->assertSame($this->asset, $this->object->createRequireJsConfigAsset());
     }
@@ -138,13 +126,13 @@ class FileManagerTest extends TestCase
     public function testCreateBundleJsPool()
     {
         unset($this->configMock);
-        $dirRead = $this->getMockBuilder(Read::class)
+        $dirRead = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Read::class)
             ->setMockClassName('libDir')
             ->disableOriginalConstructor()
             ->getMock();
-        $context = $this->createMock(FallbackContext::class);
-        $assetRepo = $this->createMock(Repository::class);
-        $config = $this->createMock(Config::class);
+        $context = $this->createMock(\Magento\Framework\View\Asset\File\FallbackContext::class);
+        $assetRepo = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
+        $config = $this->createMock(\Magento\Framework\RequireJs\Config::class);
 
         $config
             ->expects($this->never())
@@ -218,7 +206,7 @@ class FileManagerTest extends TestCase
         $this->fileSystem->expects($this->once())
             ->method('getDirectoryWrite')
             ->with(DirectoryList::STATIC_VIEW)
-            ->willReturn($this->dir);
+            ->will($this->returnValue($this->dir));
 
         $this->object->createMinResolverAsset();
     }
@@ -229,7 +217,7 @@ class FileManagerTest extends TestCase
         $this->configMock
             ->expects($this->once())
             ->method('getMixinsFileRelativePath')
-            ->willReturn($path);
+            ->will($this->returnValue($path));
         $this->assetRepoMock
             ->expects($this->once())
             ->method('createArbitrary')
@@ -241,7 +229,7 @@ class FileManagerTest extends TestCase
 
     public function testClearBundleJsPool()
     {
-        $context = $this->getMockBuilder(FallbackContext::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Asset\File\FallbackContext::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->fileSystem->expects($this->once())
@@ -257,7 +245,7 @@ class FileManagerTest extends TestCase
             ->willReturn('/path/to/directory');
         $this->dir->expects($this->once())
             ->method('delete')
-            ->with('/path/to/directory/' . Config::BUNDLE_JS_DIR)
+            ->with('/path/to/directory/' . \Magento\Framework\RequireJs\Config::BUNDLE_JS_DIR)
             ->willReturn(true);
         $this->assertTrue($this->object->clearBundleJsPool());
     }

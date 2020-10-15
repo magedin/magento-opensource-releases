@@ -3,39 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Payment\Transaction;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Model\Order\Payment\Transaction\Manager;
-use Magento\Sales\Model\Order\Payment\Transaction\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ManagerTest extends TestCase
+/**
+ * Class ManagerTest
+ */
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Manager
+     * @var \Magento\Sales\Model\Order\Payment\Transaction\Manager
      */
     private $manager;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Sales\Model\Order\Payment\Transaction\Repository | \PHPUnit_Framework_MockObject_MockObject
      */
     private $repositoryMock;
 
     /**
      * Init
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->repositoryMock = $this->createMock(Repository::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->repositoryMock = $this->createMock(\Magento\Sales\Model\Order\Payment\Transaction\Repository::class);
         $this->manager = $objectManager->getObject(
-            Manager::class,
+            \Magento\Sales\Model\Order\Payment\Transaction\Manager::class,
             ['transactionRepository' => $this->repositoryMock]
         );
     }
@@ -48,7 +44,7 @@ class ManagerTest extends TestCase
      */
     public function testGetAuthorizationTransaction($parentTransactionId, $paymentId, $orderId)
     {
-        $transaction = $this->createMock(Transaction::class);
+        $transaction = $this->createMock(\Magento\Sales\Model\Order\Payment\Transaction::class);
         if ($parentTransactionId) {
             $this->repositoryMock->expects($this->once())->method('getByTransactionId')->with(
                 $parentTransactionId,
@@ -80,7 +76,7 @@ class ManagerTest extends TestCase
         $orderId = 9;
 
         if ($transactionId && $isRepositoryReturnTransaction) {
-            $transaction = $this->createMock(Transaction::class);
+            $transaction = $this->createMock(\Magento\Sales\Model\Order\Payment\Transaction::class);
             $this->repositoryMock->expects($this->once())->method('getByTransactionId')->willReturn($transaction);
         }
 
@@ -108,13 +104,13 @@ class ManagerTest extends TestCase
         $transactionBasedOn = false;
 
         $payment = $this->createPartialMock(
-            Payment::class,
+            \Magento\Sales\Model\Order\Payment::class,
             ["setParentTransactionId", "getParentTransactionId", "getTransactionId"]
         );
         $payment->expects($this->atLeastOnce())->method('getTransactionId')->willReturn($transactionId);
 
         if (!$parentTransactionId && !$transactionId && $transactionBasedTxnId) {
-            $transactionBasedOn = $this->createMock(Transaction::class);
+            $transactionBasedOn = $this->createMock(\Magento\Sales\Model\Order\Payment\Transaction::class);
             $transactionBasedOn->expects($this->once())->method('getTxnId')->willReturn($transactionBasedTxnId);
             $payment->expects($this->once())->method("setParentTransactionId")->with($transactionBasedTxnId);
         }

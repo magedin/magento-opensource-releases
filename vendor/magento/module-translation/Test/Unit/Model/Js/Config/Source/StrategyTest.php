@@ -3,16 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\Model\Js\Config\Source;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Translation\Model\Js\Config;
 use Magento\Translation\Model\Js\Config\Source\Strategy;
-use PHPUnit\Framework\TestCase;
 
-class StrategyTest extends TestCase
+/**
+ * Class StrategyTest
+ */
+class StrategyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Strategy
@@ -23,10 +22,10 @@ class StrategyTest extends TestCase
      * Set up
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->model = $objectManager->getObject(Strategy::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->model = $objectManager->getObject(\Magento\Translation\Model\Js\Config\Source\Strategy::class);
     }
 
     /**

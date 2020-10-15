@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mail\Test\Unit;
 
-use Magento\Framework\Mail\Message;
-use Magento\Framework\Mail\Transport;
-use PHPUnit\Framework\TestCase;
-
-class TransportTest extends TestCase
+class TransportTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \Magento\Framework\Mail\Transport::sendMessage
+     * @expectedException \Magento\Framework\Exception\MailException
+     * @expectedExceptionMessage Invalid email; contains no at least one of "To", "Cc", and "Bcc" header
      */
     public function testSendMessageBrokenMessage()
     {
-        $this->expectException('Magento\Framework\Exception\MailException');
-        $this->expectExceptionMessage('Invalid email; contains no at least one of "To", "Cc", and "Bcc" header');
-        $transport = new Transport(
-            new Message()
+        $transport = new \Magento\Framework\Mail\Transport(
+            new \Magento\Framework\Mail\Message()
         );
 
         $transport->sendMessage();

@@ -21,7 +21,7 @@ class CategoryPageViewTest extends ProductPageViewTest
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

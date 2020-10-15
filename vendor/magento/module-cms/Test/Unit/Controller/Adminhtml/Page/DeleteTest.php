@@ -3,51 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Page;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Cms\Controller\Adminhtml\Page\Delete;
-use Magento\Cms\Model\Page;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DeleteTest extends TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Delete */
+    /** @var \Magento\Cms\Controller\Adminhtml\Page\Delete */
     protected $deleteController;
 
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     protected $objectManager;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var RedirectFactory|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirectFactoryMock;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirectMock;
 
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $messageManagerMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestMock;
 
-    /** @var \Magento\Framework\ObjectManager\ObjectManager|MockObject */
+    /** @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject */
     protected $objectManagerMock;
 
-    /** @var Page|MockObject $pageMock */
+    /** @var \Magento\Cms\Model\Page|\PHPUnit_Framework_MockObject_MockObject $pageMock */
     protected $pageMock;
 
-    /** @var \Magento\Framework\Event\ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $eventManagerMock;
 
     /** @var string */
@@ -56,14 +43,14 @@ class DeleteTest extends TestCase
     /** @var int */
     protected $pageId = 1;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->messageManagerMock = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
 
         $this->requestMock = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
@@ -72,7 +59,7 @@ class DeleteTest extends TestCase
             ['getParam']
         );
 
-        $this->pageMock = $this->getMockBuilder(Page::class)
+        $this->pageMock = $this->getMockBuilder(\Magento\Cms\Model\Page::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'delete', 'getTitle'])
             ->getMock();
@@ -82,13 +69,13 @@ class DeleteTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->resultRedirectMock = $this->getMockBuilder(Redirect::class)
+        $this->resultRedirectMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->setMethods(['setPath'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            RedirectFactory::class
+            \Magento\Backend\Model\View\Result\RedirectFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -98,7 +85,7 @@ class DeleteTest extends TestCase
 
         $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
 
-        $this->contextMock = $this->createMock(Context::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\App\Action\Context::class);
 
         $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->requestMock);
         $this->contextMock->expects($this->any())->method('getMessageManager')->willReturn($this->messageManagerMock);
@@ -109,7 +96,7 @@ class DeleteTest extends TestCase
             ->willReturn($this->resultRedirectFactoryMock);
 
         $this->deleteController = $this->objectManager->getObject(
-            Delete::class,
+            \Magento\Cms\Controller\Adminhtml\Page\Delete::class,
             [
                 'context' => $this->contextMock,
             ]
@@ -124,7 +111,7 @@ class DeleteTest extends TestCase
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Page::class)
+            ->with(\Magento\Cms\Model\Page::class)
             ->willReturn($this->pageMock);
 
         $this->pageMock->expects($this->once())
@@ -187,7 +174,7 @@ class DeleteTest extends TestCase
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Page::class)
+            ->with(\Magento\Cms\Model\Page::class)
             ->willReturn($this->pageMock);
 
         $this->pageMock->expects($this->once())
@@ -198,7 +185,7 @@ class DeleteTest extends TestCase
             ->willReturn($this->title);
         $this->pageMock->expects($this->once())
             ->method('delete')
-            ->willThrowException(new \Exception($errorMsg));
+            ->willThrowException(new \Exception(__($errorMsg)));
 
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')

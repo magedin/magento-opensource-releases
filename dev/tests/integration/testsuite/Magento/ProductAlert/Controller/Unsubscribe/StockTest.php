@@ -50,7 +50,7 @@ class StockTest extends AbstractController
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = Bootstrap::getObjectManager();

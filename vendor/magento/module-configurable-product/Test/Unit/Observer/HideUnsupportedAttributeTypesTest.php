@@ -3,23 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Observer;
 
+use Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab\Main as MainBlock;
 use Magento\ConfigurableProduct\Observer\HideUnsupportedAttributeTypes;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\Select;
 use Magento\Framework\Event\Observer as EventObserver;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\BlockInterface;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Unit test for Magento\ConfigurableProduct\Observer\HideUnsupportedAttributeTypes
  */
-class HideUnsupportedAttributeTypesTest extends TestCase
+class HideUnsupportedAttributeTypesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -29,7 +28,7 @@ class HideUnsupportedAttributeTypesTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
     }
@@ -41,15 +40,15 @@ class HideUnsupportedAttributeTypesTest extends TestCase
     {
         $target = $this->createTarget($this->createRequestMock(false));
         $event = $this->createEventMock();
-        $this->assertNull($target->execute($event));
+        $this->assertEquals(null, $target->execute($event));
     }
 
     /**
-     * @param RequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+     * @param RequestInterface|\PHPUnit_Framework_MockObject_MockObject $request
      * @param array $supportedTypes
      * @return HideUnsupportedAttributeTypes
      */
-    private function createTarget(MockObject $request, array $supportedTypes = [])
+    private function createTarget(\PHPUnit_Framework_MockObject_MockObject $request, array $supportedTypes = [])
     {
         return $this->objectManager->getObject(
             HideUnsupportedAttributeTypes::class,
@@ -87,11 +86,11 @@ class HideUnsupportedAttributeTypesTest extends TestCase
     }
 
     /**
-     * @param \PHPUnit\Framework\MockObject\MockObject|null $form
-     * @return EventObserver|\PHPUnit\Framework\MockObject\MockObject
+     * @param \PHPUnit_Framework_MockObject_MockObject|null $form
+     * @return EventObserver|\PHPUnit_Framework_MockObject_MockObject
      * @internal param null|MockObject $block
      */
-    private function createEventMock(MockObject $form = null)
+    private function createEventMock(\PHPUnit_Framework_MockObject_MockObject $form = null)
     {
         $event = $this->getMockBuilder(EventObserver::class)
             ->setMethods(['getForm', 'getBlock'])
@@ -110,7 +109,7 @@ class HideUnsupportedAttributeTypesTest extends TestCase
     {
         $target = $this->createTarget($this->createRequestMock(true), $supportedTypes);
         $event = $this->createEventMock($this->createForm($originalValues, $expectedValues));
-        $this->assertNull($target->execute($event));
+        $this->assertEquals(null, $target->execute($event));
     }
 
     /**
@@ -169,11 +168,11 @@ class HideUnsupportedAttributeTypesTest extends TestCase
      */
     private function createForm(array $originalValues = [], array $expectedValues = [])
     {
-        $form = $this->getMockBuilder(Form::class)
+        $form = $this->getMockBuilder(\Magento\Framework\Data\Form::class)
             ->setMethods(['getElement'])
             ->disableOriginalConstructor()
             ->getMock();
-        $frontendInput = $this->getMockBuilder(Select::class)
+        $frontendInput = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Select::class)
             ->setMethods(['getValues', 'setValues'])
             ->disableOriginalConstructor()
             ->getMock();

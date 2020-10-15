@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Product;
 
-use Magento\Framework\Stdlib\DateTime\Filter\Date;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Block\Adminhtml\Product\Downloads\Grid;
 use Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsExcel;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ExportDownloadsExcelTest extends AbstractControllerTest
+class ExportDownloadsExcelTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportDownloadsExcel
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsExcel
      */
     protected $exportDownloadsExcel;
 
     /**
-     * @var Date|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\Filter\Date|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $this->dateMock = $this->getMockBuilder(Date::class)
+        $this->dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exportDownloadsExcel = $objectManager->getObject(
-            ExportDownloadsExcel::class,
+            \Magento\Reports\Controller\Adminhtml\Report\Product\ExportDownloadsExcel::class,
             [
                 'context' => $this->contextMock,
                 'fileFactory' => $this->fileFactoryMock,
@@ -70,7 +64,7 @@ class ExportDownloadsExcelTest extends AbstractControllerTest
         $this->layoutMock
             ->expects($this->once())
             ->method('createBlock')
-            ->with(Grid::class)
+            ->with(\Magento\Reports\Block\Adminhtml\Product\Downloads\Grid::class)
             ->willReturn($this->abstractBlockMock);
 
         $this->fileFactoryMock

@@ -3,45 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment;
 
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\Data\ShipmentInterface;
-use Magento\Sales\Api\Data\ShipmentItemInterface;
-use Magento\Sales\Model\Order\Item;
-use Magento\Sales\Model\Order\Shipment\OrderRegistrar;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class OrderRegistrarTest extends TestCase
+class OrderRegistrarTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderRegistrar
+     * @var \Magento\Sales\Model\Order\Shipment\OrderRegistrar
      */
     private $model;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var ShipmentInterface|MockObject
+     * @var \Magento\Sales\Api\Data\ShipmentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->orderMock = $this->getMockBuilder(OrderInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->shipmentMock = $this->getMockBuilder(ShipmentInterface::class)
+        $this->shipmentMock = $this->getMockBuilder(\Magento\Sales\Api\Data\ShipmentInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->model = new OrderRegistrar();
+        $this->model = new \Magento\Sales\Model\Order\Shipment\OrderRegistrar();
     }
 
     public function testRegister()
@@ -55,7 +45,7 @@ class OrderRegistrarTest extends TestCase
         $item2->expects($this->atLeastOnce())->method('getQty')->willReturn(0.5);
         $item2->expects($this->once())->method('register');
 
-        $orderItemMock = $this->createMock(Item::class);
+        $orderItemMock = $this->createMock(\Magento\Sales\Model\Order\Item::class);
         $orderItemMock->expects($this->once())->method('isDummy')->with(true)->willReturn(false);
         $item2->expects($this->once())->method('getOrderItem')->willReturn($orderItemMock);
 
@@ -68,11 +58,11 @@ class OrderRegistrarTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getShipmentItemMock()
     {
-        return $this->getMockBuilder(ShipmentItemInterface::class)
+        return $this->getMockBuilder(\Magento\Sales\Api\Data\ShipmentItemInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['register', 'getOrderItem'])
             ->getMockForAbstractClass();

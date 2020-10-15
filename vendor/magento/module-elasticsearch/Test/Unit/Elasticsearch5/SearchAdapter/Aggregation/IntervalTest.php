@@ -7,25 +7,23 @@ declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\Elasticsearch5\SearchAdapter\Aggregation;
 
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch as ElasticsearchClient;
 use Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval;
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
-use Magento\Elasticsearch\Model\Config;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Api\Data\StoreInterface;
+use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
+use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Elasticsearch\Model\Config;
+use Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch as ElasticsearchClient;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
 
 /**
  * Test for Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval class.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IntervalTest extends TestCase
+class IntervalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Interval
@@ -33,49 +31,49 @@ class IntervalTest extends TestCase
     private $model;
 
     /**
-     * @var ConnectionManager|MockObject
+     * @var ConnectionManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionManager;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var FieldMapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fieldMapper;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $clientConfig;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSession;
 
     /**
-     * @var ElasticsearchClient|MockObject
+     * @var ElasticsearchClient|\PHPUnit_Framework_MockObject_MockObject
      */
     private $clientMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var SearchIndexNameResolver|MockObject
+     * @var SearchIndexNameResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchIndexNameResolver;
 
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
             ->setMethods(['getConnection'])
@@ -83,7 +81,7 @@ class IntervalTest extends TestCase
             ->getMock();
         $this->fieldMapper = $this->getMockBuilder(FieldMapperInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->clientConfig = $this->getMockBuilder(Config::class)
             ->setMethods([
                 'getIndexName',
@@ -93,7 +91,7 @@ class IntervalTest extends TestCase
             ->getMock();
         $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->customerSession = $this->getMockBuilder(CustomerSession::class)
             ->setMethods(['getCustomerGroupId'])
             ->disableOriginalConstructor()
@@ -103,7 +101,7 @@ class IntervalTest extends TestCase
             ->willReturn(1);
         $this->storeMock = $this->getMockBuilder(StoreInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->searchIndexNameResolver = $this
             ->getMockBuilder(SearchIndexNameResolver::class)
             ->disableOriginalConstructor()

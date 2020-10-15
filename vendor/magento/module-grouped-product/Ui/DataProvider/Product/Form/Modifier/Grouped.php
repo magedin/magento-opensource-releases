@@ -394,11 +394,9 @@ class Grouped extends AbstractModifier
                         'externalFilterMode' => true,
                         'imports' => [
                             'storeId' => '${ $.provider }:data.product.current_store_id',
-                            '__disableTmpl' => ['storeId' => false],
                         ],
                         'exports' => [
                             'storeId' => '${ $.externalProvider }:params.current_store_id',
-                            '__disableTmpl' => ['storeId' => false],
                         ],
                     ],
                 ],
@@ -501,10 +499,7 @@ class Grouped extends AbstractModifier
                             'attribute_set' => 'attribute_set_text',
                             'thumbnail' => 'thumbnail_src',
                         ],
-                        'links' => [
-                            'insertData' => '${ $.provider }:${ $.dataProvider }',
-                            '__disableTmpl' => ['insertData' => false],
-                        ],
+                        'links' => ['insertData' => '${ $.provider }:${ $.dataProvider }'],
                         'sortOrder' => 20,
                         'columnsHeader' => false,
                         'columnsHeaderAfterRender' => true,

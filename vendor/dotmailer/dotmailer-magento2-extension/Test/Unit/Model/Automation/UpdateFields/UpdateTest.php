@@ -73,7 +73,7 @@ class UpdateAbandonedCartFieldsTest extends TestCase
     /**
      * Prepare data
      */
-    protected function setUp() :void
+    protected function setUp()
     {
         $this->helperMock = $this->createMock(Data::class);
         $this->magentoQuoteFactoryMock = $this->createMock(MagentoQuoteFactory::class);

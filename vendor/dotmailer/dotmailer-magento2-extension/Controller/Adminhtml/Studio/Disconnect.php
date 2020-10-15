@@ -9,7 +9,7 @@ class Disconnect extends \Magento\Backend\App\AbstractAction
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Dotdigitalgroup_Email::automation_studio';
+    const ADMIN_RESOURCE = 'Dotdigitalgroup_Email::studio';
 
     /**
      * Disconnect and remote the refresh token.

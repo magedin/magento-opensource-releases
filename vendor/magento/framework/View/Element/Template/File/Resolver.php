@@ -9,7 +9,8 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json;
 
 /**
- * Resolver, returns template file name by template.
+ * Class Resolver
+ * @package Magento\Framework\View\Element\Template\File
  */
 class Resolver
 {

@@ -5,20 +5,7 @@
  */
 namespace Magento\Framework\Code\Test\Unit\Generator;
 
-use Laminas\Code\Generator\DocBlock\Tag;
-use Laminas\Code\Generator\ParameterGenerator;
-use Laminas\Code\Generator\ValueGenerator;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\DocBlockGenerator;
-use Laminas\Code\Generator\AbstractMemberGenerator;
-use Laminas\Code\Generator\MethodGenerator;
-use Laminas\Code\Generator\PropertyGenerator;
-
-/**
- * Test for Magento\Framework\Code\Generator\ClassGenerator
- */
-class ClassGeneratorTest extends TestCase
+class ClassGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Possible flags for assertion
@@ -36,8 +23,9 @@ class ClassGeneratorTest extends TestCase
     const FLAG_VARIADIC = 'variadic';
 
     /**#@-*/
+
     /**
-     * @var ClassGenerator
+     * @var \Magento\Framework\Code\Generator\ClassGenerator
      */
     protected $_model;
 
@@ -130,12 +118,12 @@ class ClassGeneratorTest extends TestCase
         'publicProperty' => ['name' => 'publicProperty'],
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new ClassGenerator();
+        $this->_model = new \Magento\Framework\Code\Generator\ClassGenerator();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
     }
@@ -150,13 +138,12 @@ class ClassGeneratorTest extends TestCase
 
     /**
      * @param array $expectedDocBlock
-     * @param DocBlockGenerator $actualDocBlock
+     * @param \Zend\Code\Generator\DocBlockGenerator $actualDocBlock
      */
     protected function _assertDocBlockData(
         array $expectedDocBlock,
-        DocBlockGenerator $actualDocBlock
+        \Zend\Code\Generator\DocBlockGenerator $actualDocBlock
     ) {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
         // assert plain string data
         foreach ($expectedDocBlock as $propertyName => $propertyData) {
             if (is_string($propertyData)) {
@@ -169,7 +156,7 @@ class ClassGeneratorTest extends TestCase
             $expectedTagsData = $expectedDocBlock['tags'];
             $actualTags = $actualDocBlock->getTags();
             $this->assertSameSize($expectedTagsData, $actualTags);
-            /** @var Tag $actualTag */
+            /** @var $actualTag \Zend\Code\Generator\DocBlock\Tag */
             foreach ($actualTags as $actualTag) {
                 $tagName = $actualTag->getName();
                 $this->assertArrayHasKey($tagName, $expectedTagsData);
@@ -186,7 +173,7 @@ class ClassGeneratorTest extends TestCase
 
         $this->assertSameSize($this->_methodData, $actualMethods);
 
-        /** @var MethodGenerator $method */
+        /** @var $method \Zend\Code\Generator\MethodGenerator */
         foreach ($actualMethods as $methodName => $method) {
             $this->assertArrayHasKey($methodName, $this->_methodData);
             $expectedMethodData = $this->_methodData[$methodName];
@@ -209,7 +196,7 @@ class ClassGeneratorTest extends TestCase
                 foreach ($expectedMethodData['parameters'] as $parameterData) {
                     $parameterName = $parameterData['name'];
                     $this->assertArrayHasKey($parameterName, $actualParameters);
-                    /** @var ParameterGenerator $actualParameter */
+                    /** @var $actualParameter \Zend\Code\Generator\ParameterGenerator */
                     $actualParameter = $actualParameters[$parameterName];
                     $this->assertEquals($parameterName, $actualParameter->getName());
 
@@ -223,7 +210,7 @@ class ClassGeneratorTest extends TestCase
 
                     // assert default value
                     if (isset($parameterData['defaultValue'])) {
-                        /** @var ValueGenerator $actualDefaultValue */
+                        /** @var $actualDefaultValue \Zend\Code\Generator\ValueGenerator */
                         $actualDefaultValue = $actualParameter->getDefaultValue();
                         $this->assertEquals($parameterData['defaultValue'], $actualDefaultValue->getValue());
                     }
@@ -255,11 +242,11 @@ class ClassGeneratorTest extends TestCase
 
     /**
      * @param array $expectedData
-     * @param AbstractMemberGenerator $actualObject
+     * @param \Zend\Code\Generator\AbstractMemberGenerator $actualObject
      */
     protected function _assertVisibility(
         array $expectedData,
-        AbstractMemberGenerator $actualObject
+        \Zend\Code\Generator\AbstractMemberGenerator $actualObject
     ) {
         $expectedVisibility = isset($expectedData['visibility']) ? $expectedData['visibility'] : 'public';
         $this->assertEquals($expectedVisibility, $actualObject->getVisibility());
@@ -267,12 +254,13 @@ class ClassGeneratorTest extends TestCase
 
     /**
      * Correct behaviour of addMethodFromGenerator is already tested in testAddMethods
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage addMethodFromGenerator() expects string for name
      */
     public function testAddMethodFromGenerator()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('addMethodFromGenerator() expects string for name');
-        $invalidMethod = new MethodGenerator();
+        $invalidMethod = new \Zend\Code\Generator\MethodGenerator();
         $this->_model->addMethodFromGenerator($invalidMethod);
     }
 
@@ -283,7 +271,7 @@ class ClassGeneratorTest extends TestCase
 
         $this->assertSameSize($this->_propertyData, $actualProperties);
 
-        /** @var PropertyGenerator $property */
+        /** @var $property \Zend\Code\Generator\PropertyGenerator */
         foreach ($actualProperties as $propertyName => $property) {
             $this->assertArrayHasKey($propertyName, $this->_propertyData);
             $expectedPropertyData = $this->_propertyData[$propertyName];
@@ -299,7 +287,7 @@ class ClassGeneratorTest extends TestCase
 
             // assert default value
             if (isset($expectedPropertyData['defaultValue'])) {
-                /** @var ValueGenerator $actualDefaultValue */
+                /** @var $actualDefaultValue \Zend\Code\Generator\ValueGenerator */
                 $actualDefaultValue = $property->getDefaultValue();
                 $this->assertEquals($expectedPropertyData['defaultValue'], $actualDefaultValue->getValue());
             }
@@ -314,12 +302,13 @@ class ClassGeneratorTest extends TestCase
 
     /**
      * Correct behaviour of addPropertyFromGenerator is already tested in testAddProperties
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage addPropertyFromGenerator() expects string for name
      */
     public function testAddPropertyFromGenerator()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('addPropertyFromGenerator() expects string for name');
-        $invalidProperty = new PropertyGenerator();
+        $invalidProperty = new \Zend\Code\Generator\PropertyGenerator();
         $this->_model->addPropertyFromGenerator($invalidProperty);
     }
 
@@ -344,9 +333,9 @@ class ClassGeneratorTest extends TestCase
     public function providerNamespaces()
     {
         return [
-            ['Laminas', 'Laminas'],
-            ['\Laminas', 'Laminas'],
-            ['\Laminas\SomeClass', 'Laminas\SomeClass'],
+            ['Zend', 'Zend'],
+            ['\Zend', 'Zend'],
+            ['\Zend\SomeClass', 'Zend\SomeClass'],
             ['', null],
         ];
     }

@@ -12,7 +12,7 @@ class SearchEngineConfigTest extends \Magento\TestFramework\Integrity\AbstractCo
     /** @var \Magento\Framework\Config\Dom\UrnResolver */
     protected $urnResolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
     }

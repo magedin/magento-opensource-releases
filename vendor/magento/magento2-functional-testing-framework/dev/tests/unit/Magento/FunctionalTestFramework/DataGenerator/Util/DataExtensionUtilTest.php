@@ -4,25 +4,25 @@
  * See COPYING.txt for license details.
  */
 
-namespace tests\unit\Magento\FunctionalTestFramework\DataGenerator\Util;
+namespace Magento\FunctionalTestingFramework\DataGenerator\Objects;
 
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Parsers\DataProfileSchemaParser;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectManager;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 use AspectMock\Test as AspectMock;
 
 /**
- * Class DataExtensionUtilTest
+ * Class EntityDataObjectTest
  */
-class DataExtensionUtilTest extends MagentoTestCase
+class EntityDataExtensionTest extends MagentoTestCase
 {
     /**
      * Before method functionality
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         AspectMock::clean();
     }

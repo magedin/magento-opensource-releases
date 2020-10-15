@@ -3,42 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Store\Model\ResourceModel\Website\Collection;
-use Magento\Store\Model\ResourceModel\Website\CollectionFactory;
-use Magento\Store\Model\WebsiteManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class WebsiteManagementTest extends TestCase
+class WebsiteManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var WebsiteManagement
+     * @var \Magento\Store\Model\WebsiteManagement
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Store\Model\ResourceModel\Website\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $websitesFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->websitesFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Store\Model\ResourceModel\Website\CollectionFactory::class,
             ['create']
         );
-        $this->model = new WebsiteManagement(
+        $this->model = new \Magento\Store\Model\WebsiteManagement(
             $this->websitesFactoryMock
         );
     }
 
     public function testGetCount()
     {
-        $websitesMock = $this->createMock(Collection::class);
+        $websitesMock = $this->createMock(\Magento\Store\Model\ResourceModel\Website\Collection::class);
 
         $this->websitesFactoryMock
             ->expects($this->once())

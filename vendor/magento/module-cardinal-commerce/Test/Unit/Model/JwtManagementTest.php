@@ -9,12 +9,11 @@ namespace Magento\CardinalCommerce\Test\Unit\Model;
 
 use Magento\CardinalCommerce\Model\JwtManagement;
 use Magento\Framework\Serialize\Serializer\Json;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests JWT encode and decode.
  */
-class JwtManagementTest extends TestCase
+class JwtManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * API key
@@ -29,7 +28,7 @@ class JwtManagementTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new JwtManagement(new Json());
     }

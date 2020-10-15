@@ -18,28 +18,32 @@
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
             <!--Create category-->
             <createData entity="CatNotIncludeInMenu" stepKey="createCategory"/>
             <!-- Create First StoreView  -->
-            <actionGroup ref="CreateStoreViewActionGroup" stepKey="createCustomStoreViewEn">
+            <actionGroup ref="CreateStoreView" stepKey="createCustomStoreViewEn">
                 <argument name="storeView" value="customStoreEN"/>
             </actionGroup>
             <!-- Create Second StoreView -->
-            <actionGroup ref="CreateStoreViewActionGroup" stepKey="createCustomStoreViewFr">
+            <actionGroup ref="CreateStoreView" stepKey="createCustomStoreViewFr">
                 <argument name="storeView" value="customStoreFR"/>
             </actionGroup>
+            <!--Run full reindex and clear caches -->
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
             <!--Enable Flat Catalog Category -->
             <magentoCLI stepKey="setFlatCatalogCategory" command="config:set catalog/frontend/flat_catalog_category 1"/>
             <!--Open Index Management Page and Select Index mode "Update by Schedule" -->
             <magentoCLI stepKey="setIndexerMode" command="indexer:set-mode" arguments="schedule" />
-            <!-- Reindex invalidated indices and clear caches -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
-            </actionGroup>
+            <!-- Run cron twice -->
+            <magentoCLI command="cron:run" stepKey="runCron1"/>
+            <magentoCLI command="cron:run" stepKey="runCron2"/>
         </before>
         <after>
+            <magentoCLI stepKey="setFlatCatalogCategory" command="config:set catalog/frontend/flat_catalog_category 0 "/>
+            <magentoCLI stepKey="setIndexersMode" command="indexer:set-mode" arguments="realtime" />
+            <magentoCLI stepKey="indexerReindex" command="indexer:reindex" />
             <deleteData stepKey="deleteCategory" createDataKey="createCategory"/>
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreViewEn">
                 <argument name="customStore" value="customStoreEN"/>
@@ -47,17 +51,15 @@
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreViewFr">
                 <argument name="customStore" value="customStoreFR"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
-            <magentoCLI command="config:set catalog/frontend/flat_catalog_category 0 " stepKey="setFlatCatalogCategory"/>
-            <magentoCLI command="indexer:set-mode" arguments="realtime" stepKey="setIndexersMode"/>
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndicesAgain"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!--Verify Category is not listed in navigation menu-->
         <amOnPage url="/{{CatNotIncludeInMenu.name_lwr}}.html"  stepKey="openCategoryPage"/>
         <waitForPageLoad time="60" stepKey="waitForPageToBeLoaded"/>
         <dontSee selector="{{StorefrontHeaderSection.NavigationCategoryByName(CatNotIncludeInMenu.name)}}" stepKey="dontSeeCategoryOnNavigation"/>
         <!-- Select created category and enable Include In Menu option-->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="openAdminCategoryIndexPage"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="openAdminCategoryIndexPage"/>
+        <waitForPageLoad stepKey="waitForPageToLoad"/>
         <click selector="{{AdminCategorySidebarTreeSection.expandAll}}" stepKey="clickOnExpandTree"/>
         <click selector="{{AdminCategorySidebarTreeSection.categoryInTree(CatNotIncludeInMenu.name)}}" stepKey="selectCreatedCategory"/>
         <waitForPageLoad stepKey="waitForCategoryPageToLoad"/>
@@ -66,12 +68,8 @@
         <waitForPageLoad stepKey="waitForSecondCategoryToSave"/>
         <seeElement selector="{{AdminCategoryMessagesSection.SuccessMessage}}" stepKey="seeSuccessMessage"/>
         <!--Run full reindex and clear caches -->
-        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-            <argument name="indices" value=""/>
-        </actionGroup>
-        <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-            <argument name="tags" value=""/>
-        </actionGroup>
+        <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+        <magentoCLI command="cache:flush" stepKey="flushCache"/>
         <!--Open Index Management Page -->
         <amOnPage url="{{AdminIndexManagementPage.url}}" stepKey="openIndexManagementPage"/>
         <waitForPageLoad stepKey="waitForIndexPageToBeLoaded"/>

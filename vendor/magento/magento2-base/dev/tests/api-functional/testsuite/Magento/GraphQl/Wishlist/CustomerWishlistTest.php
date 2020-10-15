@@ -25,7 +25,7 @@ class CustomerWishlistTest extends GraphQlAbstract
      */
     private $wishlistCollectionFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customerTokenService = Bootstrap::getObjectManager()->get(CustomerTokenServiceInterface::class);
         $this->wishlistCollectionFactory = Bootstrap::getObjectManager()->get(CollectionFactory::class);
@@ -100,12 +100,11 @@ QUERY;
     }
 
     /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage The current customer isn't authorized.
      */
     public function testGuestCannotGetWishlist()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The current customer isn\'t authorized.');
-
         $query =
             <<<QUERY
 {

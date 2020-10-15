@@ -3,55 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model;
 
-use Magento\Eav\Model\AttributeRepository;
-use Magento\Eav\Model\CustomAttributesMapper;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\Api\AttributeInterface;
-use Magento\Framework\Api\CustomAttributesDataInterface;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchResults;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class CustomAttributesMapperTest extends TestCase
+/**
+ * Class CustomAttributesMapperTest
+ */
+class CustomAttributesMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     public function testEntityToDatabase()
     {
-        $searchResult = $this->getMockBuilder(SearchResults::class)
+        $searchResult = $this->getMockBuilder(\Magento\Framework\Api\SearchResults::class)
             ->disableOriginalConstructor()
             ->setMethods(['getItems'])
             ->getMock();
         $searchResult->expects($this->any())
             ->method('getItems')
-            ->willReturn($this->getAttributes());
+            ->will($this->returnValue($this->getAttributes()));
 
-        $attributeRepository = $this->getMockBuilder(AttributeRepository::class)
+        $attributeRepository = $this->getMockBuilder(\Magento\Eav\Model\AttributeRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['getList'])
             ->getMock();
         $attributeRepository->expects($this->any())
             ->method('getList')
-            ->willReturn($searchResult);
+            ->will($this->returnValue($searchResult));
 
         $metadata = $this->objectManager->getObject(
-            EntityMetadata::class,
+            \Magento\Framework\EntityManager\EntityMetadata::class,
             [
                 'entityTableName' => 'test',
                 'identifierField' => 'entity_id',
@@ -59,7 +47,7 @@ class CustomAttributesMapperTest extends TestCase
             ]
         );
 
-        $metadataPool = $this->getMockBuilder(MetadataPool::class)
+        $metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->setMethods(['getMetadata', 'hasConfiguration'])
             ->getMock();
@@ -68,62 +56,62 @@ class CustomAttributesMapperTest extends TestCase
             ->willReturn(true);
         $metadataPool->expects($this->any())
             ->method('getMetadata')
-            ->with(CustomAttributesDataInterface::class)
-            ->willReturn($metadata);
+            ->with($this->equalTo(\Magento\Framework\Api\CustomAttributesDataInterface::class))
+            ->will($this->returnValue($metadata));
         $metadataPool->expects($this->once())
             ->method('hasConfiguration')
             ->willReturn(true);
 
-        $searchCriteriaBuilder = $this->getMockBuilder(SearchCriteriaBuilder::class)
+        $searchCriteriaBuilder = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaBuilder::class)
             ->disableOriginalConstructor()
             ->setMethods(['addFilter', 'create'])
             ->getMock();
-        $searchCriteria = $this->getMockBuilder(SearchCriteria::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteria::class)
             ->disableOriginalConstructor()
             ->getMock();
         $searchCriteriaBuilder->expects($this->any())
             ->method('addFilter')
-            ->willReturn($searchCriteriaBuilder);
+            ->will($this->returnValue($searchCriteriaBuilder));
         $searchCriteriaBuilder->expects($this->any())
             ->method('create')
-            ->willReturn($searchCriteria);
+            ->will($this->returnValue($searchCriteria));
 
-        /** @var CustomAttributesMapper $customAttributesMapper */
+        /** @var \Magento\Eav\Model\CustomAttributesMapper $customAttributesMapper */
         $customAttributesMapper = $this->objectManager
-            ->getObject(CustomAttributesMapper::class, [
+            ->getObject(\Magento\Eav\Model\CustomAttributesMapper::class, [
                 'attributeRepository' => $attributeRepository,
                 'metadataPool' => $metadataPool,
                 'searchCriteriaBuilder' => $searchCriteriaBuilder
             ]);
 
         $actual = $customAttributesMapper->entityToDatabase(
-            CustomAttributesDataInterface::class,
+            \Magento\Framework\Api\CustomAttributesDataInterface::class,
             [
-                CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
+                \Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
                     'test' => [
-                        AttributeInterface::ATTRIBUTE_CODE => 'test',
-                        AttributeInterface::VALUE => 'test'
+                        \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test',
+                        \Magento\Framework\Api\AttributeInterface::VALUE => 'test'
                     ],
                     'test1' => [
-                        AttributeInterface::ATTRIBUTE_CODE => 'test4',
-                        AttributeInterface::VALUE => 'test4'
+                        \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test4',
+                        \Magento\Framework\Api\AttributeInterface::VALUE => 'test4'
                     ],
                     'test2' => [
-                        AttributeInterface::ATTRIBUTE_CODE => 'test2',
-                        AttributeInterface::VALUE => 'test2'
+                        \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test2',
+                        \Magento\Framework\Api\AttributeInterface::VALUE => 'test2'
                     ]
                 ]
             ]
         );
         $expected = [
-            CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
+            \Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
                 'test1' => [
-                    AttributeInterface::ATTRIBUTE_CODE => 'test4',
-                    AttributeInterface::VALUE => 'test4'
+                    \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test4',
+                    \Magento\Framework\Api\AttributeInterface::VALUE => 'test4'
                 ],
                 'test2' => [
-                    AttributeInterface::ATTRIBUTE_CODE => 'test2',
-                    AttributeInterface::VALUE => 'test2'
+                    \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test2',
+                    \Magento\Framework\Api\AttributeInterface::VALUE => 'test2'
                 ],
             ],
             'test' => 'test'
@@ -133,24 +121,24 @@ class CustomAttributesMapperTest extends TestCase
 
     public function testDatabaseToEntity()
     {
-        $searchResult = $this->getMockBuilder(SearchResults::class)
+        $searchResult = $this->getMockBuilder(\Magento\Framework\Api\SearchResults::class)
             ->disableOriginalConstructor()
             ->setMethods(['getItems'])
             ->getMock();
         $searchResult->expects($this->any())
             ->method('getItems')
-            ->willReturn($this->getAttributes());
+            ->will($this->returnValue($this->getAttributes()));
 
-        $attributeRepository = $this->getMockBuilder(AttributeRepository::class)
+        $attributeRepository = $this->getMockBuilder(\Magento\Eav\Model\AttributeRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['getList'])
             ->getMock();
         $attributeRepository->expects($this->any())
             ->method('getList')
-            ->willReturn($searchResult);
+            ->will($this->returnValue($searchResult));
 
         $metadata = $this->objectManager->getObject(
-            EntityMetadata::class,
+            \Magento\Framework\EntityManager\EntityMetadata::class,
             [
                 'entityTableName' => 'test',
                 'identifierField' => 'entity_id',
@@ -158,38 +146,38 @@ class CustomAttributesMapperTest extends TestCase
             ]
         );
 
-        $metadataPool = $this->getMockBuilder(MetadataPool::class)
+        $metadataPool = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->setMethods(['getMetadata'])
             ->getMock();
         $metadataPool->expects($this->any())
             ->method('getMetadata')
-            ->with(CustomAttributesDataInterface::class)
-            ->willReturn($metadata);
+            ->with($this->equalTo(\Magento\Framework\Api\CustomAttributesDataInterface::class))
+            ->will($this->returnValue($metadata));
 
-        $searchCriteriaBuilder = $this->getMockBuilder(SearchCriteriaBuilder::class)
+        $searchCriteriaBuilder = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaBuilder::class)
             ->disableOriginalConstructor()
             ->setMethods(['addFilter', 'create'])
             ->getMock();
-        $searchCriteria = $this->getMockBuilder(SearchCriteria::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteria::class)
             ->disableOriginalConstructor()
             ->getMock();
         $searchCriteriaBuilder->expects($this->any())
             ->method('addFilter')
-            ->willReturn($searchCriteriaBuilder);
+            ->will($this->returnValue($searchCriteriaBuilder));
         $searchCriteriaBuilder->expects($this->any())
             ->method('create')
-            ->willReturn($searchCriteria);
+            ->will($this->returnValue($searchCriteria));
 
-        /** @var CustomAttributesMapper $customAttributesMapper */
+        /** @var \Magento\Eav\Model\CustomAttributesMapper $customAttributesMapper */
         $customAttributesMapper = $this->objectManager
-            ->getObject(CustomAttributesMapper::class, [
+            ->getObject(\Magento\Eav\Model\CustomAttributesMapper::class, [
                 'attributeRepository' => $attributeRepository,
                 'metadataPool' => $metadataPool,
                 'searchCriteriaBuilder' => $searchCriteriaBuilder
             ]);
         $actual = $customAttributesMapper->databaseToEntity(
-            CustomAttributesDataInterface::class,
+            \Magento\Framework\Api\CustomAttributesDataInterface::class,
             [
                 'test' => 'test',
                 'test4' => 'test4',
@@ -199,10 +187,10 @@ class CustomAttributesMapperTest extends TestCase
         $expected = [
             'test4' => 'test4',
             'test2' => 'test2',
-            CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
+            \Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => [
                 [
-                    AttributeInterface::ATTRIBUTE_CODE => 'test',
-                    AttributeInterface::VALUE => 'test'
+                    \Magento\Framework\Api\AttributeInterface::ATTRIBUTE_CODE => 'test',
+                    \Magento\Framework\Api\AttributeInterface::VALUE => 'test'
                 ]
             ],
             'test' => 'test'
@@ -216,40 +204,40 @@ class CustomAttributesMapperTest extends TestCase
     private function getAttributes()
     {
         /* Attribute with the code we want to copy */
-        $attribute = $this->getMockBuilder(AbstractAttribute::class)
+        $attribute = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['isStatic', 'getAttributeCode'])
             ->getMockForAbstractClass();
         $attribute->expects($this->any())
             ->method('isStatic')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $attribute->expects($this->any())
             ->method('getAttributeCode')
-            ->willReturn('test');
+            ->will($this->returnValue('test'));
 
         /* Attribute with the code we don't want to copy */
-        $attribute1 = $this->getMockBuilder(AbstractAttribute::class)
+        $attribute1 = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['isStatic', 'getAttributeCode'])
             ->getMockForAbstractClass();
         $attribute1->expects($this->any())
             ->method('isStatic')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $attribute1->expects($this->any())
             ->method('getAttributeCode')
-            ->willReturn('test1');
+            ->will($this->returnValue('test1'));
 
         /* Static attribute but with the code which exists in custom attributes */
-        $attribute2 = $this->getMockBuilder(AbstractAttribute::class)
+        $attribute2 = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['isStatic', 'getAttributeCode'])
             ->getMockForAbstractClass();
         $attribute2->expects($this->any())
             ->method('isStatic')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $attribute2->expects($this->any())
             ->method('getAttributeCode')
-            ->willReturn('test2');
+            ->will($this->returnValue('test2'));
 
         return [$attribute, $attribute1, $attribute2];
     }

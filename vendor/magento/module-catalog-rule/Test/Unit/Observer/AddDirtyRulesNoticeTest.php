@@ -3,38 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Observer;
 
-use Magento\CatalogRule\Model\Flag;
-use Magento\CatalogRule\Observer\AddDirtyRulesNotice;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AddDirtyRulesNoticeTest extends TestCase
+/**
+ * Class AddDirtyRulesNoticeTest
+ */
+class AddDirtyRulesNoticeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AddDirtyRulesNotice
+     * @var \Magento\CatalogRule\Observer\AddDirtyRulesNotice
      */
     private $observer;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $objectManagerHelper = new ObjectManager($this);
         $this->observer = $objectManagerHelper->getObject(
-            AddDirtyRulesNotice::class,
+            \Magento\CatalogRule\Observer\AddDirtyRulesNotice::class,
             [
                 'messageManager' => $this->messageManagerMock,
             ]
@@ -44,11 +39,11 @@ class AddDirtyRulesNoticeTest extends TestCase
     public function testExecute()
     {
         $message = "test";
-        $flagMock = $this->getMockBuilder(Flag::class)
+        $flagMock = $this->getMockBuilder(\Magento\CatalogRule\Model\Flag::class)
             ->setMethods(['getState'])
             ->disableOriginalConstructor()
             ->getMock();
-        $eventObserverMock = $this->getMockBuilder(Observer::class)
+        $eventObserverMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $eventObserverMock->expects($this->at(0))->method('getData')->with('dirty_rules')->willReturn($flagMock);

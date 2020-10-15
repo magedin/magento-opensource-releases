@@ -53,7 +53,7 @@ class CatalogProductListCollectionAppendSummaryFieldsObserver implements Observe
         $productCollection = $observer->getEvent()->getCollection();
         $this->sumResourceFactory->create()->appendSummaryFieldsToCollection(
             $productCollection,
-            (int)$this->storeManager->getStore()->getId(),
+            $this->storeManager->getStore()->getId(),
             \Magento\Review\Model\Review::ENTITY_PRODUCT_CODE
         );
 

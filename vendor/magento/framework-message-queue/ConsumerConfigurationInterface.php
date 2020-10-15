@@ -42,7 +42,7 @@ interface ConsumerConfigurationInterface
      * Get consumer type sync|async.
      *
      * @return string
-     * @deprecated 103.0.0
+     * @deprecated 102.0.5
      * @see \Magento\Framework\Communication\ConfigInterface::getTopic
      * @throws \LogicException
      */

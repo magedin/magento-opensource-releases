@@ -3,11 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Setup\Module;
 
 use Magento\Framework\Model\ResourceModel\Type\Db\Pdo\Mysql;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Connection adapter factory
@@ -32,7 +31,7 @@ class ConnectionFactory implements \Magento\Framework\Model\ResourceModel\Type\D
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function create(array $connectionConfig)
     {

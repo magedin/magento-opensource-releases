@@ -30,7 +30,7 @@ class AnalyticsConfigRule implements RuleInterface
                 $module = implode('\\', array_slice($classParts, 0, 2));
                 if (strtolower($currentModule) !== strtolower($module)) {
                     $dependenciesInfo[] = [
-                        'modules' => [$module],
+                        'module' => $module,
                         'type' => RuleInterface::TYPE_HARD,
                         'source' => $file,
                     ];

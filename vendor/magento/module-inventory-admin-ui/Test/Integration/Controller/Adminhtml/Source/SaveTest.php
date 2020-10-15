@@ -29,7 +29,7 @@ class SaveTest extends AbstractBackendController
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->controller = $this->_objectManager->get(Save::class);

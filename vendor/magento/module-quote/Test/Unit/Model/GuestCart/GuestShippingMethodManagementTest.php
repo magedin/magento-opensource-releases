@@ -4,21 +4,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\Data\ShippingMethodInterface;
-use Magento\Quote\Api\ShipmentEstimationInterface;
-use Magento\Quote\Model\GuestCart\GuestShippingMethodManagement;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Model\ShippingMethodManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Quote\Api\ShipmentEstimationInterface;
+use Magento\Quote\Api\Data\ShippingMethodInterface;
+use Magento\Quote\Model\GuestCart\GuestShippingMethodManagement;
 
-class GuestShippingMethodManagementTest extends TestCase
+class GuestShippingMethodManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GuestShippingMethodManagement
@@ -26,12 +22,12 @@ class GuestShippingMethodManagementTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingMethodManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteIdMaskFactoryMock;
 
@@ -55,12 +51,12 @@ class GuestShippingMethodManagementTest extends TestCase
      */
     private $cartId = 867;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->shippingMethodManagementMock =
-            $this->createMock(ShippingMethodManagement::class);
+            $this->createMock(\Magento\Quote\Model\ShippingMethodManagement::class);
 
         $guestCartTestHelper = new GuestCartTestHelper($this);
         list($this->quoteIdMaskFactoryMock, $this->quoteIdMask) = $guestCartTestHelper->mockQuoteIdMask(
@@ -93,7 +89,7 @@ class GuestShippingMethodManagementTest extends TestCase
         $this->shippingMethodManagementMock->expects($this->once())
             ->method('set')
             ->with($this->cartId, $carrierCode, $methodCode)
-            ->willReturn($retValue);
+            ->will($this->returnValue($retValue));
 
         $this->assertEquals($retValue, $this->model->set($this->maskedCartId, $carrierCode, $methodCode));
     }
@@ -104,7 +100,7 @@ class GuestShippingMethodManagementTest extends TestCase
         $this->shippingMethodManagementMock->expects($this->once())
             ->method('getList')
             ->with($this->cartId)
-            ->willReturn($retValue);
+            ->will($this->returnValue($retValue));
 
         $this->assertEquals($retValue, $this->model->getList($this->maskedCartId));
     }
@@ -115,7 +111,7 @@ class GuestShippingMethodManagementTest extends TestCase
         $this->shippingMethodManagementMock->expects($this->once())
             ->method('get')
             ->with($this->cartId)
-            ->willReturn($retValue);
+            ->will($this->returnValue($retValue));
 
         $this->assertEquals($retValue, $this->model->get($this->maskedCartId));
     }

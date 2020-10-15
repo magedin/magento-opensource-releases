@@ -8,12 +8,10 @@ namespace Magento\Sales\Model\Order;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Payment\Model\SaleOperationInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Info;
-use Magento\Sales\Model\Order\Payment\Operations\SaleOperation;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface;
 use Magento\Sales\Api\CreditmemoManagementInterface as CreditmemoManager;
@@ -118,11 +116,6 @@ class Payment extends Info implements OrderPaymentInterface
     private $creditmemoManager = null;
 
     /**
-     * @var SaleOperation
-     */
-    private $saleOperation;
-
-    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -140,7 +133,6 @@ class Payment extends Info implements OrderPaymentInterface
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
      * @param array $data
      * @param CreditmemoManager $creditmemoManager
-     * @param SaleOperation $saleOperation
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -160,8 +152,7 @@ class Payment extends Info implements OrderPaymentInterface
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = [],
-        CreditmemoManager $creditmemoManager = null,
-        SaleOperation $saleOperation = null
+        CreditmemoManager $creditmemoManager = null
     ) {
         $this->priceCurrency = $priceCurrency;
         $this->creditmemoFactory = $creditmemoFactory;
@@ -171,8 +162,6 @@ class Payment extends Info implements OrderPaymentInterface
         $this->orderPaymentProcessor = $paymentProcessor;
         $this->orderRepository = $orderRepository;
         $this->creditmemoManager = $creditmemoManager ?: ObjectManager::getInstance()->get(CreditmemoManager::class);
-        $this->saleOperation = $saleOperation ?: ObjectManager::getInstance()->get(SaleOperation::class);
-
         parent::__construct(
             $context,
             $registry,
@@ -462,11 +451,7 @@ class Payment extends Info implements OrderPaymentInterface
             case \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE:
                 $this->setAmountAuthorized($totalDue);
                 $this->setBaseAmountAuthorized($baseTotalDue);
-                if ($this->canSale()) {
-                    $this->saleOperation->execute($this);
-                } else {
-                    $this->capture(null);
-                }
+                $this->capture(null);
                 break;
             default:
                 break;
@@ -2586,17 +2571,5 @@ class Payment extends Info implements OrderPaymentInterface
         }
 
         return $result;
-    }
-
-    /**
-     * Check sale operation availability for payment method.
-     *
-     * @return bool
-     */
-    private function canSale(): bool
-    {
-        $method = $this->getMethodInstance();
-
-        return $method instanceof SaleOperationInterface && $method->canSale();
     }
 }

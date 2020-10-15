@@ -3,30 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Model\Export\Config;
 
-use Magento\Framework\Module\Dir\Reader;
-use Magento\ImportExport\Model\Export\Config\SchemaLocator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleReaderMock;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\ImportExport\Model\Export\Config\SchemaLocator
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_moduleReaderMock = $this->createMock(Reader::class);
+        $this->_moduleReaderMock = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
 
         $this->_moduleReaderMock->expects(
             $this->any()
@@ -35,10 +28,10 @@ class SchemaLocatorTest extends TestCase
         )->with(
             'etc',
             'Magento_ImportExport'
-        )->willReturn(
-            'schema_dir'
+        )->will(
+            $this->returnValue('schema_dir')
         );
-        $this->_model = new SchemaLocator($this->_moduleReaderMock);
+        $this->_model = new \Magento\ImportExport\Model\Export\Config\SchemaLocator($this->_moduleReaderMock);
     }
 
     public function testGetSchema()

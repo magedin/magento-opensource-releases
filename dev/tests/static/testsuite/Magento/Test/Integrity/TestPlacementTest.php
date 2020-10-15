@@ -22,7 +22,7 @@ class TestPlacementTest extends \PHPUnit\Framework\TestCase
      */
     private $root;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->root = BP;
     }

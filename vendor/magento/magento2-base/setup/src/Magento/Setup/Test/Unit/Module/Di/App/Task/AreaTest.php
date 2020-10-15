@@ -3,65 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\App\Task;
 
 use Magento\Framework\App;
-use Magento\Framework\App\AreaList;
-use Magento\Framework\App\ObjectManager\ConfigWriterInterface;
 use Magento\Setup\Module\Di\App\Task\Operation\Area;
 use Magento\Setup\Module\Di\Compiler\Config;
-use Magento\Setup\Module\Di\Compiler\Config\ModificationChain;
-use Magento\Setup\Module\Di\Compiler\Config\Reader;
-use Magento\Setup\Module\Di\Definition\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AreaTest extends TestCase
+class AreaTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var App\AreaList|MockObject
+     * @var App\AreaList | \PHPUnit_Framework_MockObject_MockObject
      */
     private $areaListMock;
 
     /**
-     * @var \Magento\Setup\Module\Di\Code\Reader\Decorator\Area|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Reader\Decorator\Area | \PHPUnit_Framework_MockObject_MockObject
      */
     private $areaInstancesNamesList;
 
     /**
-     * @var Config\Reader|MockObject
+     * @var Config\Reader | \PHPUnit_Framework_MockObject_MockObject
      */
     private $configReaderMock;
 
     /**
-     * @var Config\WriterInterface|MockObject
+     * @var Config\WriterInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $configWriterMock;
 
     /**
-     * @var ModificationChain|MockObject
+     * @var \Magento\Setup\Module\Di\Compiler\Config\ModificationChain | \PHPUnit_Framework_MockObject_MockObject
      */
     private $configChain;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->areaListMock = $this->getMockBuilder(AreaList::class)
+        $this->areaListMock = $this->getMockBuilder(\Magento\Framework\App\AreaList::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->areaInstancesNamesList =
             $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Reader\Decorator\Area::class)
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->configReaderMock = $this->getMockBuilder(Reader::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configReaderMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Compiler\Config\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configWriterMock =
-            $this->getMockBuilder(ConfigWriterInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
-        $this->configChain = $this->getMockBuilder(ModificationChain::class)
+            $this->getMockBuilder(\Magento\Framework\App\ObjectManager\ConfigWriterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configChain = $this->getMockBuilder(\Magento\Setup\Module\Di\Compiler\Config\ModificationChain::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -108,7 +99,7 @@ class AreaTest extends TestCase
         $this->configReaderMock->expects($this->once())
             ->method('generateCachePerScope')
             ->with(
-                $this->isInstanceOf(Collection::class),
+                $this->isInstanceOf(\Magento\Setup\Module\Di\Definition\Collection::class),
                 App\Area::AREA_GLOBAL
             )
             ->willReturn($generatedConfig);

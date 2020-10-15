@@ -1,24 +1,26 @@
 <?php
 /**
  * @category   Magento
+ * @package    Magento_Event
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Event\Test\Unit;
 
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Event\WrapperFactory;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Event\WrapperFactory;
 
-class WrapperFactoryTest extends TestCase
+/**
+ * Class WrapperFactoryTest
+ *
+ * @package Magento\Framework\Event
+ */
+class WrapperFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $expectedInstance = Observer::class;
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $expectedInstance = \Magento\Framework\Event\Observer::class;
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $wrapperFactory = new WrapperFactory($objectManagerMock);
         $arguments = ['argument' => 'value', 'data' => 'data'];
@@ -27,7 +29,7 @@ class WrapperFactoryTest extends TestCase
         $objectManagerMock->expects($this->once())
             ->method('create')
             ->with($expectedInstance, $arguments)
-            ->willReturn($observerInstanceMock);
+            ->will($this->returnValue($observerInstanceMock));
 
         $this->assertInstanceOf($expectedInstance, $wrapperFactory->create($arguments));
     }

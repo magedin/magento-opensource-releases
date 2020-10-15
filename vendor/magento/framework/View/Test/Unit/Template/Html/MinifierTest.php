@@ -5,11 +5,6 @@
  */
 namespace Magento\Framework\View\Test\Unit\Template\Html;
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\ReadInterface;
@@ -17,7 +12,7 @@ use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Template\Html\Minifier;
 
-class MinifierTest extends TestCase
+class MinifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Minifier
@@ -25,36 +20,36 @@ class MinifierTest extends TestCase
     protected $object;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $htmlDirectoryMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $appDirectoryMock;
 
     /**
-     * @var Filesystem\Directory\ReadFactory|MockObject
+     * @var Filesystem\Directory\ReadFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readFactoryMock;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var ReadInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rootDirectoryMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystemMock;
 
     /**
      * Initialize testable object
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->htmlDirectoryMock = $this->getMockBuilder(WriteInterface::class)
+        $this->htmlDirectoryMock = $this->getMockBuilder(Filesystem\Directory\WriteInterface::class)
             ->getMockForAbstractClass();
         $this->appDirectoryMock = $this->getMockBuilder(ReadInterface::class)
             ->getMockForAbstractClass();
@@ -63,7 +58,7 @@ class MinifierTest extends TestCase
         $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->readFactoryMock = $this->getMockBuilder(ReadFactory::class)
+        $this->readFactoryMock = $this->getMockBuilder(Filesystem\Directory\ReadFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -113,8 +108,6 @@ class MinifierTest extends TestCase
     /**
      * Covered method minify and test regular expressions
      * @test
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testMinify()
     {
@@ -169,12 +162,6 @@ class MinifierTest extends TestCase
             <?php // echo \$block->getChildHtml('anotherChildBlock'); ?>
         <?php // endif; ?>
     </body>
-    <?php
-    \$sometext = <<<SOMETEXT
-    mytext
-    mytextline2
-SOMETEXT;
-    ?>
 </html>
 TEXT;
 
@@ -197,10 +184,7 @@ TEXT;
                 }
             });
             //]]>
-</script><?php echo "http://some.link.com/" ?> <?php echo "//some.link.com/" ?> <?php echo '//some.link.com/' ?> <em>inline text</em> <a href="http://www.<?php echo 'hi' ?>"></a> <?php ?> <?php echo \$block->getChildHtml('someChildBlock'); ?> <?php ?> <?php ?> <?php ?></body><?php \$sometext = <<<SOMETEXT
-    mytext
-    mytextline2
-SOMETEXT; ?></html>
+</script><?php echo "http://some.link.com/" ?> <?php echo "//some.link.com/" ?> <?php echo '//some.link.com/' ?> <em>inline text</em> <a href="http://www.<?php echo 'hi' ?>"></a> <?php ?> <?php echo \$block->getChildHtml('someChildBlock'); ?> <?php ?> <?php ?> <?php ?></body></html>
 TEXT;
 
         $this->appDirectoryMock->expects($this->once())
@@ -231,7 +215,7 @@ TEXT;
         $file = '/absolute/path/to/phtml/template/file';
         $relativeGeneratedPath = 'absolute/path/to/phtml/template/file';
 
-        $htmlDriver = $this->getMockForAbstractClass(DriverInterface::class);
+        $htmlDriver = $this->createMock(\Magento\Framework\Filesystem\DriverInterface::class);
         $htmlDriver
             ->expects($this->once())
             ->method('getRealPathSafety')

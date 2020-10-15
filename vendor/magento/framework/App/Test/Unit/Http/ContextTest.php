@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Http;
 
-use Magento\Framework\App\Http\Context;
+use \Magento\Framework\App\Http\Context;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ContextTest extends TestCase
+class ContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -26,26 +22,28 @@ class ContextTest extends TestCase
     protected $object;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->serializerMock = $this->getMockBuilder(Json::class)
             ->setMethods(['serialize'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializerMock->expects($this->any())
             ->method('serialize')
-            ->willReturnCallback(
-                function ($value) {
-                    return json_encode($value);
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        return json_encode($value);
+                    }
+                )
             );
         $this->object = $this->objectManager->getObject(
-            Context::class,
+            \Magento\Framework\App\Http\Context::class,
             [
                 'serializer' => $this->serializerMock
             ]
@@ -93,7 +91,7 @@ class ContextTest extends TestCase
 
     public function testToArray()
     {
-        $newObject = new Context(['key' => 'value'], [], $this->serializerMock);
+        $newObject = new \Magento\Framework\App\Http\Context(['key' => 'value'], [], $this->serializerMock);
 
         $newObject->setValue('key1', 'value1', 'default1');
         $newObject->setValue('key2', 'value2', 'default2');

@@ -38,8 +38,8 @@ define([
             if (typeof this.data.productCurrentScope !== 'undefined') {
                 productCurrentScope = this.data.productCurrentScope;
                 scopeId = productCurrentScope === 'store' ? window.checkout.storeId :
-                    productCurrentScope === 'group' ? window.checkout.storeGroupId :
-                        window.checkout.websiteId;
+                        productCurrentScope === 'group' ? window.checkout.storeGroupId :
+                            window.checkout.websiteId;
                 _.each(data, function (value, key) {
                     if (!providerData[productCurrentScope + '-' + scopeId + '-' + key]) {
                         result[key] = value;

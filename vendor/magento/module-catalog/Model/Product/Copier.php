@@ -8,13 +8,7 @@ namespace Magento\Catalog\Model\Product;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Attribute\ScopeOverriddenValue;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Catalog\Model\Product\Option\Repository as OptionRepository;
 use Magento\Catalog\Model\ProductFactory;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Store\Model\Store;
-use Magento\UrlRewrite\Model\Exception\UrlAlreadyExistsException;
 
 /**
  * Catalog product copier.
@@ -41,10 +35,9 @@ class Copier
     protected $productFactory;
 
     /**
-     * @var MetadataPool
+     * @var \Magento\Framework\EntityManager\MetadataPool
      */
     protected $metadataPool;
-
     /**
      * @var ScopeOverriddenValue
      */
@@ -54,57 +47,52 @@ class Copier
      * @param CopyConstructorInterface $copyConstructor
      * @param ProductFactory $productFactory
      * @param ScopeOverriddenValue $scopeOverriddenValue
-     * @param OptionRepository|null $optionRepository
-     * @param MetadataPool|null $metadataPool
      */
     public function __construct(
         CopyConstructorInterface $copyConstructor,
         ProductFactory $productFactory,
-        ScopeOverriddenValue $scopeOverriddenValue,
-        OptionRepository $optionRepository,
-        MetadataPool $metadataPool
+        ScopeOverriddenValue $scopeOverriddenValue
     ) {
         $this->productFactory = $productFactory;
         $this->copyConstructor = $copyConstructor;
         $this->scopeOverriddenValue = $scopeOverriddenValue;
-        $this->optionRepository = $optionRepository;
-        $this->metadataPool = $metadataPool;
     }
 
     /**
      * Create product duplicate
      *
-     * @param Product $product
-     * @return Product
+     * @param \Magento\Catalog\Model\Product $product
+     * @return \Magento\Catalog\Model\Product
      */
-    public function copy(Product $product): Product
+    public function copy(Product $product)
     {
         $product->getWebsiteIds();
         $product->getCategoryIds();
 
-        $metadata = $this->metadataPool->getMetadata(ProductInterface::class);
+        /** @var \Magento\Framework\EntityManager\EntityMetadataInterface $metadata */
+        $metadata = $this->getMetadataPool()->getMetadata(ProductInterface::class);
 
-        /** @var Product $duplicate */
+        /** @var \Magento\Catalog\Model\Product $duplicate */
         $duplicate = $this->productFactory->create();
         $productData = $product->getData();
         $productData = $this->removeStockItem($productData);
         $duplicate->setData($productData);
         $duplicate->setOptions([]);
-        $duplicate->setMetaTitle(null);
-        $duplicate->setMetaKeyword(null);
-        $duplicate->setMetaDescription(null);
         $duplicate->setIsDuplicate(true);
         $duplicate->setOriginalLinkId($product->getData($metadata->getLinkField()));
-        $duplicate->setStatus(Status::STATUS_DISABLED);
+        $duplicate->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED);
         $duplicate->setCreatedAt(null);
         $duplicate->setUpdatedAt(null);
         $duplicate->setId(null);
-        $duplicate->setStoreId(Store::DEFAULT_STORE_ID);
+        $duplicate->setStoreId(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
         $this->copyConstructor->build($product, $duplicate);
         $this->setDefaultUrl($product, $duplicate);
         $this->setStoresUrl($product, $duplicate);
-        $this->optionRepository->duplicate($product, $duplicate);
-
+        $this->getOptionRepository()->duplicate($product, $duplicate);
+        $product->getResource()->duplicate(
+            $product->getData($metadata->getLinkField()),
+            $duplicate->getData($metadata->getLinkField())
+        );
         return $duplicate;
     }
 
@@ -117,11 +105,11 @@ class Copier
      */
     private function setDefaultUrl(Product $product, Product $duplicate) : void
     {
-        $duplicate->setStoreId(Store::DEFAULT_STORE_ID);
+        $duplicate->setStoreId(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
         $resource = $product->getResource();
         $attribute = $resource->getAttribute('url_key');
         $productId = $product->getId();
-        $urlKey = $resource->getAttributeRawValue($productId, 'url_key', Store::DEFAULT_STORE_ID);
+        $urlKey = $resource->getAttributeRawValue($productId, 'url_key', \Magento\Store\Model\Store::DEFAULT_STORE_ID);
         do {
             $urlKey = $this->modifyUrl($urlKey);
             $duplicate->setUrlKey($urlKey);
@@ -135,16 +123,13 @@ class Copier
      *
      * @param Product $product
      * @param Product $duplicate
-     *
      * @return void
-     * @throws UrlAlreadyExistsException
      */
     private function setStoresUrl(Product $product, Product $duplicate) : void
     {
         $storeIds = $duplicate->getStoreIds();
         $productId = $product->getId();
         $productResource = $product->getResource();
-        $attribute = $productResource->getAttribute('url_key');
         $duplicate->setData('save_rewrites_history', false);
         foreach ($storeIds as $storeId) {
             $useDefault = !$this->scopeOverriddenValue->containsValue(
@@ -156,25 +141,22 @@ class Copier
             if ($useDefault) {
                 continue;
             }
-
+            $isDuplicateSaved = false;
             $duplicate->setStoreId($storeId);
             $urlKey = $productResource->getAttributeRawValue($productId, 'url_key', $storeId);
-            $iteration = 0;
-
             do {
-                if ($iteration === 10) {
-                    throw new UrlAlreadyExistsException();
-                }
-
                 $urlKey = $this->modifyUrl($urlKey);
                 $duplicate->setUrlKey($urlKey);
-                $iteration++;
-            } while (!$attribute->getEntity()->checkAttributeUniqueValue($attribute, $duplicate));
-            $duplicate->setData('url_path', null);
-            $productResource->saveAttribute($duplicate, 'url_path');
-            $productResource->saveAttribute($duplicate, 'url_key');
+                $duplicate->setData('url_path', null);
+                try {
+                    $duplicate->save();
+                    $isDuplicateSaved = true;
+                    // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock
+                } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
+                }
+            } while (!$isDuplicateSaved);
         }
-        $duplicate->setStoreId(Store::DEFAULT_STORE_ID);
+        $duplicate->setStoreId(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
     }
 
     /**
@@ -186,8 +168,38 @@ class Copier
     private function modifyUrl(string $urlKey) : string
     {
         return preg_match('/(.*)-(\d+)$/', $urlKey, $matches)
-            ? $matches[1] . '-' . ($matches[2] + 1)
-            : $urlKey . '-1';
+                    ? $matches[1] . '-' . ($matches[2] + 1)
+                    : $urlKey . '-1';
+    }
+
+    /**
+     * Returns product option repository.
+     *
+     * @return Option\Repository
+     * @deprecated 101.0.0
+     */
+    private function getOptionRepository()
+    {
+        if (null === $this->optionRepository) {
+            $this->optionRepository = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Catalog\Model\Product\Option\Repository::class);
+        }
+        return $this->optionRepository;
+    }
+
+    /**
+     * Returns metadata pool.
+     *
+     * @return \Magento\Framework\EntityManager\MetadataPool
+     * @deprecated 101.0.0
+     */
+    private function getMetadataPool()
+    {
+        if (null === $this->metadataPool) {
+            $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Framework\EntityManager\MetadataPool::class);
+        }
+        return $this->metadataPool;
     }
 
     /**
@@ -196,7 +208,7 @@ class Copier
      * @param array $productData
      * @return array
      */
-    private function removeStockItem(array $productData): array
+    private function removeStockItem(array $productData)
     {
         if (isset($productData[ProductInterface::EXTENSION_ATTRIBUTES_KEY])) {
             $extensionAttributes = $productData[ProductInterface::EXTENSION_ATTRIBUTES_KEY];

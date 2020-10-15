@@ -3,30 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block;
 
-use Magento\Backend\Block\MenuItemChecker;
-use Magento\Backend\Model\Menu;
 use Magento\Backend\Model\Menu\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Backend\Model\Menu;
+use Magento\Backend\Block\MenuItemChecker;
 
-class MenuItemCheckerTest extends TestCase
+class MenuItemCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Item|MockObject
+     * @var Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private $activeMenuItemMock;
 
     /**
-     * @var Item|MockObject
+     * @var Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private $menuItemMock;
 
     /**
-     * @var Menu|MockObject
+     * @var Menu|\PHPUnit_Framework_MockObject_MockObject
      */
     private $menuMock;
 
@@ -35,7 +31,7 @@ class MenuItemCheckerTest extends TestCase
      */
     private $menuItemChecker;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->menuItemMock = $this->getMockBuilder(Item::class)
             ->disableOriginalConstructor()

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml\DB;
 
 use Magento\Analytics\ReportXml\DB\ConditionResolver;
@@ -12,13 +10,11 @@ use Magento\Analytics\ReportXml\DB\SelectBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Sql\Expression;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConditionResolverTest extends TestCase
+class ConditionResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
@@ -28,25 +24,31 @@ class ConditionResolverTest extends TestCase
     private $conditionResolver;
 
     /**
-     * @var SelectBuilder|MockObject
+     * @var SelectBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectBuilderMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceConnectionMock = $this->createMock(ResourceConnection::class);
+        $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->selectBuilderMock = $this->createMock(SelectBuilder::class);
+        $this->selectBuilderMock = $this->getMockBuilder(SelectBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connectionMock = $this->getMockBuilder(AdapterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->conditionResolver = new ConditionResolver($this->resourceConnectionMock);
     }
@@ -66,7 +68,7 @@ class ConditionResolverTest extends TestCase
             ["glue" => "OR", "condition" => [$identifierCondition]],
         ];
         $aliasName = 'n';
-        $this->selectBuilderMock
+        $this->selectBuilderMock->expects($this->any())
             ->method('setParams')
             ->with(array_merge([], [$condition['_value']]));
 
@@ -74,7 +76,7 @@ class ConditionResolverTest extends TestCase
             ->method('getParams')
             ->willReturn([]);
 
-        $this->selectBuilderMock
+        $this->selectBuilderMock->expects($this->any())
             ->method('getColumns')
             ->willReturn(['price' => new Expression("(n.price = 400)")]);
 
@@ -82,7 +84,7 @@ class ConditionResolverTest extends TestCase
             ->method('getConnection')
             ->willReturn($this->connectionMock);
 
-        $this->connectionMock
+        $this->connectionMock->expects($this->any())
             ->method('quote')
             ->willReturn("'John'");
         $this->connectionMock->expects($this->exactly(4))

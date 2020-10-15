@@ -23,7 +23,7 @@ class UrlFinderInterfaceTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->urlFinder = Bootstrap::getObjectManager()->create(UrlFinderInterface::class);
     }

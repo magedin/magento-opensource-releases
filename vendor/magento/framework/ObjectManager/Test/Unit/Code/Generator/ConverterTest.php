@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\ObjectManager\Test\Unit\Code\Generator;
 
-use Magento\Framework\Code\Generator\ClassGenerator;
-use Magento\Framework\Code\Generator\DefinedClasses;
-use Magento\Framework\Code\Generator\EntityAbstract;
 use Magento\Framework\Code\Generator\Io;
-use Magento\Framework\ObjectManager\Code\Generator\Converter;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase
+/**
+ * Class ConverterTest
+ * @package Magento\Framework\ObjectManager\Code\Generator
+ */
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -29,40 +25,39 @@ class ConverterTest extends TestCase
     private $resultClassName;
 
     /**
-     * @var Io|MockObject
+     * @var Io | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ioObjectMock;
 
     /**
-     * @var EntityAbstract
+     * @var \Magento\Framework\Code\Generator\EntityAbstract
      */
     protected $generator;
 
     /**
-     * @var ClassGenerator|MockObject
+     * @var \Magento\Framework\Code\Generator\ClassGenerator | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $classGenerator;
 
     /**
-     * @var DefinedClasses|MockObject
+     * @var \Magento\Framework\Code\Generator\DefinedClasses | \PHPUnit_Framework_MockObject_MockObject
      */
     private $definedClassesMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->sourceClassName = '\\' . \Magento\Framework\ObjectManager\Code\Generator\Sample::class;
         $this->resultClassName = '\\' . \Magento\Framework\ObjectManager\Code\Generator\SampleConverter::class;
 
-        $this->ioObjectMock = $this->createMock(Io::class);
-        $this->classGenerator = $this->createMock(ClassGenerator::class);
+        $this->ioObjectMock = $this->createMock(\Magento\Framework\Code\Generator\Io::class);
+        $this->classGenerator = $this->createMock(\Magento\Framework\Code\Generator\ClassGenerator::class);
 
-        $this->definedClassesMock = $this->getMockBuilder(DefinedClasses::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->definedClassesMock = $this->getMockBuilder(\Magento\Framework\Code\Generator\DefinedClasses::class)
+            ->disableOriginalConstructor()->getMock();
 
         $objectManager = new ObjectManager($this);
         $this->generator = $objectManager->getObject(
-            Converter::class,
+            \Magento\Framework\ObjectManager\Code\Generator\Converter::class,
             [
                 'sourceClassName' => $this->sourceClassName,
                 'resultClassName' => $this->resultClassName,
@@ -81,12 +76,12 @@ class ConverterTest extends TestCase
         //Mocking _validateData call
         $this->definedClassesMock->expects($this->at(0))
             ->method('isClassLoadable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->ioObjectMock->expects($this->once())
             ->method('makeResultFileDirectory')
             ->with($this->resultClassName)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         //Mocking _generateCode call
         $this->classGenerator->expects($this->once())
@@ -104,13 +99,13 @@ class ConverterTest extends TestCase
             ->willReturnSelf();
         $this->classGenerator->expects($this->once())
             ->method('generate')
-            ->willReturn($generatedCode);
+            ->will($this->returnValue($generatedCode));
 
         //Mocking generation
         $this->ioObjectMock->expects($this->any())
             ->method('generateResultFileName')
             ->with($this->resultClassName)
-            ->willReturn($resultFileName);
+            ->will($this->returnValue($resultFileName));
         $this->ioObjectMock->expects($this->once())
             ->method('writeResultFile')
             ->with($resultFileName, $generatedCode);

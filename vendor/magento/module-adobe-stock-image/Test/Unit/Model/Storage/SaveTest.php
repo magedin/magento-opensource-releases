@@ -94,7 +94,10 @@ class SaveTest extends TestCase
             ->withAnyParameters()
             ->willReturn($this->isType('integer'));
 
-        $this->save->execute($imageUrl, '/240_F_272299924_HjNOJkyyhzFVKRcSQ2TaArR7Ka6nTXRa.jpg');
+        $this->assertSame(
+            '/240_F_272299924_HjNOJkyyhzFVKRcSQ2TaArR7Ka6nTXRa.jpg',
+            $this->save->execute($imageUrl, '/240_F_272299924_HjNOJkyyhzFVKRcSQ2TaArR7Ka6nTXRa.jpg')
+        );
     }
 
     /**

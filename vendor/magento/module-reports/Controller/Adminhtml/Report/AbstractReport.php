@@ -18,7 +18,6 @@ use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 /**
  * Reports api controller
  *
- * phpcs:disable Magento2.Classes.AbstractApi
  * @api
  * @since 100.0.2
  * @SuppressWarnings(PHPMD.AllPurposeAction)
@@ -141,7 +140,7 @@ abstract class AbstractReport extends \Magento\Backend\App\Action
         $flag = $this->_objectManager->create(\Magento\Reports\Model\Flag::class)
             ->setReportFlagCode($flagCode)
             ->loadSelf();
-        $updatedAt = __('Never');
+        $updatedAt = 'undefined';
         if ($flag->hasData()) {
             $updatedAt = $this->timezone->formatDate(
                 $flag->getLastUpdate(),

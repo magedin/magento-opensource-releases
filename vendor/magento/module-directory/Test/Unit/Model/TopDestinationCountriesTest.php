@@ -3,37 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Directory\Test\Unit\Model;
 
-use Magento\Directory\Model\TopDestinationCountries;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class TopDestinationCountriesTest extends TestCase
+class TopDestinationCountriesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfigMock;
 
     /**
-     * @var TopDestinationCountries
+     * @var \Magento\Directory\Model\TopDestinationCountries
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMock();
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $arguments = [
             'scopeConfig' => $this->scopeConfigMock
         ];
         $this->model = $objectManager
-            ->getObject(TopDestinationCountries::class, $arguments);
+            ->getObject(\Magento\Directory\Model\TopDestinationCountries::class, $arguments);
     }
 
     /**

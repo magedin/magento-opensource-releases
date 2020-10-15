@@ -3,78 +3,57 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model;
 
-use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Category\Tree;
-use Magento\Catalog\Model\CategoryManagement;
-use Magento\Catalog\Model\ResourceModel\Category\Collection;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\Framework\App\ScopeInterface;
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\Data\Tree\Node;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class CategoryManagementTest extends TestCase
+class CategoryManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CategoryManagement
+     * @var \Magento\Catalog\Model\CategoryManagement
      */
     protected $model;
 
     /**
-     * @var CategoryRepositoryInterface|MockObject
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryRepositoryMock;
 
     /**
-     * @var Tree|MockObject
+     * @var \Magento\Catalog\Model\Category\Tree|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoryTreeMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $categoriesFactoryMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
     /**
-     * @var ScopeResolverInterface|MockObject
+     * @var \Magento\Framework\App\ScopeResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeResolverMock;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var \Magento\Framework\App\ScopeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
-        $this->categoryRepositoryMock = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
-        $this->categoryTreeMock = $this->createMock(Tree::class);
-        $this->categoriesFactoryMock = $this->getMockBuilder(CollectionFactory::class)
-            ->addMethods(['addFilter', 'getFirstItem'])
-            ->onlyMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->categoryRepositoryMock = $this->createMock(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
+        $this->categoryTreeMock = $this->createMock(\Magento\Catalog\Model\Category\Tree::class);
+        $this->categoriesFactoryMock = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory::class,
+            ['create', 'addFilter', 'getFirstItem']
+        );
 
         $this->model = $this->objectManagerHelper->getObject(
-            CategoryManagement::class,
+            \Magento\Catalog\Model\CategoryManagement::class,
             [
                 'categoryRepository' => $this->categoryRepositoryMock,
                 'categoryTree' => $this->categoryTreeMock,
@@ -82,9 +61,9 @@ class CategoryManagementTest extends TestCase
             ]
         );
 
-        $this->scopeResolverMock = $this->getMockForAbstractClass(ScopeResolverInterface::class);
+        $this->scopeResolverMock = $this->createMock(\Magento\Framework\App\ScopeResolverInterface::class);
 
-        $this->scopeMock = $this->getMockForAbstractClass(ScopeInterface::class);
+        $this->scopeMock = $this->createMock(\Magento\Framework\App\ScopeInterface::class);
 
         $this->objectManagerHelper->setBackwardCompatibleProperty(
             $this->model,
@@ -97,8 +76,8 @@ class CategoryManagementTest extends TestCase
     {
         $rootCategoryId = 1;
         $depth = 2;
-        $categoryMock = $this->createMock(Category::class);
-        $nodeMock = $this->createMock(Node::class);
+        $categoryMock = $this->createMock(\Magento\Catalog\Model\Category::class);
+        $nodeMock = $this->createMock(\Magento\Framework\Data\Tree\Node::class);
 
         $this->categoryRepositoryMock
             ->expects($this->once())
@@ -153,8 +132,8 @@ class CategoryManagementTest extends TestCase
     public function testGetTreeForAllScope()
     {
         $depth = null;
-        $categoriesMock = $this->createMock(Collection::class);
-        $categoryMock = $this->getMockBuilder(Category::class)
+        $categoriesMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Category\Collection::class);
+        $categoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->setMockClassName('categoryMock')
             ->disableOriginalConstructor()
             ->getMock();
@@ -171,7 +150,7 @@ class CategoryManagementTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->willReturn($categoriesMock);
-        $nodeMock = $this->createMock(Node::class);
+        $nodeMock = $this->createMock(\Magento\Framework\Data\Tree\Node::class);
 
         $this->categoryTreeMock
             ->expects($this->once())
@@ -194,7 +173,7 @@ class CategoryManagementTest extends TestCase
         $this->scopeMock
             ->expects($this->once())
             ->method('getCode')
-            ->willReturn(Store::ADMIN_CODE);
+            ->willReturn(\Magento\Store\Model\Store::ADMIN_CODE);
 
         $this->model->getTree();
     }
@@ -204,11 +183,11 @@ class CategoryManagementTest extends TestCase
         $categoryId = 2;
         $parentId = 1;
         $afterId = null;
-        $categoryMock = $this->getMockBuilder(Category::class)
+        $categoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->setMockClassName('categoryMock')
             ->disableOriginalConstructor()
             ->getMock();
-        $parentCategoryMock = $this->getMockBuilder(Category::class)
+        $parentCategoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->setMockClassName('parentCategoryMock')
             ->disableOriginalConstructor()
             ->getMock();
@@ -216,10 +195,12 @@ class CategoryManagementTest extends TestCase
         $this->categoryRepositoryMock
             ->expects($this->exactly(2))
             ->method('get')
-            ->willReturnMap([
-                [$categoryId, null, $categoryMock],
-                [$parentId, null, $parentCategoryMock],
-            ]);
+            ->will($this->returnValueMap(
+                [
+                    [$categoryId, null, $categoryMock],
+                    [$parentId, null, $parentCategoryMock],
+                ]
+            ));
         $parentCategoryMock->expects($this->once())->method('hasChildren')->willReturn(true);
         $parentCategoryMock->expects($this->once())->method('getChildren')->willReturn('5,6,7');
         $categoryMock->expects($this->once())->method('getPath');
@@ -228,18 +209,20 @@ class CategoryManagementTest extends TestCase
         $this->assertTrue($this->model->move($categoryId, $parentId, $afterId));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Operation do not allow to move a parent category to any of children category
+     */
     public function testMoveWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Operation do not allow to move a parent category to any of children category');
         $categoryId = 2;
         $parentId = 1;
         $afterId = null;
-        $categoryMock = $this->getMockBuilder(Category::class)
+        $categoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->setMockClassName('categoryMock')
             ->disableOriginalConstructor()
             ->getMock();
-        $parentCategoryMock = $this->getMockBuilder(Category::class)
+        $parentCategoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->setMockClassName('parentCategoryMock')
             ->disableOriginalConstructor()
             ->getMock();
@@ -247,27 +230,31 @@ class CategoryManagementTest extends TestCase
         $this->categoryRepositoryMock
             ->expects($this->exactly(2))
             ->method('get')
-            ->willReturnMap([
-                [$categoryId, null, $categoryMock],
-                [$parentId, null, $parentCategoryMock],
-            ]);
+            ->will($this->returnValueMap(
+                [
+                    [$categoryId, null, $categoryMock],
+                    [$parentId, null, $parentCategoryMock],
+                ]
+            ));
         $categoryMock->expects($this->once())->method('getPath')->willReturn('test');
         $parentCategoryMock->expects($this->once())->method('getPath')->willReturn('test');
         $this->model->move($categoryId, $parentId, $afterId);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Could not move category
+     */
     public function testMoveWithCouldNotMoveException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Could not move category');
         $categoryId = 2;
         $parentId = 1;
         $afterId = null;
-        $categoryMock = $this->getMockBuilder(Category::class)
+        $categoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->setMockClassName('categoryMock')
             ->getMock();
-        $parentCategoryMock = $this->getMockBuilder(Category::class)
+        $parentCategoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->setMockClassName('parentCategoryMock')
             ->getMock();
@@ -275,20 +262,22 @@ class CategoryManagementTest extends TestCase
         $this->categoryRepositoryMock
             ->expects($this->exactly(2))
             ->method('get')
-            ->willReturnMap([
-                [$categoryId, null, $categoryMock],
-                [$parentId, null, $parentCategoryMock],
-            ]);
+            ->will($this->returnValueMap(
+                [
+                    [$categoryId, null, $categoryMock],
+                    [$parentId, null, $parentCategoryMock],
+                ]
+            ));
         $categoryMock->expects($this->once())
             ->method('move')
             ->with($parentId, $afterId)
-            ->willThrowException(new LocalizedException(__('message')));
+            ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('message')));
         $this->model->move($categoryId, $parentId, $afterId);
     }
 
     public function testGetCount()
     {
-        $categoriesMock = $this->createMock(Collection::class);
+        $categoriesMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Category\Collection::class);
 
         $this->categoriesFactoryMock
             ->expects($this->once())

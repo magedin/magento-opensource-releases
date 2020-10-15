@@ -3,70 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Backend\Model\Menu\Director\Director
  */
 namespace Magento\Backend\Test\Unit\Model\Menu\Director;
 
-use Magento\Backend\Model\Menu\Builder;
-use Magento\Backend\Model\Menu\Builder\AbstractCommand;
-use Magento\Backend\Model\Menu\Builder\CommandFactory;
-use Magento\Backend\Model\Menu\Director\Director;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class DirectorTest extends TestCase
+class DirectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Director
+     * @var \Magento\Backend\Model\Menu\Director\Director
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_commandFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_builderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_logger;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_commandMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_builderMock = $this->createMock(Builder::class);
-        $this->_logger = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->_builderMock = $this->createMock(\Magento\Backend\Model\Menu\Builder::class);
+        $this->_logger = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->_commandMock = $this->createPartialMock(
-            AbstractCommand::class,
+            \Magento\Backend\Model\Menu\Builder\AbstractCommand::class,
             ['getId', '_execute', 'execute', 'chain']
         );
         $this->_commandFactoryMock = $this->createPartialMock(
-            CommandFactory::class,
+            \Magento\Backend\Model\Menu\Builder\CommandFactory::class,
             ['create']
         );
         $this->_commandFactoryMock->expects(
             $this->any()
         )->method(
             'create'
-        )->willReturn(
-            $this->_commandMock
+        )->will(
+            $this->returnValue($this->_commandMock)
         );
 
-        $this->_commandMock->expects($this->any())->method('getId')->willReturn(true);
-        $this->_model = new Director($this->_commandFactoryMock);
+        $this->_commandMock->expects($this->any())->method('getId')->will($this->returnValue(true));
+        $this->_model = new \Magento\Backend\Model\Menu\Director\Director($this->_commandFactoryMock);
     }
 
     public function testDirectWithExistKey()

@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Config\Rules;
-
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Paypal\Model\Config\Rules\FileResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class FileResolverTest
  *
  * Test for class \Magento\Paypal\Model\Config\Rules\FileResolver
  */
-class FileResolverTest extends TestCase
+class FileResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @vat \Magento\Paypal\Model\Config\Rules\FileResolver
@@ -25,7 +18,7 @@ class FileResolverTest extends TestCase
     protected $fileResolver;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerMock;
 
@@ -34,13 +27,13 @@ class FileResolverTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->readerMock = $this->getMockBuilder(Reader::class)
+        $this->readerMock = $this->getMockBuilder(\Magento\Framework\Module\Dir\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->fileResolver = new FileResolver($this->readerMock);
+        $this->fileResolver = new \Magento\Paypal\Model\Config\Rules\FileResolver($this->readerMock);
     }
 
     /**

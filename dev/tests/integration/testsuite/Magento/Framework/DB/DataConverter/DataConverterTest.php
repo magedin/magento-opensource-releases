@@ -18,7 +18,7 @@ use Magento\Framework\ObjectManagerInterface;
 class DataConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InQueryModifier|\PHPUnit\Framework\MockObject\MockObject
+     * @var InQueryModifier|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryModifierMock;
 
@@ -28,22 +28,22 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
     private $dataConverter;
 
     /**
-     * @var BatchIterator|\PHPUnit\Framework\MockObject\MockObject
+     * @var BatchIterator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $iteratorMock;
 
     /**
-     * @var Generator|\PHPUnit\Framework\MockObject\MockObject
+     * @var Generator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryGeneratorMock;
 
     /**
-     * @var Select|\PHPUnit\Framework\MockObject\MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectByRangeMock;
 
     /**
-     * @var Mysql|\PHPUnit\Framework\MockObject\MockObject
+     * @var Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     private $adapterMock;
 
@@ -60,7 +60,7 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up before test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -68,7 +68,7 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
         $this->queryModifierMock = $this->getMockBuilder(QueryModifierInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['modify'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->dataConverter = $this->objectManager->get(SerializedToJson::class);
 
@@ -105,12 +105,12 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
 
         $this->queryGeneratorMock->expects($this->any())
             ->method('generate')
-            ->willReturn($this->iteratorMock);
+            ->will($this->returnValue($this->iteratorMock));
 
         // mocking only current as next() is not supposed to be called
         $this->iteratorMock->expects($this->any())
             ->method('current')
-            ->willReturn($this->selectByRangeMock);
+            ->will($this->returnValue($this->selectByRangeMock));
 
         $this->adapterMock = $this->getMockBuilder(Mysql::class)
             ->disableOriginalConstructor()
@@ -119,7 +119,7 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
 
         $this->adapterMock->expects($this->any())
             ->method('quoteInto')
-            ->willReturn('field=value');
+            ->will($this->returnValue('field=value'));
 
         $this->fieldDataConverter = $this->objectManager->create(
             FieldDataConverter::class,
@@ -133,12 +133,11 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
     /**
      * Test that exception with valid text is thrown when data is corrupted
      *
+     * @expectedException \Magento\Framework\DB\FieldDataConversionException
+     * @expectedExceptionMessage Error converting field `value` in table `table` where `id`=2 using
      */
     public function testDataConvertErrorReporting()
     {
-        $this->expectException(\Magento\Framework\DB\FieldDataConversionException::class);
-        $this->expectExceptionMessage('Error converting field `value` in table `table` where `id`=2 using');
-
         $rows = [
             1 => 'N;',
             2 => 'a:2:{s:3:"foo";s:3:"bar";s:3:"bar";s:',
@@ -147,7 +146,7 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
         $this->adapterMock->expects($this->any())
             ->method('fetchPairs')
             ->with($this->selectByRangeMock)
-            ->willReturn($rows);
+            ->will($this->returnValue($rows));
 
         $this->adapterMock->expects($this->once())
             ->method('update')
@@ -171,7 +170,7 @@ class DataConverterTest extends \PHPUnit\Framework\TestCase
         $this->adapterMock->expects($this->any())
             ->method('fetchPairs')
             ->with($this->selectByRangeMock)
-            ->willReturn($rows);
+            ->will($this->returnValue($rows));
 
         $this->adapterMock->expects($this->once())
             ->method('update')

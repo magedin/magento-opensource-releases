@@ -3,75 +3,63 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Model\ResourceModel\PasswordResetRequestEvent;
-
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * Test class for \Magento\Security\Model\ResourceModel\AdminSessionInfo\Collection testing
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Collection */
+    /** @var \Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection */
     protected $collectionMock;
 
-    /** @var DateTime */
+    /** @var \Magento\Framework\Stdlib\DateTime\DateTime */
     protected $dateTimeMock;
 
-    /** @var Select */
+    /** @var \Magento\Framework\DB\Select */
     protected $selectMock;
 
-    /** @var AbstractDb */
+    /** @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb */
     protected $resourceMock;
 
     /**
      * Init mocks for tests
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $entityFactory = $this->getMockForAbstractClass(EntityFactoryInterface::class);
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $fetchStrategy = $this->getMockForAbstractClass(FetchStrategyInterface::class);
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
+        $entityFactory = $this->createMock(\Magento\Framework\Data\Collection\EntityFactoryInterface::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $fetchStrategy = $this->createMock(\Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
 
         $this->dateTimeMock = $this->createPartialMock(
-            DateTime::class,
+            \Magento\Framework\Stdlib\DateTime\DateTime::class,
             ['gmtTimestamp']
         );
 
-        $this->selectMock = $this->createPartialMock(Select::class, ['limit', 'from']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['limit', 'from']);
 
-        $connection = $this->getMockBuilder(Mysql::class)
+        $connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->any())->method('select')->willReturn($this->selectMock);
 
-        $this->resourceMock = $this->getMockBuilder(AbstractDb::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection', 'getMainTable', 'getTable', 'deleteRecordsOlderThen'])
             ->getMockForAbstractClass();
 
         $this->resourceMock->expects($this->any())
             ->method('getConnection')
-            ->willReturn($connection);
+            ->will($this->returnValue($connection));
 
         $this->resourceMock->expects($this->any())->method('getMainTable')->willReturn('table_test');
         $this->resourceMock->expects($this->any())->method('getTable')->willReturn('test');
 
         $this->collectionMock = $this->getMockBuilder(
-            Collection::class
+            \Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection::class
         )
             ->setMethods(['addFieldToFilter', 'addOrder', 'getSelect', 'getResource', 'getConnection'])
             ->setConstructorArgs(
@@ -95,7 +83,7 @@ class CollectionTest extends TestCase
 
         $this->collectionMock->expects($this->any())
             ->method('getConnection')
-            ->willReturn($connection);
+            ->will($this->returnValue($connection));
 
         $this->collectionMock->expects($this->any())
             ->method('getSelect')

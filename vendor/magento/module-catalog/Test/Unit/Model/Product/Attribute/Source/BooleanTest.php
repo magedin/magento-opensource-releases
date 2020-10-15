@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Source;
 
 use Magento\Catalog\Model\Product\Attribute\Source\Boolean as BooleanSource;
-use Magento\Eav\Model\ResourceModel\Entity\AttributeFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BooleanTest extends TestCase
+class BooleanTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeFactoryMock;
 
@@ -24,10 +19,10 @@ class BooleanTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attributeFactoryMock = $this->createMock(
-            AttributeFactory::class
+            \Magento\Eav\Model\ResourceModel\Entity\AttributeFactory::class
         );
         $this->model = new BooleanSource($this->attributeFactoryMock);
     }

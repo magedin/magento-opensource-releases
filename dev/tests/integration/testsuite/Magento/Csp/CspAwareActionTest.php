@@ -34,7 +34,7 @@ class CspAwareActionTest extends AbstractController
         $header = $this->getResponse()->getHeader('Content-Security-Policy');
         $this->assertNotEmpty($header);
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'script-src https://controller.magento.com'
                 .' \'self\' \'sha256-H4RRnauTM2X2Xg/z9zkno1crqhsaY3uKKu97uwmnXXE=\'',
             $header->getFieldValue()

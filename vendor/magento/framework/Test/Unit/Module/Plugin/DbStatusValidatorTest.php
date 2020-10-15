@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit\Module\Plugin;
 
-use Magento\Framework\App\FrontController;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Cache\FrontendInterface as FrontendCacheInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Module\DbVersionInfo;
 use Magento\Framework\Module\Plugin\DbStatusValidator as DbStatusValidatorPlugin;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Cache\FrontendInterface as FrontendCacheInterface;
+use Magento\Framework\Module\DbVersionInfo;
+use Magento\Framework\App\FrontController;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\LocalizedException;
 
-class DbStatusValidatorTest extends TestCase
+class DbStatusValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DbStatusValidatorPlugin
@@ -30,26 +26,26 @@ class DbStatusValidatorTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var FrontendCacheInterface|MockObject
+     * @var FrontendCacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var DbVersionInfo|MockObject
+     * @var DbVersionInfo|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dbVersionInfoMock;
 
     /**
-     * @var FrontController|MockObject
+     * @var FrontController|\PHPUnit_Framework_MockObject_MockObject
      */
     private $frontControllerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->cacheMock = $this->getMockBuilder(FrontendCacheInterface::class)
             ->getMockForAbstractClass();

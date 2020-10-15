@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute;
 
-use Magento\Catalog\Model\Product\Attribute\Group;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
 use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class GroupTest extends TestCase
+class GroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Group
+     * @var \Magento\Catalog\Model\Product\Attribute\Group
      */
     private $model;
 
@@ -27,11 +21,11 @@ class GroupTest extends TestCase
         $this->assertTrue($this->model->hasSystemAttributes());
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            Group::class,
+            \Magento\Catalog\Model\Product\Attribute\Group::class,
             [
                 'attributeCollectionFactory' => $this->getMockedCollectionFactory()
             ]
@@ -39,14 +33,14 @@ class GroupTest extends TestCase
     }
 
     /**
-     * @return CollectionFactory
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory
      */
     private function getMockedCollectionFactory()
     {
         $mockedCollection = $this->getMockedCollection();
 
         $mockBuilder = $this->getMockBuilder(
-            CollectionFactory::class
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class
         );
         $mock = $mockBuilder->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -54,17 +48,17 @@ class GroupTest extends TestCase
 
         $mock->expects($this->any())
             ->method('create')
-            ->willReturn($mockedCollection);
+            ->will($this->returnValue($mockedCollection));
 
         return $mock;
     }
 
     /**
-     * @return Collection
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection
      */
     private function getMockedCollection()
     {
-        $mockBuilder = $this->getMockBuilder(Collection::class);
+        $mockBuilder = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class);
         $mock = $mockBuilder->disableOriginalConstructor()
             ->getMock();
 
@@ -73,10 +67,10 @@ class GroupTest extends TestCase
 
         $mock->expects($this->any())
             ->method('setAttributeGroupFilter')
-            ->willReturn($mock);
+            ->will($this->returnValue($mock));
         $mock->expects($this->any())
             ->method('getIterator')
-            ->willReturn(new \ArrayIterator([$item]));
+            ->will($this->returnValue(new \ArrayIterator([$item])));
 
         return $mock;
     }

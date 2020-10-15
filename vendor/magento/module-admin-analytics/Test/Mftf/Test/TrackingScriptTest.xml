@@ -21,6 +21,6 @@
         </annotations>
 
         <!-- Logging in Magento admin -->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
     </test>
 </tests>

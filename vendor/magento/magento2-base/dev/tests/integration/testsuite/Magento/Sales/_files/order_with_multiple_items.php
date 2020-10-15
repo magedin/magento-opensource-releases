@@ -5,21 +5,22 @@
  */
 declare(strict_types=1);
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
-use Magento\Sales\Model\Order;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use Magento\TestFramework\Helper\Bootstrap;
+require 'order.php';
+/** @var \Magento\Catalog\Model\Product $product */
+/** @var \Magento\Sales\Model\Order $order */
+$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
+$orderItems[] = [
+    'product_id' => $product->getId(),
+    'base_price' => 123,
+    'order_id' => $order->getId(),
+    'price' => 123,
+    'row_total' => 126,
+    'product_type' => 'simple'
+];
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
-$product = $productRepository->get('simple');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_duplicated.php';
 $orderItems[] = [
     'product_id' => $product->getId(),
     'base_price' => 123,
@@ -28,8 +29,8 @@ $orderItems[] = [
     'row_total' => 126,
     'product_type' => 'simple'
 ];
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_duplicated.php');
-$product = $productRepository->get('simple-1');
+
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_with_full_option_set.php';
 $orderItems[] = [
     'product_id' => $product->getId(),
     'base_price' => 123,
@@ -38,18 +39,8 @@ $orderItems[] = [
     'row_total' => 126,
     'product_type' => 'simple'
 ];
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_with_full_option_set.php');
-$product = $productRepository->get('simple');
-$orderItems[] = [
-    'product_id' => $product->getId(),
-    'base_price' => 123,
-    'order_id' => $order->getId(),
-    'price' => 123,
-    'row_total' => 126,
-    'product_type' => 'simple'
-];
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_with_url_key.php');
-$product = $productRepository->get('simple2');
+
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_with_url_key.php';
 $orderItems[] = [
         'product_id' => $product->getId(),
         'base_price' => 123,
@@ -58,8 +49,8 @@ $orderItems[] = [
         'row_total' => 126,
         'product_type' => 'simple'
 ];
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_with_all_fields.php');
-$product = $productRepository->get('simple');
+
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_with_all_fields.php';
 $orderItems[] = [
     'product_id' => $product->getId(),
     'base_price' => 123,
@@ -68,8 +59,8 @@ $orderItems[] = [
     'row_total' => 126,
     'product_type' => 'simple'
 ];
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_with_custom_attribute.php');
-$product = $productRepository->get('simple');
+
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_with_custom_attribute.php';
 $orderItems[] = [
     'product_id' => $product->getId(),
     'base_price' => 123,

@@ -85,12 +85,10 @@ class Review extends AbstractModifier
                                 'behaviourType' => 'simple',
                                 'externalFilterMode' => true,
                                 'imports' => [
-                                    'productId' => '${ $.provider }:data.product.current_product_id',
-                                    '__disableTmpl' => ['productId' => false],
+                                    'productId' => '${ $.provider }:data.product.current_product_id'
                                 ],
                                 'exports' => [
-                                    'productId' => '${ $.externalProvider }:params.current_product_id',
-                                    '__disableTmpl' => ['productId' => false],
+                                    'productId' => '${ $.externalProvider }:params.current_product_id'
                                 ],
                             ],
                         ],

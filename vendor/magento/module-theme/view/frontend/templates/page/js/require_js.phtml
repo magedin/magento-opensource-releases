@@ -3,13 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
-
-$scriptString = '
-    var BASE_URL = \'' . /* @noEscape */ $block->escapeJs($block->getBaseUrl()) .'\';
+?>
+<script>
+    var BASE_URL = '<?= $block->escapeUrl($block->getBaseUrl()) ?>';
     var require = {
-        \'baseUrl\': \'' . /* @noEscape */ $block->escapeJs($block->getViewFileUrl('/')) . '\'
-    };';
-
-echo /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false);
+        "baseUrl": "<?= $block->escapeUrl($block->getViewFileUrl('/')) ?>"
+    };
+</script>

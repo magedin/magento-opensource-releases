@@ -33,7 +33,7 @@
             </createData>
 
             <!-- Login as Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!--Create website-->
             <actionGroup ref="AdminCreateWebsiteActionGroup" stepKey="createSecondWebsite">
@@ -53,9 +53,7 @@
             </actionGroup>
 
             <!-- Reindex -->
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexAllIndexes">
-                <argument name="indices" value=""/>
-            </actionGroup>
+            <magentoCLI command="indexer:reindex" stepKey="reindexAllIndexes"/>
         </before>
 
         <after>
@@ -71,14 +69,14 @@
                 <argument name="websiteName" value="{{secondCustomWebsite.name}}"/>
             </actionGroup>
 
-            <actionGroup ref="NavigateToAndResetProductGridToDefaultViewActionGroup" stepKey="resetProductGridFilter"/>
+            <actionGroup ref="NavigateToAndResetProductGridToDefaultView" stepKey="resetProductGridFilter"/>
 
             <!-- Admin logout -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Open product page and assign grouped project to second website -->
-        <actionGroup ref="FilterAndSelectProductActionGroup" stepKey="openAdminProductPage">
+        <actionGroup ref="filterAndSelectProduct" stepKey="openAdminProductPage">
             <argument name="productSku" value="$$createGroupedProduct.sku$$"/>
         </actionGroup>
         <actionGroup ref="AdminAssignProductInWebsiteActionGroup" stepKey="assignProductToSecondWebsite">
@@ -87,15 +85,15 @@
         <actionGroup ref="AdminUnassignProductInWebsiteActionGroup" stepKey="unassignProductFromDefaultWebsite">
             <argument name="website" value="{{_defaultWebsite.name}}"/>
         </actionGroup>
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveGroupedProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="saveGroupedProduct"/>
 
         <!-- Assert product is assigned to Second website -->
-        <actionGroup ref="AssertProductIsAssignedToWebsiteActionGroup" stepKey="seeCustomWebsiteIsChecked">
+        <actionGroup ref="AssertProductIsAssignedToWebsite" stepKey="seeCustomWebsiteIsChecked">
             <argument name="website" value="{{secondCustomWebsite.name}}"/>
         </actionGroup>
 
         <!-- Assert product is not assigned to Main website -->
-        <actionGroup ref="AssertProductIsNotAssignedToWebsiteActionGroup" stepKey="seeMainWebsiteIsNotChecked">
+        <actionGroup ref="AssertProductIsNotAssignedToWebsite" stepKey="seeMainWebsiteIsNotChecked">
             <argument name="website" value="{{_defaultWebsite.name}}"/>
         </actionGroup>
 

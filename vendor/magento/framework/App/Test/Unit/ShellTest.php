@@ -3,35 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit;
 
 use Magento\Framework\App\Shell;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Shell\Driver;
 use Magento\Framework\Shell\Response;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class ShellTest extends TestCase
+class ShellTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  MockObject|LoggerInterface */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject | \Psr\Log\LoggerInterface */
     private $loggerMock;
 
-    /** @var  MockObject|Driver */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Shell\Driver */
     private $driverMock;
 
-    /** @var  Shell */
+    /** @var  \Magento\Framework\App\Shell */
     private $model;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->driverMock = $this->getMockBuilder(Driver::class)
+            ->getMock();
+        $this->driverMock = $this->getMockBuilder(\Magento\Framework\Shell\Driver::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->model = new Shell(

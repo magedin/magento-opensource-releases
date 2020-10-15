@@ -3,59 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Listing\Collector;
 
-use Magento\Catalog\Api\Data\ProductRender\PriceInfoInterface;
-use Magento\Catalog\Api\Data\ProductRender\PriceInfoInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductRenderInterface;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Pricing\Price\FinalPrice;
-use Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Price;
 use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Pricing\PriceInfo\Base;
+use Magento\Catalog\Api\Data\ProductRender\PriceInfoInterface;
+use Magento\Catalog\Api\Data\ProductRender\PriceInfoInterfaceFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Price */
+    /** @var \Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Price */
     protected $model;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var PriceCurrencyInterface|MockObject */
+    /** @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $priceCurrencyMock;
 
-    /** @var PriceInfoInterfaceFactory|MockObject */
+    /** @var PriceInfoInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $priceInfoFactory;
 
-    /** @var PriceInfoInterface|MockObject */
+    /** @var PriceInfoInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $priceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->priceCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $this->priceCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
             ->getMockForAbstractClass();
         $this->priceInfoFactory = $this->getMockBuilder(
-            PriceInfoInterfaceFactory::class
+            \Magento\Catalog\Api\Data\ProductRender\PriceInfoInterfaceFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->priceMock = $this->getMockBuilder(
-            PriceInfoInterface::class
+            \Magento\Catalog\Api\Data\ProductRender\PriceInfoInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            Price::class,
+            \Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Price::class,
             [
                 'priceCurrency' => $this->priceCurrencyMock,
                 'priceInfoFactory' => $this->priceInfoFactory,
@@ -68,11 +60,11 @@ class PriceTest extends TestCase
         $product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $productRenderInfoDto = $this->getMockForAbstractClass(ProductRenderInterface::class);
+        $productRenderInfoDto = $this->createMock(ProductRenderInterface::class);
         $productRenderInfoDto->expects($this->exactly(2))
             ->method('getPriceInfo')
             ->willReturn([]);
-        $priceInfo = $this->getMockBuilder(Base::class)
+        $priceInfo = $this->getMockBuilder(\Magento\Framework\Pricing\PriceInfo\Base::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->priceInfoFactory->expects($this->once())
@@ -90,13 +82,13 @@ class PriceTest extends TestCase
         $this->priceMock->expects($this->once())
             ->method('setRegularPrice')
             ->with(10);
-        $price = $this->getMockBuilder(FinalPrice::class)
+        $price = $this->getMockBuilder(\Magento\Catalog\Pricing\Price\FinalPrice::class)
             ->disableOriginalConstructor()
             ->getMock();
         $priceInfo->expects($this->atLeastOnce())
             ->method('getPrice')
             ->willReturn($price);
-        $amount = $this->getMockForAbstractClass(AmountInterface::class);
+        $amount = $this->createMock(AmountInterface::class);
 
         $price->expects($this->atLeastOnce())
             ->method('getAmount')

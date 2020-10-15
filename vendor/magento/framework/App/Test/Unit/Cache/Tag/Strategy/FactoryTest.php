@@ -3,32 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Cache\Tag\Strategy;
 
-use Magento\Framework\App\Cache\Tag\Strategy\Dummy;
-use Magento\Framework\App\Cache\Tag\Strategy\Factory;
-use Magento\Framework\App\Cache\Tag\Strategy\Identifier;
-use Magento\Framework\App\Cache\Tag\StrategyInterface;
-use Magento\Framework\DataObject\IdentityInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Cache\Tag\Strategy\Factory;
 
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Identifier
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Tag\Strategy\Identifier
      */
     private $identifierStrategy;
 
     /**
-     * @var MockObject|Dummy
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Tag\Strategy\Dummy
      */
     private $dummyStrategy;
 
     /**
-     * @var MockObject|StrategyInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Tag\StrategyInterface
      */
     private $customStrategy;
 
@@ -37,14 +30,14 @@ class FactoryTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->identifierStrategy = $this->createMock(Identifier::class);
+        $this->identifierStrategy = $this->createMock(\Magento\Framework\App\Cache\Tag\Strategy\Identifier::class);
 
-        $this->dummyStrategy = $this->createMock(Dummy::class);
+        $this->dummyStrategy = $this->createMock(\Magento\Framework\App\Cache\Tag\Strategy\Dummy::class);
 
         $this->customStrategy = $this->getMockForAbstractClass(
-            StrategyInterface::class
+            \Magento\Framework\App\Cache\Tag\StrategyInterface::class
         );
 
         $this->model = new Factory(
@@ -63,12 +56,12 @@ class FactoryTest extends TestCase
 
     public function testGetStrategyWithObject()
     {
-        $this->assertEquals($this->dummyStrategy, $this->model->getStrategy(new \stdClass()));
+        $this->assertEquals($this->dummyStrategy, $this->model->getStrategy(new \stdClass));
     }
 
     public function testGetStrategyWithIdentityInterface()
     {
-        $object = $this->getMockForAbstractClass(IdentityInterface::class);
+        $object = $this->getMockForAbstractClass(\Magento\Framework\DataObject\IdentityInterface::class);
 
         $this->assertEquals($this->identifierStrategy, $this->model->getStrategy($object));
     }

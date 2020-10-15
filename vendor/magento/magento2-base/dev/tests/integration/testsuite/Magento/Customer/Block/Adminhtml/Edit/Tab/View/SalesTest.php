@@ -9,7 +9,7 @@ use Magento\Customer\Controller\RegistryConstants;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
- * Test for \Magento\Customer\Block\Adminhtml\Edit\Tab\View\Sales
+ * Class SalesTest
  *
  * @magentoAppArea adminhtml
  */
@@ -41,7 +41,7 @@ class SalesTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(\Magento\Framework\App\State::class)->setAreaCode('adminhtml');
@@ -64,7 +64,7 @@ class SalesTest extends \PHPUnit\Framework\TestCase
     /**
      * Execute post test cleanup.
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->coreRegistry->unregister(RegistryConstants::CURRENT_CUSTOMER_ID);
         $this->html = '';
@@ -121,7 +121,7 @@ class SalesTest extends \PHPUnit\Framework\TestCase
      */
     public function testToHtml()
     {
-        $this->assertStringContainsString('<span class="title">Sales Statistics</span>', $this->html);
-        $this->assertStringContainsString('<strong>All Store Views</strong>', $this->html);
+        $this->assertContains('<span class="title">Sales Statistics</span>', $this->html);
+        $this->assertContains('<strong>All Store Views</strong>', $this->html);
     }
 }

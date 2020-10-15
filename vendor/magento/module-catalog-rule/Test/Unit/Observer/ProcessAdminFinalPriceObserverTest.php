@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Observer;
 
 use Magento\Catalog\Model\Product;
@@ -18,7 +16,6 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Form\Element\DataType\Date;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -63,16 +60,16 @@ class ProcessAdminFinalPriceObserverTest extends TestCase
     private $rulePricesStorageMock;
 
     /**
-     * @var Event|MockObject
+     * @var Event|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventMock;
 
     /**
-     * @var Observer|MockObject
+     * @var Observer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $observerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->observerMock = $this
             ->getMockBuilder(Observer::class)

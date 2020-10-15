@@ -4,23 +4,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Config\Source\Address;
 
-use Magento\Customer\Model\Config\Source\Address\Type;
-use PHPUnit\Framework\TestCase;
-
-class TypeTest extends TestCase
+class TypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Type
+     * @var \Magento\Customer\Model\Config\Source\Address\Type
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new Type();
+        $this->model = new \Magento\Customer\Model\Config\Source\Address\Type();
     }
 
     public function testToOptionArray()

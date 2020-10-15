@@ -7,18 +7,17 @@ declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Model\Adminhtml;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Paypal\Model\Adminhtml\Express;
 use Magento\Paypal\Model\Api\Nvp;
 use Magento\Paypal\Model\Pro;
-use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Model\Order\Payment\Transaction\Repository as TransactionRepository;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Sales\Api\Data\TransactionInterface;
+use Magento\Sales\Model\Order\Payment\Transaction;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,48 +31,47 @@ class ExpressTest extends TestCase
     private $express;
 
     /**
-     * @var Payment|MockObject
+     * @var Payment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $payment;
 
     /**
-     * @var MethodInterface|MockObject
+     * @var MethodInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentInstance;
 
     /**
-     * @var Pro|MockObject
+     * @var Pro|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pro;
 
     /**
-     * @var Nvp|MockObject
+     * @var Nvp|\PHPUnit_Framework_MockObject_MockObject
      */
     private $nvp;
 
     /**
-     * @var Order|MockObject
+     * @var Order|\PHPUnit_Framework_MockObject_MockObject
      */
     private $order;
 
     /**
-     * @var TransactionRepository|MockObject
+     * @var TransactionRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $transactionRepository;
 
     /**
-     * @var TransactionInterface|MockObject
+     * @var TransactionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $transaction;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->nvp = $this->getMockBuilder(Nvp::class)
-            ->addMethods(['setProcessableErrors'])
-            ->onlyMethods(['getData', 'callDoAuthorization'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->nvp = $this->createPartialMock(
+            Nvp::class,
+            ['getData','setProcessableErrors', 'callDoAuthorization']
+        );
         $this->nvp->method('getData')->willReturn([]);
         $this->nvp->method('setProcessableErrors')->willReturnSelf();
 
@@ -213,6 +211,8 @@ class ExpressTest extends TestCase
             ['paypal_express', 'order', 50, false],
             ['paypal_express', 'capture', 0, false],
             ['paypal_express', 'order', 0, true],
+            ['braintree', 'authorize', 10, false],
+            ['braintree', 'authorize', 0, false],
         ];
     }
 }

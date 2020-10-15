@@ -48,16 +48,28 @@
                 <requiredEntity createDataKey="createSecondSimpleProduct"/>
             </updateData>
 
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <comment userInput="Reindex invalidated indices" stepKey="runCron1"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="runCron2"/>
+
+            <!-- Login as admin -->
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+            <actionGroup ref="deleteAllExportedFiles" stepKey="clearExportedFilesList"/>
         </before>
         <after>
+            <!-- Deleted created products -->
             <deleteData createDataKey="createFirstSimpleProduct" stepKey="deleteFirstSimpleProduct"/>
             <deleteData createDataKey="createSecondSimpleProduct" stepKey="deleteSecondSimpleProduct"/>
             <deleteData createDataKey="createGroupedProduct" stepKey="deleteGroupedProduct"/>
+
+            <!-- Delete category -->
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+
+            <!-- Delete exported file -->
+            <actionGroup ref="deleteExportedFile" stepKey="deleteExportedFile">
+                <argument name="rowIndex" value="0"/>
+            </actionGroup>
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Go to export page -->
@@ -65,25 +77,17 @@
         <waitForPageLoad stepKey="waitForExportIndexPageLoad"/>
 
         <!-- Export created below products -->
-        <actionGroup ref="ExportAllProductsActionGroup" stepKey="exportCreatedProducts"/>
+        <actionGroup ref="exportAllProducts" stepKey="exportCreatedProducts"/>
 
-        <!-- Start message queue for export consumer -->
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="startMessageQueue">
+        <comment userInput="Start message queue for export consumer" stepKey="runCron3"/>
+        <actionGroup ref="CliConsumerStartActionGroup" stepKey="runCron4">
             <argument name="consumerName" value="{{AdminExportMessageConsumerData.consumerName}}"/>
             <argument name="maxMessages" value="{{AdminExportMessageConsumerData.messageLimit}}"/>
         </actionGroup>
-        <reloadPage stepKey="refreshPage"/>
-        <waitForElementVisible selector="{{AdminExportAttributeSection.exportFileNameByPosition('0')}}" stepKey="waitForFileName"/>
-        <grabTextFrom selector="{{AdminExportAttributeSection.exportFileNameByPosition('0')}}" stepKey="grabNameFile"/>
 
         <!-- Download product -->
-        <actionGroup ref="DownloadFileActionGroup" stepKey="downloadCreatedProducts">
-            <argument name="fileName" value="{$grabNameFile}"/>
-        </actionGroup>
-
-        <!-- Delete exported file -->
-        <actionGroup ref="DeleteExportedFileActionGroup" stepKey="deleteExportedFile">
-            <argument name="fileName" value="{$grabNameFile}"/>
+        <actionGroup ref="downloadFileByRowIndex" stepKey="downloadCreatedProducts">
+            <argument name="rowIndex" value="0"/>
         </actionGroup>
     </test>
 </tests>

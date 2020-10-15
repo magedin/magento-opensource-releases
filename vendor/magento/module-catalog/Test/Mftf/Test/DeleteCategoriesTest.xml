@@ -36,13 +36,14 @@
             <createData entity="NewRootCategory" stepKey="createNewRootCategoryA"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <actionGroup ref="logout" stepKey="adminLogout"/>
             <deleteData createDataKey="createProduct1" stepKey="deleteProduct1"/>
             <deleteData createDataKey="createProduct2" stepKey="deleteProduct2"/>
             <deleteData createDataKey="createProduct3" stepKey="deleteProduct3"/>
         </after>
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin1"/>
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="navigateToCategoryPage1"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin1"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPage1"/>
+        <waitForPageLoad time="30" stepKey="waitForPageCategoryLoadAfterNavigate"/>
         <click selector="{{AdminCategorySidebarTreeSection.categoryInTree($$createNewRootCategoryA.name$$)}}" stepKey="openNewRootCategory"/>
         <waitForPageLoad stepKey="waitForPageCategoryLoadAfterClickOnNewRootCategory"/>
         <seeElement selector="{{AdminCategoryMainActionsSection.DeleteButton}}" stepKey="assertDeleteButtonIsPresent"/>
@@ -75,12 +76,11 @@
 
         <!-- @TODO: Uncomment commented below code after MQE-903 is fixed -->
         <!-- Perform cli reindex. -->
-        <!--<actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">-->
-        <!--    <argument name="indices" value=""/>-->
-        <!--</actionGroup>-->
+        <!--<magentoCLI command="indexer:reindex" stepKey="magentoCli"/>-->
 
         <!-- Delete Default Root Category. -->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="navigateToCategoryPageAfterCLIReindexCommand"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPageAfterCLIReindexCommand"/>
+        <waitForPageLoad time="30" stepKey="waitForPageCategoryLoadAfterCLIReindexCommand"/>
         <click selector="{{AdminCategorySidebarTreeSection.categoryInTree('Default Category')}}" stepKey="clickOnDefaultRootCategory"/>
         <waitForPageLoad stepKey="waitForPageDefaultCategoryEditLoad" />
         <seeElement selector="{{AdminCategoryMainActionsSection.DeleteButton}}" stepKey="assertDeleteButtonIsPresent1"/>
@@ -89,7 +89,8 @@
         <click selector="{{AdminCategoryModalSection.ok}}" stepKey="acceptModal1"/>
         <waitForElementVisible selector="{{AdminCategoryMessagesSection.SuccessMessage}}" stepKey="waitForPageReloadAfterDeleteDefaultCategory"/>
         <!-- Verify categories 1 and 3 their products. -->
-        <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToHomePage"/>
+        <amOnPage url="{{StorefrontHomePage.url}}" stepKey="amOnHomePage"/>
+        <waitForPageLoad stepKey="homeWaitForPageLoad"/>
 
         <!-- @TODO: Uncomment commented below code after MQE-903 is fixed -->
         <!--<click selector="{{StorefrontHeaderSection.NavigationCategoryByName($$createCategoryC.name$$)}}" stepKey="browseClickCategoryC"/>-->
@@ -97,7 +98,7 @@
             <!--<argument name="category" value="$$createCategoryC$$"/>-->
             <!--<argument name="productCount" value="2"/>-->
         <!--</actionGroup>-->
-        <!--<actionGroup ref="StorefrontCheckCategorySimpleProductActionGroup" stepKey="browseAssertCategoryProduct1">-->
+        <!--<actionGroup ref="StorefrontCheckCategorySimpleProduct" stepKey="browseAssertCategoryProduct1">-->
             <!--<argument name="product" value="$$createProduct1$$"/>-->
         <!--</actionGroup>-->
 
@@ -108,7 +109,7 @@
             <argument name="category" value="$$createSubCategory$$"/>
             <argument name="productCount" value="1"/>
         </actionGroup>
-        <actionGroup ref="StorefrontCheckCategorySimpleProductActionGroup" stepKey="browseAssertCategoryProduct2">
+        <actionGroup ref="StorefrontCheckCategorySimpleProduct" stepKey="browseAssertCategoryProduct2">
             <argument name="product" value="$$createProduct2$$"/>
         </actionGroup>
 
@@ -117,40 +118,43 @@
             <!--<argument name="category" value="$$createCategoryB$$"/>-->
             <!--<argument name="productCount" value="1"/>-->
         <!--</actionGroup>-->
-        <!--<actionGroup ref="StorefrontCheckCategorySimpleProductActionGroup" stepKey="browseAssertCategoryProduct3">-->
+        <!--<actionGroup ref="StorefrontCheckCategorySimpleProduct" stepKey="browseAssertCategoryProduct3">-->
             <!--<argument name="product" value="$$createProduct3$$"/>-->
         <!--</actionGroup>-->
 
         <!-- Delete Categories 1(with subcategory) and 3. -->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="navigateToCategoryPageAfterStoreFrontCategoryAssertions"/>
-        <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCategoryC">
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPageAfterStoreFrontCategoryAssertions"/>
+        <waitForPageLoad time="30" stepKey="waitForCategoryPageLoadAfterStoreFrontCategoryAssertions"/>
+        <actionGroup ref="DeleteCategory" stepKey="deleteCategoryC">
             <argument name="categoryEntity" value="$$createCategoryC$$"/>
         </actionGroup>
-        <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCategoryB">
+        <actionGroup ref="DeleteCategory" stepKey="deleteCategoryB">
             <argument name="categoryEntity" value="$$createCategoryB$$"/>
         </actionGroup>
         <!-- Verify categories 1 and 3 are absent -->
-        <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToHomePage1"/>
+        <amOnPage url="{{StorefrontHomePage.url}}" stepKey="amOnHomePage1"/>
+        <waitForPageLoad stepKey="waitHomePageLoadAfterDeletingCategories"/>
         <dontSee selector="{{StorefrontHeaderSection.NavigationCategoryByName($$createCategoryB.name$$)}}" stepKey="browseClickCategoryB"/>
         <dontSee selector="{{StorefrontHeaderSection.NavigationCategoryByName($$createCategoryC.name$$)}}" stepKey="browseClickCategoryC"/>
         <!-- Verify products 1-3 are available on storefront -->
         <amOnPage url="{{StorefrontHomePage.url}}$$createProduct1.custom_attributes[url_key]$$.html" stepKey="amOnProduct1Page"/>
         <waitForPageLoad stepKey="product1WaitForPageLoad"/>
-        <actionGroup ref="StorefrontCheckSimpleProductActionGroup" stepKey="browseAssertProduct1Page">
+        <actionGroup ref="StorefrontCheckSimpleProduct" stepKey="browseAssertProduct1Page">
             <argument name="product" value="$$createProduct1$$"/>
         </actionGroup>
         <amOnPage url="{{StorefrontHomePage.url}}$$createProduct2.custom_attributes[url_key]$$.html" stepKey="amOnProduct2Page"/>
         <waitForPageLoad stepKey="product2WaitForPageLoad"/>
-        <actionGroup ref="StorefrontCheckSimpleProductActionGroup" stepKey="browseAssertProduct2Page">
+        <actionGroup ref="StorefrontCheckSimpleProduct" stepKey="browseAssertProduct2Page">
             <argument name="product" value="$$createProduct2$$"/>
         </actionGroup>
         <amOnPage url="{{StorefrontHomePage.url}}$$createProduct3.custom_attributes[url_key]$$.html" stepKey="amOnProduct3Page"/>
         <waitForPageLoad stepKey="product3WaitForPageLoad"/>
-        <actionGroup ref="StorefrontCheckSimpleProductActionGroup" stepKey="browseAssertProduct3Page">
+        <actionGroup ref="StorefrontCheckSimpleProduct" stepKey="browseAssertProduct3Page">
             <argument name="product" value="$$createProduct3$$"/>
         </actionGroup>
         <!-- Rename New Root Category to Default category -->
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="navigateToCategoryPageAfterStoreFrontProductsAssertions"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPageAfterStoreFrontProductsAssertions"/>
+        <waitForPageLoad time="30" stepKey="waitForCategoryPageLoadAfterStoreFrontProductsAssertions"/>
         <click selector="{{AdminCategorySidebarTreeSection.categoryInTree('$$createNewRootCategoryA.name$$')}}" stepKey="clickOnNewRootCategoryA"/>
         <waitForPageLoad stepKey="waitForPageNewRootCategoryALoad" />
         <fillField selector="{{AdminCategoryBasicFieldSection.CategoryNameInput}}" userInput="Default Category" stepKey="enterCategoryNameAsDefaultCategory"/>

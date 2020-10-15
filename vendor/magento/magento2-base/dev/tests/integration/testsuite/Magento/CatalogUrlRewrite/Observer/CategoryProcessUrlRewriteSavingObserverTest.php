@@ -26,7 +26,7 @@ class CategoryProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Tes
     /** @var \Magento\Framework\ObjectManagerInterface */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -51,7 +51,7 @@ class CategoryProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Tes
         return $actualResults;
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $category = $this->objectManager->create(\Magento\Catalog\Model\Category::class);
         $category->load(3);

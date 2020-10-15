@@ -1,46 +1,38 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures\Quote;
-
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Fixtures\FixtureModel;
-use Magento\Setup\Fixtures\Quote\QuoteConfiguration;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Setup\Fixtures\Quote\QuoteConfiguration class.
  */
-class QuoteConfigurationTest extends TestCase
+class QuoteConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FixtureModel|MockObject
+     * @var \Magento\Setup\Fixtures\FixtureModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fixtureModelMock;
 
     /**
-     * @var QuoteConfiguration
+     * @var \Magento\Setup\Fixtures\Quote\QuoteConfiguration
      */
     private $fixture;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->fixtureModelMock = $this->getMockBuilder(FixtureModel::class)
+        $this->fixtureModelMock = $this->getMockBuilder(\Magento\Setup\Fixtures\FixtureModel::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->fixture = $objectManager->getObject(
-            QuoteConfiguration::class,
+            \Magento\Setup\Fixtures\Quote\QuoteConfiguration::class,
             [
                 'fixtureModel' => $this->fixtureModelMock
             ]
@@ -62,8 +54,8 @@ class QuoteConfigurationTest extends TestCase
             'configurable_count_from' => 1,
             'big_configurable_count_to' => 1,
             'big_configurable_count_from' => 1,
-            'fixture_data_filename' => $dir . DIRECTORY_SEPARATOR . "_files"
-                . DIRECTORY_SEPARATOR . 'orders_fixture_data.json',
+            'fixture_data_filename' =>
+                $dir . DIRECTORY_SEPARATOR . "_files" . DIRECTORY_SEPARATOR . 'orders_fixture_data.json',
             'order_quotes_enable' => 1,
         ];
         $this->fixtureModelMock->expects($this->atLeastOnce())
@@ -75,7 +67,7 @@ class QuoteConfigurationTest extends TestCase
                 ['order_configurable_product_count_from'],
                 ['order_big_configurable_product_count_to'],
                 ['order_big_configurable_product_count_from'],
-                ['order_quotes_enable']
+                ['order_quotes_enable',]
             )->willReturn(1);
         $this->assertSame($expectedResult, $this->fixture->load()->getData());
     }

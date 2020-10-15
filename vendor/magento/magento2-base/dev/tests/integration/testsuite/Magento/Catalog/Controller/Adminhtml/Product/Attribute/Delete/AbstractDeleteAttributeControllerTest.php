@@ -31,7 +31,7 @@ abstract class AbstractDeleteAttributeControllerTest extends AbstractBackendCont
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->productAttributeRepository = $this->_objectManager->get(ProductAttributeRepositoryInterface::class);

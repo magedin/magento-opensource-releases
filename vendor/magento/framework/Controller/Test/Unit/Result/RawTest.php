@@ -3,39 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Controller\Test\Unit\Result;
 
 use Magento\Framework\App\Response\HttpInterface as HttpResponseInterface;
-use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RawTest extends TestCase
+class RawTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Raw */
+    /** @var \Magento\Framework\Controller\Result\Raw */
     protected $raw;
 
-    /** @var HttpResponseInterface|MockObject*/
+    /** @var HttpResponseInterface|\PHPUnit_Framework_MockObject_MockObject*/
     protected $response;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->response = $this->getMockForAbstractClass(HttpResponseInterface::class);
-        $this->raw = $this->objectManagerHelper->getObject(Raw::class);
+        $this->response = $this->createMock(HttpResponseInterface::class);
+        $this->raw = $this->objectManagerHelper->getObject(\Magento\Framework\Controller\Result\Raw::class);
     }
 
     public function testSetContents()
     {
         $content = '<content>test</content>';
-        $this->assertInstanceOf(Raw::class, $this->raw->setContents($content));
+        $this->assertInstanceOf(\Magento\Framework\Controller\Result\Raw::class, $this->raw->setContents($content));
     }
 
     public function testRender()

@@ -3,44 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Block\Element\Weee;
 
-use Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Weight;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\DataObject;
-use Magento\Framework\Locale\Currency;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Weee\Block\Element\Weee\Tax;
-use PHPUnit\Framework\TestCase;
-
-class TaxTest extends TestCase
+class TaxTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Weight
+     * @var \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Weight
      */
     protected $model;
 
     public function testGetEscapedValue()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $inputValue = [
             ['value' => '30000.4'],
         ];
 
         $collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Framework\Data\Form\Element\CollectionFactory::class,
             ['create']
         );
 
-        $storeManager = $this->createMock(StoreManager::class);
+        $storeManager = $this->createMock(\Magento\Store\Model\StoreManager::class);
 
-        $localeCurrency = $this->createMock(Currency::class);
+        $localeCurrency = $this->createMock(\Magento\Framework\Locale\Currency::class);
 
         $currency = $this->createMock(\Magento\Framework\Currency::class);
 
@@ -56,7 +43,7 @@ class TaxTest extends TestCase
             'getCurrency'
         )->willReturn($currency);
 
-        $store = $this->createMock(Store::class);
+        $store = $this->createMock(\Magento\Store\Model\Store::class);
 
         $storeManager->expects(
             $this->any()
@@ -64,10 +51,10 @@ class TaxTest extends TestCase
             'getStore'
         )->willReturn($store);
 
-        $factory = $this->createMock(Factory::class);
+        $factory = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
 
         $this->model = $objectManager->getObject(
-            Tax::class,
+            \Magento\Weee\Block\Element\Weee\Tax::class,
             [
                 'factoryElement' => $factory,
                 'factoryCollection' => $collectionFactory,
@@ -77,7 +64,7 @@ class TaxTest extends TestCase
         );
 
         $this->model->setValue($inputValue);
-        $this->model->setEntityAttribute(new DataObject(['store_id' => 1]));
+        $this->model->setEntityAttribute(new \Magento\Framework\DataObject(['store_id' => 1]));
 
         $return = $this->model->getEscapedValue();
         $this->assertEquals(

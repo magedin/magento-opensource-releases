@@ -14,6 +14,7 @@ use Magento\CatalogGraphQl\Model\Resolver\Products\SearchResultFactory;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Search\Api\SearchInterface;
+use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Search\Model\Search\PageSizeProvider;
 
 /**
@@ -37,6 +38,11 @@ class Search implements ProductQueryInterface
     private $pageSizeProvider;
 
     /**
+     * @var SearchCriteriaInterfaceFactory
+     */
+    private $searchCriteriaFactory;
+
+    /**
      * @var FieldSelection
      */
     private $fieldSelection;
@@ -55,6 +61,7 @@ class Search implements ProductQueryInterface
      * @param SearchInterface $search
      * @param SearchResultFactory $searchResultFactory
      * @param PageSizeProvider $pageSize
+     * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param FieldSelection $fieldSelection
      * @param ProductSearch $productsProvider
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
@@ -63,6 +70,7 @@ class Search implements ProductQueryInterface
         SearchInterface $search,
         SearchResultFactory $searchResultFactory,
         PageSizeProvider $pageSize,
+        SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         FieldSelection $fieldSelection,
         ProductSearch $productsProvider,
         SearchCriteriaBuilder $searchCriteriaBuilder
@@ -70,6 +78,7 @@ class Search implements ProductQueryInterface
         $this->search = $search;
         $this->searchResultFactory = $searchResultFactory;
         $this->pageSizeProvider = $pageSize;
+        $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->fieldSelection = $fieldSelection;
         $this->productsProvider = $productsProvider;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;

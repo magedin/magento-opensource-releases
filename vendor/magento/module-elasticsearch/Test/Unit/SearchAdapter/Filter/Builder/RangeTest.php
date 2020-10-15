@@ -3,23 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Filter\Builder;
 
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
 use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Range;
-use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Range as RangeFilterBuilder;
-use Magento\Framework\Search\Request\Filter\Range as RangeFilterRequest;
-use Magento\Framework\Search\Request\Filter\Wildcard;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @see \Magento\Elasticsearch\SearchAdapter\Filter\Builder\Range
  */
-class RangeTest extends TestCase
+class RangeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Range
@@ -27,12 +20,12 @@ class RangeTest extends TestCase
     private $model;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fieldMapper;
 
     /**
-     * @var Wildcard|MockObject
+     * @var \Magento\Framework\Search\Request\Filter\Wildcard|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filterInterface;
 
@@ -41,26 +34,24 @@ class RangeTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->fieldMapper = $this->getMockBuilder(FieldMapperInterface::class)
+        $this->fieldMapper = $this->getMockBuilder(\Magento\Elasticsearch\Model\Adapter\FieldMapperInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->filterInterface = $this->getMockBuilder(RangeFilterRequest::class)
+        $this->filterInterface = $this->getMockBuilder(\Magento\Framework\Search\Request\Filter\Range::class)
             ->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'getField',
-                    'getFrom',
-                    'getTo',
-                ]
-            )
+            ->setMethods([
+                'getField',
+                'getFrom',
+                'getTo',
+            ])
             ->getMock();
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            RangeFilterBuilder::class,
+            \Magento\Elasticsearch\SearchAdapter\Filter\Builder\Range::class,
             [
                 'fieldMapper' => $this->fieldMapper
             ]

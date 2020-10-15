@@ -23,7 +23,7 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     {
         $this->dispatch('backend/admin/auth/forgotpassword');
         $expected = 'Password Help';
-        $this->assertStringContainsString($expected, $this->getResponse()->getBody());
+        $this->assertContains($expected, $this->getResponse()->getBody());
     }
 
     /**
@@ -269,7 +269,7 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractBackendController
      * @param int $occurrenceNumber
      * @param string $templateId
      * @param string $sender
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function prepareEmailMock($occurrenceNumber, $templateId, $sender)
     {
@@ -317,11 +317,11 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractBackendController
     /**
      * Add mocked object to environment
      *
-     * @param \PHPUnit\Framework\MockObject\MockObject $transportBuilderMock
+     * @param \PHPUnit_Framework_MockObject_MockObject $transportBuilderMock
      * @param string $originalClassName
      */
     protected function addMockToClass(
-        \PHPUnit\Framework\MockObject\MockObject $transportBuilderMock,
+        \PHPUnit_Framework_MockObject_MockObject $transportBuilderMock,
         $originalClassName
     ) {
         $userMock = $this->_objectManager->create(

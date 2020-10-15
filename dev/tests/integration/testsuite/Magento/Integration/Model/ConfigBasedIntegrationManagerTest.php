@@ -14,7 +14,7 @@ namespace Magento\Integration\Model;
 class ConfigBasedIntegrationManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $consolidatedMock;
 
@@ -36,7 +36,7 @@ class ConfigBasedIntegrationManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -58,7 +58,7 @@ class ConfigBasedIntegrationManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->objectManager->removeSharedInstance(\Magento\Integration\Model\ConsolidatedConfig::class);
         parent::tearDown();
@@ -78,7 +78,7 @@ class ConfigBasedIntegrationManagerTest extends \PHPUnit\Framework\TestCase
         // Check that the integrations do not exist already
         foreach ($newIntegrations as $integrationName => $integrationData) {
             $integration = $this->integrationService->findByName($integrationName);
-            $this->assertNull($integration->getId(), 'Integration already exists');
+            $this->assertEquals(null, $integration->getId(), 'Integration already exists');
         }
 
         // Create new integrations

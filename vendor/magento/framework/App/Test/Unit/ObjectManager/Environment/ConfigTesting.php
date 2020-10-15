@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\ObjectManager\Environment;
 
 use Magento\Framework\Interception\ObjectManager\ConfigInterface;
@@ -24,6 +22,7 @@ class ConfigTesting implements ConfigInterface
      */
     public function setRelations(RelationsInterface $relations)
     {
+        return;
     }
 
     /**
@@ -36,6 +35,7 @@ class ConfigTesting implements ConfigInterface
      */
     public function setCache(ConfigCacheInterface $cache)
     {
+        return;
     }
 
     /**
@@ -104,6 +104,7 @@ class ConfigTesting implements ConfigInterface
      */
     public function extend(array $configuration)
     {
+        return;
     }
 
     /**
@@ -125,6 +126,7 @@ class ConfigTesting implements ConfigInterface
      */
     public function setInterceptionConfig(\Magento\Framework\Interception\ConfigInterface $interceptionConfig)
     {
+        return;
     }
 
     /**

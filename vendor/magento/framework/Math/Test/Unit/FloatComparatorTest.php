@@ -20,7 +20,7 @@ class FloatComparatorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->comparator = new FloatComparator();
     }

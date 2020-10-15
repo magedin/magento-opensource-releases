@@ -3,15 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ProductOptions\Config;
 
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\TestFramework\Unit\Utility\XsdValidator;
-use PHPUnit\Framework\TestCase;
-
-class XsdTest extends TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Path to xsd file
@@ -20,18 +14,18 @@ class XsdTest extends TestCase
     protected $_xsdSchemaPath;
 
     /**
-     * @var XsdValidator
+     * @var \Magento\Framework\TestFramework\Unit\Utility\XsdValidator
      */
     protected $_xsdValidator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
         }
-        $urnResolver = new UrnResolver();
+        $urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
         $this->_xsdSchemaPath = $urnResolver->getRealPath('urn:magento:module:Magento_Catalog:etc/');
-        $this->_xsdValidator = new XsdValidator();
+        $this->_xsdValidator = new \Magento\Framework\TestFramework\Unit\Utility\XsdValidator();
     }
 
     /**

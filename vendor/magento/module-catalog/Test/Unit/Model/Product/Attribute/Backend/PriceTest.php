@@ -3,60 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Backend;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Backend\Price;
-use Magento\Directory\Model\CurrencyFactory;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
-use Magento\Framework\Locale\Format;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Store;
 
-class PriceTest extends TestCase
+/**
+ * Class PriceTest
+ */
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Price
+     * @var \Magento\Catalog\Model\Product\Attribute\Backend\Price
      */
     private $model;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute\AbstractAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attribute;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
-    /** @var  CurrencyFactory|MockObject */
+    /** @var  \Magento\Directory\Model\CurrencyFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $currencyFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectHelper = new ObjectManager($this);
-        $localeFormat = $objectHelper->getObject(Format::class);
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $localeFormat = $objectHelper->getObject(\Magento\Framework\Locale\Format::class);
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
-        $this->currencyFactory = $this->getMockBuilder(CurrencyFactory::class)
+        $this->currencyFactory = $this->getMockBuilder(\Magento\Directory\Model\CurrencyFactory::class)
             ->setMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->model = $objectHelper->getObject(
-            Price::class,
+            \Magento\Catalog\Model\Product\Attribute\Backend\Price::class,
             [
                 'localeFormat' => $localeFormat,
                 'storeManager' => $this->storeManager,
                 'currencyFactory' => $this->currencyFactory
             ]
         );
-        $this->attribute = $this->getMockBuilder(AbstractAttribute::class)
+        $this->attribute = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->setMethods(['getAttributeCode', 'isScopeWebsite', 'getIsGlobal'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -70,7 +61,7 @@ class PriceTest extends TestCase
      */
     public function testValidate($value)
     {
-        $object = $this->createMock(Product::class);
+        $object = $this->createMock(\Magento\Catalog\Model\Product::class);
         $object->expects($this->once())->method('getData')->willReturn($value);
 
         $this->assertTrue($this->model->validate($object));
@@ -95,12 +86,12 @@ class PriceTest extends TestCase
     /**
      * Tests for the cases that expect to fail validation
      *
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      * @dataProvider dataProviderValidateForFailure
      */
     public function testValidateForFailure($value)
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $object = $this->createMock(Product::class);
+        $object = $this->createMock(\Magento\Catalog\Model\Product::class);
         $object->expects($this->once())->method('getData')->willReturn($value);
 
         $this->model->validate($object);
@@ -127,9 +118,7 @@ class PriceTest extends TestCase
         $attributeCode = 'price';
         $defaultStoreId = 0;
         $allStoreIds = [1, 2, 3];
-        $object = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)->disableOriginalConstructor()->getMock();
         $object->expects($this->any())->method('getData')->with($attributeCode)->willReturn($newPrice);
         $object->expects($this->any())->method('getOrigData')->with($attributeCode)->willReturn('7.77');
         $object->expects($this->any())->method('getStoreId')->willReturn($defaultStoreId);
@@ -137,7 +126,7 @@ class PriceTest extends TestCase
         $object->expects($this->never())->method('getWebsiteStoreIds');
         $this->attribute->expects($this->any())->method('getAttributeCode')->willReturn($attributeCode);
         $this->attribute->expects($this->any())->method('isScopeWebsite')
-            ->willReturn(ScopedAttributeInterface::SCOPE_WEBSITE);
+            ->willReturn(\Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_WEBSITE);
         $this->storeManager->expects($this->never())->method('getStore');
 
         $object->expects($this->any())->method('addAttributeUpdate')->withConsecutive(
@@ -164,14 +153,12 @@ class PriceTest extends TestCase
     {
         $attributeCode = 'price';
 
-        $object = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)->disableOriginalConstructor()->getMock();
         $object->expects($this->any())->method('getData')->with($attributeCode)->willReturn('7.77');
         $object->expects($this->any())->method('getOrigData')->with($attributeCode)->willReturn('7.77');
         $this->attribute->expects($this->any())->method('getAttributeCode')->willReturn($attributeCode);
         $this->attribute->expects($this->any())->method('getIsGlobal')
-            ->willReturn(ScopedAttributeInterface::SCOPE_WEBSITE);
+            ->willReturn(\Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_WEBSITE);
 
         $object->expects($this->never())->method('addAttributeUpdate');
         $this->assertEquals($this->model, $this->model->afterSave($object));
@@ -181,14 +168,12 @@ class PriceTest extends TestCase
     {
         $attributeCode = 'price';
 
-        $object = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)->disableOriginalConstructor()->getMock();
         $object->expects($this->any())->method('getData')->with($attributeCode)->willReturn('9.99');
         $object->expects($this->any())->method('getOrigData')->with($attributeCode)->willReturn('7.77');
         $this->attribute->expects($this->any())->method('getAttributeCode')->willReturn($attributeCode);
         $this->attribute->expects($this->any())->method('getIsGlobal')
-            ->willReturn(ScopedAttributeInterface::SCOPE_GLOBAL);
+            ->willReturn(\Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
 
         $object->expects($this->never())->method('addAttributeUpdate');
         $this->assertEquals($this->model, $this->model->afterSave($object));

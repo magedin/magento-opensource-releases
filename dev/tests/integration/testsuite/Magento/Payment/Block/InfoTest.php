@@ -16,7 +16,7 @@ use Magento\Sales\Model\Order;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
- * Test for Magento\Payment\Block\Info
+ * Class InfoTest
  */
 class InfoTest extends \PHPUnit\Framework\TestCase
 {
@@ -66,11 +66,11 @@ class InfoTest extends \PHPUnit\Framework\TestCase
 
         $pdfArray = $block->getChildPdfAsArray();
 
-        $this->assertIsArray($pdfArray);
+        $this->assertInternalType('array', $pdfArray);
         $this->assertCount(2, $pdfArray);
         $text = implode('', $pdfArray);
-        $this->assertStringContainsString('Bank Method Title', $text);
-        $this->assertStringContainsString('Checkmo Title Of The Method', $text);
-        $this->assertStringNotContainsString($nonExpectedHtml, $text);
+        $this->assertContains('Bank Method Title', $text);
+        $this->assertContains('Checkmo Title Of The Method', $text);
+        $this->assertNotContains($nonExpectedHtml, $text);
     }
 }

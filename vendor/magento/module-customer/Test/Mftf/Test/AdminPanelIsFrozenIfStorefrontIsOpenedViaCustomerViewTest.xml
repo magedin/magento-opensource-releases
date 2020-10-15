@@ -23,31 +23,31 @@
             <createData entity="SimpleProduct" stepKey="createSimpleProduct">
                 <requiredEntity createDataKey="createSimpleCategory"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
         </before>
         <after>
             <deleteData createDataKey="createSimpleCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createSimpleProduct" stepKey="deleteSimpleProduct"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
-        <actionGroup ref="NavigateToNewOrderPageExistingCustomerActionGroup" stepKey="navigateToNewOrderPage">
+        <actionGroup ref="navigateToNewOrderPageExistingCustomer" stepKey="navigateToNewOrderPage">
             <argument name="customer" value="$simpleCustomer$"/>
         </actionGroup>
-        <actionGroup ref="AddSimpleProductToOrderActionGroup" stepKey="addSecondProduct">
+        <actionGroup ref="addSimpleProductToOrder" stepKey="addSecondProduct">
             <argument name="product" value="$createSimpleProduct$"/>
         </actionGroup>
-        <actionGroup ref="FillOrderCustomerInformationActionGroup" stepKey="fillCustomerInfo">
+        <actionGroup ref="fillOrderCustomerInformation" stepKey="fillCustomerInfo">
             <argument name="customer" value="$simpleCustomer$"/>
             <argument name="address" value="US_Address_TX"/>
         </actionGroup>
-        <actionGroup ref="OrderSelectFlatRateShippingActionGroup" stepKey="selectFlatRate"/>
+        <actionGroup ref="orderSelectFlatRateShipping" stepKey="selectFlatRate"/>
         <actionGroup ref="AdminSubmitOrderActionGroup" stepKey="submitOrder"/>
         <grabTextFrom selector="|Order # (\d+)|" stepKey="getOrderId"/>
 
-        <actionGroup ref="StartCreateInvoiceFromOrderPageActionGroup" stepKey="startCreateInvoice"/>
-        <actionGroup ref="SubmitInvoiceActionGroup" stepKey="submitInvoice"/>
-        <actionGroup ref="GoToShipmentIntoOrderActionGroup" stepKey="goToShipment"/>
-        <actionGroup ref="SubmitShipmentIntoOrderActionGroup" stepKey="submitShipment"/>
+        <actionGroup ref="StartCreateInvoiceFromOrderPage" stepKey="startCreateInvoice"/>
+        <actionGroup ref="SubmitInvoice" stepKey="submitInvoice"/>
+        <actionGroup ref="goToShipmentIntoOrder" stepKey="goToShipment"/>
+        <actionGroup ref="submitShipmentIntoOrder" stepKey="submitShipment"/>
 
         <!--Create Credit Memo-->
         <actionGroup ref="StartToCreateCreditMemoActionGroup" stepKey="startToCreateCreditMemo">

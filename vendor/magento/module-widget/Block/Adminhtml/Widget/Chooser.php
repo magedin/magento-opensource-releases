@@ -11,9 +11,6 @@
  */
 namespace Magento\Widget\Block\Adminhtml\Widget;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
 /**
  * Chooser widget block.
  */
@@ -30,27 +27,19 @@ class Chooser extends \Magento\Backend\Block\Template
     protected $_jsonEncoder;
 
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Json\EncoderInterface $jsonEncoder
      * @param \Magento\Framework\Data\Form\Element\Factory $elementFactory
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Framework\Data\Form\Element\Factory $elementFactory,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
+        array $data = []
     ) {
         $this->_jsonEncoder = $jsonEncoder;
         $this->_elementFactory = $elementFactory;
-        $this->secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
         parent::__construct($context, $data);
     }
 
@@ -200,35 +189,33 @@ class Chooser extends \Magento\Backend\Block\Template
             '</label>
             <div id="' .
             $chooserId .
-            'advice-container" class="hidden"></div>' .
-            $this->secureRenderer->renderTag(
-                'script',
-                [],
-                'require(["prototype", "mage/adminhtml/wysiwyg/widget"], function(){
+            'advice-container" class="hidden"></div>
+            <script>
+            require(["prototype", "mage/adminhtml/wysiwyg/widget"], function(){
             //<![CDATA[
                 (function() {
                     var instantiateChooser = function() {
                         window.' .
-                $chooserId .
-                ' = new WysiwygWidget.chooser(
+            $chooserId .
+            ' = new WysiwygWidget.chooser(
                             "' .
-                $chooserId .
-                '",
+            $chooserId .
+            '",
                             "' .
-                $this->getSourceUrl() .
-                '",
+            $this->getSourceUrl() .
+            '",
                             ' .
-                $configJson .
-                '
+            $configJson .
+            '
                         );
                         if ($("' .
-                $chooserId .
-                'value")) {
+            $chooserId .
+            'value")) {
                             $("' .
-                $chooserId .
-                'value").advaiceContainer = "' .
-                $chooserId .
-                'advice-container";
+            $chooserId .
+            'value").advaiceContainer = "' .
+            $chooserId .
+            'advice-container";
                         }
                     }
 
@@ -236,8 +223,7 @@ class Chooser extends \Magento\Backend\Block\Template
                 })();
             //]]>
             });
-            ',
-                false
-            );
+            </script>
+        ';
     }
 }

@@ -3,31 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\ResourceModel;
 
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\CatalogSearch\Model\ResourceModel\Advanced;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AdvancedTest extends TestCase
+class AdvancedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Advanced
+     * @var \Magento\CatalogSearch\Model\ResourceModel\Advanced
      */
     private $model;
 
     /**
      * setUp method for AdvancedTest
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->model = $helper->getObject(Advanced::class);
+        $this->model = $helper->getObject(\Magento\CatalogSearch\Model\ResourceModel\Advanced::class);
     }
 
     /**
@@ -35,8 +30,8 @@ class AdvancedTest extends TestCase
      */
     public function testPrepareCondition($backendType, $value, $expected)
     {
-        /** @var Attribute|MockObject $attributeMock */
-        $attributeMock = $this->getMockBuilder(Attribute::class)
+        /** @var Attribute|\PHPUnit_Framework_MockObject_MockObject $attributeMock */
+        $attributeMock = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
             ->setMethods(['getBackendType'])
             ->disableOriginalConstructor()
             ->getMock();

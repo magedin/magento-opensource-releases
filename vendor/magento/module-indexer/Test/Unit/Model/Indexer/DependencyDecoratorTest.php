@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Indexer\Test\Unit\Model\Indexer;
 
@@ -15,10 +14,8 @@ use Magento\Framework\Mview\View;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Indexer\Model\Indexer;
 use Magento\Indexer\Model\Indexer\DependencyDecorator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DependencyDecoratorTest extends TestCase
+class DependencyDecoratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -31,24 +28,24 @@ class DependencyDecoratorTest extends TestCase
     private $dependencyDecorator;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var IndexerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerMock;
 
     /**
-     * @var DependencyInfoProviderInterface|MockObject
+     * @var DependencyInfoProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dependencyInfoProviderMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerRegistryMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -138,11 +135,8 @@ class DependencyDecoratorTest extends TestCase
             ['getFields', ['one', 'two']],
             ['getSources', ['one', 'two']],
             ['getHandlers', ['one', 'two']],
-            ['getView', $this->getMockBuilder(View::class)
-                ->disableOriginalConstructor()
-                ->getMock()],
-            ['getState', $this->getMockBuilder(StateInterface::class)
-                ->getMockForAbstractClass()],
+            ['getView', $this->getMockBuilder(View::class)->disableOriginalConstructor()->getMock()],
+            ['getState', $this->getMockBuilder(StateInterface::class)->getMockForAbstractClass()],
             ['isScheduled', true],
             ['isValid', false],
             ['isInvalid', true],
@@ -311,7 +305,7 @@ class DependencyDecoratorTest extends TestCase
     }
 
     /**
-     * @return MockObject|IndexerInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|IndexerInterface
      */
     private function getIndexerMock()
     {

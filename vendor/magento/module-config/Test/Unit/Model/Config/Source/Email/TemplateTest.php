@@ -3,35 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Config\Test\Unit\Model\Config\Source\Email;
-
-use Magento\Config\Model\Config\Source\Email\Template;
-use Magento\Email\Model\ResourceModel\Template\Collection;
-use Magento\Email\Model\ResourceModel\Template\CollectionFactory;
-use Magento\Email\Model\Template\Config;
-use Magento\Framework\Registry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Template.
  */
-class TemplateTest extends TestCase
+class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Template
+     * @var \Magento\Config\Model\Config\Source\Email\Template
      */
     protected $_model;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_coreRegistry;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Email\Model\Template\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_emailConfig;
 
@@ -40,14 +31,14 @@ class TemplateTest extends TestCase
      */
     protected $_templatesFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_coreRegistry = $this->createMock(Registry::class);
-        $this->_emailConfig = $this->createMock(Config::class);
+        $this->_coreRegistry = $this->createMock(\Magento\Framework\Registry::class);
+        $this->_emailConfig = $this->createMock(\Magento\Email\Model\Template\Config::class);
         $this->_templatesFactory = $this->createMock(
-            CollectionFactory::class
+            \Magento\Email\Model\ResourceModel\Template\CollectionFactory::class
         );
-        $this->_model = new Template(
+        $this->_model = new \Magento\Config\Model\Config\Source\Email\Template(
             $this->_coreRegistry,
             $this->_templatesFactory,
             $this->_emailConfig
@@ -56,16 +47,18 @@ class TemplateTest extends TestCase
 
     public function testToOptionArray()
     {
-        $collection = $this->createMock(Collection::class);
+        $collection = $this->createMock(\Magento\Email\Model\ResourceModel\Template\Collection::class);
         $collection->expects(
             $this->once()
         )->method(
             'toOptionArray'
-        )->willReturn(
-            [
-                ['value' => 'template_one', 'label' => 'Template One'],
-                ['value' => 'template_two', 'label' => 'Template Two'],
-            ]
+        )->will(
+            $this->returnValue(
+                [
+                    ['value' => 'template_one', 'label' => 'Template One'],
+                    ['value' => 'template_two', 'label' => 'Template Two'],
+                ]
+            )
         );
         $this->_coreRegistry->expects(
             $this->once()
@@ -73,8 +66,8 @@ class TemplateTest extends TestCase
             'registry'
         )->with(
             'config_system_email_template'
-        )->willReturn(
-            $collection
+        )->will(
+            $this->returnValue($collection)
         );
         $this->_emailConfig->expects(
             $this->once()
@@ -82,21 +75,24 @@ class TemplateTest extends TestCase
             'getTemplateLabel'
         )->with(
             'template_new'
-        )->willReturn(
-            'Template New'
+        )->will(
+            $this->returnValue('Template New')
         );
         $expectedResult = [
             [
                 'value' => 'template_new',
                 'label' => 'Template New (Default)',
+                '__disableTmpl' => true
             ],
             [
                 'value' => 'template_one',
                 'label' => 'Template One',
+                '__disableTmpl' => true
             ],
             [
                 'value' => 'template_two',
                 'label' => 'Template Two',
+                '__disableTmpl' => true
             ],
         ];
         $this->_model->setPath('template/new');

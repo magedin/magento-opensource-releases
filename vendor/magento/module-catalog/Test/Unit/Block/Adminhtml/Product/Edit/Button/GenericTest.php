@@ -3,19 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Product\Edit\Button;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Block\Adminhtml\Product\Edit\Button\Generic;
 use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Block\Adminhtml\Product\Edit\Button\Generic;
 
-class GenericTest extends TestCase
+/**
+ * Class GenericTest
+ */
+class GenericTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -23,21 +22,21 @@ class GenericTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registryMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->contextMock = $this->getMockBuilder(Context::class)

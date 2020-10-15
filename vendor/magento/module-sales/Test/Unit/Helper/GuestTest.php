@@ -3,118 +3,96 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Helper;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Api\Data\OrderSearchResultInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Helper\Guest;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Address;
-use Magento\Sales\Model\OrderFactory;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GuestTest extends TestCase
+class GuestTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Guest */
+    /** @var \Magento\Sales\Helper\Guest */
     protected $guest;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $sessionMock;
 
-    /** @var CookieManagerInterface|MockObject */
+    /** @var \Magento\Framework\Stdlib\CookieManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $cookieManagerMock;
 
-    /** @var CookieMetadataFactory|MockObject */
+    /** @var \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $cookieMetadataFactoryMock;
 
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $managerInterfaceMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $orderFactoryMock;
 
-    /** @var ViewInterface|MockObject */
+    /** @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $viewInterfaceMock;
 
-    /** @var Store|MockObject */
+    /** @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeModelMock;
 
-    /** @var Order|MockObject */
+    /** @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject */
     protected $salesOrderMock;
 
     /**
-     * @var OrderRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\OrderRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderRepository;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $appContextHelperMock = $this->createMock(Context::class);
-        $storeManagerInterfaceMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $registryMock = $this->createMock(Registry::class);
-        $this->sessionMock = $this->createMock(Session::class);
-        $this->cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
+        $appContextHelperMock = $this->createMock(\Magento\Framework\App\Helper\Context::class);
+        $storeManagerInterfaceMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->sessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->cookieManagerMock = $this->createMock(\Magento\Framework\Stdlib\CookieManagerInterface::class);
         $this->cookieMetadataFactoryMock = $this->createMock(
-            CookieMetadataFactory::class
+            \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory::class
         );
-        $this->managerInterfaceMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->orderFactoryMock = $this->createPartialMock(OrderFactory::class, ['create']);
-        $this->viewInterfaceMock = $this->getMockForAbstractClass(ViewInterface::class);
-        $this->storeModelMock = $this->getMockBuilder(Store::class)
+        $this->managerInterfaceMock = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
+        $this->orderFactoryMock = $this->createPartialMock(\Magento\Sales\Model\OrderFactory::class, ['create']);
+        $this->viewInterfaceMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $this->storeModelMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->salesOrderMock = $this->createPartialMock(
-            Order::class,
+            \Magento\Sales\Model\Order::class,
             [
                 'getProtectCode',
                 'loadByIncrementIdAndStoreId',
                 'loadByIncrementId',
                 'getId',
                 'getStoreId',
-                'getBillingAddress'
+                'getBillingAddress',
+                '__wakeup'
             ]
         );
-        $this->orderRepository = $this->getMockBuilder(OrderRepositoryInterface::class)
+        $this->orderRepository = $this->getMockBuilder(\Magento\Sales\Api\OrderRepositoryInterface::class)
             ->setMethods(['getList'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->searchCriteriaBuilder = $this->getMockBuilder(SearchCriteriaBuilder::class)
+        $this->searchCriteriaBuilder = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaBuilder::class)
             ->setMethods(['addFilter', 'create'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $orderSearchResult = $this->getMockBuilder(OrderSearchResultInterface::class)
+        $orderSearchResult = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderSearchResultInterface::class)
             ->setMethods(['getTotalCount', 'getItems'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->searchCriteriaBuilder->method('addFilter')->willReturnSelf();
         $resultRedirectFactory =
-            $this->getMockBuilder(RedirectFactory::class)
+            $this->getMockBuilder(\Magento\Framework\Controller\Result\RedirectFactory::class)
                 ->setMethods(['create'])
                 ->disableOriginalConstructor()
                 ->getMock();
@@ -122,7 +100,7 @@ class GuestTest extends TestCase
         $orderSearchResult->method('getTotalCount')->willReturn(1);
         $orderSearchResult->method('getItems')->willReturn([ 2 => $this->salesOrderMock]);
         $searchCriteria = $this
-            ->getMockBuilder(SearchCriteriaInterface::class)
+            ->getMockBuilder(\Magento\Framework\Api\SearchCriteriaInterface::class)
             ->getMockForAbstractClass();
         $storeManagerInterfaceMock->expects($this->any())->method('getStore')->willReturn($this->storeModelMock);
         $this->searchCriteriaBuilder->method('create')->willReturn($searchCriteria);
@@ -130,7 +108,7 @@ class GuestTest extends TestCase
         $this->salesOrderMock->expects($this->any())->method('getStoreId')->willReturn(1);
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->guest = $objectManagerHelper->getObject(
-            Guest::class,
+            \Magento\Sales\Helper\Guest::class,
             [
                 'context' => $appContextHelperMock,
                 'storeManager' => $storeManagerInterfaceMock,
@@ -161,19 +139,19 @@ class GuestTest extends TestCase
         $incrementId = $post['oar_order_id'];
         $protectedCode = 'protectedCode';
         $this->sessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
-        $requestMock = $this->createMock(Http::class);
+        $requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
         $requestMock->expects($this->once())->method('getPostValue')->willReturn($post);
         $this->salesOrderMock->expects($this->any())->method('getId')->willReturn($incrementId);
 
         $billingAddressMock = $this->createPartialMock(
-            Address::class,
-            ['getLastname', 'getEmail']
+            \Magento\Sales\Model\Order\Address::class,
+            ['getLastname', 'getEmail', '__wakeup']
         );
         $billingAddressMock->expects($this->once())->method('getLastname')->willReturn(($post['oar_billing_lastname']));
         $billingAddressMock->expects($this->once())->method('getEmail')->willReturn(($post['oar_email']));
         $this->salesOrderMock->expects($this->once())->method('getBillingAddress')->willReturn($billingAddressMock);
         $this->salesOrderMock->expects($this->once())->method('getProtectCode')->willReturn($protectedCode);
-        $metaDataMock = $this->createMock(PublicCookieMetadata::class);
+        $metaDataMock = $this->createMock(\Magento\Framework\Stdlib\Cookie\PublicCookieMetadata::class);
         $metaDataMock->expects($this->once())->method('setPath')
             ->with(Guest::COOKIE_PATH)
             ->willReturnSelf();
@@ -203,7 +181,7 @@ class GuestTest extends TestCase
             ->willReturn($cookieDataHash);
         $this->salesOrderMock->expects($this->any())->method('getId')->willReturn($incrementId);
         $this->salesOrderMock->expects($this->once())->method('getProtectCode')->willReturn($protectedCode);
-        $metaDataMock = $this->createMock(PublicCookieMetadata::class);
+        $metaDataMock = $this->createMock(\Magento\Framework\Stdlib\Cookie\PublicCookieMetadata::class);
         $metaDataMock->expects($this->once())
             ->method('setPath')
             ->with(Guest::COOKIE_PATH)
@@ -218,7 +196,7 @@ class GuestTest extends TestCase
         $this->cookieManagerMock->expects($this->once())
             ->method('setPublicCookie')
             ->with(Guest::COOKIE_NAME, $this->anything(), $metaDataMock);
-        $requestMock = $this->createMock(Http::class);
+        $requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
         $this->assertTrue($this->guest->loadValidOrder($requestMock));
     }
 }

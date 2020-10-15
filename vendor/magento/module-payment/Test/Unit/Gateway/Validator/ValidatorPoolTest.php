@@ -3,27 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Validator;
 
-use Magento\Framework\Exception\NotFoundException;
-use Magento\Framework\ObjectManager\TMap;
-use Magento\Framework\ObjectManager\TMapFactory;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
 use Magento\Payment\Gateway\Validator\ValidatorPool;
-use PHPUnit\Framework\TestCase;
 
-class ValidatorPoolTest extends TestCase
+class ValidatorPoolTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
-        $commandI = $this->getMockBuilder(ValidatorInterface::class)
+        $commandI = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ValidatorInterface::class)
             ->getMockForAbstractClass();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -32,7 +26,7 @@ class ValidatorPoolTest extends TestCase
             ->method('create')
             ->with(
                 [
-                    'array' => ['validator' => ValidatorInterface::class],
+                    'array' => ['validator' => \Magento\Payment\Gateway\Validator\ValidatorInterface::class],
                     'type' => ValidatorInterface::class
                 ]
             )
@@ -48,7 +42,7 @@ class ValidatorPoolTest extends TestCase
 
         $pool = new ValidatorPool(
             $tMapFactory,
-            ['validator' => ValidatorInterface::class]
+            ['validator' => \Magento\Payment\Gateway\Validator\ValidatorInterface::class]
         );
 
         static::assertSame($commandI, $pool->get('validator'));
@@ -56,13 +50,13 @@ class ValidatorPoolTest extends TestCase
 
     public function testGetException()
     {
-        $this->expectException(NotFoundException::class);
+        $this->expectException(\Magento\Framework\Exception\NotFoundException::class);
 
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 

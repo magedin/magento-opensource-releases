@@ -68,16 +68,16 @@ class Command
     /**
      * The recieved cli options
      *
-     * @var array<string, mixed>
+     * @var array(string=>mixed)
      */
     private $options = array();
 
     /**
      * The directories/files to be analyzed
      *
-     * @var array<integer, string>
+     * @var string
      */
-    private $source = array();
+    private $source;
 
     /**
      * The used text ui runner.
@@ -628,7 +628,7 @@ class Command
     }
 
     /**
-     * @param integer $startTime
+     * @param $startTime
      */
     private function printStatistics($startTime)
     {

@@ -3,56 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Catalog\Controller\Adminhtml\Product\ShowUpdateResult;
-use Magento\Catalog\Helper\Product\Composite;
-use Magento\Catalog\Model\Product\Action;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShowUpdateResultTest extends TestCase
+class ShowUpdateResultTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var Layout|MockObject */
+    /** @var \Magento\Framework\View\Layout|\PHPUnit_Framework_MockObject_MockObject */
     protected $layout;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $session;
 
-    /** @var Http|MockObject */
+    /** @var \Magento\Framework\App\Request\Http|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
     /**
      * Init session object
      *
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getSession()
     {
-        $session = $this->getMockBuilder(Session::class)
-            ->addMethods(['hasCompositeProductResult', 'getCompositeProductResult', 'unsCompositeProductResult'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $session = $this->createPartialMock(
+            \Magento\Backend\Model\Session::class,
+            ['hasCompositeProductResult', 'getCompositeProductResult', 'unsCompositeProductResult']
+        );
         $session->expects($this->once())
             ->method('hasCompositeProductResult')
             ->willReturn(true);
@@ -60,7 +42,7 @@ class ShowUpdateResultTest extends TestCase
             ->method('unsCompositeProductResult');
         $session->expects($this->atLeastOnce())
             ->method('getCompositeProductResult')
-            ->willReturn(new DataObject());
+            ->willReturn(new \Magento\Framework\DataObject());
 
         return $session;
     }
@@ -68,17 +50,17 @@ class ShowUpdateResultTest extends TestCase
     /**
      * Init context object
      *
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getContext()
     {
-        $productActionMock = $this->createMock(Action::class);
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $productActionMock = $this->createMock(\Magento\Catalog\Model\Product\Action::class);
+        $objectManagerMock = $this->getMockForAbstractClass(\Magento\Framework\ObjectManagerInterface::class);
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturn($productActionMock);
 
-        $eventManager = $this->getMockBuilder(Manager::class)
+        $eventManager = $this->getMockBuilder(\Magento\Framework\Event\Manager::class)
             ->setMethods(['dispatch'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -88,37 +70,32 @@ class ShowUpdateResultTest extends TestCase
             ->willReturnSelf();
 
         $this->request = $this->createPartialMock(
-            Http::class,
+            \Magento\Framework\App\Request\Http::class,
             ['getParam', 'getPost', 'getFullActionName', 'getPostValue']
         );
 
-        $responseInterfaceMock = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setRedirect'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
+        $responseInterfaceMock = $this->createPartialMock(
+            \Magento\Framework\App\ResponseInterface::class,
+            ['setRedirect', 'sendResponse']
+        );
 
-        $managerInterfaceMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $managerInterfaceMock = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
         $this->session = $this->getSession();
-        $actionFlagMock = $this->createMock(ActionFlag::class);
-        $helperDataMock = $this->createMock(Data::class);
-        $this->context = $this->getMockBuilder(Context::class)
-            ->addMethods(['getTitle'])
-            ->onlyMethods(
-                [
-                    'getRequest',
-                    'getResponse',
-                    'getObjectManager',
-                    'getEventManager',
-                    'getMessageManager',
-                    'getSession',
-                    'getActionFlag',
-                    'getHelper',
-                    'getView',
-                    'getResultRedirectFactory'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $actionFlagMock = $this->createMock(\Magento\Framework\App\ActionFlag::class);
+        $helperDataMock = $this->createMock(\Magento\Backend\Helper\Data::class);
+        $this->context = $this->createPartialMock(\Magento\Backend\App\Action\Context::class, [
+                'getRequest',
+                'getResponse',
+                'getObjectManager',
+                'getEventManager',
+                'getMessageManager',
+                'getSession',
+                'getActionFlag',
+                'getHelper',
+                'getTitle',
+                'getView',
+                'getResultRedirectFactory'
+            ]);
 
         $this->context->expects($this->any())
             ->method('getEventManager')
@@ -151,14 +128,14 @@ class ShowUpdateResultTest extends TestCase
 
     public function testExecute()
     {
-        $productCompositeHelper = $this->createMock(Composite::class);
+        $productCompositeHelper = $this->createMock(\Magento\Catalog\Helper\Product\Composite::class);
         $productCompositeHelper->expects($this->once())
             ->method('renderUpdateResult');
 
-        $productBuilder = $this->createMock(Builder::class);
+        $productBuilder = $this->createMock(\Magento\Catalog\Controller\Adminhtml\Product\Builder::class);
         $context = $this->getContext();
 
-        /** @var ShowUpdateResult $controller */
+        /** @var \Magento\Catalog\Controller\Adminhtml\Product\ShowUpdateResult $controller */
         $controller = new ShowUpdateResult($context, $productBuilder, $productCompositeHelper);
         $controller->execute();
     }

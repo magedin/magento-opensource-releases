@@ -3,14 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Config\Converter;
 
 use Magento\Ui\Config\Converter\HtmlContent;
-use PHPUnit\Framework\TestCase;
 
-class HtmlContentTest extends TestCase
+/**
+ * Class HtmlContentTest
+ */
+class HtmlContentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var HtmlContent
@@ -20,7 +20,7 @@ class HtmlContentTest extends TestCase
     /**
      * Set up mocks
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->converter = new HtmlContent();
     }
@@ -31,7 +31,7 @@ class HtmlContentTest extends TestCase
                 '<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' .
                         '<block class="Magento\Customer\Block\Adminhtml\Edit\Tab\View" name="customer_edit_tab_view" ' .
                                 'template="Magento_Customer::tab/view.phtml">' .
-                            '<block class="Magento\Customer\Block\Adminhtml\Edit\Tab\View\PersonalInfo" ' .
+                            '<block class="Magento\Customer\Block\Adminhtml\Edit\Tab\View\PersonalInfo" '.
                                     'name="personal_info" template="Magento_Customer::tab/view/personal_info.phtml"/>' .
                         '</block>' .
                 '</layout>';
@@ -57,7 +57,7 @@ class HtmlContentTest extends TestCase
         $node = $domXpath->query('//form/htmlContent/block')->item(0);
 
         $actualResult = $this->converter->convert($node, []);
-        $this->assertArrayHasKey('value', $actualResult['item']['layout']);
+        $this->assertTrue(isset($actualResult['item']['layout']['value']));
 
         // assert xml structures
         $this->assertXmlStringEqualsXmlString($xml, $actualResult['item']['layout']['value']);

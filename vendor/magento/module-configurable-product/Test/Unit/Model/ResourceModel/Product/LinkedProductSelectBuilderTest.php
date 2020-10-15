@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model\ResourceModel\Product;
 
+use Magento\Framework\DB\Select;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Catalog\Model\ResourceModel\Product\BaseSelectProcessorInterface;
 use Magento\Catalog\Model\ResourceModel\Product\LinkedProductSelectBuilderInterface;
 use Magento\ConfigurableProduct\Model\ResourceModel\Product\LinkedProductSelectBuilder;
-use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LinkedProductSelectBuilderTest extends TestCase
+class LinkedProductSelectBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var LinkedProductSelectBuilder
@@ -23,16 +19,16 @@ class LinkedProductSelectBuilderTest extends TestCase
     private $subject;
 
     /**
-     * @var BaseSelectProcessorInterface|MockObject
+     * @var BaseSelectProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $baseSelectProcessorMock;
 
     /**
-     * @var LinkedProductSelectBuilderInterface|MockObject
+     * @var LinkedProductSelectBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $linkedProductSelectBuilderMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->baseSelectProcessorMock = $this->getMockBuilder(BaseSelectProcessorInterface::class)
             ->disableOriginalConstructor()
@@ -54,9 +50,8 @@ class LinkedProductSelectBuilderTest extends TestCase
     public function testBuild()
     {
         $productId = 42;
-        $storeId = 1;
 
-        /** @var Select|MockObject $selectMock */
+        /** @var Select|\PHPUnit_Framework_MockObject_MockObject $selectMock */
         $selectMock = $this->getMockBuilder(Select::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -72,6 +67,6 @@ class LinkedProductSelectBuilderTest extends TestCase
             ->method('process')
             ->with($selectMock);
 
-        $this->assertEquals($expectedResult, $this->subject->build($productId, $storeId));
+        $this->assertEquals($expectedResult, $this->subject->build($productId));
     }
 }

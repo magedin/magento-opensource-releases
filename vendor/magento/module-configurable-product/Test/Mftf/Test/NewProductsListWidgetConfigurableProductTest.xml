@@ -72,15 +72,13 @@
             <deleteData createDataKey="createConfigProductAttribute" stepKey="deleteConfigProductAttribute"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- A Cms page containing the New Products Widget gets created here via extends -->
 
         <!-- Modify the Configurable Product that we created in the before block -->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="amOnEditPage">
-            <argument name="productId" value="$$createConfigProduct.id$$"/>
-        </actionGroup>
+        <amOnPage url="{{AdminProductEditPage.url($$createConfigProduct.id$$)}}" stepKey="amOnEditPage"/>
         <waitForPageLoad stepKey="waitForEditPage"/>
         <fillField selector="{{AdminProductFormSection.setProductAsNewFrom}}" userInput="01/1/2000" stepKey="fillProductNewFrom"/>
         <fillField selector="{{AdminProductFormSection.setProductAsNewTo}}" userInput="01/1/2099" stepKey="fillProductNewTo"/>

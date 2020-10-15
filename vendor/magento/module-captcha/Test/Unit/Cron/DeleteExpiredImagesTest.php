@@ -3,56 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Captcha\Test\Unit\Cron;
 
-use Magento\Captcha\Cron\DeleteExpiredImages;
-use Magento\Captcha\Helper\Data;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\Constraint\IsIdentical;
-use PHPUnit\Framework\Constraint\IsNull;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DeleteExpiredImagesTest extends TestCase
+class DeleteExpiredImagesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * CAPTCHA helper
      *
-     * @var Data|MockObject
+     * @var \Magento\Captcha\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_helper;
 
     /**
      * CAPTCHA helper
      *
-     * @var \Magento\Captcha\Helper\Adminhtml\Data|MockObject
+     * @var \Magento\Captcha\Helper\Adminhtml\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_adminHelper;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_filesystem;
 
     /**
-     * @var StoreManager|MockObject
+     * @var \Magento\Store\Model\StoreManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_storeManager;
 
     /**
-     * @var DeleteExpiredImages
+     * @var \Magento\Captcha\Cron\DeleteExpiredImages
      */
     protected $_deleteExpiredImages;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_directory;
 
@@ -64,23 +49,23 @@ class DeleteExpiredImagesTest extends TestCase
     /**
      * Create mocks and model
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_helper = $this->createMock(Data::class);
+        $this->_helper = $this->createMock(\Magento\Captcha\Helper\Data::class);
         $this->_adminHelper = $this->createMock(\Magento\Captcha\Helper\Adminhtml\Data::class);
-        $this->_filesystem = $this->createMock(Filesystem::class);
-        $this->_directory = $this->createMock(Write::class);
-        $this->_storeManager = $this->createMock(StoreManager::class);
+        $this->_filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->_directory = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
+        $this->_storeManager = $this->createMock(\Magento\Store\Model\StoreManager::class);
 
         $this->_filesystem->expects(
             $this->once()
         )->method(
             'getDirectoryWrite'
-        )->willReturn(
-            $this->_directory
+        )->will(
+            $this->returnValue($this->_directory)
         );
 
-        $this->_deleteExpiredImages = new DeleteExpiredImages(
+        $this->_deleteExpiredImages = new \Magento\Captcha\Cron\DeleteExpiredImages(
             $this->_helper,
             $this->_adminHelper,
             $this->_filesystem,
@@ -97,8 +82,8 @@ class DeleteExpiredImagesTest extends TestCase
             $this->once()
         )->method(
             'getWebsites'
-        )->willReturn(
-            isset($website) ? [$website] : []
+        )->will(
+            $this->returnValue(isset($website) ? [$website] : [])
         );
         if (isset($website)) {
             $this->_helper->expects(
@@ -106,10 +91,10 @@ class DeleteExpiredImagesTest extends TestCase
             )->method(
                 'getConfig'
             )->with(
-                'timeout',
-                new IsIdentical($website->getDefaultStore())
-            )->willReturn(
-                $timeout
+                $this->equalTo('timeout'),
+                new \PHPUnit\Framework\Constraint\IsIdentical($website->getDefaultStore())
+            )->will(
+                $this->returnValue($timeout)
             );
         } else {
             $this->_helper->expects($this->never())->method('getConfig');
@@ -119,10 +104,10 @@ class DeleteExpiredImagesTest extends TestCase
         )->method(
             'getConfig'
         )->with(
-            'timeout',
-            new IsNull()
-        )->willReturn(
-            $timeout
+            $this->equalTo('timeout'),
+            new \PHPUnit\Framework\Constraint\IsNull()
+        )->will(
+            $this->returnValue($timeout)
         );
 
         $timesToCall = isset($website) ? 2 : 1;
@@ -130,11 +115,11 @@ class DeleteExpiredImagesTest extends TestCase
             $this->exactly($timesToCall)
         )->method(
             'read'
-        )->willReturn(
-            [$filename]
+        )->will(
+            $this->returnValue([$filename])
         );
-        $this->_directory->expects($this->exactly($timesToCall))->method('isFile')->willReturn($isFile);
-        $this->_directory->expects($this->any())->method('stat')->willReturn(['mtime' => $mTime]);
+        $this->_directory->expects($this->exactly($timesToCall))->method('isFile')->will($this->returnValue($isFile));
+        $this->_directory->expects($this->any())->method('stat')->will($this->returnValue(['mtime' => $mTime]));
 
         $this->_deleteExpiredImages->execute();
     }
@@ -144,9 +129,9 @@ class DeleteExpiredImagesTest extends TestCase
      */
     public function getExpiredImages()
     {
-        $website = $this->createPartialMock(Website::class, ['__wakeup', 'getDefaultStore']);
-        $store = $this->createPartialMock(Store::class, ['__wakeup']);
-        $website->expects($this->any())->method('getDefaultStore')->willReturn($store);
+        $website = $this->createPartialMock(\Magento\Store\Model\Website::class, ['__wakeup', 'getDefaultStore']);
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['__wakeup']);
+        $website->expects($this->any())->method('getDefaultStore')->will($this->returnValue($store));
         $time = time();
         return [
             [null, true, 'test.png', 50, ($time - 60) / 60, true],

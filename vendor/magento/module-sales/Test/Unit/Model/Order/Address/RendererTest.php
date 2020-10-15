@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Address;
 
-use Magento\Customer\Block\Address\Renderer\RendererInterface as CustomerAddressBlockRenderer;
-use Magento\Customer\Model\Address\Config as CustomerAddressConfig;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface as EventManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Address as OrderAddress;
 use Magento\Sales\Model\Order\Address\Renderer as OrderAddressRenderer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Customer\Model\Address\Config as CustomerAddressConfig;
+use Magento\Framework\Event\ManagerInterface as EventManager;
+use Magento\Sales\Model\Order\Address as OrderAddress;
+use Magento\Sales\Model\Order;
+use Magento\Customer\Block\Address\Renderer\RendererInterface as CustomerAddressBlockRenderer;
+use Magento\Framework\DataObject;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderAddressRenderer
@@ -31,31 +27,31 @@ class RendererTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var CustomerAddressConfig|MockObject
+     * @var CustomerAddressConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerAddressConfigMock;
 
     /**
-     * @var EventManager|MockObject
+     * @var EventManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var OrderAddress|MockObject
+     * @var OrderAddress|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderAddressMock;
 
     /**
-     * @var Order|MockObject
+     * @var Order|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var CustomerAddressBlockRenderer|MockObject
+     * @var CustomerAddressBlockRenderer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerAddressBlockRendererMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customerAddressConfigMock = $this->getMockBuilder(CustomerAddressConfig::class)
             ->disableOriginalConstructor()
@@ -123,7 +119,7 @@ class RendererTest extends TestCase
         $this->eventManagerMock->expects(static::never())
             ->method('dispatch');
 
-        $this->assertNull($this->orderAddressRenderer->format($this->orderAddressMock, $type));
+        $this->assertEquals(null, $this->orderAddressRenderer->format($this->orderAddressMock, $type));
     }
 
     /**

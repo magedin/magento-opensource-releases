@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Flat;
 
-use Magento\Catalog\Model\Indexer\Product\Flat\State;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Indexer\Model\Indexer;
-use PHPUnit\Framework\TestCase;
-
-class StateTest extends TestCase
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectManager;
 
     /**
-     * @var State
+     * @var \Magento\Catalog\Model\Indexer\Product\Flat\State
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = new ObjectManager($this);
+        $this->_objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $indexerMock = $this->createMock(Indexer::class);
+        $indexerMock = $this->createMock(\Magento\Indexer\Model\Indexer::class);
         $flatIndexerHelperMock = $this->createMock(\Magento\Catalog\Helper\Product\Flat\Indexer::class);
-        $configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $this->_model = $this->_objectManager->getObject(
-            State::class,
+            \Magento\Catalog\Model\Indexer\Product\Flat\State::class,
             [
                 'scopeConfig' => $configMock,
                 'flatIndexer' => $indexerMock,

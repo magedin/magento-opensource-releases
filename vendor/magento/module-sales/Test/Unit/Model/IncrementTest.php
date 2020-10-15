@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model;
 
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Increment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IncrementTest extends TestCase
+/**
+ * Class IncrementTest
+ */
+class IncrementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Increment
+     * @var \Magento\Sales\Model\Increment
      */
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavConfig;
 
     /**
-     * @var Type|MockObject
+     * @var \Magento\Eav\Model\Entity\Type|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $type;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->eavConfig = $this->createPartialMock(Config::class, ['getEntityType']);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->eavConfig = $this->createPartialMock(\Magento\Eav\Model\Config::class, ['getEntityType']);
         $this->model = $objectManager->getObject(
-            Increment::class,
+            \Magento\Sales\Model\Increment::class,
             ['eavConfig' => $this->eavConfig]
         );
-        $this->type = $this->createPartialMock(Type::class, ['fetchNewIncrementId']);
+        $this->type = $this->createPartialMock(\Magento\Eav\Model\Entity\Type::class, ['fetchNewIncrementId']);
     }
 
     public function testGetCurrentValue()

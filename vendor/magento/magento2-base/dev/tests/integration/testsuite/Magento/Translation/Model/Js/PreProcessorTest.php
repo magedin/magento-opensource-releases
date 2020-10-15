@@ -33,7 +33,7 @@ class PreProcessorTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $viewFileSystem = $this->createPartialMock(FileSystem::class, ['getLocaleFileName']);
         $viewFileSystem->expects($this->any())->method('getLocaleFileName')
@@ -67,7 +67,7 @@ class PreProcessorTest extends \PHPUnit\Framework\TestCase
     /**
      * Tear down.
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         Phrase::setRenderer($this->origRenderer);
     }

@@ -75,12 +75,7 @@ class Xml implements Report
         // add that manually later. We only have it in here to
         // properly set the encoding.
         $content = $out->flush();
-        if (strpos($content, PHP_EOL) !== false) {
-            $content = substr($content, (strpos($content, PHP_EOL) + strlen(PHP_EOL)));
-        } else if (strpos($content, "\n") !== false) {
-            $content = substr($content, (strpos($content, "\n") + 1));
-        }
-
+        $content = substr($content, (strpos($content, PHP_EOL) + strlen(PHP_EOL)));
         echo $content;
 
         return true;

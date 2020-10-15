@@ -4,27 +4,18 @@
  * See COPYING.txt for license details.
  */
 
-/**
- * @var $block \Magento\Backend\Block\Widget\Form\Renderer\Fieldset
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
- */
-
-/** @var \Magento\Framework\Json\Helper\Data $jsonHelper */
-$jsonHelper = $block->getData('jsonHelper');
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+/** @var $block \Magento\Backend\Block\Widget\Form\Renderer\Fieldset */
 ?>
 
 <div id="js-file-uploader" class="uploader">
 </div>
-<script id="js-file-uploader-template" type="text/x-magento-template">
+<script id="js-file-uploader-template" type="text/x-magento-template"> 
     <div id="<%- data.id %>" class="file-row">
         <span class="file-info"><%- data.name %> (<%- data.size %>)</span>
         <div class="progressbar-container">
-            <div class="progressbar upload-progress""></div>
+            <div class="progressbar upload-progress" style="width: 0%;"></div>
         </div>
-        <?= /* @noEscape */ $secureRenderer->renderStyleAsTag(
-            "width: 0%;",
-            "div.progressbar-container div.progressbar.upload-progress"
-        ) ?>
         <div class="clear"></div>
     </div>
 </script>
@@ -49,8 +40,8 @@ $jsonHelper = $block->getData('jsonHelper');
 </script>
 
 <ul id="js-files-container" class="js-files-container ui-sortable" ></ul>
-<?php $scriptString = <<<script
 
+<script>
 require([
     "jquery",
     "jquery/ui",
@@ -70,13 +61,10 @@ jQuery(function($) {
     $('body').trigger(
         'refreshJsList',
         {
-            jsList: {$jsonHelper->jsonEncode($block->getJsFiles())}
+            jsList: <?= /* @noEscape */ $this->helper(Magento\Framework\Json\Helper\Data::class)->jsonEncode($block->getJsFiles()) ?>
         }
     );
 });
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

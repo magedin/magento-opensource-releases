@@ -3,33 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Attribute\Frontend;
 
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Eav\Model\Entity\Attribute\Frontend\Datetime;
-use Magento\Eav\Model\Entity\Attribute\Source\BooleanFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\Phrase;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DatetimeTest extends TestCase
+class DatetimeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $localeDateMock;
 
     /**
-     * @var BooleanFactory|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $booleanFactoryMock;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeMock;
 
@@ -38,62 +29,38 @@ class DatetimeTest extends TestCase
      */
     private $model;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->booleanFactoryMock = $this->createMock(BooleanFactory::class);
-        $this->localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->attributeMock = $this->getMockBuilder(AbstractAttribute::class)
-            ->addMethods(['getFrontendLabel'])
-            ->onlyMethods(['getAttributeCode', 'getFrontendInput'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->booleanFactoryMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Source\BooleanFactory::class);
+        $this->localeDateMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->attributeMock = $this->createPartialMock(
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
+            ['getAttributeCode', 'getFrontendLabel', 'getData']
+        );
 
         $this->model = new Datetime($this->booleanFactoryMock, $this->localeDateMock);
         $this->model->setAttribute($this->attributeMock);
     }
 
-    /**
-     * Test to retrieve attribute value
-     *
-     * @param string $frontendInput
-     * @param int $timeType
-     * @dataProvider getValueDataProvider
-     */
-    public function testGetValue(string $frontendInput, int $timeType)
+    public function testGetValue()
     {
         $attributeValue = '11-11-2011';
-        $attributeCode = 'datetime';
         $date = new \DateTime($attributeValue);
-        $object = new DataObject([$attributeCode => $attributeValue]);
+        $object = new \Magento\Framework\DataObject(['datetime' => $attributeValue]);
 
         $this->attributeMock->expects($this->any())
             ->method('getAttributeCode')
-            ->willReturn($attributeCode);
+            ->willReturn('datetime');
         $this->attributeMock->expects($this->any())
-            ->method('getFrontendInput')
-            ->willReturn($frontendInput);
+            ->method('getData')
+            ->with('frontend_input')
+            ->willReturn('text');
         $this->localeDateMock->expects($this->once())
             ->method('formatDateTime')
-            ->with($date, \IntlDateFormatter::MEDIUM, $timeType)
+            ->with($date, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE, null, null, null)
             ->willReturn($attributeValue);
 
         $this->assertEquals($attributeValue, $this->model->getValue($object));
-    }
-
-    /**
-     * Retrieve attribute value data provider
-     *
-     * @return array
-     */
-    public function getValueDataProvider(): array
-    {
-        return [
-            ['frontendInput' => 'date', 'timeType' => \IntlDateFormatter::NONE],
-            ['frontendInput' => 'datetime', 'timeType' => \IntlDateFormatter::MEDIUM],
-        ];
     }
 
     /**
@@ -111,7 +78,7 @@ class DatetimeTest extends TestCase
             ->method('getAttributeCode')
             ->willReturn($attributeCode);
 
-        $this->assertInstanceOf(Phrase::class, $this->model->getLocalizedLabel());
+        $this->assertInstanceOf(\Magento\Framework\Phrase::class, $this->model->getLocalizedLabel());
         $this->assertSame($expectedResult, (string)$this->model->getLocalizedLabel());
     }
 

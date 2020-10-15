@@ -3,35 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model;
 
-use Magento\Indexer\Model\Config;
-use Magento\Indexer\Model\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Indexer\Model\Config
      */
     protected $model;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Indexer\Model\Config\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
      * Set up test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->createMock(Data::class);
+        $this->configMock = $this->createMock(\Magento\Indexer\Model\Config\Data::class);
 
-        $this->model = new Config(
+        $this->model = new \Magento\Indexer\Model\Config(
             $this->configMock
         );
     }

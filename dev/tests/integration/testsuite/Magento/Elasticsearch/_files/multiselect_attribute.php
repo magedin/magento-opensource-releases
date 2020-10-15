@@ -56,3 +56,10 @@ $installer->addAttributeToGroup(
     'General',
     $multiselectAttribute->getId()
 );
+
+/** @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection $multiselectOptions */
+$multiselectOptions = $objectManager->create(
+    \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class
+);
+$multiselectOptions->setAttributeFilter($multiselectAttribute->getId());
+$multiselectOptionsIds = $multiselectOptions->getAllIds();

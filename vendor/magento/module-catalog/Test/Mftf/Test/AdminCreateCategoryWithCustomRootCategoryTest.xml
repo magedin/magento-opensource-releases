@@ -18,7 +18,7 @@
             <group value="Catalog"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
         </before>
         <after>
             <amOnPage url="{{AdminSystemStorePage.url}}" stepKey="navigateToStoresIndex"/>
@@ -26,12 +26,13 @@
             <actionGroup ref="DeleteCustomStoreActionGroup" stepKey="deleteCustomStore">
                 <argument name="storeGroupName" value="customStore.name"/>
             </actionGroup>
-            <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCreatedNewRootCategory">
+            <actionGroup ref="DeleteCategory" stepKey="deleteCreatedNewRootCategory">
                 <argument name="categoryEntity" value="NewRootCategory"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
-        <actionGroup ref="AdminOpenCategoryPageActionGroup" stepKey="openAdminCategoryIndexPage"/>
+        <amOnPage url="{{AdminCategoryPage.url}}" stepKey="openAdminCategoryIndexPage"/>
+        <waitForPageLoad stepKey="waitForCategoryIndexPageToBeLoaded"/>
         <!--Create Root Category-->
         <actionGroup ref="AdminCreateRootCategory" stepKey="createNewRootCategory">
             <argument name="categoryEntity" value="NewRootCategory"/>
@@ -40,7 +41,7 @@
         <scrollToTopOfPage stepKey="scrollToTopOfPage"/>
         <click selector="{{AdminCategorySidebarTreeSection.categoryInTree(NewRootCategory.name)}}" stepKey="clickOnCreatedNewRootCategory"/>
         <scrollToTopOfPage stepKey="scrollToTopOfPage1"/>
-        <actionGroup ref="CreateCategoryActionGroup" stepKey="createSubcategory">
+        <actionGroup ref="CreateCategory" stepKey="createSubcategory">
             <argument name="categoryEntity" value="SimpleSubCategory"/>
         </actionGroup>
         <!--Create a Store-->

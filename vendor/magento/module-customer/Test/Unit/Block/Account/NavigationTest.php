@@ -7,14 +7,13 @@ declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Block\Account;
 
-use Magento\Customer\Block\Account\Link as CustomerAccountLink;
-use Magento\Customer\Block\Account\Navigation;
+use PHPUnit\Framework\TestCase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Customer\Block\Account\Navigation;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Wishlist\Block\Link as WishListLink;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Block\Account\Link as CustomerAccountLink;
 
 class NavigationTest extends TestCase
 {
@@ -29,22 +28,22 @@ class NavigationTest extends TestCase
     private $navigation;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layoutMock;
 
     /**
      * Setup environment for test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->createMock(Context::class);
-        $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
+        $this->layoutMock = $this->createMock(LayoutInterface::class);
         $this->contextMock->expects($this->any())
             ->method('getLayout')
             ->willReturn($this->layoutMock);

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Plugin;
 
@@ -13,10 +12,12 @@ use Magento\Catalog\Model\Product\Type;
 use Magento\ConfigurableProduct\Model\Plugin\PriceBackend;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class PriceBackendTest extends TestCase
+/**
+ * Class PriceBackendTest
+ */
+class PriceBackendTest extends \PHPUnit\Framework\TestCase
 {
     const CLOSURE_VALUE = 'CLOSURE';
 
@@ -40,7 +41,7 @@ class PriceBackendTest extends TestCase
      */
     private $product;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->priceBackendPlugin = $objectManager->getObject(PriceBackend::class);
@@ -53,7 +54,7 @@ class PriceBackendTest extends TestCase
             ->getMock();
         $this->product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getTypeId', 'getPriceType'])
+            ->setMethods(['getTypeId', 'getPriceType', '__wakeUp'])
             ->getMock();
     }
 

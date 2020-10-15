@@ -3,26 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit;
 
-use Magento\Framework\Data\Tree;
-use Magento\Framework\Data\Tree\Node;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Tree\Node;
+use \Magento\Framework\Data\Tree;
 
 /**
  * Tests for \Magento\Framework\Data\FormFactory
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class TreeTest extends TestCase
+class TreeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Tree
+     * @var \Magento\Framework\Data\Tree
      */
     protected $_tree;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_tree = new Tree();
     }

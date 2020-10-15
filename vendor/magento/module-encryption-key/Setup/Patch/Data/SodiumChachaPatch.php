@@ -7,14 +7,8 @@ declare(strict_types=1);
 
 namespace Magento\EncryptionKey\Setup\Patch\Data;
 
-use Magento\Config\Model\Config\Backend\Encrypted;
-use Magento\Config\Model\Config\Structure;
-use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Migrate encrypted configuration values to the latest cipher
@@ -22,50 +16,50 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 class SodiumChachaPatch implements DataPatchInterface
 {
     /**
-     * @var ModuleDataSetupInterface
-     */
-    private $moduleDataSetup;
-
-    /**
-     * @var Structure
-     */
-    private $structure;
-
-    /**
-     * @var EncryptorInterface
-     */
-    private $encryptor;
-
-    /**
-     * @var State
-     */
-    private $state;
-
-    /**
-     * @var ScopeInterface
+     * @var \Magento\Framework\Config\ScopeInterface
      */
     private $scope;
 
     /**
+     * @var \Magento\Framework\Setup\ModuleDataSetupInterface
+     */
+    private $moduleDataSetup;
+
+    /**
+     * @var \Magento\Config\Model\Config\Structure
+     */
+    private $structure;
+
+    /**
+     * @var \Magento\Framework\Encryption\EncryptorInterface
+     */
+    private $encryptor;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    private $state;
+
+    /**
      * SodiumChachaPatch constructor.
-     * @param ModuleDataSetupInterface $moduleDataSetup
-     * @param Structure $structure
-     * @param EncryptorInterface $encryptor
-     * @param State $state
-     * @param ScopeInterface $scope
+     * @param \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetup
+     * @param \Magento\Config\Model\Config\Structure\Proxy $structure
+     * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
+     * @param \Magento\Framework\App\State $state
+     * @param \Magento\Framework\Config\ScopeInterface|null $scope
      */
     public function __construct(
-        ModuleDataSetupInterface $moduleDataSetup,
-        Structure $structure,
-        EncryptorInterface $encryptor,
-        State $state,
-        ScopeInterface $scope
+        \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetup,
+        \Magento\Config\Model\Config\Structure\Proxy $structure,
+        \Magento\Framework\Encryption\EncryptorInterface $encryptor,
+        \Magento\Framework\App\State $state,
+        \Magento\Framework\Config\ScopeInterface $scope = null
     ) {
         $this->moduleDataSetup = $moduleDataSetup;
         $this->structure = $structure;
         $this->encryptor = $encryptor;
         $this->state = $state;
-        $this->scope = $scope;
+        $this->scope = $scope ?? ObjectManager::getInstance()->get(\Magento\Framework\Config\ScopeInterface::class);
     }
 
     /**
@@ -78,8 +72,6 @@ class SodiumChachaPatch implements DataPatchInterface
         $this->reEncryptSystemConfigurationValues();
 
         $this->moduleDataSetup->endSetup();
-
-        return $this;
     }
 
     /**
@@ -114,25 +106,19 @@ class SodiumChachaPatch implements DataPatchInterface
             $currentScope = $this->scope->getCurrentScope();
             $structure = $this->structure;
             $paths = $this->state->emulateAreaCode(
-                Area::AREA_ADMINHTML,
+                \Magento\Framework\App\Area::AREA_ADMINHTML,
                 function () use ($structure) {
-                    $this->scope->setCurrentScope(Area::AREA_ADMINHTML);
+                    $this->scope->setCurrentScope(\Magento\Framework\App\Area::AREA_ADMINHTML);
                     /** Returns list of structure paths to be re encrypted */
                     $paths = $structure->getFieldPathsByAttribute(
                         'backend_model',
-                        Encrypted::class
+                        \Magento\Config\Model\Config\Backend\Encrypted::class
                     );
                     /** Returns list of mapping between configPath => [structurePaths] */
                     $mappedPaths = $structure->getFieldPaths();
                     foreach ($mappedPaths as $mappedPath => $data) {
                         foreach ($data as $structurePath) {
-                            if ($structurePath === $mappedPath) {
-                                continue;
-                            }
-
-                            $key = array_search($structurePath, $paths);
-
-                            if ($key) {
+                            if ($structurePath !== $mappedPath && $key = array_search($structurePath, $paths)) {
                                 $paths[$key] = $mappedPath;
                             }
                         }

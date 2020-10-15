@@ -3,30 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Shipping\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Sales\Model\Order\Shipment\Track;
-use Magento\Sales\Model\OrderFactory;
-use Magento\Sales\Model\ResourceModel\Order\Shipment\Collection;
-use Magento\Shipping\Helper\Data;
 use Magento\Shipping\Model\Info;
-use Magento\Shipping\Model\Order\TrackFactory;
 use Magento\Shipping\Model\ResourceModel\Order\Track\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Shipping\Model\Info.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InfoTest extends TestCase
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Info
@@ -34,47 +22,47 @@ class InfoTest extends TestCase
     private $info;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Shipping\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helper;
 
     /**
-     * @var OrderFactory|MockObject
+     * @var \Magento\Sales\Model\OrderFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderFactory;
 
     /**
-     * @var ShipmentRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\ShipmentRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shipmentRepository;
 
     /**
-     * @var TrackFactory|MockObject
+     * @var \Magento\Shipping\Model\Order\TrackFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $trackFactory;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $trackCollectionFactory;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helper = $this->getMockBuilder(Data::class)
+        $this->helper = $this->getMockBuilder(\Magento\Shipping\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->orderFactory = $this->getMockBuilder(OrderFactory::class)
+        $this->orderFactory = $this->getMockBuilder(\Magento\Sales\Model\OrderFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->shipmentRepository = $this->getMockBuilder(ShipmentRepositoryInterface::class)
+        $this->shipmentRepository = $this->getMockBuilder(\Magento\Sales\Api\ShipmentRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->trackFactory = $this->getMockBuilder(TrackFactory::class)
-            ->disableOriginalConstructor()
+            ->getMock();
+        $this->trackFactory = $this->getMockBuilder(\Magento\Shipping\Model\Order\TrackFactory::class)
+           ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->trackCollectionFactory = $this->getMockBuilder(CollectionFactory::class)
@@ -111,12 +99,12 @@ class InfoTest extends TestCase
             ->method('decodeTrackingHash')
             ->with($hash)
             ->willReturn($decodedHash);
-        $shipmentCollection = $this->getMockBuilder(Collection::class)
+        $shipmentCollection = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Shipment\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIterator'])
             ->getMock();
 
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'getProtectCode', 'getShipmentsCollection'])
             ->getMock();
@@ -126,7 +114,7 @@ class InfoTest extends TestCase
         $order->expects($this->atLeastOnce())->method('getShipmentsCollection')->willReturn($shipmentCollection);
         $this->orderFactory->expects($this->atLeastOnce())->method('create')->willReturn($order);
 
-        $shipment = $this->getMockBuilder(Shipment::class)
+        $shipment = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIncrementId', 'getId'])
             ->getMock();
@@ -134,7 +122,7 @@ class InfoTest extends TestCase
         $shipment->expects($this->atLeastOnce())->method('getId')->willReturn($shipmentId);
         $shipmentCollection->expects($this->any())->method('getIterator')->willReturn(new \ArrayIterator([$shipment]));
 
-        $track = $this->getMockBuilder(Track::class)
+        $track = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment\Track::class)
             ->disableOriginalConstructor()
             ->setMethods(['setShipment', 'getNumberDetail'])
             ->getMock();
@@ -170,7 +158,7 @@ class InfoTest extends TestCase
             ->method('decodeTrackingHash')
             ->with($hash)
             ->willReturn($decodedHash);
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'getProtectCode'])
             ->getMock();
@@ -198,7 +186,7 @@ class InfoTest extends TestCase
             ->method('decodeTrackingHash')
             ->with($hash)
             ->willReturn($decodedHash);
-        $shipment = $this->getMockBuilder(Shipment::class)
+        $shipment = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEntityId', 'getProtectCode', 'getIncrementId', 'getId'])
             ->getMock();
@@ -210,7 +198,7 @@ class InfoTest extends TestCase
             ->method('get')
             ->with($decodedHash['id'])
             ->willReturn($shipment);
-        $track = $this->getMockBuilder(Track::class)
+        $track = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment\Track::class)
             ->disableOriginalConstructor()
             ->setMethods(['setShipment', 'getNumberDetail'])
             ->getMock();
@@ -246,7 +234,7 @@ class InfoTest extends TestCase
             ->method('decodeTrackingHash')
             ->with($hash)
             ->willReturn($decodedHash);
-        $shipment = $this->getMockBuilder(Shipment::class)
+        $shipment = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEntityId', 'getProtectCode'])
             ->getMock();
@@ -281,12 +269,12 @@ class InfoTest extends TestCase
             'key' => 'track_id',
             'id' => 1,
             'hash' => $protectCodeHash,
-        ];
+            ];
         $this->helper->expects($this->atLeastOnce())
             ->method('decodeTrackingHash')
             ->with($hash)
             ->willReturn($decodedHash);
-        $track = $this->getMockBuilder(Track::class)
+        $track = $this->getMockBuilder(\Magento\Sales\Model\Order\Shipment\Track::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'getProtectCode', 'getNumberDetail'])
             ->getMock();

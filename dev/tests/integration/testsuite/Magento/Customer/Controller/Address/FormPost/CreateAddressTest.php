@@ -75,7 +75,7 @@ class CreateAddressTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->escaper = $this->_objectManager->get(Escaper::class);
@@ -89,7 +89,7 @@ class CreateAddressTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->customerSession->setCustomerId(null);
         $this->customerRegistry->removeByEmail('customer5@example.com');
@@ -383,7 +383,7 @@ class CreateAddressTest extends AbstractController
         $this->assertRedirect($this->stringContains('customer/address/edit'));
         foreach ($expectedSessionMessages as $expectedMessage) {
             $this->assertSessionMessages(
-                $this->containsEqual($this->escaper->escapeHtml((string)__($expectedMessage))),
+                $this->contains($this->escaper->escapeHtml((string)__($expectedMessage))),
                 MessageInterface::TYPE_ERROR
             );
         }

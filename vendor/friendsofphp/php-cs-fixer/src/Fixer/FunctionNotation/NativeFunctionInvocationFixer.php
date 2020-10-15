@@ -162,17 +162,6 @@ $c = get_class($d);
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before GlobalNamespaceImportFixer.
-     * Must run after StrictParamFixer.
-     */
-    public function getPriority()
-    {
-        return 10;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {
@@ -267,9 +256,11 @@ $c = get_class($d);
     }
 
     /**
-     * @param int  $start
-     * @param int  $end
-     * @param bool $tryToRemove
+     * @param Tokens   $tokens
+     * @param callable $functionFilter
+     * @param int      $start
+     * @param int      $end
+     * @param bool     $tryToRemove
      */
     private function fixFunctionCalls(Tokens $tokens, callable $functionFilter, $start, $end, $tryToRemove)
     {

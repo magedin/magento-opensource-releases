@@ -3,18 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model;
 
-use Magento\Eav\Model\AttributeFactory;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\TestCase;
-
-class AttributeFactoryTest extends TestCase
+class AttributeFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AttributeFactory
+     * @var \Magento\Eav\Model\AttributeFactory
      */
     protected $_factory;
 
@@ -28,22 +22,22 @@ class AttributeFactoryTest extends TestCase
      */
     protected $_className = 'Test_Class';
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        /** @var ObjectManagerInterface $objectManagerMock */
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        /** @var $objectManagerMock \Magento\Framework\ObjectManagerInterface */
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $objectManagerMock->expects(
             $this->any()
         )->method(
             'create'
-        )->willReturnCallback(
-            [$this, 'getModelInstance']
+        )->will(
+            $this->returnCallback([$this, 'getModelInstance'])
         );
 
-        $this->_factory = new AttributeFactory($objectManagerMock);
+        $this->_factory = new \Magento\Eav\Model\AttributeFactory($objectManagerMock);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_factory);
     }
@@ -63,6 +57,7 @@ class AttributeFactoryTest extends TestCase
      */
     public function getModelInstance($className, $arguments)
     {
+        $this->assertInternalType('array', $arguments);
         $this->assertArrayHasKey('data', $arguments);
         $this->assertEquals($this->_arguments, $arguments['data']);
 

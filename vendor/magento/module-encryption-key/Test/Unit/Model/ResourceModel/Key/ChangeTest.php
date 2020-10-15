@@ -3,111 +3,95 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\EncryptionKey\Test\Unit\Model\ResourceModel\Key;
-
-use Magento\Config\Model\Config\Structure;
-use Magento\EncryptionKey\Model\ResourceModel\Key\Change;
-use Magento\Framework\App\DeploymentConfig\Writer;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Math\Random;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test Class For Magento\EncryptionKey\Model\ResourceModel\Key\Change
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ChangeTest extends TestCase
+class ChangeTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var EncryptorInterface|MockObject */
+    /** @var \Magento\Framework\Encryption\EncryptorInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $encryptMock;
 
-    /** @var Filesystem|MockObject */
+    /** @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject */
     protected $filesystemMock;
 
-    /** @var Structure|MockObject */
+    /** @var \Magento\Config\Model\Config\Structure|\PHPUnit_Framework_MockObject_MockObject */
     protected $structureMock;
 
-    /** @var Writer|MockObject */
+    /** @var \Magento\Framework\App\DeploymentConfig\Writer|\PHPUnit_Framework_MockObject_MockObject */
     protected $writerMock;
 
-    /** @var AdapterInterface|MockObject */
+    /** @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $adapterMock;
 
-    /** @var ResourceConnection|MockObject */
+    /** @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject */
     protected $resourceMock;
 
-    /** @var Select|MockObject */
+    /** @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject */
     protected $selectMock;
 
-    /** @var TransactionManagerInterface */
+    /** @var \Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface */
     protected $transactionMock;
 
-    /** @var MockObject */
+    /** @var |\PHPUnit_Framework_MockObject_MockObject */
     protected $objRelationMock;
 
-    /** @var Random|MockObject */
+    /** @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject */
     protected $randomMock;
 
-    /** @var Change */
+    /** @var \Magento\EncryptionKey\Model\ResourceModel\Key\Change */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->encryptMock = $this->getMockBuilder(EncryptorInterface::class)
+        $this->encryptMock = $this->getMockBuilder(\Magento\Framework\Encryption\EncryptorInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNewKey', 'exportKeys'])
             ->getMockForAbstractClass();
-        $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $this->filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->structureMock = $this->getMockBuilder(Structure::class)
+        $this->structureMock = $this->getMockBuilder(\Magento\Config\Model\Config\Structure::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->writerMock = $this->getMockBuilder(Writer::class)
+        $this->writerMock = $this->getMockBuilder(\Magento\Framework\App\DeploymentConfig\Writer::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->adapterMock = $this->getMockBuilder(AdapterInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMockForAbstractClass();
-        $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->adapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->selectMock = $this->getMockBuilder(Select::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->setMethods(['from', 'where', 'update'])
             ->getMock();
-        $translationClassName = TransactionManagerInterface::class;
+        $translationClassName = \Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface::class;
         $this->transactionMock = $this->getMockBuilder($translationClassName)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $relationClassName = ObjectRelationProcessor::class;
+        $relationClassName = \Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class;
         $this->objRelationMock = $this->getMockBuilder($relationClassName)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->randomMock = $this->createMock(Random::class);
+        $this->randomMock = $this->createMock(\Magento\Framework\Math\Random::class);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->model = $helper->getObject(
-            Change::class,
+            \Magento\EncryptionKey\Model\ResourceModel\Key\Change::class,
             [
                 'filesystem' => $this->filesystemMock,
                 'structure' => $this->structureMock,
@@ -157,7 +141,7 @@ class ChangeTest extends TestCase
     {
         $this->setUpChangeEncryptionKey();
         $this->randomMock->expects($this->once())->method('getRandomString')->willReturn('abc');
-        $this->assertEquals(hash('md5', 'abc'), $this->model->changeEncryptionKey());
+        $this->assertEquals(md5('abc'), $this->model->changeEncryptionKey());
     }
 
     public function testChangeEncryptionKeyThrowsException()

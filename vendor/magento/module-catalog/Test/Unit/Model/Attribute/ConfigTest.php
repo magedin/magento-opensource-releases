@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Attribute;
 
-use Magento\Catalog\Model\Attribute\Config;
-use Magento\Catalog\Model\Attribute\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Catalog\Model\Attribute\Config
      */
     protected $_model;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Catalog\Model\Attribute\Config\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_dataStorage;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_dataStorage = $this->createPartialMock(Data::class, ['get']);
-        $this->_model = new Config($this->_dataStorage);
+        $this->_dataStorage = $this->createPartialMock(\Magento\Catalog\Model\Attribute\Config\Data::class, ['get']);
+        $this->_model = new \Magento\Catalog\Model\Attribute\Config($this->_dataStorage);
     }
 
     public function testGetAttributeNames()
@@ -39,8 +32,8 @@ class ConfigTest extends TestCase
             'get'
         )->with(
             'some_group'
-        )->willReturn(
-            $expectedResult
+        )->will(
+            $this->returnValue($expectedResult)
         );
         $this->assertSame($expectedResult, $this->_model->getAttributeNames('some_group'));
     }

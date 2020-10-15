@@ -3,86 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Model\Product\Type;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Catalog\Model\Product\Type\AbstractType;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Registry;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\GroupedProduct\Model\Product\Type\Grouped;
-use Magento\GroupedProduct\Model\ResourceModel\Product\Link;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
- * Tests for Grouped product
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Model\Product\Type\Grouped
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $catalogProductLink;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $product;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productStatusMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectHelper;
 
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $serializer;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectHelper = new ObjectManager($this);
-        $eventManager = $this->getMockForAbstractClass(ManagerInterface::class);
-        $fileStorageDbMock = $this->createMock(Database::class);
-        $filesystem = $this->createMock(Filesystem::class);
-        $coreRegistry = $this->createMock(Registry::class);
-        $this->product = $this->createMock(Product::class);
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $productFactoryMock = $this->createMock(ProductFactory::class);
-        $this->catalogProductLink = $this->createMock(Link::class);
-        $this->productStatusMock = $this->createMock(Status::class);
-        $this->serializer = $this->getMockBuilder(Json::class)
-            ->setMethods(['serialize'])
-            ->getMockForAbstractClass();
+        $this->objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $eventManager = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $fileStorageDbMock = $this->createMock(\Magento\MediaStorage\Helper\File\Storage\Database::class);
+        $filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $coreRegistry = $this->createMock(\Magento\Framework\Registry::class);
+        $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $productFactoryMock = $this->createMock(\Magento\Catalog\Model\ProductFactory::class);
+        $this->catalogProductLink = $this->createMock(\Magento\GroupedProduct\Model\ResourceModel\Product\Link::class);
+        $this->productStatusMock = $this->createMock(\Magento\Catalog\Model\Product\Attribute\Source\Status::class);
+        $this->serializer = $this->objectHelper->getObject(\Magento\Framework\Serialize\Serializer\Json::class);
 
         $this->_model = $this->objectHelper->getObject(
-            Grouped::class,
+            \Magento\GroupedProduct\Model\Product\Type\Grouped::class,
             [
                 'eventManager' => $eventManager,
                 'fileStorageDb' => $fileStorageDbMock,
@@ -97,22 +72,12 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Verify has weight is false
-     *
-     * @return void
-     */
-    public function testHasWeightFalse(): void
+    public function testHasWeightFalse()
     {
         $this->assertFalse($this->_model->hasWeight(), 'This product has weight, but it should not');
     }
 
-    /**
-     * Verify children ids.
-     *
-     * @return void
-     */
-    public function testGetChildrenIds(): void
+    public function testGetChildrenIds()
     {
         $parentId = 12345;
         $childrenIds = [100, 200, 300];
@@ -122,19 +87,14 @@ class GroupedTest extends TestCase
             'getChildrenIds'
         )->with(
             $parentId,
-            Link::LINK_TYPE_GROUPED
-        )->willReturn(
-            $childrenIds
+            \Magento\GroupedProduct\Model\ResourceModel\Product\Link::LINK_TYPE_GROUPED
+        )->will(
+            $this->returnValue($childrenIds)
         );
         $this->assertEquals($childrenIds, $this->_model->getChildrenIds($parentId));
     }
 
-    /**
-     * Verify get parents by child products
-     *
-     * @return void
-     */
-    public function testGetParentIdsByChild(): void
+    public function testGetParentIdsByChild()
     {
         $childId = 12345;
         $parentIds = [100, 200, 300];
@@ -144,58 +104,44 @@ class GroupedTest extends TestCase
             'getParentIdsByChild'
         )->with(
             $childId,
-            Link::LINK_TYPE_GROUPED
-        )->willReturn(
-            $parentIds
+            \Magento\GroupedProduct\Model\ResourceModel\Product\Link::LINK_TYPE_GROUPED
+        )->will(
+            $this->returnValue($parentIds)
         );
         $this->assertEquals($parentIds, $this->_model->getParentIdsByChild($childId));
     }
 
-    /**
-     * Verify get associated products
-     *
-     * @return void
-     */
-    public function testGetAssociatedProducts(): void
+    public function testGetAssociatedProducts()
     {
         $cached = true;
         $associatedProducts = [5, 7, 11, 13, 17];
-        $this->product->expects($this->once())->method('hasData')->willReturn($cached);
-        $this->product->expects($this->once())->method('getData')->willReturn($associatedProducts);
+        $this->product->expects($this->once())->method('hasData')->will($this->returnValue($cached));
+        $this->product->expects($this->once())->method('getData')->will($this->returnValue($associatedProducts));
         $this->assertEquals($associatedProducts, $this->_model->getAssociatedProducts($this->product));
     }
 
     /**
-     * Verify able to set status filter
-     *
      * @param int $status
      * @param array $filters
      * @param array $result
      * @dataProvider addStatusFilterDataProvider
      */
-    public function testAddStatusFilter($status, $filters, $result): void
+    public function testAddStatusFilter($status, $filters, $result)
     {
-        $this->product->expects($this->once())->method('getData')->willReturn($filters);
+        $this->product->expects($this->once())->method('getData')->will($this->returnValue($filters));
         $this->product->expects($this->once())->method('setData')->with('_cache_instance_status_filters', $result);
         $this->assertEquals($this->_model, $this->_model->addStatusFilter($status, $this->product));
     }
 
     /**
-     * Data Provider for Status Filter
-     *
      * @return array
      */
-    public function addStatusFilterDataProvider(): array
+    public function addStatusFilterDataProvider()
     {
         return [[1, [], [1]], [1, false, [1]]];
     }
 
-    /**
-     * Verify able to set salable status
-     *
-     * @return void
-     */
-    public function testSetSaleableStatus(): void
+    public function testSetSaleableStatus()
     {
         $key = '_cache_instance_status_filters';
         $saleableIds = [300, 800, 500];
@@ -204,96 +150,76 @@ class GroupedTest extends TestCase
             $this->once()
         )->method(
             'getSaleableStatusIds'
-        )->willReturn(
-            $saleableIds
+        )->will(
+            $this->returnValue($saleableIds)
         );
         $this->product->expects($this->once())->method('setData')->with($key, $saleableIds);
         $this->assertEquals($this->_model, $this->_model->setSaleableStatus($this->product));
     }
 
-    /**
-     * Verify status filter with no data.
-     *
-     * @return void
-     */
-    public function testGetStatusFiltersNoData(): void
+    public function testGetStatusFiltersNoData()
     {
         $result = [
-            Status::STATUS_ENABLED,
-            Status::STATUS_DISABLED,
+            \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED,
+            \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED,
         ];
-        $this->product->expects($this->once())->method('hasData')->willReturn(false);
+        $this->product->expects($this->once())->method('hasData')->will($this->returnValue(false));
         $this->assertEquals($result, $this->_model->getStatusFilters($this->product));
     }
 
-    /**
-     * Verify status filter with data
-     *
-     * @return void
-     */
-    public function testGetStatusFiltersWithData(): void
+    public function testGetStatusFiltersWithData()
     {
         $result = [
-            Status::STATUS_ENABLED,
-            Status::STATUS_DISABLED,
+            \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED,
+            \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED,
         ];
-        $this->product->expects($this->once())->method('hasData')->willReturn(true);
-        $this->product->expects($this->once())->method('getData')->willReturn($result);
+        $this->product->expects($this->once())->method('hasData')->will($this->returnValue(true));
+        $this->product->expects($this->once())->method('getData')->will($this->returnValue($result));
         $this->assertEquals($result, $this->_model->getStatusFilters($this->product));
     }
 
-    /**
-     * Verify AssociatedProducts Ids with cache
-     *
-     * @return void
-     */
-    public function testGetAssociatedProductIdsCached(): void
+    public function testGetAssociatedProductIdsCached()
     {
         $key = '_cache_instance_associated_product_ids';
         $cachedData = [300, 303, 306];
 
-        $this->product->expects($this->once())->method('hasData')->with($key)->willReturn(true);
+        $this->product->expects($this->once())->method('hasData')->with($key)->will($this->returnValue(true));
         $this->product->expects($this->never())->method('setData');
-        $this->product->expects($this->once())->method('getData')->with($key)->willReturn($cachedData);
+        $this->product->expects($this->once())->method('getData')->with($key)->will($this->returnValue($cachedData));
 
         $this->assertEquals($cachedData, $this->_model->getAssociatedProductIds($this->product));
     }
 
-    /**
-     * Verify AssociatedProducts Ids with no cached.
-     *
-     * @return void
-     */
-    public function testGetAssociatedProductIdsNonCached(): void
+    public function testGetAssociatedProductIdsNonCached()
     {
         $args = $this->objectHelper->getConstructArguments(
-            Grouped::class,
+            \Magento\GroupedProduct\Model\Product\Type\Grouped::class,
             []
         );
 
-        /** @var Grouped $model */
-        $model = $this->getMockBuilder(Grouped::class)
+        /** @var \Magento\GroupedProduct\Model\Product\Type\Grouped $model */
+        $model = $this->getMockBuilder(\Magento\GroupedProduct\Model\Product\Type\Grouped::class)
             ->setMethods(['getAssociatedProducts'])
             ->setConstructorArgs($args)
             ->getMock();
 
-        $associatedProduct = $this->createMock(Product::class);
+        $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
         $model->expects(
             $this->once()
         )->method(
             'getAssociatedProducts'
         )->with(
             $this->product
-        )->willReturn(
-            [$associatedProduct]
+        )->will(
+            $this->returnValue([$associatedProduct])
         );
 
         $associatedId = 9384;
         $key = '_cache_instance_associated_product_ids';
         $associatedIds = [$associatedId];
-        $associatedProduct->expects($this->once())->method('getId')->willReturn($associatedId);
+        $associatedProduct->expects($this->once())->method('getId')->will($this->returnValue($associatedId));
 
-        $this->product->expects($this->once())->method('hasData')->with($key)->willReturn(false);
+        $this->product->expects($this->once())->method('hasData')->with($key)->will($this->returnValue(false));
         $this->product->expects($this->once())->method('setData')->with($key, $associatedIds);
         $this->product->expects(
             $this->once()
@@ -301,66 +227,54 @@ class GroupedTest extends TestCase
             'getData'
         )->with(
             $key
-        )->willReturn(
-            $associatedIds
+        )->will(
+            $this->returnValue($associatedIds)
         );
 
         $this->assertEquals($associatedIds, $model->getAssociatedProductIds($this->product));
     }
 
-    /**
-     * Verify Associated Product collection
-     *
-     * @return void
-     */
-    public function testGetAssociatedProductCollection(): void
+    public function testGetAssociatedProductCollection()
     {
-        $link = $this->getMockBuilder(\Magento\Catalog\Model\Product\Link::class)->addMethods(['setLinkTypeId'])
-            ->onlyMethods(['getProductCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->product->expects($this->once())->method('getLinkInstance')->willReturn($link);
+        $link = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Link::class,
+            ['setLinkTypeId', 'getProductCollection']
+        );
+        $this->product->expects($this->once())->method('getLinkInstance')->will($this->returnValue($link));
         $link->expects(
             $this->any()
         )->method(
             'setLinkTypeId'
         )->with(
-            Link::LINK_TYPE_GROUPED
+            \Magento\GroupedProduct\Model\ResourceModel\Product\Link::LINK_TYPE_GROUPED
         );
         $collection = $this->createPartialMock(
-            Collection::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection::class,
             ['setFlag', 'setIsStrongMode', 'setProduct']
         );
-        $link->expects($this->once())->method('getProductCollection')->willReturn($collection);
-        $collection->expects($this->any())->method('setFlag')->willReturn($collection);
-        $collection->expects($this->once())->method('setIsStrongMode')->willReturn($collection);
+        $link->expects($this->once())->method('getProductCollection')->will($this->returnValue($collection));
+        $collection->expects($this->any())->method('setFlag')->will($this->returnValue($collection));
+        $collection->expects($this->once())->method('setIsStrongMode')->will($this->returnValue($collection));
         $this->assertEquals($collection, $this->_model->getAssociatedProductCollection($this->product));
     }
 
     /**
-     * Verify Proccess buy request
-     *
      * @param array $superGroup
      * @param array $result
      * @dataProvider processBuyRequestDataProvider
      */
     public function testProcessBuyRequest($superGroup, $result)
     {
-        $buyRequest = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getSuperGroup'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $buyRequest->expects($this->any())->method('getSuperGroup')->willReturn($superGroup);
+        $buyRequest = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getSuperGroup']);
+        $buyRequest->expects($this->any())->method('getSuperGroup')->will($this->returnValue($superGroup));
 
         $this->assertEquals($result, $this->_model->processBuyRequest($this->product, $buyRequest));
     }
 
     /**
-     * dataProvider for buy request
-     *
      * @return array
      */
-    public function processBuyRequestDataProvider(): array
+    public function processBuyRequestDataProvider()
     {
         return [
             'positive' => [[1, 2, 3], ['super_group' => [1, 2, 3]]],
@@ -369,35 +283,27 @@ class GroupedTest extends TestCase
     }
 
     /**
-     * Get Children Msrp when children product with Msrp
-     *
-     * @return void
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
-    public function testGetChildrenMsrpWhenNoChildrenWithMsrp(): void
+    public function testGetChildrenMsrpWhenNoChildrenWithMsrp()
     {
         $key = '_cache_instance_associated_products';
 
-        $this->product->expects($this->once())->method('hasData')->with($key)->willReturn(true);
+        $this->product->expects($this->once())->method('hasData')->with($key)->will($this->returnValue(true));
         $this->product->expects($this->never())->method('setData');
-        $this->product->expects($this->once())->method('getData')->with($key)->willReturn([]);
+        $this->product->expects($this->once())->method('getData')->with($key)->will($this->returnValue([]));
 
         $this->assertEquals(0, $this->_model->getChildrenMsrp($this->product));
     }
 
-    /**
-     * Prepare for card method with advanced empty
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedEmpty(): void
+    public function testPrepareForCartAdvancedEmpty()
     {
-        $this->product = $this->createMock(Product::class);
-        $buyRequest = new DataObject();
+        $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $buyRequest = new \Magento\Framework\DataObject();
         $expectedMsg = "Please specify the quantity of product(s).";
 
         $productCollection = $this->createMock(
-            Collection::class
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection::class
         );
         $productCollection
             ->expects($this->atLeastOnce())
@@ -431,18 +337,18 @@ class GroupedTest extends TestCase
             ->method('addAttributeToFilter')
             ->willReturnSelf();
         $items = [
-            $this->createMock(Product::class),
-            $this->createMock(Product::class)
+            $this->createMock(\Magento\Catalog\Model\Product::class),
+            $this->createMock(\Magento\Catalog\Model\Product::class)
         ];
         $productCollection
             ->expects($this->atLeastOnce())
             ->method('getIterator')
             ->willReturn(new \ArrayIterator($items));
 
-        $link = $this->getMockBuilder(\Magento\Catalog\Model\Product\Link::class)->addMethods(['setLinkTypeId'])
-            ->onlyMethods(['getProductCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $link = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Link::class,
+            ['setLinkTypeId', 'getProductCollection']
+        );
         $link
             ->expects($this->any())
             ->method('setLinkTypeId');
@@ -473,14 +379,9 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Prepare for card with no products set strict option true
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedNoProductsStrictTrue(): void
+    public function testPrepareForCartAdvancedNoProductsStrictTrue()
     {
-        $buyRequest = new DataObject();
+        $buyRequest = new \Magento\Framework\DataObject();
         $buyRequest->setSuperGroup([0 => 0]);
         $expectedMsg = "Please specify the quantity of product(s).";
 
@@ -489,11 +390,11 @@ class GroupedTest extends TestCase
         $this->product
             ->expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product
             ->expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn($associatedProducts);
+            ->will($this->returnValue($associatedProducts));
 
         $this->assertEquals(
             $expectedMsg,
@@ -501,14 +402,9 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Prepare for card with no products and set strict to false
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedNoProductsStrictFalse(): void
+    public function testPrepareForCartAdvancedNoProductsStrictFalse()
     {
-        $buyRequest = new DataObject();
+        $buyRequest = new \Magento\Framework\DataObject();
         $buyRequest->setSuperGroup([0 => 0]);
 
         $cached = true;
@@ -516,14 +412,11 @@ class GroupedTest extends TestCase
         $this->product
             ->expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product
             ->expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn($associatedProducts);
-        $this->serializer->expects($this->any())
-            ->method('serialize')
-            ->willReturn(json_encode($buyRequest->getData()));
+            ->will($this->returnValue($associatedProducts));
 
         $this->assertEquals(
             [0 => $this->product],
@@ -531,19 +424,14 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Verify Prepare for cart product with Product strict flase and string result
-     *
-     * @return false
-     */
-    public function testPrepareForCartAdvancedWithProductsStrictFalseStringResult(): void
+    public function testPrepareForCartAdvancedWithProductsStrictFalseStringResult()
     {
-        $associatedProduct = $this->createMock(Product::class);
+        $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
         $associatedId = 9384;
-        $associatedProduct->expects($this->atLeastOnce())->method('getId')->willReturn($associatedId);
+        $associatedProduct->expects($this->atLeastOnce())->method('getId')->will($this->returnValue($associatedId));
 
         $typeMock = $this->createPartialMock(
-            AbstractType::class,
+            \Magento\Catalog\Model\Product\Type\AbstractType::class,
             ['_prepareProduct', 'deleteTypeSpecificData']
         );
         $associatedPrepareResult = "";
@@ -551,18 +439,18 @@ class GroupedTest extends TestCase
 
         $associatedProduct->expects($this->once())->method('getTypeInstance')->willReturn($typeMock);
 
-        $buyRequest = new DataObject();
+        $buyRequest = new \Magento\Framework\DataObject();
         $buyRequest->setSuperGroup([$associatedId => 1]);
 
         $cached = true;
         $this->product
             ->expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product
             ->expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn([$associatedProduct]);
+            ->will($this->returnValue([$associatedProduct]));
 
         $this->assertEquals(
             $associatedPrepareResult,
@@ -570,20 +458,15 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Verify prepare for cart with strict option set to false and empty array
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedWithProductsStrictFalseEmptyArrayResult(): void
+    public function testPrepareForCartAdvancedWithProductsStrictFalseEmptyArrayResult()
     {
         $expectedMsg = "Cannot process the item.";
-        $associatedProduct = $this->createMock(Product::class);
+        $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
         $associatedId = 9384;
-        $associatedProduct->expects($this->atLeastOnce())->method('getId')->willReturn($associatedId);
+        $associatedProduct->expects($this->atLeastOnce())->method('getId')->will($this->returnValue($associatedId));
 
         $typeMock = $this->createPartialMock(
-            AbstractType::class,
+            \Magento\Catalog\Model\Product\Type\AbstractType::class,
             ['_prepareProduct', 'deleteTypeSpecificData']
         );
         $associatedPrepareResult = [];
@@ -591,18 +474,18 @@ class GroupedTest extends TestCase
 
         $associatedProduct->expects($this->once())->method('getTypeInstance')->willReturn($typeMock);
 
-        $buyRequest = new DataObject();
+        $buyRequest = new \Magento\Framework\DataObject();
         $buyRequest->setSuperGroup([$associatedId => 1]);
 
         $cached = true;
         $this->product->
         expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product->
         expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn([$associatedProduct]);
+            ->will($this->returnValue([$associatedProduct]));
 
         $this->assertEquals(
             $expectedMsg,
@@ -610,23 +493,18 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Prepare for cart product with Product strict option st to false.
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedWithProductsStrictFalse(): void
+    public function testPrepareForCartAdvancedWithProductsStrictFalse()
     {
-        $associatedProduct = $this->createMock(Product::class);
+        $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
         $associatedId = 9384;
-        $associatedProduct->expects($this->atLeastOnce())->method('getId')->willReturn($associatedId);
+        $associatedProduct->expects($this->atLeastOnce())->method('getId')->will($this->returnValue($associatedId));
 
         $typeMock = $this->createPartialMock(
-            AbstractType::class,
+            \Magento\Catalog\Model\Product\Type\AbstractType::class,
             ['_prepareProduct', 'deleteTypeSpecificData']
         );
         $associatedPrepareResult = [
-            $this->getMockBuilder(Product::class)
+            $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
                 ->setMockClassName('resultProduct')
                 ->disableOriginalConstructor()
                 ->getMock()
@@ -635,22 +513,18 @@ class GroupedTest extends TestCase
 
         $associatedProduct->expects($this->once())->method('getTypeInstance')->willReturn($typeMock);
 
-        $buyRequest = new DataObject();
+        $buyRequest = new \Magento\Framework\DataObject();
         $buyRequest->setSuperGroup([$associatedId => 1]);
-
-        $this->serializer->expects($this->any())
-            ->method('serialize')
-            ->willReturn(json_encode($buyRequest->getData()));
 
         $cached = true;
         $this->product
             ->expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product
             ->expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn([$associatedProduct]);
+            ->will($this->returnValue([$associatedProduct]));
 
         $this->assertEquals(
             [$this->product],
@@ -672,7 +546,7 @@ class GroupedTest extends TestCase
         $expectedResult
     ) {
         $associatedProducts = $this->configureProduct($subProducts);
-        $buyRequestObject = new DataObject();
+        $buyRequestObject = new \Magento\Framework\DataObject();
         $buyRequestObject->setSuperGroup($buyRequest);
         $associatedProductsById = [];
         foreach ($associatedProducts as $associatedProduct) {
@@ -691,41 +565,31 @@ class GroupedTest extends TestCase
         );
     }
 
-    /**
-     * Verify prepare for card with sold out option
-     *
-     * @return void
-     */
-    public function testPrepareForCartAdvancedZeroQtyAndSoldOutOption(): void
+    public function testPrepareForCartAdvancedZeroQty()
     {
         $expectedMsg = "Please specify the quantity of product(s).";
-        $associatedId = 91;
-        $associatedProduct = $this->createMock(Product::class);
-        $associatedProduct->expects($this->atLeastOnce())->method('getId')->willReturn(90);
-        $associatedProduct->expects($this->once())->method('isSalable')->willReturn(true);
-        $buyRequest = new DataObject();
-        $buyRequest->setSuperGroup([$associatedId => 90]);
+        $associatedId = 9384;
+        $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $associatedProduct->expects($this->atLeastOnce())->method('getId')->will($this->returnValue($associatedId));
+
+        $buyRequest = new \Magento\Framework\DataObject();
+        $buyRequest->setSuperGroup([$associatedId => 0]);
 
         $cached = true;
         $this->product
             ->expects($this->atLeastOnce())
             ->method('hasData')
-            ->willReturn($cached);
+            ->will($this->returnValue($cached));
         $this->product
             ->expects($this->atLeastOnce())
             ->method('getData')
-            ->willReturn([$associatedProduct]);
+            ->will($this->returnValue([$associatedProduct]));
         $this->assertEquals($expectedMsg, $this->_model->prepareForCartAdvanced($buyRequest, $this->product));
     }
 
-    /**
-     * Verify flush cache for associated products
-     *
-     * @return void
-     */
-    public function testFlushAssociatedProductsCache(): void
+    public function testFlushAssociatedProductsCache()
     {
-        $productMock = $this->createPartialMock(Product::class, ['unsetData']);
+        $productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['unsetData']);
         $productMock->expects($this->once())
             ->method('unsetData')
             ->with('_cache_instance_associated_products')
@@ -823,14 +687,14 @@ class GroupedTest extends TestCase
     {
         $associatedProducts = [];
         foreach ($subProducts as $data) {
-            $associatedProduct = $this->createMock(Product::class);
+            $associatedProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
             foreach ($data as $method => $value) {
                 $associatedProduct->method($method)->willReturn($value);
             }
             $associatedProducts[] = $associatedProduct;
 
             $typeMock = $this->createPartialMock(
-                AbstractType::class,
+                \Magento\Catalog\Model\Product\Type\AbstractType::class,
                 ['_prepareProduct', 'deleteTypeSpecificData']
             );
             $typeMock->method('_prepareProduct')->willReturn([$associatedProduct]);

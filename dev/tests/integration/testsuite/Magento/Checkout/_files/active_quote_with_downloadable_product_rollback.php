@@ -4,7 +4,5 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Downloadable/_files/product_downloadable_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/active_quote_rollback.php');
+require __DIR__ . '/active_quote_rollback.php';
+require __DIR__ . '/../../Downloadable/_files/product_downloadable_rollback.php';

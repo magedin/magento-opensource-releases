@@ -3,44 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogWidget\Test\Unit\Model;
 
-use Magento\CatalogWidget\Model\Rule;
-use Magento\CatalogWidget\Model\Rule\Condition\Combine;
-use Magento\CatalogWidget\Model\Rule\Condition\CombineFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RuleTest extends TestCase
+class RuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Rule
+     * @var \Magento\CatalogWidget\Model\Rule
      */
     protected $rule;
 
     /**
-     * @var CombineFactory|MockObject
+     * @var \Magento\CatalogWidget\Model\Rule\Condition\CombineFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $combineFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->combineFactory = $this->getMockBuilder(CombineFactory::class)
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->combineFactory = $this->getMockBuilder(\Magento\CatalogWidget\Model\Rule\Condition\CombineFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->rule = $this->objectManager->getObject(
-            Rule::class,
+            \Magento\CatalogWidget\Model\Rule::class,
             [
                 'conditionsFactory' => $this->combineFactory
             ]
@@ -49,11 +40,11 @@ class RuleTest extends TestCase
 
     public function testGetConditionsInstance()
     {
-        $condition = $this->getMockBuilder(Combine::class)
+        $condition = $this->getMockBuilder(\Magento\CatalogWidget\Model\Rule\Condition\Combine::class)
             ->setMethods([])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->combineFactory->expects($this->once())->method('create')->willReturn($condition);
+        $this->combineFactory->expects($this->once())->method('create')->will($this->returnValue($condition));
         $this->assertSame($condition, $this->rule->getConditionsInstance());
     }
 

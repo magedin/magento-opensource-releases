@@ -3,94 +3,81 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Column\Filter;
-
-use Magento\Backend\Block\Context;
-use Magento\Backend\Block\Widget\Grid\Column;
-use Magento\Backend\Block\Widget\Grid\Column\Filter\Date;
-use Magento\Framework\Escaper;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Math\Random;
-use Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class DateTest to test Magento\Backend\Block\Widget\Grid\Column\Filter\Date
  *
  */
-class DateTest extends TestCase
+class DateTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Date */
+    /** @var \Magento\Backend\Block\Widget\Grid\Column\Filter\Date */
     protected $model;
 
-    /** @var Random|MockObject */
+    /** @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject */
     protected $mathRandomMock;
 
-    /** @var ResolverInterface|MockObject */
+    /** @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $localeResolverMock;
 
-    /** @var DateTimeFormatterInterface|MockObject */
+    /** @var \Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $dateTimeFormatterMock;
 
-    /** @var Column|MockObject */
+    /** @var \Magento\Backend\Block\Widget\Grid\Column|\PHPUnit_Framework_MockObject_MockObject */
     protected $columnMock;
 
-    /** @var TimezoneInterface|MockObject */
+    /** @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $localeDateMock;
 
-    /** @var Escaper|MockObject */
+    /** @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject */
     private $escaperMock;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\Block\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $contextMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->mathRandomMock = $this->getMockBuilder(Random::class)
+        $this->mathRandomMock = $this->getMockBuilder(\Magento\Framework\Math\Random::class)
             ->disableOriginalConstructor()
             ->setMethods(['getUniqueHash'])
             ->getMock();
 
-        $this->localeResolverMock = $this->getMockBuilder(ResolverInterface::class)
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->dateTimeFormatterMock = $this
-            ->getMockBuilder(DateTimeFormatterInterface::class)
+            ->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->columnMock = $this->getMockBuilder(Column::class)
+        $this->columnMock = $this->getMockBuilder(\Magento\Backend\Block\Widget\Grid\Column::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTimezone', 'getHtmlId', 'getId'])
             ->getMock();
 
-        $this->localeDateMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->localeDateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->escaperMock = $this->getMockBuilder(Escaper::class)
+        $this->escaperMock = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\Block\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->contextMock->expects($this->once())->method('getEscaper')->willReturn($this->escaperMock);
         $this->contextMock->expects($this->once())->method('getLocaleDate')->willReturn($this->localeDateMock);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            Date::class,
+            \Magento\Backend\Block\Widget\Grid\Column\Filter\Date::class,
             [
                 'mathRandom' => $this->mathRandomMock,
                 'localeResolver' => $this->localeResolverMock,
@@ -126,14 +113,8 @@ class DateTest extends TestCase
         $this->model->setValue($value);
 
         $output = $this->model->getHtml();
-        $this->assertStringContainsString(
-            'id="' . $uniqueHash . '_from" value="' . $yesterday->getTimestamp(),
-            $output
-        );
-        $this->assertStringContainsString(
-            'id="' . $uniqueHash . '_to" value="' . $tomorrow->getTimestamp(),
-            $output
-        );
+        $this->assertContains('id="' . $uniqueHash . '_from" value="' . $yesterday->getTimestamp(), $output);
+        $this->assertContains('id="' . $uniqueHash . '_to" value="' . $tomorrow->getTimestamp(), $output);
     }
 
     public function testGetEscapedValueEscapeString()

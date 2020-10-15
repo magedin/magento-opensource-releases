@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Vertex\Tax\Test\Unit\Block\Adminhtml\Config\Form\Field;
 
@@ -12,43 +12,42 @@ use Magento\OfflineShipping\Model\Carrier\Flatrate;
 use Magento\OfflineShipping\Model\Carrier\Tablerate;
 use Magento\Shipping\Model\Config;
 use Magento\Usps\Model\Carrier;
-use PHPUnit\Framework\MockObject\MockObject;
 use Vertex\Tax\Block\Adminhtml\Config\Form\Field\ShippingCodes;
 use Vertex\Tax\Test\Unit\TestCase;
 
 class ShippingCodesTest extends TestCase
 {
-    /** @var MockObject|ShippingCodes */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|ShippingCodes */
     private $blockMock;
 
-    /** @var MockObject|Context */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Context */
     private $contextMock;
 
-    /** @var MockObject|Config */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Config */
     private $configMock;
 
-    /** @var MockObject|AbstractElement */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|AbstractElement */
     private $abstractElementMock;
 
-    /** @var MockObject|Tablerate */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Tablerate */
     private $tableRateMock;
 
-    /** @var MockObject|Flatrate */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Flatrate */
     private $flatRateMock;
 
-    /** @var MockObject|Carrier */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Carrier */
     private $uspsMock;
 
-    /** @var MockObject|Escaper */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Escaper */
     private $escaperMock;
 
-    /** @var MockObject|ScopeConfigInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|ScopeConfigInterface */
     private $scopeConfigInterfaceMock;
 
-    /** @var MockObject|RequestInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|RequestInterface */
     private $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->contextMock = $this->createPartialMock(Context::class, ['getScopeConfig', 'getEscaper', 'getRequest']);
@@ -87,7 +86,6 @@ class ShippingCodesTest extends TestCase
 
     public function testGetElementHtml()
     {
-        $this->markTestSkipped('Test fails due to changes to Core implementation');
         $expected = '<table cellspacing="0" class="data-grid"><thead><tr><th class="data-grid-th">Shipping Method</th>'
             . '<th class="data-grid-th">Product Code</th></tr></thead><tbody><tr>'
             . '<th class="data-grid-th"   colspan="2">usps</th></tr><tr class="" >'
@@ -121,7 +119,6 @@ class ShippingCodesTest extends TestCase
 
     public function testRender()
     {
-        $this->markTestSkipped('Test fails due to changes to Core implementation');
         $expected = '<tr id="row_"><td><table cellspacing="0" class="data-grid">'
             . '<thead><tr><th class="data-grid-th">Shipping Method</th><th class="data-grid-th">Product Code</th></tr>'
             . '</thead><tbody></tbody></table></td></tr>';

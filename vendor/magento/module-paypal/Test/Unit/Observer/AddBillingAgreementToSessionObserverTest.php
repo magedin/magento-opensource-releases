@@ -3,66 +3,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Observer;
 
-use Magento\Checkout\Model\Session;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\TestFramework\Unit\Matcher\MethodInvokedAtIndex;
-use Magento\Paypal\Model\Billing\Agreement;
-use Magento\Paypal\Model\Billing\AgreementFactory;
-use Magento\Paypal\Observer\AddBillingAgreementToSessionObserver;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AddBillingAgreementToSessionObserverTest extends TestCase
+/**
+ * Class AddBillingAgreementToSessionObserverTest
+ */
+class AddBillingAgreementToSessionObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AddBillingAgreementToSessionObserver
+     * @var \Magento\Paypal\Observer\AddBillingAgreementToSessionObserver
      */
     protected $_model;
 
     /**
-     * @var Observer
+     * @var \Magento\Framework\Event\Observer
      */
     protected $_observer;
 
     /**
-     * @var DataObject
+     * @var \Magento\Framework\DataObject
      */
     protected $_event;
 
     /**
-     * @var AgreementFactory|MockObject
+     * @var \Magento\Paypal\Model\Billing\Agreement Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_agreementFactory;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Checkout\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_checkoutSession;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_event = new DataObject();
+        $this->_event = new \Magento\Framework\DataObject();
 
-        $this->_observer = new Observer();
+        $this->_observer = new \Magento\Framework\Event\Observer();
         $this->_observer->setEvent($this->_event);
 
         $this->_agreementFactory = $this->createPartialMock(
-            AgreementFactory::class,
+            \Magento\Paypal\Model\Billing\AgreementFactory::class,
             ['create']
         );
-        $this->_checkoutSession = $this->createMock(Session::class);
-        $objectManagerHelper = new ObjectManager($this);
+        $this->_checkoutSession = $this->createMock(\Magento\Checkout\Model\Session::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $objectManagerHelper->getObject(
-            AddBillingAgreementToSessionObserver::class,
+            \Magento\Paypal\Observer\AddBillingAgreementToSessionObserver::class,
             [
                 'agreementFactory' => $this->_agreementFactory,
                 'checkoutSession' => $this->_checkoutSession,
@@ -72,15 +61,15 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
 
     public function testAddBillingAgreementToSessionNoData()
     {
-        $payment = $this->createMock(Payment::class);
+        $payment = $this->createMock(\Magento\Sales\Model\Order\Payment::class);
         $payment->expects(
             $this->once()
         )->method(
             '__call'
         )->with(
             'getBillingAgreementData'
-        )->willReturn(
-            null
+        )->will(
+            $this->returnValue(null)
         );
         $this->_event->setPayment($payment);
         $this->_agreementFactory->expects($this->never())->method('create');
@@ -94,10 +83,10 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
      */
     public function testAddBillingAgreementToSession($isValid)
     {
-        $agreement = $this->createMock(Agreement::class);
-        $agreement->expects($this->once())->method('isValid')->willReturn($isValid);
+        $agreement = $this->createMock(\Magento\Paypal\Model\Billing\Agreement::class);
+        $agreement->expects($this->once())->method('isValid')->will($this->returnValue($isValid));
         $comment = $this->getMockForAbstractClass(
-            AbstractModel::class,
+            \Magento\Framework\Model\AbstractModel::class,
             [],
             '',
             false,
@@ -105,7 +94,7 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
             true,
             ['__wakeup']
         );
-        $order = $this->createMock(Order::class);
+        $order = $this->createMock(\Magento\Sales\Model\Order::class);
         $order->expects(
             $this->once()
         )->method(
@@ -117,8 +106,8 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
             ) : __(
                 'We can\'t create a billing agreement for this order.'
             )
-        )->willReturn(
-            $comment
+        )->will(
+            $this->returnValue($comment)
         );
         if ($isValid) {
             $agreement->expects(
@@ -127,8 +116,8 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
                 '__call'
             )->with(
                 'getReferenceId'
-            )->willReturn(
-                'agreement reference id'
+            )->will(
+                $this->returnValue('agreement reference id')
             );
             $agreement->expects($this->once())->method('addOrderRelation')->with($order);
             $order->expects(new MethodInvokedAtIndex(0))->method('addRelatedObject')->with($agreement);
@@ -152,28 +141,28 @@ class AddBillingAgreementToSessionObserverTest extends TestCase
         }
         $order->expects(new MethodInvokedAtIndex($isValid ? 1 : 0))->method('addRelatedObject')->with($comment);
 
-        $payment = $this->createMock(Payment::class);
+        $payment = $this->createMock(\Magento\Sales\Model\Order\Payment::class);
         $payment->expects(
             $this->once()
         )->method(
             '__call'
         )->with(
             'getBillingAgreementData'
-        )->willReturn(
-            'not empty'
+        )->will(
+            $this->returnValue('not empty')
         );
-        $payment->expects($this->once())->method('getOrder')->willReturn($order);
+        $payment->expects($this->once())->method('getOrder')->will($this->returnValue($order));
         $agreement->expects(
             $this->once()
         )->method(
             'importOrderPayment'
         )->with(
             $payment
-        )->willReturn(
-            $agreement
+        )->will(
+            $this->returnValue($agreement)
         );
         $this->_event->setPayment($payment);
-        $this->_agreementFactory->expects($this->once())->method('create')->willReturn($agreement);
+        $this->_agreementFactory->expects($this->once())->method('create')->will($this->returnValue($agreement));
         $this->_model->execute($this->_observer);
     }
 

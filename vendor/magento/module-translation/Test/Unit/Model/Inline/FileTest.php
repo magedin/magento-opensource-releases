@@ -3,50 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\Model\Inline;
 
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\Translate\ResourceInterface;
-use Magento\Translation\Model\Inline\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\Translation\Model\Inline\File
      */
     private $model;
 
     /**
-     * @var ResourceInterface|MockObject
+     * @var \Magento\Framework\Translate\ResourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $translateResourceMock;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $localeResolverMock;
 
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $jsonSerializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->translateResourceMock = $this->getMockBuilder(ResourceInterface::class)
+        $this->translateResourceMock = $this->getMockBuilder(\Magento\Framework\Translate\ResourceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->localeResolverMock = $this->getMockBuilder(ResolverInterface::class)
+            ->getMock();
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->jsonSerializer = new Json();
+            ->getMock();
+        $this->jsonSerializer = new \Magento\Framework\Serialize\Serializer\Json();
 
-        $this->model = new File(
+        $this->model = new \Magento\Translation\Model\Inline\File(
             $this->translateResourceMock,
             $this->localeResolverMock,
             $this->jsonSerializer

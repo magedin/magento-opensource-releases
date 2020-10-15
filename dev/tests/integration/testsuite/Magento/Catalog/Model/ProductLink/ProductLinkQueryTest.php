@@ -38,7 +38,7 @@ class ProductLinkQueryTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -134,9 +134,9 @@ class ProductLinkQueryTest extends TestCase
                 //Determining whether the product is supposed to be linked by SKU
                 preg_match('/^simple\-related\-(\d+)$/i', $criteria->getBelongsToProductSku(), $productIndex);
                 $this->assertNotEmpty($productIndex);
-                $this->assertNotEmpty($productIndex[1]);
+                $this->assertFalse(empty($productIndex[1]));
                 $productIndex = (int)$productIndex[1];
-                $this->assertMatchesRegularExpression('/^related\-product\-' .$productIndex .'\-\d+$/i', $link->getLinkedProductSku());
+                $this->assertRegExp('/^related\-product\-' .$productIndex .'\-\d+$/i', $link->getLinkedProductSku());
                 //Position must be set
                 $this->assertGreaterThan(0, $link->getPosition());
             }

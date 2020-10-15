@@ -20,25 +20,25 @@ class BaseStringUtilsTest extends \PHPUnit\Framework\TestCase
     private $model;
 
     /**
-     * @var BooleanUtils|\PHPUnit\Framework\MockObject\MockObject
+     * @var BooleanUtils|\PHPUnit_Framework_MockObject_MockObject
      */
     private $booleanUtils;
 
     /**
      * Prepare subject for tests.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->booleanUtils = $this->createPartialMock(BooleanUtils::class, ['toBoolean']);
         $this->booleanUtils->expects(
             $this->any()
         )->method(
             'toBoolean'
-        )->willReturnMap(
-            [['true', true], ['false', false]]
+        )->will(
+            $this->returnValueMap([['true', true], ['false', false]])
         );
         $this->model = new BaseStringUtils($this->booleanUtils);
-        /** @var RendererInterface|\PHPUnit\Framework\MockObject\MockObject $translateRenderer */
+        /** @var RendererInterface|\PHPUnit_Framework_MockObject_MockObject $translateRenderer */
         $translateRenderer = $this->getMockBuilder(RendererInterface::class)
           ->setMethods(['render'])
           ->getMockForAbstractClass();
@@ -83,12 +83,11 @@ class BaseStringUtilsTest extends \PHPUnit\Framework\TestCase
      *
      * @param array $input
      * @dataProvider evaluateExceptionDataProvider
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage String value is expected
      */
     public function testEvaluateException($input)
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('String value is expected');
-
         $this->model->evaluate($input);
     }
 

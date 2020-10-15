@@ -13,13 +13,13 @@ use Magento\Integration\Model\Config\Integration\Reader as ConfigReader;
  */
 class ReaderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \PHPUnit\Framework\MockObject\MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_fileResolverMock;
 
     /** @var ConfigReader */
     protected $_configReader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->_fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
@@ -36,7 +36,7 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
             file_get_contents(realpath(__DIR__ . '/_files/apiA.xml')),
             file_get_contents(realpath(__DIR__ . '/_files/apiB.xml')),
         ];
-        $this->_fileResolverMock->expects($this->any())->method('get')->willReturn($configFiles);
+        $this->_fileResolverMock->expects($this->any())->method('get')->will($this->returnValue($configFiles));
 
         $expectedResult = require __DIR__ . '/_files/api.php';
         $this->assertEquals($expectedResult, $this->_configReader->read(), 'Error happened during config reading.');

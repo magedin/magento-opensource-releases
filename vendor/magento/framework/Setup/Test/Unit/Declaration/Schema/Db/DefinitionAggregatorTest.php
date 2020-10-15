@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\DbDefinitionProcessorInterface;
 use Magento\Framework\Setup\Declaration\Schema\Db\DefinitionAggregator;
 use Magento\Framework\Setup\Declaration\Schema\Dto\ElementInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Definition Aggregator.
  *
+ * @package Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db
  */
-class DefinitionAggregatorTest extends TestCase
+class DefinitionAggregatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DefinitionAggregator
@@ -31,21 +28,21 @@ class DefinitionAggregatorTest extends TestCase
     private $objectManager;
 
     /**
-     * @var DbDefinitionProcessorInterface[]|MockObject[]
+     * @var DbDefinitionProcessorInterface[]|\PHPUnit_Framework_MockObject_MockObject[]
      */
     private $definitonProcessors;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $intDefProcessor = $this->getMockBuilder(DbDefinitionProcessorInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
         $varcharDefProcessor = $this->getMockBuilder(DbDefinitionProcessorInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->definitonProcessors = [
             'int' => $intDefProcessor,
@@ -59,22 +56,24 @@ class DefinitionAggregatorTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Cannot process object to definition for type text
+     */
     public function testToDefinition()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Cannot process object to definition for type text');
-        /** @var ElementInterface|MockObject $columnInt */
+        /** @var ElementInterface|\PHPUnit_Framework_MockObject_MockObject $columnInt */
         $columnInt = $this->getMockBuilder(ElementInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        /** @var ElementInterface|MockObject $columnVarchar */
+            ->getMock();
+        /** @var ElementInterface|\PHPUnit_Framework_MockObject_MockObject $columnVarchar */
         $columnVarchar = $this->getMockBuilder(ElementInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        /** @var ElementInterface|MockObject $columnText */
+            ->getMock();
+        /** @var ElementInterface|\PHPUnit_Framework_MockObject_MockObject $columnText */
         $columnText = $this->getMockBuilder(ElementInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $columnInt->expects($this->any())->method('getType')->willReturn('int');
         $columnVarchar->expects($this->any())->method('getType')->willReturn('varchar');
         $columnText->expects($this->any())->method('getType')->willReturn('text');
@@ -85,10 +84,12 @@ class DefinitionAggregatorTest extends TestCase
         $this->definitonAggregator->toDefinition($columnText);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * Cannot process definition to array for type text
+     */
     public function testFromDefinition()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Cannot process definition to array for type text');
         $data = [
             'col_int' => [
                 'type' => 'int'

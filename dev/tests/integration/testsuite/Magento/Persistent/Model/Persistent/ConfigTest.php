@@ -19,7 +19,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     /** @var  \Magento\Framework\ObjectManagerInterface */
     protected $_objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $directoryList = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Framework\App\Filesystem\DirectoryList::class,

@@ -5,12 +5,14 @@
  */
 
 /* @var \Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Items $block */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
 <?php
 /** @var Magento\Sales\ViewModel\CreditMemo\Create\UpdateTotalsButton $viewModel */
 $viewModel = $block->getData('viewModel');
-$_items = $block->getCreditmemo()->getAllItems();
+/** @var Magento\Sales\ViewModel\CreditMemo\Create\ItemsToRender $itemsToRenderViewModel */
+$itemsToRenderViewModel = $block->getData('itemsToRenderViewModel');
+$_items = $itemsToRenderViewModel->getItems();
+$commentText = $block->getCreditmemo()->getCommentText();
 ?>
 
 <section class="admin__page-section">
@@ -95,8 +97,7 @@ $_items = $block->getCreditmemo()->getAllItems();
                                   class="admin__control-textarea"
                                   name="creditmemo[comment_text]"
                                   rows="3"
-                                  cols="5"><?= $block->escapeHtml($block->getCreditmemo()->getCommentText()) ?>
-                        </textarea>
+                                  cols="5"><?= $block->escapeHtml($commentText) ?></textarea>
                     </div>
                 </div>
             </div>
@@ -141,8 +142,7 @@ $_items = $block->getCreditmemo()->getAllItems();
     </div>
 </section>
 
-<?php $scriptString = <<<script
-
+<script>
 require(['jquery'], function(jQuery){
 
 //<![CDATA[
@@ -220,6 +220,4 @@ window.checkButtonsRelation = checkButtonsRelation;
 //]]>
 
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

@@ -72,6 +72,9 @@ final class ErrorsManager
         return empty($this->errors);
     }
 
+    /**
+     * @param Error $error
+     */
     public function report(Error $error)
     {
         $this->errors[] = $error;

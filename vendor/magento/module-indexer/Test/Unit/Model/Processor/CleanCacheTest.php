@@ -3,54 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model\Processor;
 
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Indexer\ActionInterface;
-use Magento\Framework\Indexer\CacheContext;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Indexer\Model\Processor;
 use Magento\Indexer\Model\Processor\CleanCache;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CleanCacheTest extends TestCase
+class CleanCacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tested plugin
      *
-     * @var CleanCache
+     * @var \Magento\Indexer\Model\Processor\CleanCache
      */
     protected $plugin;
 
     /**
      * Mock for context
      *
-     * @var CacheContext|MockObject
+     * @var \Magento\Framework\Indexer\CacheContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
      * Subject mock
      *
-     * @var ActionInterface|MockObject
+     * @var \Magento\Framework\Indexer\ActionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
     /**
      * Event manager mock
      *
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Event\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
      * Cache mock
      *
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\App\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheMock;
 
@@ -62,13 +53,13 @@ class CleanCacheTest extends TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->subjectMock = $this->createMock(Processor::class);
-        $this->contextMock = $this->createMock(CacheContext::class);
-        $this->eventManagerMock = $this->createMock(Manager::class);
-        $this->cacheMock = $this->getMockForAbstractClass(CacheInterface::class);
+        $this->subjectMock = $this->createMock(\Magento\Indexer\Model\Processor::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\Indexer\CacheContext::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\Manager::class);
+        $this->cacheMock = $this->createMock(\Magento\Framework\App\CacheInterface::class);
         $this->plugin = new CleanCache(
             $this->contextMock,
             $this->eventManagerMock
@@ -91,8 +82,8 @@ class CleanCacheTest extends TestCase
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')
             ->with(
-                'clean_cache_after_reindex',
-                ['object' => $this->contextMock]
+                $this->equalTo('clean_cache_after_reindex'),
+                $this->equalTo(['object' => $this->contextMock])
             );
 
         $this->contextMock->expects($this->atLeastOnce())

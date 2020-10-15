@@ -3,39 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model\Method\Specification;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Payment\Model\Method\Specification\Composite;
-use Magento\Payment\Model\Method\Specification\Factory;
-use Magento\Payment\Model\Method\SpecificationInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CompositeTest extends TestCase
+/**
+ * Composite Test
+ */
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Payment\Model\Method\Specification\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $factoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->factoryMock = $this->createMock(Factory::class);
+        $this->factoryMock = $this->createMock(\Magento\Payment\Model\Method\Specification\Factory::class);
     }
 
     /**
      * @param array $specifications
-     * @return Composite
+     * @return \Magento\Payment\Model\Method\Specification\Composite
      */
     protected function createComposite($specifications = [])
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         return $objectManager->getObject(
-            Composite::class,
+            \Magento\Payment\Model\Method\Specification\Composite::class,
             ['factory' => $this->factoryMock, 'specifications' => $specifications]
         );
     }
@@ -50,26 +44,26 @@ class CompositeTest extends TestCase
     {
         $method = 'method-name';
 
-        $specificationFirst = $this->getMockForAbstractClass(SpecificationInterface::class);
+        $specificationFirst = $this->createMock(\Magento\Payment\Model\Method\SpecificationInterface::class);
         $specificationFirst->expects(
             $this->once()
         )->method(
             'isSatisfiedBy'
         )->with(
             $method
-        )->willReturn(
-            $firstSpecificationResult
+        )->will(
+            $this->returnValue($firstSpecificationResult)
         );
 
-        $specificationSecond = $this->getMockForAbstractClass(SpecificationInterface::class);
+        $specificationSecond = $this->createMock(\Magento\Payment\Model\Method\SpecificationInterface::class);
         $specificationSecond->expects(
             $this->any()
         )->method(
             'isSatisfiedBy'
         )->with(
             $method
-        )->willReturn(
-            $secondSpecificationResult
+        )->will(
+            $this->returnValue($secondSpecificationResult)
         );
 
         $this->factoryMock->expects(
@@ -78,8 +72,8 @@ class CompositeTest extends TestCase
             'create'
         )->with(
             'SpecificationFirst'
-        )->willReturn(
-            $specificationFirst
+        )->will(
+            $this->returnValue($specificationFirst)
         );
         $this->factoryMock->expects(
             $this->at(1)
@@ -87,8 +81,8 @@ class CompositeTest extends TestCase
             'create'
         )->with(
             'SpecificationSecond'
-        )->willReturn(
-            $specificationSecond
+        )->will(
+            $this->returnValue($specificationSecond)
         );
 
         $composite = $this->createComposite(['SpecificationFirst', 'SpecificationSecond']);

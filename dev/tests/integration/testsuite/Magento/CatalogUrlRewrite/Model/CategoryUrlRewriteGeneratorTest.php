@@ -31,7 +31,7 @@ class CategoryUrlRewriteGeneratorTest extends TestCase
     /** @var ObjectManagerInterface */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
     }

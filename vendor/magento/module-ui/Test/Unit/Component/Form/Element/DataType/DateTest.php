@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form\Element\DataType;
 
 use Magento\Framework\Locale\ResolverInterface;
@@ -13,45 +11,37 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\Context;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Component\Form\Element\DataType\Date;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DateTest extends TestCase
+class DateTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Context|MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $contextMock;
 
-    /** @var TimezoneInterface|MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $localeDateMock;
 
-    /** @var ResolverInterface|MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $localeResolverMock;
 
-    /** @var Date  */
+    /** @var \Magento\Ui\Component\Form\Element\DataType\Date  */
     private $date;
 
-    /** @var Processor|MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $processorMock;
 
-    /** @var  ObjectManager */
+    /** @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManagerHelper;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->contextMock = $this->createMock(Context::class);
-        $this->localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->localeResolverMock = $this->getMockForAbstractClass(ResolverInterface::class);
+        $this->localeDateMock = $this->createMock(TimezoneInterface::class);
+        $this->localeResolverMock = $this->createMock(ResolverInterface::class);
         $this->objectManagerHelper = new ObjectManager($this);
         $this->processorMock = $this->createMock(Processor::class);
-        $this->contextMock->method('getProcessor')->willReturn($this->processorMock);
+        $this->contextMock->expects($this->atLeastOnce())->method('getProcessor')->willReturn($this->processorMock);
     }
 
-    /**
-     * Test to Prepare component configuration with Time offset
-     */
     public function testPrepareWithTimeOffset()
     {
         $this->date = new Date(
@@ -75,16 +65,13 @@ class DateTest extends TestCase
         $this->date->prepare();
 
         $config = $this->date->getConfig();
-        $this->assertIsArray($config);
+        $this->assertTrue(is_array($config));
 
         $this->assertArrayHasKey('options', $config);
         $this->assertArrayHasKey('dateFormat', $config['options']);
         $this->assertEquals($localeDateFormat, $config['options']['dateFormat']);
     }
 
-    /**
-     * Test to Prepare component configuration without Time offset
-     */
     public function testPrepareWithoutTimeOffset()
     {
         $defaultDateFormat = 'MM/dd/y';
@@ -116,7 +103,7 @@ class DateTest extends TestCase
         $this->date->prepare();
 
         $config = $this->date->getConfig();
-        $this->assertIsArray($config);
+        $this->assertTrue(is_array($config));
 
         $this->assertArrayHasKey('options', $config);
         $this->assertArrayHasKey('dateFormat', $config['options']);
@@ -142,44 +129,5 @@ class DateTest extends TestCase
         $configArray = $this->date->getData('config');
         $this->assertEquals('America/Chicago', $configArray['storeTimeZone']);
         $this->assertEquals('de-DE', $configArray['options']['storeLocale']);
-    }
-
-    /**
-     * Test to Convert given date to default (UTC) timezone
-     *
-     * @param string $dateStr
-     * @param bool $setUtcTimeZone
-     * @param string $convertedDate
-     * @dataProvider convertDatetimeDataProvider
-     */
-    public function testConvertDatetime(string $dateStr, bool $setUtcTimeZone, string $convertedDate)
-    {
-        $this->localeDateMock->method('getConfigTimezone')
-            ->willReturn('America/Los_Angeles');
-
-        $this->date = $this->objectManagerHelper->getObject(
-            Date::class,
-            [
-                'localeDate' => $this->localeDateMock,
-            ]
-        );
-
-        $this->assertEquals(
-            $convertedDate,
-            $this->date->convertDatetime($dateStr, $setUtcTimeZone)->format('Y-m-d H:i:s'),
-            "The date value wasn't converted"
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function convertDatetimeDataProvider(): array
-    {
-        return [
-            ['2019-09-30T12:32:00.000Z', false, '2019-09-30 12:32:00'],
-            ['2019-09-30T12:32:00.000', false, '2019-09-30 12:32:00'],
-            ['2019-09-30T12:32:00.000Z', true, '2019-09-30 19:32:00'],
-        ];
     }
 }

@@ -53,7 +53,7 @@ class OrderCustomerDelegateInterfaceTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->delegate = Bootstrap::getObjectManager()->get(
             OrderCustomerDelegateInterface::class

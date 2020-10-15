@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Stdlib\Test\Unit;
 
-use Magento\Framework\Stdlib\BooleanUtils;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Stdlib\BooleanUtils;
 
-class BooleanUtilsTest extends TestCase
+class BooleanUtilsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BooleanUtils
      */
     protected $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->object = new BooleanUtils();
     }
@@ -62,11 +59,11 @@ class BooleanUtilsTest extends TestCase
      * @param mixed $input
      *
      * @dataProvider toBooleanExceptionDataProvider
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Boolean value is expected
      */
     public function testToBooleanException($input)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Boolean value is expected');
         $this->object->toBoolean($input);
     }
 

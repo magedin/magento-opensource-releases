@@ -59,7 +59,8 @@ class Viewed extends AbstractProduct implements IdentityInterface
     }
 
     /**
-     * Prepare to html check has viewed products
+     * Prepare to html
+     * check has viewed products
      *
      * @return string
      */
@@ -76,10 +77,10 @@ class Viewed extends AbstractProduct implements IdentityInterface
      */
     public function getIdentities()
     {
-        $identities = [[]];
+        $identities = [];
         foreach ($this->getItemsCollection() as $item) {
-            $identities[] = $item->getIdentities();
+            $identities = array_merge($identities, $item->getIdentities());
         }
-        return array_merge(...$identities);
+        return $identities;
     }
 }

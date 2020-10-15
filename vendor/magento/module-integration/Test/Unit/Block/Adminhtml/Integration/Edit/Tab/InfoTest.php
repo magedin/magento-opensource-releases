@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Block\Adminhtml\Integration\Edit\Tab;
-
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Integration\Block\Adminhtml\Integration\Edit\Tab\Info;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Integration\Block\Adminhtml\Integration\Edit\Tab\Info
  */
-class InfoTest extends TestCase
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
@@ -26,12 +21,12 @@ class InfoTest extends TestCase
      */
     private $infoBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->infoBlock = $this->objectManager->getObject(
-            Info::class
+            \Magento\Integration\Block\Adminhtml\Integration\Edit\Tab\Info::class
         );
     }
 

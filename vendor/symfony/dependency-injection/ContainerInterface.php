@@ -32,8 +32,11 @@ interface ContainerInterface extends PsrContainerInterface
 
     /**
      * Sets a service.
+     *
+     * @param string      $id      The service identifier
+     * @param object|null $service The service instance
      */
-    public function set(string $id, ?object $service);
+    public function set($id, $service);
 
     /**
      * Gets a service.
@@ -48,7 +51,7 @@ interface ContainerInterface extends PsrContainerInterface
      *
      * @see Reference
      */
-    public function get($id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE);
+    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE);
 
     /**
      * Returns true if the given service is defined.
@@ -62,9 +65,11 @@ interface ContainerInterface extends PsrContainerInterface
     /**
      * Check for whether or not a service has been initialized.
      *
+     * @param string $id
+     *
      * @return bool true if the service has been initialized, false otherwise
      */
-    public function initialized(string $id);
+    public function initialized($id);
 
     /**
      * Gets a parameter.
@@ -75,7 +80,7 @@ interface ContainerInterface extends PsrContainerInterface
      *
      * @throws InvalidArgumentException if the parameter is not defined
      */
-    public function getParameter(string $name);
+    public function getParameter($name);
 
     /**
      * Checks if a parameter exists.
@@ -84,7 +89,7 @@ interface ContainerInterface extends PsrContainerInterface
      *
      * @return bool The presence of parameter in container
      */
-    public function hasParameter(string $name);
+    public function hasParameter($name);
 
     /**
      * Sets a parameter.
@@ -92,5 +97,5 @@ interface ContainerInterface extends PsrContainerInterface
      * @param string $name  The parameter name
      * @param mixed  $value The parameter value
      */
-    public function setParameter(string $name, $value);
+    public function setParameter($name, $value);
 }

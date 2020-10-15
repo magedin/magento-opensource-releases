@@ -3,56 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GoogleOptimizer\Test\Unit\Helper;
 
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Data\Form\Element\Fieldset;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GoogleOptimizer\Helper\Form;
-use Magento\GoogleOptimizer\Model\Code;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Form
+     * @var \Magento\GoogleOptimizer\Helper\Form
      */
     protected $_helper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_formMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_fieldsetMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_experimentCodeMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_formMock = $this->getMockBuilder(\Magento\Framework\Data\Form::class)
-            ->addMethods(['setFieldNameSuffix'])
-            ->onlyMethods(['addFieldset'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_fieldsetMock = $this->createMock(Fieldset::class);
-        $this->_experimentCodeMock = $this->getMockBuilder(Code::class)
-            ->addMethods(['getExperimentScript', 'getCodeId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $context = $this->createMock(Context::class);
+        $this->_formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form::class,
+            ['setFieldNameSuffix', 'addFieldset']
+        );
+        $this->_fieldsetMock = $this->createMock(\Magento\Framework\Data\Form\Element\Fieldset::class);
+        $this->_experimentCodeMock = $this->createPartialMock(
+            \Magento\GoogleOptimizer\Model\Code::class,
+            ['getExperimentScript', 'getCodeId', '__wakeup']
+        );
+        $context = $this->createMock(\Magento\Framework\App\Helper\Context::class);
         $data = ['context' => $context];
-        $objectManagerHelper = new ObjectManager($this);
-        $this->_helper = $objectManagerHelper->getObject(Form::class, $data);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_helper = $objectManagerHelper->getObject(\Magento\GoogleOptimizer\Helper\Form::class, $data);
     }
 
     public function testAddFieldsWithExperimentCode()
@@ -63,15 +52,15 @@ class FormTest extends TestCase
             $this->once()
         )->method(
             'getExperimentScript'
-        )->willReturn(
-            $experimentCode
+        )->will(
+            $this->returnValue($experimentCode)
         );
         $this->_experimentCodeMock->expects(
             $this->once()
         )->method(
             'getCodeId'
-        )->willReturn(
-            $experimentCodeId
+        )->will(
+            $this->returnValue($experimentCodeId)
         );
         $this->_prepareFormMock($experimentCode, $experimentCodeId);
 
@@ -100,8 +89,8 @@ class FormTest extends TestCase
         )->with(
             'googleoptimizer_fields',
             ['legend' => 'Google Analytics Content Experiments Code']
-        )->willReturn(
-            $this->_fieldsetMock
+        )->will(
+            $this->returnValue($this->_fieldsetMock)
         );
 
         $this->_fieldsetMock->expects(

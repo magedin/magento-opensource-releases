@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit\Declaration\Converter;
 
-use Magento\Framework\Module\Declaration\Converter\Dom;
-use PHPUnit\Framework\TestCase;
-
-class DomTest extends TestCase
+class DomTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Dom
+     * @var \Magento\Framework\Module\Declaration\Converter\Dom
      */
     protected $_converter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_converter = new Dom();
+        $this->_converter = new \Magento\Framework\Module\Declaration\Converter\Dom();
     }
 
     public function testConvertWithValidDom()
@@ -34,10 +29,10 @@ class DomTest extends TestCase
     /**
      * @param string $xmlString
      * @dataProvider convertWithInvalidDomDataProvider
+     * @expectedException \Exception
      */
     public function testConvertWithInvalidDom($xmlString)
     {
-        $this->expectException('Exception');
         $dom = new \DOMDocument();
         try {
             $dom->loadXML($xmlString);

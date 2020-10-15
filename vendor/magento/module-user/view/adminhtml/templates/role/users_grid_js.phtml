@@ -3,11 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-<?php $scriptString = <<<script
-
+<script>
 require([
     'jquery',
     'Magento_Ui/js/modal/confirm',
@@ -15,14 +12,9 @@ require([
     'mage/adminhtml/grid',
     'prototype'
 ], function(jQuery, confirm, _){
-
-script;
-
-$myBlock = $block->getLayout()->getBlock('roleUsersGrid');
-if (is_object($myBlock) && $myBlock->getJsObjectName()):
-    $scriptString .= <<<script
-
-    var checkBoxes = \$H({$myBlock->getUsers(true)});
+<?php $myBlock = $block->getLayout()->getBlock('roleUsersGrid'); ?>
+<?php if (is_object($myBlock) && $myBlock->getJsObjectName()) : ?>
+    var checkBoxes = $H(<?= /* @noEscape */ $myBlock->getUsers(true) ?>);
     var warning = false;
     if (checkBoxes.size() > 0) {
         warning = true;
@@ -51,8 +43,7 @@ if (is_object($myBlock) && $myBlock->getJsObjectName()):
 
                 if (checked) {
                     confirm({
-                        content: "{$myBlock->escapeJs(__('Warning!\r\nThis action will remove this user from already ' .
-                                                         'assigned role\r\nAre you sure?'))}",
+                        content: "<?= $myBlock->escapeHtml(__('Warning!\r\nThis action will remove this user from already assigned role\r\nAre you sure?')) ?>",
                         actions: {
                             confirm: function () {
                                 checkbox[0].checked = false;
@@ -101,9 +92,7 @@ if (is_object($myBlock) && $myBlock->getJsObjectName()):
         if (!allCheckbox.checked && _.size(checkBoxes._object) > 0) {
             allCheckbox.checked = true;
             confirm({
-                content: "{$myBlock->escapeJs(
-                    __('Warning!\r\nThis action will remove those users from already assigned roles\r\nAre you sure?')
-                    )}",
+                content: "<?= $myBlock->escapeHtml(__('Warning!\r\nThis action will remove those users from already assigned roles\r\nAre you sure?')) ?>",
                 actions: {
                     confirm: function () {
                         allCheckbox.checked = false;
@@ -116,25 +105,25 @@ if (is_object($myBlock) && $myBlock->getJsObjectName()):
         }
     }
     function markCheckboxes(value) {
-        {$myBlock->escapeJs($myBlock->getJsObjectName())}.rows.each(function(row)
+        <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.rows.each(function(row)
         {
             $(row).getElementsByClassName('checkbox')[0].checked = value;
-            roleUsersRowInit({$myBlock->escapeJs($myBlock->getJsObjectName())}, row);
+            roleUsersRowInit(<?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>, row);
         });
     }
     function onLoad() {
-        if (typeof {$myBlock->escapeJs($myBlock->getJsObjectName())} !== 'undefined') {
-            {$myBlock->escapeJs($myBlock->getJsObjectName())}.
+        if (typeof <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?> !== 'undefined') {
+            <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.
             rowClickCallback = roleUsersRowClick;
-            {$myBlock->escapeJs($myBlock->getJsObjectName())}.
+            <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.
             initRowCallback = roleUsersRowInit;
-            {$myBlock->escapeJs($myBlock->getJsObjectName())}.
+            <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.
             checkboxCheckCallback = registerUserRole;
-            {$myBlock->escapeJs($myBlock->getJsObjectName())}.
+            <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.
             checkCheckboxes = massSelectUsers;
-            {$myBlock->escapeJs($myBlock->getJsObjectName())}.
+            <?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>.
             rows.each(function (row) {
-                roleUsersRowInit({$myBlock->escapeJs($myBlock->getJsObjectName())}, row)
+                roleUsersRowInit(<?= $myBlock->escapeJs($myBlock->getJsObjectName()) ?>, row)
             });
             $('in_role_user_old').value = $('in_role_user').value;
         } else {
@@ -142,13 +131,7 @@ if (is_object($myBlock) && $myBlock->getJsObjectName()):
         }
     }
     onLoad();
-
-script;
-endif;
-$scriptString .= <<<script
+<?php endif; ?>
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

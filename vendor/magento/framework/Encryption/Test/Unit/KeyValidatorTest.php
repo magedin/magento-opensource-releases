@@ -10,16 +10,15 @@ namespace Magento\Framework\Encryption\Test\Unit;
 
 use Magento\Framework\Encryption\KeyValidator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class KeyValidatorTest extends TestCase
+class KeyValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var KeyValidator
      */
     private $keyValidator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->keyValidator = (new ObjectManager($this))->getObject(KeyValidator::class);
     }

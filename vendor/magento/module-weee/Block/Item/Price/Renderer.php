@@ -40,7 +40,6 @@ class Renderer extends \Magento\Tax\Block\Item\Price\Renderer
         array $data = []
     ) {
         $this->weeeHelper = $weeeHelper;
-        $data['weeeHelper'] = $this->weeeHelper;
         parent::__construct($context, $taxHelper, $priceCurrency, $data);
         $this->_isScopePrivate = true;
     }

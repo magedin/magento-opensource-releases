@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Request;
 
-use Magento\Framework\DataObject;
 use Magento\Framework\Math\Random;
+use Magento\Framework\DataObject;
 use Magento\Framework\UrlInterface;
 use Magento\Paypal\Model\Payflow\Service\Request\SecureToken;
 use Magento\Paypal\Model\Payflow\Transparent;
 use Magento\Paypal\Model\PayflowConfig;
 use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * Test class for \Magento\Paypal\Model\Payflow\Service\Request\SecureToken
  */
-class SecureTokenTest extends TestCase
+class SecureTokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SecureToken
@@ -45,11 +42,11 @@ class SecureTokenTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->url = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->mathRandom = $this->createMock(Random::class);
-        $this->transparent = $this->createMock(Transparent::class);
+        $this->url = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->mathRandom = $this->createMock(\Magento\Framework\Math\Random::class);
+        $this->transparent = $this->createMock(\Magento\Paypal\Model\Payflow\Transparent::class);
 
         $this->model = new SecureToken(
             $this->url,
@@ -88,7 +85,7 @@ class SecureTokenTest extends TestCase
             ->method('fillCustomerContacts');
         $this->transparent->expects($this->once())
             ->method('getConfig')
-            ->willReturn($this->createMock(PayflowConfig::class));
+            ->willReturn($this->createMock(\Magento\Paypal\Model\PayflowConfig::class));
         $this->transparent->expects($this->once())
             ->method('postRequest')
             ->willReturn($response);

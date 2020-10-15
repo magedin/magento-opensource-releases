@@ -19,7 +19,7 @@ class AdminConfigTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

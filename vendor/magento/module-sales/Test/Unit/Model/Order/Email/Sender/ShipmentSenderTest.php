@@ -3,24 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Sender;
 
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Address;
-use Magento\Sales\Model\Order\Email\Container\ShipmentIdentity;
 use Magento\Sales\Model\Order\Email\Sender\ShipmentSender;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Sales\Model\ResourceModel\EntityAbstract;
-use Magento\Sales\Model\ResourceModel\Order\Shipment as ShipmentResource;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * Test for Magento\Sales\Model\Order\Email\Sender\ShipmentSender class
- *
- * @deprecated since ShipmentSender is deprecated
- * @see \Magento\Sales\Model\Order\Email\Sender\ShipmentSender
+ * Test for Magento\Sales\Model\Order\Email\Sender\ShipmentSender class.
  */
 class ShipmentSenderTest extends AbstractSenderTest
 {
@@ -29,40 +17,48 @@ class ShipmentSenderTest extends AbstractSenderTest
     private const ORDER_ID = 1;
 
     /**
-     * @var ShipmentSender
+     * @var \Magento\Sales\Model\Order\Email\Sender\ShipmentSender
      */
     protected $sender;
 
     /**
-     * @var Shipment|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipmentMock;
 
     /**
-     * @var EntityAbstract|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\EntityAbstract|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shipmentResourceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stepMockSetup();
 
         $this->shipmentResourceMock = $this->createPartialMock(
-            ShipmentResource::class,
+            \Magento\Sales\Model\ResourceModel\Order\Shipment::class,
             ['saveAttribute']
         );
 
-        $this->shipmentMock = $this->getMockBuilder(Shipment::class)
-            ->addMethods(['setSendEmail', 'getCustomerNoteNotify', 'getCustomerNote'])
-            ->onlyMethods(['getStore', 'getId', 'getOrder', 'setEmailSent'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->shipmentMock = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Shipment::class,
+            [
+                'getStore',
+                'getId',
+                '__wakeup',
+                'getOrder',
+                'setSendEmail',
+                'setEmailSent',
+                'getCustomerNoteNotify',
+                'getCustomerNote'
+            ]
+        );
         $this->shipmentMock->expects($this->any())
             ->method('getStore')
-            ->willReturn($this->storeMock);
+            ->will($this->returnValue($this->storeMock));
         $this->shipmentMock->expects($this->any())
             ->method('getOrder')
-            ->willReturn($this->orderMock);
+            ->will($this->returnValue($this->orderMock));
 
         $this->shipmentMock->method('getId')
             ->willReturn(self::SHIPMENT_ID);
@@ -70,12 +66,12 @@ class ShipmentSenderTest extends AbstractSenderTest
             ->willReturn(self::ORDER_ID);
 
         $this->identityContainerMock = $this->createPartialMock(
-            ShipmentIdentity::class,
+            \Magento\Sales\Model\Order\Email\Container\ShipmentIdentity::class,
             ['getStore', 'isEnabled', 'getConfigValue', 'getTemplateId', 'getGuestTemplateId', 'getCopyMethod']
         );
         $this->identityContainerMock->expects($this->any())
             ->method('getStore')
-            ->willReturn($this->storeMock);
+            ->will($this->returnValue($this->storeMock));
 
         $this->sender = new ShipmentSender(
             $this->templateContainerMock,
@@ -118,7 +114,7 @@ class ShipmentSenderTest extends AbstractSenderTest
             ->willReturn($configValue);
 
         if (!$configValue || $forceSyncMode) {
-            $addressMock = $this->createMock(Address::class);
+            $addressMock = $this->createMock(\Magento\Sales\Model\Order\Address::class);
 
             $this->addressRenderer->expects($this->any())
                 ->method('format')
@@ -256,7 +252,7 @@ class ShipmentSenderTest extends AbstractSenderTest
     public function testSendVirtualOrder($isVirtualOrder, $formatCallCount, $expectedShippingAddress)
     {
         $address = 'address_test';
-        $this->orderMock->setData(OrderInterface::IS_VIRTUAL, $isVirtualOrder);
+        $this->orderMock->setData(\Magento\Sales\Api\Data\OrderInterface::IS_VIRTUAL, $isVirtualOrder);
         $customerName = 'Test Customer';
         $frontendStatusLabel = 'Complete';
         $isNotVirtual = false;
@@ -270,7 +266,7 @@ class ShipmentSenderTest extends AbstractSenderTest
             ->with('sales_email/general/async_sending')
             ->willReturn(false);
 
-        $addressMock = $this->createMock(Address::class);
+        $addressMock = $this->createMock(\Magento\Sales\Model\Order\Address::class);
 
         $this->addressRenderer->expects($this->exactly($formatCallCount))
             ->method('format')

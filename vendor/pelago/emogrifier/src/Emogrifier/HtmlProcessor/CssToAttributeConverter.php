@@ -10,6 +10,8 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  *
  * To trigger the conversion, call the convertCssToVisualAttributes method.
  *
+ * @internal This class currently is a new technology preview, and its API is still in flux. Don't use it in production.
+ *
  * @author Oliver Klee <github@oliverklee.de>
  */
 class CssToAttributeConverter extends AbstractHtmlProcessor
@@ -99,7 +101,9 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         }
 
         $properties = [];
-        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
+        $declarations = \preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
+
+        foreach ($declarations as $declaration) {
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
@@ -170,12 +174,13 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         $mapping = $this->cssToHtmlMap[$property];
         $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, $mapping['nodes'], true);
         $valuesMatch = !isset($mapping['values']) || \in_array($value, $mapping['values'], true);
-        $canBeMapped = $nodesMatch && $valuesMatch;
-        if ($canBeMapped) {
-            $node->setAttribute($mapping['attribute'], $value);
+        if (!$nodesMatch || !$valuesMatch) {
+            return false;
         }
 
-        return $canBeMapped;
+        $node->setAttribute($mapping['attribute'], $value);
+
+        return true;
     }
 
     /**
@@ -217,14 +222,12 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     private function mapBackgroundProperty(\DOMElement $node, $value)
     {
         // parse out the color, if any
-        $styles = \explode(' ', $value, 2);
+        $styles = \explode(' ', $value);
         $first = $styles[0];
-        if (\is_numeric($first[0]) || \strncmp($first, 'url', 3) === 0) {
-            return;
+        if (!\is_numeric($first[0]) && \strpos($first, 'url') !== 0) {
+            // as this is not a position or image, assume it's a color
+            $node->setAttribute('bgcolor', $first);
         }
-
-        // as this is not a position or image, assume it's a color
-        $node->setAttribute('bgcolor', $first);
     }
 
     /**
@@ -302,7 +305,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     private function parseCssShorthandValue($value)
     {
-        /** @var string[] $values */
         $values = \preg_split('/\\s+/', $value);
 
         $css = [];

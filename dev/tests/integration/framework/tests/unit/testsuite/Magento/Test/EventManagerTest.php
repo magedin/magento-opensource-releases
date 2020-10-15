@@ -17,16 +17,16 @@ class EventManagerTest extends \PHPUnit\Framework\TestCase
     protected $_eventManager;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_subscriberOne;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_subscriberTwo;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_subscriberOne = $this->createPartialMock(\stdClass::class, ['testEvent']);
         $this->_subscriberTwo = $this->createPartialMock(\stdClass::class, ['testEvent']);
@@ -46,11 +46,11 @@ class EventManagerTest extends \PHPUnit\Framework\TestCase
         $callback = function () use (&$actualSubscribers) {
             $actualSubscribers[] = 'subscriberOne';
         };
-        $this->_subscriberOne->expects($this->once())->method('testEvent')->willReturnCallback($callback);
+        $this->_subscriberOne->expects($this->once())->method('testEvent')->will($this->returnCallback($callback));
         $callback = function () use (&$actualSubscribers) {
             $actualSubscribers[] = 'subscriberTwo';
         };
-        $this->_subscriberTwo->expects($this->once())->method('testEvent')->willReturnCallback($callback);
+        $this->_subscriberTwo->expects($this->once())->method('testEvent')->will($this->returnCallback($callback));
         $this->_eventManager->fireEvent('testEvent', [], $reverseOrder);
         $this->assertEquals($expectedSubscribers, $actualSubscribers);
     }

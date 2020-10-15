@@ -3,20 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit;
 
-use Magento\Framework\Event;
+use \Magento\Framework\Event;
+
 use Magento\Framework\Event\Observer;
-
 use Magento\Framework\Event\Observer\Collection;
-use PHPUnit\Framework\TestCase;
 
-class EventTest extends TestCase
+/**
+ * Class Event
+ *
+ * @package Magento\Framework
+ */
+class EventTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Event
+     * @var \Magento\Framework\Event
      */
     protected $event;
 
@@ -30,7 +32,7 @@ class EventTest extends TestCase
      */
     protected $observer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $data = [
             'name' => 'ObserverName',
@@ -42,7 +44,7 @@ class EventTest extends TestCase
         $this->observers->addObserver($this->observer);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->event);
     }
@@ -70,14 +72,14 @@ class EventTest extends TestCase
             'name' => 'ObserverName',
         ];
         $this->event->addObserver($this->observer);
-        $expected = Collection::class;
+        $expected = \Magento\Framework\Event\Observer\Collection::class;
         $actual = $this->event->getObservers()->removeObserverByName($data['name']);
         $this->assertInstanceOf($expected, $actual);
     }
 
     public function testDispatch()
     {
-        $this->assertInstanceOf(Event::class, $this->event->dispatch());
+        $this->assertInstanceOf(\Magento\Framework\Event::class, $this->event->dispatch());
     }
 
     public function testGetName()

@@ -76,7 +76,6 @@ class ResetButton extends Field
             [
                 'actionName' => 'reset',
                 'targetName' => '${ $.name }',
-                '__disableTmpl' => ['targetName' => false],
                 'params'     => [
                     json_encode($this->getRobotsDefaultCustomInstructions())
                 ]

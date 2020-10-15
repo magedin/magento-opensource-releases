@@ -3,65 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Adminhtml\Edit;
 
-use Magento\Backend\Block\Widget\Context;
-use Magento\Customer\Block\Adminhtml\Edit\UnlockButton;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Framework\Phrase;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\TestCase;
 
-class UnlockButtonTest extends TestCase
+/**
+ * Class UnlockButtonTest
+ * @package Magento\Customer\Block\Adminhtml\Edit
+ */
+class UnlockButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerRegistry
+     * @var \Magento\Customer\Model\CustomerRegistry
      */
     protected $customerRegistryMock;
 
     /**
-     * @var  Context
+     * @var  \Magento\Backend\Block\Widget\Context
      */
     protected $contextMock;
 
     /**
-     * @var Customer
+     * @var \Magento\Customer\Model\Customer
      */
     protected $customerModelMock;
 
     /**
      * Url Builder
      *
-     * @var UrlInterface
+     * @var \Magento\Framework\UrlInterface
      */
     protected $urlBuilderMock;
 
     /**
-     * @var Registry
+     * @var \Magento\Framework\Registry
      */
     protected $registryMock;
 
     /**
-     * @var UnlockButton
+     * @var \Magento\Customer\Block\Adminhtml\Edit\UnlockButton
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createMock(Context::class);
+        $this->contextMock = $this->createMock(\Magento\Backend\Block\Widget\Context::class);
         $this->customerRegistryMock = $this->createPartialMock(
-            CustomerRegistry::class,
+            \Magento\Customer\Model\CustomerRegistry::class,
             ['retrieve']
         );
-        $this->customerModelMock = $this->createMock(Customer::class);
-        $this->registryMock = $this->createPartialMock(Registry::class, ['registry']);
+        $this->customerModelMock = $this->createMock(\Magento\Customer\Model\Customer::class);
+        $this->registryMock = $this->createPartialMock(\Magento\Framework\Registry::class, ['registry']);
 
-        $this->urlBuilderMock = $this->getMockBuilder(UrlInterface::class)
+        $this->urlBuilderMock = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->setMethods(['getUrl'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -69,7 +63,7 @@ class UnlockButtonTest extends TestCase
         $objectManagerHelper = new ObjectManagerHelper($this);
 
         $this->block = $objectManagerHelper->getObject(
-            UnlockButton::class,
+            \Magento\Customer\Block\Adminhtml\Edit\UnlockButton::class,
             [
                 'context' => $this->contextMock,
                 'customerRegistry' => $this->customerRegistryMock,
@@ -102,7 +96,7 @@ class UnlockButtonTest extends TestCase
         return [
             [
                 'result' => [
-                    'label' => new Phrase('Unlock'),
+                    'label' => new \Magento\Framework\Phrase('Unlock'),
                     'class' => 'unlock unlock-customer',
                     'on_click' => "location.href = 'http://website.com/';",
                     'sort_order' => 50,

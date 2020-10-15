@@ -7,25 +7,22 @@ declare(strict_types=1);
 
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier\Data;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Downloadable\Helper\File as DownloadableFile;
-use Magento\Downloadable\Model\Product\Type;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Samples;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Samples;
+use \Magento\Framework\Escaper;
+use Magento\Downloadable\Model\Product\Type;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Downloadable\Helper\File as DownloadableFile;
 use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
  * Test class to cover Sample Modifier
  *
  * Class \Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier\Data\SampleTest
  */
-class SamplesTest extends TestCase
+class SamplesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -33,32 +30,32 @@ class SamplesTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $locatorMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $escaperMock;
 
     /**
-     * @var DownloadableFile|MockObject
+     * @var DownloadableFile|\PHPUnit_Framework_MockObject_MockObject
      */
     private $downloadableFileMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productMock;
 
@@ -70,17 +67,17 @@ class SamplesTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->productMock = $this->getMockBuilder(ProductInterface::class)
             ->setMethods(['getSamplesTitle', 'getId', 'getTypeId'])
             ->getMockForAbstractClass();
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->locatorMock = $this->createMock(LocatorInterface::class);
+        $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
         $this->escaperMock = $this->createMock(Escaper::class);
         $this->downloadableFileMock = $this->createMock(DownloadableFile::class);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilderMock = $this->createMock(UrlInterface::class);
         $this->samples = $this->objectManagerHelper->getObject(
             Samples::class,
             [
@@ -98,8 +95,8 @@ class SamplesTest extends TestCase
      *
      * @param int|null $id
      * @param string $typeId
-     * @param InvokedCount $expectedGetTitle
-     * @param InvokedCount $expectedGetValue
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $expectedGetTitle
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $expectedGetValue
      * @return void
      * @dataProvider getSamplesTitleDataProvider
      */

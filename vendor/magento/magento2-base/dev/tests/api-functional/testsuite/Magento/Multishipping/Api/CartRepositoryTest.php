@@ -44,7 +44,7 @@ class CartRepositoryTest extends WebapiAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->filterBuilder = $this->objectManager->create(FilterBuilder::class);
@@ -55,7 +55,7 @@ class CartRepositoryTest extends WebapiAbstract
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         try {
             /** @var CartRepositoryInterface $quoteRepository */

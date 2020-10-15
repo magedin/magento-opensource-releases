@@ -54,7 +54,7 @@ class GherkinSnippets extends Command
 
         if (empty($snippets)) {
             $output->writeln("<notice> All Gherkin steps are defined. Exiting... </notice>");
-            return 0;
+            return;
         }
         $output->writeln("<comment> Snippets found in: </comment>");
         foreach ($features as $feature) {
@@ -68,6 +68,5 @@ class GherkinSnippets extends Command
         $output->writeln("<info> ----------------------------------------- </info>");
         $output->writeln(sprintf(' <bold>%d</bold> snippets proposed', count($snippets)));
         $output->writeln("<notice> Copy generated snippets to {$config['actor']} or a specific Gherkin context </notice>");
-        return 0;
     }
 }

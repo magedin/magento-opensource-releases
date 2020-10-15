@@ -4,20 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var QuoteFactory $quoteFactory */
-$quoteFactory = $objectManager->get(QuoteFactory::class);
-/** @var QuoteResource $quoteResource */
-$quoteResource = $objectManager->get(QuoteResource::class);
-$quote = $quoteFactory->create();
-$quoteResource->load($quote, 'test_order_1', 'reserved_order_id');
+require 'quote_with_address.php';
 
 /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
 $serializer = $objectManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
@@ -43,7 +30,7 @@ $quote->getPayment()
 $quote->collectTotals()->save();
 
 /** @var \Magento\Quote\Model\QuoteIdMask $quoteIdMask */
-$quoteIdMask = $objectManager
+$quoteIdMask = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Quote\Model\QuoteIdMaskFactory::class)
     ->create();
 $quoteIdMask->setQuoteId($quote->getId());

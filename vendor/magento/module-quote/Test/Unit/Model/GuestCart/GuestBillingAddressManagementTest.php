@@ -4,41 +4,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\BillingAddressManagementInterface;
-use Magento\Quote\Model\GuestCart\GuestBillingAddressManagement;
-use Magento\Quote\Model\Quote\Address;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestBillingAddressManagementTest extends TestCase
+class GuestBillingAddressManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GuestBillingAddressManagement
+     * @var \Magento\Quote\Model\GuestCart\GuestBillingAddressManagement
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $billingAddressManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $addressMock;
 
@@ -55,12 +46,12 @@ class GuestBillingAddressManagementTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->addressMock = $this->createMock(Address::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->addressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
         $this->billingAddressManagementMock = $this->createMock(
-            BillingAddressManagementInterface::class
+            \Magento\Quote\Api\BillingAddressManagementInterface::class
         );
 
         $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
@@ -73,7 +64,7 @@ class GuestBillingAddressManagementTest extends TestCase
         );
 
         $this->model = $objectManager->getObject(
-            GuestBillingAddressManagement::class,
+            \Magento\Quote\Model\GuestCart\GuestBillingAddressManagement::class,
             [
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,
                 'billingAddressManagement' => $this->billingAddressManagementMock

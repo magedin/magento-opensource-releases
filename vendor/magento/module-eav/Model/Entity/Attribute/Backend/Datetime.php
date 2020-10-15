@@ -7,8 +7,6 @@
 namespace Magento\Eav\Model\Entity\Attribute\Backend;
 
 /**
- * Prepare date for save in DB
- *
  * @api
  * @since 100.0.2
  */
@@ -63,8 +61,8 @@ class Datetime extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBacke
     /**
      * Prepare date for save in DB
      *
-     * String format is used in input fields (all date input fields need apply locale settings)
-     * int (Unix) format can be used in other parts of the code
+     * string format used from input fields (all date input fields need apply locale settings)
+     * int value can be declared in code (this meen whot we use valid date)
      *
      * @param string|int|\DateTimeInterface $date
      * @return string
@@ -74,7 +72,7 @@ class Datetime extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBacke
         if (empty($date)) {
             return null;
         }
-        // Unix timestamp given - simply instantiate date object
+        // unix timestamp given - simply instantiate date object
         if (is_scalar($date) && preg_match('/^[0-9]+$/', $date)) {
             $date = (new \DateTime())->setTimestamp($date);
         } elseif (!($date instanceof \DateTimeInterface)) {

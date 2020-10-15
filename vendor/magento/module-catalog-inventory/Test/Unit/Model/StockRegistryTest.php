@@ -3,44 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Model;
 
-use Magento\CatalogInventory\Api\StockItemCriteriaInterface;
-use Magento\CatalogInventory\Api\StockItemCriteriaInterfaceFactory;
-use Magento\CatalogInventory\Model\StockRegistry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StockRegistryTest extends TestCase
+/**
+ * Class StockRegistryTest
+ */
+class StockRegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StockRegistry
+     * @var \Magento\CatalogInventory\Model\StockRegistry
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $criteria;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->criteria = $this->getMockBuilder(StockItemCriteriaInterface::class)
+        $this->criteria = $this->getMockBuilder(\Magento\CatalogInventory\Api\StockItemCriteriaInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $criteriaFactory = $this->getMockBuilder(StockItemCriteriaInterfaceFactory::class)
+        $criteriaFactory = $this->getMockBuilder(\Magento\CatalogInventory\Api\StockItemCriteriaInterfaceFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $criteriaFactory->expects($this->once())->method('create')->willReturn($this->criteria);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            StockRegistry::class,
+            \Magento\CatalogInventory\Model\StockRegistry::class,
             [
                 'criteriaFactory' => $criteriaFactory
             ]

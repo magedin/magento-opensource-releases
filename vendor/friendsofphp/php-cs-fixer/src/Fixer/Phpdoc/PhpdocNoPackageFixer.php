@@ -48,17 +48,6 @@ class Baz
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoEmptyPhpdocFixer, PhpdocAlignFixer, PhpdocOrderFixer, PhpdocSeparationFixer, PhpdocTrimFixer.
-     * Must run after CommentToPhpdocFixer, PhpdocIndentFixer, PhpdocScalarFixer, PhpdocToCommentFixer, PhpdocTypesFixer.
-     */
-    public function getPriority()
-    {
-        return parent::getPriority();
-    }
-
-    /**
-     * {@inheritdoc}
      */
     protected function createProxyFixers()
     {

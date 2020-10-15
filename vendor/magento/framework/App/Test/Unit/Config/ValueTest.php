@@ -3,54 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Config;
 
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Config\Value;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValueTest extends TestCase
+class ValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Value
+     * @var \Magento\Framework\App\Config\Value
      */
     protected $model;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var TypeListInterface|MockObject
+     * @var \Magento\Framework\App\Cache\TypeListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $cacheTypeListMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->cacheTypeListMock = $this->getMockBuilder(TypeListInterface::class)
+        $this->configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->cacheTypeListMock = $this->getMockBuilder(\Magento\Framework\App\Cache\TypeListInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Value::class,
+            \Magento\Framework\App\Config\Value::class,
             [
                 'config' => $this->configMock,
                 'eventDispatcher' => $this->eventManagerMock,
@@ -71,8 +61,8 @@ class ValueTest extends TestCase
         )->with(
             null,
             'default'
-        )->willReturn(
-            'old_value'
+        )->will(
+            $this->returnValue('old_value')
         );
 
         $this->assertEquals('old_value', $this->model->getOldValue());
@@ -93,8 +83,8 @@ class ValueTest extends TestCase
         )->with(
             null,
             'default'
-        )->willReturn(
-            $oldValue
+        )->will(
+            $this->returnValue($oldValue)
         );
 
         $this->model->setValue($value);

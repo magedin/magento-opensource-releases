@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Control;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Component\Control\Link;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-class LinkTest extends TestCase
+/**
+ * Class LinkTest
+ */
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Link
@@ -28,18 +26,18 @@ class LinkTest extends TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->getMockBuilder(ContextInterface::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $context->expects($this->never())->method('getProcessor')->willReturn($processor);
 
         $this->objectManager = new ObjectManager($this);
         $this->link = $this->objectManager->getObject(
-            Link::class,
+            \Magento\Ui\Component\Control\Link::class,
             ['context' => $context]
         );
     }
@@ -51,6 +49,6 @@ class LinkTest extends TestCase
      */
     public function testGetComponentName()
     {
-        $this->assertSame(Link::NAME, $this->link->getComponentName());
+        $this->assertTrue($this->link->getComponentName() === Link::NAME);
     }
 }

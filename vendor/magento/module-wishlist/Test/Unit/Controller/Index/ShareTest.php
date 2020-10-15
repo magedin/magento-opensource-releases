@@ -3,50 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Wishlist\Test\Unit\Controller\Index;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Wishlist\Controller\Index\Share;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ShareTest extends TestCase
+class ShareTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Share
+     * @var \Magento\Wishlist\Controller\Index\Share
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerSessionMock = $this->createMock(Session::class);
-        $this->contextMock = $this->createMock(Context::class);
-        $this->resultFactoryMock = $this->createMock(ResultFactory::class);
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\App\Action\Context::class);
+        $this->resultFactoryMock = $this->createMock(\Magento\Framework\Controller\ResultFactory::class);
 
         $this->contextMock->expects($this->any())->method('getResultFactory')->willReturn($this->resultFactoryMock);
 
-        $this->model = new Share(
+        $this->model = new \Magento\Wishlist\Controller\Index\Share(
             $this->contextMock,
             $this->customerSessionMock
         );
@@ -54,7 +46,7 @@ class ShareTest extends TestCase
 
     public function testExecute()
     {
-        $resultMock = $this->getMockForAbstractClass(ResultInterface::class);
+        $resultMock = $this->createMock(\Magento\Framework\Controller\ResultInterface::class);
 
         $this->customerSessionMock->expects($this->once())->method('authenticate')
             ->willReturn(true);

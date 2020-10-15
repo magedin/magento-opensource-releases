@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Layout\Argument\Interpreter\Options;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Layout\Argument\Interpreter\Options;
 
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var InterpreterInterface|MockObject
+     * @var \Magento\Framework\Data\Argument\InterpreterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_interpreter;
 
@@ -31,22 +24,24 @@ class OptionsTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->_model = new Options($this->_objectManager);
     }
 
     public function testEvaluate()
     {
-        $modelClass = OptionSourceInterface::class;
+        $modelClass = \Magento\Framework\Data\OptionSourceInterface::class;
         $model = $this->getMockForAbstractClass($modelClass);
         $model->expects(
             $this->once()
         )->method(
             'toOptionArray'
-        )->willReturn(
-            ['value1' => 'label 1', 'value2' => 'label 2', ['value' => 'value3', 'label' => 'label 3']]
+        )->will(
+            $this->returnValue(
+                ['value1' => 'label 1', 'value2' => 'label 2', ['value' => 'value3', 'label' => 'label 3']]
+            )
         );
         $this->_objectManager->expects(
             $this->once()
@@ -54,8 +49,8 @@ class OptionsTest extends TestCase
             'get'
         )->with(
             $modelClass
-        )->willReturn(
-            $model
+        )->will(
+            $this->returnValue($model)
         );
         $input = ['model' => $modelClass];
         $expected = [

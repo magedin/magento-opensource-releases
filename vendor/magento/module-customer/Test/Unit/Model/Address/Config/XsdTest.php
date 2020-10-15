@@ -5,28 +5,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Address\Config;
 
-use Magento\Framework\Config\Dom;
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Config\ValidationStateInterface;
-use PHPUnit\Framework\TestCase;
-
-class XsdTest extends TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
      */
     protected $_schemaFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
         }
-        $urnResolver = new UrnResolver();
+        $urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
         $this->_schemaFile = $urnResolver->getRealPath('urn:magento:module:Magento_Customer:etc/address_formats.xsd');
     }
 
@@ -37,10 +30,10 @@ class XsdTest extends TestCase
      */
     public function testExemplarXml($fixtureXml, array $expectedErrors)
     {
-        $validationStateMock = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $validationStateMock->method('isValidationRequired')
             ->willReturn(true);
-        $dom = new Dom($fixtureXml, $validationStateMock, [], null, null, '%message%');
+        $dom = new \Magento\Framework\Config\Dom($fixtureXml, $validationStateMock, [], null, null, '%message%');
         $actualResult = $dom->validate($this->_schemaFile, $actualErrors);
         $this->assertEquals(empty($expectedErrors), $actualResult);
         $this->assertEquals($expectedErrors, $actualErrors);

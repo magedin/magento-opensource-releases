@@ -37,7 +37,7 @@ class ViewedTest extends \PHPUnit\Framework\TestCase
      */
     private $eventManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = BootstrapHelper::getObjectManager();
         $this->layout = $this->objectManager->get(LayoutInterface::class);

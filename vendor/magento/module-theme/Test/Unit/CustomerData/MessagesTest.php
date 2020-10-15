@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\CustomerData;
 
-use Magento\Framework\Message\Collection;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\View\Element\Message\InterpretationStrategyInterface;
 use Magento\Theme\CustomerData\Messages;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class MessagesTest extends TestCase
+class MessagesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManager;
 
     /**
-     * @var InterpretationStrategyInterface|MockObject
+     * @var InterpretationStrategyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $messageInterpretationStrategy;
 
@@ -32,12 +25,11 @@ class MessagesTest extends TestCase
      */
     protected $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
-            ->getMock();
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)->getMock();
         $this->messageInterpretationStrategy = $this->createMock(
-            InterpretationStrategyInterface::class
+            \Magento\Framework\View\Element\Message\InterpretationStrategyInterface::class
         );
         $this->object = new Messages($this->messageManager, $this->messageInterpretationStrategy);
     }
@@ -46,10 +38,9 @@ class MessagesTest extends TestCase
     {
         $msgType = 'error';
         $msgText = 'All is lost';
-        $msg = $this->getMockBuilder(MessageInterface::class)
-            ->getMock();
+        $msg = $this->getMockBuilder(\Magento\Framework\Message\MessageInterface::class)->getMock();
         $messages = [$msg];
-        $msgCollection = $this->getMockBuilder(Collection::class)
+        $msgCollection = $this->getMockBuilder(\Magento\Framework\Message\Collection::class)
             ->getMock();
 
         $msg->expects($this->once())

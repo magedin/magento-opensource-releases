@@ -6,10 +6,6 @@
 
 namespace Magento\Config\Block\System\Config\Form;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
 /**
  * Render field html element in Stores Configuration
  *
@@ -21,25 +17,6 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
 class Field extends \Magento\Backend\Block\Template implements
     \Magento\Framework\Data\Form\Element\Renderer\RendererInterface
 {
-    /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
-     * @param Context $context
-     * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
-     */
-    public function __construct(
-        Context $context,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
-    ) {
-        parent::__construct($context, $data);
-        $this->secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
-    }
-
     /**
      * Retrieve element HTML markup
      *
@@ -131,12 +108,7 @@ class Field extends \Magento\Backend\Block\Template implements
             '[inherit]" type="checkbox" value="1"' .
             ' class="checkbox config-inherit" ' .
             $checkedHtml . $disabled .
-            ' />';
-        $html .= /* @noEscape */ $this->secureRenderer->renderEventListenerAsTag(
-            'onclick',
-            "toggleValueElements(this, Element.previous(this.parentNode))",
-            'input#' . $htmlId . '_inherit'
-        );
+            ' onclick="toggleValueElements(this, Element.previous(this.parentNode))" /> ';
         $html .= '<label for="' . $htmlId . '_inherit" class="inherit">' . $this->_getInheritCheckboxLabel(
             $element
         ) . '</label>';
@@ -202,12 +174,7 @@ class Field extends \Magento\Backend\Block\Template implements
     {
         $html = '<td class="">';
         if ($element->getHint()) {
-            $html .= '<div class="hint"><div id="hint_' . $element->getHtmlId() . '">' .
-                $element->getHint() . '</div></div>';
-            $html .= /* @noEscape */ $this->secureRenderer->renderStyleAsTag(
-                "display: none;",
-                'div#hint_' . $element->getHtmlId()
-            );
+            $html .= '<div class="hint"><div style="display: none;">' . $element->getHint() . '</div></div>';
         }
         $html .= '</td>';
         return $html;

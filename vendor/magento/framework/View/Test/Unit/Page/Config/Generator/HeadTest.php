@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Page\Config\Generator;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Layout\Generator\Context;
-use Magento\Framework\View\Layout\Reader\Context as ReaderContext;
-use Magento\Framework\View\Page\Config as PageConfig;
 use Magento\Framework\View\Page\Config\Generator\Head;
+use Magento\Framework\View\Page\Config as PageConfig;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Framework\View\Layout\Generator\Context;
 use Magento\Framework\View\Page\Config\Structure;
-use Magento\Framework\View\Page\Title;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Layout\Reader\Context as ReaderContext;
 
 /**
  * Test for page config generator model
  */
-class HeadTest extends TestCase
+class HeadTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Head
@@ -29,35 +24,35 @@ class HeadTest extends TestCase
     protected $headGenerator;
 
     /**
-     * @var \Magento\Framework\View\Page\Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfigMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlMock;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $title;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->title = $this->getMockBuilder(Title::class)
+        $this->title = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->urlMock = $this->getMockBuilder(UrlInterface::class)
+        $this->urlMock = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->headGenerator = $objectManagerHelper->getObject(
-            Head::class,
+            \Magento\Framework\View\Page\Config\Generator\Head::class,
             [
                 'pageConfig' => $this->pageConfigMock,
                 'url' => $this->urlMock,
@@ -71,7 +66,7 @@ class HeadTest extends TestCase
     public function testProcess()
     {
         $generatorContextMock = $this->createMock(Context::class);
-        $this->title->expects($this->any())->method('set')->with()->willReturnSelf();
+        $this->title->expects($this->any())->method('set')->with()->will($this->returnSelf());
         $structureMock = $this->createMock(Structure::class);
         $readerContextMock = $this->createMock(ReaderContext::class);
         $readerContextMock->expects($this->any())->method('getPageConfigStructure')->willReturn($structureMock);
@@ -143,18 +138,18 @@ class HeadTest extends TestCase
             ->with('name', ['attributes' => ['media' => 'print'], 'ie_condition' => 'lt IE 7']);
         $structureMock->expects($this->once())
             ->method('getAssets')
-            ->willReturn($assets);
+            ->will($this->returnValue($assets));
 
         $title = 'Page title';
         $structureMock->expects($this->atLeastOnce())
             ->method('getTitle')
-            ->willReturn($title);
-        $this->pageConfigMock->expects($this->any())->method('getTitle')->willReturn($this->title);
+            ->will($this->returnValue($title));
+        $this->pageConfigMock->expects($this->any())->method('getTitle')->will($this->returnValue($this->title));
 
         $metadata = ['name1' => 'content1', 'name2' => 'content2'];
         $structureMock->expects($this->once())
             ->method('getMetadata')
-            ->willReturn($metadata);
+            ->will($this->returnValue($metadata));
         $this->pageConfigMock->expects($this->exactly(2))
             ->method('setMetadata')
             ->withConsecutive(['name1', 'content1'], ['name2', 'content2']);
@@ -170,7 +165,7 @@ class HeadTest extends TestCase
         ];
         $structureMock->expects($this->once())
             ->method('getElementAttributes')
-            ->willReturn($elementAttributes);
+            ->will($this->returnValue($elementAttributes));
         $this->pageConfigMock->expects($this->exactly(3))
             ->method('setElementAttribute')
             ->withConsecutive(

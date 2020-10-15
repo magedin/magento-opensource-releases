@@ -4,19 +4,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\GiftMessage\Test\Unit\Model\Type\Plugin;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GiftMessage\Model\GiftMessageManager;
 use Magento\GiftMessage\Model\Type\Plugin\Onepage;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class OnepageTest extends TestCase
+class OnepageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Onepage
@@ -24,23 +17,23 @@ class OnepageTest extends TestCase
     protected $plugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->messageMock = $this->createMock(GiftMessageManager::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->messageMock = $this->createMock(\Magento\GiftMessage\Model\GiftMessageManager::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
         $this->plugin = $objectManager->getObject(
-            Onepage::class,
+            \Magento\GiftMessage\Model\Type\Plugin\Onepage::class,
             [
                 'message' => $this->messageMock,
                 'request' => $this->requestMock,
@@ -54,9 +47,9 @@ class OnepageTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with('giftmessage')
-            ->willReturn('giftMessage');
-        $quoteMock = $this->createMock(Quote::class);
-        $subjectMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
+            ->will($this->returnValue('giftMessage'));
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $subjectMock->expects($this->once())->method('getQuote')->will($this->returnValue($quoteMock));
         $this->messageMock->expects($this->once())->method('add')->with('giftMessage', $quoteMock);
 
         $this->assertEquals([], $this->plugin->afterSaveShippingMethod($subjectMock, []));

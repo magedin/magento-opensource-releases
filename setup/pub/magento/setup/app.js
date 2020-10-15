@@ -5,12 +5,34 @@
 
 'use strict';
 var app = angular.module(
-    'magento',
+    'magentoSetup',
     [
         'ui.router',
         'ui.bootstrap',
         'main',
-        'landing'
+        'landing',
+        'readiness-check',
+        'add-database',
+        'web-configuration',
+        'customize-your-store',
+        'create-admin-account',
+        'install',
+        'success',
+        'module-grid',
+        'extension-grid',
+        'install-extension-grid',
+        'update-extension-grid',
+        'create-backup',
+        'complete-backup',
+        'data-option',
+        'start-updater',
+        'select-version',
+        'updater-success',
+        'home',
+        'auth-dialog',
+        'system-config',
+        'marketplace-credentials',
+        'ngSanitize'
     ]);
 
 app.config(['$httpProvider', '$stateProvider', function ($httpProvider, $stateProvider) {

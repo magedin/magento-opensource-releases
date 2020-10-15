@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit\Data;
 
 use Magento\Framework\Config\Data\ConfigData;
-use PHPUnit\Framework\TestCase;
 
-class ConfigDataTest extends TestCase
+class ConfigDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testSet()
     {
@@ -42,6 +39,7 @@ class ConfigDataTest extends TestCase
      */
     public function testSetWrongKey($key, $expectedException)
     {
+
         $configData = new ConfigData('testKey');
 
         $this->expectException('InvalidArgumentException');

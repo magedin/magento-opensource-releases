@@ -3,26 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Config\Source;
 
-use Magento\Catalog\Model\Config\Source\GridPerPage;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class GridPerPageTest extends TestCase
+class GridPerPageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GridPerPage
+     * @var \Magento\Catalog\Model\Config\Source\GridPerPage
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            GridPerPage::class,
+            \Magento\Catalog\Model\Config\Source\GridPerPage::class,
             ['perPageValues' => 'some,values']
         );
     }

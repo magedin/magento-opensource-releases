@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Scanner;
 
-use Magento\Setup\Module\Di\Code\Scanner\ArrayScanner;
-use PHPUnit\Framework\TestCase;
-
-class ArrayScannerTest extends TestCase
+class ArrayScannerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ArrayScanner
+     * @var \Magento\Setup\Module\Di\Code\Scanner\ArrayScanner
      */
     protected $_model;
 
@@ -22,9 +17,9 @@ class ArrayScannerTest extends TestCase
      */
     protected $_testDir;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new ArrayScanner();
+        $this->_model = new \Magento\Setup\Module\Di\Code\Scanner\ArrayScanner();
         $this->_testDir = str_replace('\\', '/', realpath(__DIR__ . '/../../') . '/_files');
     }
 

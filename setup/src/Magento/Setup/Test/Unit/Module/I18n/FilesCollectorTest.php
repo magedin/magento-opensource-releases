@@ -3,15 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\FilesCollector;
-use PHPUnit\Framework\TestCase;
-
-class FilesCollectorTest extends TestCase
+class FilesCollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -19,16 +13,16 @@ class FilesCollectorTest extends TestCase
     protected $_testDir;
 
     /**
-     * @var FilesCollector
+     * @var \Magento\Setup\Module\I18n\FilesCollector
      */
     protected $_filesCollector;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_testDir = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/_files/files_collector/';
 
-        $objectManagerHelper = new ObjectManager($this);
-        $this->_filesCollector = $objectManagerHelper->getObject(FilesCollector::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_filesCollector = $objectManagerHelper->getObject(\Magento\Setup\Module\I18n\FilesCollector::class);
     }
 
     public function testGetFilesWithoutMask()

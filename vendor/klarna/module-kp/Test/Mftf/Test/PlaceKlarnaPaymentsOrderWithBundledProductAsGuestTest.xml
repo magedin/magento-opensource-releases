@@ -78,7 +78,6 @@
 
         <!--Go to checkout-->
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart"/>
-        <waitForPageLoad stepKey="waitForCheckoutPageLoad"/>
 
         <!--Enter shipping information and continue to payments-->
         <actionGroup ref="GuestCheckoutFillingShippingSectionActionGroup" stepKey="guestCheckoutFillingShipping">
@@ -100,13 +99,11 @@
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber"/>
 
         <!--Verify order summary in admin-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        <actionGroup ref="OpenOrderByIdActionGroup" stepKey="goToOrderPage">
-            <argument name="orderId" value="{$grabOrderNumber}"/>
-        </actionGroup>
-        <actionGroup ref="ValidateAdminKlarnaOrderSummaryGrandTotal" stepKey="validateGrandTotal">
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
+        <actionGroup ref="ValidateAdminKlarnaOrderSummaryGrandTotal" stepKey="validateOrderSummary">
+            <argument name="orderNumber" value="{$grabOrderNumber}"/>
             <argument name="grandTotalAmount" value="{$grabTotalAmount}"/>
         </actionGroup>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="signOutFromAdmin"/>
+        <actionGroup ref="logout" stepKey="signOutFromAdmin"/>
     </test>
 </tests>

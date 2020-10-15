@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Category\Flat\Plugin;
 
 use Magento\Catalog\Model\Indexer\Category\Flat\Plugin\StoreGroup;
@@ -14,18 +12,16 @@ use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Group as GroupModel;
 use Magento\Store\Model\ResourceModel\Group;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StoreGroupTest extends TestCase
+class StoreGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|IndexerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|IndexerInterface
      */
     protected $indexerMock;
 
     /**
-     * @var MockObject|State
+     * @var \PHPUnit_Framework_MockObject_MockObject|State
      */
     protected $stateMock;
 
@@ -35,21 +31,21 @@ class StoreGroupTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject|Group
+     * @var \PHPUnit_Framework_MockObject_MockObject|Group
      */
     protected $subjectMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $indexerRegistryMock;
 
     /**
-     * @var MockObject|GroupModel
+     * @var \PHPUnit_Framework_MockObject_MockObject|GroupModel
      */
     protected $groupMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->indexerMock = $this->getMockForAbstractClass(
             IndexerInterface::class,
@@ -58,14 +54,14 @@ class StoreGroupTest extends TestCase
             false,
             false,
             true,
-            ['getId', 'getState']
+            ['getId', 'getState', '__wakeup']
         );
         $this->stateMock = $this->createPartialMock(State::class, ['isFlatEnabled']);
         $this->subjectMock = $this->createMock(Group::class);
 
         $this->groupMock = $this->createPartialMock(
             GroupModel::class,
-            ['dataHasChangedFor', 'isObjectNew']
+            ['dataHasChangedFor', 'isObjectNew', '__wakeup']
         );
 
         $this->indexerRegistryMock = $this->createPartialMock(IndexerRegistry::class, ['get']);

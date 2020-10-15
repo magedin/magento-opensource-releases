@@ -5,16 +5,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Pdf\Config;
 
-use Magento\Framework\Config\Dom;
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Config\ValidationStateInterface;
-use PHPUnit\Framework\TestCase;
-
-class XsdTest extends TestCase
+class XsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -26,14 +19,14 @@ class XsdTest extends TestCase
      */
     protected static $_schemaFilePath;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
-        $urnResolver = new UrnResolver();
+        $urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
         self::$_schemaPath = $urnResolver->getRealPath('urn:magento:module:Magento_Sales:etc/pdf.xsd');
         self::$_schemaFilePath = $urnResolver->getRealPath('urn:magento:module:Magento_Sales:etc/pdf_file.xsd');
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
@@ -69,10 +62,10 @@ class XsdTest extends TestCase
      */
     protected function _testSchema($schema, $fixtureXml, array $expectedErrors)
     {
-        $validationStateMock = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $validationStateMock->method('isValidationRequired')
             ->willReturn(true);
-        $dom = new Dom($fixtureXml, $validationStateMock, [], null, null, '%message%');
+        $dom = new \Magento\Framework\Config\Dom($fixtureXml, $validationStateMock, [], null, null, '%message%');
         $actualResult = $dom->validate($schema, $actualErrors);
         $this->assertEquals(empty($expectedErrors), $actualResult);
         $this->assertEquals($expectedErrors, $actualErrors);

@@ -29,11 +29,11 @@
             <createData entity="secondCustomWebsite" stepKey="createWebsite"/>
 
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Delete created virtual product -->
-            <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
+            <actionGroup ref="deleteProductUsingProductGrid" stepKey="deleteProduct">
                 <argument name="product" value="defaultVirtualProduct"/>
             </actionGroup>
 
@@ -48,18 +48,18 @@
             <deleteData createDataKey="createThirdRelatedProduct" stepKey="deleteThirdRelatedProduct"/>
 
             <!-- Log out -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <actionGroup ref="logout" stepKey="adminLogout"/>
         </after>
 
         <comment userInput="remove me" stepKey="disableWYSIWYG"/>
 
         <!-- Create new virtual product -->
-        <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="createVirtualProduct">
+        <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="createVirtualProduct">
             <argument name="productType" value="virtual"/>
         </actionGroup>
 
         <!-- Fill all main fields -->
-        <actionGroup ref="FillMainProductFormNoWeightActionGroup" stepKey="fillMainProductForm">
+        <actionGroup ref="fillMainProductFormNoWeight" stepKey="fillMainProductForm">
             <argument name="product" value="defaultVirtualProduct"/>
         </actionGroup>
 
@@ -70,10 +70,10 @@
         <fillField selector="{{AdminProductContentSection.shortDescriptionTextArea}}" userInput="{{ApiProductShortDescription.value}}" stepKey="fillShortDescription"/>
 
         <!-- Add two related products -->
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addFirstRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addFirstRelatedProduct">
             <argument name="sku" value="$$createFirstRelatedProduct.sku$$"/>
         </actionGroup>
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addSecondRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addSecondRelatedProduct">
             <argument name="sku" value="$$createSecondRelatedProduct.sku$$"/>
         </actionGroup>
 
@@ -93,7 +93,7 @@
         </actionGroup>
 
         <!-- Save product form-->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveButton"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveButton"/>
 
         <!-- Open product page -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openStorefrontProductPage">
@@ -139,12 +139,12 @@
         </actionGroup>
 
         <!-- Edit related products -->
-        <actionGroup ref="AddRelatedProductBySkuActionGroup" stepKey="addThirdRelatedProduct">
+        <actionGroup ref="addRelatedProductBySku" stepKey="addThirdRelatedProduct">
             <argument name="sku" value="$$createThirdRelatedProduct.sku$$"/>
         </actionGroup>
 
         <!-- Assert product in assigned to websites -->
-        <actionGroup ref="AssertProductIsAssignedToWebsiteActionGroup" stepKey="seeCustomWebsiteIsChecked">
+        <actionGroup ref="AssertProductIsAssignedToWebsite" stepKey="seeCustomWebsiteIsChecked">
             <argument name="website" value="$createWebsite.website[name]$"/>
         </actionGroup>
 
@@ -162,7 +162,7 @@
         <actionGroup ref="AdminSwitchProductGiftMessageStatusActionGroup" stepKey="disableGiftMessageSettings"/>
 
         <!-- Save product form -->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="clickSaveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="clickSaveProduct"/>
 
         <!-- Verify Url Key after changing -->
         <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openProductPage">

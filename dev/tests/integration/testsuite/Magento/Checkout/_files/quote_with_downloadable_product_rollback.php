@@ -4,6 +4,5 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Downloadable/_files/product_downloadable_rollback.php');
+// @codingStandardsIgnoreLine
+require __DIR__ . '/../../../Magento/Downloadable/_files/product_downloadable_rollback.php';

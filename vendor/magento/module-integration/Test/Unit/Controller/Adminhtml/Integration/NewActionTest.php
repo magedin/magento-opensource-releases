@@ -4,13 +4,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Controller\Adminhtml\Integration;
 
-use Magento\Integration\Test\Unit\Controller\Adminhtml\IntegrationTest;
-
-class NewActionTest extends IntegrationTest
+class NewActionTest extends \Magento\Integration\Test\Unit\Controller\Adminhtml\IntegrationTest
 {
     public function testNewAction()
     {
@@ -19,7 +16,7 @@ class NewActionTest extends IntegrationTest
         $this->_requestMock->expects($this->any())
             ->method('setActionName')
             ->with('edit')
-            ->willReturn($this->_requestMock);
+            ->will($this->returnValue($this->_requestMock));
         $integrationContr = $this->_createIntegrationController('NewAction');
         $result = $integrationContr->execute();
         $this->assertNull($result);

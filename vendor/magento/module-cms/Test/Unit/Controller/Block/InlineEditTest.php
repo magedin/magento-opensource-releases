@@ -3,70 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Block;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Cms\Api\BlockRepositoryInterface;
 use Magento\Cms\Controller\Adminhtml\Block\InlineEdit;
-use Magento\Cms\Model\Block;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class InlineEditTest extends TestCase
+class InlineEditTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var Block|MockObject */
+    /** @var \Magento\Cms\Model\Block|\PHPUnit_Framework_MockObject_MockObject */
     protected $cmsBlock;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var BlockRepositoryInterface|MockObject */
+    /** @var \Magento\Cms\Api\BlockRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $blockRepository;
 
-    /** @var JsonFactory|MockObject */
+    /** @var \Magento\Framework\Controller\Result\JsonFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $jsonFactory;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Controller\Result\Json|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultJson;
 
     /** @var InlineEdit */
     protected $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->request = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false
         );
-        $this->cmsBlock = $this->createMock(Block::class);
+        $this->cmsBlock = $this->createMock(\Magento\Cms\Model\Block::class);
         $this->context = $helper->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->request
             ]
         );
         $this->blockRepository = $this->getMockForAbstractClass(
-            BlockRepositoryInterface::class,
+            \Magento\Cms\Api\BlockRepositoryInterface::class,
             [],
             '',
             false
         );
-        $this->resultJson = $this->createMock(Json::class);
+        $this->resultJson = $this->createMock(\Magento\Framework\Controller\Result\Json::class);
         $this->jsonFactory = $this->createPartialMock(
-            JsonFactory::class,
+            \Magento\Framework\Controller\Result\JsonFactory::class,
             ['create']
         );
         $this->controller = new InlineEdit(
@@ -122,7 +111,7 @@ class InlineEditTest extends TestCase
         $this->blockRepository->expects($this->once())
             ->method('save')
             ->with($this->cmsBlock)
-            ->willThrowException(new \Exception('Exception'));
+            ->willThrowException(new \Exception(__('Exception')));
         $this->resultJson->expects($this->once())
             ->method('setData')
             ->with([

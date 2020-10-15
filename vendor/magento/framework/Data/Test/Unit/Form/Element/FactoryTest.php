@@ -3,36 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Factory
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\Collection;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\ObjectManager\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Factory
+     * @var \Magento\Framework\Data\Form\Element\Factory
      */
     protected $_factory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_objectManagerMock =
-            $this->createPartialMock(ObjectManager::class, ['create']);
-        $this->_factory = new Factory($this->_objectManagerMock);
+            $this->createPartialMock(\Magento\Framework\ObjectManager\ObjectManager::class, ['create']);
+        $this->_factory = new \Magento\Framework\Data\Form\Element\Factory($this->_objectManagerMock);
     }
 
     /**
@@ -50,8 +43,8 @@ class FactoryTest extends TestCase
         )->with(
             $className,
             []
-        )->willReturn(
-            $elementMock
+        )->will(
+            $this->returnValue($elementMock)
         );
         $element = $this->_factory->create($type);
         $this->assertSame($elementMock, $element);
@@ -74,8 +67,8 @@ class FactoryTest extends TestCase
         )->with(
             $className,
             $config
-        )->willReturn(
-            $elementMock
+        )->will(
+            $this->returnValue($elementMock)
         );
         $element = $this->_factory->create($type, $config);
         $this->assertSame($elementMock, $element);
@@ -122,10 +115,10 @@ class FactoryTest extends TestCase
     /**
      * @param string $type
      * @dataProvider createExceptionReflectionExceptionDataProvider
+     * @expectedException \ReflectionException
      */
     public function testCreateExceptionReflectionException($type)
     {
-        $this->expectException('ReflectionException');
         $this->_objectManagerMock->expects(
             $this->once()
         )->method(
@@ -133,8 +126,8 @@ class FactoryTest extends TestCase
         )->with(
             $type,
             []
-        )->willThrowException(
-            new \ReflectionException()
+        )->will(
+            $this->throwException(new \ReflectionException())
         );
         $this->_factory->create($type);
     }
@@ -154,10 +147,10 @@ class FactoryTest extends TestCase
     /**
      * @param string $type
      * @dataProvider createExceptionInvalidArgumentDataProvider
+     * @expectedException \InvalidArgumentException
      */
     public function testCreateExceptionInvalidArgument($type)
     {
-        $this->expectException('InvalidArgumentException');
         $elementMock = $this->createMock($type);
         $this->_objectManagerMock->expects(
             $this->once()
@@ -166,8 +159,8 @@ class FactoryTest extends TestCase
         )->with(
             $type,
             []
-        )->willReturn(
-            $elementMock
+        )->will(
+            $this->returnValue($elementMock)
         );
         $this->_factory->create($type);
     }
@@ -178,11 +171,11 @@ class FactoryTest extends TestCase
     public function createExceptionInvalidArgumentDataProvider()
     {
         return [
-            Factory::class => [
-                Factory::class
+            \Magento\Framework\Data\Form\Element\Factory::class => [
+                \Magento\Framework\Data\Form\Element\Factory::class
             ],
-            Collection::class => [
-                Collection::class
+            \Magento\Framework\Data\Form\Element\Collection::class => [
+                \Magento\Framework\Data\Form\Element\Collection::class
             ]
         ];
     }

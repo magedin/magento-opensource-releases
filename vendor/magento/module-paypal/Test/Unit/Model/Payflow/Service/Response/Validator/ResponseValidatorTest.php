@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow\Service\Response\Validator;
 
 use Magento\Framework\DataObject;
-use Magento\Paypal\Model\Payflow\Service\Response\Validator\ResponseValidator;
-use Magento\Paypal\Model\Payflow\Service\Response\ValidatorInterface;
 use Magento\Paypal\Model\Payflow\Transparent;
 use Magento\Paypal\Model\Payflowpro;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Paypal\Model\Payflow\Service\Response\ValidatorInterface;
+use Magento\Paypal\Model\Payflow\Service\Response\Validator\ResponseValidator;
 
 /**
  * Class ResponseValidatorTest
  *
  * Test for class \Magento\Paypal\Model\Payflow\Service\Response\Validator\ResponseValidator
  */
-class ResponseValidatorTest extends TestCase
+class ResponseValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ResponseValidator
@@ -28,19 +24,19 @@ class ResponseValidatorTest extends TestCase
     protected $responseValidator;
 
     /**
-     * @var ValidatorInterface|MockObject
+     * @var ValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validatorMock;
 
     /**
-     * @var Transparent|MockObject
+     * @var Transparent|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $payflowFacade;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->validatorMock = $this->getMockBuilder(
-            ValidatorInterface::class
+            \Magento\Paypal\Model\Payflow\Service\Response\ValidatorInterface::class
         )
             ->setMethods(['validate'])
             ->getMockForAbstractClass();
@@ -88,10 +84,12 @@ class ResponseValidatorTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Transaction has been declined
+     */
     public function testValidateFail()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Transaction has been declined');
         $response = new DataObject(
             [
                 'result' => Payflowpro::RESPONSE_CODE_APPROVED,
@@ -107,10 +105,12 @@ class ResponseValidatorTest extends TestCase
         $this->responseValidator->validate($response, $this->payflowFacade);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Transaction has been declined
+     */
     public function testValidateUnknownCode()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Transaction has been declined');
         $response = new DataObject(
             [
                 'result' => 7777777777,

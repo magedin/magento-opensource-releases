@@ -3,26 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model\ResourceModel;
 
-use Magento\Cms\Model\Page;
+use Magento\Cms\Api\Data\PageInterface;
 use Magento\Cms\Model\ResourceModel\Page as PageResourceModel;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\EntityManager\EntityManager;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\EntityManager\EntityManager;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Cms\Model\Page;
+use Magento\Framework\App\ResourceConnection;
 
 /**
+ * Class PageTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PageTest extends TestCase
+class PageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PageResourceModel
@@ -30,41 +28,41 @@ class PageTest extends TestCase
     protected $model;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var DateTime|MockObject
+     * @var DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateTimeMock;
 
     /**
-     * @var EntityManager|MockObject
+     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityManagerMock;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataPoolMock;
 
     /**
-     * @var Page|MockObject
+     * @var Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourcesMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()

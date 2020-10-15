@@ -10,8 +10,7 @@ namespace Magento\InventorySales\Test\Integration\IsProductSalableForRequestedQt
 use Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\GetStockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\SaveStockItemConfigurationInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -31,9 +30,9 @@ class IsCorrectQtyConditionTest extends TestCase
     private $saveStockItemConfig;
 
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
+    private $isProductSalableForRequestedQty;
 
     /**
      * @var GetStockItemConfigurationInterface
@@ -46,23 +45,16 @@ class IsCorrectQtyConditionTest extends TestCase
     private $saveStockItemConfiguration;
 
     /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestFactory;
-
-    /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
         $this->getStockItemConfig = Bootstrap::getObjectManager()->get(GetStockItemConfigurationInterface::class);
         $this->saveStockItemConfig = Bootstrap::getObjectManager()->get(SaveStockItemConfigurationInterface::class);
-        $this->areProductsSalableForRequestedQty
-            = Bootstrap::getObjectManager()->get(AreProductsSalableForRequestedQtyInterface::class);
-        $this->isProductSalableForRequestedQtyRequestFactory = Bootstrap::getObjectManager()
-            ->get(IsProductSalableForRequestedQtyRequestInterfaceFactory::class);
+        $this->isProductSalableForRequestedQty
+            = Bootstrap::getObjectManager()->get(IsProductSalableForRequestedQtyInterface::class);
         $this->getStockItemConfiguration = Bootstrap::getObjectManager()->get(
             GetStockItemConfigurationInterface::class
         );
@@ -72,12 +64,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -97,14 +89,7 @@ class IsCorrectQtyConditionTest extends TestCase
         int $requestedQty,
         bool $expectedResult
     ) {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -119,12 +104,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -144,14 +129,7 @@ class IsCorrectQtyConditionTest extends TestCase
         float $requestedQty,
         bool $expectedResult
     ): void {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -164,17 +142,17 @@ class IsCorrectQtyConditionTest extends TestCase
             ['SKU-1', 10, 2.5, true],
             ['SKU-1', 10, 2, true],
             ['SKU-2', 30, 2.5, false],
-            ['SKU-2', 30, 2, true],
+            ['SKU-2', 30, 2, true]
         ];
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      * @magentoConfigFixture current_store cataloginventory/item_options/min_sale_qty 7
      *
      * @param string $sku
@@ -195,14 +173,7 @@ class IsCorrectQtyConditionTest extends TestCase
         int $requestedQty,
         bool $expectedResult
     ): void {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -236,12 +207,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -267,14 +238,7 @@ class IsCorrectQtyConditionTest extends TestCase
         $stockItemConfiguration->setMinSaleQty(7);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -302,12 +266,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      * @magentoConfigFixture current_store cataloginventory/item_options/max_sale_qty 6
      *
      * @param string $sku
@@ -328,14 +292,7 @@ class IsCorrectQtyConditionTest extends TestCase
         int $requestedQty,
         bool $expectedResult
     ): void {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -371,12 +328,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -403,14 +360,7 @@ class IsCorrectQtyConditionTest extends TestCase
         $stockItemConfiguration->setMaxSaleQty(6);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -440,12 +390,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      * @magentoConfigFixture current_store cataloginventory/item_options/enable_qty_increments 1
      * @magentoConfigFixture current_store cataloginventory/item_options/qty_increments 3
      *
@@ -467,14 +417,7 @@ class IsCorrectQtyConditionTest extends TestCase
         int $requestedQty,
         bool $expectedResult
     ): void {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 
@@ -512,12 +455,12 @@ class IsCorrectQtyConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -546,14 +489,7 @@ class IsCorrectQtyConditionTest extends TestCase
         $stockItemConfiguration->setQtyIncrements(3);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $requestedQty,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
+        $result = $this->isProductSalableForRequestedQty->execute($sku, $stockId, $requestedQty);
         $this->assertEquals($expectedResult, $result->isSalable());
     }
 

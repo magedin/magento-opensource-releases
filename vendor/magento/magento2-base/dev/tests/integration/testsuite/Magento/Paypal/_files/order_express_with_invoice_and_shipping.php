@@ -4,7 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\DB\Transaction;
 use Magento\Paypal\Model\Config;
 use Magento\Sales\Api\InvoiceManagementInterface;
@@ -15,14 +14,11 @@ use Magento\Sales\Model\Order\Address;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Service\InvoiceService;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple.php';
 
 $objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
+
 $addressData = include __DIR__ . '/address_data.php';
 $billingAddress = $objectManager->create(
     Address::class,

@@ -62,7 +62,7 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Add configurable product to the cart  -->
@@ -74,7 +74,8 @@
         </actionGroup>
 
         <!-- Remove product from cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="goToCart"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCart"/>
+        <waitForPageLoad stepKey="waitForCartPageLoad"/>
         <actionGroup ref="DeleteProductFromShoppingCartActionGroup" stepKey="deleteProduct">
             <argument name="productName" value="$$createConfigProduct.name$$"/>
         </actionGroup>

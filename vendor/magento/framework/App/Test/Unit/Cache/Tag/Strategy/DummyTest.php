@@ -3,19 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Cache\Tag\Strategy;
 
-use Magento\Framework\App\Cache\Tag\Strategy\Dummy;
-use Magento\Framework\DataObject\IdentityInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Cache\Tag\Strategy\Dummy;
 
-class DummyTest extends TestCase
+class DummyTest extends \PHPUnit\Framework\TestCase
 {
+
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new Dummy();
     }
@@ -31,9 +29,9 @@ class DummyTest extends TestCase
     {
         $emptyArray = [];
 
-        $this->assertEquals($emptyArray, $this->model->getTags(new \stdClass()));
+        $this->assertEquals($emptyArray, $this->model->getTags(new \stdClass));
 
-        $identityInterface = $this->getMockForAbstractClass(IdentityInterface::class);
+        $identityInterface = $this->getMockForAbstractClass(\Magento\Framework\DataObject\IdentityInterface::class);
         $this->assertEquals($emptyArray, $this->model->getTags($identityInterface));
     }
 }

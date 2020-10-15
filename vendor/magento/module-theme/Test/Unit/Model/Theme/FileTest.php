@@ -3,28 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Theme;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\ActionValidator\RemoveAction;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use Magento\Framework\View\Design\Theme\Customization\FileInterface;
 use Magento\Framework\View\Design\Theme\Customization\FileServiceFactory;
-use Magento\Framework\View\Design\Theme\FlyweightFactory;
-use Magento\Framework\View\Design\ThemeInterface;
 use Magento\Framework\View\DesignInterface;
-use Magento\Theme\Model\ResourceModel\Theme\File\Collection;
 use Magento\Theme\Model\Theme\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var File
@@ -32,61 +17,56 @@ class FileTest extends TestCase
     protected $model;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var FlyweightFactory|MockObject
+     * @var \Magento\Framework\View\Design\Theme\FlyweightFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $themeFactory;
 
     /**
-     * @var FileServiceFactory|MockObject
+     * @var FileServiceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fileServiceFactory;
 
     /**
-     * @var \Magento\Theme\Model\ResourceModel\Theme\File|MockObject
+     * @var \Magento\Theme\Model\ResourceModel\Theme\File|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resource;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Theme\Model\ResourceModel\Theme\File\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $context = $this->getMockBuilder(
-            Context::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Model\Context::class
+        )->disableOriginalConstructor()->getMock();
         $this->registry = $this->getMockBuilder(
-            Registry::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->themeFactory = $this->getMockBuilder(FlyweightFactory::class)
+            \Magento\Framework\Registry::class
+        )->disableOriginalConstructor()->getMock();
+        $this->themeFactory = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\FlyweightFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->fileServiceFactory = $this->getMockBuilder(
-            FileServiceFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\Design\Theme\Customization\FileServiceFactory::class
+        )->disableOriginalConstructor()->getMock();
         $this->resource = $this->getMockBuilder(\Magento\Theme\Model\ResourceModel\Theme\File::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resourceCollection = $this->getMockBuilder(
-            Collection::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Theme\Model\ResourceModel\Theme\File\Collection::class
+        )->disableOriginalConstructor()->getMock();
         $context->expects($this->once())
             ->method('getEventDispatcher')
-            ->willReturn($this->getMockBuilder(ManagerInterface::class)
-            ->getMock());
-        $validator = $this->getMockBuilder(RemoveAction::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->willReturn($this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)->getMock());
+        $validator = $this->getMockBuilder(\Magento\Framework\Model\ActionValidator\RemoveAction::class)
+                ->disableOriginalConstructor()
+                ->getMock();
         $validator->expects($this->any())
             ->method('isAllowed')
             ->willReturn(true);
@@ -94,7 +74,7 @@ class FileTest extends TestCase
             ->method('getActionValidator')
             ->willReturn($validator);
 
-        /** @var Context $context */
+        /** @var $context \Magento\Framework\Model\Context */
         $this->model = new File(
             $context,
             $this->registry,
@@ -111,7 +91,7 @@ class FileTest extends TestCase
      */
     public function testSetCustomizationService()
     {
-        $customization = $this->getMockBuilder(FileInterface::class)
+        $customization = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Customization\FileInterface::class)
             ->getMock();
 
         /** @var $customization \Magento\Framework\View\Design\Theme\Customization\FileInterface */
@@ -121,10 +101,10 @@ class FileTest extends TestCase
     /**
      * @test
      * @return void
+     * @expectedException \UnexpectedValueException
      */
     public function testGetFullPathWithoutFileType()
     {
-        $this->expectException('UnexpectedValueException');
         $this->model->getFullPath();
     }
 
@@ -136,7 +116,7 @@ class FileTest extends TestCase
     {
         $fileServiceName = 'file_service';
         $fullPath = '/full/path';
-        $customization = $this->getMockBuilder(FileInterface::class)
+        $customization = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Customization\FileInterface::class)
             ->getMock();
 
         $this->model->setData('file_type', $fileServiceName);
@@ -159,15 +139,14 @@ class FileTest extends TestCase
     {
         $themeId = 1;
         $themePath = '/path/to/theme';
-        $theme = $this->getMockBuilder(ThemeInterface::class)
-            ->getMock();
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)->getMock();
         $theme->expects($this->once())
             ->method('getId')
             ->willReturn($themeId);
         $theme->expects($this->once())
             ->method('getThemePath')
             ->willReturn($themePath);
-        /** @var ThemeInterface $theme */
+        /** @var $theme \Magento\Framework\View\Design\ThemeInterface */
         $this->model->setTheme($theme);
         $this->assertEquals($themeId, $this->model->getThemeId());
         $this->assertEquals($themePath, $this->model->getThemePath());
@@ -181,23 +160,22 @@ class FileTest extends TestCase
     {
         $themeId = 1;
         $this->model->setThemeId($themeId);
-        $theme = $this->getMockBuilder(ThemeInterface::class)
-            ->getMock();
+        $theme = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)->getMock();
         $this->themeFactory->expects($this->once())
             ->method('create')
             ->with($themeId, DesignInterface::DEFAULT_AREA)
             ->willReturn($theme);
-        $this->assertInstanceOf(ThemeInterface::class, $this->model->getTheme());
+        $this->assertInstanceOf(\Magento\Framework\View\Design\ThemeInterface::class, $this->model->getTheme());
     }
 
     /**
      * @test
      * @return void
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Theme id should be set
      */
     public function testGetThemeException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Theme id should be set');
         $this->themeFactory->expects($this->once())
             ->method('create')
             ->with(null, DesignInterface::DEFAULT_AREA)
@@ -250,7 +228,7 @@ class FileTest extends TestCase
     public function testBeforeSaveDelete()
     {
         $fileServiceName = 'service_name';
-        $customization = $this->getMockBuilder(FileInterface::class)
+        $customization = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Customization\FileInterface::class)
             ->getMock();
         $this->fileServiceFactory->expects($this->once())
             ->method('create')

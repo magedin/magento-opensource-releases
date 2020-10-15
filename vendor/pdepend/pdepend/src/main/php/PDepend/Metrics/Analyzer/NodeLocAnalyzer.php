@@ -94,7 +94,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
     /**
      * Collected project metrics.
      *
-     * @var array<string, integer>
+     * @var array(string=>integer)
      */
     private $projectMetrics = array(
         self::M_LINES_OF_CODE              =>  0,
@@ -208,8 +208,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
         }
 
         if ($this->restoreFromCache($class)) {
-            $this->fireEndClass($class);
-            return;
+            return $this->fireEndClass($class);
         }
 
         list($cloc) = $this->linesOfCode($class->getTokens(), true);
@@ -250,8 +249,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
 
         if ($this->restoreFromCache($compilationUnit)) {
             $this->updateProjectMetrics($id);
-            $this->fireEndFile($compilationUnit);
-            return;
+            return $this->fireEndFile($compilationUnit);
         }
 
         list($cloc, $eloc, $lloc) = $this->linesOfCode($compilationUnit->getTokens());
@@ -285,8 +283,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
         $function->getCompilationUnit()->accept($this);
 
         if ($this->restoreFromCache($function)) {
-            $this->fireEndFunction($function);
-            return;
+            return $this->fireEndFunction($function);
         }
 
         list($cloc, $eloc, $lloc) = $this->linesOfCode(
@@ -325,8 +322,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
         }
 
         if ($this->restoreFromCache($interface)) {
-            $this->fireEndInterface($interface);
-            return;
+            return $this->fireEndInterface($interface);
         }
 
         list($cloc) = $this->linesOfCode($interface->getTokens(), true);
@@ -356,8 +352,7 @@ class NodeLocAnalyzer extends AbstractCachingAnalyzer implements
         $this->fireStartMethod($method);
 
         if ($this->restoreFromCache($method)) {
-            $this->fireEndMethod($method);
-            return;
+            return $this->fireEndMethod($method);
         }
         
         if ($method->isAbstract()) {

@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableImportExport\Test\Unit\Model\Export;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\CatalogImportExport\Model\Import\Product as ImportProduct;
 use Magento\ConfigurableImportExport\Model\Export\RowCustomizer as ExportRowCustomizer;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProductType;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProductType;
+use Magento\Catalog\Model\Product;
+use Magento\CatalogImportExport\Model\Import\Product as ImportProduct;
 use Magento\ImportExport\Model\Import;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RowCustomizerTest extends TestCase
+class RowCustomizerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExportRowCustomizer
@@ -30,12 +26,12 @@ class RowCustomizerTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ProductCollection|MockObject
+     * @var ProductCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productCollectionMock;
 
     /**
-     * @var ConfigurableProductType|MockObject
+     * @var ConfigurableProductType|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configurableProductTypeMock;
 
@@ -44,7 +40,7 @@ class RowCustomizerTest extends TestCase
      */
     private $productId = 11;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productCollectionMock = $this->getMockBuilder(ProductCollection::class)
             ->disableOriginalConstructor()
@@ -276,7 +272,7 @@ class RowCustomizerTest extends TestCase
     /**
      * Create product mock object
      *
-     * @return Product|MockObject
+     * @return Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createProductMock()
     {

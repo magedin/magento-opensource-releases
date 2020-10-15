@@ -3,8 +3,6 @@
 namespace Dotdigitalgroup\Email\Test\Unit\Model\Catalog;
 
 use PHPUnit\Framework\TestCase;
-use Magento\Catalog\Model\Product;
-use Dotdigitalgroup\Email\Model\Product\ParentFinder;
 use Dotdigitalgroup\Email\Model\ResourceModel\Catalog;
 use Dotdigitalgroup\Email\Model\CatalogFactory;
 use Dotdigitalgroup\Email\Model\Catalog\UpdateCatalog as Update;
@@ -33,31 +31,18 @@ class UpdateCatalogTest extends TestCase
      */
     private $catalogMock;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $parentFinderMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $productMock;
-
-    protected function setUp() :void
+    protected function setUp()
     {
-        $this->productMock = $this->createMock(Product::class);
         $this->catalogResourceMock = $this->createMock(Catalog::class);
         $this->catalogFactoryMock = $this->createMock(CatalogFactory::class);
         $this->catalogMock = $this->getMockBuilder(ModelCatalog::class)
-            ->setMethods(['loadProductById', 'getId', 'getProcessed', 'setProductId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+                                    ->setMethods(['loadProductById','getId','getProcessed','setProductId'])
+                                    ->disableOriginalConstructor()
+                                    ->getMock();
 
-        $this->parentFinderMock = $this->createMock(ParentFinder::class);
         $this->updateCatalog = new Update(
             $this->catalogResourceMock,
-            $this->catalogFactoryMock,
-            $this->parentFinderMock
+            $this->catalogFactoryMock
         );
     }
 
@@ -69,32 +54,28 @@ class UpdateCatalogTest extends TestCase
 
         $this->catalogMock->expects($this->once())
             ->method('loadProductById')
+            ->with(2)
             ->willReturn($this->catalogMock);
 
         $this->catalogMock->expects($this->once())
             ->method('getId')
             ->willReturn(2455);
 
+        $this->catalogMock->expects($this->once())
+            ->method('getProcessed')
+            ->willReturn(1);
+
+        $this->catalogResourceMock->expects($this->once())
+            ->method('save')
+            ->with($this->catalogMock);
+
         $this->catalogMock->expects($this->never())
             ->method('setProductId');
 
-        $this->productMock->expects($this->once())
-            ->method('getData')
-            ->willReturn($toUpdate = [
-                'entity_id' => 54
-            ]);
-
-        $this->parentFinderMock->expects($this->once())
-            ->method('getConfigurableParentsFromBunchOfProducts')
-            ->willReturn([]);
-
-        $this->catalogResourceMock->expects($this->once())
-            ->method('setUnprocessedByIds');
-
-        $this->updateCatalog->execute($this->productMock);
+        $this->updateCatalog->execute(2);
     }
 
-    public function testIfProductNotExistsNewEntryCreated()
+    public function testIfProductExistsNewEntryCreated()
     {
         $this->catalogFactoryMock->expects($this->once())
             ->method('create')
@@ -102,6 +83,7 @@ class UpdateCatalogTest extends TestCase
 
         $this->catalogMock->expects($this->once())
             ->method('loadProductById')
+            ->with(2)
             ->willReturn($this->catalogMock);
 
         $this->catalogMock->expects($this->once())
@@ -111,6 +93,6 @@ class UpdateCatalogTest extends TestCase
         $this->catalogMock->expects($this->once())
             ->method('setProductId');
 
-        $this->updateCatalog->execute($this->productMock);
+        $this->updateCatalog->execute(2);
     }
 }

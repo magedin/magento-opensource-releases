@@ -35,21 +35,11 @@ class Application extends BaseApplication
             if ($e->getCode() === 404) {
                 return;
             }
-            $this->renderExceptionWrapper($e, new ConsoleOutput());
+            $this->renderException($e, new ConsoleOutput());
             exit(1);
         } catch (\Exception $e) {
-            $this->renderExceptionWrapper($e, new ConsoleOutput());
+            $this->renderException($e, new ConsoleOutput());
             exit(1);
-        }
-    }
-
-    public function renderExceptionWrapper(\Exception $e, OutputInterface $output)
-    {
-        if (method_exists('Symfony\Component\Console\Application', 'renderException')) {
-            //Symfony 5
-            parent::renderException($e, $output);
-        } else {
-            parent::renderThrowable($e, $output);
         }
     }
 
@@ -110,7 +100,8 @@ class Application extends BaseApplication
             $input = $this->getCoreArguments();
         }
 
-        if (!ini_get('register_argc_argv')) {
+        if (!ini_get('register_argc_argv') && empty($_SERVER['argv'])) {
+            //register_argc_argv is always off on HHVM, but it has no effect
             throw new ConfigurationException('register_argc_argv must be set to On for running Codeception');
         }
 

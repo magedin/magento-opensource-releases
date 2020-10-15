@@ -3,34 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CurrencySymbol\Test\Unit\Block\Adminhtml\System\Currency\Rate;
 
-use Magento\Backend\Model\Session;
-use Magento\CurrencySymbol\Block\Adminhtml\System\Currency\Rate\Matrix;
-use Magento\CurrencySymbol\Block\Adminhtml\System\Currency\Rate\Services;
-use Magento\Directory\Model\Currency;
-use Magento\Directory\Model\CurrencyFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\TestCase;
-
-class MatrixTest extends TestCase
+class MatrixTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Object manager helper
      *
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->objectManagerHelper);
     }
@@ -44,15 +33,15 @@ class MatrixTest extends TestCase
         $newRates = ['USD' => ['EUR' => 0.7767, 'UAH' => 20, 'GBP' => 12, 'USD' => 1]];
         $expectedNewRates = ['USD' => ['EUR' => '0.7767', 'UAH' => '20.0000', 'GBP' => '12.0000', 'USD' => '1.0000']];
 
-        $backendSessionMock = $this->getMockBuilder(Session::class)
-            ->addMethods(['getRates', 'unsetData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $backendSessionMock = $this->createPartialMock(
+            \Magento\Backend\Model\Session::class,
+            ['getRates', 'unsetData']
+        );
         $backendSessionMock->expects($this->once())->method('getRates')->willReturn($newRates);
 
-        $currencyFactoryMock = $this->createPartialMock(CurrencyFactory::class, ['create']);
+        $currencyFactoryMock = $this->createPartialMock(\Magento\Directory\Model\CurrencyFactory::class, ['create']);
         $currencyMock = $this->createPartialMock(
-            Currency::class,
+            \Magento\Directory\Model\Currency::class,
             ['getConfigAllowCurrencies', 'getConfigBaseCurrencies', 'getCurrencyRates']
         );
         $currencyFactoryMock->expects($this->once())->method('create')->willReturn($currencyMock);
@@ -63,9 +52,9 @@ class MatrixTest extends TestCase
             ->with($baseCurrencies, $allowCurrencies)
             ->willReturn($currencyRates);
 
-        /** @var LayoutInterface|MockObject $layoutMock */
+        /** @var $layoutMock \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject */
         $layoutMock = $this->getMockForAbstractClass(
-            LayoutInterface::class,
+            \Magento\Framework\View\LayoutInterface::class,
             [],
             '',
             false,
@@ -74,9 +63,9 @@ class MatrixTest extends TestCase
             []
         );
 
-        /** @var Services $block */
+        /** @var $block \Magento\CurrencySymbol\Block\Adminhtml\System\Currency\Rate\Services */
         $block = $this->objectManagerHelper->getObject(
-            Matrix::class,
+            \Magento\CurrencySymbol\Block\Adminhtml\System\Currency\Rate\Matrix::class,
             [
                 'dirCurrencyFactory' => $currencyFactoryMock,
                 'backendSession' => $backendSessionMock

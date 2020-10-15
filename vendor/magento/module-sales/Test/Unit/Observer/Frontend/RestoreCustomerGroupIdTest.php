@@ -3,28 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Observer\Frontend;
 
-use Magento\Customer\Helper\Address;
-use Magento\Customer\Model\Address\AbstractAddress;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
 use Magento\Sales\Observer\Frontend\RestoreCustomerGroupId;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\Sales\Observer\Frontend\RestoreCustomerGroupIdTest
  */
-class RestoreCustomerGroupIdTest extends TestCase
+class RestoreCustomerGroupIdTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Address|MockObject
+     * @var \Magento\Customer\Helper\Address|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerAddressHelperMock;
 
@@ -33,9 +22,9 @@ class RestoreCustomerGroupIdTest extends TestCase
      */
     protected $quote;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerAddressHelperMock = $this->createMock(Address::class);
+        $this->customerAddressHelperMock = $this->createMock(\Magento\Customer\Helper\Address::class);
         $this->quote = new RestoreCustomerGroupId($this->customerAddressHelperMock);
     }
 
@@ -45,38 +34,34 @@ class RestoreCustomerGroupIdTest extends TestCase
      */
     public function testExecute($configAddressType)
     {
-        $eventMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getShippingAssignment', 'getQuote'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $observer = $this->createPartialMock(Observer::class, ['getEvent']);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getShippingAssignment', 'getQuote']);
+        $observer = $this->createPartialMock(\Magento\Framework\Event\Observer::class, ['getEvent']);
         $observer->expects($this->exactly(2))->method('getEvent')->willReturn($eventMock);
 
-        $shippingAssignmentMock = $this->getMockForAbstractClass(ShippingAssignmentInterface::class);
-        $quoteMock = $this->createMock(Quote::class);
+        $shippingAssignmentMock = $this->createMock(\Magento\Quote\Api\Data\ShippingAssignmentInterface::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
 
         $eventMock->expects($this->once())->method('getShippingAssignment')->willReturn($shippingAssignmentMock);
         $eventMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
 
-        $shippingMock = $this->getMockForAbstractClass(ShippingInterface::class);
+        $shippingMock = $this->createMock(\Magento\Quote\Api\Data\ShippingInterface::class);
         $shippingAssignmentMock->expects($this->once())->method('getShipping')->willReturn($shippingMock);
 
-        $quoteAddress = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address::class)->addMethods(
+        $quoteAddress = $this->createPartialMock(
+            \Magento\Quote\Model\Quote\Address::class,
             [
                 'getPrevQuoteCustomerGroupId',
                 'unsPrevQuoteCustomerGroupId',
                 'hasPrevQuoteCustomerGroupId',
-                'setCustomerGroupId'
+                'setCustomerGroupId',
+                'getQuote'
             ]
-        )
-            ->onlyMethods(['getQuote'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        );
         $shippingMock->expects($this->once())->method('getAddress')->willReturn($quoteAddress);
 
         $this->customerAddressHelperMock->expects($this->once())
             ->method('getTaxCalculationAddressType')
-            ->willReturn($configAddressType);
+            ->will($this->returnValue($configAddressType));
 
         $quoteAddress->expects($this->once())->method('hasPrevQuoteCustomerGroupId');
         $id = $quoteAddress->expects($this->any())->method('getPrevQuoteCustomerGroupId');
@@ -93,9 +78,9 @@ class RestoreCustomerGroupIdTest extends TestCase
     public function restoreCustomerGroupIdDataProvider()
     {
         return [
-            [AbstractAddress::TYPE_SHIPPING],
+            [\Magento\Customer\Model\Address\AbstractAddress::TYPE_SHIPPING],
             [null],
-            [AbstractAddress::TYPE_BILLING],
+            [\Magento\Customer\Model\Address\AbstractAddress::TYPE_BILLING],
         ];
     }
 }

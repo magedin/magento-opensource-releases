@@ -6,42 +6,37 @@
 
 namespace Magento\Catalog\Model\ProductLink;
 
+use Magento\Catalog\Api\Data;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\InputException;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Product\LinkTypeProvider;
-use Magento\Catalog\Api\ProductLinkManagementInterface;
 
-/**
- * Manage product links from api
- */
-class Management implements ProductLinkManagementInterface
+class Management implements \Magento\Catalog\Api\ProductLinkManagementInterface
 {
     /**
-     * @var ProductRepositoryInterface
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
 
     /**
-     * @var LinkTypeProvider
+     * @var \Magento\Catalog\Model\Product\LinkTypeProvider
      */
     protected $linkTypeProvider;
 
     /**
-     * @param ProductRepositoryInterface $productRepository
-     * @param LinkTypeProvider $linkTypeProvider
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param \Magento\Catalog\Model\Product\LinkTypeProvider $linkTypeProvider
      */
     public function __construct(
-        ProductRepositoryInterface $productRepository,
-        LinkTypeProvider $linkTypeProvider
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Catalog\Model\Product\LinkTypeProvider $linkTypeProvider
     ) {
         $this->productRepository = $productRepository;
         $this->linkTypeProvider = $linkTypeProvider;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getLinkedItemsByType($sku, $type)
     {
@@ -68,42 +63,47 @@ class Management implements ProductLinkManagementInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setProductLinks($sku, array $items)
     {
-
-        if (empty($items)) {
-            throw InputException::invalidFieldValue('items', 'empty array');
-        }
-
         $linkTypes = $this->linkTypeProvider->getLinkTypes();
 
         // Check if product link type is set and correct
-        foreach ($items as $newLink) {
-            $type = $newLink->getLinkType();
-            if ($type == null) {
-                throw InputException::requiredField("linkType");
-            }
-            if (!isset($linkTypes[$type])) {
-                throw new NoSuchEntityException(
-                    __('The "%1" link type wasn\'t found. Verify the type and try again.', $type)
-                );
+        if (!empty($items)) {
+            foreach ($items as $newLink) {
+                $type = $newLink->getLinkType();
+                if ($type == null) {
+                    throw InputException::requiredField("linkType");
+                }
+                if (!isset($linkTypes[$type])) {
+                    throw new NoSuchEntityException(
+                        __('The "%1" link type wasn\'t found. Verify the type and try again.', $type)
+                    );
+                }
             }
         }
 
         $product = $this->productRepository->get($sku);
 
+        // Replace only links of the specified type
         $existingLinks = $product->getProductLinks();
-        $newLinks = array_merge($existingLinks, $items);
-
+        $newLinks = [];
+        if (!empty($existingLinks)) {
+            foreach ($existingLinks as $link) {
+                if ($link->getLinkType() != $type) {
+                    $newLinks[] = $link;
+                }
+            }
+            $newLinks = array_merge($newLinks, $items);
+        } else {
+            $newLinks = $items;
+        }
         $product->setProductLinks($newLinks);
         try {
             $this->productRepository->save($product);
         } catch (\Exception $exception) {
-            throw new CouldNotSaveException(
-                __('The linked products data is invalid. Verify the data and try again.')
-            );
+            throw new CouldNotSaveException(__('The linked products data is invalid. Verify the data and try again.'));
         }
 
         return true;

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Fedex\Test\Unit\Model;
 
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
@@ -39,8 +37,7 @@ use Magento\Shipping\Model\Tracking\Result\StatusFactory;
 use Magento\Shipping\Model\Tracking\ResultFactory;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -48,7 +45,7 @@ use Psr\Log\LoggerInterface;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CarrierTest extends TestCase
+class CarrierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -110,12 +107,12 @@ class CarrierTest extends TestCase
      */
     private $currencyFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helper = new ObjectManager($this);
         $this->scope = $this->getMockBuilder(ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->scope->expects($this->any())
             ->method('getValue')
@@ -361,6 +358,7 @@ class CarrierTest extends TestCase
             [12.12, 'USD', 'USD', 'RATED_LIST_SHIPMENT', 12.12, 0],
             [38.9, 'USD', 'USD', 'PAYOR_LIST_SHIPMENT', 38.9],
             [38.9, 'USD', 'USD', 'PAYOR_LIST_SHIPMENT', 38.9, 0],
+            [10.0, 'SID', 'USD', 'PAYOR_LIST_SHIPMENT', 10.0, 0],
         ];
     }
 
@@ -459,7 +457,7 @@ class CarrierTest extends TestCase
         $this->carrier->getTracking($tracking);
         $tracks = $this->carrier->getResult()->getAllTrackings();
 
-        $this->assertCount(1, $tracks);
+        $this->assertEquals(1, count($tracks));
 
         /** @var Error $current */
         $current = $tracks[0];
@@ -516,7 +514,7 @@ class CarrierTest extends TestCase
             ->willReturn($status);
 
         $tracks = $this->carrier->getTracking($tracking)->getAllTrackings();
-        $this->assertCount(1, $tracks);
+        $this->assertEquals(1, count($tracks));
 
         $current = $tracks[0];
         $fields = [
@@ -640,11 +638,11 @@ class CarrierTest extends TestCase
 
         $this->carrier->getTracking($tracking);
         $tracks = $this->carrier->getResult()->getAllTrackings();
-        $this->assertCount(1, $tracks);
+        $this->assertEquals(1, count($tracks));
 
         $current = $tracks[0];
         $this->assertNotEmpty($current['progressdetail']);
-        $this->assertCount(1, $current['progressdetail']);
+        $this->assertEquals(1, count($current['progressdetail']));
 
         $event = $current['progressdetail'][0];
         $fields = ['activity', 'deliverylocation'];
@@ -748,7 +746,7 @@ class CarrierTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getBaseCurrencyCode'])
             ->getMock();
-        $storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $storeManager = $this->createMock(StoreManagerInterface::class);
         $storeManager->expects($this->any())
             ->method('getStore')
             ->willReturn($store);
@@ -762,7 +760,7 @@ class CarrierTest extends TestCase
      */
     private function getRateMethodFactory()
     {
-        $priceCurrency = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $priceCurrency = $this->createMock(PriceCurrencyInterface::class);
         $rateMethod = $this->getMockBuilder(Method::class)
             ->setConstructorArgs(['priceCurrency' => $priceCurrency])
             ->setMethods(null)

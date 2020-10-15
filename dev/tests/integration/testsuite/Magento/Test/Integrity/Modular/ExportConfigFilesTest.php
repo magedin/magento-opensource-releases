@@ -14,7 +14,7 @@ class ExportConfigFilesTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var $moduleDirSearch \Magento\Framework\Component\DirSearch */
@@ -25,9 +25,9 @@ class ExportConfigFilesTest extends \PHPUnit\Framework\TestCase
         );
 
         $validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
-        $validationStateMock->expects($this->any())->method('isValidationRequired')->willReturn(true);
+        $validationStateMock->expects($this->any())->method('isValidationRequired')->will($this->returnValue(true));
         $fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
-        $fileResolverMock->expects($this->any())->method('get')->willReturn($xmlFiles);
+        $fileResolverMock->expects($this->any())->method('get')->will($this->returnValue($xmlFiles));
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         $this->_model = $objectManager->create(

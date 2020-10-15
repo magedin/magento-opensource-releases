@@ -3,52 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order;
 
-use Magento\Framework\EntityManager\HydratorInterface;
 use Magento\Framework\EntityManager\HydratorPool;
 use Magento\Sales\Api\Data\ShipmentCommentCreationInterface;
-use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemCreationInterface;
 use Magento\Sales\Api\Data\ShipmentTrackCreationInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Shipment\Track;
-use Magento\Sales\Model\Order\Shipment\TrackFactory;
-use Magento\Sales\Model\Order\ShipmentDocumentFactory;
-use Magento\Sales\Model\Order\ShipmentDocumentFactory\ExtensionAttributesProcessor;
 use Magento\Sales\Model\Order\ShipmentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Sales\Model\Order\ShipmentDocumentFactory;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Api\Data\ShipmentInterface;
+use Magento\Sales\Model\Order\Shipment\TrackFactory;
+use Magento\Sales\Model\Order\Shipment\Track;
+use Magento\Framework\EntityManager\HydratorInterface;
+use Magento\Sales\Model\Order\ShipmentDocumentFactory\ExtensionAttributesProcessor;
 
 /**
+ * Class ShipmentDocumentFactoryTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShipmentDocumentFactoryTest extends TestCase
+class ShipmentDocumentFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ShipmentFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|ShipmentFactory
      */
     private $shipmentFactoryMock;
 
     /**
-     * @var MockObject|Order
+     * @var \PHPUnit_Framework_MockObject_MockObject|Order
      */
     private $orderMock;
 
     /**
-     * @var MockObject|ShipmentItemCreationInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|ShipmentItemCreationInterface
      */
     private $itemMock;
 
     /**
-     * @var MockObject|ShipmentCommentCreationInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|ShipmentCommentCreationInterface
      */
     private $commentMock;
 
     /**
-     * @var MockObject|ShipmentInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|ShipmentInterface
      */
     private $shipmentMock;
 
@@ -58,31 +55,31 @@ class ShipmentDocumentFactoryTest extends TestCase
     private $shipmentDocumentFactory;
 
     /**
-     * @var MockObject|HydratorPool
+     * @var \PHPUnit_Framework_MockObject_MockObject|HydratorPool
      */
     private $hydratorPoolMock;
 
     /**
-     * @var MockObject|TrackFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|TrackFactory
      */
     private $trackFactoryMock;
 
     /**
-     * @var MockObject|HydratorInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|HydratorInterface
      */
     private $hydratorMock;
 
     /**
-     * @var MockObject|ExtensionAttributesProcessor
+     * @var \PHPUnit_Framework_MockObject_MockObject|ExtensionAttributesProcessor
      */
     private $extensionAttributeProcessorMock;
 
     /**
-     * @var MockObject|Track
+     * @var \PHPUnit_Framework_MockObject_MockObject|Track
      */
     private $trackMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->shipmentFactoryMock = $this->getMockBuilder(ShipmentFactory::class)
             ->disableOriginalConstructor()
@@ -94,11 +91,11 @@ class ShipmentDocumentFactoryTest extends TestCase
 
         $this->itemMock = $this->getMockBuilder(ShipmentItemCreationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->commentMock = $this->getMockBuilder(ShipmentCommentCreationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->shipmentMock = $this->getMockBuilder(ShipmentInterface::class)
             ->disableOriginalConstructor()

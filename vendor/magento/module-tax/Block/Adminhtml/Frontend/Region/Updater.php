@@ -5,9 +5,7 @@
  */
 namespace Magento\Tax\Block\Adminhtml\Frontend\Region;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 class Updater extends \Magento\Config\Block\System\Config\Form\Field
 {
@@ -17,30 +15,20 @@ class Updater extends \Magento\Config\Block\System\Config\Form\Field
     protected $_directoryHelper;
 
     /**
-     * @var SecureHtmlRenderer
-     */
-    private $secureRenderer;
-
-    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureRenderer
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Directory\Helper\Data $directoryHelper,
-        array $data = [],
-        ?SecureHtmlRenderer $secureRenderer = null
+        array $data = []
     ) {
         $this->_directoryHelper = $directoryHelper;
         parent::__construct($context, $data);
-        $this->secureRenderer = $secureRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
     }
 
     /**
-     * Return element html.
-     *
      * @param AbstractElement $element
      * @return string
      */
@@ -48,7 +36,8 @@ class Updater extends \Magento\Config\Block\System\Config\Form\Field
     {
         $html = parent::_getElementHtml($element);
 
-        $js = 'require(["prototype", "mage/adminhtml/form"], function(){
+        $js = '<script>
+              require(["prototype", "mage/adminhtml/form"], function(){
                updater = new RegionUpdater("tax_defaults_country", "none", "tax_defaults_region", %s, "nullify");
                if(updater.lastCountryId) {
                    var tmpRegionId = $("tax_defaults_region").value;
@@ -60,12 +49,10 @@ class Updater extends \Magento\Config\Block\System\Config\Form\Field
                } else {
                    updater.update();
                }
-                });';
+                });
+               </script>';
 
-        $scriptString = sprintf($js, $this->_directoryHelper->getRegionJson());
-
-        $html .= /* @noEscape */ $this->secureRenderer->renderTag('script', [], $scriptString, false);
-
+        $html .= sprintf($js, $this->_directoryHelper->getRegionJson());
         return $html;
     }
 }

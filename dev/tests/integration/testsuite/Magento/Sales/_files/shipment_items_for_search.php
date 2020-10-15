@@ -4,26 +4,18 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Payment\Helper\Data;
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\Sales\Model\Order\ShipmentFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'default_rollback.php';
+require __DIR__ . '/order.php';
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
 /** @var Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 $payment = $order->getPayment();
-$paymentInfoBlock = $objectManager->get(Data::class)
+$paymentInfoBlock = Bootstrap::getObjectManager()->get(Data::class)
     ->getInfoBlock($payment);
 $payment->setBlockMock($paymentInfoBlock);
 
@@ -86,7 +78,7 @@ $items = [];
 foreach ($order->getItems() as $orderItem) {
     $items[$orderItem->getId()] = $orderItem->getQtyOrdered();
 }
-$shipment = $objectManager->get(ShipmentFactory::class)->create($order, $items);
+$shipment = Bootstrap::getObjectManager()->get(ShipmentFactory::class)->create($order, $items);
 $shipment->setPackages([['1'], ['2']]);
 $shipment->setShipmentStatus(\Magento\Sales\Model\Order\Shipment::STATUS_NEW);
 $shipment->save();

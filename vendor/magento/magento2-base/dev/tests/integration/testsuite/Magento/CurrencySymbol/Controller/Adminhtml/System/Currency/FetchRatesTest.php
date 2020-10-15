@@ -9,7 +9,7 @@ namespace Magento\CurrencySymbol\Controller\Adminhtml\System\Currency;
 use Magento\Framework\Escaper;
 
 /**
- * Test for fetchRates action
+ * Fetch Rates Test
  */
 class FetchRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
@@ -21,7 +21,7 @@ class FetchRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendCont
     /**
      * Initial setup
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->escaper = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             Escaper::class
@@ -45,7 +45,7 @@ class FetchRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendCont
         $this->dispatch('backend/admin/system_currency/fetchRates');
 
         $this->assertSessionMessages(
-            $this->containsEqual('The Import Service is incorrect. Verify the service and try again.'),
+            $this->contains('The Import Service is incorrect. Verify the service and try again.'),
             \Magento\Framework\Message\MessageInterface::TYPE_ERROR
         );
     }
@@ -65,7 +65,7 @@ class FetchRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendCont
         $this->dispatch('backend/admin/system_currency/fetchRates');
 
         $this->assertSessionMessages(
-            $this->containsEqual(
+            $this->contains(
                 $this->escaper->escapeHtml(
                     "The import model can't be initialized. Verify the model and try again."
                 )

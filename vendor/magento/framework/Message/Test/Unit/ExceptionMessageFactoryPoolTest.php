@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Message\Test\Unit;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ExceptionMessageFactoryInterface;
-use Magento\Framework\Message\ExceptionMessageFactoryPool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Exception\LocalizedException;
 
-class ExceptionMessageFactoryPoolTest extends TestCase
+class ExceptionMessageFactoryPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ExceptionMessageFactoryInterface|MockObject
+     * @var ExceptionMessageFactoryInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $defaultExceptionMessageFactoryMock;
 
@@ -26,24 +22,24 @@ class ExceptionMessageFactoryPoolTest extends TestCase
     private $specificExceptionMessageFactoryMock;
 
     /**
-     * @var ExceptionMessageFactoryInterface[]|MockObject
+     * @var ExceptionMessageFactoryInterface[] | \PHPUnit_Framework_MockObject_MockObject
      */
     private $exceptionMessageFactoryMapMock;
 
     /**
-     * @var ExceptionMessageFactoryPool
+     * @var \Magento\Framework\Message\ExceptionMessageFactoryPool
      */
     private $exceptionMessageFactoryPool;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->specificExceptionMessageFactoryMock = $this->getMockForAbstractClass(ExceptionMessageFactoryInterface::class);
-        $this->defaultExceptionMessageFactoryMock = $this->getMockForAbstractClass(ExceptionMessageFactoryInterface::class);
+        $this->specificExceptionMessageFactoryMock = $this->createMock(ExceptionMessageFactoryInterface::class);
+        $this->defaultExceptionMessageFactoryMock = $this->createMock(ExceptionMessageFactoryInterface::class);
 
         $this->exceptionMessageFactoryMapMock = [
-            LocalizedException::class => $this->specificExceptionMessageFactoryMock
+            \Magento\Framework\Exception\LocalizedException::class => $this->specificExceptionMessageFactoryMock
         ];
-        $this->exceptionMessageFactoryPool = new ExceptionMessageFactoryPool(
+        $this->exceptionMessageFactoryPool = new \Magento\Framework\Message\ExceptionMessageFactoryPool(
             $this->defaultExceptionMessageFactoryMock,
             $this->exceptionMessageFactoryMapMock
         );

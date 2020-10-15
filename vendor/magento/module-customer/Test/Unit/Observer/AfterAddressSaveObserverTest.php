@@ -3,36 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Observer;
 
-use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Customer\Api\GroupManagementInterface;
 use Magento\Customer\Helper\Address as HelperAddress;
 use Magento\Customer\Model\Address\AbstractAddress;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Session;
 use Magento\Customer\Model\Vat;
 use Magento\Customer\Observer\AfterAddressSaveObserver;
 use Magento\Customer\Observer\BeforeAddressSaveObserver;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\State as AppState;
-use Magento\Framework\DataObject;
 use Magento\Framework\Escaper;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AfterAddressSaveObserverTest extends TestCase
+class AfterAddressSaveObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AfterAddressSaveObserver
@@ -40,58 +30,58 @@ class AfterAddressSaveObserverTest extends TestCase
     protected $model;
 
     /**
-     * @var Vat|MockObject
+     * @var Vat |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $vat;
 
     /**
-     * @var HelperAddress|MockObject
+     * @var HelperAddress |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperAddress;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var GroupManagementInterface|MockObject
+     * @var GroupManagementInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $groupManagement;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManager;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaper;
 
     /**
-     * @var AppState|MockObject
+     * @var AppState |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $appState;
 
     /**
-     * @var Customer|MockObject
+     * @var \Magento\Customer\Model\Customer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->vat = $this->getMockBuilder(Vat::class)
+        $this->vat = $this->getMockBuilder(\Magento\Customer\Model\Vat::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -99,26 +89,26 @@ class AfterAddressSaveObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->registry = $this->getMockBuilder(Registry::class)
+        $this->registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->group = $this->getMockBuilder(GroupInterface::class)
+        $this->group = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->setMethods(['getId'])
             ->getMockForAbstractClass();
         $this->group->expects($this->any())->method('getId')->willReturn(1);
-        $this->groupManagement = $this->getMockBuilder(GroupManagementInterface::class)
+        $this->groupManagement = $this->getMockBuilder(\Magento\Customer\Api\GroupManagementInterface::class)
             ->setMethods(['getDefaultGroup'])
             ->getMockForAbstractClass();
         $this->groupManagement->expects($this->any())->method('getDefaultGroup')->willReturn($this->group);
 
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $this->escaper = $this->getMockBuilder(Escaper::class)
+        $this->escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -126,7 +116,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -160,11 +150,11 @@ class AfterAddressSaveObserverTest extends TestCase
         $registeredAddressId,
         $configAddressType
     ) {
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $customer = $this->getMockBuilder(Customer::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getDefaultBilling', 'getStore', 'getDefaultShipping', 'getGroupId'])
             ->getMock();
@@ -218,7 +208,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->method('getIsDefaultShipping')
             ->willReturn($addressId);
 
-        $observer = $this->getMockBuilder(Observer::class)
+        $observer = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getCustomerAddress',
@@ -263,11 +253,11 @@ class AfterAddressSaveObserverTest extends TestCase
 
     public function testAfterAddressSaveException()
     {
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $customer = $this->getMockBuilder(Customer::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $customer->expects($this->any())
@@ -292,7 +282,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->method('getVatId')
             ->willThrowException(new \Exception('Exception'));
 
-        $observer = $this->getMockBuilder(Observer::class)
+        $observer = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getCustomerAddress',
@@ -334,17 +324,17 @@ class AfterAddressSaveObserverTest extends TestCase
         $isCountryInEU,
         $defaultGroupId
     ) {
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $dataGroup = $this->getMockBuilder(GroupInterface::class)
+        $dataGroup = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->getMockForAbstractClass();
         $dataGroup->expects($this->any())
             ->method('getId')
             ->willReturn($defaultGroupId);
 
-        $customer = $this->getMockBuilder(Customer::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getStore',
@@ -393,7 +383,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->method('getCountry')
             ->willReturn($countryId);
 
-        $observer = $this->getMockBuilder(Observer::class)
+        $observer = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getCustomerAddress',
@@ -461,11 +451,11 @@ class AfterAddressSaveObserverTest extends TestCase
         $resultInvalidMessage,
         $resultErrorMessage
     ) {
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $validationResult = $this->getMockBuilder(DataObject::class)
+        $validationResult = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getIsValid',
@@ -479,7 +469,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->method('getRequestSuccess')
             ->willReturn($resultRequestSuccess);
 
-        $customer = $this->getMockBuilder(Customer::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getStore',
@@ -542,7 +532,7 @@ class AfterAddressSaveObserverTest extends TestCase
             ->with($validationResult)
             ->willReturnSelf();
 
-        $observer = $this->getMockBuilder(Observer::class)
+        $observer = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getCustomerAddress',

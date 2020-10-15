@@ -4,35 +4,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Controller\Adminhtml\Indexer;
-
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\Page;
-use Magento\Indexer\Controller\Adminhtml\Indexer\MassOnTheFly;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class MassOnTheFlyTest extends TestCase
+class MassOnTheFlyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MassOnTheFly
+     * @var \Magento\Indexer\Controller\Adminhtml\Indexer\MassOnTheFly
      */
     protected $model;
 
@@ -42,62 +22,62 @@ class MassOnTheFlyTest extends TestCase
     protected $contextMock;
 
     /**
-     * @var ViewInterface
+     * @var \Magento\Framework\App\ViewInterface
      */
     protected $view;
 
     /**
-     * @var Page
+     * @var \Magento\Framework\View\Result\Page
      */
     protected $page;
 
     /**
-     * @var Config
+     * @var \Magento\Framework\View\Page\Config
      */
     protected $config;
 
     /**
-     * @var Title
+     * @var \Magento\Framework\View\Page\Title
      */
     protected $title;
 
     /**
-     * @var RequestInterface
+     * @var \Magento\Framework\App\RequestInterface
      */
     protected $request;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var ManagerInterface
+     * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
 
     /**
-     * @var IndexerRegistry
+     * @var \Magento\Framework\Indexer\IndexerRegistry
      */
     protected $indexReg;
 
     /**
-     * @return ResponseInterface
+     * @return \Magento\Framework\App\ResponseInterface
      */
     protected $response;
 
     /**
-     * @var ActionFlag
+     * @var \Magento\Framework\App\ActionFlag
      */
     protected $actionFlag;
 
     /**
-     * @var Data
+     * @var \Magento\Backend\Helper\Data
      */
     protected $helper;
 
     /**
-     * @var  Session
+     * @var  \Magento\Backend\Model\Session
      */
     protected $session;
 
@@ -105,35 +85,37 @@ class MassOnTheFlyTest extends TestCase
      * Set up test
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->createPartialMock(Context::class, [
-            'getAuthorization',
-            'getSession',
-            'getActionFlag',
-            'getAuth',
-            'getView',
-            'getHelper',
-            'getBackendUrl',
-            'getFormKeyValidator',
-            'getLocaleResolver',
-            'getCanUseBaseUrl',
-            'getRequest',
-            'getResponse',
-            'getObjectManager',
-            'getMessageManager'
-        ]);
+        $this->contextMock = $this->createPartialMock(\Magento\Backend\App\Action\Context::class, [
+                'getAuthorization',
+                'getSession',
+                'getActionFlag',
+                'getAuth',
+                'getView',
+                'getHelper',
+                'getBackendUrl',
+                'getFormKeyValidator',
+                'getLocaleResolver',
+                'getCanUseBaseUrl',
+                'getRequest',
+                'getResponse',
+                'getObjectManager',
+                'getMessageManager'
+            ]);
 
-        $this->response = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setRedirect'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
+        $this->response = $this->createPartialMock(
+            \Magento\Framework\App\ResponseInterface::class,
+            ['setRedirect', 'sendResponse']
+        );
 
-        $this->view = $this->getMockBuilder(ViewInterface::class)
-            ->addMethods(['getConfig', 'getTitle'])
-            ->onlyMethods([
+        $this->view = $this->createPartialMock(
+            \Magento\Framework\App\ViewInterface::class,
+            [
                 'loadLayout',
                 'getPage',
+                'getConfig',
+                'getTitle',
                 'renderLayout',
                 'loadLayoutUpdates',
                 'getDefaultLayoutHandle',
@@ -144,44 +126,40 @@ class MassOnTheFlyTest extends TestCase
                 'addActionLayoutHandles',
                 'setIsLayoutLoaded',
                 'isLayoutLoaded'
-            ])
-            ->getMockForAbstractClass();
+            ]
+        );
 
-        $this->session = $this->getMockBuilder(Session::class)
-            ->addMethods(['setIsUrlNotice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->session = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['setIsUrlNotice']);
         $this->session->expects($this->any())->method('setIsUrlNotice')->willReturn($this->objectManager);
-        $this->actionFlag = $this->createPartialMock(ActionFlag::class, ['get']);
+        $this->actionFlag = $this->createPartialMock(\Magento\Framework\App\ActionFlag::class, ['get']);
         $this->actionFlag->expects($this->any())->method("get")->willReturn($this->objectManager);
-        $this->objectManager = $this->getMockBuilder(ObjectManager::class)
-            ->addMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->objectManager = $this->createPartialMock(
+            \Magento\Framework\TestFramework\Unit\Helper\ObjectManager::class,
+            ['get']
+        );
         $this->request = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             ['getParam', 'getRequest'],
             '',
             false
         );
 
         $this->response->expects($this->any())->method("setRedirect")->willReturn(1);
-        $this->page = $this->createMock(Page::class);
-        $this->config = $this->createMock(Page::class);
-        $this->title = $this->createMock(Title::class);
+        $this->page = $this->createMock(\Magento\Framework\View\Result\Page::class);
+        $this->config = $this->createMock(\Magento\Framework\View\Result\Page::class);
+        $this->title = $this->createMock(\Magento\Framework\View\Page\Title::class);
         $this->messageManager = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Message\ManagerInterface::class,
             ['addError', 'addSuccess'],
             '',
             false
         );
 
-        $this->indexReg = $this->getMockBuilder(IndexerRegistry::class)
-            ->addMethods(['setScheduled'])
-            ->onlyMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->helper = $this->createPartialMock(Data::class, ['getUrl']);
+        $this->indexReg = $this->createPartialMock(
+            \Magento\Framework\Indexer\IndexerRegistry::class,
+            ['get', 'setScheduled']
+        );
+        $this->helper = $this->createPartialMock(\Magento\Backend\Helper\Data::class, ['getUrl']);
         $this->contextMock->expects($this->any())->method("getObjectManager")->willReturn($this->objectManager);
         $this->contextMock->expects($this->any())->method("getRequest")->willReturn($this->request);
         $this->contextMock->expects($this->any())->method("getResponse")->willReturn($this->response);
@@ -199,38 +177,38 @@ class MassOnTheFlyTest extends TestCase
      */
     public function testExecute($indexerIds, $exception, $expectsExceptionValues)
     {
-        $this->model = new MassOnTheFly($this->contextMock);
+        $this->model = new \Magento\Indexer\Controller\Adminhtml\Indexer\MassOnTheFly($this->contextMock);
         $this->request->expects($this->any())
             ->method('getParam')->with('indexer_ids')
-            ->willReturn($indexerIds);
+            ->will($this->returnValue($indexerIds));
 
         if (!is_array($indexerIds)) {
             $this->messageManager->expects($this->once())
                 ->method('addError')->with(__('Please select indexers.'))
-                ->willReturn(1);
+                ->will($this->returnValue(1));
         } else {
             $this->objectManager->expects($this->any())
-                ->method('get')->with(IndexerRegistry::class)
-                ->willReturn($this->indexReg);
+                ->method('get')->with(\Magento\Framework\Indexer\IndexerRegistry::class)
+                ->will($this->returnValue($this->indexReg));
             $indexerInterface = $this->getMockForAbstractClass(
-                IndexerInterface::class,
+                \Magento\Framework\Indexer\IndexerInterface::class,
                 ['setScheduled'],
                 '',
                 false
             );
             $this->indexReg->expects($this->any())
                 ->method('get')->with(1)
-                ->willReturn($indexerInterface);
+                ->will($this->returnValue($indexerInterface));
 
             if ($exception !== null) {
                 $indexerInterface->expects($this->any())
-                    ->method('setScheduled')->with(false)->willThrowException($exception);
+                    ->method('setScheduled')->with(false)->will($this->throwException($exception));
             } else {
                 $indexerInterface->expects($this->any())
-                    ->method('setScheduled')->with(false)->willReturn(1);
+                    ->method('setScheduled')->with(false)->will($this->returnValue(1));
             }
 
-            $this->messageManager->expects($this->any())->method('addSuccess')->willReturn(1);
+            $this->messageManager->expects($this->any())->method('addSuccess')->will($this->returnValue(1));
 
             if ($exception !== null) {
                 $this->messageManager->expects($this->exactly($expectsExceptionValues[2]))
@@ -267,7 +245,7 @@ class MassOnTheFlyTest extends TestCase
             ],
             'set3' => [
                 'idexers' => [1],
-                "exception" => new LocalizedException(__('Test Phrase')),
+                "exception" => new \Magento\Framework\Exception\LocalizedException(__('Test Phrase')),
                 "expectsException" => [0, 0, 1]
             ],
             'set4' => [

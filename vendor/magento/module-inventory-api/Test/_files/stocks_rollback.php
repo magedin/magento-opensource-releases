@@ -13,8 +13,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 
 /** @var StockRepositoryInterface $stockRepository */
 $stockRepository = Bootstrap::getObjectManager()->get(StockRepositoryInterface::class);
-$removeIndexData = Bootstrap::getObjectManager()->get(RemoveIndexData::class);
-
 foreach ([10, 20, 30] as $stockId) {
     try {
         //Unassign sales channels from stocks in order to delete given stocks.
@@ -30,9 +28,7 @@ foreach ([10, 20, 30] as $stockId) {
     } catch (NoSuchEntityException $e) {
         //Stock already removed
     }
-    try {
-        $removeIndexData->execute([$stockId]);
-    } catch (\Exception $exception) {
-        //Stock index data already removed
-    }
 }
+
+$removeIndexData = Bootstrap::getObjectManager()->get(RemoveIndexData::class);
+$removeIndexData->execute([10, 20, 30]);

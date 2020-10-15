@@ -65,8 +65,8 @@ abstract class AbstractScopeSniff implements Sniff
      *                               the scope, by calling the
      *                               processTokenOutsideScope method.
      *
-     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If the specified tokens arrays are empty
-     *                                                      or invalid.
+     * @see    PHP_CodeSniffer.getValidScopeTokeners()
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If the specified tokens array is empty.
      */
     public function __construct(
         array $scopeTokens,
@@ -132,20 +132,20 @@ abstract class AbstractScopeSniff implements Sniff
         $tokens = $phpcsFile->getTokens();
 
         $foundScope = false;
-        $skipTokens = [];
+        $skipPtrs   = [];
         foreach ($tokens[$stackPtr]['conditions'] as $scope => $code) {
             if (isset($this->scopeTokens[$code]) === true) {
-                $skipTokens[] = $this->processTokenWithinScope($phpcsFile, $stackPtr, $scope);
-                $foundScope   = true;
+                $skipPtrs[] = $this->processTokenWithinScope($phpcsFile, $stackPtr, $scope);
+                $foundScope = true;
             }
         }
 
         if ($this->listenOutside === true && $foundScope === false) {
-            $skipTokens[] = $this->processTokenOutsideScope($phpcsFile, $stackPtr);
+            $skipPtrs[] = $this->processTokenOutsideScope($phpcsFile, $stackPtr);
         }
 
-        if (empty($skipTokens) === false) {
-            return min($skipTokens);
+        if (empty($skipPtrs) === false) {
+            return min($skipPtrs);
         }
 
         return;

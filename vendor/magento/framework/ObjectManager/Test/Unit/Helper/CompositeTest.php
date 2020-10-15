@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Helper;
 
-use Magento\Framework\DataObject;
+use \Magento\Framework\ObjectManager\Helper\Composite;
+
 use Magento\Framework\ObjectManager\Helper\Composite as CompositeHelper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
-use PHPUnit\Framework\TestCase;
-
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompositeHelper
@@ -21,13 +18,13 @@ class CompositeTest extends TestCase
     protected $compositeHelper;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->compositeHelper = $this->objectManager->getObject(
             \Magento\Framework\ObjectManager\Helper\Composite::class
         );
@@ -35,12 +32,12 @@ class CompositeTest extends TestCase
 
     public function testFilterAndSortDeclaredComponents()
     {
-        $firstComponent = new DataObject();
-        $secondComponent = new DataObject();
-        $thirdComponent = new DataObject();
+        $firstComponent = new \Magento\Framework\DataObject();
+        $secondComponent = new \Magento\Framework\DataObject();
+        $thirdComponent = new \Magento\Framework\DataObject();
         $contexts = [
             [
-                'type' => new DataObject(),
+                'type' => new \Magento\Framework\DataObject(),
             ],
             [
                 'sortOrder' => 50,

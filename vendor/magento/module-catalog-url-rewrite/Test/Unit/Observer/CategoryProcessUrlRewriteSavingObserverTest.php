@@ -7,31 +7,28 @@ declare(strict_types=1);
 
 namespace Magento\CatalogUrlRewrite\Test\Unit\Observer;
 
-use Magento\Catalog\Model\Category;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
-use Magento\CatalogUrlRewrite\Model\Map\DatabaseMapPool;
-use Magento\CatalogUrlRewrite\Model\UrlRewriteBunchReplacer;
 use Magento\CatalogUrlRewrite\Observer\CategoryProcessUrlRewriteSavingObserver;
+use Magento\CatalogUrlRewrite\Model\UrlRewriteBunchReplacer;
 use Magento\CatalogUrlRewrite\Observer\UrlRewriteHandler;
+use Magento\CatalogUrlRewrite\Model\Map\DatabaseMapPool;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterfaceAlias;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Store\Model\ResourceModel\Group\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Catalog\Model\Category;
 
 /**
  * Unit tests for \Magento\CatalogUrlRewrite\Observer\CategoryProcessUrlRewriteSavingObserver class.
  */
-class CategoryProcessUrlRewriteSavingObserverTest extends TestCase
+class CategoryProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $observer;
 
     /**
-     * @var Category|MockObject
+     * @var \Magento\Catalog\Model\Category|\PHPUnit_Framework_MockObject_MockObject
      */
     private $category;
 
@@ -41,49 +38,54 @@ class CategoryProcessUrlRewriteSavingObserverTest extends TestCase
     private $categoryProcessUrlRewriteSavingObserver;
 
     /**
-     * @var CategoryUrlRewriteGenerator|MockObject
+     * @var CategoryUrlRewriteGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryUrlRewriteGeneratorMock;
 
     /**
-     * @var UrlRewriteBunchReplacer|MockObject
+     * @var UrlRewriteBunchReplacer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlRewriteBunchReplacerMock;
 
     /**
-     * @var UrlRewriteHandler|MockObject
+     * @var UrlRewriteHandler|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlRewriteHandlerMock;
 
     /**
-     * @var DatabaseMapPool|MockObject
+     * @var DatabaseMapPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $databaseMapPoolMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeGroupFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->observer = $this->createPartialMock(
-            Observer::class,
+            \Magento\Framework\Event\Observer::class,
             ['getEvent', 'getData']
         );
-        $this->category = $this->getMockBuilder(Category::class)
-            ->addMethods(['getChangedProductIds'])
-            ->onlyMethods(['hasData', 'getParentId', 'getStoreId', 'dataHasChangedFor'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->category = $this->createPartialMock(
+            Category::class,
+            [
+                'hasData',
+                'getParentId',
+                'getStoreId',
+                'dataHasChangedFor',
+                'getChangedProductIds',
+            ]
+        );
         $this->observer->expects($this->any())
             ->method('getEvent')
             ->willReturnSelf();

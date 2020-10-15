@@ -3,18 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Product;
 
 use Magento\Catalog\Model\Product;
 use Magento\ConfigurableProduct\Helper\Product\Options\Loader;
 use Magento\ConfigurableProduct\Model\Product\ReadHandler;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-class ReadHandlerTest extends TestCase
+/**
+ * Class ReadHandlerTest
+ */
+class ReadHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReadHandler
@@ -29,7 +29,7 @@ class ReadHandlerTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->optionLoader = $this->getMockBuilder(Loader::class)
             ->disableOriginalConstructor()

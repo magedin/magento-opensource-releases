@@ -3,7 +3,6 @@ namespace Codeception\Test;
 
 use Codeception\TestInterface;
 use Codeception\Util\ReflectionHelper;
-use SebastianBergmann\Timer\Duration;
 use SebastianBergmann\Timer\Timer;
 
 /**
@@ -72,11 +71,7 @@ abstract class Test implements TestInterface, Interfaces\Descriptive
         $status = self::STATUS_PENDING;
         $time = 0;
         $e = null;
-        $timer = null;
-        if (class_exists(Duration::class)) {
-            $timer = new Timer();
-        }
-
+        
         $result->startTest($this);
 
         foreach ($this->hooks as $hook) {
@@ -88,12 +83,8 @@ abstract class Test implements TestInterface, Interfaces\Descriptive
         $failedToStart = ReflectionHelper::readPrivateProperty($result, 'lastTestFailed');
 
         if (!$this->ignored && !$failedToStart) {
-            if (null !== $timer) {
-                $timer->start();
-            } else {
-                Timer::start();
-            }
 
+            Timer::start();
             try {
                 $this->test();
                 $status = self::STATUS_OK;
@@ -108,12 +99,7 @@ abstract class Test implements TestInterface, Interfaces\Descriptive
                 $e     = new \PHPUnit\Framework\ExceptionWrapper($e);
                 $status = self::STATUS_ERROR;
             }
-
-            if (null !== $timer) {
-                $time = $timer->stop()->asSeconds();
-            } else {
-                $time = Timer::stop();
-            }
+            $time = Timer::stop();
         }
 
         foreach (array_reverse($this->hooks) as $hook) {

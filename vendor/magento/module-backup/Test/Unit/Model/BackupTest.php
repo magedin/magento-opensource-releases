@@ -3,58 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backup\Test\Unit\Model;
 
-use Magento\Backup\Helper\Data;
-use Magento\Backup\Model\Backup;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * @covers \Magento\Backup\Model\Backup
  */
-class BackupTest extends TestCase
+class BackupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Backup
+     * @var \Magento\Backup\Model\Backup
      */
     protected $backupModel;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystemMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backup\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataHelperMock;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $this->filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dataHelperMock = $this->getMockBuilder(Data::class)
+        $this->dataHelperMock = $this->getMockBuilder(\Magento\Backup\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->directoryMock = $this->getMockBuilder(WriteInterface::class)
+        $this->directoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMock();
 
         $this->filesystemMock->expects($this->atLeastOnce())
@@ -64,7 +56,7 @@ class BackupTest extends TestCase
 
         $this->objectManager = new ObjectManager($this);
         $this->backupModel = $this->objectManager->getObject(
-            Backup::class,
+            \Magento\Backup\Model\Backup::class,
             [
                 'filesystem' => $this->filesystemMock,
                 'helper' => $this->dataHelperMock

@@ -22,7 +22,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
      */
     protected $_theme;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_model = $objectManager->create(\Magento\Theme\Model\Theme\File::class);
@@ -39,7 +39,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_model = null;
         $this->_data = [];

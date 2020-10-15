@@ -56,7 +56,7 @@ class GuestValidationTest extends \PHPUnit\Framework\TestCase
      */
     private $objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->checkoutSession = $this->objectManager->create(\Magento\Checkout\Model\Session::class);

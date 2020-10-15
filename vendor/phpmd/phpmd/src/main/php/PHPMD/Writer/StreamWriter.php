@@ -40,18 +40,18 @@ class StreamWriter extends AbstractWriter
     {
         if (is_resource($streamResourceOrUri) === true) {
             $this->stream = $streamResourceOrUri;
-            return;
-        }
-        $dirName = dirname($streamResourceOrUri);
-        if (file_exists($dirName) === false) {
-            mkdir($dirName, 0777, true);
-        }
-        if (file_exists($dirName) === false) {
-            $message = 'Cannot find output directory "' . $dirName . '".';
-            throw new \RuntimeException($message);
-        }
+        } else {
+            $dirName = dirname($streamResourceOrUri);
+            if (file_exists($dirName) === false) {
+                mkdir($dirName, 0777, true);
+            }
+            if (file_exists($dirName) === false) {
+                $message = 'Cannot find output directory "' . $dirName . '".';
+                throw new \RuntimeException($message);
+            }
 
-        $this->stream = fopen($streamResourceOrUri, 'wb');
+            $this->stream = fopen($streamResourceOrUri, 'wb');
+        }
     }
 
     /**

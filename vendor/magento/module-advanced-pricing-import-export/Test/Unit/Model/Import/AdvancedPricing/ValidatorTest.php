@@ -3,33 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AdvancedPricingImportExport\Test\Unit\Model\Import\AdvancedPricing;
 
 use Magento\AdvancedPricingImportExport\Model\Import\AdvancedPricing\Validator as Validator;
 use Magento\CatalogImportExport\Model\Import\Product\RowValidatorInterface as RowValidatorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator|MockObject
+     * @var Validator |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validator;
 
     /**
-     * @var Validator|MockObject
+     * @var Validator |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validators;
 
     /**
-     * @var RowValidatorInterface|MockObject
+     * @var RowValidatorInterface |\PHPUnit_Framework_MockObject_MockObject
      */
     protected $validatorTest;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->validatorTest = $this->getMockForAbstractClass(
             \Magento\CatalogImportExport\Model\Import\Product\RowValidatorInterface::class,
@@ -38,7 +34,7 @@ class ValidatorTest extends TestCase
             false
         );
         $messages = ['messages'];
-        $this->validatorTest->method('getMessages')->willReturn($messages);
+        $this->validatorTest->expects($this->any())->method('getMessages')->willReturn($messages);
         $this->validators = [$this->validatorTest];
 
         $this->validator = $this->getMockBuilder(

@@ -22,20 +22,4 @@ class TSample implements TSampleInterface
     {
         return '';
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getWithNull()
-    {
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getOnlyNull()
-    {
-        return null;
-    }
 }

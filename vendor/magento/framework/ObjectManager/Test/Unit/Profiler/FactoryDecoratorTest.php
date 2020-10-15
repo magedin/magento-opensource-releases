@@ -3,18 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Profiler;
 
-use Magento\Framework\ObjectManager\FactoryInterface;
-use Magento\Framework\ObjectManager\Profiler\Code\Generator\Logger;
-use Magento\Framework\ObjectManager\Profiler\FactoryDecorator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryDecoratorTest extends TestCase
+class FactoryDecoratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Name of the base class to wrap in logger
@@ -29,26 +21,26 @@ class FactoryDecoratorTest extends TestCase
     /**
      * Name of the class that generates wrappers - should not be wrapped by logger
      */
-    const GENERATOR_NAME = Logger::class;
+    const GENERATOR_NAME = \Magento\Framework\ObjectManager\Profiler\Code\Generator\Logger::class;
 
-    /** @var  MockObject|FactoryInterface*/
+    /** @var  \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\ObjectManager\FactoryInterface*/
     private $objectManagerMock;
 
-    /** @var  FactoryDecorator */
+    /** @var  \Magento\Framework\ObjectManager\Profiler\FactoryDecorator */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         require_once __DIR__ . '/../_files/logger_classes.php';
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->objectManagerMock = $this->getMockBuilder(FactoryInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManager\FactoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         // Instantiate SUT
         $this->model = $objectManager->getObject(
-            FactoryDecorator::class,
+            \Magento\Framework\ObjectManager\Profiler\FactoryDecorator::class,
             ['subject' => $this->objectManagerMock]
         );
     }
@@ -71,9 +63,7 @@ class FactoryDecoratorTest extends TestCase
     public function testCreateNeglectGenerator()
     {
         $arguments = [1, 2, 3];
-        $loggerMock = $this->getMockBuilder(self::GENERATOR_NAME)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $loggerMock = $this->getMockBuilder(self::GENERATOR_NAME)->disableOriginalConstructor()->getMock();
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\TemplateEngine;
 
 use Magento\Framework\View\Element\BlockInterface;
@@ -30,22 +28,13 @@ class Php implements TemplateEngineInterface
     protected $_helperFactory;
 
     /**
-     * @var object[]
-     */
-    private $blockVariables = [];
-
-    /**
      * Constructor
      *
      * @param \Magento\Framework\ObjectManagerInterface $helperFactory
-     * @param object[] $blockVariables
      */
-    public function __construct(
-        \Magento\Framework\ObjectManagerInterface $helperFactory,
-        array $blockVariables = []
-    ) {
+    public function __construct(\Magento\Framework\ObjectManagerInterface $helperFactory)
+    {
         $this->_helperFactory = $helperFactory;
-        $this->blockVariables = $blockVariables;
     }
 
     /**
@@ -54,11 +43,11 @@ class Php implements TemplateEngineInterface
      * Include the named PHTML template using the given block as the $this
      * reference, though only public methods will be accessible.
      *
-     * @param BlockInterface $block
-     * @param string $fileName
-     * @param array $dictionary
+     * @param BlockInterface           $block
+     * @param string                   $fileName
+     * @param array                    $dictionary
      * @return string
-     * @throws \Throwable
+     * @throws \Exception
      */
     public function render(BlockInterface $block, $fileName, array $dictionary = [])
     {
@@ -66,7 +55,6 @@ class Php implements TemplateEngineInterface
         try {
             $tmpBlock = $this->_currentBlock;
             $this->_currentBlock = $block;
-            $dictionary = array_merge($this->blockVariables, $dictionary);
             extract($dictionary, EXTR_SKIP);
             include $fileName;
             $this->_currentBlock = $tmpBlock;

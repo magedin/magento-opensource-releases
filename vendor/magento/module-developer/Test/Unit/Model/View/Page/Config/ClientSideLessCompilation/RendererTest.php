@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /***
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -7,39 +7,31 @@
 namespace Magento\Developer\Test\Unit\Model\View\Page\Config\ClientSideLessCompilation;
 
 use Magento\Developer\Model\View\Page\Config\ClientSideLessCompilation\Renderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\GroupedCollection;
-use Magento\Framework\View\Asset\PropertyGroup;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Framework\View\Page\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject|Renderer */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | Renderer */
     private $model;
 
-    /** @var  MockObject|GroupedCollection */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\View\Asset\GroupedCollection */
     private $assetCollectionMock;
 
-    /** @var  MockObject|Repository */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\View\Asset\Repository */
     private $assetRepo;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $pageConfigMock = $this->getMockBuilder(Config::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->assetCollectionMock = $this->getMockBuilder(GroupedCollection::class)
+        $this->assetCollectionMock = $this->getMockBuilder(\Magento\Framework\View\Asset\GroupedCollection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $pageConfigMock->expects($this->once())
             ->method('getAssetCollection')
             ->willReturn($this->assetCollectionMock);
-        $this->assetRepo = $this->getMockBuilder(Repository::class)
+        $this->assetRepo = $this->getMockBuilder(\Magento\Framework\View\Asset\Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $overriddenMocks = [
@@ -48,11 +40,11 @@ class RendererTest extends TestCase
         ];
 
         $mocks = $objectManager->getConstructArguments(
-            Renderer::class,
+            \Magento\Developer\Model\View\Page\Config\ClientSideLessCompilation\Renderer::class,
             $overriddenMocks
         );
         $this->model = $this->getMockBuilder(
-            Renderer::class
+            \Magento\Developer\Model\View\Page\Config\ClientSideLessCompilation\Renderer::class
         )
             ->setMethods(['renderAssetGroup'])
             ->setConstructorArgs($mocks)
@@ -66,17 +58,17 @@ class RendererTest extends TestCase
     {
         // Stubs for renderAssets
         $propertyGroups = [
-            $this->getMockBuilder(PropertyGroup::class)
+            $this->getMockBuilder(\Magento\Framework\View\Asset\PropertyGroup::class)
                 ->disableOriginalConstructor()
                 ->getMock()
         ];
         $this->assetCollectionMock->expects($this->once())->method('getGroups')->willReturn($propertyGroups);
 
         // Stubs for renderLessJsScripts code
-        $lessConfigFile = $this->getMockBuilder(File::class)
+        $lessConfigFile = $this->getMockBuilder(\Magento\Framework\View\Asset\File::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $lessMinFile = $this->getMockBuilder(File::class)
+        $lessMinFile = $this->getMockBuilder(\Magento\Framework\View\Asset\File::class)
             ->disableOriginalConstructor()
             ->getMock();
         $lessConfigUrl = 'less/config/url.css';
@@ -88,7 +80,7 @@ class RendererTest extends TestCase
             ['less/config.less.js', [], $lessConfigFile],
             ['less/less.min.js', [], $lessMinFile]
         ];
-        $this->assetRepo->expects($this->exactly(2))->method('createAsset')->willReturnMap($assetMap);
+        $this->assetRepo->expects($this->exactly(2))->method('createAsset')->will($this->returnValueMap($assetMap));
 
         $resultGroups = "<script src=\"$lessConfigUrl\"></script>\n<script src=\"$lessMinUrl\"></script>\n";
 

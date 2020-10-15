@@ -1,13 +1,9 @@
 <?php
-declare(strict_types=1);
-
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Quote\Api\Data\CartInterface;
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 return [
     'publishers' => [
         'test-publisher-1' => [
@@ -31,7 +27,7 @@ return [
             'name' => 'customer.created',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-1',
             "response_schema" => [
@@ -44,7 +40,7 @@ return [
             'name' => 'customer.created.one',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-1',
             "response_schema" => [
@@ -57,7 +53,7 @@ return [
             'name' => 'customer.created.one.two',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-1',
             "response_schema" => [
@@ -70,7 +66,7 @@ return [
             'name' => 'customer.created.two',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-1',
             "response_schema" => [
@@ -83,7 +79,7 @@ return [
             'name' => 'customer.updated',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-2',
             "response_schema" => [
@@ -96,7 +92,7 @@ return [
             'name' => 'customer.deleted',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CustomerInterface::class
+                'schema_value' => \Magento\Customer\Api\Data\CustomerInterface::class
             ],
             'publisher' => 'test-publisher-2',
             "response_schema" => [
@@ -109,7 +105,7 @@ return [
             'name' => 'cart.created',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CartInterface::class
+                'schema_value' => \Magento\Quote\Api\Data\CartInterface::class
             ],
             'publisher' => 'test-publisher-3',
             "response_schema" => [
@@ -122,7 +118,7 @@ return [
             'name' => 'cart.created.one',
             'schema' => [
                 'schema_type' => 'object',
-                'schema_value' => CartInterface::class
+                'schema_value' => \Magento\Quote\Api\Data\CartInterface::class
             ],
             'publisher' => 'test-publisher-3',
             "response_schema" => [
@@ -225,106 +221,48 @@ return [
         ],
     ],
     'binds' => [
-        'customer.created--magento--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "magento",
-            'topic' => "customer.created"
-        ],
-        'customer.created.one--magento--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "magento",
-            'topic' => "customer.created.one"
-        ],
-        'customer.created.one.two--magento--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "magento",
-            'topic' => "customer.created.one.two"
-        ],
-        'customer.created.two--magento--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "magento",
-            'topic' => "customer.created.two"
-        ],
-        'customer.updated--magento--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "magento",
-            'topic' => "customer.updated"
-        ],
-        'cart.created--test-exchange-1--test-queue-1' => [
-            'queue' => "test-queue-1",
-            'exchange' => "test-exchange-1",
-            'topic' => "cart.created"
-        ],
-        'customer.created--magento--test-queue-2' => [
-            'queue' => "test-queue-2",
-            'exchange' => "magento",
-            'topic' => "customer.created"
-        ],
-        'customer.deleted--magento--test-queue-2' => [
-            'queue' => "test-queue-2",
-            'exchange' => "magento",
-            'topic' => "customer.deleted"
-        ],
-        'cart.created--magento--test-queue-3' => [
-            'queue' => "test-queue-3",
-            'exchange' => "magento",
-            'topic' => "cart.created"
-        ],
-        'cart.created.one--magento--test-queue-3' => [
-            'queue' => "test-queue-3",
-            'exchange' => "magento",
-            'topic' => "cart.created.one"
-        ],
-        'cart.created--test-exchange-1--test-queue-3' => [
-            'queue' => "test-queue-3",
-            'exchange' => "test-exchange-1",
-            'topic' => "cart.created"
-        ],
-        'customer.*--magento--test-queue-4' => [
-            'queue' => "test-queue-4",
-            'exchange' => "magento",
-            'topic' => "customer.*"
-        ],
-        'customer.#--magento--test-queue-5' => [
-            'queue' => "test-queue-5",
-            'exchange' => "magento",
-            'topic' => "customer.#"
-        ],
-        'customer.*.one--magento--test-queue-6' => [
-            'queue' => "test-queue-6",
-            'exchange' => "magento",
-            'topic' => "customer.*.one"
-        ],
-        '*.created.*--magento--test-queue-7' => [
-            'queue' => "test-queue-7",
-            'exchange' => "magento",
-            'topic' => "*.created.*"
-        ],
-        '*.created.#--magento--test-queue-8' => [
-            'queue' => "test-queue-8",
-            'exchange' => "magento",
-            'topic' => "*.created.#"
-        ],
-        '#--magento--test-queue-9' => ['queue' => "test-queue-9", 'exchange' => "magento", 'topic' => "#"],
+        'customer.created--magento--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "magento", 'topic' => "customer.created"],
+        'customer.created.one--magento--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "magento", 'topic' => "customer.created.one"],
+        'customer.created.one.two--magento--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "magento", 'topic' => "customer.created.one.two"],
+        'customer.created.two--magento--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "magento", 'topic' => "customer.created.two"],
+        'customer.updated--magento--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "magento", 'topic' => "customer.updated"],
+        'cart.created--test-exchange-1--test-queue-1' =>
+            ['queue' => "test-queue-1", 'exchange' => "test-exchange-1", 'topic' => "cart.created"],
+        'customer.created--magento--test-queue-2' =>
+            ['queue' => "test-queue-2", 'exchange' => "magento", 'topic' => "customer.created"],
+        'customer.deleted--magento--test-queue-2' =>
+            ['queue' => "test-queue-2", 'exchange' => "magento", 'topic' => "customer.deleted"],
+        'cart.created--magento--test-queue-3' =>
+            ['queue' => "test-queue-3", 'exchange' => "magento", 'topic' => "cart.created"],
+        'cart.created.one--magento--test-queue-3' =>
+            ['queue' => "test-queue-3", 'exchange' => "magento", 'topic' => "cart.created.one"],
+        'cart.created--test-exchange-1--test-queue-3' =>
+            ['queue' => "test-queue-3", 'exchange' => "test-exchange-1", 'topic' => "cart.created"],
+        'customer.*--magento--test-queue-4' =>
+            ['queue' => "test-queue-4", 'exchange' => "magento", 'topic' => "customer.*"],
+        'customer.#--magento--test-queue-5' =>
+            ['queue' => "test-queue-5", 'exchange' => "magento", 'topic' => "customer.#"],
+        'customer.*.one--magento--test-queue-6' =>
+            ['queue' => "test-queue-6", 'exchange' => "magento", 'topic' => "customer.*.one"],
+        '*.created.*--magento--test-queue-7' =>
+            ['queue' => "test-queue-7", 'exchange' => "magento", 'topic' => "*.created.*"],
+        '*.created.#--magento--test-queue-8' =>
+            ['queue' => "test-queue-8", 'exchange' => "magento", 'topic' => "*.created.#"],
+        '#--magento--test-queue-9' =>
+            ['queue' => "test-queue-9", 'exchange' => "magento", 'topic' => "#"],
     ],
     'exchange_topic_to_queues_map' => [
         'magento--customer.created' => ['test-queue-1', 'test-queue-2', 'test-queue-4', 'test-queue-5', 'test-queue-9'],
-        'magento--customer.created.one' => [
-            'test-queue-1',
-            'test-queue-5',
-            'test-queue-6',
-            'test-queue-7',
-            'test-queue-8',
-            'test-queue-9'
-        ],
+        'magento--customer.created.one' =>
+            ['test-queue-1', 'test-queue-5', 'test-queue-6', 'test-queue-7', 'test-queue-8', 'test-queue-9'],
         'magento--customer.created.one.two' => ['test-queue-1', 'test-queue-5', 'test-queue-8', 'test-queue-9'],
-        'magento--customer.created.two' => [
-            'test-queue-1',
-            'test-queue-5',
-            'test-queue-7',
-            'test-queue-8',
-            'test-queue-9'
-        ],
+        'magento--customer.created.two' =>
+            ['test-queue-1', 'test-queue-5', 'test-queue-7', 'test-queue-8', 'test-queue-9'],
         'magento--customer.updated' => ['test-queue-1', 'test-queue-4', 'test-queue-5', 'test-queue-9'],
         'test-exchange-1--cart.created' => ['test-queue-1', 'test-queue-3'],
         'magento--customer.deleted' => ['test-queue-2', 'test-queue-4', 'test-queue-5', 'test-queue-9'],

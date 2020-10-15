@@ -3,28 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Webapi\Request;
-use Magento\Webapi\Model\Soap\Server;
-use PHPUnit\Framework\TestCase;
-
-class RequestTest extends TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Request */
+    /** @var \Magento\Framework\Webapi\Request */
     protected $request;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** Initialize SUT. */
-        $objectManager = new ObjectManager($this);
-        $this->request = $objectManager->getObject(Request::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->request = $objectManager->getObject(\Magento\Framework\Webapi\Request::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->request);
         parent::tearDown();
@@ -38,8 +31,8 @@ class RequestTest extends TestCase
     public function testGetRequestedServicesSuccess($requestParamServices, $expectedResult)
     {
         $requestParams = [
-            Server::REQUEST_PARAM_WSDL => true,
-            Server::REQUEST_PARAM_SERVICES => $requestParamServices,
+            \Magento\Webapi\Model\Soap\Server::REQUEST_PARAM_WSDL => true,
+            \Magento\Webapi\Model\Soap\Server::REQUEST_PARAM_SERVICES => $requestParamServices,
         ];
         $this->request->setParams($requestParams);
         $this->assertEquals($expectedResult, $this->request->getRequestedServices());

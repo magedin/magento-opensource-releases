@@ -90,7 +90,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('reviewGrid');
+        $this->setId('reviwGrid');
         $this->setDefaultSort('created_at');
     }
 

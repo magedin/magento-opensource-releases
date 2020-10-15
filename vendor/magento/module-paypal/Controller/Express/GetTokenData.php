@@ -152,10 +152,6 @@ class GetTokenData extends AbstractExpress implements HttpGetActionInterface
             $responseContent['error_message'] = __('Sorry, but something went wrong');
         }
 
-        if (!$responseContent['success']) {
-            $this->messageManager->addErrorMessage($responseContent['error_message']);
-        }
-
         return $controllerResult->setData($responseContent);
     }
 

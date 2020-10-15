@@ -10,8 +10,6 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Test for \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\DeleteFiles class.
- *
- * @magentoAppArea adminhtml
  */
 class DeleteFilesTest extends \PHPUnit\Framework\TestCase
 {
@@ -53,7 +51,7 @@ class DeleteFilesTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $directoryName = 'directory1';
@@ -182,7 +180,7 @@ class DeleteFilesTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         $filesystem = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->get(\Magento\Framework\Filesystem::class);

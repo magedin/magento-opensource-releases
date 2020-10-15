@@ -8,12 +8,12 @@ declare(strict_types=1);
 namespace Magento\Framework\Mail;
 
 use Magento\Framework\Mail\Exception\InvalidArgumentException;
-use Laminas\Mail\Address as LaminasAddress;
-use Laminas\Mail\AddressList;
-use Laminas\Mime\Message as LaminasMimeMessage;
+use Zend\Mail\Address as ZendAddress;
+use Zend\Mail\AddressList;
+use Zend\Mime\Message as ZendMimeMessage;
 
 /**
- * Magento Framework Email message
+ * Email message
  */
 class EmailMessage extends Message implements EmailMessageInterface
 {
@@ -28,6 +28,8 @@ class EmailMessage extends Message implements EmailMessageInterface
     private $addressFactory;
 
     /**
+     * EmailMessage constructor
+     *
      * @param MimeMessageInterface $body
      * @param array $to
      * @param MimeMessageInterfaceFactory $mimeMessageFactory
@@ -59,7 +61,7 @@ class EmailMessage extends Message implements EmailMessageInterface
         ?string $encoding = 'utf-8'
     ) {
         parent::__construct($encoding);
-        $mimeMessage = new LaminasMimeMessage();
+        $mimeMessage = new ZendMimeMessage();
         $mimeMessage->setParts($body->getParts());
         $this->zendMessage->setBody($mimeMessage);
         if ($subject) {
@@ -151,15 +153,15 @@ class EmailMessage extends Message implements EmailMessageInterface
      */
     public function getSender(): ?Address
     {
-        /** @var LaminasAddress $laminasSender */
-        if (!$laminasSender = $this->zendMessage->getSender()) {
+        /** @var ZendAddress $zendSender */
+        if (!$zendSender = $this->zendMessage->getSender()) {
             return null;
         }
 
         return $this->addressFactory->create(
             [
-                'email' => $laminasSender->getEmail(),
-                'name' => $laminasSender->getName()
+                'email' => $zendSender->getEmail(),
+                'name' => $zendSender->getName()
             ]
         );
     }
@@ -220,11 +222,11 @@ class EmailMessage extends Message implements EmailMessageInterface
      */
     private function convertAddressArrayToAddressList(array $arrayList): AddressList
     {
-        $laminasAddressList = new AddressList();
+        $zendAddressList = new AddressList();
         foreach ($arrayList as $address) {
-            $laminasAddressList->add($address->getEmail(), $address->getName());
+            $zendAddressList->add($address->getEmail(), $address->getName());
         }
 
-        return $laminasAddressList;
+        return $zendAddressList;
     }
 }

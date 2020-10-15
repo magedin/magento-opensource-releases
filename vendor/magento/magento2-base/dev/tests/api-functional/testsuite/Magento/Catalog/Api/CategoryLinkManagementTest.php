@@ -39,7 +39,7 @@ class CategoryLinkManagementTest extends WebapiAbstract
         try {
             $this->getAssignedProducts(-1);
         } catch (\Exception $e) {
-            $this->assertStringContainsString('No such entity with %fieldName = %fieldValue', $e->getMessage());
+            $this->assertContains('No such entity with %fieldName = %fieldValue', $e->getMessage());
         }
     }
 

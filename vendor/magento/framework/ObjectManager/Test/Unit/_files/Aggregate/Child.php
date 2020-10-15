@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Test\Di\Aggregate;
 
-use Magento\Test\Di\DiInterface;
-use Magento\Test\Di\DiParent;
-
-class Child extends AggregateParent
+class Child extends \Magento\Test\Di\Aggregate\AggregateParent
 {
     public $secondScalar;
 
@@ -18,8 +13,8 @@ class Child extends AggregateParent
 
     /**
      * Child constructor.
-     * @param DiInterface $interface
-     * @param DiParent $parent
+     * @param \Magento\Test\Di\DiInterface $interface
+     * @param \Magento\Test\Di\DiParent $parent
      * @param \Magento\Test\Di\Child $child
      * @param $scalar
      * @param $secondScalar
@@ -27,8 +22,8 @@ class Child extends AggregateParent
      * @param string $secondOptionalScalar
      */
     public function __construct(
-        DiInterface $interface,
-        DiParent $parent,
+        \Magento\Test\Di\DiInterface $interface,
+        \Magento\Test\Di\DiParent $parent,
         \Magento\Test\Di\Child $child,
         $scalar,
         $secondScalar,

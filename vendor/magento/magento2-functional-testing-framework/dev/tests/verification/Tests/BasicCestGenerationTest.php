@@ -10,7 +10,6 @@ use tests\util\MftfTestCase;
 class BasicCestGenerationTest extends MftfTestCase
 {
     /**
-     * BasicFunctionalTest:
      * Tests flat generation of a hardcoded test file with no external references.
      *
      * @throws \Exception
@@ -19,30 +18,6 @@ class BasicCestGenerationTest extends MftfTestCase
     public function testBasicGeneration()
     {
         $this->generateAndCompareTest('BasicFunctionalTest');
-    }
-
-    /**
-     * MergeMassViaInsertAfter:
-     * Tests flat generation of a hardcoded test file with no external references.
-     *
-     * @throws \Exception
-     * @throws \Magento\FunctionalTestingFramework\Exceptions\TestReferenceException
-     */
-    public function testMergeMassViaInsertAfter()
-    {
-        $this->generateAndCompareTest('MergeMassViaInsertAfter');
-    }
-
-    /**
-     * MergeMassViaInsertBefore:
-     * Tests flat generation of a hardcoded test file with no external references.
-     *
-     * @throws \Exception
-     * @throws \Magento\FunctionalTestingFramework\Exceptions\TestReferenceException
-     */
-    public function testMergeMassViaInsertBefore()
-    {
-        $this->generateAndCompareTest('MergeMassViaInsertBefore');
     }
 
     /**

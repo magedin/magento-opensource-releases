@@ -7,19 +7,20 @@
 /** @var $product \Magento\Catalog\Model\Product */
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
-/** @var \Magento\Eav\Model\AttributeSetManagement $attributeSetManagement */
-$attributeSetManagement = $objectManager->create(\Magento\Eav\Model\AttributeSetManagement::class);
-
-/** @var \Magento\Eav\Api\Data\AttributeSetInterface $attributeSet */
+/** @var \Magento\Eav\Model\Entity\Attribute\Set $attributeSet */
 $attributeSet = $objectManager->create(\Magento\Eav\Model\Entity\Attribute\Set::class);
+
+$entityType = $objectManager->create(\Magento\Eav\Model\Entity\Type::class)->loadByCode('catalog_product');
+$defaultSetId = $objectManager->create(\Magento\Catalog\Model\Product::class)->getDefaultAttributeSetid();
 
 $data = [
     'attribute_set_name' => 'second_attribute_set',
+    'entity_type_id' => $entityType->getId(),
     'sort_order' => 200,
 ];
 
-$attributeSet->organizeData($data);
-
-$defaultSetId = $objectManager->create(\Magento\Catalog\Model\Product::class)->getDefaultAttributeSetId();
-
-$attributeSetManagement->create(\Magento\Catalog\Model\Product::ENTITY, $attributeSet, $defaultSetId);
+$attributeSet->setData($data);
+$attributeSet->validate();
+$attributeSet->save();
+$attributeSet->initFromSkeleton($defaultSetId);
+$attributeSet->save();

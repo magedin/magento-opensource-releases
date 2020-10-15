@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Indexer\Test\Unit;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Indexer\BatchProvider;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\DB\Adapter\AdapterInterface;
+use \Magento\Framework\DB\Select;
+use \Magento\Framework\Indexer\BatchProvider;
 
-class BatchProviderTest extends TestCase
+class BatchProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BatchProvider
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new BatchProvider();
     }
@@ -37,7 +34,7 @@ class BatchProviderTest extends TestCase
         $linkField = 'id';
 
         $selectMock = $this->createMock(Select::class);
-        $adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $adapterMock = $this->createMock(AdapterInterface::class);
 
         $selectMock->expects($this->once())->method('from')->willReturnSelf();
         $adapterMock->expects($this->once())->method('select')->willReturn($selectMock);
@@ -64,7 +61,7 @@ class BatchProviderTest extends TestCase
     public function testGetBatchIds()
     {
         $selectMock = $this->createMock(Select::class);
-        $adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $adapterMock = $this->createMock(AdapterInterface::class);
 
         $selectMock->expects($this->once())->method('where')->with('(entity_id BETWEEN 10 AND 100)')->willReturnSelf();
         $adapterMock->expects($this->atLeastOnce())->method('quote')->willReturnArgument(0);

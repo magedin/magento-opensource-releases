@@ -3,26 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Console\Command\ConfigSet;
 
-use Magento\Config\App\Config\Type\System;
 use Magento\Config\Console\Command\ConfigSet\ConfigSetProcessorFactory;
 use Magento\Config\Console\Command\ConfigSet\ConfigSetProcessorInterface;
 use Magento\Config\Console\Command\ConfigSet\ProcessorFacade;
-use Magento\Config\Model\Config\PathValidator;
-use Magento\Deploy\Model\DeploymentConfig\Hash;
-use Magento\Framework\App\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Scope\ValidatorInterface;
+use Magento\Config\Model\Config\PathValidator;
 use Magento\Framework\Config\File\ConfigFilePool;
-use Magento\Framework\Exception\ConfigurationMismatchException;
-use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\ValidatorException;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\ConfigurationMismatchException;
+use Magento\Deploy\Model\DeploymentConfig\Hash;
+use Magento\Config\App\Config\Type\System;
+use Magento\Framework\App\Config;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Test for ProcessorFacade.
@@ -30,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  * @see ProcessorFacade
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProcessorFacadeTest extends TestCase
+class ProcessorFacadeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProcessorFacade
@@ -70,7 +67,7 @@ class ProcessorFacadeTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeValidatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->getMockForAbstractClass();
@@ -168,10 +165,12 @@ class ProcessorFacadeTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\ConfigurationMismatchException
+     * @expectedExceptionMessage Some error
+     */
     public function testProcessWithConfigurationMismatchException()
     {
-        $this->expectException('Magento\Framework\Exception\ConfigurationMismatchException');
-        $this->expectExceptionMessage('Some error');
         $this->scopeValidatorMock->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
@@ -196,10 +195,12 @@ class ProcessorFacadeTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     * @expectedExceptionMessage Some error
+     */
     public function testProcessWithCouldNotSaveException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
-        $this->expectExceptionMessage('Some error');
         $this->scopeValidatorMock->expects($this->once())
             ->method('isValid')
             ->willReturn(true);

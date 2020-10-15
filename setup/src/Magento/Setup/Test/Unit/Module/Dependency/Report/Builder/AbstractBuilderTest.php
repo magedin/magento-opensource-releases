@@ -3,53 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Dependency\Report\Builder;
 
-use Magento\Setup\Module\Dependency\ParserInterface;
-use Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder;
-use Magento\Setup\Module\Dependency\Report\Data\ConfigInterface;
-use Magento\Setup\Module\Dependency\Report\WriterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractBuilderTest extends TestCase
+class AbstractBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ParserInterface|MockObject
+     * @var \Magento\Setup\Module\Dependency\ParserInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dependenciesParserMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\WriterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $reportWriterMock;
 
     /**
-     * @var AbstractBuilder|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $builder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dependenciesParserMock = $this->getMockForAbstractClass(ParserInterface::class);
-        $this->reportWriterMock = $this->getMockForAbstractClass(WriterInterface::class);
+        $this->dependenciesParserMock = $this->createMock(\Magento\Setup\Module\Dependency\ParserInterface::class);
+        $this->reportWriterMock = $this->createMock(\Magento\Setup\Module\Dependency\Report\WriterInterface::class);
 
         $this->builder = $this->getMockForAbstractClass(
-            AbstractBuilder::class,
+            \Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder::class,
             ['dependenciesParser' => $this->dependenciesParserMock, 'reportWriter' => $this->reportWriterMock]
         );
     }
 
     /**
      * @param array $options
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Passed option section "parse" is wrong.
      * @dataProvider dataProviderWrongParseOptions
      */
     public function testBuildWithWrongParseOptions($options)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Passed option section "parse" is wrong.');
         $this->builder->build($options);
     }
 
@@ -63,12 +54,12 @@ class AbstractBuilderTest extends TestCase
 
     /**
      * @param array $options
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Passed option section "write" is wrong.
      * @dataProvider dataProviderWrongWriteOptions
      */
     public function testBuildWithWrongWriteOptions($options)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Passed option section "write" is wrong.');
         $this->builder->build($options);
     }
 
@@ -88,7 +79,7 @@ class AbstractBuilderTest extends TestCase
         ];
 
         $parseResult = ['foo', 'bar', 'baz'];
-        $configMock = $this->getMockForAbstractClass(ConfigInterface::class);
+        $configMock = $this->createMock(\Magento\Setup\Module\Dependency\Report\Data\ConfigInterface::class);
 
         $this->dependenciesParserMock->expects(
             $this->once()
@@ -96,8 +87,8 @@ class AbstractBuilderTest extends TestCase
             'parse'
         )->with(
             $options['parse']
-        )->willReturn(
-            $parseResult
+        )->will(
+            $this->returnValue($parseResult)
         );
         $this->builder->expects(
             $this->once()
@@ -105,8 +96,8 @@ class AbstractBuilderTest extends TestCase
             'buildData'
         )->with(
             $parseResult
-        )->willReturn(
-            $configMock
+        )->will(
+            $this->returnValue($configMock)
         );
         $this->reportWriterMock->expects($this->once())->method('write')->with($options['write'], $configMock);
 

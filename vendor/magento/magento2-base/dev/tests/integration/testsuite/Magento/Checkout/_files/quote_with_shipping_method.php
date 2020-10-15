@@ -8,22 +8,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address_saved.php');
+require 'quote_with_address_saved.php';
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var QuoteFactory $quoteFactory */
-$quoteFactory = $objectManager->get(QuoteFactory::class);
-/** @var QuoteResource $quoteResource */
-$quoteResource = $objectManager->get(QuoteResource::class);
-$quote = $quoteFactory->create();
-$quoteResource->load($quote, 'test_order_1', 'reserved_order_id');
+$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $rate = $objectManager->get(\Magento\Quote\Model\Quote\Address\Rate::class);
 
+$quote->load('test_order_1', 'reserved_order_id');
 $shippingAddress = $quote->getShippingAddress();
 $shippingAddress->setShippingMethod('flatrate_flatrate')
     ->setShippingDescription('Flat Rate - Fixed')

@@ -3,22 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\App\Config\Type;
 
+use Magento\Authorizenet\Helper\Backend\Data;
+use Magento\Framework\App\Cache\Type\Translate;
 use Magento\Framework\App\Config\ConfigSourceInterface;
+use Magento\Framework\Cache\FrontendInterface;
 use Magento\Translation\App\Config\Type\Translation;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DataObject;
 
 /**
  * @covers \Magento\Translation\App\Config\Type\Translation
  */
-class TranslationTest extends TestCase
+class TranslationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigSourceInterface|MockObject
+     * @var ConfigSourceInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $source;
 
@@ -27,7 +27,7 @@ class TranslationTest extends TestCase
      */
     private $configType;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->source = $this->getMockBuilder(ConfigSourceInterface::class)
             ->getMockForAbstractClass();

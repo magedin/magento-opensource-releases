@@ -3,40 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Model\ResourceModel;
 
-use Magento\CatalogRule\Api\Data\RuleInterface;
-use Magento\CatalogRule\Model\ResourceModel\ReadHandler;
-use Magento\CatalogRule\Model\ResourceModel\Rule;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReadHandlerTest extends TestCase
+class ReadHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReadHandler
+     * @var \Magento\CatalogRule\Model\ResourceModel\ReadHandler
      */
     protected $subject;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceMock = $this->createMock(Rule::class);
-        $this->metadataMock = $this->createMock(MetadataPool::class);
-        $this->subject = new ReadHandler(
+        $this->resourceMock = $this->createMock(\Magento\CatalogRule\Model\ResourceModel\Rule::class);
+        $this->metadataMock = $this->createMock(\Magento\Framework\EntityManager\MetadataPool::class);
+        $this->subject = new \Magento\CatalogRule\Model\ResourceModel\ReadHandler(
             $this->resourceMock,
             $this->metadataMock
         );
@@ -46,7 +36,7 @@ class ReadHandlerTest extends TestCase
     {
         $linkedField = 'entity_id';
         $entityId = 100;
-        $entityType = RuleInterface::class;
+        $entityType = \Magento\CatalogRule\Api\Data\RuleInterface::class;
         $entityData = [
             $linkedField => $entityId
         ];
@@ -55,7 +45,7 @@ class ReadHandlerTest extends TestCase
         $websiteIds = [4, 5, 6];
 
         $metadataMock = $this->createPartialMock(
-            EntityMetadata::class,
+            \Magento\Framework\EntityManager\EntityMetadata::class,
             ['getLinkField']
         );
         $this->metadataMock->expects($this->once())

@@ -8,7 +8,6 @@ namespace Magento\User\Model;
 
 use Magento\Backend\Model\Auth\Credential\StorageInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -39,19 +38,19 @@ use Magento\Framework\App\DeploymentConfig;
 class User extends AbstractModel implements StorageInterface, UserInterface
 {
     /**
-     * @deprecated New functionality has been added
+     * @deprecated New functionality has been added. It isn't used anymore
      * @see \Magento\User\Model\Spi\NotificatorInterface
      */
     const XML_PATH_FORGOT_EMAIL_TEMPLATE = 'admin/emails/forgot_email_template';
 
     /**
-     * @deprecated New functionality has been added
+     * @deprecated New functionality has been added. It isn't used anymore
      * @see \Magento\User\Model\Spi\NotificatorInterface
      */
     const XML_PATH_FORGOT_EMAIL_IDENTITY = 'admin/emails/forgot_email_identity';
 
     /**
-     * @deprecated New functionality has been added
+     * @deprecated New functionality has been added. It isn't used anymore
      * @see \Magento\User\Model\Spi\NotificatorInterface
      */
     const XML_PATH_USER_NOTIFICATION_TEMPLATE = 'admin/emails/user_notification_template';
@@ -59,11 +58,16 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     /**
      * Configuration paths for admin user reset password email template
      *
-     * @deprecated New functionality has been added
+     * @deprecated New functionality has been added. It isn't used anymore
      */
     const XML_PATH_RESET_PASSWORD_TEMPLATE = 'admin/emails/reset_password_template';
 
     const MESSAGE_ID_PASSWORD_EXPIRED = 'magento_user_password_expired';
+
+    /**
+     * Tag to use for user assigned role caching.
+     */
+    private const CACHE_TAG = 'user_assigned_role';
 
     /**
      * Model event prefix
@@ -148,6 +152,14 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      * @deprecated 101.1.0
      */
     private $deploymentConfig;
+
+    /**
+     * @var array
+     */
+    protected $_cacheTag = [
+        \Magento\Backend\Block\Menu::CACHE_TAGS,
+        self::CACHE_TAG,
+    ];
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -400,7 +412,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      * Retrieve user roles
      *
      * @return array
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getRoles()
     {
@@ -567,7 +579,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      * @param string $username
      * @param string $password
      * @return bool
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function authenticate($username, $password)
     {
@@ -589,7 +601,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
                 'admin_user_authenticate_after',
                 ['username' => $username, 'password' => $password, 'user' => $this, 'result' => $result]
             );
-        } catch (LocalizedException $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->unsetData();
             throw $e;
         }
@@ -633,7 +645,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      * @param string $username
      * @param string $password
      * @return $this
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function login($username, $password)
     {
@@ -666,7 +678,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     {
         $data = $this->getResource()->loadByUsername($username);
         if ($data !== false) {
-            if (isset($data['extra']) && is_string($data['extra'])) {
+            if (is_string($data['extra'])) {
                 $data['extra'] = $this->serializer->unserialize($data['extra']);
             }
 
@@ -679,12 +691,32 @@ class User extends AbstractModel implements StorageInterface, UserInterface
     /**
      * Check if user is assigned to any role
      *
-     * @param int|User $user
+     * @param int|\Magento\User\Model\User $user
      * @return null|array
      */
     public function hasAssigned2Role($user)
     {
-        return $this->getResource()->hasAssigned2Role($user);
+        if ($user instanceof AbstractModel) {
+            $userId = $user->getUserId();
+        } elseif (is_numeric($user) && (int)$user !== 0) {
+            $userId = $user;
+        } else {
+            return null;
+        }
+        $data = $this->_cacheManager->load('assigned_role_' . $userId);
+        if (false === $data) {
+            $data = $this->getResource()->hasAssigned2Role($user);
+
+            $this->_cacheManager->save(
+                $this->serializer->serialize($data),
+                'assigned_role_' . $userId,
+                [self::CACHE_TAG]
+            );
+        } else {
+            $data = $this->serializer->unserialize($data);
+        }
+
+        return $data;
     }
 
     /**
@@ -705,12 +737,12 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      *
      * @param string $newToken
      * @return $this
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function changeResetPasswordLinkToken($newToken)
     {
         if (!is_string($newToken) || empty($newToken)) {
-            throw new LocalizedException(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('The password reset token is incorrect. Verify the token and try again.')
             );
         }

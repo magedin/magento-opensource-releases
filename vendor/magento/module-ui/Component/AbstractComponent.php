@@ -5,14 +5,15 @@
  */
 namespace Magento\Ui\Component;
 
-use Magento\Framework\Data\ValueSourceInterface;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\DataSourceInterface;
 use Magento\Framework\View\Element\UiComponent\ObserverInterface;
-use Magento\Framework\View\Element\UiComponentInterface;
+use Magento\Framework\Data\ValueSourceInterface;
 
-//phpcs:disable Magento2.Classes.AbstractApi
 /**
  * Abstract class AbstractComponent
  *
@@ -145,7 +146,7 @@ abstract class AbstractComponent extends DataObject implements UiComponentInterf
      */
     public function toHtml()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -172,14 +173,12 @@ abstract class AbstractComponent extends DataObject implements UiComponentInterf
     }
 
     /**
-     * Return component
-     *
      * @param string $name
      * @return UiComponentInterface
      */
     public function getComponent($name)
     {
-        return $this->components[$name] ?? null;
+        return isset($this->components[$name]) ? $this->components[$name] : null;
     }
 
     /**
@@ -243,7 +242,6 @@ abstract class AbstractComponent extends DataObject implements UiComponentInterf
         return $jsConfig;
     }
 
-    // phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
     /**
      * Component data setter
      *
@@ -256,7 +254,6 @@ abstract class AbstractComponent extends DataObject implements UiComponentInterf
         parent::setData($key, $value);
     }
 
-    // phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
     /**
      * Component data getter
      *
@@ -281,7 +278,7 @@ abstract class AbstractComponent extends DataObject implements UiComponentInterf
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDataSourceData()
     {

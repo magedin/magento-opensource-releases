@@ -32,10 +32,10 @@
         </before>
         <after>
             <deleteData createDataKey="subcategory1" stepKey="deleteCategory1"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <amOnPage url="{{_ENV.MAGENTO_BACKEND_NAME}}/admin/auth/logout/" stepKey="amOnLogoutPage"/>
         </after>
         <!-- Login as admin and open page for creation new Price Rule -->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin1"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin1"/>
         <amOnPage url="{{PriceRuleNewPage.url}}" stepKey="openCatalogPriceRulePage"/>
         <waitForPageLoad stepKey="waitCatalogPriceRulePageLoad"/>
         <!-- Open Conditions section and select Categories condition -->

@@ -14,15 +14,11 @@
             <xs:element type="assertElementContainsAttributeType" name="assertElementContainsAttribute" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertArrayHasKeyType" name="assertArrayHasKey" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertArrayNotHasKeyType" name="assertArrayNotHasKey" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element type="assertArraySubsetType" name="assertArraySubset" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertContainsType" name="assertContains" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertStringContainsStringType" name="assertStringContainsString" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertStringContainsStringIgnoringCaseType" name="assertStringContainsStringIgnoringCase" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertCountType" name="assertCount" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertEmptyType" name="assertEmpty" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertEqualsType" name="assertEquals" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertEqualsWithDeltaType" name="assertEqualsWithDelta" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertEqualsCanonicalizingType" name="assertEqualsCanonicalizing" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertEqualsIgnoringCaseType" name="assertEqualsIgnoringCase" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertFalseType" name="assertFalse" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertFileExistsType" name="assertFileExists" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertFileNotExistsType" name="assertFileNotExists" minOccurs="0" maxOccurs="unbounded"/>
@@ -30,18 +26,14 @@
             <xs:element type="assertGreaterThanType" name="assertGreaterThan" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertGreaterThanOrEqualType" name="assertGreaterThanOrEqual" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertInstanceOfType" name="assertInstanceOf" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element type="assertInternalTypeType" name="assertInternalType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertIsEmptyType" name="assertIsEmpty" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertLessOrEqualsType" name="assertLessOrEquals" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertLessThanType" name="assertLessThan" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertLessThanOrEqualType" name="assertLessThanOrEqual" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotContainsType" name="assertNotContains" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertStringNotContainsStringType" name="assertStringNotContainsString" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertStringNotContainsStringIgnoringCaseType" name="assertStringNotContainsStringIgnoringCase" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotEmptyType" name="assertNotEmpty" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotEqualsType" name="assertNotEquals" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertNotEqualsWithDeltaType" name="assertNotEqualsWithDelta" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertNotEqualsCanonicalizingType" name="assertNotEqualsCanonicalizing" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element type="assertNotEqualsIgnoringCaseType" name="assertNotEqualsIgnoringCase" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotInstanceOfType" name="assertNotInstanceOf" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotNullType" name="assertNotNull" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element type="assertNotRegExpType" name="assertNotRegExp" minOccurs="0" maxOccurs="unbounded"/>
@@ -57,6 +49,22 @@
     </xs:group>
 
     <!-- Data Attributes -->
+    <xs:attribute type="xs:string" name="expected">
+        <xs:annotation>
+            <xs:documentation>
+                Assertion's Expected value. Cast by expectedType.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute type="xs:string" name="actual">
+        <xs:annotation>
+            <xs:documentation>
+                Assertion's Actual value. Cast by actualType.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
     <xs:attribute type="xs:string" name="message">
         <xs:annotation>
             <xs:documentation>
@@ -84,11 +92,16 @@
     <!-- Complex Types -->
 
     <!-- ASSERTION TYPES -->
+    <!-- REMOVE expected/expectedType and actual/actualType in MQE-683-->
     <xs:complexType name="assertionType">
         <xs:choice maxOccurs="unbounded">
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>        
         <xs:attribute ref="message"/>
         <xs:attribute ref="delta"/>
         <xs:attribute ref="strict"/>
@@ -102,8 +115,23 @@
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedElementContainsType" minOccurs="0"/>
+            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute type="xs:string" name="expectedValue">
+            <xs:annotation>
+                <xs:documentation>
+                    Assertion's Expected value. Cast by expectedType.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="selector" use="required"/>
+        <xs:attribute type="xs:string" name="attribute" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Attribute in given element to be assert against.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
 
@@ -117,6 +145,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -131,6 +163,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>        
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -145,6 +181,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attribute ref="strict"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
@@ -160,34 +200,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertStringContainsStringType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that given string contains a value.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertStringContainsStringIgnoringCaseType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that given string contains a value ignoring case.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -202,6 +218,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -215,6 +235,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -222,58 +246,18 @@
     <xs:complexType name="assertEqualsType">
         <xs:annotation>
             <xs:documentation>
-                Asserts that two given variables are equal.
+                Asserts that two given variables are equal. Can be given a "delta" to allow precision tolerance in floating point comparison.
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertEqualsWithDeltaType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that two given variables are equal. Accepts a delta.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>        
         <xs:attribute ref="delta"/>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertEqualsIgnoringCaseType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that two given variables are equal.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertEqualsCanonicalizingType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that two given variables are equal. The contents are canonicalized before they are compared.
-                For instance, when the two variables $expected and $actual are arrays, then these arrays are
-                sorted before they are compared.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -287,6 +271,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -300,6 +288,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -313,6 +305,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -327,6 +323,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -341,6 +341,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -355,6 +359,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -369,6 +377,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -383,6 +395,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -396,6 +412,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -410,6 +430,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -424,6 +448,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -438,6 +466,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -452,34 +484,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertStringNotContainsStringType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that given string does not contain a value.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertStringNotContainsStringIgnoringCaseType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that given string does not contain a value ignoring case.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -493,6 +501,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -500,59 +512,19 @@
     <xs:complexType name="assertNotEqualsType">
         <xs:annotation>
             <xs:documentation>
-                Asserts that actual and expected are not equal.
+                Asserts that actual and expected are not equal. Can be given a "delta" to allow precision tolerance in floating point comparison.
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>        
         <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertNotEqualsWithDeltaType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that two given variables are not equal. Accepts a delta.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
         <xs:attribute ref="delta"/>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertNotEqualsIgnoringCaseType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that actual and expected are not equal.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
-        <xs:attribute ref="message"/>
-        <xs:attributeGroup ref="commonActionAttributes"/>
-    </xs:complexType>
-
-    <xs:complexType name="assertNotEqualsCanonicalizingType">
-        <xs:annotation>
-            <xs:documentation>
-                Asserts that two given variables are equal. The contents are canonicalized before they are compared.
-                For instance, when the two variables $expected and $actual are arrays, then these arrays are
-                sorted before they are compared.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice maxOccurs="unbounded">
-            <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
-            <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
-        </xs:choice>
-        <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
 
@@ -566,6 +538,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -579,6 +555,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -593,6 +573,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -607,6 +591,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -620,6 +608,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -634,6 +626,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -648,6 +644,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -662,6 +662,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -676,6 +680,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -689,6 +697,10 @@
         <xs:choice maxOccurs="unbounded">
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attribute ref="message"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
@@ -703,6 +715,10 @@
             <xs:element name="expectedResult" type="expectedResultType" minOccurs="0"/>
             <xs:element name="actualResult" type="actualResultType" minOccurs="0"/>
         </xs:choice>
+        <xs:attribute ref="expected"/>
+        <xs:attribute type="assertEnum" name="expectedType" default="const"/>
+        <xs:attribute ref="actual"/>
+        <xs:attribute type="assertEnum" name="actualType" default="const"/>
         <xs:attributeGroup ref="commonActionAttributes"/>
     </xs:complexType>
 
@@ -715,20 +731,6 @@
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="assertEnum" name="type" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="expectedElementContainsType">
-        <xs:annotation>
-            <xs:documentation>
-                Element containing the Expected value and selector/attributeName.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="selector" use="required"/>
-                <xs:attribute type="xs:string" name="attribute" use="required"/>
                 <xs:attribute type="assertEnum" name="type" use="required"/>
             </xs:extension>
         </xs:simpleContent>

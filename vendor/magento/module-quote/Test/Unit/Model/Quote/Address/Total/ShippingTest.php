@@ -3,128 +3,109 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Address\Total;
-
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\Data\CartItemInterface;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\FreeShippingInterface;
-use Magento\Quote\Model\Quote\Address\Rate;
-use Magento\Quote\Model\Quote\Address\Total;
-use Magento\Quote\Model\Quote\Address\Total\Shipping;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShippingTest extends TestCase
+class ShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Shipping
+     * @var \Magento\Quote\Model\Quote\Address\Total\Shipping
      */
     protected $shippingModel;
 
-    /** @var Quote|MockObject */
+    /** @var \Magento\Quote\Model\Quote|\PHPUnit_Framework_MockObject_MockObject */
     protected $quote;
 
-    /** @var Total|MockObject  */
+    /** @var \Magento\Quote\Model\Quote\Address\Total|\PHPUnit_Framework_MockObject_MockObject  */
     protected $total;
 
-    /** @var ShippingAssignmentInterface|MockObject  */
+    /** @var \Magento\Quote\Api\Data\ShippingAssignmentInterface|\PHPUnit_Framework_MockObject_MockObject  */
     protected $shippingAssignment;
 
-    /** @var Address|MockObject  */
+    /** @var \Magento\Quote\Model\Quote\Address|\PHPUnit_Framework_MockObject_MockObject  */
     protected $address;
 
-    /** @var ShippingInterface|MockObject  */
+    /** @var \Magento\Quote\Api\Data\ShippingInterface|\PHPUnit_Framework_MockObject_MockObject  */
     protected $shipping;
 
-    /** @var FreeShippingInterface|MockObject */
+    /** @var \Magento\Quote\Model\Quote\Address\FreeShippingInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $freeShipping;
 
-    /** @var CartItemInterface|MockObject */
+    /** @var \Magento\Quote\Api\Data\CartItemInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $cartItem;
 
-    /** @var Rate|MockObject */
+    /** @var \Magento\Quote\Model\Quote\Address\Rate|\PHPUnit_Framework_MockObject_MockObject */
     protected $rate;
 
-    /** @var Store|MockObject */
+    /** @var \Magento\Store\Model\Store|\PHPUnit_Framework_MockObject_MockObject */
     protected $store;
 
-    /** @var PriceCurrencyInterface|MockObject */
+    /** @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $priceCurrency;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->freeShipping = $this->getMockForAbstractClass(
-            FreeShippingInterface::class,
+            \Magento\Quote\Model\Quote\Address\FreeShippingInterface::class,
             [],
             '',
             false
         );
         $this->priceCurrency = $this->getMockForAbstractClass(
-            PriceCurrencyInterface::class,
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class,
             [],
             '',
             false
         );
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->shippingModel = $objectManager->getObject(
-            Shipping::class,
+            \Magento\Quote\Model\Quote\Address\Total\Shipping::class,
             [
                 'freeShipping' => $this->freeShipping,
                 'priceCurrency' => $this->priceCurrency,
             ]
         );
 
-        $this->quote = $this->createMock(Quote::class);
-        $this->total = $this->getMockBuilder(Total::class)
-            ->addMethods(['setShippingAmount', 'setBaseShippingAmount', 'setShippingDescription'])
-            ->onlyMethods(['setBaseTotalAmount', 'setTotalAmount'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->quote = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $this->total = $this->createPartialMock(\Magento\Quote\Model\Quote\Address\Total::class, [
+                'setShippingAmount',
+                'setBaseShippingAmount',
+                'setBaseTotalAmount',
+                'setTotalAmount',
+                'setShippingDescription',
+            ]);
         $this->shippingAssignment = $this->getMockForAbstractClass(
-            ShippingAssignmentInterface::class,
+            \Magento\Quote\Api\Data\ShippingAssignmentInterface::class,
             [],
             '',
             false
         );
-        $this->address = $this->getMockBuilder(Address::class)
-            ->addMethods(
-                [
-                    'setWeight',
-                    'setFreeMethodWeight',
-                    'getWeight',
-                    'getFreeMethodWeight',
-                    'setFreeShipping',
-                    'setItemQty',
-                    'setShippingDescription',
-                    'getShippingDescription',
-                    'getFreeShipping'
-                ]
-            )
-            ->onlyMethods(['collectShippingRates', 'getAllShippingRates'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->address = $this->createPartialMock(\Magento\Quote\Model\Quote\Address::class, [
+                'setWeight',
+                'setFreeMethodWeight',
+                'getWeight',
+                'getFreeMethodWeight',
+                'setFreeShipping',
+                'setItemQty',
+                'collectShippingRates',
+                'getAllShippingRates',
+                'setShippingDescription',
+                'getShippingDescription',
+                'getFreeShipping',
+            ]);
         $this->shipping = $this->getMockForAbstractClass(
-            ShippingInterface::class,
+            \Magento\Quote\Api\Data\ShippingInterface::class,
             [],
             '',
             false
         );
         $this->cartItem = $this->getMockForAbstractClass(
-            CartItemInterface::class,
+            \Magento\Quote\Api\Data\CartItemInterface::class,
             [],
             '',
             false,
@@ -141,11 +122,11 @@ class ShippingTest extends TestCase
                 'setRowWeight',
             ]
         );
-        $this->rate = $this->getMockBuilder(Rate::class)
-            ->addMethods(['getPrice', 'getCode', 'getCarrierTitle', 'getMethodTitle'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->store = $this->createMock(Store::class);
+        $this->rate = $this->createPartialMock(
+            \Magento\Quote\Model\Quote\Address\Rate::class,
+            ['getPrice', 'getCode', 'getCarrierTitle', 'getMethodTitle']
+        );
+        $this->store = $this->createMock(\Magento\Store\Model\Store::class);
     }
 
     /**
@@ -161,11 +142,11 @@ class ShippingTest extends TestCase
             'title' => __('Shipping & Handling (%1)', $shippingDescription)
         ];
 
-        $quoteMock = $this->createMock(Quote::class);
-        $totalMock = $this->getMockBuilder(Total::class)
-            ->addMethods(['getShippingAmount', 'getShippingDescription'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $totalMock = $this->createPartialMock(
+            \Magento\Quote\Model\Quote\Address\Total::class,
+            ['getShippingAmount', 'getShippingDescription']
+        );
 
         $totalMock->expects($this->once())->method('getShippingAmount')->willReturn($shippingAmount);
         $totalMock->expects($this->once())->method('getShippingDescription')->willReturn($shippingDescription);

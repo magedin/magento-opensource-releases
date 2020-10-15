@@ -3,27 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Setup\BackendFrontnameGenerator;
 use Magento\Setup\Console\Command\InfoAdminUriCommand;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Framework\Setup\BackendFrontnameGenerator;
 
-class InfoAdminUriCommandTest extends TestCase
+class InfoAdminUriCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $deploymentConfig;
 
-    protected function setup(): void
+    protected function setup()
     {
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
     }
 
     public function testExecute()
@@ -34,12 +29,8 @@ class InfoAdminUriCommandTest extends TestCase
         $commandTester->execute([]);
 
         $regexp = '/' . BackendFrontnameGenerator::ADMIN_AREA_PATH_PREFIX
-            . '[a-z0-9]{1,' . BackendFrontnameGenerator::ADMIN_AREA_PATH_RANDOM_PART_LENGTH . '}/';
+            . '[a-z0-9]{1,' . BackendFrontnameGenerator::ADMIN_AREA_PATH_RANDOM_PART_LENGTH .'}/';
 
-        $this->assertMatchesRegularExpression(
-            $regexp,
-            $commandTester->getDisplay(),
-            'Unexpected Backend Frontname pattern.'
-        );
+        $this->assertRegExp($regexp, $commandTester->getDisplay(), 'Unexpected Backend Frontname pattern.');
     }
 }

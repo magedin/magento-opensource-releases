@@ -26,7 +26,7 @@ class AdaptStockResolverToAdminWebsiteTest extends TestCase
      */
     private $defaultStockProvider;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stockResolver = Bootstrap::getObjectManager()->get(StockResolverInterface::class);
         $this->defaultStockProvider = Bootstrap::getObjectManager()->get(DefaultStockProviderInterface::class);

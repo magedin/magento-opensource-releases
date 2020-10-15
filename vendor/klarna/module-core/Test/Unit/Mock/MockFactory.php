@@ -33,7 +33,7 @@ class MockFactory extends TestCase
         $mock = $this->getMockBuilder($className);
         $mock->disableOriginalConstructor();
 
-        if (!empty($methods)) {
+        if (count($methods) > 0) {
             $mock->setMethods($methods);
         }
 

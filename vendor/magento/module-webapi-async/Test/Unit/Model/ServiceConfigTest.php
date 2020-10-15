@@ -9,14 +9,11 @@ declare(strict_types=1);
 namespace Magento\WebapiAsync\Test\Unit\Model;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Webapi\Model\Cache\Type\Webapi;
 use Magento\Webapi\Model\Config;
 use Magento\Webapi\Model\Config\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ServiceConfigTest extends TestCase
+class ServiceConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -24,27 +21,27 @@ class ServiceConfigTest extends TestCase
     private $config;
 
     /**
-     * @var Webapi|MockObject
+     * @var Webapi|\PHPUnit_Framework_MockObject_MockObject
      */
     private $webapiCacheMock;
 
     /**
-     * @var Reader|MockObject
+     * @var Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configReaderMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->webapiCacheMock = $this->createMock(Webapi::class);
-        $this->configReaderMock = $this->createMock(Reader::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->webapiCacheMock = $this->createMock(\Magento\Webapi\Model\Cache\Type\Webapi::class);
+        $this->configReaderMock = $this->createMock(\Magento\Webapi\Model\Config\Reader::class);
+        $this->serializerMock = $this->createMock(SerializerInterface::class);
 
         $this->config = $objectManager->getObject(
             Config::class,

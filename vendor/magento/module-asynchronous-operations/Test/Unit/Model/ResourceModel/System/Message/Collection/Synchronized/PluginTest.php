@@ -3,29 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Test\Unit\Model\ResourceModel\System\Message\Collection\Synchronized;
 
-use Magento\AdminNotification\Model\ResourceModel\System\Message\Collection\Synchronized;
-use Magento\AdminNotification\Model\System\Message;
-use Magento\AdminNotification\Model\System\MessageFactory;
-use Magento\AsynchronousOperations\Api\Data\BulkSummaryInterface;
-use Magento\AsynchronousOperations\Model\BulkNotificationManagement;
-use Magento\AsynchronousOperations\Model\BulkSummary;
-use Magento\AsynchronousOperations\Model\Operation\Details;
 use Magento\AsynchronousOperations\Model\ResourceModel\System\Message\Collection\Synchronized\Plugin;
-use Magento\AsynchronousOperations\Model\StatusMapper;
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Bulk\BulkStatusInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\AsynchronousOperations\Model\BulkNotificationManagement;
+use Magento\AsynchronousOperations\Model\Operation\Details;
+use Magento\Framework\AuthorizationInterface;
+use Magento\AdminNotification\Model\ResourceModel\System\Message\Collection\Synchronized;
 
 /**
+ * Class PluginTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PluginTest extends TestCase
+class PluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Plugin
@@ -33,47 +26,47 @@ class PluginTest extends TestCase
     private $plugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $messagefactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $bulkStatusMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $bulkNotificationMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $userContextMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $operationsDetailsMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $authorizationMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $messageMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $statusMapper;
 
@@ -82,21 +75,21 @@ class PluginTest extends TestCase
      */
     private $resourceName = 'Magento_Logging::system_magento_logging_bulk_operations';
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->messagefactoryMock = $this->createPartialMock(
-            MessageFactory::class,
+            \Magento\AdminNotification\Model\System\MessageFactory::class,
             ['create']
         );
-        $this->bulkStatusMock = $this->getMockForAbstractClass(BulkStatusInterface::class);
+        $this->bulkStatusMock = $this->createMock(BulkStatusInterface::class);
 
-        $this->userContextMock = $this->getMockForAbstractClass(UserContextInterface::class);
+        $this->userContextMock = $this->createMock(UserContextInterface::class);
         $this->operationsDetailsMock = $this->createMock(Details::class);
-        $this->authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
-        $this->messageMock = $this->createMock(Message::class);
+        $this->authorizationMock = $this->createMock(AuthorizationInterface::class);
+        $this->messageMock = $this->createMock(\Magento\AdminNotification\Model\System\Message::class);
         $this->collectionMock = $this->createMock(Synchronized::class);
         $this->bulkNotificationMock = $this->createMock(BulkNotificationManagement::class);
-        $this->statusMapper = $this->createMock(StatusMapper::class);
+        $this->statusMapper = $this->createMock(\Magento\AsynchronousOperations\Model\StatusMapper::class);
         $this->plugin = new Plugin(
             $this->messagefactoryMock,
             $this->bulkStatusMock,
@@ -125,17 +118,14 @@ class PluginTest extends TestCase
      */
     public function testAfterTo($operationDetails)
     {
-        $bulkMock = $this->getMockBuilder(BulkSummary::class)
-            ->addMethods(['getStatus'])
-            ->onlyMethods(['getBulkId', 'getDescription', 'getStartTime'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $methods = ['getBulkId', 'getDescription', 'getStatus', 'getStartTime'];
+        $bulkMock = $this->createPartialMock(\Magento\AsynchronousOperations\Model\BulkSummary::class, $methods);
         $result = ['items' =>[], 'totalRecords' => 1];
         $userBulks = [$bulkMock];
         $userId = 1;
         $bulkUuid = 2;
         $bulkArray = [
-            'status' => BulkSummaryInterface::NOT_STARTED
+            'status' => \Magento\AsynchronousOperations\Api\Data\BulkSummaryInterface::NOT_STARTED
         ];
         $bulkMock->expects($this->once())->method('getBulkId')->willReturn($bulkUuid);
         $this->operationsDetailsMock
@@ -169,19 +159,13 @@ class PluginTest extends TestCase
     public function afterToDataProvider()
     {
         return [
-            [
-                [
-                    'operations_successful' => 0,
-                    'operations_failed' => 0,
-                    'operations_total' => 10
-                ]
+            ['operations_successful' => 0,
+                'operations_failed' => 0,
+                'operations_total' => 10
             ],
-            [
-                [
-                    'operations_successful' => 1,
-                    'operations_failed' => 2,
-                    'operations_total' => 10
-                ]
+            ['operations_successful' => 1,
+                'operations_failed' => 2,
+                'operations_total' => 10
             ],
         ];
     }

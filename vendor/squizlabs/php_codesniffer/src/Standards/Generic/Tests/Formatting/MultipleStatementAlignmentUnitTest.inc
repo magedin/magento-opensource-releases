@@ -403,6 +403,3 @@ $foofoo   = new Foo([
     $b = new Bar(),
     $c = new Bar(),
 ]);
-
-$i = 0;
-echo "TEST: ".($i += 1)."\n";

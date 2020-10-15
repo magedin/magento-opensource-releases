@@ -11,7 +11,8 @@ use Magento\Paypal\Model\Info;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
 /**
- * Processes AVS codes mapping from PayPal Payflow transaction to electronic merchant systems standard.
+ * Processes AVS codes mapping from PayPal Payflow transaction to
+ * electronic merchant systems standard.
  *
  * @see https://developer.paypal.com/docs/classic/payflow/integration-guide/#credit-card-transaction-responses
  * @see http://www.emsecommerce.net/avs_cvv2_response_codes.htm
@@ -63,6 +64,6 @@ class AvsEmsCodeMapper implements PaymentVerificationInterface
         $zipCode = $additionalInfo[Info::PAYPAL_AVSZIP];
         $key = $zipCode . $streetCode;
 
-        return self::$avsMap[$key] ?? self::$unavailableCode;
+        return isset(self::$avsMap[$key]) ? self::$avsMap[$key] : self::$unavailableCode;
     }
 }

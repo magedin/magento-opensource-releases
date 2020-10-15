@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\Address;
 
-use Magento\Backend\Model\Session\Quote as QuoteSession;
 use Magento\Customer\Model\Metadata\Form as CustomerForm;
 use Magento\Customer\Model\Metadata\FormFactory as CustomerFormFactory;
 use Magento\Directory\Model\ResourceModel\Country\Collection;
@@ -21,13 +20,13 @@ use Magento\Sales\Block\Adminhtml\Order\Address\Form;
 use Magento\Sales\Model\AdminOrder\Create;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Address;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use Magento\Backend\Model\Session\Quote as QuoteSession;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
@@ -64,7 +63,7 @@ class FormTest extends TestCase
      */
     private $orderCreate;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 

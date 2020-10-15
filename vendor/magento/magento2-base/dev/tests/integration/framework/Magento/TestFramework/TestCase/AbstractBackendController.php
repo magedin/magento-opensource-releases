@@ -53,7 +53,7 @@ abstract class AbstractBackendController extends \Magento\TestFramework\TestCase
      *
      * @throws \Magento\Framework\Exception\AuthenticationException
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -82,7 +82,7 @@ abstract class AbstractBackendController extends \Magento\TestFramework\TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_auth->getAuthStorage()->destroy(['send_expire_cookie' => false]);
         $this->_auth = null;

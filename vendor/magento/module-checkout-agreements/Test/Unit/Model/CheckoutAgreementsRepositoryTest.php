@@ -3,31 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CheckoutAgreements\Test\Unit\Model;
 
-use Magento\CheckoutAgreements\Api\CheckoutAgreementsListInterface;
-use Magento\CheckoutAgreements\Model\Agreement as AgreementModel;
-use Magento\CheckoutAgreements\Model\AgreementFactory;
-use Magento\CheckoutAgreements\Model\Api\SearchCriteria\ActiveStoreAgreementsFilter;
 use Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository;
-use Magento\CheckoutAgreements\Model\ResourceModel\Agreement;
-use Magento\CheckoutAgreements\Model\ResourceModel\Agreement\CollectionFactory;
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessor;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CheckoutAgreementsRepositoryTest extends TestCase
+class CheckoutAgreementsRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CheckoutAgreementsRepository
@@ -35,17 +20,17 @@ class CheckoutAgreementsRepositoryTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $factoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
@@ -55,74 +40,72 @@ class CheckoutAgreementsRepositoryTest extends TestCase
     private $objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $agrFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $agreementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $extensionAttributesJoinProcessorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $agreementsListMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $agreementsFilterMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->factoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\CheckoutAgreements\Model\ResourceModel\Agreement\CollectionFactory::class,
             ['create']
         );
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->resourceMock = $this->createMock(Agreement::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->resourceMock = $this->createMock(\Magento\CheckoutAgreements\Model\ResourceModel\Agreement::class);
         $this->agrFactoryMock = $this->createPartialMock(
-            AgreementFactory::class,
+            \Magento\CheckoutAgreements\Model\AgreementFactory::class,
             ['create']
         );
-        $this->agreementMock = $this->getMockBuilder(AgreementModel::class)
-            ->addMethods(['setStores'])
-            ->onlyMethods(['addData', 'getData', 'getAgreementId', 'getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->storeMock = $this->createMock(Store::class);
+        $methods = ['addData', 'getData', 'setStores', 'getAgreementId', 'getId'];
+        $this->agreementMock =
+            $this->createPartialMock(\Magento\CheckoutAgreements\Model\Agreement::class, $methods);
+        $this->storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $this->extensionAttributesJoinProcessorMock = $this->createPartialMock(
-            JoinProcessor::class,
+            \Magento\Framework\Api\ExtensionAttribute\JoinProcessor::class,
             ['process']
         );
 
         $this->agreementsListMock = $this->createMock(
-            CheckoutAgreementsListInterface::class
+            \Magento\CheckoutAgreements\Api\CheckoutAgreementsListInterface::class
         );
         $this->agreementsFilterMock = $this->createMock(
-            ActiveStoreAgreementsFilter::class
+            \Magento\CheckoutAgreements\Model\Api\SearchCriteria\ActiveStoreAgreementsFilter::class
         );
 
-        $this->model = new CheckoutAgreementsRepository(
+        $this->model = new \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository(
             $this->factoryMock,
             $this->storeManagerMock,
             $this->scopeConfigMock,
@@ -141,7 +124,7 @@ class CheckoutAgreementsRepositoryTest extends TestCase
         $this->scopeConfigMock->expects($this->once())
             ->method('isSetFlag')
             ->with('checkout/options/enable_agreements', ScopeInterface::SCOPE_STORE, null)
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->factoryMock->expects($this->never())->method('create');
         $this->assertEmpty($this->model->getList());
     }
@@ -151,9 +134,9 @@ class CheckoutAgreementsRepositoryTest extends TestCase
         $this->scopeConfigMock->expects($this->once())
             ->method('isSetFlag')
             ->with('checkout/options/enable_agreements', ScopeInterface::SCOPE_STORE, null)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
-        $searchCriteriaMock = $this->createMock(SearchCriteria::class);
+        $searchCriteriaMock = $this->createMock(\Magento\Framework\Api\SearchCriteria::class);
         $this->agreementsFilterMock->expects($this->once())
             ->method('buildSearchCriteria')
             ->willReturn($searchCriteriaMock);
@@ -197,9 +180,11 @@ class CheckoutAgreementsRepositoryTest extends TestCase
         $this->assertEquals($this->agreementMock, $this->model->save($this->agreementMock, 1));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     */
     public function testSaveWithException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
         $this->agreementMock->expects($this->exactly(2))->method('getAgreementId')->willReturn(null);
         $this->agrFactoryMock->expects($this->never())->method('create');
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($this->storeMock);
@@ -226,9 +211,11 @@ class CheckoutAgreementsRepositoryTest extends TestCase
         $this->assertTrue($this->model->deleteById(1));
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\CouldNotDeleteException
+     */
     public function testDeleteByIdWithException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotDeleteException');
         $agreementId = 1;
         $this->agrFactoryMock->expects($this->once())->method('create')->willReturn($this->agreementMock);
         $this->resourceMock

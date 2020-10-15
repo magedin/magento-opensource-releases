@@ -50,7 +50,7 @@ class ImportExportTableratesTest extends \Magento\TestFramework\TestCase\Abstrac
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->fileSystem = $this->objectManager->get(Filesystem::class);

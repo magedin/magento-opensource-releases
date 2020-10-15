@@ -7,7 +7,7 @@
 -->
 
 <sections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
+        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
     <section name="AdminOrderItemsOrderedSection">
         <element name="itemTaxAmountByProductName" type="text" selector="//table[contains(@class,'edit-order-table')]//div[contains(text(),'{{productName}}')]/ancestor::tr//td[contains(@class, 'col-tax-amount')]//span" parameterized="true"/>
     </section>

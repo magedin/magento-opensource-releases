@@ -20,31 +20,31 @@
             <group value="adobe_stock_integration"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <actionGroup ref="AdminOpenMediaGalleryForPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
             <actionGroup ref="AdminAdobeStockOpenPanelFromMediaGalleryActionGroup" stepKey="openAdobeStockPanel"/>
         </before>
         <after>
-            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="resetAdminDataGridToDefaultView"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="resetAdminDataGridToDefaultView" stepKey="resetAdminDataGridToDefaultView"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <actionGroup ref="AdminAdobeStockExpandImagePreviewActionGroup" stepKey="expandImagePreview"/>
-        <grabAttributeFrom selector="{{AdminAdobeStockImagePreviewSection.image}}" userInput="src" stepKey="getCurrentImageUrl"/>
-        <click selector="{{AdminAdobeStockImagePreviewSection.navigation('next')}}" stepKey="NavigateToNextImage"/>
+        <grabAttributeFrom selector="{{AdobeStockImagePreviewSection.image}}" userInput="src" stepKey="getCurrentImageUrl"/>
+        <click selector="{{AdobeStockImagePreviewSection.navigation('next')}}" stepKey="NavigateToNextImage"/>
         <waitForLoadingMaskToDisappear stepKey="waitForNextImageToLoad"/>
         <!-- Assert that User switched to the next image "-->
-        <dontSeeElement selector="{{AdminAdobeStockSection.imageSrc($getCurrentImageUrl)}}"
+        <dontSeeElement selector="{{AdobeStockSection.imageSrc($getCurrentImageUrl)}}"
                         stepKey="checkImageNotSameAfterWeSwitchToNextImage"/>
-        <grabAttributeFrom selector="{{AdminAdobeStockImagePreviewSection.image}}" userInput="src"
+        <grabAttributeFrom selector="{{AdobeStockImagePreviewSection.image}}" userInput="src"
                            stepKey="getImageUrlAfterSwitchedToNextImage"/>
-        <click selector="{{AdminAdobeStockImagePreviewSection.navigation('previous')}}" stepKey="NavigateToPreviousImage"/>
+        <click selector="{{AdobeStockImagePreviewSection.navigation('previous')}}" stepKey="NavigateToPreviousImage"/>
         <waitForLoadingMaskToDisappear stepKey="waitForPreviousImageToLoad"/>
         <!-- Assert that User switched to the previous image "-->
-        <dontSeeElement selector="{{AdminAdobeStockSection.imageSrc($getImageUrlAfterSwitchedToNextImage)}}"
+        <dontSeeElement selector="{{AdobeStockSection.imageSrc($getImageUrlAfterSwitchedToNextImage)}}"
                         stepKey="checkImageNotSameAfterWeSwitchToPreviousImage"/>
         <!-- Assert that User can close preview "-->
-        <click selector="{{AdminAdobeStockImagePreviewSection.navigation('close')}}" stepKey="closeImagePopup"/>
-        <dontSeeElement selector="{{AdminAdobeStockImagePreviewSection.image}}"
+        <click selector="{{AdobeStockImagePreviewSection.navigation('close')}}" stepKey="closeImagePopup"/>
+        <dontSeeElement selector="{{AdobeStockImagePreviewSection.image}}"
                         stepKey="checkThatImagePreviewClosed"/>
     </test>
 </tests>

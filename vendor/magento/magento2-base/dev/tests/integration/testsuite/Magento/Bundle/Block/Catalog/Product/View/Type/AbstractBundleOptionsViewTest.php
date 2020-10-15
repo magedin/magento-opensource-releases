@@ -57,7 +57,7 @@ abstract class AbstractBundleOptionsViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -73,7 +73,7 @@ abstract class AbstractBundleOptionsViewTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->registry->unregister('product');
         $this->registry->unregister('current_product');

@@ -4,61 +4,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Request;
 
-use Magento\Framework\App\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Request\PathInfo;
-use Magento\Framework\App\Request\PathInfoProcessorInterface;
-use Magento\Framework\App\Route\ConfigInterface;
-use Magento\Framework\App\Route\ConfigInterface\Proxy;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\StringUtils;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class HttpTest extends TestCase
+class HttpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Http
+     * @var \Magento\Framework\App\Request\Http
      */
     private $model;
 
     /**
-     * @var Proxy|MockObject
+     * @var \Magento\Framework\App\Route\ConfigInterface\Proxy | \PHPUnit_Framework_MockObject_MockObject
      */
     private $routerListMock;
 
     /**
-     * @var PathInfoProcessorInterface|MockObject
+     * @var \Magento\Framework\App\Request\PathInfoProcessorInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $infoProcessorMock;
 
     /**
-     * @var PathInfo
+     * @var \Magento\Framework\App\Request\PathInfo
      */
     private $pathInfo;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager | \PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var StringUtils|MockObject
+     * @var \Magento\Framework\Stdlib\StringUtils | \PHPUnit_Framework_MockObject_MockObject
      */
     private $converterMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
@@ -67,40 +56,40 @@ class HttpTest extends TestCase
      */
     private $serverArray;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->routerListMock = $this->createPartialMock(
-            Proxy::class,
+            \Magento\Framework\App\Route\ConfigInterface\Proxy::class,
             ['getRouteFrontName', 'getRouteByFrontName', '__wakeup']
         );
-        $this->infoProcessorMock = $this->getMockForAbstractClass(PathInfoProcessorInterface::class);
-        $this->infoProcessorMock->expects($this->any())->method('process')->willReturnArgument(1);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->converterMock = $this->getMockBuilder(StringUtils::class)
+        $this->infoProcessorMock = $this->createMock(\Magento\Framework\App\Request\PathInfoProcessorInterface::class);
+        $this->infoProcessorMock->expects($this->any())->method('process')->will($this->returnArgument(1));
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->converterMock = $this->getMockBuilder(\Magento\Framework\Stdlib\StringUtils::class)
             ->disableOriginalConstructor()
             ->setMethods(['cleanString'])
             ->getMock();
-        $this->converterMock->expects($this->any())->method('cleanString')->willReturnArgument(0);
+        $this->converterMock->expects($this->any())->method('cleanString')->will($this->returnArgument(0));
 
         // Stash the $_SERVER array to protect it from modification in test
         $this->serverArray = $_SERVER;
 
-        $this->objectManager = new ObjectManager($this);
-        $this->pathInfo =  $this->objectManager->getObject(PathInfo::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->pathInfo =  $this->objectManager->getObject(\Magento\Framework\App\Request\PathInfo::class);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $_SERVER = $this->serverArray;
     }
 
     /**
-     * @return Http
+     * @return \Magento\Framework\App\Request\Http
      */
     private function getModel($uri = null, $appConfigMock = true)
     {
         $model = $this->objectManager->getObject(
-            Http::class,
+            \Magento\Framework\App\Request\Http::class,
             [
                 'routeConfig' => $this->routerListMock,
                 'pathInfoProcessor' => $this->infoProcessorMock,
@@ -112,7 +101,7 @@ class HttpTest extends TestCase
         );
 
         if ($appConfigMock) {
-            $configMock = $this->createMock(Config::class);
+            $configMock = $this->createMock(\Magento\Framework\App\Config::class);
             $this->objectManager->setBackwardCompatibleProperty($model, 'appConfig', $configMock);
         }
 
@@ -148,8 +137,8 @@ class HttpTest extends TestCase
 
     public function testSetRouteNameWithRouter()
     {
-        $router = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->routerListMock->expects($this->any())->method('getRouteFrontName')->willReturn($router);
+        $router = $this->createMock(\Magento\Framework\App\Route\ConfigInterface::class);
+        $this->routerListMock->expects($this->any())->method('getRouteFrontName')->will($this->returnValue($router));
         $this->model = $this->getModel();
         $this->model->setRouteName('RouterName');
         $this->assertEquals('RouterName', $this->model->getRouteName());
@@ -158,7 +147,7 @@ class HttpTest extends TestCase
     public function testSetRouteNameWithNullRouterValue()
     {
         $this->model = $this->getModel();
-        $this->routerListMock->expects($this->once())->method('getRouteFrontName')->willReturn(null);
+        $this->routerListMock->expects($this->once())->method('getRouteFrontName')->will($this->returnValue(null));
         $this->model->setRouteName('RouterName');
     }
 
@@ -362,14 +351,14 @@ class HttpTest extends TestCase
     {
         $this->model = $this->getModel(null, false);
         $configOffloadHeader = 'Header-From-Proxy';
-        $configMock = $this->getMockBuilder(Config::class)
+        $configMock = $this->getMockBuilder(\Magento\Framework\App\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $configMock->expects($this->exactly($configCall))
             ->method('getValue')
             ->with(
-                Http::XML_PATH_OFFLOADER_HEADER,
+                \Magento\Framework\App\Request\Http::XML_PATH_OFFLOADER_HEADER,
                 ScopeConfigInterface::SCOPE_TYPE_DEFAULT
             )->willReturn($configOffloadHeader);
 
@@ -391,7 +380,7 @@ class HttpTest extends TestCase
     {
         $this->model = $this->getModel();
         $_SERVER['REQUEST_METHOD'] = $httpMethod;
-        $this->assertTrue($this->model->isSafeMethod());
+        $this->assertEquals(true, $this->model->isSafeMethod());
     }
 
     /**
@@ -403,7 +392,7 @@ class HttpTest extends TestCase
     {
         $this->model = $this->getModel();
         $_SERVER['REQUEST_METHOD'] = $httpMethod;
-        $this->assertFalse($this->model->isSafeMethod());
+        $this->assertEquals(false, $this->model->isSafeMethod());
     }
 
     /**
@@ -464,7 +453,7 @@ class HttpTest extends TestCase
             'HTTPS off with HTTP_ prefixed proxy set to https' => [true, 'off', 'HTTP_HEADER_FROM_PROXY', 'https', 1],
         ];
     }
-
+    
     /**
      * @dataProvider setPathInfoDataProvider
      * @param string $requestUri

@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GoogleAdwords\Test\Unit\Model\Filter;
 
-use Magento\GoogleAdwords\Model\Filter\UppercaseTitle;
-use PHPUnit\Framework\TestCase;
-
-class UppercaseTitleTest extends TestCase
+class UppercaseTitleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UppercaseTitle
+     * @var \Magento\GoogleAdwords\Model\Filter\UppercaseTitle
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new UppercaseTitle();
+        $this->_model = new \Magento\GoogleAdwords\Model\Filter\UppercaseTitle();
     }
 
     /**

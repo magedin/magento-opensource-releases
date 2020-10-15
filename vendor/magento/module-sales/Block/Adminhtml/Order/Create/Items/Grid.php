@@ -8,11 +8,11 @@ namespace Magento\Sales\Block\Adminhtml\Order\Create\Items;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Api\StockStateInterface;
+use Magento\CatalogInventory\Model\Quote\Item\QuantityValidator\QuoteItemQtyList;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Quote\Model\Quote\Item;
-use Magento\Catalog\Helper\Data as CatalogHelper;
 
 /**
  * Adminhtml sales order create items grid block
@@ -75,6 +75,11 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
     protected $stockState;
 
     /**
+     * @var QuoteItemQtyList
+     */
+    private $quoteItemQtyList;
+
+    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Model\Session\Quote $sessionQuote
      * @param \Magento\Sales\Model\AdminOrder\Create $orderCreate
@@ -87,7 +92,7 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
      * @param StockRegistryInterface $stockRegistry
      * @param StockStateInterface $stockState
      * @param array $data
-     * @param CatalogHelper|null $catalogHelper
+     * @param QuoteItemQtyList $quoteItemQtyList
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -103,7 +108,7 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
         StockRegistryInterface $stockRegistry,
         StockStateInterface $stockState,
         array $data = [],
-        ?CatalogHelper $catalogHelper = null
+        ?QuoteItemQtyList $quoteItemQtyList = null
     ) {
         $this->_messageHelper = $messageHelper;
         $this->_wishlistFactory = $wishlistFactory;
@@ -112,7 +117,7 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
         $this->_taxData = $taxData;
         $this->stockRegistry = $stockRegistry;
         $this->stockState = $stockState;
-        $data['catalogHelper'] = $catalogHelper ?? ObjectManager::getInstance()->get(CatalogHelper::class);
+        $this->quoteItemQtyList = $quoteItemQtyList ?? ObjectManager::getInstance()->get(QuoteItemQtyList::class);
         parent::__construct($context, $sessionQuote, $orderCreate, $priceCurrency, $data);
     }
 
@@ -137,6 +142,7 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
         $items = $this->getParentBlock()->getItems();
         $oldSuperMode = $this->getQuote()->getIsSuperMode();
         $this->getQuote()->setIsSuperMode(false);
+        $this->quoteItemQtyList->clear();
         foreach ($items as $item) {
             // To dispatch inventory event sales_quote_item_qty_set_after, set item qty
             $item->setQty($item->getQty());
@@ -545,12 +551,12 @@ class Grid extends \Magento\Sales\Block\Adminhtml\Order\Create\AbstractCreate
     {
         $product = $item->getProduct();
 
-        $options = ['label' => __('Configure')];
+        $options = ['label' => $this->escapeHtml(__('Configure'))];
         if ($product->canConfigure()) {
             $options['onclick'] = sprintf('order.showQuoteItemConfiguration(%s)', $item->getId());
         } else {
             $options['class'] = ' disabled';
-            $options['title'] = __('This product does not have any configurable options');
+            $options['title'] = $this->escapeHtml(__('This product does not have any configurable options'));
         }
 
         return $this->getLayout()->createBlock(

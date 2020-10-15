@@ -19,7 +19,6 @@ use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
 use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 
@@ -166,12 +165,10 @@ $this->assertTrue(is_readable($a));
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before PhpUnitDedicateAssertInternalTypeFixer.
-     * Must run after NoAliasFunctionsFixer, PhpUnitConstructFixer.
      */
     public function getPriority()
     {
+        // should be run after the PhpUnitConstructFixer.
         return -15;
     }
 
@@ -255,6 +252,10 @@ $this->assertTrue(is_readable($a));
         ], $this->getName());
     }
 
+    /**
+     * @param Tokens $tokens
+     * @param array  $assertCall
+     */
     private function fixAssertTrueFalse(Tokens $tokens, array $assertCall)
     {
         $testDefaultNamespaceTokenIndex = false;
@@ -319,6 +320,10 @@ $this->assertTrue(is_readable($a));
         }
     }
 
+    /**
+     * @param Tokens $tokens
+     * @param array  $assertCall
+     */
     private function fixAssertSameEquals(Tokens $tokens, array $assertCall)
     {
         // @ $this->/self::assertEquals/Same([$nextIndex])
@@ -385,8 +390,6 @@ $this->assertTrue(is_readable($a));
 
     private function getPreviousAssertCall(Tokens $tokens)
     {
-        $functionsAnalyzer = new FunctionsAnalyzer();
-
         for ($index = $tokens->count(); $index > 0; --$index) {
             $index = $tokens->getPrevTokenOfKind($index, [[T_STRING]]);
             if (null === $index) {
@@ -405,7 +408,14 @@ $this->assertTrue(is_readable($a));
                 continue;
             }
 
-            if (!$functionsAnalyzer->isTheSameClassCall($tokens, $index)) {
+            $operatorIndex = $tokens->getPrevMeaningfulToken($index);
+            $referenceIndex = $tokens->getPrevMeaningfulToken($operatorIndex);
+
+            if (
+                !($tokens[$operatorIndex]->equals([T_OBJECT_OPERATOR, '->']) && $tokens[$referenceIndex]->equals([T_VARIABLE, '$this']))
+                && !($tokens[$operatorIndex]->equals([T_DOUBLE_COLON, '::']) && $tokens[$referenceIndex]->equals([T_STRING, 'self']))
+                && !($tokens[$operatorIndex]->equals([T_DOUBLE_COLON, '::']) && $tokens[$referenceIndex]->equals([T_STATIC, 'static']))
+            ) {
                 continue;
             }
 
@@ -419,6 +429,7 @@ $this->assertTrue(is_readable($a));
     }
 
     /**
+     * @param Tokens    $tokens
      * @param false|int $callNSIndex
      * @param int       $callIndex
      * @param int       $openIndex

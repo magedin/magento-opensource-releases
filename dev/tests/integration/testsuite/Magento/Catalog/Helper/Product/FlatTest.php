@@ -17,7 +17,7 @@ class FlatTest extends \PHPUnit\Framework\TestCase
      */
     protected $_state;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_helper = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Catalog\Helper\Product\Flat\Indexer::class

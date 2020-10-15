@@ -9,8 +9,7 @@ namespace Magento\Customer\Model\Data;
 use \Magento\Framework\Api\AttributeValueFactory;
 
 /**
- * Customer data model
- *
+ * Class Customer
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implements
@@ -40,7 +39,7 @@ class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implement
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getCustomAttributesCodes()
     {
@@ -51,8 +50,6 @@ class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implement
     }
 
     /**
-     * Get default billing address id
-     *
      * @return string|null
      */
     public function getDefaultBilling()
@@ -153,7 +150,7 @@ class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implement
     /**
      * Get group id
      *
-     * @return int|null
+     * @return string|null
      */
     public function getGroupId()
     {
@@ -492,7 +489,7 @@ class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implement
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return \Magento\Customer\Api\Data\CustomerExtensionInterface|null
      */
@@ -502,7 +499,7 @@ class Customer extends \Magento\Framework\Api\AbstractExtensibleObject implement
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param \Magento\Customer\Api\Data\CustomerExtensionInterface $extensionAttributes
      * @return $this

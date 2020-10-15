@@ -3,20 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Collection;
 
-use Magento\Eav\Model\Entity\Collection\AbstractCollection;
-use Magento\Framework\DataObject;
-
-class AbstractCollectionStub extends AbstractCollection
+class AbstractCollectionStub extends \Magento\Eav\Model\Entity\Collection\AbstractCollection
 {
     /**
      * Retrieve item by id
      *
      * @param   mixed $id
-     * @return  DataObject
+     * @return  \Magento\Framework\DataObject
      */
     public function getItemById($id)
     {
@@ -33,16 +28,6 @@ class AbstractCollectionStub extends AbstractCollection
      */
     protected function _construct()
     {
-        return $this->_init(DataObject::class, 'test_entity_model');
-    }
-
-    /**
-     * Retrieve collection empty item
-     *
-     * @return DataObject
-     */
-    public function getNewEmptyItem()
-    {
-        return new DataObject();
+        return $this->_init(\Magento\Framework\DataObject::class, 'test_entity_model');
     }
 }

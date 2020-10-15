@@ -3,64 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Search\Test\Unit\Adapter\Mysql;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Search\Adapter\Mysql\ConditionManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConditionManagerTest extends TestCase
+class ConditionManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resource;
 
-    /** @var ConditionManager */
+    /** @var \Magento\Framework\Search\Adapter\Mysql\ConditionManager */
     private $conditionManager;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->connectionMock = $this->getMockBuilder(AdapterInterface::class)
+        $this->connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['quote', 'quoteIdentifier'])
             ->getMockForAbstractClass();
         $this->connectionMock->expects($this->any())
             ->method('quote')
-            ->willReturnCallback(
-                function ($value) {
-                    return sprintf('\'%s\'', $value);
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        return sprintf('\'%s\'', $value);
+                    }
+                )
             );
         $this->connectionMock->expects($this->any())
             ->method('quoteIdentifier')
-            ->willReturnCallback(
-                function ($value) {
-                    return sprintf('`%s`', $value);
-                }
+            ->will(
+                $this->returnCallback(
+                    function ($value) {
+                        return sprintf('`%s`', $value);
+                    }
+                )
             );
 
-        $this->resource = $this->getMockBuilder(ResourceConnection::class)
+        $this->resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resource->expects($this->once())
             ->method('getConnection')
-            ->willReturn($this->connectionMock);
+            ->will($this->returnValue($this->connectionMock));
 
         $this->conditionManager = $objectManager->getObject(
-            ConditionManager::class,
+            \Magento\Framework\Search\Adapter\Mysql\ConditionManager::class,
             [
                 'resource' => $this->resource
             ]

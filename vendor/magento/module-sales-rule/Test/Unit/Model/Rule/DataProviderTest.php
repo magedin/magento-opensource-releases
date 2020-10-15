@@ -3,78 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\Rule;
 
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\SalesRule\Model\ResourceModel\Rule\Collection;
-use Magento\SalesRule\Model\ResourceModel\Rule\CollectionFactory;
-use Magento\SalesRule\Model\Rule;
-use Magento\SalesRule\Model\Rule\DataProvider;
-use Magento\SalesRule\Model\Rule\Metadata\ValueProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataProvider
+     * @var \Magento\SalesRule\Model\Rule\DataProvider
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $groupRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $searchCriteriaBuilderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\SalesRule\Model\ResourceModel\Rule\CollectionFactory::class,
             ['create']
         );
 
-        $this->collectionMock = $this->createMock(Collection::class);
+        $this->collectionMock = $this->createMock(\Magento\SalesRule\Model\ResourceModel\Rule\Collection::class);
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($this->collectionMock);
-        $ruleMock = $this->createMock(Rule::class);
-        $metaDataValueProviderMock = $this->getMockBuilder(ValueProvider::class)
+        $ruleMock = $this->createMock(\Magento\SalesRule\Model\Rule::class);
+        $metaDataValueProviderMock = $this->getMockBuilder(\Magento\SalesRule\Model\Rule\Metadata\ValueProvider::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $registryMock = $this->createMock(Registry::class);
+        $registryMock = $this->createMock(\Magento\Framework\Registry::class);
         $registryMock->expects($this->once())
             ->method('registry')
             ->willReturn($ruleMock);
         $metaDataValueProviderMock->expects($this->once())->method('getMetadataValues')->willReturn(['data']);
         $this->model = (new ObjectManager($this))->getObject(
-            DataProvider::class,
+            \Magento\SalesRule\Model\Rule\DataProvider::class,
             [
                 'name' => 'Name',
                 'primaryFieldName' => 'Primary',
@@ -91,11 +81,15 @@ class DataProviderTest extends TestCase
         $ruleId = 42;
         $ruleData = ['name' => 'Sales Price Rule'];
 
-        $ruleMock = $this->getMockBuilder(Rule::class)
-            ->addMethods(['getDiscountAmount', 'setDiscountAmount', 'getDiscountQty', 'setDiscountQty'])
-            ->onlyMethods(['load', 'getId', 'getData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $ruleMock = $this->createPartialMock(\Magento\SalesRule\Model\Rule::class, [
+                'getDiscountAmount',
+                'setDiscountAmount',
+                'getDiscountQty',
+                'setDiscountQty',
+                'load',
+                'getId',
+                'getData'
+            ]);
         $this->collectionMock->expects($this->once())->method('getItems')->willReturn([$ruleMock]);
 
         $ruleMock->expects($this->atLeastOnce())->method('getId')->willReturn($ruleId);

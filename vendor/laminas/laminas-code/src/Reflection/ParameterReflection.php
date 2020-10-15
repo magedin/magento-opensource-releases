@@ -80,7 +80,7 @@ class ParameterReflection extends ReflectionParameter implements ReflectionInter
             && ($type = $this->getType())
             && $type->isBuiltin()
         ) {
-            return $type->getName();
+            return (string) $type;
         }
 
         // can be dropped when dropping PHP7 support:

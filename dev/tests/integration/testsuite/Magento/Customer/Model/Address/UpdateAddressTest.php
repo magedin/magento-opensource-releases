@@ -63,7 +63,7 @@ class UpdateAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->addressRegistry = $this->objectManager->get(AddressRegistry::class);
@@ -77,7 +77,7 @@ class UpdateAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         foreach ($this->processedAddressesIds as $createdAddressesId) {
             $this->addressRegistry->remove($createdAddressesId);

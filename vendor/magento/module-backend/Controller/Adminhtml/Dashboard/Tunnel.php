@@ -1,21 +1,16 @@
 <?php
 /**
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Controller\Adminhtml\Dashboard;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result;
 use Magento\Framework\Encryption\Helper\Security;
 
-/**
- * Dashboard graph image tunnel
- * @deprecated dashboard graphs were migrated to dynamic chart.js solution
- * @see dashboard.chart.amounts and dashboard.chart.orders in adminhtml_dashboard_index.xml
- */
-class Tunnel extends \Magento\Backend\Controller\Adminhtml\Dashboard implements HttpGetActionInterface
+class Tunnel extends \Magento\Backend\Controller\Adminhtml\Dashboard
 {
     /**
      * @var \Magento\Framework\Controller\Result\RawFactory
@@ -55,7 +50,6 @@ class Tunnel extends \Magento\Backend\Controller\Adminhtml\Dashboard implements 
             $newHash = $helper->getChartDataHash($gaData);
             if (Security::compareStrings($newHash, $gaHash)) {
                 $params = null;
-                // phpcs:ignore Magento2.Functions.DiscouragedFunction
                 $paramsJson = base64_decode(urldecode($gaData));
                 if ($paramsJson) {
                     $params = json_decode($paramsJson, true);

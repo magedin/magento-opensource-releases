@@ -5,6 +5,4 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/invoices_for_items_rollback.php');
+require __DIR__ . '/../../../Magento/Sales/_files/invoices_for_items_rollback.php';

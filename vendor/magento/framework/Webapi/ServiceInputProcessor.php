@@ -21,7 +21,7 @@ use Magento\Framework\Reflection\MethodsMap;
 use Magento\Framework\Reflection\TypeProcessor;
 use Magento\Framework\Webapi\Exception as WebapiException;
 use Magento\Framework\Webapi\CustomAttribute\PreprocessorInterface;
-use Laminas\Code\Reflection\ClassReflection;
+use Zend\Code\Reflection\ClassReflection;
 
 /**
  * Deserialize arguments from API requests.

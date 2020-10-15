@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * @copyright  Vertex. All rights reserved.  https://www.vertexinc.com/
  * @author     Mediotype                     https://www.mediotype.com/
@@ -6,10 +6,9 @@
 
 namespace Vertex\Tax\Test\Unit\Model\TaxRegistry;
 
+use Magento\Framework\Serialize\Serializer\Serialize as SerializeSerializer;
 use Magento\Framework\App\Cache\StateInterface;
 use Magento\Framework\Cache\FrontendInterface;
-use Magento\Framework\Serialize\Serializer\Serialize as SerializeSerializer;
-use PHPUnit\Framework\MockObject\MockObject;
 use Vertex\Tax\Model\Cache\Serializer;
 use Vertex\Tax\Model\TaxRegistry\CacheStorage;
 use Vertex\Tax\Test\Unit\TestCase;
@@ -19,16 +18,16 @@ use Vertex\Tax\Test\Unit\TestCase;
  */
 class CacheStorageTest extends TestCase
 {
-    /** @var MockObject|FrontendInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|FrontendInterface */
     private $cacheFrontendMock;
 
-    /** @var MockObject|StateInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|StateInterface */
     private $cacheStateMock;
 
     /** @var CacheStorage */
     private $cacheStorage;
 
-    /** @var MockObject|Serializer */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|Serializer */
     private $serializerMock;
 
     /** @var SerializeSerializer */
@@ -37,7 +36,7 @@ class CacheStorageTest extends TestCase
     /**
      * Perform test setup.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

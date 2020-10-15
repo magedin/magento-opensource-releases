@@ -3,46 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Sender;
 
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Email\Container\CreditmemoCommentIdentity;
 use Magento\Sales\Model\Order\Email\Sender\CreditmemoCommentSender;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class CreditmemoCommentSenderTest extends AbstractSenderTest
 {
     /**
-     * @var CreditmemoCommentSender
+     * @var \Magento\Sales\Model\Order\Email\Sender\CreditmemoCommentSender
      */
     protected $sender;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoMock;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stepMockSetup();
-        $this->stepIdentityContainerInit(CreditmemoCommentIdentity::class);
+        $this->stepIdentityContainerInit(\Magento\Sales\Model\Order\Email\Container\CreditmemoCommentIdentity::class);
         $this->addressRenderer->expects($this->any())->method('format')->willReturn(1);
         $this->creditmemoMock = $this->createPartialMock(
-            Creditmemo::class,
-            ['getStore', 'getOrder']
+            \Magento\Sales\Model\Order\Creditmemo::class,
+            ['getStore', '__wakeup', 'getOrder']
         );
         $this->creditmemoMock->expects($this->any())
             ->method('getStore')
-            ->willReturn($this->storeMock);
+            ->will($this->returnValue($this->storeMock));
         $this->creditmemoMock->expects($this->any())
             ->method('getOrder')
-            ->willReturn($this->orderMock);
+            ->will($this->returnValue($this->orderMock));
         $this->sender = new CreditmemoCommentSender(
             $this->templateContainerMock,
             $this->identityContainerMock,
@@ -63,7 +57,7 @@ class CreditmemoCommentSenderTest extends AbstractSenderTest
 
     public function testSendVirtualOrder()
     {
-        $this->orderMock->setData(OrderInterface::IS_VIRTUAL, true);
+        $this->orderMock->setData(\Magento\Sales\Api\Data\OrderInterface::IS_VIRTUAL, true);
         $billingAddress = $this->addressMock;
         $customerName = 'test customer';
         $frontendStatusLabel = 'Complete';
@@ -78,19 +72,21 @@ class CreditmemoCommentSenderTest extends AbstractSenderTest
         $this->templateContainerMock->expects($this->once())
             ->method('setTemplateVars')
             ->with(
-                [
-                    'order' => $this->orderMock,
-                    'creditmemo' => $this->creditmemoMock,
-                    'comment' => '',
-                    'billing' => $billingAddress,
-                    'store' => $this->storeMock,
-                    'formattedShippingAddress' => null,
-                    'formattedBillingAddress' => 1,
-                    'order_data' => [
-                        'customer_name' => $customerName,
-                        'frontend_status_label' => $frontendStatusLabel
+                $this->equalTo(
+                    [
+                        'order' => $this->orderMock,
+                        'creditmemo' => $this->creditmemoMock,
+                        'comment' => '',
+                        'billing' => $billingAddress,
+                        'store' => $this->storeMock,
+                        'formattedShippingAddress' => null,
+                        'formattedBillingAddress' => 1,
+                        'order_data' => [
+                            'customer_name' => $customerName,
+                            'frontend_status_label' => $frontendStatusLabel
+                        ]
                     ]
-                ]
+                )
             );
         $this->stepAddressFormat($billingAddress, true);
         $result = $this->sender->send($this->creditmemoMock);
@@ -113,27 +109,29 @@ class CreditmemoCommentSenderTest extends AbstractSenderTest
 
         $this->orderMock->expects($this->once())
             ->method('getCustomerIsGuest')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->stepAddressFormat($billingAddress);
         $this->identityContainerMock->expects($this->once())
             ->method('isEnabled')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->templateContainerMock->expects($this->once())
             ->method('setTemplateVars')
             ->with(
-                [
-                    'order' => $this->orderMock,
-                    'creditmemo' => $this->creditmemoMock,
-                    'comment' => $comment,
-                    'billing' => $billingAddress,
-                    'store' => $this->storeMock,
-                    'formattedShippingAddress' => 1,
-                    'formattedBillingAddress' => 1,
-                    'order_data' => [
-                        'customer_name' => $customerName,
-                        'frontend_status_label' => $frontendStatusLabel
+                $this->equalTo(
+                    [
+                        'order' => $this->orderMock,
+                        'creditmemo' => $this->creditmemoMock,
+                        'comment' => $comment,
+                        'billing' => $billingAddress,
+                        'store' => $this->storeMock,
+                        'formattedShippingAddress' => 1,
+                        'formattedBillingAddress' => 1,
+                        'order_data' => [
+                            'customer_name' => $customerName,
+                            'frontend_status_label' => $frontendStatusLabel
+                        ]
                     ]
-                ]
+                )
             );
         $this->stepSendWithoutSendCopy();
         $result = $this->sender->send($this->creditmemoMock, true, $comment);
@@ -156,27 +154,29 @@ class CreditmemoCommentSenderTest extends AbstractSenderTest
 
         $this->orderMock->expects($this->once())
             ->method('getCustomerIsGuest')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->stepAddressFormat($billingAddress);
         $this->identityContainerMock->expects($this->once())
             ->method('isEnabled')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->templateContainerMock->expects($this->once())
             ->method('setTemplateVars')
             ->with(
-                [
-                    'order' => $this->orderMock,
-                    'creditmemo' => $this->creditmemoMock,
-                    'billing' => $billingAddress,
-                    'comment' => $comment,
-                    'store' => $this->storeMock,
-                    'formattedShippingAddress' => 1,
-                    'formattedBillingAddress' => 1,
-                    'order_data' => [
-                        'customer_name' => $customerName,
-                        'frontend_status_label' => $frontendStatusLabel
+                $this->equalTo(
+                    [
+                        'order' => $this->orderMock,
+                        'creditmemo' => $this->creditmemoMock,
+                        'billing' => $billingAddress,
+                        'comment' => $comment,
+                        'store' => $this->storeMock,
+                        'formattedShippingAddress' => 1,
+                        'formattedBillingAddress' => 1,
+                        'order_data' => [
+                            'customer_name' => $customerName,
+                            'frontend_status_label' => $frontendStatusLabel
+                        ]
                     ]
-                ]
+                )
             );
         $this->stepSendWithCallSendCopyTo();
         $result = $this->sender->send($this->creditmemoMock, false, $comment);

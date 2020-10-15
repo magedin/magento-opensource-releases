@@ -3,69 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Asset;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\File\Context;
-use Magento\Framework\View\Asset\File\FallbackContext;
-use Magento\Framework\View\Asset\PreProcessor\Chain;
 use Magento\Framework\View\Asset\PreProcessor\ChainFactoryInterface;
-use Magento\Framework\View\Asset\PreProcessor\Pool;
+use Magento\Framework\View\Asset\PreProcessor\Chain;
 use Magento\Framework\View\Asset\Source;
-use Magento\Framework\View\Design\FileResolution\Fallback\StaticFile;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
-use Magento\Framework\View\Design\ThemeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SourceTest extends TestCase
+class SourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystem;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $rootDirRead;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tmpDir;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $staticDirRead;
 
     /**
-     * @var Pool|MockObject
+     * @var \Magento\Framework\View\Asset\PreProcessor\Pool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $preProcessorPool;
 
     /**
-     * @var StaticFile|MockObject
+     * @var \Magento\Framework\View\Design\FileResolution\Fallback\StaticFile|\PHPUnit_Framework_MockObject_MockObject
      */
     private $viewFileResolution;
 
     /**
-     * @var ThemeInterface|MockObject
+     * @var \Magento\Framework\View\Design\ThemeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $theme;
 
@@ -75,32 +60,33 @@ class SourceTest extends TestCase
     private $object;
 
     /**
-     * @var ChainFactoryInterface|MockObject
+     * @var ChainFactoryInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $chainFactory;
 
     /**
-     * @var Chain|MockObject
+     * @var Chain | \PHPUnit_Framework_MockObject_MockObject
      */
     private $chain;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $readFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->preProcessorPool = $this->createMock(Pool::class);
+        $this->preProcessorPool = $this->createMock(\Magento\Framework\View\Asset\PreProcessor\Pool::class);
         $this->viewFileResolution = $this->createMock(
-            StaticFile::class
+            \Magento\Framework\View\Design\FileResolution\Fallback\StaticFile::class
         );
-        $this->theme = $this->getMockForAbstractClass(ThemeInterface::class);
-        /** @var ScopeConfigInterface $config */
+        $this->theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
+        /** @var \Magento\Framework\App\Config\ScopeConfigInterface $config */
+
         $this->chainFactory = $this->getMockBuilder(
-            ChainFactoryInterface::class
+            \Magento\Framework\View\Asset\PreProcessor\ChainFactoryInterface::class
         )->getMock();
-        $this->chain = $this->getMockBuilder(Chain::class)
+        $this->chain = $this->getMockBuilder(\Magento\Framework\View\Asset\PreProcessor\Chain::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -108,13 +94,13 @@ class SourceTest extends TestCase
             ->method('create')
             ->willReturn($this->chain);
 
-        $themeProvider = $this->getMockForAbstractClass(ThemeProviderInterface::class);
+        $themeProvider = $this->createMock(ThemeProviderInterface::class);
         $themeProvider->expects($this->any())
             ->method('getThemeByFullPath')
             ->with('frontend/magento_theme')
             ->willReturn($this->theme);
 
-        $this->readFactory = $this->createMock(ReadFactory::class);
+        $this->readFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
 
         $this->initFilesystem();
 
@@ -140,7 +126,7 @@ class SourceTest extends TestCase
     public function testGetFile($origFile, $origPath, $origContent, $isMaterialization, $isExist)
     {
         $filePath = 'some/file.ext';
-        $read = $this->createMock(Read::class);
+        $read = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
         $read->expects($this->at(0))->method('readFile')->with($origPath)->willReturn($origContent);
         $this->readFactory->expects($this->atLeastOnce())->method('create')->willReturn($read);
         $this->viewFileResolution->expects($this->once())
@@ -234,14 +220,14 @@ class SourceTest extends TestCase
 
     protected function initFilesystem()
     {
-        $this->filesystem = $this->createMock(Filesystem::class);
+        $this->filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->rootDirRead = $this->getMockForAbstractClass(
-            ReadInterface::class
+            \Magento\Framework\Filesystem\Directory\ReadInterface::class
         );
         $this->staticDirRead = $this->getMockForAbstractClass(
-            ReadInterface::class
+            \Magento\Framework\Filesystem\Directory\ReadInterface::class
         );
-        $this->tmpDir = $this->getMockForAbstractClass(WriteInterface::class);
+        $this->tmpDir = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\Directory\WriteInterface::class);
 
         $readDirMap = [
             [DirectoryList::ROOT, DriverPool::FILE, $this->rootDirRead],
@@ -262,26 +248,26 @@ class SourceTest extends TestCase
      * Create an asset mock
      *
      * @param bool $isFallback
-     * @return File|MockObject
+     * @return \Magento\Framework\View\Asset\File|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getAsset($isFallback = true)
     {
         if ($isFallback) {
-            $context = new FallbackContext(
+            $context = new \Magento\Framework\View\Asset\File\FallbackContext(
                 'http://example.com/static/',
                 'frontend',
                 'magento_theme',
                 'en_US'
             );
         } else {
-            $context = new Context(
+            $context = new \Magento\Framework\View\Asset\File\Context(
                 'http://example.com/static/',
                 DirectoryList::STATIC_VIEW,
                 ''
             );
         }
 
-        $asset = $this->createMock(File::class);
+        $asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
         $asset->expects($this->any())
             ->method('getContext')
             ->willReturn($context);

@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\ScopeTypeNormalizer;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\ScopeInterface;
 
-class ScopeTypeNormalizerTest extends TestCase
+class ScopeTypeNormalizerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ScopeTypeNormalizer
@@ -21,7 +18,7 @@ class ScopeTypeNormalizerTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeTypeNormalizer = new ScopeTypeNormalizer();
     }

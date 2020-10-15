@@ -12,9 +12,8 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\DataObject;
 use Magento\Quote\Model\Quote;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_with_custom_options.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_with_custom_options.php';
 
 /** @var ProductRepositoryInterface $productRepository */
 $productRepository = Bootstrap::getObjectManager()

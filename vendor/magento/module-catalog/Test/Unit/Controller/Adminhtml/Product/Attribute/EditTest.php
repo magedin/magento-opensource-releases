@@ -3,166 +3,145 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product\Attribute;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Block\Template;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Page;
-use Magento\Catalog\Controller\Adminhtml\Product\Attribute\Edit;
-use Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\Layout;
-use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EditTest extends TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Edit
+     * @var \Magento\Catalog\Controller\Adminhtml\Product\Attribute\Edit
      */
     protected $editController;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavAttribute;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
     /**
-     * @var Page|MockObject
+     * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPage;
 
     /**
-     * @var  Layout|MockObject
+     * @var  \Magento\Framework\View\Result\Layout|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultLayout;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageConfig;
 
     /**
-     * @var \Magento\Framework\View\Layout|MockObject
+     * @var \Magento\Framework\View\Layout|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layout;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $session;
 
     /**
-     * @var Presentation|MockObject
+     * @var \Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $presentation;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageTitle;
 
     /**
-     * @var Template|MockObject
+     * @var \Magento\Backend\Block\Template|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $blockTemplate;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var PageFactory|MockObject
+     * @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultPageFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)->getMock();
 
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
-            ->getMock();
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)->getMock();
 
         $this->eavAttribute = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
             ['setEntityTypeId', 'load', 'getId', 'getEntityTypeId', 'addData', 'getName']
         );
 
-        $this->registry = $this->createMock(Registry::class);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
 
-        $this->resultPage = $this->getMockBuilder(Page::class)
+        $this->resultPage = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->setMethods(['setActiveMenu', 'getConfig', 'addBreadcrumb', 'addHandle', 'getLayout'])
             ->getMock();
 
-        $this->resultPageFactory = $this->getMockBuilder(PageFactory::class)
+        $this->resultPageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->resultLayout = $this->getMockBuilder(Layout::class)
+        $this->resultLayout = $this->getMockBuilder(\Magento\Framework\View\Result\Layout::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageConfig = $this->getMockBuilder(Config::class)
+        $this->pageConfig = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageTitle = $this->getMockBuilder(Title::class)
+        $this->pageTitle = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->layout = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['getBlock']);
 
-        $this->session = $this->getMockBuilder(Session::class)
+        $this->session = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->presentation = $this->getMockBuilder(
-            Presentation::class
+            \Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation::class
         )->disableOriginalConstructor()
             ->getMock();
 
-        $this->blockTemplate = $this->getMockBuilder(Template::class)
+        $this->blockTemplate = $this->getMockBuilder(\Magento\Backend\Block\Template::class)
             ->setMethods(['setIsPopup'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->context = $this->getMockBuilder(Context::class)
-            ->addMethods(['getResultPageFactory'])
-            ->onlyMethods(['getRequest', 'getObjectManager', 'getSession'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->context = $this->createPartialMock(
+            \Magento\Backend\App\Action\Context::class,
+            ['getRequest', 'getObjectManager', 'getResultPageFactory', 'getSession']
+        );
         $this->context->expects($this->any())->method('getRequest')->willReturn($this->request);
         $this->context->expects($this->any())->method('getObjectManager')->willReturn($this->objectManagerMock);
         $this->context->expects($this->any())->method('getResultPageFactory')->willReturn($this->resultPageFactory);
@@ -170,7 +149,7 @@ class EditTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->editController = $objectManager->getObject(
-            Edit::class,
+            \Magento\Catalog\Controller\Adminhtml\Product\Attribute\Edit::class,
             [
                 'context' => $this->context,
                 'resultPageFactory' => $this->resultPageFactory
@@ -192,12 +171,12 @@ class EditTest extends TestCase
         );
 
         $this->objectManagerMock->expects($this->any())->method('create')
-            ->with(Attribute::class)
+            ->with(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
             ->willReturn($this->eavAttribute);
         $this->objectManagerMock->expects($this->any())->method('get')
             ->willReturnMap([
-                [Session::class, $this->session],
-                [Presentation::class, $this->presentation]
+                [\Magento\Backend\Model\Session::class, $this->session],
+                [\Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation::class, $this->presentation]
             ]);
         $this->eavAttribute->expects($this->once())->method('setEntityTypeId')->willReturnSelf();
         $this->eavAttribute->expects($this->once())->method('addData')->with($attributesData)->willReturnSelf();
@@ -243,12 +222,12 @@ class EditTest extends TestCase
         );
 
         $this->objectManagerMock->expects($this->any())->method('create')
-            ->with(Attribute::class)
+            ->with(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
             ->willReturn($this->eavAttribute);
         $this->objectManagerMock->expects($this->any())->method('get')
             ->willReturnMap([
-                [Session::class, $this->session],
-                [Presentation::class, $this->presentation]
+                [\Magento\Backend\Model\Session::class, $this->session],
+                [\Magento\Catalog\Model\Product\Attribute\Frontend\Inputtype\Presentation::class, $this->presentation]
             ]);
 
         $this->eavAttribute->expects($this->once())->method('setEntityTypeId')->willReturnSelf();

@@ -4,63 +4,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Swatches\Test\Unit\Controller\Ajax;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\PageCache\Model\Config;
-use Magento\Swatches\Controller\Ajax\Media;
-use Magento\Swatches\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class MediaTest extends TestCase
+/**
+ * Class Media
+ */
+class MediaTest extends \PHPUnit\Framework\TestCase
 {
     /** @var array */
     private $mediaGallery;
 
-    /** @var Data|MockObject */
+    /** @var \Magento\Swatches\Helper\Data|\PHPUnit_Framework_MockObject_MockObject */
     private $swatchHelperMock;
 
-    /** @var ProductFactory|MockObject */
+    /** @var \Magento\Catalog\Model\ProductFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $productModelFactoryMock;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\PageCache\Model\Config|\PHPUnit_Framework_MockObject_MockObject */
     private $config;
 
-    /** @var Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject */
     private $productMock;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $contextMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $requestMock;
 
-    /** @var ResponseInterface|MockObject */
+    /** @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $responseMock;
 
-    /** @var ResultFactory|MockObject */
+    /** @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $resultFactory;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Controller\Result\Json|\PHPUnit_Framework_MockObject_MockObject */
     private $jsonMock;
 
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
-    /** @var ObjectManager|Media */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager|\Magento\Swatches\Controller\Ajax\Media */
     private $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->mediaGallery = [
             'image' => '/m/a/magento.png',
@@ -69,35 +56,35 @@ class MediaTest extends TestCase
             'swatch_image' => '/m/a/magento.png',
         ];
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->swatchHelperMock = $this->createMock(Data::class);
+        $this->swatchHelperMock = $this->createMock(\Magento\Swatches\Helper\Data::class);
         $this->productModelFactoryMock = $this->createPartialMock(
-            ProductFactory::class,
+            \Magento\Catalog\Model\ProductFactory::class,
             ['create']
         );
-        $this->config = $this->createMock(Config::class);
+        $this->config = $this->createMock(\Magento\PageCache\Model\Config::class);
         $this->config->method('getTtl')->willReturn(1);
 
-        $this->productMock = $this->createMock(Product::class);
-        $this->contextMock = $this->createMock(Context::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\App\Action\Context::class);
 
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->contextMock->method('getRequest')->willReturn($this->requestMock);
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['setPublicHeaders'])
             ->getMockForAbstractClass();
         $this->responseMock->method('setPublicHeaders')->willReturnSelf();
         $this->contextMock->method('getResponse')->willReturn($this->responseMock);
-        $this->resultFactory = $this->createPartialMock(ResultFactory::class, ['create']);
+        $this->resultFactory = $this->createPartialMock(\Magento\Framework\Controller\ResultFactory::class, ['create']);
         $this->contextMock->method('getResultFactory')->willReturn($this->resultFactory);
 
-        $this->jsonMock = $this->createMock(Json::class);
+        $this->jsonMock = $this->createMock(\Magento\Framework\Controller\Result\Json::class);
         $this->resultFactory->expects($this->once())->method('create')->with('json')->willReturn($this->jsonMock);
 
         $this->controller = $this->objectManager->getObject(
-            Media::class,
+            \Magento\Swatches\Controller\Ajax\Media::class,
             [
                 'context' => $this->contextMock,
                 'swatchHelper' => $this->swatchHelperMock,
@@ -134,10 +121,11 @@ class MediaTest extends TestCase
         $this->jsonMock
             ->expects($this->once())
             ->method('setData')
-            ->with($this->mediaGallery)->willReturnSelf();
+            ->with($this->mediaGallery)
+            ->will($this->returnSelf());
 
         $result = $this->controller->execute();
 
-        $this->assertInstanceOf(Json::class, $result);
+        $this->assertInstanceOf(\Magento\Framework\Controller\Result\Json::class, $result);
     }
 }

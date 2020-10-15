@@ -95,12 +95,11 @@ class ParserFactory
     private function initInput(Engine $pdepend, PHPMD $phpmd)
     {
         foreach (explode(',', $phpmd->getInput()) as $path) {
-            $trimmedPath = trim($path);
-            if (is_dir($trimmedPath)) {
-                $pdepend->addDirectory($trimmedPath);
-                continue;
+            if (is_dir(trim($path))) {
+                $pdepend->addDirectory(trim($path));
+            } else {
+                $pdepend->addFile(trim($path));
             }
-            $pdepend->addFile($trimmedPath);
         }
     }
 

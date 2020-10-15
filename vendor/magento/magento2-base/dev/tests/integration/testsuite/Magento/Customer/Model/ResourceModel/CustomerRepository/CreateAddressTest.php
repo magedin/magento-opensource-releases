@@ -26,7 +26,7 @@ class CreateAddressTest extends CreateAddressViaAddressRepositoryTest
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->dataObjectHelper = $this->objectManager->get(DataObjectHelper::class);

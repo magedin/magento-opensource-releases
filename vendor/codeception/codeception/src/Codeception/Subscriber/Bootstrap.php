@@ -1,7 +1,6 @@
 <?php
 namespace Codeception\Subscriber;
 
-use Codeception\Configuration;
 use Codeception\Event\SuiteEvent;
 use Codeception\Events;
 use Codeception\Exception\ConfigurationException;
@@ -23,6 +22,15 @@ class Bootstrap implements EventSubscriberInterface
             return;
         }
 
-        Configuration::loadBootstrap($settings['bootstrap'], $settings['path']);
+        if (!$settings['bootstrap']) {
+            return;
+        }
+
+        $bootstrap = $settings['path'] . $settings['bootstrap'];
+        if (!is_file($bootstrap)) {
+            throw new ConfigurationException("Bootstrap file $bootstrap can't be loaded");
+        }
+
+        require_once $bootstrap;
     }
 }

@@ -41,8 +41,10 @@ class ConfigurableQty extends AbstractModifier
                                 'arguments' => [
                                     'data' => [
                                         'config' => [
-                                            'component' => 'Magento_ConfigurableProduct/js/' .
-                                                'components/qty-configurable'
+                                            'imports' => [
+                                                'disabled' => '!ns = ${ $.ns }, index = '
+                                                    . ConfigurablePanel::CONFIGURABLE_MATRIX . ':isEmpty',
+                                            ],
                                         ],
                                     ],
                                 ],

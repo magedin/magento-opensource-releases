@@ -3,61 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Address;
 
-use Magento\Directory\Helper\Data;
-use Magento\Directory\Model\CountryFactory;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Sales\Model\Order\Address;
-use Magento\Sales\Model\Order\Address\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+/**
+ * Class ValidatorTest
+ */
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Sales\Model\Order\Address\Validator
      */
     protected $validator;
 
     /**
-     * @var Address|MockObject
+     * @var \Magento\Sales\Model\Order\Address|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $addressMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Directory\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directoryHelperMock;
 
     /**
-     * @var CountryFactory|MockObject
+     * @var \Magento\Directory\Model\CountryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $countryFactoryMock;
 
     /**
      * Mock order address model
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->addressMock = $this->createPartialMock(
-            Address::class,
-            ['hasData', 'getEmail', 'getAddressType']
+            \Magento\Sales\Model\Order\Address::class,
+            ['hasData', 'getEmail', 'getAddressType', '__wakeup']
         );
-        $this->directoryHelperMock = $this->createMock(Data::class);
-        $this->countryFactoryMock = $this->createMock(CountryFactory::class);
-        $eavConfigMock = $this->createMock(Config::class);
-        $attributeMock = $this->createMock(Attribute::class);
+        $this->directoryHelperMock = $this->createMock(\Magento\Directory\Helper\Data::class);
+        $this->countryFactoryMock = $this->createMock(\Magento\Directory\Model\CountryFactory::class);
+        $eavConfigMock = $this->createMock(\Magento\Eav\Model\Config::class);
+        $attributeMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute::class);
         $attributeMock->expects($this->any())
             ->method('getIsRequired')
             ->willReturn(true);
         $eavConfigMock->expects($this->any())
             ->method('getAttribute')
-            ->willReturn($attributeMock);
-        $this->validator = new Validator(
+            ->will($this->returnValue($attributeMock));
+        $this->validator = new \Magento\Sales\Model\Order\Address\Validator(
             $this->directoryHelperMock,
             $this->countryFactoryMock,
             $eavConfigMock
@@ -77,13 +70,13 @@ class ValidatorTest extends TestCase
     {
         $this->addressMock->expects($this->any())
             ->method('hasData')
-            ->willReturnMap($addressData);
+            ->will($this->returnValueMap($addressData));
         $this->addressMock->expects($this->once())
             ->method('getEmail')
-            ->willReturn($email);
+            ->will($this->returnValue($email));
         $this->addressMock->expects($this->once())
             ->method('getAddressType')
-            ->willReturn($addressType);
+            ->will($this->returnValue($addressType));
         $actualWarnings = $this->validator->validate($this->addressMock);
         $this->assertEquals($expectedWarnings, $actualWarnings);
     }

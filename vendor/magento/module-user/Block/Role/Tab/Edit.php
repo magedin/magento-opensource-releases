@@ -63,12 +63,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form implements \Magento\Backen
     protected $coreRegistry = null;
 
     /**
-     * Constructor
-     *
      * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Authorization\Model\Acl\AclRetriever $aclRetriever
      * @param \Magento\Framework\Acl\RootResource $rootResource
      * @param \Magento\Authorization\Model\ResourceModel\Rules\CollectionFactory $rulesCollectionFactory
+     * @param \Magento\Authorization\Model\Acl\AclRetriever $aclRetriever
      * @param \Magento\Framework\Acl\AclResource\ProviderInterface $aclResourceProvider
      * @param \Magento\Integration\Helper\Data $integrationData
      * @param array $data
@@ -224,6 +222,6 @@ class Edit extends \Magento\Backend\Block\Widget\Form implements \Magento\Backen
             }
         );
         $configResource = reset($configResource);
-        return $configResource['children'] ?? [];
+        return isset($configResource['children']) ? $configResource['children'] : [];
     }
 }

@@ -7,22 +7,18 @@ declare(strict_types=1);
 
 namespace Magento\Cms\Test\Unit\Model\Config\Source;
 
-use Magento\Cms\Model\Config\Source\Block;
-use Magento\Cms\Model\ResourceModel\Block\Collection;
-use Magento\Cms\Model\ResourceModel\Block\CollectionFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class BlockTest extends TestCase
+/**
+ * Class BlockTest
+ */
+class BlockTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Block\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactory;
 
     /**
-     * @var Block
+     * @var \Magento\Cms\Model\Config\Source\Block
      */
     protected $block;
 
@@ -31,17 +27,17 @@ class BlockTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Cms\Model\ResourceModel\Block\CollectionFactory::class,
             ['create']
         );
 
         $this->block = $objectManager->getObject(
-            Block::class,
+            \Magento\Cms\Model\Config\Source\Block::class,
             [
                 'collectionFactory' => $this->collectionFactory,
             ]
@@ -55,15 +51,15 @@ class BlockTest extends TestCase
      */
     public function testToOptionArray()
     {
-        $blockCollectionMock = $this->createMock(Collection::class);
+        $blockCollectionMock = $this->createMock(\Magento\Cms\Model\ResourceModel\Block\Collection::class);
 
         $this->collectionFactory->expects($this->once())
             ->method('create')
-            ->willReturn($blockCollectionMock);
+            ->will($this->returnValue($blockCollectionMock));
 
         $blockCollectionMock->expects($this->once())
             ->method('toOptionIdArray')
-            ->willReturn('return-value');
+            ->will($this->returnValue('return-value'));
 
         $this->assertEquals('return-value', $this->block->toOptionArray());
     }

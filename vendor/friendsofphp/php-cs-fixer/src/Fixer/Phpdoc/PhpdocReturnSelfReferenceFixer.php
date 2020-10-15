@@ -103,12 +103,10 @@ class Sample
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoSuperfluousPhpdocTagsFixer, PhpdocAlignFixer.
-     * Must run after CommentToPhpdocFixer, PhpdocIndentFixer, PhpdocScalarFixer, PhpdocToCommentFixer, PhpdocTypesFixer.
      */
     public function getPriority()
     {
+        // must run before NoSuperfluousPhpdocTagsFixer
         return 10;
     }
 
@@ -176,7 +174,8 @@ class Sample
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixMethod(Tokens $tokens, $index)
     {

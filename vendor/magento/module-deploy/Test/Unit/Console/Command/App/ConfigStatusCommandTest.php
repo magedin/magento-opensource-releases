@@ -3,20 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command\App;
 
 use Magento\Deploy\Console\Command\App\ConfigStatusCommand;
 use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Framework\Console\Cli;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @inheritdoc
  */
-class ConfigStatusCommandTest extends TestCase
+class ConfigStatusCommandTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -31,7 +28,7 @@ class ConfigStatusCommandTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->changeDetector = $this->getMockBuilder(ChangeDetector::class)
             ->disableOriginalConstructor()
@@ -51,7 +48,7 @@ class ConfigStatusCommandTest extends TestCase
     {
         $this->changeDetector->expects($this->once())
             ->method('hasChanges')
-            ->willReturn($hasChanges);
+            ->will($this->returnValue($hasChanges));
 
         $tester = new CommandTester($this->command);
         $tester->execute([]);

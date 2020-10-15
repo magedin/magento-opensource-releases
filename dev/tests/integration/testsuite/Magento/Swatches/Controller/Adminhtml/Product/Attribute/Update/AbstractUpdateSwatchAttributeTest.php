@@ -27,7 +27,7 @@ abstract class AbstractUpdateSwatchAttributeTest extends AbstractUpdateAttribute
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->swatchAttributeType = $this->_objectManager->get(SwatchAttributeType::class);

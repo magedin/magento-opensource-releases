@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Sitemap\Model\SitemapConfigReader;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SitemapConfigReaderTest extends TestCase
+class SitemapConfigReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetValidPaths()
     {
@@ -25,9 +22,9 @@ class SitemapConfigReaderTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getScopeConfigMock(): MockObject
+    private function getScopeConfigMock(): \PHPUnit_Framework_MockObject_MockObject
     {
         $scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
         $scopeConfigMock->expects($this->any())

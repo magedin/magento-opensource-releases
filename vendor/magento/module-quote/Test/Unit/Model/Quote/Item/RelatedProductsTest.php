@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Item;
 
-use Magento\Quote\Model\Quote\Item;
-use Magento\Quote\Model\Quote\Item\Option;
-use Magento\Quote\Model\Quote\Item\RelatedProducts;
-use PHPUnit\Framework\TestCase;
-
-class RelatedProductsTest extends TestCase
+class RelatedProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RelatedProducts
+     * @var \Magento\Quote\Model\Quote\Item\RelatedProducts
      */
     protected $model;
 
@@ -24,10 +17,10 @@ class RelatedProductsTest extends TestCase
      */
     protected $relatedProductTypes;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->relatedProductTypes = ['type1', 'type2', 'type3'];
-        $this->model = new RelatedProducts($this->relatedProductTypes);
+        $this->model = new \Magento\Quote\Model\Quote\Item\RelatedProducts($this->relatedProductTypes);
     }
 
     /**
@@ -40,12 +33,11 @@ class RelatedProductsTest extends TestCase
      */
     public function testGetRelatedProductIds($optionValue, $productId, $expectedResult)
     {
-        $quoteItemMock = $this->createMock(Item::class);
-        $itemOptionMock = $this->getMockBuilder(Option::class)
-            ->addMethods(['getProductId'])
-            ->onlyMethods(['getValue', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
+        $itemOptionMock = $this->createPartialMock(
+            \Magento\Quote\Model\Quote\Item\Option::class,
+            ['getValue', 'getProductId', '__wakeup']
+        );
 
         $quoteItemMock->expects(
             $this->once()
@@ -53,13 +45,13 @@ class RelatedProductsTest extends TestCase
             'getOptionByCode'
         )->with(
             'product_type'
-        )->willReturn(
-            $itemOptionMock
+        )->will(
+            $this->returnValue($itemOptionMock)
         );
 
-        $itemOptionMock->expects($this->once())->method('getValue')->willReturn($optionValue);
+        $itemOptionMock->expects($this->once())->method('getValue')->will($this->returnValue($optionValue));
 
-        $itemOptionMock->expects($this->any())->method('getProductId')->willReturn($productId);
+        $itemOptionMock->expects($this->any())->method('getProductId')->will($this->returnValue($productId));
 
         $this->assertEquals($expectedResult, $this->model->getRelatedProductIds([$quoteItemMock]));
     }
@@ -87,7 +79,7 @@ class RelatedProductsTest extends TestCase
      */
     public function testGetRelatedProductIdsNoOptions()
     {
-        $quoteItemMock = $this->createMock(Item::class);
+        $quoteItemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
 
         $quoteItemMock->expects(
             $this->once()
@@ -95,8 +87,8 @@ class RelatedProductsTest extends TestCase
             'getOptionByCode'
         )->with(
             'product_type'
-        )->willReturn(
-            new \stdClass()
+        )->will(
+            $this->returnValue(new \stdClass())
         );
 
         $this->assertEquals([], $this->model->getRelatedProductIds([$quoteItemMock]));

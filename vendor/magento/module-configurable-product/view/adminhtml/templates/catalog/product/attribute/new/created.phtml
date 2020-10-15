@@ -4,13 +4,11 @@
  * See COPYING.txt for license details.
  */
 /** @var $block \Magento\ConfigurableProduct\Block\Adminhtml\Product\Attribute\NewAttribute\Product\Created */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-<?php $attributes = /* @noEscape */ $block->getAttributesBlockJson();
-$scriptString = <<<script
+<script>
 (function ($) {
 
-    var data = {$attributes};
+    var data = <?= /* @noEscape */ $block->getAttributesBlockJson() ?>;
     var set = data.set || {id: $('#attribute_set_id').val()};
     if (data.tab == 'variations') {
         $('[data-role=product-variations-matrix]').trigger('add', data.attribute);
@@ -20,6 +18,4 @@ $scriptString = <<<script
     $('#create_new_attribute').modal('closeModal');
 
 })(window.parent.jQuery);
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

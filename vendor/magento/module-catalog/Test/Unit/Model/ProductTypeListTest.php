@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model;
 
-use Magento\Catalog\Api\Data\ProductTypeInterface;
-use Magento\Catalog\Api\Data\ProductTypeInterfaceFactory;
 use Magento\Catalog\Model\ProductTypeList;
-use Magento\Catalog\Model\ProductTypes\ConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductTypeListTest extends TestCase
+class ProductTypeListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductTypeList
@@ -22,20 +15,20 @@ class ProductTypeListTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $typeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $factoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->typeConfigMock = $this->getMockForAbstractClass(ConfigInterface::class);
+        $this->typeConfigMock = $this->createMock(\Magento\Catalog\Model\ProductTypes\ConfigInterface::class);
         $this->factoryMock = $this->createPartialMock(
-            ProductTypeInterfaceFactory::class,
+            \Magento\Catalog\Api\Data\ProductTypeInterfaceFactory::class,
             ['create']
         );
         $this->model = new ProductTypeList(
@@ -53,8 +46,8 @@ class ProductTypeListTest extends TestCase
         $productTypeData = [
             'simple' => $simpleProductType,
         ];
-        $productTypeMock = $this->getMockForAbstractClass(ProductTypeInterface::class);
-        $this->typeConfigMock->expects($this->any())->method('getAll')->willReturn($productTypeData);
+        $productTypeMock = $this->createMock(\Magento\Catalog\Api\Data\ProductTypeInterface::class);
+        $this->typeConfigMock->expects($this->any())->method('getAll')->will($this->returnValue($productTypeData));
 
         $this->factoryMock->expects($this->once())->method('create')->willReturn($productTypeMock);
         $productTypeMock->expects($this->once())

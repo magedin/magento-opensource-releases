@@ -36,16 +36,6 @@ final class NoSinglelineWhitespaceBeforeSemicolonsFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after CombineConsecutiveIssetsFixer, FunctionToConstantFixer, NoEmptyStatementFixer, SingleImportPerStatementFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {

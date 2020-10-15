@@ -3,110 +3,94 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflineShipping\Test\Unit\Model\Carrier;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflineShipping\Model\Carrier\Flatrate;
-use Magento\OfflineShipping\Model\Carrier\Flatrate\ItemPriceCalculator;
-use Magento\Quote\Model\Quote\Address\RateRequest;
-use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
 use Magento\Quote\Model\Quote\Address\RateResult\Method;
-use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
-use Magento\Sales\Model\Order\Item;
 use Magento\Shipping\Model\Carrier\AbstractCarrier;
 use Magento\Shipping\Model\Rate\Result;
-use Magento\Shipping\Model\Rate\ResultFactory;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\Constraint\Callback;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FlatrateTest extends TestCase
+class FlatrateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Flatrate
+     * @var \Magento\OfflineShipping\Model\Carrier\Flatrate
      */
     private $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var ErrorFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $errorFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Shipping\Model\Rate\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var MethodFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $methodFactoryMock;
 
     /**
-     * @var ItemPriceCalculator|MockObject
+     * @var \Magento\OfflineShipping\Model\Carrier\Flatrate\ItemPriceCalculator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $priceCalculatorMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['create', 'isSetFlag', 'getValue'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->errorFactoryMock = $this
-            ->getMockBuilder(ErrorFactory::class)
+            ->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Shipping\Model\Rate\ResultFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->methodFactoryMock = $this
-            ->getMockBuilder(MethodFactory::class)
+            ->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateResult\MethodFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->priceCalculatorMock = $this
-            ->getMockBuilder(ItemPriceCalculator::class)
+            ->getMockBuilder(\Magento\OfflineShipping\Model\Carrier\Flatrate\ItemPriceCalculator::class)
             ->disableOriginalConstructor()
             ->setMethods(['getShippingPricePerOrder'])
             ->getMock();
 
-        $this->helper = new ObjectManager($this);
+        $this->helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $this->helper->getObject(
-            Flatrate::class,
+            \Magento\OfflineShipping\Model\Carrier\Flatrate::class,
             [
                 'scopeConfig' => $this->scopeConfigMock,
                 'rateErrorFactory' => $this->errorFactoryMock,
@@ -128,12 +112,12 @@ class FlatrateTest extends TestCase
         $this->markTestSkipped('Test needs refactoring.');
         $expectedPrice = 5;
 
-        $request = $this->getMockBuilder(RateRequest::class)
+        $request = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateRequest::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAllItems', 'getPackageQty', 'getFreeShipping'])
             ->getMock();
 
-        $item = $this->getMockBuilder(Item::class)
+        $item = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -148,26 +132,26 @@ class FlatrateTest extends TestCase
             )
             ->getMock();
 
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['isVirtual'])
             ->getMock();
 
         $this->scopeConfigMock->expects($this->any())->method('isSetFlag')->willReturn(true);
         $this->scopeConfigMock->expects($this->any())->method('getValue')->willReturnMap([
-            ['carriers/flatrate/active', ScopeInterface::SCOPE_STORE, null, true],
-            ['carriers/flatrate/price', ScopeInterface::SCOPE_STORE, null, 5],
-            ['carriers/flatrate/type', ScopeInterface::SCOPE_STORE, null, 'O'],
-            ['carriers/flatrate/handling_fee', ScopeInterface::SCOPE_STORE, null, 0],
+            ['carriers/flatrate/active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null, true],
+            ['carriers/flatrate/price', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null, 5],
+            ['carriers/flatrate/type', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null, 'O'],
+            ['carriers/flatrate/handling_fee', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null, 0],
             [
                 'carriers/flatrate/handling_type',
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 null,
                 AbstractCarrier::HANDLING_TYPE_FIXED
             ],
             [
                 'carriers/flatrate/handling_action',
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 null,
                 AbstractCarrier::HANDLING_ACTION_PERORDER
             ],
@@ -222,7 +206,7 @@ class FlatrateTest extends TestCase
      * Captures the argument and saves it in the given variable
      *
      * @param $captureVar
-     * @return Callback
+     * @return \PHPUnit\Framework\Constraint\Callback
      */
     private function captureArg(&$captureVar)
     {

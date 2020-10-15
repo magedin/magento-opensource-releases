@@ -13,16 +13,13 @@ use Magento\Catalog\Setup\CategorySetup;
 use Magento\ConfigurableProduct\Helper\Product\Options\Factory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
-use Magento\Eav\Model\Config;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/configurable_attribute.php');
+require __DIR__ . '/configurable_attribute.php';
 
-$eavConfig = Bootstrap::getObjectManager()->get(Config::class);
-$attribute = $eavConfig->getAttribute(Product::ENTITY, 'test_configurable');
 /** @var ProductRepositoryInterface $productRepository */
-$productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
+$productRepository = Bootstrap::getObjectManager()
+    ->get(ProductRepositoryInterface::class);
 
 /** @var $installer CategorySetup */
 $installer = Bootstrap::getObjectManager()->create(CategorySetup::class);
@@ -46,7 +43,7 @@ foreach ($options as $option) {
         ->setAttributeSetId($attributeSetId)
         ->setWebsiteIds([1])
        // ->setName('Configurable Option' . $option->getLabel())
-        ->setName('ConfigurableOption' . $productId . '_' . $option->getLabel())
+        ->setName('ConfigurableOption' .$productId .'_' . $option->getLabel())
         ->setSku('simple_' . $productId)
         ->setPrice($productId)
         ->setWeight(1)
@@ -114,7 +111,7 @@ foreach ($options as $option) {
         ->setAttributeSetId($attributeSetId)
         ->setWebsiteIds([1])
       //  ->setName('Configurable Option' . $option->getLabel())
-        ->setName('ConfigurableOption' . $productId . '_' . $option->getLabel())
+        ->setName('ConfigurableOption' .$productId .'_' . $option->getLabel())
         ->setSku('simple_' . $productId)
         ->setPrice($productId)
         ->setWeight(2)
@@ -169,7 +166,7 @@ $productRepository->cleanCache();
 $productRepository->save($product);
 
 /** @var $product \Magento\Catalog\Model\Product */
-$product = Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
 $product->isObjectNew(true);
 $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setId(10)
@@ -194,7 +191,7 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setSpecialPrice('5.99')
     ->save();
 
-$product = Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
 $product->isObjectNew(true);
 $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setId(11)
@@ -219,7 +216,7 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setSpecialPrice('15.99')
     ->save();
 
-$product = Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
 $product->isObjectNew(true);
 $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setId(12)

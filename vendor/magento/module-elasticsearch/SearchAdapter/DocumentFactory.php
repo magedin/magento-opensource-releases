@@ -5,6 +5,7 @@
  */
 namespace Magento\Elasticsearch\SearchAdapter;
 
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Search\EntityMetadata;
 use Magento\Framework\Api\AttributeInterface;
 use Magento\Framework\Api\AttributeValue;
@@ -13,22 +14,33 @@ use Magento\Framework\Api\Search\Document;
 use Magento\Framework\Api\Search\DocumentInterface;
 
 /**
- * Document Factory to create Search Document instance
+ * Document Factory
  * @api
  * @since 100.1.0
  */
 class DocumentFactory
 {
     /**
+     * Object Manager instance
+     *
+     * @var ObjectManagerInterface
+     * @deprecated 100.1.0
+     * @since 100.1.0
+     */
+    protected $objectManager;
+
+    /**
      * @var EntityMetadata
      */
     private $entityMetadata;
 
     /**
+     * @param ObjectManagerInterface $objectManager
      * @param EntityMetadata $entityMetadata
      */
-    public function __construct(EntityMetadata $entityMetadata)
+    public function __construct(ObjectManagerInterface $objectManager, EntityMetadata $entityMetadata)
     {
+        $this->objectManager = $objectManager;
         $this->entityMetadata = $entityMetadata;
     }
 

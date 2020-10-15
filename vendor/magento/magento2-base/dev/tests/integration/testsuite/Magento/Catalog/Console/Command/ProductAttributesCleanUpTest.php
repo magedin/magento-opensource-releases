@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Catalog\Console\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
@@ -30,7 +29,7 @@ class ProductAttributesCleanUpTest extends \PHPUnit\Framework\TestCase
      */
     private $attributeResource;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->command = $this->objectManager->create(\Magento\Catalog\Console\Command\ProductAttributesCleanUp::class);
@@ -66,12 +65,9 @@ class ProductAttributesCleanUpTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([]);
 
         // Verify that unused attribute was removed
-        $this->assertStringContainsString(
-            'Unused product attributes successfully cleaned up',
-            $this->tester->getDisplay()
-        );
+        $this->assertContains('Unused product attributes successfully cleaned up', $this->tester->getDisplay());
         $attribute = $this->getUnusedProductAttribute();
-        $this->assertEmpty($attribute);
+        $this->assertFalse($attribute);
     }
 
     /**
@@ -83,7 +79,6 @@ class ProductAttributesCleanUpTest extends \PHPUnit\Framework\TestCase
         $select = $connection->select();
         $select->from($this->attributeResource->getTable('catalog_product_entity_varchar'));
         $select->where('value = ?', 'Simple fixture store');
-
         return $connection->fetchRow($select);
     }
 

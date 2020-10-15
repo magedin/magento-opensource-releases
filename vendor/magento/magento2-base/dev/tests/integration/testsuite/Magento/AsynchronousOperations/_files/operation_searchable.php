@@ -42,7 +42,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_COMPLETE,
         'error_code' => null,
         'result_message' => null,
-        'operation_key' => 0
     ],
     [
         'bulk_uuid' => 'bulk-uuid-searchable-6',
@@ -51,7 +50,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_NOT_RETRIABLY_FAILED,
         'error_code' => 1111,
         'result_message' => 'Something went wrong during your request',
-        'operation_key' => 1
     ],
     [
         'bulk_uuid' => 'bulk-uuid-searchable-6',
@@ -60,7 +58,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_RETRIABLY_FAILED,
         'error_code' => 2222,
         'result_message' => 'Entity with ID=4 does not exist',
-        'operation_key' => 2
     ],
     [
         'bulk_uuid' => 'bulk-uuid-searchable-6',
@@ -69,7 +66,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_OPEN,
         'error_code' => null,
         'result_message' => '',
-        'operation_key' => 3
     ],
     [
         'bulk_uuid' => 'bulk-uuid-searchable-6',
@@ -78,7 +74,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_OPEN,
         'error_code' => null,
         'result_message' => '',
-        'operation_key' => 4
     ],
     [
         'bulk_uuid' => 'bulk-uuid-searchable-6',
@@ -87,7 +82,6 @@ $operations = [
         'status' => OperationInterface::STATUS_TYPE_REJECTED,
         'error_code' => null,
         'result_message' => '',
-        'operation_key' => 5
     ],
 ];
 
@@ -98,8 +92,8 @@ foreach ($bulks as $bulk) {
 }
 
 $operationQuery = "INSERT INTO {$operationTable}"
-    . " (`bulk_uuid`, `topic_name`, `serialized_data`, `status`, `error_code`, `result_message`, `operation_key`)"
-    . " VALUES (:bulk_uuid, :topic_name, :serialized_data, :status, :error_code, :result_message, :operation_key);";
+    . " (`bulk_uuid`, `topic_name`, `serialized_data`, `status`, `error_code`, `result_message`)"
+    . " VALUES (:bulk_uuid, :topic_name, :serialized_data, :status, :error_code, :result_message);";
 foreach ($operations as $operation) {
     $connection->query($operationQuery, $operation);
 }

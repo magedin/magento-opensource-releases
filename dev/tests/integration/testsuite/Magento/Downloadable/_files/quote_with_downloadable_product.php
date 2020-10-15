@@ -3,24 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Downloadable/_files/product_downloadable.php');
+require __DIR__ . '/product_downloadable.php';
 
 \Magento\TestFramework\Helper\Bootstrap::getInstance()->loadArea('frontend');
-$objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('downloadable-product');
+$product->load(1);
 
 /** @var \Magento\Quote\Model\Quote $quote */
-$quote = $objectManager->create(\Magento\Quote\Model\Quote::class);
+$quote = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Quote\Model\Quote::class);
 $quote->setCustomerIsGuest(
     true
 )->setStoreId(
-    $objectManager->get(
+    \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
         \Magento\Store\Model\StoreManagerInterface::class
     )->getStore()->getId()
 )->setReservedOrderId(
@@ -37,7 +30,7 @@ $quote->collectTotals();
 $quote->save();
 
 /** @var \Magento\Quote\Model\QuoteIdMask $quoteIdMask */
-$quoteIdMask = $objectManager
+$quoteIdMask = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
     ->create(\Magento\Quote\Model\QuoteIdMaskFactory::class)
     ->create();
 $quoteIdMask->setQuoteId($quote->getId());

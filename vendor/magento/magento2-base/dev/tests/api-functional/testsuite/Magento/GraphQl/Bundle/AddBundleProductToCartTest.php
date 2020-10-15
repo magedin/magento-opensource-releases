@@ -42,7 +42,7 @@ class AddBundleProductToCartTest extends GraphQlAbstract
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->quoteResource = $objectManager->get(QuoteResource::class);
@@ -208,12 +208,11 @@ QUERY;
     /**
      * @magentoApiDataFixture Magento/Bundle/_files/product_1.php
      * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage Please select all required options
      */
     public function testAddBundleToCartWithoutOptions()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Please select all required options');
-
         $this->quoteResource->load(
             $this->quote,
             'test_order_1',

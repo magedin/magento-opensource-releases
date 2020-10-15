@@ -8,7 +8,7 @@
  * and LICENSE files that were distributed with this source code.
  */
 
-namespace Klarna\Core\Test\Unit\Model;
+namespace Klarna\Core\Model;
 
 use Klarna\Core\Api\OrderInterface;
 
@@ -109,7 +109,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 

@@ -9,12 +9,11 @@ namespace Magento\Sales\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Model\ValidatorResult;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Sales\Model\ValidatorResult
  */
-class ValidatorResultTest extends TestCase
+class ValidatorResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Testable Object
@@ -35,7 +34,7 @@ class ValidatorResultTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->validatorResult = $this->objectManager->getObject(ValidatorResult::class);

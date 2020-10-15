@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Sample;
 
 use Magento\Downloadable\Api\Data\SampleInterface;
 use Magento\Downloadable\Helper\Download;
-use Magento\Downloadable\Helper\File;
 use Magento\Downloadable\Model\Sample;
 use Magento\Downloadable\Model\Sample\Builder;
-use Magento\Downloadable\Model\SampleFactory;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\DataObject\Copy;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Unit test for downloadable products' builder sample class
+ * Class BuilderTest
  */
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $downloadFileMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $objectCopyServiceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $dataObjectHelperMock;
 
@@ -45,34 +36,31 @@ class BuilderTest extends TestCase
     private $service;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $mockComponentFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $sampleMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->downloadFileMock = $this->getMockBuilder(
-            File::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Downloadable\Helper\File::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->objectCopyServiceMock = $this->getMockBuilder(
-            Copy::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\DataObject\Copy::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->dataObjectHelperMock = $this->getMockBuilder(
-            DataObjectHelper::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Api\DataObjectHelper::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->mockComponentFactory = $this->getMockBuilder(SampleFactory::class)
+        $this->mockComponentFactory = $this->getMockBuilder(\Magento\Downloadable\Model\SampleFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -96,7 +84,6 @@ class BuilderTest extends TestCase
     {
         $data = [
             'file' => 'cXVlIHRhbA==',
-            'use_default_title' => '1',
             'type' => 'file'
         ];
         $downloadableData = ['sort_order' => 1];
@@ -135,12 +122,8 @@ class BuilderTest extends TestCase
             )->willReturn($fileName);
         $this->sampleMock->expects($this->once())->method('setSampleFile')->with($fileName);
         $this->sampleMock->expects($this->once())->method('setSortOrder')->with(1);
-        $useDefaultTitle = $data['use_default_title'] ?? false;
-        if ($useDefaultTitle) {
-            $this->sampleMock->expects($this->once())->method('setTitle')->with(null);
-        }
         $this->service->setData($data);
-
+        
         $this->service->build($this->sampleMock);
     }
 }

@@ -39,7 +39,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->orderAddressRenderer = $this->objectManager->get(OrderAddressRenderer::class);

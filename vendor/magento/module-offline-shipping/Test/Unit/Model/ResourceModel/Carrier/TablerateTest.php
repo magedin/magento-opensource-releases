@@ -3,31 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\OfflineShipping\Test\Unit\Model\ResourceModel\Carrier;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\Import;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate\RateQueryFactory;
-use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * Unit test for Magento\OfflineShipping\Model\ResourceModel\Carrier\Tablerate
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TablerateTest extends TestCase
+class TablerateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Tablerate
@@ -35,36 +23,36 @@ class TablerateTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystemMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $importMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $contextMock = $this->createMock(Context::class);
-        $loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $coreConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
+        $loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $coreConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
         $carrierTablerateMock = $this->createMock(\Magento\OfflineShipping\Model\Carrier\Tablerate::class);
-        $this->filesystemMock = $this->createMock(Filesystem::class);
+        $this->filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->importMock = $this->createMock(Import::class);
         $rateQueryFactoryMock = $this->createMock(RateQueryFactory::class);
-        $this->resource = $this->createMock(ResourceConnection::class);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
 
         $contextMock->expects($this->once())->method('getResources')->willReturn($this->resource);
 
@@ -83,15 +71,15 @@ class TablerateTest extends TestCase
     public function testUploadAndImport()
     {
         $_FILES['groups']['tmp_name']['tablerate']['fields']['import']['value'] = 'some/path/to/file';
-        $object = $this->getMockBuilder(\Magento\OfflineShipping\Model\Config\Backend\Tablerate::class)
-            ->addMethods(['getScopeId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $object = $this->createPartialMock(
+            \Magento\OfflineShipping\Model\Config\Backend\Tablerate::class,
+            ['getScopeId']
+        );
 
-        $websiteMock = $this->getMockForAbstractClass(WebsiteInterface::class);
-        $directoryReadMock = $this->getMockForAbstractClass(ReadInterface::class);
+        $websiteMock = $this->createMock(\Magento\Store\Api\Data\WebsiteInterface::class);
+        $directoryReadMock = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadInterface::class);
         $fileReadMock = $this->createMock(\Magento\Framework\Filesystem\File\ReadInterface::class);
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
 
         $this->storeManagerMock->expects($this->once())->method('getWebsite')->willReturn($websiteMock);
         $object->expects($this->once())->method('getScopeId')->willReturn(1);

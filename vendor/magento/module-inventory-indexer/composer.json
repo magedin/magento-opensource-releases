@@ -2,15 +2,14 @@
     "name": "magento/module-inventory-indexer",
     "description": "N/A",
     "require": {
-        "php": "~7.3.0||~7.4.0",
+        "php": "~7.1.3||~7.2.0||~7.3.0",
         "magento/framework": "*",
-        "magento/framework-message-queue": "*",
-        "magento/module-inventory-multi-dimensional-indexer-api": "1.1.*",
-        "magento/module-inventory": "1.1.*",
-        "magento/module-inventory-api": "1.1.*",
-        "magento/module-inventory-catalog-api": "1.2.*",
-        "magento/module-inventory-sales-api": "1.1.*",
-        "magento/module-inventory-sales": "1.1.*"
+        "magento/module-inventory-multi-dimensional-indexer-api": "1.0.*",
+        "magento/module-inventory": "1.0.*",
+        "magento/module-inventory-api": "1.0.*",
+        "magento/module-inventory-catalog-api": "1.1.*",
+        "magento/module-inventory-sales-api": "1.0.*",
+        "magento/module-inventory-sales": "1.0.*"
     },
     "suggest": {
         "magento/module-catalog": "*"
@@ -28,5 +27,5 @@
             "Magento\\InventoryIndexer\\": ""
         }
     },
-    "version": "2.0.0"
+    "version": "1.0.9"
 }

@@ -37,19 +37,9 @@ define([
                 {
                     component: 'Magento_AdobeStockImageAdminUi/js/components/grid/column/preview/actions',
                     name: '${ $.name }_actions',
-                    provider: '${ $.provider }',
-                    mediaGallery: '${ $.mediaGalleryComponent }',
-                    mediaGalleryName: '${ $.mediaGalleryName }',
-                    mediaGalleryProvider: '${ $.mediaGalleryProvider }',
-                    mediaGallerySortBy: '${ $.mediaGallerySortBy }',
-                    mediaGallerySearchInput: '${ $.mediaGallerySearchInput }',
-                    mediaGalleryListingFilters: '${ $.mediaGalleryListingFilters }',
-                    listingPaging: '${ $.listingPaging }'
+                    provider: '${ $.provider }'
                 }
-            ],
-            listens: {
-                '${ $.sortByComponentName }:applied': 'hide'
-            }
+            ]
         },
 
         /**
@@ -59,8 +49,6 @@ define([
          */
         initialize: function () {
             this._super().initView();
-            $(window).on('fileDeleted.enhancedMediaGallery', this.reloadAdobeGrid.bind(this));
-            $(window).on('folderDeleted.enhancedMediaGallery', this.reloadAdobeGrid.bind(this));
 
             return this;
         },
@@ -181,15 +169,6 @@ define([
                     value: this.displayedRecord().id
                 }
             ];
-        },
-
-        /**
-         * Reload Adobe grid after deleting image
-         */
-        reloadAdobeGrid: function () {
-            this.actions().source().reload({
-                refresh: true
-            });
         }
     });
 });

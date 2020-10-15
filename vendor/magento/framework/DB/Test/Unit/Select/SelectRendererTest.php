@@ -3,28 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\RendererInterface;
-use Magento\Framework\DB\Select\SelectRenderer;
-use PHPUnit\Framework\TestCase;
-
-class SelectRendererTest extends TestCase
+class SelectRendererTest extends \PHPUnit\Framework\TestCase
 {
     public function testRender()
     {
-        $rendererOne = $this->getMockBuilder(RendererInterface::class)
+        $rendererOne = $this->getMockBuilder(\Magento\Framework\DB\Select\RendererInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $renders = [
             ['renderer' => $rendererOne, 'sort' => 10, 'part' => 'from'],
             ['renderer' => $rendererOne, 'sort' => 20, 'part' => 'from'],
             ['renderer' => $rendererOne, 'sort' => 5, 'part' => 'from'],
         ];
-        $selectMock = $this->getMockBuilder(Select::class)
+        $selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $rendererOne->expects($this->any())
@@ -32,7 +25,7 @@ class SelectRendererTest extends TestCase
             ->withAnyParameters()
             ->willReturn('render1');
 
-        $model = new SelectRenderer($renders);
+        $model = new \Magento\Framework\DB\Select\SelectRenderer($renders);
         $this->assertEquals('render1', $model->render($selectMock));
     }
 }

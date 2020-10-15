@@ -6,9 +6,6 @@
 
 namespace Magento\PageCache\Model\App\Response;
 
-use Magento\Framework\App\PageCache\NotCacheableInterface;
-use Magento\Framework\App\Response\Http as HttpResponse;
-
 /**
  * HTTP response plugin for frontend.
  */
@@ -17,15 +14,14 @@ class HttpPlugin
     /**
      * Set proper value of X-Magento-Vary cookie.
      *
-     * @param HttpResponse $subject
+     * @param \Magento\Framework\App\Response\Http $subject
      * @return void
      */
-    public function beforeSendResponse(HttpResponse $subject)
+    public function beforeSendResponse(\Magento\Framework\App\Response\Http $subject)
     {
-        if ($subject instanceof NotCacheableInterface || $subject->headersSent()) {
+        if ($subject instanceof \Magento\Framework\App\PageCache\NotCacheableInterface) {
             return;
         }
-
         $subject->sendVary();
     }
 }

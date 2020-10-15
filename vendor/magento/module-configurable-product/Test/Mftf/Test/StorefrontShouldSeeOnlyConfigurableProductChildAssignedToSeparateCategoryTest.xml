@@ -15,9 +15,8 @@
             <title value="It should be possible to only view the child product of a configurable product"/>
             <description value="Create configurable product, add to category such that only child variation is visible in category"/>
             <severity value="CRITICAL"/>
-            <testCaseId value="MC-25651"/>
+            <testCaseId value="MC-5832"/>
             <group value="configurable_product"/>
-            <group value="catalog"/>
         </annotations>
         <before>
             <!-- Create the category -->
@@ -84,7 +83,7 @@
                 <requiredEntity createDataKey="createConfigChildProduct2"/>
             </createData>
 
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdmin"/>
         </before>
 
         <after>
@@ -94,14 +93,14 @@
             <deleteData createDataKey="createConfigProductAttribute" stepKey="deleteConfigProductAttribute"/>
             <deleteData createDataKey="createCategory" stepKey="deleteApiCategory"/>
             <deleteData createDataKey="secondCategory" stepKey="deleteSecondCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Go to the product page for the first product -->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="openConfigChildProduct1Page">
+        <actionGroup ref="goToProductPageViaID" stepKey="openConfigChildProduct1Page">
             <argument name="productId" value="$$createConfigChildProduct1.id$$"/>
         </actionGroup>
 
@@ -112,16 +111,15 @@
             <argument name="categoryName" value="$$secondCategory.name$$"/>
         </actionGroup>
 
-        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexSearchIndex">
-            <argument name="indices" value="catalogsearch_fulltext"/>
-        </actionGroup>
+        <magentoCLI command="indexer:reindex" arguments="catalogsearch_fulltext" stepKey="reindexSearchIndex"/>
 
         <!-- Go to storefront to view child product -->
         <actionGroup ref="StorefrontNavigateCategoryPageActionGroup" stepKey="goToSecondCategoryStorefront">
             <argument name="category" value="$$secondCategory$$"/>
         </actionGroup>
-        <actionGroup ref="StorefrontCheckCategorySimpleProductActionGroup" stepKey="seeChildProductInCategory">
-            <argument name="product" value="$createConfigChildProduct1$"/>
+        <actionGroup ref="AssertStorefrontCategorySimpleProductShownActionGroup" stepKey="seeChildProductInCategory">
+            <argument name="productName" value="$$createConfigChildProduct1.name$$"/>
+            <argument name="productPrice" value="$$createConfigChildProduct1.price$$"/>
         </actionGroup>
         <actionGroup ref="StorefrontCheckProductIsMissingInCategoryProductsPageActionGroup" stepKey="dontSeeOtherChildProduct">
             <argument name="productName" value="$$createConfigChildProduct2.name$$"/>
@@ -129,7 +127,7 @@
         <actionGroup ref="StorefrontCheckProductIsMissingInCategoryProductsPageActionGroup" stepKey="dontSeeParentProduct">
             <argument name="productName" value="$$createConfigProduct.name$$"/>
         </actionGroup>
-        <actionGroup ref="StorefrontOpenProductFromCategoryPageActionGroup" stepKey="openConfigChildProductFromCategoryPage">
+        <actionGroup ref="StorefrontCategoryPageOpenProductActionGroup" stepKey="openConfigChildProductFromCategoryPage">
             <argument name="productName" value="$$createConfigChildProduct1.name$$"/>
         </actionGroup>
         <actionGroup ref="AssertStorefrontProductDetailPageNameAndUrlActionGroup" stepKey="checkStorefrontConfigChildProductPage">

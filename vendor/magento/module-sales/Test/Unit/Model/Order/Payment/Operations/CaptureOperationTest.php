@@ -3,153 +3,116 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Payment\Operations;
 
-use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Order\Payment\Operations\CaptureOperation;
-use Magento\Sales\Model\Order\Payment\Operations\ProcessInvoiceOperation;
-use Magento\Sales\Model\Order\Payment\State\CommandInterface;
-use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
-use Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface as TransactionManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\ObjectManager\ObjectManager;
+use Magento\Payment\Model\Method;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-class CaptureOperationTest extends TestCase
+class CaptureOperationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TransactionManagerInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $transactionManager;
+    protected $transactionManager;
 
     /**
-     * @var EventManagerInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $eventManager;
+    protected $eventManager;
 
     /**
-     * @var BuilderInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $transactionBuilder;
+    protected $transactionBuilder;
 
     /**
-     * @var CommandInterface|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $stateCommand;
+    protected $stateCommand;
 
     /**
-     * @var ProcessInvoiceOperation|MockObject
+     * @var \Magento\Sales\Model\Order\Payment\Operations\CaptureOperation
      */
-    private $processInvoiceOperation;
+    protected $model;
 
-    /**
-     * @var CaptureOperation
-     */
-    private $model;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->transactionManager = $this->getMockForAbstractClass(TransactionManagerInterface::class);
-        $this->eventManager = $this->getMockForAbstractClass(EventManagerInterface::class);
-        $this->transactionBuilder = $this->getMockForAbstractClass(BuilderInterface::class);
-        $this->stateCommand = $this->getMockForAbstractClass(CommandInterface::class);
-        $this->processInvoiceOperation = $this->getMockBuilder(ProcessInvoiceOperation::class)
+        $transactionClass = \Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface::class;
+        $transactionBuilderClass = \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface::class;
+        $this->transactionManager = $this->getMockBuilder($transactionClass)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->model = new CaptureOperation(
-            $this->stateCommand,
-            $this->transactionBuilder,
-            $this->transactionManager,
-            $this->eventManager,
-            $this->processInvoiceOperation
+        $this->eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->transactionBuilder = $this->getMockBuilder($transactionBuilderClass)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->stateCommand = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment\State\CommandInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $objectManagerHelper = new ObjectManagerHelper($this);
+        $this->model = $objectManagerHelper->getObject(
+            \Magento\Sales\Model\Order\Payment\Operations\CaptureOperation::class,
+            [
+                'transactionManager' => $this->transactionManager,
+                'eventManager' => $this->eventManager,
+                'transactionBuilder' => $this->transactionBuilder,
+                'stateCommand' => $this->stateCommand
+            ]
         );
     }
 
-    /**
-     * Tests a case when capture operation is called with null invoice.
-     *
-     * @throws LocalizedException
-     */
-    public function testCaptureWithoutInvoice()
+    public function testCapture()
     {
-        $invoice = $this->getMockBuilder(Invoice::class)
+        $baseGrandTotal = 10;
+
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $invoice->expects($this->once())
-            ->method('register');
-        $invoice->expects($this->once())
-            ->method('capture');
 
-        $order = $this->getMockBuilder(Order::class)
-            ->setMethods(['prepareInvoice', 'addRelatedObject', 'setStatus'])
+        $paymentMethod = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $order->expects($this->once())
-            ->method('prepareInvoice')
-            ->willReturn($invoice);
-        $order->expects($this->once())
-            ->method('addRelatedObject');
-        $order->expects($this->once())
-            ->method('setStatus')
-            ->with(Order::STATUS_FRAUD);
 
-        /** @var MethodInterface $paymentMethod */
-        $paymentMethod = $this->getMockForAbstractClass(MethodInterface::class);
-        $paymentMethod->method('canCapture')
-            ->willReturn(true);
-
-        /** @var Payment|MockObject  $orderPayment | */
-        $orderPayment = $this->getMockBuilder(Payment::class)
-            ->setMethods(['setCreatedInvoice', 'getOrder', 'getMethodInstance', 'getIsFraudDetected'])
+        $orderPayment = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $orderPayment->expects($this->once())
-            ->method('setCreatedInvoice')
-            ->with($invoice);
-        $orderPayment->method('getIsFraudDetected')
-            ->willReturn(true);
-        $orderPayment->method('getOrder')
+        $orderPayment->expects($this->any())
+            ->method('formatAmount')
+            ->with($baseGrandTotal)
+            ->willReturnArgument(0);
+        $orderPayment->expects($this->any())
+            ->method('getOrder')
             ->willReturn($order);
-        $orderPayment->method('getMethodInstance')
+        $orderPayment->expects($this->any())
+            ->method('getMethodInstance')
             ->willReturn($paymentMethod);
+        $orderPayment->expects($this->once())
+            ->method('getIsTransactionPending')
+            ->willReturn(true);
+        $orderPayment->expects($this->once())
+            ->method('getTransactionAdditionalInfo')
+            ->willReturn([]);
 
-        $this->assertInstanceOf(
-            Payment::class,
-            $this->model->capture($orderPayment, null)
-        );
-    }
+        $paymentMethod->expects($this->once())
+            ->method('capture')
+            ->with($orderPayment, $baseGrandTotal);
 
-    /**
-     * Tests a case when capture operation is called with null invoice.
-     *
-     * @throws LocalizedException
-     */
-    public function testCaptureWithInvoice()
-    {
-        /** @var Invoice|MockObject  $invoice */
-        $invoice = $this->getMockBuilder(Invoice::class)
+        $this->transactionBuilder->expects($this->once())
+            ->method('setPayment')
+            ->with($orderPayment)
+            ->willReturnSelf();
+
+        $invoice = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $invoice->expects($this->any())
+            ->method('getBaseGrandTotal')
+            ->willReturn($baseGrandTotal);
 
-        /** @var Payment|MockObject  $orderPayment | */
-        $orderPayment = $this->getMockBuilder(Payment::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->processInvoiceOperation->expects($this->once())
-            ->method('execute')
-            ->willReturn($orderPayment);
-
-        $this->assertInstanceOf(
-            Payment::class,
-            $this->model->capture($orderPayment, $invoice)
-        );
+        $this->model->capture($orderPayment, $invoice);
     }
 }

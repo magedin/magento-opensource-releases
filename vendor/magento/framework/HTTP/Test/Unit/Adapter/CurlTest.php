@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\HTTP\Test\Unit\Adapter;
 
-use Magento\Framework\HTTP\Adapter\Curl;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\HTTP\Adapter\Curl;
 
-class CurlTest extends TestCase
+class CurlTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Curl
@@ -22,10 +20,10 @@ class CurlTest extends TestCase
      */
     public static $curlExectClosure;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         require_once __DIR__ . '/_files/curl_exec_mock.php';
-        $this->model = new Curl();
+        $this->model = new \Magento\Framework\HTTP\Adapter\Curl();
     }
 
     /**

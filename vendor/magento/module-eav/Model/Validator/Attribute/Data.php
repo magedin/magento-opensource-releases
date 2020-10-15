@@ -23,12 +23,12 @@ class Data extends \Magento\Framework\Validator\AbstractValidator
     /**
      * @var array
      */
-    protected $allowedAttributesList = [];
+    protected $_attributesWhiteList = [];
 
     /**
      * @var array
      */
-    protected $deniedAttributesList = [];
+    protected $_attributesBlackList = [];
 
     /**
      * @var array
@@ -68,9 +68,9 @@ class Data extends \Magento\Framework\Validator\AbstractValidator
      * @param array $attributesCodes
      * @return $this
      */
-    public function setAllowedAttributesList(array $attributesCodes)
+    public function setAttributesWhiteList(array $attributesCodes)
     {
-        $this->allowedAttributesList = $attributesCodes;
+        $this->_attributesWhiteList = $attributesCodes;
         return $this;
     }
 
@@ -82,9 +82,9 @@ class Data extends \Magento\Framework\Validator\AbstractValidator
      * @param array $attributesCodes
      * @return $this
      */
-    public function setDeniedAttributesList(array $attributesCodes)
+    public function setAttributesBlackList(array $attributesCodes)
     {
-        $this->deniedAttributesList = $attributesCodes;
+        $this->_attributesBlackList = $attributesCodes;
         return $this;
     }
 
@@ -171,11 +171,11 @@ class Data extends \Magento\Framework\Validator\AbstractValidator
             $attributesCodes[] = $attributeCode;
         }
 
-        $ignoreAttributes = $this->deniedAttributesList;
-        if ($this->allowedAttributesList) {
+        $ignoreAttributes = $this->_attributesBlackList;
+        if ($this->_attributesWhiteList) {
             $ignoreAttributes = array_merge(
                 $ignoreAttributes,
-                array_diff($attributesCodes, $this->allowedAttributesList)
+                array_diff($attributesCodes, $this->_attributesWhiteList)
             );
         }
 

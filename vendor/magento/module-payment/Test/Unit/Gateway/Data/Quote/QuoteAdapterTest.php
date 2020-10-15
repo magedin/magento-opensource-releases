@@ -3,42 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Data\Quote;
 
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Payment\Gateway\Data\AddressAdapterInterface;
-use Magento\Payment\Gateway\Data\Quote\AddressAdapterFactory;
 use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
-use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Api\Data\CurrencyInterface;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 
-class QuoteAdapterTest extends TestCase
+/**
+ * Class QuoteAdapterTest
+ */
+class QuoteAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var QuoteAdapter */
     protected $model;
 
     /**
-     * @var CartInterface|MockObject
+     * @var CartInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var AddressAdapterFactory|MockObject
+     * @var \Magento\Payment\Gateway\Data\Quote\AddressAdapterFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $addressAdapterFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->quoteMock = $this->createMock(Quote::class);
+        $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
 
         $this->addressAdapterFactoryMock =
-            $this->getMockBuilder(AddressAdapterFactory::class)
+            $this->getMockBuilder(\Magento\Payment\Gateway\Data\Quote\AddressAdapterFactory::class)
                 ->setMethods(['create'])
                 ->disableOriginalConstructor()
                 ->getMock();
@@ -49,9 +43,9 @@ class QuoteAdapterTest extends TestCase
     public function testGetCurrencyCode()
     {
         $expected = 'USD';
-        /** @var CurrencyInterface $currencyMock */
+        /** @var \Magento\Quote\Api\Data\CurrencyInterface $currencyMock */
         $currencyMock = $this->getMockBuilder(
-            CurrencyInterface::class
+            \Magento\Quote\Api\Data\CurrencyInterface::class
         )->getMockForAbstractClass();
         $currencyMock->expects($this->once())->method('getBaseCurrencyCode')->willReturn($expected);
         $this->quoteMock->expects($this->once())->method('getCurrency')->willReturn($currencyMock);
@@ -68,9 +62,9 @@ class QuoteAdapterTest extends TestCase
     public function testGetCustomerId()
     {
         $expected = 1;
-        /** @var CustomerInterface $customerMock */
+        /** @var \Magento\Customer\Api\Data\CustomerInterface $customerMock */
         $customerMock = $this->getMockBuilder(
-            CustomerInterface::class
+            \Magento\Customer\Api\Data\CustomerInterface::class
         )->getMockForAbstractClass();
         $customerMock->expects($this->once())->method('getId')->willReturn($expected);
         $this->quoteMock->expects($this->once())->method('getCustomer')->willReturn($customerMock);
@@ -81,16 +75,16 @@ class QuoteAdapterTest extends TestCase
     {
         $this->quoteMock->expects($this->once())->method('getBillingAddress')->willReturn(null);
 
-        $this->assertNull($this->model->getBillingAddress());
+        $this->assertSame(null, $this->model->getBillingAddress());
     }
 
     public function testGetBillingAddress()
     {
         /** @var AddressAdapterInterface $addressAdapterMock */
-        $addressAdapterMock = $this->getMockBuilder(AddressAdapterInterface::class)
+        $addressAdapterMock = $this->getMockBuilder(\Magento\Payment\Gateway\Data\AddressAdapterInterface::class)
             ->getMockForAbstractClass();
-        /** @var AddressInterface $quoteAddressMock */
-        $quoteAddressMock = $this->getMockBuilder(AddressInterface::class)
+        /** @var \Magento\Quote\Api\Data\AddressInterface $quoteAddressMock */
+        $quoteAddressMock = $this->getMockBuilder(\Magento\Quote\Api\Data\AddressInterface::class)
             ->getMockForAbstractClass();
         $this->addressAdapterFactoryMock->expects($this->once())
             ->method('create')
@@ -105,16 +99,16 @@ class QuoteAdapterTest extends TestCase
     {
         $this->quoteMock->expects($this->once())->method('getShippingAddress')->willReturn(null);
 
-        $this->assertNull($this->model->getShippingAddress());
+        $this->assertSame(null, $this->model->getShippingAddress());
     }
 
     public function testGetShippingAddress()
     {
         /** @var AddressAdapterInterface $addressAdapterMock */
-        $addressAdapterMock = $this->getMockBuilder(AddressAdapterInterface::class)
+        $addressAdapterMock = $this->getMockBuilder(\Magento\Payment\Gateway\Data\AddressAdapterInterface::class)
             ->getMockForAbstractClass();
-        /** @var AddressInterface $quoteAddressMock */
-        $quoteAddressMock = $this->getMockBuilder(AddressInterface::class)
+        /** @var \Magento\Quote\Api\Data\AddressInterface $quoteAddressMock */
+        $quoteAddressMock = $this->getMockBuilder(\Magento\Quote\Api\Data\AddressInterface::class)
             ->getMockForAbstractClass();
         $this->addressAdapterFactoryMock->expects($this->once())
             ->method('create')

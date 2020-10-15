@@ -10,13 +10,11 @@ namespace Magento\Config\Test\Unit\Model\Config\Structure\ElementVisibility;
 use Magento\Config\Model\Config\Structure\ElementVisibility\ConcealInProduction;
 use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
 use Magento\Framework\App\State;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConcealInProductionTest extends TestCase
+class ConcealInProductionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $stateMock;
 
@@ -25,7 +23,7 @@ class ConcealInProductionTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stateMock = $this->getMockBuilder(State::class)
             ->disableOriginalConstructor()

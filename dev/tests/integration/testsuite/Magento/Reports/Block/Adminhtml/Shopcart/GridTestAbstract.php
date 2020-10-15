@@ -13,7 +13,7 @@ abstract class GridTestAbstract extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $objectManager = Bootstrap::getObjectManager();

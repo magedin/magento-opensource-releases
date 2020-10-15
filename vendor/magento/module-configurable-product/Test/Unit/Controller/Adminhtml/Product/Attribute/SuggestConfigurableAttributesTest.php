@@ -3,54 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Controller\Adminhtml\Product\Attribute;
 
-use Magento\ConfigurableProduct\Controller\Adminhtml\Product\Attribute\SuggestConfigurableAttributes;
-use Magento\ConfigurableProduct\Model\SuggestedAttributeList;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\Json\Helper\Data;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SuggestConfigurableAttributesTest extends TestCase
+class SuggestConfigurableAttributesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SuggestConfigurableAttributes
+     * @var \Magento\ConfigurableProduct\Controller\Adminhtml\Product\Attribute\SuggestConfigurableAttributes
      */
     protected $suggestAttributes;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $responseMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $attributeListMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
-        $this->responseMock = $this->createMock(Http::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->responseMock = $this->createMock(\Magento\Framework\App\Response\Http::class);
         $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
-        $this->helperMock = $this->createMock(Data::class);
-        $this->attributeListMock = $this->createMock(SuggestedAttributeList::class);
+        $this->helperMock = $this->createMock(\Magento\Framework\Json\Helper\Data::class);
+        $this->attributeListMock = $this->createMock(\Magento\ConfigurableProduct\Model\SuggestedAttributeList::class);
         $this->suggestAttributes = $helper->getObject(
-            SuggestConfigurableAttributes::class,
+            \Magento\ConfigurableProduct\Controller\Adminhtml\Product\Attribute\SuggestConfigurableAttributes::class,
             [
                 'response' => $this->responseMock,
                 'request' => $this->requestMock,
@@ -68,8 +58,8 @@ class SuggestConfigurableAttributesTest extends TestCase
             'getParam'
         )->with(
             'label_part'
-        )->willReturn(
-            'attribute'
+        )->will(
+            $this->returnValue('attribute')
         );
         $this->attributeListMock->expects(
             $this->once()
@@ -77,8 +67,8 @@ class SuggestConfigurableAttributesTest extends TestCase
             'getSuggestedAttributes'
         )->with(
             'attribute'
-        )->willReturn(
-            'some_value_for_json'
+        )->will(
+            $this->returnValue('some_value_for_json')
         );
         $this->helperMock->expects(
             $this->once()
@@ -86,8 +76,8 @@ class SuggestConfigurableAttributesTest extends TestCase
             'jsonEncode'
         )->with(
             'some_value_for_json'
-        )->willReturn(
-            'body'
+        )->will(
+            $this->returnValue('body')
         );
         $this->responseMock->expects($this->once())->method('representJson')->with('body');
         $this->suggestAttributes->execute();

@@ -3,41 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Calculation;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Model\Calculation\Rate;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RateTest extends TestCase
+class RateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectHelper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
      *  Init data
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectHelper = new ObjectManager($this);
-        $this->resourceMock = $this->getMockBuilder(AbstractResource::class)
-            ->addMethods(['getIdFieldName'])
-            ->onlyMethods(['getConnection', 'beginTransaction', 'rollBack'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->resourceMock->expects($this->any())->method('beginTransaction')->willReturnSelf();
+        $this->objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->resourceMock = $this->createPartialMock(
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
+            [
+                '_construct',
+                'getConnection',
+                'getIdFieldName',
+                'beginTransaction',
+                'rollBack'
+            ]
+        );
+        $this->resourceMock->expects($this->any())->method('beginTransaction')->will($this->returnSelf());
     }
 
     /**
@@ -50,10 +47,10 @@ class RateTest extends TestCase
      */
     public function testExceptionOfValidation($exceptionMessage, $data)
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage($exceptionMessage);
         $rate = $this->objectHelper->getObject(
-            Rate::class,
+            \Magento\Tax\Model\Calculation\Rate::class,
             ['resource' => $this->resourceMock]
         );
         foreach ($data as $key => $value) {

@@ -3,46 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Msrp\Test\Unit\Observer\Frontend\Quote;
 
-use Magento\Customer\Model\Address\AbstractAddress;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Msrp\Model\Config;
-use Magento\Msrp\Model\Quote\Address\CanApplyMsrp;
-use Magento\Msrp\Model\Quote\Msrp;
-use Magento\Msrp\Observer\Frontend\Quote\SetCanApplyMsrpObserver;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Model\Quote\Address;
 
-class SetCanApplyMsrpObserverTest extends TestCase
+class SetCanApplyMsrpObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SetCanApplyMsrpObserver
+     * @var \Magento\Msrp\Observer\Frontend\Quote\SetCanApplyMsrpObserver
      */
     protected $observer;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Msrp\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $canApplyMsrpMock;
 
-    /** @var  MockObject */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     protected $msrpMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->configMock = $this->createMock(Config::class);
-        $this->canApplyMsrpMock = $this->createMock(CanApplyMsrp::class);
-        $this->msrpMock = $this->createMock(Msrp::class);
+        $this->configMock = $this->createMock(\Magento\Msrp\Model\Config::class);
+        $this->canApplyMsrpMock = $this->createMock(\Magento\Msrp\Model\Quote\Address\CanApplyMsrp::class);
+        $this->msrpMock = $this->createMock(\Magento\Msrp\Model\Quote\Msrp::class);
 
-        $this->observer = new SetCanApplyMsrpObserver(
+        $this->observer = new \Magento\Msrp\Observer\Frontend\Quote\SetCanApplyMsrpObserver(
             $this->configMock,
             $this->canApplyMsrpMock,
             $this->msrpMock
@@ -52,19 +41,16 @@ class SetCanApplyMsrpObserverTest extends TestCase
     public function testSetQuoteCanApplyMsrpIfMsrpCanApply()
     {
         $quoteId = 100;
-        $eventMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getQuote'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteMock = $this->createPartialMock(Quote::class, ['getAllAddresses', 'getId']);
-        $observerMock = $this->createMock(Observer::class);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getQuote']);
+        $quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getAllAddresses', 'getId']);
+        $observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
 
         $observerMock->expects($this->once())->method('getEvent')->willReturn($eventMock);
         $eventMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
         $this->configMock->expects($this->once())->method('isEnabled')->willReturn(true);
         $this->msrpMock->expects($this->once())->method('setCanApplyMsrp')->with($quoteId, true);
 
-        $addressMock = $this->createPartialMock(AbstractAddress::class, ['__wakeup']);
+        $addressMock = $this->createPartialMock(\Magento\Customer\Model\Address\AbstractAddress::class, ['__wakeup']);
         $this->canApplyMsrpMock->expects($this->once())->method('isCanApplyMsrp')->willReturn(true);
 
         $quoteMock->expects($this->once())->method('getAllAddresses')->willReturn([$addressMock]);
@@ -75,19 +61,16 @@ class SetCanApplyMsrpObserverTest extends TestCase
     public function setQuoteCanApplyMsrpDataProvider()
     {
         $quoteId = 100;
-        $eventMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getQuote'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteMock = $this->createPartialMock(Quote::class, ['getAllAddresses', 'getId']);
-        $observerMock = $this->createMock(Observer::class);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getQuote']);
+        $quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getAllAddresses', 'getId']);
+        $observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
 
         $observerMock->expects($this->once())->method('getEvent')->willReturn($eventMock);
         $eventMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
         $this->configMock->expects($this->once())->method('isEnabled')->willReturn(true);
         $this->msrpMock->expects($this->once())->method('setCanApplyMsrp')->with($quoteId, false);
 
-        $addressMock = $this->createPartialMock(AbstractAddress::class, ['__wakeup']);
+        $addressMock = $this->createPartialMock(\Magento\Customer\Model\Address\AbstractAddress::class, ['__wakeup']);
         $this->canApplyMsrpMock->expects($this->once())->method('isCanApplyMsrp')->willReturn(false);
 
         $quoteMock->expects($this->once())->method('getAllAddresses')->willReturn([$addressMock]);
@@ -98,12 +81,9 @@ class SetCanApplyMsrpObserverTest extends TestCase
     public function testSetQuoteCanApplyMsrpIfMsrpDisabled()
     {
         $quoteId = 100;
-        $eventMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getQuote'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteMock = $this->createPartialMock(Quote::class, ['getAllAddresses', 'getId']);
-        $observerMock = $this->createMock(Observer::class);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getQuote']);
+        $quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getAllAddresses', 'getId']);
+        $observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
 
         $observerMock->expects($this->once())->method('getEvent')->willReturn($eventMock);
         $eventMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);

@@ -33,7 +33,7 @@ class ObsoleteConnectionTest extends \PHPUnit\Framework\TestCase
      */
     protected $appPath;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->obsoleteMethods = [
             '_getReadConnection',

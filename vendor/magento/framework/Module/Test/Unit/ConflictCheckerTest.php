@@ -3,17 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
-use Magento\Framework\Module\ConflictChecker;
-use Magento\Framework\Module\ModuleList;
-use Magento\Framework\Module\PackageInfo;
-use Magento\Framework\Module\PackageInfoFactory;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Module\ConflictChecker;
 
-class ConflictCheckerTest extends TestCase
+class ConflictCheckerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider checkConflictWhenEnableModuleDataProvider
@@ -28,21 +22,21 @@ class ConflictCheckerTest extends TestCase
         $moduleName,
         $expected
     ) {
-        $moduleListMock = $this->createMock(ModuleList::class);
-        $packageInfoMock = $this->createMock(PackageInfo::class);
+        $moduleListMock = $this->createMock(\Magento\Framework\Module\ModuleList::class);
+        $packageInfoMock = $this->createMock(\Magento\Framework\Module\PackageInfo::class);
         $moduleListMock->expects($this->any())
             ->method('getNames')
-            ->willReturn($enabledModules);
+            ->will($this->returnValue($enabledModules));
         $packageInfoMock->expects($this->any())
             ->method('getConflict')
-            ->willReturnMap($conflictReturnMap);
+            ->will($this->returnValueMap($conflictReturnMap));
         $packageInfoMock->expects($this->any())
             ->method('getVersion')
-            ->willReturn('0.1');
-        $packageInfoFactoryMock = $this->createMock(PackageInfoFactory::class);
+            ->will($this->returnValue('0.1'));
+        $packageInfoFactoryMock = $this->createMock(\Magento\Framework\Module\PackageInfoFactory::class);
         $packageInfoFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($packageInfoMock);
+            ->will($this->returnValue($packageInfoMock));
         $conflictChecker = new ConflictChecker($moduleListMock, $packageInfoFactoryMock);
         $this->assertEquals($expected, $conflictChecker->checkConflictsWhenEnableModules($moduleName));
     }
@@ -124,25 +118,25 @@ class ConflictCheckerTest extends TestCase
 
     public function testCheckConflictWhenEnableModuleDifferentVersion()
     {
-        $moduleListMock = $this->createMock(ModuleList::class);
-        $packageInfoMock = $this->createMock(PackageInfo::class);
+        $moduleListMock = $this->createMock(\Magento\Framework\Module\ModuleList::class);
+        $packageInfoMock = $this->createMock(\Magento\Framework\Module\PackageInfo::class);
         $moduleListMock->expects($this->any())
             ->method('getNames')
-            ->willReturn(['Vendor_A', 'Vendor_B']);
+            ->will($this->returnValue(['Vendor_A', 'Vendor_B']));
         $packageInfoMock->expects($this->any())
             ->method('getConflict')
-            ->willReturnMap([
+            ->will($this->returnValueMap([
                 ['Vendor_A', []],
                 ['Vendor_B', []],
                 ['Vendor_C', ['Vendor_A' => '>=0.2,<0.3', 'Vendor_B' => '<0.4']]
-            ]);
+            ]));
         $packageInfoMock->expects($this->any())
             ->method('getVersion')
-            ->willReturnMap([['Vendor_A', '0.2'], ['Vendor_B', '0.4']]);
-        $packageInfoFactoryMock = $this->createMock(PackageInfoFactory::class);
+            ->will($this->returnValueMap([['Vendor_A', '0.2'], ['Vendor_B', '0.4']]));
+        $packageInfoFactoryMock = $this->createMock(\Magento\Framework\Module\PackageInfoFactory::class);
         $packageInfoFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($packageInfoMock);
+            ->will($this->returnValue($packageInfoMock));
         $conflictChecker = new ConflictChecker($moduleListMock, $packageInfoFactoryMock);
         $this->assertEquals(
             ['Vendor_C' => ['Vendor_C conflicts with current Vendor_A version 0.2 (version should not be >=0.2,<0.3)']],
@@ -152,22 +146,22 @@ class ConflictCheckerTest extends TestCase
 
     public function testCheckConflictWhenEnableModuleDifferentVersionWithCurEnabledModules()
     {
-        $moduleListMock = $this->createMock(ModuleList::class);
-        $packageInfoMock = $this->createMock(PackageInfo::class);
+        $moduleListMock = $this->createMock(\Magento\Framework\Module\ModuleList::class);
+        $packageInfoMock = $this->createMock(\Magento\Framework\Module\PackageInfo::class);
         $packageInfoMock->expects($this->any())
             ->method('getConflict')
-            ->willReturnMap([
+            ->will($this->returnValueMap([
                 ['Vendor_A', []],
                 ['Vendor_B', []],
                 ['Vendor_C', ['Vendor_A' => '>=0.2,<0.3', 'Vendor_B' => '<0.4']]
-            ]);
+            ]));
         $packageInfoMock->expects($this->any())
             ->method('getVersion')
-            ->willReturnMap([['Vendor_A', '0.2'], ['Vendor_B', '0.4']]);
-        $packageInfoFactoryMock = $this->createMock(PackageInfoFactory::class);
+            ->will($this->returnValueMap([['Vendor_A', '0.2'], ['Vendor_B', '0.4']]));
+        $packageInfoFactoryMock = $this->createMock(\Magento\Framework\Module\PackageInfoFactory::class);
         $packageInfoFactoryMock->expects($this->once())
             ->method('create')
-            ->willReturn($packageInfoMock);
+            ->will($this->returnValue($packageInfoMock));
         $conflictChecker = new ConflictChecker($moduleListMock, $packageInfoFactoryMock);
         $this->assertEquals(
             ['Vendor_C' => ['Vendor_C conflicts with current Vendor_A version 0.2 (version should not be >=0.2,<0.3)']],

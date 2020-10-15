@@ -16,7 +16,7 @@ class JsTest extends \PHPUnit\Framework\TestCase
      */
     protected $jsPhraseCollector;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->jsPhraseCollector = $objectManager->create(

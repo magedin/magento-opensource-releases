@@ -3,37 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\ObjectManager\Test\Unit;
 
-use Magento\Framework\ObjectManager\ConfigInterface;
 use Magento\Framework\ObjectManager\TMap;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/_files/TMap/TClass.php';
 require_once __DIR__ . '/_files/TMap/TInterface.php';
 
-class TMapTest extends TestCase
+class TMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $om;
 
     /**
-     * @var MockObject|ConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\ObjectManager\ConfigInterface
      */
     private $omConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->om = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->om = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $this->omConfig = $this->getMockBuilder(ConfigInterface::class)
+        $this->omConfig = $this->getMockBuilder(\Magento\Framework\ObjectManager\ConfigInterface::class)
             ->getMockForAbstractClass();
     }
 
@@ -56,7 +51,9 @@ class TMapTest extends TestCase
                 ]
             );
 
-        static::assertContainsOnlyInstancesOf('\TInterface', $tMap);
+        foreach ($tMap as $instance) {
+            static::assertInstanceOf('\TInterface', $instance);
+        }
     }
 
     /**

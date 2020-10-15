@@ -3,192 +3,78 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
-namespace Magento\Test\Annotation;
-
-use Magento\Store\Model\ScopeInterface;
-use Magento\TestFramework\Annotation\ConfigFixture;
-use Magento\TestFramework\App\MutableScopeConfig;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\TestFramework\Annotation\ConfigFixture.
  */
-class ConfigFixtureTest extends TestCase
+namespace Magento\Test\Annotation;
+
+class ConfigFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigFixture|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\TestFramework\Annotation\ConfigFixture|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $object;
+    protected $_object;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->object = $this->createPartialMock(
-            ConfigFixture::class,
-            [
-                '_getConfigValue',
-                '_setConfigValue',
-                'getScopeConfig',
-                'getMutableScopeConfig',
-                'setScopeConfigValue',
-                'getScopeConfigValue'
-            ]
+        $this->_object = $this->createPartialMock(
+            \Magento\TestFramework\Annotation\ConfigFixture::class,
+            ['_getConfigValue', '_setConfigValue']
         );
-        $this->object->method('getMutableScopeConfig')
-            ->willReturn(
-                new MutableScopeConfig()
-            );
     }
 
     /**
-     * @magentoConfigFixture default/web/unsecure/base_url http://example.com/
-     *
-     * @return void
+     * @magentoConfigFixture current_store web/unsecure/base_url http://example.com/
      */
-    public function testGlobalConfig(): void
+    public function testGlobalConfig()
     {
-        $this->createResolverMock();
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
-            'default/web/unsecure/base_url'
-        )->willReturn(
-            'http://localhost/'
+            'web/unsecure/base_url'
+        )->will(
+            $this->returnValue('http://localhost/')
         );
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(1)
         )->method(
             '_setConfigValue'
         )->with(
-            'default/web/unsecure/base_url',
+            'web/unsecure/base_url',
             'http://example.com/'
         );
-        $this->object->startTest($this);
+        $this->_object->startTest($this);
 
-        $this->object->expects(
+        $this->_object->expects(
             $this->once()
         )->method(
             '_setConfigValue'
         )->with(
-            'default/web/unsecure/base_url',
+            'web/unsecure/base_url',
             'http://localhost/'
         );
-        $this->object->endTest($this);
-    }
-
-    /**
-     * @magentoConfigFixture base_website web/unsecure/base_url http://example.com/
-     *
-     * @return void
-     */
-    public function testSpecificWebsiteConfig(): void
-    {
-        $this->createResolverMock();
-        $this->object->expects(
-            $this->at(0)
-        )->method(
-            'getScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            ScopeInterface::SCOPE_WEBSITES,
-            'base'
-        )->willReturn(
-            'http://localhost/'
-        );
-        $this->object->expects(
-            $this->at(1)
-        )->method(
-            'setScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            'http://example.com/',
-            ScopeInterface::SCOPE_WEBSITES,
-            'base'
-        );
-        $this->object->startTest($this);
-
-        $this->object->expects(
-            $this->once()
-        )->method(
-            'setScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            'http://localhost/',
-            ScopeInterface::SCOPE_WEBSITES,
-            'base'
-        );
-        $this->object->endTest($this);
-    }
-
-    /**
-     * @magentoConfigFixture current_website web/unsecure/base_url http://example.com/
-     *
-     * @return void
-     */
-    public function testCurrentWebsiteConfig(): void
-    {
-        $this->createResolverMock();
-        $this->object->expects(
-            $this->at(0)
-        )->method(
-            'getScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            ScopeInterface::SCOPE_WEBSITES
-        )->willReturn(
-            'http://localhost/'
-        );
-        $this->object->expects(
-            $this->at(1)
-        )->method(
-            'setScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            'http://example.com/',
-            ScopeInterface::SCOPE_WEBSITES,
-            null
-        );
-        $this->object->startTest($this);
-
-        $this->object->expects(
-            $this->once()
-        )->method(
-            'setScopeConfigValue'
-        )->with(
-            'web/unsecure/base_url',
-            'http://localhost/',
-            ScopeInterface::SCOPE_WEBSITES,
-            null
-        );
-        $this->object->endTest($this);
+        $this->_object->endTest($this);
     }
 
     /**
      * @magentoConfigFixture current_store dev/restrict/allow_ips 192.168.0.1
-     *
-     * @return void
      */
-    public function testCurrentStoreConfig(): void
+    public function testCurrentStoreConfig()
     {
-        $this->createResolverMock();
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
             'dev/restrict/allow_ips',
             ''
-        )->willReturn(
-            '127.0.0.1'
+        )->will(
+            $this->returnValue('127.0.0.1')
         );
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(1)
         )->method(
             '_setConfigValue'
@@ -197,40 +83,36 @@ class ConfigFixtureTest extends TestCase
             '192.168.0.1',
             ''
         );
-        $this->object->startTest($this);
+        $this->_object->startTest($this);
 
-        $this->object->expects(
+        $this->_object->expects(
             $this->once()
         )->method(
-            'setScopeConfigValue'
+            '_setConfigValue'
         )->with(
             'dev/restrict/allow_ips',
             '127.0.0.1',
-            ScopeInterface::SCOPE_STORES,
             ''
         );
-        $this->object->endTest($this);
+        $this->_object->endTest($this);
     }
 
     /**
      * @magentoConfigFixture admin_store dev/restrict/allow_ips 192.168.0.2
-     *
-     * @return void
      */
-    public function testSpecificStoreConfig(): void
+    public function testSpecificStoreConfig()
     {
-        $this->createResolverMock();
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
             'dev/restrict/allow_ips',
             'admin'
-        )->willReturn(
-            '192.168.0.1'
+        )->will(
+            $this->returnValue('192.168.0.1')
         );
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(1)
         )->method(
             '_setConfigValue'
@@ -239,50 +121,43 @@ class ConfigFixtureTest extends TestCase
             '192.168.0.2',
             'admin'
         );
-        $this->object->startTest($this);
+        $this->_object->startTest($this);
 
-        $this->object->expects(
+        $this->_object->expects(
             $this->once()
         )->method(
-            'setScopeConfigValue'
+            '_setConfigValue'
         )->with(
             'dev/restrict/allow_ips',
             '192.168.0.1',
-            ScopeInterface::SCOPE_STORES,
             'admin'
         );
-        $this->object->endTest($this);
+        $this->_object->endTest($this);
     }
 
-    /**
-     * @return void
-     */
-    public function testInitStoreAfterOfScope(): void
+    public function testInitStoreAfterOfScope()
     {
-        $this->object->expects($this->never())->method('_getConfigValue');
-        $this->object->expects($this->never())->method('_setConfigValue');
-        $this->object->initStoreAfter();
+        $this->_object->expects($this->never())->method('_getConfigValue');
+        $this->_object->expects($this->never())->method('_setConfigValue');
+        $this->_object->initStoreAfter();
     }
 
     /**
      * @magentoConfigFixture current_store web/unsecure/base_url http://example.com/
-     *
-     * @return void
      */
-    public function testInitStoreAfter(): void
+    public function testInitStoreAfter()
     {
-        $this->createResolverMock();
-        $this->object->startTest($this);
-        $this->object->expects(
+        $this->_object->startTest($this);
+        $this->_object->expects(
             $this->at(0)
         )->method(
             '_getConfigValue'
         )->with(
             'web/unsecure/base_url'
-        )->willReturn(
-            'http://localhost/'
+        )->will(
+            $this->returnValue('http://localhost/')
         );
-        $this->object->expects(
+        $this->_object->expects(
             $this->at(1)
         )->method(
             '_setConfigValue'
@@ -290,25 +165,6 @@ class ConfigFixtureTest extends TestCase
             'web/unsecure/base_url',
             'http://example.com/'
         );
-        $this->object->initStoreAfter();
-    }
-
-    /**
-     * Create mock for Resolver object
-     *
-     * @return void
-     */
-    private function createResolverMock(): void
-    {
-        $mock = $this->getMockBuilder(Resolver::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['applyConfigFixtures'])
-            ->getMock();
-        $mock->method('applyConfigFixtures')
-            ->willReturn($this->getAnnotations()['method'][$this->object::ANNOTATION]);
-        $reflection = new \ReflectionClass(Resolver::class);
-        $reflectionProperty = $reflection->getProperty('instance');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue(Resolver::class, $mock);
+        $this->_object->initStoreAfter();
     }
 }

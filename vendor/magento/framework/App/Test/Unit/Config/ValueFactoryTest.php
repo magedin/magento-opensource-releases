@@ -3,29 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Config;
 
-use Magento\Framework\App\Config\ValueFactory;
-use Magento\Framework\App\Config\ValueInterface;
-use Magento\Framework\TestFramework\Unit\AbstractFactoryTestCase;
-
-class ValueFactoryTest extends AbstractFactoryTestCase
+class ValueFactoryTest extends \Magento\Framework\TestFramework\Unit\AbstractFactoryTestCase
 {
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->instanceClassName = ValueInterface::class;
-        $this->factoryClassName = ValueFactory::class;
+        $this->instanceClassName = \Magento\Framework\App\Config\ValueInterface::class;
+        $this->factoryClassName = \Magento\Framework\App\Config\ValueFactory::class;
         parent::setUp();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testCreateWithException()
     {
-        $this->expectException('InvalidArgumentException');
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->willReturn('somethingElse');
+            ->will($this->returnValue('somethingElse'));
         $this->factory->create();
     }
 }

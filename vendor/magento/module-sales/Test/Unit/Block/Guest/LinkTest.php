@@ -3,36 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Guest;
-
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Block\Guest\Link;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Sales\Block\Guest\Link
  */
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     public function testToHtml()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $context = $objectManagerHelper->getObject(Context::class);
+        $context = $objectManagerHelper->getObject(\Magento\Framework\View\Element\Template\Context::class);
         $httpContext = $this->getMockBuilder(\Magento\Framework\App\Http\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $httpContext->expects($this->once())
             ->method('getValue')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
-        /** @var Link $link */
+        /** @var \Magento\Sales\Block\Guest\Link $link */
         $link = $objectManagerHelper->getObject(
-            Link::class,
+            \Magento\Sales\Block\Guest\Link::class,
             [
                 'context' => $context,
                 'httpContext' => $httpContext,

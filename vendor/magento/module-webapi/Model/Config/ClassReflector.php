@@ -5,24 +5,24 @@
  */
 namespace Magento\Webapi\Model\Config;
 
-use Laminas\Code\Reflection\ClassReflection;
-use Laminas\Code\Reflection\MethodReflection;
-use Magento\Framework\Reflection\TypeProcessor;
+use Zend\Code\Reflection\MethodReflection;
 
 /**
- * Config class reflector
+ * Class reflector.
  */
 class ClassReflector
 {
     /**
-     * @var TypeProcessor
+     * @var \Magento\Framework\Reflection\TypeProcessor
      */
     protected $_typeProcessor;
 
     /**
-     * @param TypeProcessor $typeProcessor
+     * Construct reflector.
+     *
+     * @param \Magento\Framework\Reflection\TypeProcessor $typeProcessor
      */
-    public function __construct(TypeProcessor $typeProcessor)
+    public function __construct(\Magento\Framework\Reflection\TypeProcessor $typeProcessor)
     {
         $this->_typeProcessor = $typeProcessor;
     }
@@ -60,13 +60,12 @@ class ClassReflector
      *     ),
      *     ...
      * )</pre>
-     * @throws \ReflectionException
      */
     public function reflectClassMethods($className, $methods)
     {
         $data = [];
-        $classReflection = new ClassReflection($className);
-        /** @var MethodReflection $methodReflection */
+        $classReflection = new \Zend\Code\Reflection\ClassReflection($className);
+        /** @var \Zend\Code\Reflection\MethodReflection $methodReflection */
         foreach ($classReflection->getMethods() as $methodReflection) {
             $methodName = $methodReflection->getName();
             if (in_array($methodName, $methods) || array_key_exists($methodName, $methods)) {
@@ -79,15 +78,14 @@ class ClassReflector
     /**
      * Retrieve method interface and documentation description.
      *
-     * @param MethodReflection $method
+     * @param \Zend\Code\Reflection\MethodReflection $method
      * @return array
      * @throws \InvalidArgumentException
-     * @throws \ReflectionException
      */
-    public function extractMethodData(MethodReflection $method)
+    public function extractMethodData(\Zend\Code\Reflection\MethodReflection $method)
     {
         $methodData = ['documentation' => $this->extractMethodDescription($method), 'interface' => []];
-        /** @var \Laminas\Code\Reflection\ParameterReflection $parameter */
+        /** @var \Zend\Code\Reflection\ParameterReflection $parameter */
         foreach ($method->getParameters() as $parameter) {
             $parameterData = [
                 'type' => $this->_typeProcessor->register($this->_typeProcessor->getParamType($parameter)),
@@ -118,11 +116,10 @@ class ClassReflector
     /**
      * Retrieve method full documentation description.
      *
-     * @param MethodReflection $method
+     * @param \Zend\Code\Reflection\MethodReflection $method
      * @return string
-     * @throws \ReflectionException
      */
-    protected function extractMethodDescription(MethodReflection $method)
+    protected function extractMethodDescription(\Zend\Code\Reflection\MethodReflection $method)
     {
         $methodReflection = new MethodReflection(
             $method->getDeclaringClass()->getName(),
@@ -144,11 +141,10 @@ class ClassReflector
      *
      * @param string $className
      * @return string
-     * @throws \ReflectionException
      */
     public function extractClassDescription($className)
     {
-        $classReflection = new ClassReflection($className);
+        $classReflection = new \Zend\Code\Reflection\ClassReflection($className);
         $docBlock = $classReflection->getDocBlock();
         if (!$docBlock) {
             return '';

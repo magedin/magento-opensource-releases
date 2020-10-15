@@ -3,30 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Model\Export;
 
-use Magento\Framework\Api\Search\DocumentInterface;
-use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\WriteInterface as DirectoryWriteInterface;
 use Magento\Framework\Filesystem\File\WriteInterface as FileWriteInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Ui\Model\Export\ConvertToCsv;
 use Magento\Ui\Model\Export\MetadataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConvertToCsvTest extends TestCase
+class ConvertToCsvTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConvertToCsv
@@ -34,41 +25,41 @@ class ConvertToCsvTest extends TestCase
     protected $model;
 
     /**
-     * @var DirectoryWriteInterface|MockObject
+     * @var DirectoryWriteInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $directory;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystem;
 
     /**
-     * @var Filter|MockObject
+     * @var Filter | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $filter;
 
     /**
-     * @var MetadataProvider|MockObject
+     * @var MetadataProvider | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataProvider;
 
     /**
-     * @var FileWriteInterface|MockObject
+     * @var FileWriteInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $stream;
 
     /**
-     * @var UiComponentInterface|MockObject
+     * @var UiComponentInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $component;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->directory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\WriteInterface::class)
             ->getMockForAbstractClass();
 
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->filesystem->expects($this->any())
@@ -76,15 +67,15 @@ class ConvertToCsvTest extends TestCase
             ->with(DirectoryList::VAR_DIR)
             ->willReturn($this->directory);
 
-        $this->filter = $this->getMockBuilder(Filter::class)
+        $this->filter = $this->getMockBuilder(\Magento\Ui\Component\MassAction\Filter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->metadataProvider = $this->getMockBuilder(MetadataProvider::class)
+        $this->metadataProvider = $this->getMockBuilder(\Magento\Ui\Model\Export\MetadataProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->component = $this->getMockBuilder(UiComponentInterface::class)
+        $this->component = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->getMockForAbstractClass();
 
         $this->stream = $this->getMockBuilder(\Magento\Framework\Filesystem\File\WriteInterface::class)
@@ -107,7 +98,7 @@ class ConvertToCsvTest extends TestCase
         $componentName = 'component_name';
         $data = ['data_value'];
 
-        $document = $this->getMockBuilder(DocumentInterface::class)
+        $document = $this->getMockBuilder(\Magento\Framework\Api\Search\DocumentInterface::class)
             ->getMockForAbstractClass();
 
         $this->mockComponent($componentName, [$document]);
@@ -148,12 +139,12 @@ class ConvertToCsvTest extends TestCase
             ->with($document, $componentName);
 
         $result = $this->model->getCsvFile();
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertArrayHasKey('type', $result);
         $this->assertArrayHasKey('value', $result);
         $this->assertArrayHasKey('rm', $result);
-        $this->assertStringContainsString($componentName, $result['value']);
-        $this->assertStringContainsString('.csv', $result['value']);
+        $this->assertContains($componentName, $result);
+        $this->assertContains('.csv', $result);
     }
 
     /**
@@ -190,21 +181,21 @@ class ConvertToCsvTest extends TestCase
      */
     protected function mockComponent($componentName, $items)
     {
-        $context = $this->getMockBuilder(ContextInterface::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->setMethods(['getDataProvider'])
             ->getMockForAbstractClass();
 
         $dataProvider = $this->getMockBuilder(
-            DataProviderInterface::class
+            \Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface::class
         )
             ->setMethods(['getSearchResult'])
             ->getMockForAbstractClass();
 
-        $searchResult = $this->getMockBuilder(SearchResultInterface::class)
+        $searchResult = $this->getMockBuilder(\Magento\Framework\Api\Search\SearchResultInterface::class)
             ->setMethods(['getItems'])
             ->getMockForAbstractClass();
 
-        $searchCriteria = $this->getMockBuilder(SearchCriteriaInterface::class)
+        $searchCriteria = $this->getMockBuilder(\Magento\Framework\Api\SearchCriteriaInterface::class)
             ->setMethods(['setPageSize', 'setCurrentPage'])
             ->getMockForAbstractClass();
         $this->component->expects($this->any())

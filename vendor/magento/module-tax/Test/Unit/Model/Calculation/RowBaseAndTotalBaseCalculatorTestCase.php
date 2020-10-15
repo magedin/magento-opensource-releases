@@ -3,33 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Calculation;
 
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Api\Data\AppliedTaxInterface;
-use Magento\Tax\Api\Data\AppliedTaxInterfaceFactory;
-use Magento\Tax\Api\Data\AppliedTaxRateInterface;
-use Magento\Tax\Api\Data\AppliedTaxRateInterfaceFactory;
-use Magento\Tax\Api\Data\QuoteDetailsItemExtensionInterface;
-use Magento\Tax\Api\Data\QuoteDetailsItemInterface;
-use Magento\Tax\Api\Data\TaxDetailsItemInterface;
-use Magento\Tax\Api\Data\TaxDetailsItemInterfaceFactory;
-use Magento\Tax\Model\Calculation;
 use Magento\Tax\Model\Calculation\RowBaseCalculator;
 use Magento\Tax\Model\Calculation\TotalBaseCalculator;
-use Magento\Tax\Model\Config;
-use Magento\Tax\Model\TaxDetails\AppliedTaxRate;
-use Magento\Tax\Model\TaxDetails\ItemDetails;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Tax\Api\Data\QuoteDetailsItemExtensionInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RowBaseAndTotalBaseCalculatorTestCase extends TestCase
+class RowBaseAndTotalBaseCalculatorTestCase extends \PHPUnit\Framework\TestCase
 {
     const STORE_ID = 2300;
     const QUANTITY = 1;
@@ -51,39 +36,39 @@ class RowBaseAndTotalBaseCalculatorTestCase extends TestCase
     /** @var ObjectManager */
     protected $objectManager;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $taxItemDetailsDataObjectFactory;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $mockCalculationTool;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $mockConfig;
 
-    /** @var QuoteDetailsItemInterface|MockObject */
+    /** @var \Magento\Tax\Api\Data\QuoteDetailsItemInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $mockItem;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $appliedTaxDataObjectFactory;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $appliedTaxRateDataObjectFactory;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $mockAppliedTax;
 
     protected $addressRateRequest;
 
-    /** @var  AppliedTaxRateInterface */
+    /** @var  \Magento\Tax\Api\Data\AppliedTaxRateInterface */
     protected $appliedTaxRate;
 
     /**
-     * @var TaxDetailsItemInterface
+     * @var \Magento\Tax\Api\Data\TaxDetailsItemInterface
      */
     protected $taxDetailsItem;
 
     /**
-     * @var QuoteDetailsItemExtensionInterface|MockObject
+     * @var \Magento\Tax\Api\Data\QuoteDetailsItemExtensionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteDetailsItemExtension;
 
@@ -100,63 +85,60 @@ class RowBaseAndTotalBaseCalculatorTestCase extends TestCase
         $this->initMockAppliedTaxDataObjectFactory();
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->taxItemDetailsDataObjectFactory = $this->createPartialMock(
-            TaxDetailsItemInterfaceFactory::class,
+            \Magento\Tax\Api\Data\TaxDetailsItemInterfaceFactory::class,
             ['create']
         );
-        $this->taxDetailsItem = $this->objectManager->getObject(ItemDetails::class);
+        $this->taxDetailsItem = $this->objectManager->getObject(\Magento\Tax\Model\TaxDetails\ItemDetails::class);
         $this->taxItemDetailsDataObjectFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->taxDetailsItem);
 
-        $this->mockCalculationTool = $this->getMockBuilder(Calculation::class)
+        $this->mockCalculationTool = $this->getMockBuilder(\Magento\Tax\Model\Calculation::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 ['__wakeup', 'round', 'getRate', 'getStoreRate', 'getRateRequest', 'getAppliedRates']
             )
             ->getMock();
-        $this->mockConfig = $this->getMockBuilder(Config::class)
+        $this->mockConfig = $this->getMockBuilder(\Magento\Tax\Model\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->mockItem = $this->getMockBuilder(QuoteDetailsItemInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getExtensionAttributes', 'getUnitPrice'])
+        $this->mockItem = $this->getMockBuilder(\Magento\Tax\Api\Data\QuoteDetailsItemInterface::class)
+            ->disableOriginalConstructor()->setMethods(['getExtensionAttributes', 'getUnitPrice'])
             ->getMockForAbstractClass();
         $this->quoteDetailsItemExtension = $this->getMockBuilder(QuoteDetailsItemExtensionInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getPriceForTaxCalculation'])
+            ->disableOriginalConstructor()->setMethods(['getPriceForTaxCalculation'])
             ->getMockForAbstractClass();
         $this->mockItem->expects($this->any())->method('getExtensionAttributes')
             ->willReturn($this->quoteDetailsItemExtension);
 
         $this->appliedTaxDataObjectFactory = $this->createPartialMock(
-            AppliedTaxInterfaceFactory::class,
+            \Magento\Tax\Api\Data\AppliedTaxInterfaceFactory::class,
             ['create']
         );
 
         $this->appliedTaxRateDataObjectFactory = $this->createPartialMock(
-            AppliedTaxRateInterfaceFactory::class,
+            \Magento\Tax\Api\Data\AppliedTaxRateInterfaceFactory::class,
             ['create']
         );
-        $this->appliedTaxRate = $this->objectManager->getObject(AppliedTaxRate::class);
+        $this->appliedTaxRate = $this->objectManager->getObject(\Magento\Tax\Model\TaxDetails\AppliedTaxRate::class);
         $this->appliedTaxRateDataObjectFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->appliedTaxRate);
-        $this->mockAppliedTax = $this->getMockBuilder(AppliedTaxInterface::class)
-            ->getMock();
+        $this->mockAppliedTax = $this->getMockBuilder(\Magento\Tax\Api\Data\AppliedTaxInterface::class)->getMock();
 
-        $this->mockAppliedTax->expects($this->any())->method('getTaxRateKey')->willReturn('taxKey');
-        $this->addressRateRequest = new DataObject();
+        $this->mockAppliedTax->expects($this->any())->method('getTaxRateKey')->will($this->returnValue('taxKey'));
+        $this->addressRateRequest = new \Magento\Framework\DataObject();
     }
 
     /**
      * @param $calculator RowBaseCalculator|TotalBaseCalculator
      * @param boolean $round
-     * @return TaxDetailsItemInterface
+     * @return \Magento\Tax\Api\Data\TaxDetailsItemInterface
      */
     public function calculate($calculator, $round = true)
     {
@@ -292,7 +274,7 @@ class RowBaseAndTotalBaseCalculatorTestCase extends TestCase
     }
 
     /**
-     * @param MockObject $mockObject
+     * @param \PHPUnit_Framework_MockObject_MockObject $mockObject
      * @param array $mockMap
      */
     private function mockReturnValues($mockObject, $mockMap)
@@ -302,15 +284,15 @@ class RowBaseAndTotalBaseCalculatorTestCase extends TestCase
                 $mockObject->expects(
                     $valueMap[self::ONCE] == true ? $this->once() : $this->atLeastOnce()
                 )->method($valueMap[self::MOCK_METHOD_NAME])->with($valueMap[self::WITH_ARGUMENT])
-                    ->willReturn(
-                        $valueMap[self::MOCK_VALUE]
+                    ->will(
+                        $this->returnValue($valueMap[self::MOCK_VALUE])
                     );
             } else {
                 $mockObject->expects(
                     $valueMap[self::ONCE] == true ? $this->once() : $this->atLeastOnce()
                 )->method($valueMap[self::MOCK_METHOD_NAME])->withAnyParameters()
-                    ->willReturn(
-                        $valueMap[self::MOCK_VALUE]
+                    ->will(
+                        $this->returnValue($valueMap[self::MOCK_VALUE])
                     );
             }
         }

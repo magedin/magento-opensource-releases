@@ -3,23 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Flag;
-use Magento\Framework\Flag\FlagResource;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\Serialize\Serializer\Serialize;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FlagTest extends TestCase
+class FlagTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
@@ -61,13 +47,15 @@ class FlagTest extends TestCase
     public function testLoadSelf()
     {
         $flag = $this->createFlagInstance(['flag_code' => 'synchronize']);
-        $this->assertInstanceOf(Flag::class, $flag->loadSelf());
+        $this->assertInstanceOf(\Magento\Framework\Flag::class, $flag->loadSelf());
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Please define flag code.
+     */
     public function testLoadSelfException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Please define flag code.');
         $flag = $this->createFlagInstance();
         $flag->loadSelf();
     }
@@ -81,10 +69,12 @@ class FlagTest extends TestCase
         $this->assertEquals($flagCode, $flag->getFlagCode());
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Please define flag code.
+     */
     public function testBeforeSaveException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Please define flag code.');
         $flag = $this->createFlagInstance();
         $flag->setData('block', 'blockNmae');
         $flag->beforeSave();
@@ -92,22 +82,22 @@ class FlagTest extends TestCase
 
     /**
      * @param array $data
-     * @return Flag
+     * @return \Magento\Framework\Flag
      */
     private function createFlagInstance(array $data = [])
     {
-        $objectManager = new ObjectManager($this);
-        $eventManagerMock = $this->createPartialMock(Manager::class, ['dispatch']);
-        /** @var Context|MockObject $contextMock */
-        $contextMock = $this->createMock(Context::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $eventManagerMock = $this->createPartialMock(\Magento\Framework\Event\Manager::class, ['dispatch']);
+        /** @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject $contextMock */
+        $contextMock = $this->createMock(\Magento\Framework\Model\Context::class);
         $contextMock->expects($this->once())
             ->method('getEventDispatcher')
             ->willReturn($eventManagerMock);
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $connectionMock->expects($this->any())
             ->method('beginTransaction')
             ->willReturnSelf();
-        $appResource = $this->createMock(ResourceConnection::class);
+        $appResource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $appResource->expects($this->any())
             ->method('getConnection')
             ->willReturn($connectionMock);
@@ -115,7 +105,7 @@ class FlagTest extends TestCase
         $dbContextMock->expects($this->once())
             ->method('getResources')
             ->willReturn($appResource);
-        $resourceMock = $this->getMockBuilder(FlagResource::class)
+        $resourceMock = $this->getMockBuilder(\Magento\Framework\Flag\FlagResource::class)
             ->setMethods(['__wakeup', 'load', 'save', 'addCommitCallback', 'commit', 'rollBack'])
             ->setConstructorArgs(['context' => $dbContextMock])
             ->getMock();
@@ -124,13 +114,13 @@ class FlagTest extends TestCase
             ->method('addCommitCallback')
             ->willReturnSelf();
         return $objectManager->getObject(
-            Flag::class,
+            \Magento\Framework\Flag::class,
             [
                 'context' => $contextMock,
                 'resource' => $resourceMock,
                 'data' => $data,
-                'json' => new Json(),
-                'serialize' => new Serialize()
+                'json' => new \Magento\Framework\Serialize\Serializer\Json(),
+                'serialize' => new \Magento\Framework\Serialize\Serializer\Serialize()
             ]
         );
     }

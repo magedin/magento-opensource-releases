@@ -9,7 +9,6 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Registry;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 $registry = $objectManager->get(Registry::class);
@@ -28,4 +27,4 @@ $repository->delete($customer);
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/websites_different_countries_rollback.php');
+require __DIR__ . '/../../Store/_files/websites_different_countries_rollback.php';

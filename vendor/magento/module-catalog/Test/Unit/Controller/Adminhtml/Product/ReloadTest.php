@@ -3,13 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Catalog\Controller\Adminhtml\Product\Reload;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
@@ -17,14 +14,15 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Layout\ProcessorInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Ui\Component\Wrapper\UiComponent;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class ReloadTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ReloadTest extends TestCase
+class ReloadTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Reload
@@ -37,51 +35,51 @@ class ReloadTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $contextMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactoryMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var Builder|MockObject
+     * @var Builder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productBuilderMock;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var UiComponent|MockObject
+     * @var UiComponent|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $uiComponentMock;
 
     /**
-     * @var ProcessorInterface|MockObject
+     * @var ProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -93,7 +91,7 @@ class ReloadTest extends TestCase
             ->getMock();
         $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->requestMock = $this->getMockBuilder(RequestInterface::class)
             ->getMockForAbstractClass();
         $this->productBuilderMock = $this->getMockBuilder(Builder::class)
@@ -149,7 +147,7 @@ class ReloadTest extends TestCase
             ->with('noroute')
             ->willReturn(true);
 
-        $this->assertTrue($this->model->execute());
+        $this->assertSame(true, $this->model->execute());
     }
 
     public function testExecute()

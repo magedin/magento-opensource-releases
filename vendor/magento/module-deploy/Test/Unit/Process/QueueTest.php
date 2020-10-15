@@ -3,28 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Process;
 
-use Magento\Deploy\Package\Package;
 use Magento\Deploy\Process\Queue;
+use Magento\Deploy\Package\Package;
 use Magento\Deploy\Service\DeployPackage;
-use Magento\Framework\App\ResourceConnection;
 
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolver;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
-
+use Magento\Framework\App\ResourceConnection;
 use Psr\Log\LoggerInterface;
+
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Deployment Queue class unit tests
  *
  * @see Queue
  */
-class QueueTest extends TestCase
+class QueueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Queue
@@ -59,7 +56,7 @@ class QueueTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->appState = $this->createMock(AppState::class);
         $this->localeResolver = $this->getMockForAbstractClass(
@@ -96,7 +93,7 @@ class QueueTest extends TestCase
         $package = $this->createMock(Package::class);
         $package->expects($this->once())->method('getPath')->willReturn('path');
 
-        $this->assertTrue($this->queue->add($package));
+        $this->assertEquals(true, $this->queue->add($package));
         $packages = $this->queue->getPackages();
         $this->assertEquals(
             $package,

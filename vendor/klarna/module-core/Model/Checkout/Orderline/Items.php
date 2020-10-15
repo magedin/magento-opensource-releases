@@ -141,8 +141,7 @@ class Items extends AbstractLine
             'reference'     => substr($item->getSku(), 0, 64),
             'name'          => $item->getName(),
             'quantity'      => ceil($this->getItemQty($item) * $qtyMultiplier),
-            'discount_rate' => 0,
-            'total_discount_amount' => $this->helper->toApiFloat($item->getBaseDiscountAmount())
+            'discount_rate' => 0
         ];
 
         if ($product && $product->getId()) {
@@ -155,17 +154,20 @@ class Items extends AbstractLine
             $_item['total_tax_amount'] = 0;
             $_item['unit_price'] = $this->helper->toApiFloat($item->getBasePrice())
                 ?: $this->helper->toApiFloat($item->getBaseOriginalPrice());
-            $_item['total_amount'] = $this->helper->toApiFloat(
-                $item->getBaseRowTotal() - $item->getBaseDiscountAmount()
-            );
+            $_item['total_amount'] = $this->helper->toApiFloat($item->getBaseRowTotal());
         } else {
-            $_item['tax_rate'] = $this->helper->toApiFloat($item->getTaxPercent());
-            $_item['total_tax_amount'] = $this->helper->toApiFloat($item->getBaseTaxAmount());
+            $taxRate = 0;
+            if ($item->getBaseRowTotal() > 0) {
+                $taxRate = ($item->getTaxPercent() > 0) ? $item->getTaxPercent()
+                    : ($item->getBaseTaxAmount() / $item->getBaseRowTotal() * 100);
+            }
+
+            $taxAmount = $this->calculator->calcTaxAmount($item->getBaseRowTotalInclTax(), $taxRate, true);
+            $_item['tax_rate'] = $this->helper->toApiFloat($taxRate);
+            $_item['total_tax_amount'] = $this->helper->toApiFloat($taxAmount);
             $_item['unit_price'] = $this->helper->toApiFloat($item->getBasePriceInclTax())
                 ?: $this->helper->toApiFloat($item->getBaseRowTotalInclTax());
-            $_item['total_amount'] = $this->helper->toApiFloat(
-                $item->getBaseRowTotalInclTax() - $item->getBaseDiscountAmount()
-            );
+            $_item['total_amount'] = $this->helper->toApiFloat($item->getBaseRowTotalInclTax());
         }
 
         return $_item;

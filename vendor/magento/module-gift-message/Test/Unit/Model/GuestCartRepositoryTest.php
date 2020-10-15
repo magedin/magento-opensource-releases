@@ -4,19 +4,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GiftMessage\Test\Unit\Model;
 
 use Magento\GiftMessage\Api\Data\MessageInterface;
-use Magento\GiftMessage\Model\GuestItemRepository;
 use Magento\GiftMessage\Model\ItemRepository;
+use Magento\GiftMessage\Model\GuestItemRepository;
 use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GuestCartRepositoryTest extends TestCase
+class GuestCartRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GuestItemRepository
@@ -24,22 +20,22 @@ class GuestCartRepositoryTest extends TestCase
     protected $model;
 
     /**
-     * @var ItemRepository|MockObject
+     * @var ItemRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $repositoryMock;
 
     /**
-     * @var QuoteIdMaskFactory|MockObject
+     * @var QuoteIdMaskFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->repositoryMock = $this->getMockBuilder(ItemRepository::class)
+        $this->repositoryMock = $this->getMockBuilder(\Magento\GiftMessage\Model\ItemRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->quoteIdMaskFactoryMock = $this->getMockBuilder(QuoteIdMaskFactory::class)
+        $this->quoteIdMaskFactoryMock = $this->getMockBuilder(\Magento\Quote\Model\QuoteIdMaskFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();
@@ -56,8 +52,8 @@ class GuestCartRepositoryTest extends TestCase
         $quoteId = 123;
         $itemId = 234;
 
-        /** @var QuoteIdMask|MockObject $quoteIdMaskMock */
-        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
+        /** @var QuoteIdMask|\PHPUnit_Framework_MockObject_MockObject $quoteIdMaskMock */
+        $quoteIdMaskMock = $this->getMockBuilder(\Magento\Quote\Model\QuoteIdMask::class)
             ->setMethods(['getQuoteId', 'load'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -74,8 +70,8 @@ class GuestCartRepositoryTest extends TestCase
             ->method('getQuoteId')
             ->willReturn($quoteId);
 
-        /** @var MessageInterface|MockObject $messageMock */
-        $messageMock = $this->getMockBuilder(MessageInterface::class)
+        /** @var MessageInterface|\PHPUnit_Framework_MockObject_MockObject $messageMock */
+        $messageMock = $this->getMockBuilder(\Magento\GiftMessage\Api\Data\MessageInterface::class)
             ->getMockForAbstractClass();
 
         $this->repositoryMock->expects($this->once())
@@ -92,8 +88,8 @@ class GuestCartRepositoryTest extends TestCase
         $quoteId = 123;
         $itemId = 234;
 
-        /** @var QuoteIdMask|MockObject $quoteIdMaskMock */
-        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
+        /** @var QuoteIdMask|\PHPUnit_Framework_MockObject_MockObject $quoteIdMaskMock */
+        $quoteIdMaskMock = $this->getMockBuilder(\Magento\Quote\Model\QuoteIdMask::class)
             ->setMethods(['getQuoteId', 'load'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -110,8 +106,8 @@ class GuestCartRepositoryTest extends TestCase
             ->method('getQuoteId')
             ->willReturn($quoteId);
 
-        /** @var MessageInterface|MockObject $messageMock */
-        $messageMock = $this->getMockBuilder(MessageInterface::class)
+        /** @var MessageInterface|\PHPUnit_Framework_MockObject_MockObject $messageMock */
+        $messageMock = $this->getMockBuilder(\Magento\GiftMessage\Api\Data\MessageInterface::class)
             ->getMockForAbstractClass();
 
         $this->repositoryMock->expects($this->once())

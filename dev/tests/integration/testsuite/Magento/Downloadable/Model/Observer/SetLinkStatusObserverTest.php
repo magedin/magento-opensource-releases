@@ -20,7 +20,7 @@ class SetLinkStatusObserverTest extends \PHPUnit\Framework\TestCase
     /**
      * Initialization of dependencies
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }

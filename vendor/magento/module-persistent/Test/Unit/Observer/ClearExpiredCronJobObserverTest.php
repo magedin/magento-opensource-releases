@@ -4,65 +4,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Cron\Model\Schedule;
-use Magento\Persistent\Model\Session;
-use Magento\Persistent\Model\SessionFactory;
-use Magento\Persistent\Observer\ClearExpiredCronJobObserver;
-use Magento\Store\Model\ResourceModel\Website\Collection;
-use Magento\Store\Model\ResourceModel\Website\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ClearExpiredCronJobObserverTest extends TestCase
+class ClearExpiredCronJobObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClearExpiredCronJobObserver
+     * @var \Magento\Persistent\Observer\ClearExpiredCronJobObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scheduleMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $websiteCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collectionFactoryMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
+            $this->createPartialMock(\Magento\Store\Model\ResourceModel\Website\CollectionFactory::class, ['create']);
         $this->sessionFactoryMock = $this->createPartialMock(
-            SessionFactory::class,
+            \Magento\Persistent\Model\SessionFactory::class,
             ['create']
         );
-        $this->scheduleMock = $this->createMock(Schedule::class);
-        $this->sessionMock = $this->createMock(Session::class);
+        $this->scheduleMock = $this->createMock(\Magento\Cron\Model\Schedule::class);
+        $this->sessionMock = $this->createMock(\Magento\Persistent\Model\Session::class);
         $this->websiteCollectionMock
-            = $this->createMock(Collection::class);
+            = $this->createMock(\Magento\Store\Model\ResourceModel\Website\Collection::class);
 
-        $this->model = new ClearExpiredCronJobObserver(
+        $this->model = new \Magento\Persistent\Observer\ClearExpiredCronJobObserver(
             $this->collectionFactoryMock,
             $this->sessionFactoryMock
         );
@@ -73,12 +63,12 @@ class ClearExpiredCronJobObserverTest extends TestCase
         $this->collectionFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->websiteCollectionMock);
-        $this->websiteCollectionMock->expects($this->once())->method('getAllIds')->willReturn([1]);
+            ->will($this->returnValue($this->websiteCollectionMock));
+        $this->websiteCollectionMock->expects($this->once())->method('getAllIds')->will($this->returnValue([1]));
         $this->sessionFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->sessionMock);
+            ->will($this->returnValue($this->sessionMock));
         $this->sessionMock->expects($this->once())->method('deleteExpired')->with(1);
         $this->model->execute($this->scheduleMock);
     }
@@ -88,7 +78,7 @@ class ClearExpiredCronJobObserverTest extends TestCase
         $this->collectionFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->willReturn($this->websiteCollectionMock);
+            ->will($this->returnValue($this->websiteCollectionMock));
         $this->websiteCollectionMock->expects($this->once())->method('getAllIds');
         $this->sessionFactoryMock
             ->expects($this->never())

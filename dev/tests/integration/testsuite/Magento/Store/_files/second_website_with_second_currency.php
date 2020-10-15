@@ -4,15 +4,9 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Store\Api\WebsiteRepositoryInterface;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_website_with_two_stores.php');
+require 'second_website_with_two_stores.php';
 
 $objectManager =  \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-/** @var WebsiteRepositoryInterface $websiteRepository */
-$websiteRepository = $objectManager->get(WebsiteRepositoryInterface::class);
-$websiteId = $websiteRepository->get('test')->getId();
 /** @var \Magento\Config\Model\ResourceModel\Config $configResource */
 $configResource = $objectManager->get(\Magento\Config\Model\ResourceModel\Config::class);
 $configResource->saveConfig(

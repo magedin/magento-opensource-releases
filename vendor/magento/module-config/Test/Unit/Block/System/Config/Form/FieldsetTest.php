@@ -3,51 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Block\System\Config\Form;
-
-use Magento\Backend\Model\Auth\Session;
-use Magento\Backend\Model\Url;
-use Magento\Config\Block\System\Config\Form\Fieldset;
-use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\AbstractForm;
-use Magento\Framework\Data\Form\Element\Collection;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Text;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Helper\Js;
-use Magento\Framework\View\Layout;
-use Magento\User\Model\User;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FieldsetTest extends TestCase
+class FieldsetTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Fieldset
+     * @var \Magento\Config\Block\System\Config\Form\Fieldset
      */
     protected $_object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_elementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_urlModelMock;
 
@@ -65,27 +44,27 @@ class FieldsetTest extends TestCase
     ];
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_layoutMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_testHelper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $authSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $userMock;
 
@@ -93,14 +72,14 @@ class FieldsetTest extends TestCase
      * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->authSessionMock = $this->getMockBuilder(Session::class)
+        $this->authSessionMock = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->setMethods(['getUser'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->userMock = $this->getMockBuilder(User::class)
+        $this->userMock = $this->getMockBuilder(\Magento\User\Model\User::class)
             ->setMethods(['getExtra'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -109,25 +88,18 @@ class FieldsetTest extends TestCase
             ->method('getUser')
             ->willReturn($this->userMock);
 
-        $this->_requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->_requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->_requestMock->expects($this->any())
             ->method('getParam')
             ->willReturn('Test Param');
-        $this->_urlModelMock = $this->createMock(Url::class);
-        $this->_layoutMock = $this->createMock(Layout::class);
-        $groupMock = $this->createMock(Group::class);
-        $groupMock->expects($this->any())->method('getFieldsetCss')->willReturn('test_fieldset_css');
+        $this->_urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
+        $this->_layoutMock = $this->createMock(\Magento\Framework\View\Layout::class);
+        $groupMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class);
+        $groupMock->expects($this->any())->method('getFieldsetCss')->will($this->returnValue('test_fieldset_css'));
 
-        $this->_helperMock = $this->createMock(Js::class);
-        $secureRendererMock = $this->createMock(SecureHtmlRenderer::class);
-        $secureRendererMock->method('renderStyleAsTag')
-            ->willReturnCallback(
-                function (string $style, string $selector): string {
-                    return "<style>$selector { $style }</style>";
-                }
-            );
+        $this->_helperMock = $this->createMock(\Magento\Framework\View\Helper\Js::class);
 
         $data = [
             'request' => $this->_requestMock,
@@ -136,32 +108,40 @@ class FieldsetTest extends TestCase
             'layout' => $this->_layoutMock,
             'jsHelper' => $this->_helperMock,
             'data' => ['group' => $groupMock],
-            'secureRenderer' => $secureRendererMock
         ];
-        $this->_testHelper = new ObjectManager($this);
-        $this->_object = $this->_testHelper->getObject(Fieldset::class, $data);
+        $this->_testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_object = $this->_testHelper->getObject(\Magento\Config\Block\System\Config\Form\Fieldset::class, $data);
 
-        $this->_elementMock = $this->getMockBuilder(Text::class)
-            ->addMethods(['getLegend', 'getComment', 'getIsNested', 'getExpanded'])
-            ->onlyMethods(['getId', 'getHtmlId', 'getName', 'getElements', 'getForm'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_elementMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\Element\Text::class,
+            [
+                'getId',
+                'getHtmlId',
+                'getName',
+                'getElements',
+                'getLegend',
+                'getComment',
+                'getIsNested',
+                'getExpanded',
+                'getForm'
+            ]
+        );
 
         $this->_elementMock->expects($this->any())
             ->method('getId')
-            ->willReturn($this->testData['htmlId']);
+            ->will($this->returnValue($this->testData['htmlId']));
         $this->_elementMock->expects($this->any())
             ->method('getHtmlId')
-            ->willReturn($this->testData['htmlId']);
+            ->will($this->returnValue($this->testData['htmlId']));
         $this->_elementMock->expects($this->any())
             ->method('getName')
-            ->willReturn($this->testData['name']);
+            ->will($this->returnValue($this->testData['name']));
         $this->_elementMock->expects($this->any())
             ->method('getLegend')
-            ->willReturn($this->testData['legend']);
+            ->will($this->returnValue($this->testData['legend']));
         $this->_elementMock->expects($this->any())
             ->method('getComment')
-            ->willReturn($this->testData['comment']);
+            ->will($this->returnValue($this->testData['comment']));
     }
 
     /**
@@ -173,19 +153,19 @@ class FieldsetTest extends TestCase
     public function testRenderWithoutStoredElements($expanded, $nested, $extra)
     {
         $this->userMock->expects($this->any())->method('getExtra')->willReturn($extra);
-        $collection = $this->_testHelper->getObject(Collection::class);
-        $formMock = $this->createMock(Form::class);
+        $collection = $this->_testHelper->getObject(\Magento\Framework\Data\Form\Element\Collection::class);
+        $formMock = $this->createMock(\Magento\Framework\Data\Form::class);
         $this->_elementMock->expects($this->any())->method('getForm')->willReturn($formMock);
         $formMock->expects($this->any())->method('getElements')->willReturn($collection);
-        $this->_elementMock->expects($this->any())->method('getElements')->willReturn($collection);
-        $this->_elementMock->expects($this->any())->method('getIsNested')->willReturn($nested);
-        $this->_elementMock->expects($this->any())->method('getExpanded')->willReturn($expanded);
+        $this->_elementMock->expects($this->any())->method('getElements')->will($this->returnValue($collection));
+        $this->_elementMock->expects($this->any())->method('getIsNested')->will($this->returnValue($nested));
+        $this->_elementMock->expects($this->any())->method('getExpanded')->will($this->returnValue($expanded));
         $actualHtml = $this->_object->render($this->_elementMock);
-        $this->assertStringContainsString($this->testData['htmlId'], $actualHtml);
-        $this->assertStringContainsString($this->testData['legend'], $actualHtml);
-        $this->assertStringContainsString($this->testData['comment'], $actualHtml);
+        $this->assertContains($this->testData['htmlId'], $actualHtml);
+        $this->assertContains($this->testData['legend'], $actualHtml);
+        $this->assertContains($this->testData['comment'], $actualHtml);
         if ($nested) {
-            $this->assertStringContainsString('nested', $actualHtml);
+            $this->assertContains('nested', $actualHtml);
         }
     }
 
@@ -198,55 +178,55 @@ class FieldsetTest extends TestCase
     public function testRenderWithStoredElements($expanded, $nested, $extra)
     {
         $this->userMock->expects($this->any())->method('getExtra')->willReturn($extra);
-        $this->_helperMock->expects($this->any())->method('getScript')->willReturnArgument(0);
-        $fieldMock = $this->getMockBuilder(Text::class)
+        $this->_helperMock->expects($this->any())->method('getScript')->will($this->returnArgument(0));
+        $fieldMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Text::class)
             ->setMethods(['getId', 'getTooltip', 'toHtml', 'getHtmlId', 'getIsNested', 'getExpanded'])
             ->disableOriginalConstructor()
             ->getMock();
-        $fieldMock->expects($this->any())->method('getId')->willReturn('test_field_id');
-        $fieldMock->expects($this->any())->method('getTooltip')->willReturn('test_field_tootip');
-        $fieldMock->expects($this->any())->method('toHtml')->willReturn('test_field_toHTML');
+        $fieldMock->expects($this->any())->method('getId')->will($this->returnValue('test_field_id'));
+        $fieldMock->expects($this->any())->method('getTooltip')->will($this->returnValue('test_field_tootip'));
+        $fieldMock->expects($this->any())->method('toHtml')->will($this->returnValue('test_field_toHTML'));
         $fieldMock->expects($this->any())->method('getHtmlId')->willReturn('test_field_HTML_id');
 
         $fieldSetMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Fieldset::class)
             ->setMethods(['getId', 'getTooltip', 'toHtml', 'getHtmlId', 'getIsNested', 'getExpanded'])
             ->disableOriginalConstructor()
             ->getMock();
-        $fieldSetMock->expects($this->any())->method('getId')->willReturn('test_fieldset_id');
-        $fieldSetMock->expects($this->any())->method('getTooltip')->willReturn('test_fieldset_tootip');
-        $fieldSetMock->expects($this->any())->method('toHtml')->willReturn('test_fieldset_toHTML');
+        $fieldSetMock->expects($this->any())->method('getId')->will($this->returnValue('test_fieldset_id'));
+        $fieldSetMock->expects($this->any())->method('getTooltip')->will($this->returnValue('test_fieldset_tootip'));
+        $fieldSetMock->expects($this->any())->method('toHtml')->will($this->returnValue('test_fieldset_toHTML'));
         $fieldSetMock->expects($this->any())->method('getHtmlId')->willReturn('test_fieldset_HTML_id');
 
-        $factory = $this->createMock(Factory::class);
+        $factory = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
 
-        $factoryColl = $this->createMock(CollectionFactory::class);
+        $factoryColl = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
 
-        $formMock = $this->getMockBuilder(AbstractForm::class)
+        $formMock = $this->getMockBuilder(\Magento\Framework\Data\Form\AbstractForm::class)
             ->setConstructorArgs([$factory, $factoryColl])
             ->getMock();
 
         $collection = $this->_testHelper->getObject(
-            Collection::class,
+            \Magento\Framework\Data\Form\Element\Collection::class,
             ['container' => $formMock]
         );
         $collection->add($fieldMock);
         $collection->add($fieldSetMock);
-        $formMock = $this->createMock(Form::class);
+        $formMock = $this->createMock(\Magento\Framework\Data\Form::class);
         $this->_elementMock->expects($this->any())->method('getForm')->willReturn($formMock);
         $formMock->expects($this->any())->method('getElements')->willReturn($collection);
-        $this->_elementMock->expects($this->any())->method('getElements')->willReturn($collection);
-        $this->_elementMock->expects($this->any())->method('getIsNested')->willReturn($nested);
-        $this->_elementMock->expects($this->any())->method('getExpanded')->willReturn($expanded);
+        $this->_elementMock->expects($this->any())->method('getElements')->will($this->returnValue($collection));
+        $this->_elementMock->expects($this->any())->method('getIsNested')->will($this->returnValue($nested));
+        $this->_elementMock->expects($this->any())->method('getExpanded')->will($this->returnValue($expanded));
 
         $actual = $this->_object->render($this->_elementMock);
 
-        $this->assertStringContainsString('test_field_toHTML', $actual);
+        $this->assertContains('test_field_toHTML', $actual);
 
-        $expected = '<div id="row_test_field_id_comment" class="system-tooltip-box">test_field_tootip</div>' .
-        '<style>#row_test_field_id_comment { display:none; }</style>';
-        $this->assertStringContainsString($expected, $actual);
+        $expected = '<div id="row_test_field_id_comment" class="system-tooltip-box"' .
+            ' style="display:none;">test_field_tootip</div>';
+        $this->assertContains($expected, $actual);
         if ($nested) {
-            $this->assertStringContainsString('nested', $actual);
+            $this->assertContains('nested', $actual);
         }
     }
 

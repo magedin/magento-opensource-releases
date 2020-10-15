@@ -20,7 +20,7 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
      */
     private $filesystem;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->filesystem = $this->objectManager->create(\Magento\Framework\Backup\Filesystem::class);
@@ -45,6 +45,6 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
             ->setBackupExtension('tgz');
 
         $this->assertTrue($this->filesystem->rollback());
-        $this->assertFileExists($rootDir . '/' . $fileName);
+        $this->assertTrue(file_exists($rootDir . '/' . $fileName));
     }
 }

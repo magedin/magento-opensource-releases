@@ -3,19 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Widget\Test\Unit\Model\Config;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\DirSearch;
-use Magento\Framework\Config\FileIteratorFactory;
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Widget\Model\Config\FileResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Widget\Model\Config\FileResolver;
 
-class FileResolverTest extends TestCase
+class FileResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FileResolver
@@ -23,25 +17,25 @@ class FileResolverTest extends TestCase
     private $object;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit_Framework_MockObject_MockObject
      */
     private $moduleReader;
 
     /**
-     * @var FileIteratorFactory|MockObject
+     * @var \Magento\Framework\Config\FileIteratorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $factory;
 
     /**
-     * @var DirSearch|MockObject
+     * @var \Magento\Framework\Component\DirSearch|\PHPUnit_Framework_MockObject_MockObject
      */
     private $componentDirSearch;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->moduleReader = $this->createMock(Reader::class);
-        $this->factory = $this->createMock(FileIteratorFactory::class);
-        $this->componentDirSearch = $this->createMock(DirSearch::class);
+        $this->moduleReader = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
+        $this->factory = $this->createMock(\Magento\Framework\Config\FileIteratorFactory::class);
+        $this->componentDirSearch = $this->createMock(\Magento\Framework\Component\DirSearch::class);
         $this->object = new FileResolver($this->moduleReader, $this->factory, $this->componentDirSearch);
     }
 
@@ -62,7 +56,7 @@ class FileResolverTest extends TestCase
         $this->componentDirSearch->expects($this->once())
             ->method('collectFiles')
             ->with(ComponentRegistrar::THEME, 'etc/file')
-            ->willReturn(['test']);
+            ->will($this->returnValue(['test']));
         $this->factory->expects($this->once())->method('create')->with(['test'])->willReturn($expected);
         $this->assertSame($expected, $this->object->get('file', 'design'));
     }

@@ -24,7 +24,7 @@ class PriceTest extends \PHPUnit\Framework\TestCase
      */
     protected $groupManagement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $category = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Catalog\Model\Category::class

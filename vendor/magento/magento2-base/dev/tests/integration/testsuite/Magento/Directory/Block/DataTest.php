@@ -14,7 +14,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
      */
     private $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->block = $objectManager->get(\Magento\Directory\Block\Data::class);

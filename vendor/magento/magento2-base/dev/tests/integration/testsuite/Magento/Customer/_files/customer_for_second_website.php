@@ -11,20 +11,11 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\Data\CustomerFactory;
 use Magento\Customer\Model\GroupManagement;
 use Magento\Eav\Model\AttributeRepository;
-use Magento\Store\Api\WebsiteRepositoryInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_website_with_two_stores.php');
+require __DIR__ . '/../../../Magento/Store/_files/second_website_with_two_stores.php';
 
 $objectManager = Bootstrap::getObjectManager();
-/** @var WebsiteRepositoryInterface $websiteRepository */
-$websiteRepository = $objectManager->get(WebsiteRepositoryInterface::class);
-$websiteId = $websiteRepository->get('test')->getId();
-/** @var StoreManagerInterface $storeManager */
-$storeManager = $objectManager->get(StoreManagerInterface::class);
-$store = $storeManager->getStore('fixture_third_store');
 /** @var AccountManagementInterface $accountManagment */
 $accountManagment = $objectManager->get(AccountManagementInterface::class);
 /** @var CustomerFactory $customerFactory */

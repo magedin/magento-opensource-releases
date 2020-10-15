@@ -8,11 +8,10 @@
  * Cookie settings initialization script
  *
  * @var $block \Magento\Framework\View\Element\Js\Cookie
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  */
+?>
 
-$scriptString = '
+<script>
     window.cookiesConfig = window.cookiesConfig || {};
-    window.cookiesConfig.secure = ' . /* @noEscape */ $block->getSessionConfig()->getCookieSecure() ? 'true' : 'false';
-
-echo /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false);
+    window.cookiesConfig.secure = <?= /* @noEscape */ $block->getSessionConfig()->getCookieSecure() ? 'true' : 'false' ?>;
+</script>

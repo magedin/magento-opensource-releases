@@ -3,52 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Action;
 
-use Magento\Framework\App\Action\AbstractAction;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractActionTest extends TestCase
+class AbstractActionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var AbstractAction|MockObject */
+    /** @var \Magento\Framework\App\Action\AbstractAction|\PHPUnit_Framework_MockObject_MockObject */
     protected $action;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var ResponseInterface|MockObject */
+    /** @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    /** @var RedirectInterface|MockObject */
+    /** @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $redirectFactory;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Framework\Controller\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $redirect;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockBuilder(RequestInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->response = $this->getMockForAbstractClass(ResponseInterface::class);
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->response = $this->createMock(\Magento\Framework\App\ResponseInterface::class);
 
-        $this->redirect = $this->getMockBuilder(Redirect::class)
+        $this->redirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->setMethods(['setRefererOrBaseUrl'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->redirectFactory = $this->getMockBuilder(RedirectFactory::class)
+        $this->redirectFactory = $this->getMockBuilder(\Magento\Framework\Controller\Result\RedirectFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -56,7 +44,7 @@ class AbstractActionTest extends TestCase
             ->method('create')
             ->willReturn($this->redirect);
 
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->any())
@@ -70,7 +58,7 @@ class AbstractActionTest extends TestCase
             ->willReturn($this->response);
 
         $this->action = $this->getMockForAbstractClass(
-            AbstractAction::class,
+            \Magento\Framework\App\Action\AbstractAction::class,
             [$this->context]
         );
     }

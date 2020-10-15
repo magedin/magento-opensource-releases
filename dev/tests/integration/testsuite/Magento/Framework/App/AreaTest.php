@@ -5,7 +5,7 @@
  */
 namespace Magento\Framework\App;
 
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 class AreaTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,13 +14,13 @@ class AreaTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model;
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\App\CacheInterface::class)
             ->clean([\Magento\Theme\Model\Design::CACHE_TAG]);
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\App\State::class)
             ->setAreaCode('frontend');

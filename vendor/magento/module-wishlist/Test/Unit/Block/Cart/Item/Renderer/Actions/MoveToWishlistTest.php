@@ -3,37 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Block\Cart\Item\Renderer\Actions;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Item;
 use Magento\Wishlist\Block\Cart\Item\Renderer\Actions\MoveToWishlist;
+use Magento\Quote\Model\Quote\Item;
 use Magento\Wishlist\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class MoveToWishlistTest extends TestCase
+class MoveToWishlistTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MoveToWishlist
      */
     protected $model;
 
-    /** @var Data|MockObject */
+    /** @var Data|\PHPUnit_Framework_MockObject_MockObject */
     protected $wishlistHelperMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->wishlistHelperMock = $this->getMockBuilder(Data::class)
+        $this->wishlistHelperMock = $this->getMockBuilder(\Magento\Wishlist\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->model = $objectManagerHelper->getObject(
-            MoveToWishlist::class,
+            \Magento\Wishlist\Block\Cart\Item\Renderer\Actions\MoveToWishlist::class,
             [
                 'wishlistHelper' => $this->wishlistHelperMock,
             ]
@@ -55,9 +50,9 @@ class MoveToWishlistTest extends TestCase
         $json = '{json;}';
 
         /**
-         * @var Item|MockObject $itemMock
+         * @var Item|\PHPUnit_Framework_MockObject_MockObject $itemMock
          */
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 

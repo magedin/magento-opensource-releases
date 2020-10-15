@@ -38,24 +38,17 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     {
         return new FixerDefinition(
             'All PHPUnit test classes should be marked as internal.',
-            [
-                new CodeSample("<?php\nclass MyTest extends TestCase {}\n"),
-                new CodeSample(
-                    "<?php\nclass MyTest extends TestCase {}\nfinal class FinalTest extends TestCase {}\nabstract class AbstractTest extends TestCase {}\n",
-                    ['types' => ['final']]
-                ),
-            ]
+            [new CodeSample("<?php\nclass MyTest extends TestCase {}\n")]
         );
     }
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before FinalInternalClassFixer.
      */
     public function getPriority()
     {
-        return 68;
+        // should be run before FinalInternalClassFixer
+        return 1;
     }
 
     /**
@@ -92,7 +85,8 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $startIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
      */
     private function markClassInternal(Tokens $tokens, $startIndex)
     {
@@ -114,7 +108,8 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $i
+     * @param Tokens $tokens
+     * @param int    $i
      *
      * @return bool
      */
@@ -158,7 +153,8 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -170,7 +166,8 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */
@@ -184,7 +181,8 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return string
      */
@@ -200,7 +198,9 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $docBlockIndex
+     * @param DocBlock $docBlock
+     * @param Tokens   $tokens
+     * @param int      $docBlockIndex
      *
      * @return Line[]
      */
@@ -215,7 +215,9 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     }
 
     /**
-     * @param int $docBlockIndex
+     * @param DocBlock $doc
+     * @param Tokens   $tokens
+     * @param int      $docBlockIndex
      *
      * @return DocBlock
      */
@@ -223,12 +225,56 @@ final class PhpUnitInternalClassFixer extends AbstractFixer implements Whitespac
     {
         $lines = $doc->getLines();
         if (1 === \count($lines) && empty($doc->getAnnotationsOfType('internal'))) {
-            $indent = $this->detectIndent($tokens, $tokens->getNextNonWhitespace($docBlockIndex));
-            $doc->makeMultiLine($indent, $this->whitespacesConfig->getLineEnding());
+            $lines = $this->splitUpDocBlock($lines, $tokens, $docBlockIndex);
 
-            return $doc;
+            return new DocBlock(implode('', $lines));
         }
 
         return $doc;
+    }
+
+    /**
+     * Take a one line doc block, and turn it into a multi line doc block.
+     *
+     * @param Line[] $lines
+     * @param Tokens $tokens
+     * @param int    $docBlockIndex
+     *
+     * @return Line[]
+     */
+    private function splitUpDocBlock($lines, Tokens $tokens, $docBlockIndex)
+    {
+        $lineContent = $this->getSingleLineDocBlockEntry($lines);
+        $lineEnd = $this->whitespacesConfig->getLineEnding();
+        $originalIndent = $this->detectIndent($tokens, $tokens->getNextNonWhitespace($docBlockIndex));
+
+        return [
+            new Line('/**'.$lineEnd),
+            new Line($originalIndent.' * '.$lineContent.$lineEnd),
+            new Line($originalIndent.' */'),
+        ];
+    }
+
+    /**
+     * @param Line[] $line
+     *
+     * @return string
+     */
+    private function getSingleLineDocBlockEntry($line)
+    {
+        $line = $line[0];
+        $line = str_replace('*/', '', $line);
+        $line = trim($line);
+        $line = str_split($line);
+        $i = \count($line);
+        do {
+            --$i;
+        } while ('*' !== $line[$i] && '*' !== $line[$i - 1] && '/' !== $line[$i - 2]);
+        if (' ' === $line[$i]) {
+            ++$i;
+        }
+        $line = \array_slice($line, $i);
+
+        return implode('', $line);
     }
 }

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Payment\State;
 
 use Magento\Directory\Model\Currency;
@@ -12,13 +10,12 @@ use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\State\RegisterCaptureNotificationCommand;
 use Magento\Sales\Model\Order\StatusResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @see RegisterCaptureNotificationCommand
  */
-class RegisterCaptureNotificationCommandTest extends TestCase
+class RegisterCaptureNotificationCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var float
@@ -79,22 +76,6 @@ class RegisterCaptureNotificationCommandTest extends TestCase
                 false,
                 false,
                 null,
-                Order::STATE_PROCESSING,
-                $this->newOrderStatus,
-                'Registered notification about captured amount of %1.',
-            ],
-            [
-                false,
-                false,
-                Order::STATE_NEW,
-                Order::STATE_PROCESSING,
-                $this->newOrderStatus,
-                'Registered notification about captured amount of %1.',
-            ],
-            [
-                false,
-                false,
-                Order::STATE_PENDING_PAYMENT,
                 Order::STATE_PROCESSING,
                 $this->newOrderStatus,
                 'Registered notification about captured amount of %1.',

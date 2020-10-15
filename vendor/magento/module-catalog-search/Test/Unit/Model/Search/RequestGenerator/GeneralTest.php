@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogSearch\Test\Unit\Model\Search\RequestGenerator;
 
@@ -11,25 +10,22 @@ use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\CatalogSearch\Model\Search\RequestGenerator\General;
 use Magento\Framework\Search\Request\BucketInterface;
 use Magento\Framework\Search\Request\FilterInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GeneralTest extends TestCase
+class GeneralTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  General */
     private $general;
 
-    /** @var  Attribute|MockObject */
+    /** @var  Attribute|\PHPUnit_Framework_MockObject_MockObject */
     private $attribute;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->attribute = $this->getMockBuilder(Attribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAttributeCode'])
             ->getMockForAbstractClass();
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->general = $objectManager->getObject(General::class);
     }
 

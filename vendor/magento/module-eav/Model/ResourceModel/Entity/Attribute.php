@@ -6,21 +6,14 @@
 
 namespace Magento\Eav\Model\ResourceModel\Entity;
 
-use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Model\Config;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Eav\Model\Entity\Attribute as EntityAttribute;
-use Magento\Eav\Model\Entity\Attribute\FrontendLabel;
-use Magento\Eav\Model\Entity\Attribute\Source\Table;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\DataObject;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * EAV attribute resource model
@@ -39,7 +32,7 @@ class Attribute extends AbstractDb
     protected static $_entityAttributes = [];
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $_storeManager;
 
@@ -56,15 +49,15 @@ class Attribute extends AbstractDb
     /**
      * Class constructor
      *
-     * @param Context $context
-     * @param StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param Type $eavEntityType
      * @param string $connectionName
      * @codeCoverageIgnore
      */
     public function __construct(
-        Context $context,
-        StoreManagerInterface $storeManager,
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         Type $eavEntityType,
         $connectionName = null
     ) {
@@ -101,7 +94,7 @@ class Attribute extends AbstractDb
     /**
      * Load attribute data by attribute code
      *
-     * @param EntityAttribute|AbstractModel $object
+     * @param EntityAttribute|\Magento\Framework\Model\AbstractModel $object
      * @param int $entityTypeId
      * @param string $code
      * @return bool
@@ -153,10 +146,10 @@ class Attribute extends AbstractDb
     /**
      * Delete entity
      *
-     * @param AbstractModel $object
+     * @param \Magento\Framework\Model\AbstractMode $object
      * @return $this
      */
-    public function deleteEntity(AbstractModel $object)
+    public function deleteEntity(\Magento\Framework\Model\AbstractModel $object)
     {
         if (!$object->getEntityAttributeId()) {
             return $this;
@@ -175,7 +168,7 @@ class Attribute extends AbstractDb
      *
      * @param EntityAttribute|AbstractModel $object
      * @return $this
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _beforeSave(AbstractModel $object)
     {
@@ -192,7 +185,7 @@ class Attribute extends AbstractDb
          */
         if (!$object->getId()) {
             if ($object->getFrontendInput() == 'select') {
-                $object->setSourceModel(Table::class);
+                $object->setSourceModel(\Magento\Eav\Model\Entity\Attribute\Source\Table::class);
             }
         }
 
@@ -209,7 +202,7 @@ class Attribute extends AbstractDb
      */
     protected function _beforeDelete(AbstractModel $attribute)
     {
-        /** @var $attribute AttributeInterface */
+        /** @var $attribute \Magento\Eav\Api\Data\AttributeInterface */
         if ($attribute->getId() && !$attribute->getIsUserDefined()) {
             throw new CouldNotDeleteException(__("The system attribute can't be deleted."));
         }
@@ -241,12 +234,12 @@ class Attribute extends AbstractDb
     /**
      * Perform actions after object delete
      *
-     * @param AbstractModel|DataObject $object
+     * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\DataObject $object
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @since 100.0.7
      */
-    protected function _afterDelete(AbstractModel $object)
+    protected function _afterDelete(\Magento\Framework\Model\AbstractModel $object)
     {
         $this->getConfig()->clear();
         return $this;
@@ -269,7 +262,7 @@ class Attribute extends AbstractDb
     /**
      * Save store labels
      *
-     * @param EntityAttribute|AbstractModel $object
+     * @param EntityAttribute|\Magento\Framework\Model\AbstractModel $object
      * @return $this
      */
     protected function _saveStoreLabels(AbstractModel $object)
@@ -296,7 +289,7 @@ class Attribute extends AbstractDb
     /**
      * Save additional data of attribute
      *
-     * @param EntityAttribute|AbstractModel $object
+     * @param EntityAttribute|\Magento\Framework\Model\AbstractModel $object
      * @return $this
      */
     protected function _saveAdditionalAttributeData(AbstractModel $object)
@@ -419,12 +412,12 @@ class Attribute extends AbstractDb
      *
      * @param array $values
      * @return void
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _checkDefaultOptionValue($values)
     {
         if (!isset($values[0])) {
-            throw new LocalizedException(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __("The default option isn't defined. Set the option and try again.")
             );
         }
@@ -806,8 +799,8 @@ class Attribute extends AbstractDb
     public function __wakeup()
     {
         parent::__wakeup();
-        $this->_storeManager = ObjectManager::getInstance()
-            ->get(StoreManagerInterface::class);
+        $this->_storeManager = \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Magento\Store\Model\StoreManagerInterface::class);
     }
 
     /**
@@ -816,14 +809,14 @@ class Attribute extends AbstractDb
      * @param AbstractModel $object
      * @param string|null $frontendLabel
      * @return void
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function setStoreLabels(AbstractModel $object, $frontendLabel)
     {
         $resultLabel = [];
         $frontendLabels = $object->getFrontendLabels();
         if (isset($frontendLabels[0])
-            && $frontendLabels[0] instanceof FrontendLabel
+            && $frontendLabels[0] instanceof \Magento\Eav\Model\Entity\Attribute\FrontendLabel
         ) {
             foreach ($frontendLabels as $label) {
                 $resultLabel[$label->getStoreId()] = $label->getLabel();
@@ -839,13 +832,13 @@ class Attribute extends AbstractDb
      * @param array|string|null $frontendLabel
      * @param array $resultLabels
      * @return void
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function checkDefaultFrontendLabelExists($frontendLabel, $resultLabels)
     {
         $isAdminStoreLabel = (isset($resultLabels[0]) && !empty($resultLabels[0]));
         if (empty($frontendLabel) && !$isAdminStoreLabel) {
-            throw new LocalizedException(__('The storefront label is not defined.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('The storefront label is not defined.'));
         }
     }
 }

@@ -4,94 +4,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Controller\Product\Compare;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Controller\Product\Compare\Index;
-use Magento\Catalog\Model\Product\Compare\ItemFactory;
-use Magento\Catalog\Model\Product\Compare\ListCompare;
-use Magento\Catalog\Model\ResourceModel\Product\Compare\Item;
-use Magento\Catalog\Model\ResourceModel\Product\Compare\Item\CollectionFactory;
-use Magento\Customer\Model\Session;
-use Magento\Customer\Model\Visitor;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Data\Form\FormKey\Validator;
-use Magento\Framework\Url\DecoderInterface;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Product\Compare\Item;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Index */
+    /** @var \Magento\Catalog\Controller\Product\Compare\Index */
     protected $index;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var ItemFactory|MockObject */
+    /** @var \Magento\Catalog\Model\Product\Compare\ItemFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $itemFactoryMock;
 
-    /** @var Item\CollectionFactory|MockObject */
+    /** @var Item\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $collectionFactoryMock;
 
-    /** @var Session|MockObject */
+    /** @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $sessionMock;
 
-    /** @var Visitor|MockObject */
+    /** @var \Magento\Customer\Model\Visitor|\PHPUnit_Framework_MockObject_MockObject */
     protected $visitorMock;
 
-    /** @var ListCompare|MockObject */
+    /** @var \Magento\Catalog\Model\Product\Compare\ListCompare|\PHPUnit_Framework_MockObject_MockObject */
     protected $listCompareMock;
 
-    /** @var \Magento\Catalog\Model\Session|MockObject */
+    /** @var \Magento\Catalog\Model\Session|\PHPUnit_Framework_MockObject_MockObject */
     protected $catalogSession;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManagerMock;
 
-    /** @var Validator|MockObject */
+    /** @var \Magento\Framework\Data\Form\FormKey\Validator|\PHPUnit_Framework_MockObject_MockObject */
     protected $formKeyValidatorMock;
 
-    /** @var RedirectFactory|MockObject */
+    /** @var \Magento\Framework\Controller\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $redirectFactoryMock;
 
-    /** @var PageFactory|MockObject */
+    /** @var \Magento\Framework\View\Result\PageFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $pageFactoryMock;
 
-    /** @var ProductRepositoryInterface|MockObject */
+    /** @var \Magento\Catalog\Api\ProductRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $productRepositoryMock;
 
-    /** @var DecoderInterface|MockObject */
+    /** @var \Magento\Framework\Url\DecoderInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $decoderMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var ResponseInterface|MockObject */
+    /** @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->createPartialMock(
-            Context::class,
+            \Magento\Framework\App\Action\Context::class,
             ['getRequest', 'getResponse', 'getResultRedirectFactory']
         );
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->response = $this->getMockForAbstractClass(ResponseInterface::class);
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->response = $this->createMock(\Magento\Framework\App\ResponseInterface::class);
         $this->redirectFactoryMock = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Framework\Controller\Result\RedirectFactory::class,
             ['create']
         );
         $this->contextMock->expects($this->any())->method('getRequest')->willReturn($this->request);
@@ -101,27 +84,27 @@ class IndexTest extends TestCase
             ->willReturn($this->redirectFactoryMock);
 
         $this->itemFactoryMock = $this->createPartialMock(
-            ItemFactory::class,
+            \Magento\Catalog\Model\Product\Compare\ItemFactory::class,
             ['create']
         );
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Compare\Item\CollectionFactory::class,
             ['create']
         );
-        $this->sessionMock = $this->createMock(Session::class);
-        $this->visitorMock = $this->createMock(Visitor::class);
-        $this->listCompareMock = $this->createMock(ListCompare::class);
-        $this->catalogSession = $this->getMockBuilder(\Magento\Catalog\Model\Session::class)
-            ->addMethods(['setBeforeCompareUrl'])
+        $this->sessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->visitorMock = $this->createMock(\Magento\Customer\Model\Visitor::class);
+        $this->listCompareMock = $this->createMock(\Magento\Catalog\Model\Product\Compare\ListCompare::class);
+        $this->catalogSession = $this->createPartialMock(
+            \Magento\Catalog\Model\Session::class,
+            ['setBeforeCompareUrl']
+        );
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->formKeyValidatorMock = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey\Validator::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->formKeyValidatorMock = $this->getMockBuilder(Validator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->pageFactoryMock = $this->createMock(PageFactory::class);
-        $this->productRepositoryMock = $this->getMockForAbstractClass(ProductRepositoryInterface::class);
-        $this->decoderMock = $this->getMockForAbstractClass(DecoderInterface::class);
+        $this->pageFactoryMock = $this->createMock(\Magento\Framework\View\Result\PageFactory::class);
+        $this->productRepositoryMock = $this->createMock(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+        $this->decoderMock = $this->createMock(\Magento\Framework\Url\DecoderInterface::class);
 
         $this->index = new Index(
             $this->contextMock,

@@ -44,7 +44,7 @@ class ReSignUpResponseResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->otpResponseResolver = $objectManager->get(

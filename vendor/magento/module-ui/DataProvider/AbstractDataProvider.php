@@ -8,10 +8,7 @@ namespace Magento\Ui\DataProvider;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface;
 
- // phpcs:disable Magento2.Classes.AbstractApi
 /**
- * @inheritdoc
- *
  * @api
  * @since 100.0.2
  */
@@ -77,8 +74,6 @@ abstract class AbstractDataProvider implements DataProviderInterface, \Countable
     }
 
     /**
-     * Return collection
-     *
      * @return AbstractCollection
      */
     public function getCollection()
@@ -117,8 +112,6 @@ abstract class AbstractDataProvider implements DataProviderInterface, \Countable
     }
 
     /**
-     * Return Meta
-     *
      * @return array
      */
     public function getMeta()
@@ -134,30 +127,28 @@ abstract class AbstractDataProvider implements DataProviderInterface, \Countable
      */
     public function getFieldSetMetaInfo($fieldSetName)
     {
-        return $this->meta[$fieldSetName] ?? [];
+        return isset($this->meta[$fieldSetName]) ? $this->meta[$fieldSetName] : [];
     }
 
     /**
-     * Return fields meta info
-     *
      * @param string $fieldSetName
      * @return array
      */
     public function getFieldsMetaInfo($fieldSetName)
     {
-        return $this->meta[$fieldSetName]['children'] ?? [];
+        return isset($this->meta[$fieldSetName]['children']) ? $this->meta[$fieldSetName]['children'] : [];
     }
 
     /**
-     * Return field meta info
-     *
      * @param string $fieldSetName
      * @param string $fieldName
      * @return array
      */
     public function getFieldMetaInfo($fieldSetName, $fieldName)
     {
-        return $this->meta[$fieldSetName]['children'][$fieldName] ?? [];
+        return isset($this->meta[$fieldSetName]['children'][$fieldName])
+            ? $this->meta[$fieldSetName]['children'][$fieldName]
+            : [];
     }
 
     /**
@@ -206,7 +197,7 @@ abstract class AbstractDataProvider implements DataProviderInterface, \Countable
     }
 
     /**
-     * Alias for self::setOrder()
+     * self::setOrder() alias
      *
      * @param string $field
      * @param string $direction
@@ -279,7 +270,7 @@ abstract class AbstractDataProvider implements DataProviderInterface, \Countable
      */
     public function getConfigData()
     {
-        return $this->data['config'] ?? [];
+        return isset($this->data['config']) ? $this->data['config'] : [];
     }
 
     /**

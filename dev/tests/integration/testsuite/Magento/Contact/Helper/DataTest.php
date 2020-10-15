@@ -28,7 +28,7 @@ class DataTest extends \PHPUnit\Framework\TestCase
     /**
      * Setup customer data
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $customerIdFromFixture = 1;
         $this->contactsHelper = Bootstrap::getObjectManager()->create(\Magento\Contact\Helper\Data::class);

@@ -11,7 +11,7 @@ use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Controller\ResultFactory;
 
 /**
- * Controller for updating wishlists
+ * Class Update
  */
 class Update extends \Magento\Wishlist\Controller\AbstractIndex implements HttpPostActionInterface
 {
@@ -70,12 +70,7 @@ class Update extends \Magento\Wishlist\Controller\AbstractIndex implements HttpP
         }
 
         $post = $this->getRequest()->getPostValue();
-        $resultRedirect->setPath('*', ['wishlist_id' => $wishlist->getId()]);
-        if (!$post) {
-            return $resultRedirect;
-        }
-
-        if (isset($post['description']) && is_array($post['description'])) {
+        if ($post && isset($post['description']) && is_array($post['description'])) {
             $updatedItems = 0;
 
             foreach ($post['description'] as $itemId => $description) {
@@ -141,12 +136,13 @@ class Update extends \Magento\Wishlist\Controller\AbstractIndex implements HttpP
                     $this->messageManager->addErrorMessage(__('Can\'t update wish list'));
                 }
             }
-        }
 
-        if (isset($post['save_and_share'])) {
-            $resultRedirect->setPath('*/*/share', ['wishlist_id' => $wishlist->getId()]);
+            if (isset($post['save_and_share'])) {
+                $resultRedirect->setPath('*/*/share', ['wishlist_id' => $wishlist->getId()]);
+                return $resultRedirect;
+            }
         }
-
+        $resultRedirect->setPath('*', ['wishlist_id' => $wishlist->getId()]);
         return $resultRedirect;
     }
 }

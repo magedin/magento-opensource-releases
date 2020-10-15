@@ -73,16 +73,6 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after PhpUnitTestAnnotationFixer.
-     */
-    public function getPriority()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function isCandidate(Tokens $tokens)
     {
@@ -114,8 +104,9 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
+     * @param int    $endIndex
      */
     private function applyCasing(Tokens $tokens, $startIndex, $endIndex)
     {
@@ -159,7 +150,8 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -192,7 +184,8 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -215,7 +208,8 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -227,7 +221,8 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */
@@ -241,14 +236,15 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     }
 
     /**
-     * @param int $docBlockIndex
+     * @param Tokens $tokens
+     * @param int    $docBlockIndex
      */
     private function updateDocBlock(Tokens $tokens, $docBlockIndex)
     {
         $doc = new DocBlock($tokens[$docBlockIndex]->getContent());
         $lines = $doc->getLines();
 
-        $docBlockNeedsUpdate = false;
+        $docBlockNeesUpdate = false;
         for ($inc = 0; $inc < \count($lines); ++$inc) {
             $lineContent = $lines[$inc]->getContent();
             if (false === strpos($lineContent, '@depends')) {
@@ -266,11 +262,11 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
 
             if ($newLineContent !== $lineContent) {
                 $lines[$inc] = new Line($newLineContent);
-                $docBlockNeedsUpdate = true;
+                $docBlockNeesUpdate = true;
             }
         }
 
-        if ($docBlockNeedsUpdate) {
+        if ($docBlockNeesUpdate) {
             $lines = implode('', $lines);
             $tokens[$docBlockIndex] = new Token([T_DOC_COMMENT, $lines]);
         }

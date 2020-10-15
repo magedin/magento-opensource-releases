@@ -3,54 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Category;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Auth;
-use Magento\Backend\Model\Auth\StorageInterface;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Controller\Adminhtml\Category\Delete;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DeleteTest extends TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Delete */
+    /** @var \Magento\Catalog\Controller\Adminhtml\Category\Delete */
     protected $unit;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     protected $resultRedirect;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $request;
 
-    /** @var CategoryRepositoryInterface|MockObject */
+    /** @var \Magento\Catalog\Api\CategoryRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $categoryRepository;
 
-    /** @var StorageInterface|MockObject */
+    /** @var \Magento\Backend\Model\Auth\StorageInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $authStorage;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->createMock(Context::class);
+        $context = $this->createMock(\Magento\Backend\App\Action\Context::class);
         $resultRedirectFactory = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Backend\Model\View\Result\RedirectFactory::class,
             ['create']
         );
         $this->request = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
@@ -58,13 +44,13 @@ class DeleteTest extends TestCase
             true,
             ['getParam', 'getPost']
         );
-        $auth = $this->createPartialMock(Auth::class, ['getAuthStorage']);
-        $this->authStorage = $this->getMockBuilder(StorageInterface::class)
-            ->addMethods(['setDeletedPath'])
-            ->onlyMethods(['processLogin', 'processLogout', 'isLoggedIn', 'prolong'])
-            ->getMockForAbstractClass();
+        $auth = $this->createPartialMock(\Magento\Backend\Model\Auth::class, ['getAuthStorage']);
+        $this->authStorage = $this->createPartialMock(
+            \Magento\Backend\Model\Auth\StorageInterface::class,
+            ['processLogin', 'processLogout', 'isLoggedIn', 'prolong', 'setDeletedPath']
+        );
         $eventManager = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Event\ManagerInterface::class,
             [],
             '',
             false,
@@ -73,7 +59,7 @@ class DeleteTest extends TestCase
             ['dispatch']
         );
         $response = $this->getMockForAbstractClass(
-            ResponseInterface::class,
+            \Magento\Framework\App\ResponseInterface::class,
             [],
             '',
             false
@@ -87,32 +73,32 @@ class DeleteTest extends TestCase
             true,
             ['addSuccessMessage']
         );
-        $this->categoryRepository = $this->getMockForAbstractClass(CategoryRepositoryInterface::class);
+        $this->categoryRepository = $this->createMock(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
         $context->expects($this->any())
             ->method('getRequest')
-            ->willReturn($this->request);
+            ->will($this->returnValue($this->request));
         $context->expects($this->any())
             ->method('getResponse')
-            ->willReturn($response);
+            ->will($this->returnValue($response));
         $context->expects($this->any())
             ->method('getMessageManager')
-            ->willReturn($messageManager);
+            ->will($this->returnValue($messageManager));
         $context->expects($this->any())
             ->method('getEventManager')
-            ->willReturn($eventManager);
+            ->will($this->returnValue($eventManager));
         $context->expects($this->any())
             ->method('getAuth')
-            ->willReturn($auth);
+            ->will($this->returnValue($auth));
         $context->expects($this->once())->method('getResultRedirectFactory')->willReturn($resultRedirectFactory);
         $auth->expects($this->any())
             ->method('getAuthStorage')
-            ->willReturn($this->authStorage);
+            ->will($this->returnValue($this->authStorage));
 
-        $this->resultRedirect = $this->createMock(Redirect::class);
+        $this->resultRedirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
         $resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
 
         $this->unit = (new ObjectManagerHelper($this))->getObject(
-            Delete::class,
+            \Magento\Catalog\Controller\Adminhtml\Category\Delete::class,
             [
                 'context' => $context,
                 'categoryRepository' => $this->categoryRepository
@@ -135,7 +121,7 @@ class DeleteTest extends TestCase
         $categoryId = 5;
         $parentId = 7;
         $this->request->expects($this->any())->method('getParam')->with('id')->willReturn($categoryId);
-        $category = $this->createPartialMock(Category::class, ['getParentId', 'getPath']);
+        $category = $this->createPartialMock(\Magento\Catalog\Model\Category::class, ['getParentId', 'getPath']);
         $category->expects($this->once())->method('getParentId')->willReturn($parentId);
         $category->expects($this->once())->method('getPath')->willReturn('category-path');
         $this->categoryRepository->expects($this->once())->method('get')->with($categoryId)->willReturn($category);

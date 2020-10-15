@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace Magento\Checkout\Test\Unit\Block\Checkout;
 
-use Magento\Checkout\Block\Checkout\AttributeMerger;
 use Magento\Customer\Api\CustomerRepositoryInterface as CustomerRepository;
 use Magento\Customer\Helper\Address as AddressHelper;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Directory\Helper\Data as DirectoryHelper;
+use Magento\Checkout\Block\Checkout\AttributeMerger;
 use PHPUnit\Framework\TestCase;
 
 class AttributeMergerTest extends TestCase
@@ -44,8 +44,9 @@ class AttributeMergerTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
+
         $this->customerRepository = $this->createMock(CustomerRepository::class);
         $this->customerSession = $this->createMock(CustomerSession::class);
         $this->addressHelper = $this->createMock(AddressHelper::class);
@@ -85,9 +86,10 @@ class AttributeMergerTest extends TestCase
             $elements,
             'provider',
             'dataScope',
-            ['field' => [
-                'validation' => ['length' => true]
-            ]
+            ['field' =>
+                [
+                    'validation' => ['length' => true]
+                ]
             ]
         );
 

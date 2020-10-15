@@ -3,20 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Event\Test\Unit;
 
-use Magento\Framework\Event\ObserverFactory;
-use Magento\Framework\ObjectManager\ObjectManager;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Event\ObserverFactory;
 
-class ObserverFactoryTest extends TestCase
+/**
+ * Class ConfigTest
+ *
+ * @package Magento\Framework\Event
+ */
+class ObserverFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
@@ -25,10 +25,10 @@ class ObserverFactoryTest extends TestCase
      */
     protected $observerFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerMock = $this->createPartialMock(
-            ObjectManager::class,
+            \Magento\Framework\ObjectManager\ObjectManager::class,
             ['get', 'create']
         );
         $this->observerFactory = new ObserverFactory($this->objectManagerMock);
@@ -37,12 +37,11 @@ class ObserverFactoryTest extends TestCase
     public function testGet()
     {
         $className = 'Magento\Class';
-        $observerMock = $this->getMockBuilder('Observer')
-            ->getMock();
+        $observerMock = $this->getMockBuilder('Observer')->getMock();
         $this->objectManagerMock->expects($this->once())
             ->method('get')
             ->with($className)
-            ->willReturn($observerMock);
+            ->will($this->returnValue($observerMock));
 
         $result = $this->observerFactory->get($className);
         $this->assertEquals($observerMock, $result);
@@ -51,14 +50,13 @@ class ObserverFactoryTest extends TestCase
     public function testCreate()
     {
         $className = 'Magento\Class';
-        $observerMock =  $this->getMockBuilder('Observer')
-            ->getMock();
+        $observerMock =  $this->getMockBuilder('Observer')->getMock();
         $arguments = ['arg1', 'arg2'];
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with($className, $arguments)
-            ->willReturn($observerMock);
+            ->with($className, $this->equalTo($arguments))
+            ->will($this->returnValue($observerMock));
 
         $result = $this->observerFactory->create($className, $arguments);
         $this->assertEquals($observerMock, $result);

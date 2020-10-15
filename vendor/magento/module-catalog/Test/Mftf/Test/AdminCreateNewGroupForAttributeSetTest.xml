@@ -13,7 +13,7 @@
             <stories value="Edit attribute set"/>
             <title value="Admin should be able to create new group in an Attribute Set"/>
             <description value="The test verifies creating a new group in an attribute set and a validation message in case of empty group name"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-170"/>
             <group value="Catalog"/>
         </annotations>
@@ -23,15 +23,14 @@
             <createData entity="productAttributeWithTwoOptions" stepKey="createConfigProductAttribute"/>
 
             <!-- Login to Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
         </before>
         <after>
             <deleteData createDataKey="createConfigProductAttribute" stepKey="deleteConfigProductAttribute"/>
-            <deleteData createDataKey="createAttributeSet" stepKey="deleteAttributeSet"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Navigate to Stores > Attributes > Attribute Set -->
@@ -39,7 +38,7 @@
         <waitForPageLoad stepKey="waitForPageLoad"/>
 
         <!-- Search and open Attribute Set from preconditions -->
-        <actionGroup ref="GoToAttributeSetByNameActionGroup" stepKey="searchAttribute">
+        <actionGroup ref="goToAttributeSetByName" stepKey="searchAttribute">
             <argument name="name" value="$$createAttributeSet.attribute_set_name$$"/>
         </actionGroup>
 
@@ -72,9 +71,9 @@
         <see userInput="$$createConfigProductAttribute.attribute_code$$" selector="{{AdminProductAttributeSetEditSection.groupTree}}" stepKey="seeAttribute"/>
 
         <!-- Click 'Save' -->
-        <actionGroup ref="SaveAttributeSetActionGroup" stepKey="saveAttribute"/>
+        <actionGroup ref="SaveAttributeSet" stepKey="saveAttribute"/>
 
-        <actionGroup ref="GoToAttributeSetByNameActionGroup" stepKey="backTohAttributeSet">
+        <actionGroup ref="goToAttributeSetByName" stepKey="backTohAttributeSet">
             <argument name="name" value="$$createAttributeSet.attribute_set_name$$"/>
         </actionGroup>
 
@@ -98,7 +97,7 @@
         <click selector="{{AdminProductGridActionSection.addProductBtn}}" stepKey="clickAddProduct"/>
         <waitForPageLoad stepKey="waitForNewProductPage"/>
 
-        <actionGroup ref="AdminProductPageSelectAttributeSetActionGroup" stepKey="selectAttribute">
+        <actionGroup ref="AdminProductPageSelectAttributeSet" stepKey="selectAttribute">
             <argument name="attributeSetName" value="$$createAttributeSet.attribute_set_name$$"/>
         </actionGroup>
 

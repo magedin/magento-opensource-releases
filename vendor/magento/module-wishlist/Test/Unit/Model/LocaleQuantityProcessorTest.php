@@ -3,17 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Model;
 
-use Magento\Framework\Filter\LocalizedToNormalized;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Wishlist\Model\LocaleQuantityProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Wishlist\Model\LocaleQuantityProcessor;
 
-class LocaleQuantityProcessorTest extends TestCase
+class LocaleQuantityProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var LocaleQuantityProcessor
@@ -21,20 +15,19 @@ class LocaleQuantityProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resolver;
 
     /**
-     * @var LocalizedToNormalized|MockObject
+     * @var \Magento\Framework\Filter\LocalizedToNormalized|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resolver = $this->getMockBuilder(ResolverInterface::class)
-            ->getMock();
-        $this->filter   = $this->getMockBuilder(LocalizedToNormalized::class)
+        $this->resolver = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)->getMock();
+        $this->filter   = $this->getMockBuilder(\Magento\Framework\Filter\LocalizedToNormalized::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->processor = new LocaleQuantityProcessor($this->resolver, $this->filter);

@@ -3,111 +3,96 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AdvancedSearch\Test\Unit\Block;
 
-use Magento\AdvancedSearch\Block\SearchData;
-use Magento\AdvancedSearch\Model\SuggestedQueriesInterface;
-use Magento\Framework\View\Element\Template\Context as TemplateContext;
-use Magento\Search\Model\QueryFactoryInterface;
-use Magento\Search\Model\QueryInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
-/**
- * @covers \Magento\AdvancedSearch\Block\SearchData
- */
-class SearchDataTest extends TestCase
+class SearchDataTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Testable Object
-     *
-     * @var SearchData
-     */
-    private $block;
+    /** @var  \Magento\Framework\View\Element\Template\Context|MockObject */
+    private $context;
 
     /**
-     * @var TemplateContext|MockObject
+     * @var \Magento\Search\Model\QueryFactoryInterface|MockObject
      */
-    private $contextMock;
+    private $queryFactory;
 
     /**
-     * @var QueryFactoryInterface|MockObject
+     * @var \Magento\Search\Model\Query|MockObject
      */
-    private $queryFactoryMock;
+    private $searchQuery;
 
     /**
-     * @var QueryInterface|MockObject
-     */
-    private $searchQueryMock;
-
-    /**
-     * @var SuggestedQueriesInterface|MockObject
+     * @var \Magento\AdvancedSearch\Model\SuggestedQueriesInterface|MockObject
      */
     private $dataProvider;
 
-    protected function setUp(): void
+    /**
+     * @var \Magento\AdvancedSearch\Block\SearchData
+     */
+    private $block;
+
+    protected function setUp()
     {
-        $this->dataProvider = $this->getMockBuilder(SuggestedQueriesInterface::class)
+        $this->dataProvider = $this->getMockBuilder(\Magento\AdvancedSearch\Model\SuggestedQueriesInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getItems', 'isResultsCountEnabled'])
             ->getMockForAbstractClass();
 
-        $this->searchQueryMock = $this->getMockBuilder(QueryInterface::class)
+        $this->searchQuery = $this->getMockBuilder(\Magento\Search\Model\QueryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getQueryText'])
             ->getMockForAbstractClass();
-        $this->queryFactoryMock = $this->getMockBuilder(QueryFactoryInterface::class)
+        $this->queryFactory = $this->getMockBuilder(\Magento\Search\Model\QueryFactoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMockForAbstractClass();
-        $this->queryFactoryMock->expects($this->once())
+        $this->queryFactory->expects($this->once())
             ->method('get')
-            ->willReturn($this->searchQueryMock);
-        $this->contextMock = $this->getMockBuilder(TemplateContext::class)
+            ->will($this->returnValue($this->searchQuery));
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->block = $this->getMockBuilder(SearchData::class)
-            ->setConstructorArgs(
-                [
-                    $this->contextMock,
-                    $this->dataProvider,
-                    $this->queryFactoryMock,
-                    'Test Title',
-                    [],
-                ]
-            )
+        $this->block = $this->getMockBuilder(\Magento\AdvancedSearch\Block\SearchData::class)->setConstructorArgs(
+            [
+                $this->context,
+                $this->dataProvider,
+                $this->queryFactory,
+                'Test Title',
+                [],
+            ]
+        )
             ->setMethods(['getUrl'])
             ->getMockForAbstractClass();
     }
 
-    public function testGetSuggestions(): void
+    public function testGetSuggestions()
     {
         $value = [1, 2, 3, 100500];
 
         $this->dataProvider->expects($this->once())
             ->method('getItems')
-            ->with($this->searchQueryMock)
-            ->willReturn($value);
+            ->with($this->searchQuery)
+            ->will($this->returnValue($value));
         $actualValue = $this->block->getItems();
         $this->assertEquals($value, $actualValue);
     }
 
-    public function testGetLink(): void
+    public function testGetLink()
     {
-        $searchQueryMock = 'Some test search query';
+        $searchQuery = 'Some test search query';
         $expectedResult = '?q=Some+test+search+query';
-        $actualResult = $this->block->getLink($searchQueryMock);
+        $actualResult = $this->block->getLink($searchQuery);
         $this->assertEquals($expectedResult, $actualResult);
     }
 
-    public function testIsShowResultsCount(): void
+    public function testIsShowResultsCount()
     {
         $value = 'qwertyasdfzxcv';
         $this->dataProvider->expects($this->once())
             ->method('isResultsCountEnabled')
-            ->willReturn($value);
+            ->will($this->returnValue($value));
         $this->assertEquals($value, $this->block->isShowResultsCount());
     }
 }

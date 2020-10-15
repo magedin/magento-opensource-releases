@@ -147,8 +147,7 @@ class CustomLayoutManager implements CustomLayoutManagerInterface
         }
 
         $layout->addPageLayoutHandles(
-            ['selectable' => $this->sanitizeIdentifier($page) .'_' .$layoutSelected->getLayoutFileId()],
-            'cms_page_view'
+            ['selectable' => $this->sanitizeIdentifier($page) .'_' .$layoutSelected->getLayoutFileId()]
         );
     }
 }

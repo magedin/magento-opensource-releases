@@ -4,23 +4,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Gallery;
 
-use Magento\Catalog\Model\Product\Gallery\MimeTypeExtensionMap;
-use PHPUnit\Framework\TestCase;
-
-class MimeTypeExtensionMapTest extends TestCase
+class MimeTypeExtensionMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MimeTypeExtensionMap
+     * @var \Magento\Catalog\Model\Product\Gallery\MimeTypeExtensionMap
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new MimeTypeExtensionMap();
+        $this->model = new \Magento\Catalog\Model\Product\Gallery\MimeTypeExtensionMap();
     }
 
     public function testGetMimeTypeExtension()

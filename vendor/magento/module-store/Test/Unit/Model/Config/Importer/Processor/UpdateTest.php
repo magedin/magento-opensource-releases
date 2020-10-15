@@ -3,26 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Importer\Processor;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\RuntimeException;
 use Magento\Store\Model\Config\Importer\DataDifferenceCalculator;
 use Magento\Store\Model\Config\Importer\Processor\Update;
 use Magento\Store\Model\Group;
 use Magento\Store\Model\GroupFactory;
-use Magento\Store\Model\ResourceModel\Group as GroupResource;
-use Magento\Store\Model\ResourceModel\Store as StoreResource;
-use Magento\Store\Model\ResourceModel\Website as WebsiteResource;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreFactory;
 use Magento\Store\Model\Website;
+use Magento\Store\Model\ResourceModel\Website as WebsiteResource;
 use Magento\Store\Model\WebsiteFactory;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\ResourceModel\Group as GroupResource;
+use Magento\Store\Model\ResourceModel\Store as StoreResource;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
+use Magento\Store\Model\Store;
+use Magento\Framework\Event\ManagerInterface;
 
 /**
  * Test for Update processor.
@@ -30,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  * @see Update
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class UpdateTest extends TestCase
+class UpdateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Update
@@ -95,7 +91,7 @@ class UpdateTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->dataDifferenceCalculatorMock = $this->getMockBuilder(DataDifferenceCalculator::class)
             ->disableOriginalConstructor()
@@ -295,10 +291,12 @@ class UpdateTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     * @expectedExceptionMessage Some exception
+     */
     public function testRunWithException()
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Some exception');
         $data = [
             ScopeInterface::SCOPE_GROUPS => [],
             ScopeInterface::SCOPE_STORES => []

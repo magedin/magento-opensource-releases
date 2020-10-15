@@ -19,7 +19,7 @@
         </annotations>
         <before>
             <magentoCLI command="config:set system/backup/functionality_enabled 1" stepKey="setEnableBackupToYes"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!--Create custom store view-->
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createNewStoreView">
                 <argument name="StoreGroup" value="_defaultStoreGroup"/>
@@ -28,7 +28,7 @@
         </before>
         <after>
             <magentoCLI command="config:set system/backup/functionality_enabled 0" stepKey="setEnableBackupToNo"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Delete custom store view and verify AssertStoreSuccessDeleteMessage And BackupMessage-->
@@ -37,20 +37,22 @@
         </actionGroup>
 
         <!--Verify deleted store view not present in grid and verify AssertStoreNotInGrid Message-->
-        <actionGroup ref="AssertStoreViewNotInGridActionGroup" stepKey="verifyDeletedStoreViewNotInGrid">
+        <actionGroup ref="AssertStoreViewNotInGrid" stepKey="verifyDeletedStoreViewNotInGrid">
             <argument name="storeViewName" value="{{storeViewData.name}}"/>
         </actionGroup>
 
         <!--Go to backup index page and verify AssertBackupInGrid-->
-        <actionGroup ref="AdminBackupIndexPageOpenActionGroup" stepKey="navigateToBackupPage"/>
+        <amOnPage url="{{BackupIndexPage.url}}" stepKey="goToBackupIndexPage"/>
+        <waitForPageLoad stepKey="waitForBackupIndexPageLoad"/>
         <see selector="{{AdminGridTableSection.backupNameColumn}}" userInput="{{WebSetupWizardBackup.name}}" stepKey="seeBackupInGrid"/>
         <!--Delete database backup-->
-        <actionGroup ref="AdminBackupDeleteActionGroup" stepKey="deleteDatabaseBackup">
+        <actionGroup ref="deleteBackup" stepKey="deleteDatabaseBackup">
             <argument name="backup" value="WebSetupWizardBackup"/>
         </actionGroup>
 
         <!--Go to storefront and verify AssertStoreNotOnFrontend-->
-        <actionGroup ref="StorefrontOpenHomePageActionGroup" stepKey="goToStorefrontPage"/>
+        <amOnPage url="{{StorefrontHomePage.url}}" stepKey="goToStorefrontPage"/>
+        <waitForPageLoad stepKey="waitForStorefrontHomePageLoad"/>
         <dontSee selector="{{StorefrontHeaderSection.storeViewList(storeViewData.name)}}" stepKey="dontSeeAssertStoreViewNameOnStorefront"/>
     </test>
 </tests>

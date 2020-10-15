@@ -43,7 +43,7 @@ class AttributeSearchWeightTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productAttributeRepository = $this->objectManager->get(ProductAttributeRepositoryInterface::class);
@@ -54,7 +54,7 @@ class AttributeSearchWeightTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->updateAttributesWeight($this->collectedAttributesWeight);
     }
@@ -62,6 +62,7 @@ class AttributeSearchWeightTest extends TestCase
     /**
      * Perform search by word and check founded product order in different cases.
      *
+     * @magentoConfigFixture default/catalog/search/engine mysql
      * @magentoDataFixture Magento/CatalogSearch/_files/products_for_sku_search_weight_score.php
      * @magentoDataFixture Magento/CatalogSearch/_files/full_reindex.php
      * @dataProvider attributeSearchWeightDataProvider
@@ -77,9 +78,6 @@ class AttributeSearchWeightTest extends TestCase
         array $attributeWeights,
         array $expectedProductNames
     ): void {
-        $this->markTestSkipped(
-            'MC-33824: Stabilize skipped test cases for Integration AttributeSearchWeightTest with Elasticsearch'
-        );
         $this->updateAttributesWeight($attributeWeights);
         $actualProductNames = $this->quickSearchByQuery->execute($searchQuery)->getColumnValues('name');
         $this->assertEquals($expectedProductNames, $actualProductNames, 'Products order is not as expected.');
@@ -93,57 +91,57 @@ class AttributeSearchWeightTest extends TestCase
     public function attributeSearchWeightDataProvider(): array
     {
         return [
-            'name_order_more_than_sku' => [
-                'Nintendo Wii',
-                [
-                    'sku' => 5,
-                    'name' => 6,
-                ],
-                [
-                    'Nintendo Wii',
-                    'Xbox',
-                ],
-            ],
-            'search_by_word_from_description' => [
-                'Xbox',
-                [
-                    'name' => 10,
-                    'test_searchable_attribute' => 9,
-                    'sku' => 2,
-                    'description' => 1,
-                ],
-                [
-                    'Nintendo Wii',
-                    'Xbox',
-                    'Console description',
-                    'Gamecube attribute',
-                ],
-            ],
-            'search_by_attribute_option' => [
-                'Xbox',
-                [
-                    'name' => 10,
-                    'description' => 9,
-                    'test_searchable_attribute' => 7,
-                    'sku' => 2,
-                ],
-                [
-                    'Nintendo Wii',
-                    'Xbox',
-                    'Console description',
-                    'Gamecube attribute',
-                ],
-            ],
             'sku_order_more_than_name' => [
-                'Nintendo Wii',
+                '1234-1234-1234-1234',
                 [
                     'sku' => 6,
                     'name' => 5,
                 ],
                 [
-                    'Xbox',
-                    'Nintendo Wii',
-                ]
+                    'Simple',
+                    '1234-1234-1234-1234',
+                ],
+            ],
+            'name_order_more_than_sku' => [
+                '1234-1234-1234-1234',
+                [
+                    'name' => 6,
+                    'sku' => 5,
+                ],
+                [
+                    '1234-1234-1234-1234',
+                    'Simple',
+                ],
+            ],
+            'search_by_word_from_description' => [
+                'Simple',
+                [
+                    'test_searchable_attribute' => 8,
+                    'sku' => 6,
+                    'name' => 5,
+                    'description' => 1,
+                ],
+                [
+                    'Product with attribute',
+                    '1234-1234-1234-1234',
+                    'Simple',
+                    'Product with description',
+                ],
+            ],
+            'search_by_attribute_option' => [
+                'Simple',
+                [
+                    'description' => 10,
+                    'test_searchable_attribute' => 8,
+                    'sku' => 6,
+                    'name' => 1,
+                ],
+                [
+                    'Product with description',
+                    'Product with attribute',
+                    '1234-1234-1234-1234',
+                    'Simple',
+                ],
             ],
         ];
     }

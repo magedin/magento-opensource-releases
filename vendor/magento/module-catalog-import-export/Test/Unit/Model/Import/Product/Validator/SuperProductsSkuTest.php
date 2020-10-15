@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product\Validator;
 
 use Magento\CatalogImportExport\Model\Import\Product\SkuProcessor;
 use Magento\CatalogImportExport\Model\Import\Product\Validator\SuperProductsSku;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Test for SuperProductsSku
  *
  * @see SuperProductsSku
  */
-class SuperProductsSkuTest extends TestCase
+class SuperProductsSkuTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SkuProcessor|Mock
@@ -29,7 +26,7 @@ class SuperProductsSkuTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->skuProcessorMock = $this->getMockBuilder(SkuProcessor::class)
             ->disableOriginalConstructor()

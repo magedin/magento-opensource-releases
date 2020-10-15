@@ -3,57 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GiftMessage\Test\Unit\Block\Cart\Item\Renderer\Actions;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
-use Magento\Checkout\Model\CompositeConfigProvider;
 use Magento\Framework\Json\Encoder;
 use Magento\GiftMessage\Block\Cart\Item\Renderer\Actions\GiftOptions;
 use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GiftOptionsTest extends TestCase
+class GiftOptionsTest extends \PHPUnit\Framework\TestCase
 {
     /** @var GiftOptions */
     protected $model;
 
-    /** @var Context|MockObject */
+    /** @var Context|\PHPUnit_Framework_MockObject_MockObject */
     protected $contextMock;
 
-    /** @var LayoutProcessorInterface|MockObject */
+    /** @var LayoutProcessorInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $layoutProcessorMock;
 
-    /** @var Encoder|MockObject */
+    /** @var Encoder|\PHPUnit_Framework_MockObject_MockObject */
     protected $jsonEncoderMock;
 
     /** @var array  */
     protected $jsLayout = ['root' => 'node'];
 
-    /**
-     * @var MockObject|CompositeConfigProvider
-     */
-    private $compositeConfigProvider;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Backend\Block\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->jsonEncoderMock = $this->getMockBuilder(Encoder::class)
+        $this->jsonEncoderMock = $this->getMockBuilder(\Magento\Framework\Json\Encoder::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->compositeConfigProvider = $this->getMockBuilder(CompositeConfigProvider::class)
+        $this->compositeConfigProvider = $this->getMockBuilder(\Magento\Checkout\Model\CompositeConfigProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->layoutProcessorMock = $this->getMockBuilder(
-            LayoutProcessorInterface::class
+            \Magento\Checkout\Block\Checkout\LayoutProcessorInterface::class
         )
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -69,9 +59,9 @@ class GiftOptionsTest extends TestCase
     public function testGetJsLayout()
     {
         /**
-         * @var Item|MockObject $itemMock
+         * @var Item|\PHPUnit_Framework_MockObject_MockObject $itemMock
          */
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 

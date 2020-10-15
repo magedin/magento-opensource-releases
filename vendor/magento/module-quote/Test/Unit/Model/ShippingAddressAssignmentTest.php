@@ -3,74 +3,63 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model;
 
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\Data\CartExtension;
-use Magento\Quote\Api\Data\CartExtensionFactory;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor;
-use Magento\Quote\Model\ShippingAddressAssignment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ShippingAddressAssignmentTest extends TestCase
+class ShippingAddressAssignmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ShippingAddressAssignment
+     * @var \Magento\Quote\Model\ShippingAddressAssignment
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAssignmentProcessorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $cartExtensionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $addressMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $extensionAttributeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAssignmentMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->cartExtensionFactoryMock = $this->createPartialMock(
-            CartExtensionFactory::class,
+            \Magento\Quote\Api\Data\CartExtensionFactory::class,
             ['create']
         );
         $this->shippingAssignmentProcessorMock = $this->createMock(
-            ShippingAssignmentProcessor::class
+            \Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor::class
         );
-        $this->quoteMock = $this->createMock(Quote::class);
-        $this->addressMock = $this->createMock(Address::class);
-        $this->extensionAttributeMock = $this->getMockBuilder(CartExtension::class)
-            ->addMethods(['setShippingAssignments'])
-            ->getMock();
+        $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $this->addressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
+        $this->extensionAttributeMock = $this->createPartialMock(
+            \Magento\Quote\Api\Data\CartExtension::class,
+            ['setShippingAssignments']
+        );
 
-        $this->shippingAssignmentMock = $this->getMockForAbstractClass(ShippingAssignmentInterface::class);
+        $this->shippingAssignmentMock = $this->createMock(\Magento\Quote\Api\Data\ShippingAssignmentInterface::class);
         //shipping assignment processing
         $this->quoteMock->expects($this->once())->method('getExtensionAttributes')->willReturn(null);
         $this->cartExtensionFactoryMock
@@ -87,7 +76,7 @@ class ShippingAddressAssignmentTest extends TestCase
             ->with([$this->shippingAssignmentMock])
             ->willReturnSelf();
         $this->quoteMock->expects($this->once())->method('setExtensionAttributes')->with($this->extensionAttributeMock);
-        $this->model = new ShippingAddressAssignment(
+        $this->model = new \Magento\Quote\Model\ShippingAddressAssignment(
             $this->cartExtensionFactoryMock,
             $this->shippingAssignmentProcessorMock
         );
@@ -96,7 +85,7 @@ class ShippingAddressAssignmentTest extends TestCase
     public function testSetAddressUseForShippingTrue()
     {
         $addressId = 1;
-        $addressMock = $this->getMockForAbstractClass(AddressInterface::class);
+        $addressMock = $this->createMock(\Magento\Quote\Api\Data\AddressInterface::class);
         $this->quoteMock->expects($this->once())->method('getShippingAddress')->willReturn($addressMock);
         $addressMock->expects($this->once())->method('getId')->willReturn($addressId);
         $this->addressMock->expects($this->once())->method('setSameAsBilling')->with(1);
@@ -107,7 +96,7 @@ class ShippingAddressAssignmentTest extends TestCase
 
     public function testSetAddressUseForShippingFalse()
     {
-        $addressMock = $this->getMockForAbstractClass(AddressInterface::class);
+        $addressMock = $this->createMock(\Magento\Quote\Api\Data\AddressInterface::class);
         $this->quoteMock->expects($this->once())->method('getShippingAddress')->willReturn($addressMock);
         $addressMock->expects($this->once())->method('setSameAsBilling')->with(0)->willReturnSelf();
         $this->quoteMock->expects($this->once())->method('setShippingAddress')->with($addressMock);

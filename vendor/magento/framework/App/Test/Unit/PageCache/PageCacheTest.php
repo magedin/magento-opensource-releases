@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\PageCache;
 
-use Magento\Framework\App\Cache\Frontend\Pool;
-use Magento\Framework\App\PageCache\Cache;
-use PHPUnit\Framework\TestCase;
-
-class PageCacheTest extends TestCase
+class PageCacheTest extends \PHPUnit\Framework\TestCase
 {
     public function testIdentifierProperty()
     {
         $identifier = 'page_cache';
 
-        $poolMock = $this->getMockBuilder(Pool::class)
+        $poolMock = $this->getMockBuilder(\Magento\Framework\App\Cache\Frontend\Pool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $poolMock->expects(
@@ -25,11 +19,11 @@ class PageCacheTest extends TestCase
         )->method(
             'get'
         )->with(
-            $identifier
-        )->willReturnArgument(
-            0
+            $this->equalTo($identifier)
+        )->will(
+            $this->returnArgument(0)
         );
-        $model = new Cache($poolMock);
-        $this->assertInstanceOf(Cache::class, $model);
+        $model = new \Magento\Framework\App\PageCache\Cache($poolMock);
+        $this->assertInstanceOf(\Magento\Framework\App\PageCache\Cache::class, $model);
     }
 }

@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Topology\Config\QueueConfigItem;
 
+use Magento\Framework\MessageQueue\Topology\Config\Data;
 use Magento\Framework\Communication\ConfigInterface as CommunicationConfig;
 use Magento\Framework\MessageQueue\Rpc\ResponseQueueNameBuilder;
-use Magento\Framework\MessageQueue\Topology\Config\Data;
 use Magento\Framework\MessageQueue\Topology\Config\QueueConfigItem\DataMapper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataMapperTest extends TestCase
+class DataMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $configData;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $communicationConfig;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $queueNameBuilder;
 
@@ -36,7 +32,7 @@ class DataMapperTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configData = $this->createMock(Data::class);
         $this->communicationConfig = $this->createMock(CommunicationConfig::class);

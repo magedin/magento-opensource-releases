@@ -3,38 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model;
 
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\State;
 use Magento\Framework\Config\ConfigOptionsListConstants;
+use Magento\Framework\App\State;
 use Magento\Framework\Config\Data\ConfigData;
 use Magento\Framework\Config\Data\ConfigDataFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Setup\Model\ConfigGenerator;
 use Magento\Setup\Model\ConfigOptionsList\DriverOptions;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Setup\Model\ConfigGenerator class.
  */
-class ConfigGeneratorTest extends TestCase
+class ConfigGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeploymentConfig|MockObject
+     * @var DeploymentConfig | \PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfigMock;
 
     /**
-     * @var ConfigGenerator|MockObject
+     * @var ConfigGenerator | \PHPUnit_Framework_MockObject_MockObject
      */
     private $model;
 
     /**
-     * @var ConfigData|MockObject
+     * @var ConfigData|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configDataMock;
 
@@ -43,9 +38,9 @@ class ConfigGeneratorTest extends TestCase
      */
     private $driverOptionsMock;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()

@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\Rss;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\SalesRule\Model\ResourceModel\Rule\Collection;
-use Magento\SalesRule\Model\ResourceModel\Rule\CollectionFactory;
-use Magento\SalesRule\Model\Rss\Discounts;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DiscountsTest extends TestCase
+/**
+ * Class DiscountsTest
+ * @package Magento\SalesRule\Model\Rss
+ */
+class DiscountsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Discounts
+     * @var \Magento\SalesRule\Model\Rss\Discounts
      */
     protected $discounts;
 
@@ -27,20 +24,20 @@ class DiscountsTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\SalesRule\Model\ResourceModel\Rule\CollectionFactory::class,
             ['create']
         );
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->discounts = $this->objectManagerHelper->getObject(
-            Discounts::class,
+            \Magento\SalesRule\Model\Rss\Discounts::class,
             [
                 'collectionFactory' => $this->collectionFactory
             ]
@@ -49,17 +46,17 @@ class DiscountsTest extends TestCase
 
     public function testGetDiscountCollection()
     {
-        $ruleCollection = $this->createPartialMock(Collection::class, [
-            'addWebsiteGroupDateFilter',
-            'addFieldToFilter',
-            'setOrder',
-            'load'
-        ]);
-        $this->collectionFactory->expects($this->once())->method('create')->willReturn($ruleCollection);
-        $ruleCollection->expects($this->once())->method('addWebsiteGroupDateFilter')->willReturnSelf();
-        $ruleCollection->expects($this->once())->method('addFieldToFilter')->willReturnSelf();
-        $ruleCollection->expects($this->once())->method('setOrder')->willReturnSelf();
-        $ruleCollection->expects($this->once())->method('load')->willReturnSelf();
+        $ruleCollection = $this->createPartialMock(\Magento\SalesRule\Model\ResourceModel\Rule\Collection::class, [
+                'addWebsiteGroupDateFilter',
+                'addFieldToFilter',
+                'setOrder',
+                'load'
+            ]);
+        $this->collectionFactory->expects($this->once())->method('create')->will($this->returnValue($ruleCollection));
+        $ruleCollection->expects($this->once())->method('addWebsiteGroupDateFilter')->will($this->returnSelf());
+        $ruleCollection->expects($this->once())->method('addFieldToFilter')->will($this->returnSelf());
+        $ruleCollection->expects($this->once())->method('setOrder')->will($this->returnSelf());
+        $ruleCollection->expects($this->once())->method('load')->will($this->returnSelf());
         $this->assertEquals($ruleCollection, $this->discounts->getDiscountCollection(1, 1));
     }
 }

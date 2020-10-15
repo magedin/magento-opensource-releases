@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Convert\Test\Unit;
 
-use Magento\Framework\Convert\Xml;
-use PHPUnit\Framework\TestCase;
-
-class XmlTest extends TestCase
+class XmlTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Xml
+     * @var \Magento\Framework\Convert\Xml
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new Xml();
+        $this->_model = new \Magento\Framework\Convert\Xml();
     }
 
     public function testXmlToAssoc()

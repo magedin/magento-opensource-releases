@@ -16,16 +16,16 @@ class ColumnSetTest extends \PHPUnit\Framework\TestCase
     protected $_block;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_layoutMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_columnMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -38,8 +38,8 @@ class ColumnSetTest extends \PHPUnit\Framework\TestCase
             $this->any()
         )->method(
             'getChildBlocks'
-        )->willReturn(
-            [$this->_columnMock]
+        )->will(
+            $this->returnValue([$this->_columnMock])
         );
 
         $context = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(

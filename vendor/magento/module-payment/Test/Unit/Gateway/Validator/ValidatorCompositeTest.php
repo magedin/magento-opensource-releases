@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Validator;
 
-use Magento\Framework\ObjectManager\TMap;
-use Magento\Framework\ObjectManager\TMapFactory;
-use Magento\Payment\Gateway\Validator\ResultInterface;
-use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Payment\Gateway\Validator\ValidatorComposite;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
-use PHPUnit\Framework\TestCase;
 
-class ValidatorCompositeTest extends TestCase
+class ValidatorCompositeTest extends \PHPUnit\Framework\TestCase
 {
     public function testValidate()
     {
@@ -24,11 +17,11 @@ class ValidatorCompositeTest extends TestCase
             ->getMockForAbstractClass();
         $validator2 = $this->getMockBuilder(ValidatorInterface::class)
             ->getMockForAbstractClass();
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -48,12 +41,12 @@ class ValidatorCompositeTest extends TestCase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$validator1, $validator2]));
 
-        $resultSuccess = $this->getMockBuilder(ResultInterface::class)
+        $resultSuccess = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterface::class)
             ->getMockForAbstractClass();
         $resultSuccess->expects(static::once())
             ->method('isValid')
             ->willReturn(true);
-        $resultFail = $this->getMockBuilder(ResultInterface::class)
+        $resultFail = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterface::class)
             ->getMockForAbstractClass();
         $resultFail->expects(static::once())
             ->method('isValid')
@@ -74,9 +67,9 @@ class ValidatorCompositeTest extends TestCase
             ->with($validationSubject)
             ->willReturn($resultFail);
 
-        $compositeResult = $this->getMockBuilder(ResultInterface::class)
+        $compositeResult = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterface::class)
             ->getMockForAbstractClass();
-        $resultFactory = $this->getMockBuilder(ResultInterfaceFactory::class)
+        $resultFactory = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -109,11 +102,11 @@ class ValidatorCompositeTest extends TestCase
             ->getMockForAbstractClass();
         $validator2 = $this->getMockBuilder(ValidatorInterface::class)
             ->getMockForAbstractClass();
-        $tMapFactory = $this->getMockBuilder(TMapFactory::class)
+        $tMapFactory = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMapFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $tMap = $this->getMockBuilder(TMap::class)
+        $tMap = $this->getMockBuilder(\Magento\Framework\ObjectManager\TMap::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -133,7 +126,7 @@ class ValidatorCompositeTest extends TestCase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$validator1, $validator2]));
 
-        $resultFail = $this->getMockBuilder(ResultInterface::class)
+        $resultFail = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterface::class)
             ->getMockForAbstractClass();
         $resultFail->expects($this->once())
             ->method('isValid')
@@ -154,9 +147,9 @@ class ValidatorCompositeTest extends TestCase
         $validator2->expects($this->never())
             ->method('validate');
 
-        $compositeResult = $this->getMockBuilder(ResultInterface::class)
+        $compositeResult = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterface::class)
             ->getMockForAbstractClass();
-        $resultFactory = $this->getMockBuilder(ResultInterfaceFactory::class)
+        $resultFactory = $this->getMockBuilder(\Magento\Payment\Gateway\Validator\ResultInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();

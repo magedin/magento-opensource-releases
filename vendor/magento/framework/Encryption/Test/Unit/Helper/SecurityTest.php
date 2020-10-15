@@ -5,7 +5,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test case for \Magento\Framework\Encryption\Security
@@ -13,9 +12,8 @@ declare(strict_types=1);
 namespace Magento\Framework\Encryption\Test\Unit\Helper;
 
 use Magento\Framework\Encryption\Helper\Security;
-use PHPUnit\Framework\TestCase;
 
-class SecurityTest extends TestCase
+class SecurityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Security

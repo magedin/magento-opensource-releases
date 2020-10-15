@@ -31,7 +31,7 @@ class IfDirectiveTest extends TestCase
      */
     private $filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = ObjectManager::getInstance();
         $this->variableResolver = $objectManager->get(StrictResolver::class);

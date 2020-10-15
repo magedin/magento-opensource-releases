@@ -3,46 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Block\Widget\Page;
 
-use Magento\Cms\Block\Widget\Page\Link;
-use Magento\Cms\Helper\Page;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Link
+     * @var \Magento\Cms\Block\Widget\Page\Link
      */
     protected $linkElement;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Page|MockObject
+     * @var \Magento\Cms\Helper\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mockCmsPage;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Page|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mockResourcePage;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->mockCmsPage = $this->createMock(Page::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->mockCmsPage = $this->createMock(\Magento\Cms\Helper\Page::class);
         $this->mockResourcePage = $this->createMock(\Magento\Cms\Model\ResourceModel\Page::class);
 
         $this->linkElement = $this->objectManager->getObject(
-            Link::class,
+            \Magento\Cms\Block\Widget\Page\Link::class,
             [
                 'cmsPage' => $this->mockCmsPage,
                 'resourcePage' => $this->mockResourcePage,
@@ -50,7 +42,7 @@ class LinkTest extends TestCase
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->linkElement = null;
     }

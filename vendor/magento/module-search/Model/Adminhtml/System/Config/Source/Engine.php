@@ -21,6 +21,8 @@ class Engine implements \Magento\Framework\Option\ArrayInterface
     private $engines;
 
     /**
+     * Construct
+     *
      * @param array $engines
      */
     public function __construct(
@@ -30,11 +32,11 @@ class Engine implements \Magento\Framework\Option\ArrayInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function toOptionArray()
     {
-        $options = [['value' => null, 'label' => __('--Please Select--')]];
+        $options = [];
         foreach ($this->engines as $key => $label) {
             $options[] = ['value' => $key, 'label' => $label];
         }

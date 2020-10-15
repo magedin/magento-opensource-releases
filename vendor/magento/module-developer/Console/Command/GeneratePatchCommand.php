@@ -7,12 +7,13 @@ declare(strict_types=1);
 
 namespace Magento\Developer\Console\Command;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
-use Magento\Framework\Filesystem\DirectoryList;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,20 +58,20 @@ class GeneratePatchCommand extends Command
      * GeneratePatchCommand constructor.
      *
      * @param ComponentRegistrar $componentRegistrar
-     * @param DirectoryList $directoryList
-     * @param ReadFactory $readFactory
-     * @param WriteFactory $writeFactory
+     * @param DirectoryList|null $directoryList
+     * @param ReadFactory|null $readFactory
+     * @param WriteFactory|null $writeFactory
      */
     public function __construct(
         ComponentRegistrar $componentRegistrar,
-        DirectoryList $directoryList,
-        ReadFactory $readFactory,
-        WriteFactory $writeFactory
+        DirectoryList $directoryList = null,
+        ReadFactory $readFactory = null,
+        WriteFactory $writeFactory = null
     ) {
         $this->componentRegistrar = $componentRegistrar;
-        $this->directoryList = $directoryList;
-        $this->readFactory = $readFactory;
-        $this->writeFactory = $writeFactory;
+        $this->directoryList = $directoryList ?: ObjectManager::getInstance()->get(DirectoryList::class);
+        $this->readFactory = $readFactory ?: ObjectManager::getInstance()->get(ReadFactory::class);
+        $this->writeFactory = $writeFactory ?: ObjectManager::getInstance()->get(WriteFactory::class);
 
         parent::__construct();
     }
@@ -119,7 +120,6 @@ class GeneratePatchCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int
      * @throws FileSystemException
      */
@@ -194,7 +194,8 @@ BOF;
     private function getPatchTemplate(): string
     {
         $read = $this->readFactory->create(__DIR__ . '/');
-        return $read->readFile('patch_template.php.dist');
+        $content = $read->readFile('patch_template.php.dist');
+        return $content;
     }
 
     /**
@@ -206,6 +207,7 @@ BOF;
     private function getRevertMethodTemplate(): string
     {
         $read = $this->readFactory->create(__DIR__ . '/');
-        return $read->readFile('template_revert_function.php.dist');
+        $content = $read->readFile('template_revert_function.php.dist');
+        return $content;
     }
 }

@@ -21,7 +21,7 @@
 
         <before>
             <actionGroup ref="AdminCreateApiConfigurableProductActionGroup" stepKey="createConfigurableProduct"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
 
         <after>
@@ -31,16 +31,14 @@
             <deleteData createDataKey="createConfigChildProduct2CreateConfigurableProduct" stepKey="deleteConfigChildProduct2"/>
             <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="navigateToProductIndex"/>
             <actionGroup ref="AdminClearFiltersActionGroup" stepKey="clearProductFilters"/>
-            <actionGroup ref="DeleteProductActionGroup" stepKey="deleteProduct1">
-                <argument name="productName" value="$$createConfigProductCreateConfigurableProduct.name$$"/>
+            <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteProduct1">
+                <argument name="sku" value="$$createConfigProductAttributeCreateConfigurableProduct.sku$$"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open edit product page-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="goToProductEditPage">
-            <argument name="productId" value="$$createConfigProductCreateConfigurableProduct.id$$"/>
-        </actionGroup>
+        <amOnPage url="{{AdminProductEditPage.url($$createConfigProductCreateConfigurableProduct.id$$)}}" stepKey="goToProductEditPage"/>
 
         <!--Open edit configuration wizard-->
         <click selector="{{AdminProductFormConfigurationsSection.createConfigurations}}" stepKey="clickEditConfigurations"/>
@@ -69,17 +67,17 @@
                       selector="{{AdminCreateProductConfigurationsPanel.selectImagesButton}}" stepKey="selectAttributeOption"/>
 
         <!-- Add images to configurable product attribute options -->
-        <actionGroup ref="AddUniqueImageToConfigurableProductOptionActionGroup" stepKey="addImageToConfigurableProductOptionOne">
+        <actionGroup ref="addUniqueImageToConfigurableProductOption" stepKey="addImageToConfigurableProductOptionOne">
             <argument name="image" value="ImageUpload"/>
             <argument name="frontend_label" value="$$createConfigProductAttributeCreateConfigurableProduct.default_frontend_label$$"/>
             <argument name="label" value="$$getConfigAttributeOption1CreateConfigurableProduct.label$$"/>
         </actionGroup>
-        <actionGroup ref="AddUniqueImageToConfigurableProductOptionActionGroup" stepKey="addImageToConfigurableProductOptionTwo">
+        <actionGroup ref="addUniqueImageToConfigurableProductOption" stepKey="addImageToConfigurableProductOptionTwo">
             <argument name="image" value="ImageUpload_1"/>
             <argument name="frontend_label" value="$$createConfigProductAttributeCreateConfigurableProduct.default_frontend_label$$"/>
             <argument name="label" value="$$getConfigAttributeOption2CreateConfigurableProduct.label$$"/>
         </actionGroup>
-        <actionGroup ref="AddUniqueImageToConfigurableProductOptionActionGroup" stepKey="addImageToConfigurableProductOptionThree">
+        <actionGroup ref="addUniqueImageToConfigurableProductOption" stepKey="addImageToConfigurableProductOptionThree">
             <argument name="image" value="ImageUpload3"/>
             <argument name="frontend_label" value="$$createConfigProductAttributeCreateConfigurableProduct.default_frontend_label$$"/>
             <argument name="label" value="{{colorDefaultProductAttribute1.name}}"/>
@@ -106,7 +104,7 @@
         <click selector="{{ConfigurableProductSection.generateConfigure}}" stepKey="clickGenerateConfigure"/>
         <waitForPageLoad stepKey="waitForProductPageLoad"/>
 
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProduct"/>
 
         <!--Go to frontend and check image and price-->
         <amOnPage url="{{StorefrontProductPage.url($$createConfigProductCreateConfigurableProduct.custom_attributes[url_key]$$)}}" stepKey="goToProductPage"/>

@@ -32,7 +32,7 @@ class RestrictedCodeTest extends \PHPUnit\Framework\TestCase
      */
     private $componentRegistrar;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->componentRegistrar = new ComponentRegistrar();
     }
@@ -42,7 +42,7 @@ class RestrictedCodeTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         self::_loadData(self::$_classes, 'restricted_classes*.php');
     }

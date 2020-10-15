@@ -7,13 +7,15 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Filter;
 
-use Magento\Catalog\Model\Product\Filter\DateTime;
 use Magento\Framework\Locale\Resolver;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\Stdlib\DateTime\Timezone;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Test datetime filter
+ */
 class DateTimeTest extends TestCase
 {
     /**
@@ -21,14 +23,14 @@ class DateTimeTest extends TestCase
      */
     private $locale;
     /**
-     * @var DateTime
+     * @var \Magento\Catalog\Model\Product\Filter\DateTime
      */
     private $model;
 
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $objectManager = new ObjectManager($this);
@@ -50,7 +52,7 @@ class DateTimeTest extends TestCase
             ['localeDate' => $timezone]
         );
         $this->model = $objectManager->getObject(
-            DateTime::class,
+            \Magento\Catalog\Model\Product\Filter\DateTime::class,
             [
                 'stdlibDateTimeFilter' => $stdlibDateTimeFilter
             ]

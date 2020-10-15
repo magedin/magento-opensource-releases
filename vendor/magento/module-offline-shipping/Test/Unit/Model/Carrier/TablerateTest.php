@@ -3,108 +3,94 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\OfflineShipping\Test\Unit\Model\Carrier;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflineShipping\Model\Carrier\Tablerate;
 use Magento\OfflineShipping\Model\ResourceModel\Carrier\TablerateFactory;
-use Magento\Quote\Model\Quote\Address\RateRequest;
-use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
 use Magento\Quote\Model\Quote\Address\RateResult\Method;
-use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
-use Magento\Sales\Model\Order\Item;
 use Magento\Shipping\Model\Rate\Result;
-use Magento\Shipping\Model\Rate\ResultFactory;
-use PHPUnit\Framework\Constraint\Callback;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TablerateTest extends TestCase
+class TablerateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Tablerate
+     * @var \Magento\OfflineShipping\Model\Carrier\Tablerate
      */
     private $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var ErrorFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $errorFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Shipping\Model\Rate\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var MethodFactory|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $methodFactoryMock;
 
     /**
-     * @var TablerateFactory|MockObject
+     * @var TablerateFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $tablerateFactoryMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['create', 'isSetFlag', 'getValue'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->errorFactoryMock = $this
-            ->getMockBuilder(ErrorFactory::class)
+            ->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Shipping\Model\Rate\ResultFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->methodFactoryMock = $this
-            ->getMockBuilder(MethodFactory::class)
+            ->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateResult\MethodFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->tablerateFactoryMock = $this
-            ->getMockBuilder(TablerateFactory::class)
+            ->getMockBuilder(\Magento\OfflineShipping\Model\ResourceModel\Carrier\TablerateFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create', 'getRate'])
             ->getMock();
 
-        $this->helper = new ObjectManager($this);
+        $this->helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $this->helper->getObject(
-            Tablerate::class,
+            \Magento\OfflineShipping\Model\Carrier\Tablerate::class,
             [
                 'scopeConfig' => $this->scopeConfigMock,
                 'rateErrorFactory' => $this->errorFactoryMock,
@@ -128,12 +114,12 @@ class TablerateTest extends TestCase
             'cost' => 2
         ];
 
-        $request = $this->getMockBuilder(RateRequest::class)
+        $request = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address\RateRequest::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAllItems', 'getPackageQty', 'getFreeShipping'])
             ->getMock();
 
-        $item = $this->getMockBuilder(Item::class)
+        $item = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -149,12 +135,12 @@ class TablerateTest extends TestCase
             )
             ->getMock();
 
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['isVirtual'])
             ->getMock();
 
-        $tablerate = $this->getMockBuilder(Tablerate::class)
+        $tablerate = $this->getMockBuilder(\Magento\OfflineShipping\Model\Carrier\Tablerate::class)
             ->disableOriginalConstructor()
             ->setMethods(['getRate'])
             ->getMock();
@@ -208,7 +194,7 @@ class TablerateTest extends TestCase
      * Captures the argument and saves it in the given variable
      *
      * @param $captureVar
-     * @return Callback
+     * @return \PHPUnit\Framework\Constraint\Callback
      */
     private function captureArg(&$captureVar)
     {

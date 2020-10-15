@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Unit Test for \Magento\Framework\Validator\Config
  *
@@ -7,53 +7,39 @@
  */
 namespace Magento\Framework\Validator\Test\Unit;
 
-use Magento\Framework\App\Arguments\ValidationState;
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Config\DomFactory;
-use Magento\Framework\Config\ValidationStateInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\ObjectManager\Factory\Dynamic\Developer;
-use Magento\Framework\ObjectManager\Relations\Runtime;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Validator\Builder;
-use Magento\Framework\Validator\Config;
-use Magento\Framework\Validator\Constraint\Option;
-use Magento\Framework\Validator\Constraint\Option\Callback;
-use Magento\Framework\Validator\Test\Unit\Test\NotEmpty;
-use Magento\Framework\Validator\UniversalFactory;
-use PHPUnit\Framework\TestCase;
-
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Framework\Validator\Config
      */
     protected $_config;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectManager;
 
-    /** @var UrnResolver */
+    /** @var \Magento\Framework\Config\Dom\UrnResolver */
     protected $urnResolver;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
         }
-        $this->_objectManager = new ObjectManager($this);
-        $this->urnResolver = new UrnResolver();
+        $this->_objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->urnResolver = new \Magento\Framework\Config\Dom\UrnResolver();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage There must be at least one configuration file specified.
+     */
     public function testConstructException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('There must be at least one configuration file specified.');
         $this->_initConfig([]);
     }
 
@@ -72,15 +58,15 @@ class ConfigTest extends TestCase
             $configFiles[$path] = file_get_contents($path);
         }
         $config = new \Magento\Framework\ObjectManager\Config\Config(
-            new Runtime()
+            new \Magento\Framework\ObjectManager\Relations\Runtime()
         );
-        $factory = new Developer($config);
+        $factory = new \Magento\Framework\ObjectManager\Factory\Dynamic\Developer($config);
         $appObjectManager = new \Magento\Framework\ObjectManager\ObjectManager($factory, $config);
         $factory->setObjectManager($appObjectManager);
-        /** @var UniversalFactory $universalFactory */
-        $universalFactory = $appObjectManager->get(UniversalFactory::class);
-        /** @var UrnResolver $urnResolverMock */
-        $urnResolverMock = $this->createMock(UrnResolver::class);
+        /** @var \Magento\Framework\Validator\UniversalFactory $universalFactory */
+        $universalFactory = $appObjectManager->get(\Magento\Framework\Validator\UniversalFactory::class);
+        /** @var \Magento\Framework\Config\Dom\UrnResolver $urnResolverMock */
+        $urnResolverMock = $this->createMock(\Magento\Framework\Config\Dom\UrnResolver::class);
         $urnResolverMock->expects($this->any())
             ->method('getRealPath')
             ->with('urn:magento:framework:Validator/etc/validation.xsd')
@@ -88,9 +74,10 @@ class ConfigTest extends TestCase
         $appObjectManager->configure(
             [
                 'preferences' => [
-                    ValidationStateInterface::class => ValidationState::class,
+                    \Magento\Framework\Config\ValidationStateInterface::class =>
+                        \Magento\Framework\App\Arguments\ValidationState::class,
                 ],
-                ValidationState::class => [
+                \Magento\Framework\App\Arguments\ValidationState::class => [
                     'arguments' => [
                         'appMode' => 'developer',
                     ]
@@ -98,28 +85,32 @@ class ConfigTest extends TestCase
             ]
         );
         $this->_config = $this->_objectManager->getObject(
-            Config::class,
+            \Magento\Framework\Validator\Config::class,
             [
                 'configFiles' => $configFiles,
                 'builderFactory' => $universalFactory,
-                'domFactory' => new DomFactory($appObjectManager),
+                'domFactory' => new \Magento\Framework\Config\DomFactory($appObjectManager),
                 'urnResolver' => $urnResolverMock
             ]
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unknown validation entity "invalid_entity"
+     */
     public function testCreateValidatorInvalidEntityName()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unknown validation entity "invalid_entity"');
         $this->_initConfig();
         $this->_config->createValidatorBuilder('invalid_entity', null);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unknown validation group "invalid_group" in entity "test_entity_a"
+     */
     public function testCreateValidatorInvalidGroupName()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unknown validation group "invalid_group" in entity "test_entity_a"');
         $this->_initConfig();
         $this->_config->createValidatorBuilder('test_entity_a', 'invalid_group');
     }
@@ -134,18 +125,22 @@ class ConfigTest extends TestCase
         $this->_config->createValidator('test_entity', 'test_group');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Builder class "UnknownBuilderClass" was not found
+     */
     public function testGetValidatorBuilderClassNotFound()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Builder class "UnknownBuilderClass" was not found');
         $this->_initConfig([__DIR__ . '/_files/validation/negative/invalid_builder_class.xml']);
         $this->_config->createValidatorBuilder('catalog_product', 'create');
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Builder "stdClass" must extend \Magento\Framework\Validator\Builder
+     */
     public function testGetValidatorBuilderInstanceInvalid()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Builder "stdClass" must extend \Magento\Framework\Validator\Builder');
         $this->_initConfig([__DIR__ . '/_files/validation/negative/invalid_builder_instance.xml']);
         $this->_config->createValidatorBuilder('catalog_product', 'create');
     }
@@ -157,7 +152,7 @@ class ConfigTest extends TestCase
     {
         $this->_initConfig();
         $builder = $this->_config->createValidatorBuilder('test_entity_a', 'check_alnum');
-        $this->assertInstanceOf(Builder::class, $builder);
+        $this->assertInstanceOf(\Magento\Framework\Validator\Builder::class, $builder);
     }
 
     /**
@@ -190,13 +185,13 @@ class ConfigTest extends TestCase
         // Case 1. Pass check alnum and int properties are not empty and have valid value
         $entityName = 'test_entity_a';
         $groupName = 'check_alnum_and_int_not_empty_and_have_valid_value';
-        $value = new DataObject(['int' => 1, 'alnum' => 'abc123']);
+        $value = new \Magento\Framework\DataObject(['int' => 1, 'alnum' => 'abc123']);
         $expectedResult = true;
         $expectedMessages = [];
         $result[] = [$entityName, $groupName, $value, $expectedResult, $expectedMessages];
 
         // Case 2. Fail check alnum is not empty
-        $value = new DataObject(['int' => 'abc123', 'alnum' => null]);
+        $value = new \Magento\Framework\DataObject(['int' => 'abc123', 'alnum' => null]);
         $expectedResult = false;
         $expectedMessages = [
             'alnum' => [
@@ -209,13 +204,13 @@ class ConfigTest extends TestCase
 
         // Case 3. Pass check alnum has valid value
         $groupName = 'check_alnum';
-        $value = new DataObject(['int' => 'abc123', 'alnum' => 'abc123']);
+        $value = new \Magento\Framework\DataObject(['int' => 'abc123', 'alnum' => 'abc123']);
         $expectedResult = true;
         $expectedMessages = [];
         $result[] = [$entityName, $groupName, $value, $expectedResult, $expectedMessages];
 
         // Case 4. Fail check alnum has valid value
-        $value = new DataObject(['int' => 'abc123', 'alnum' => '[abc123]']);
+        $value = new \Magento\Framework\DataObject(['int' => 'abc123', 'alnum' => '[abc123]']);
         $expectedResult = false;
         $expectedMessages = [
             'alnum' => ['notAlnum' => '\'[abc123]\' contains characters which are non alphabetic and no digits'],
@@ -230,20 +225,16 @@ class ConfigTest extends TestCase
      */
     public function testBuilderConfiguration()
     {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-
-        $this->getMockBuilder(Builder::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->getMockBuilder(\Magento\Framework\Validator\Builder::class)->disableOriginalConstructor()->getMock();
 
         $this->_initConfig([__DIR__ . '/_files/validation/positive/builder/validation.xml']);
         $builder = $this->_config->createValidatorBuilder('test_entity_a', 'check_builder');
-        $this->assertInstanceOf(Builder::class, $builder);
+        $this->assertInstanceOf(\Magento\Framework\Validator\Builder::class, $builder);
 
         $expected = [
             [
                 'alias' => '',
-                'class' => NotEmpty::class,
+                'class' => \Magento\Framework\Validator\Test\Unit\Test\NotEmpty::class,
                 'options' => null,
                 'property' => 'int',
                 'type' => 'property',
@@ -253,18 +244,18 @@ class ConfigTest extends TestCase
                 'class' => 'Validator_Stub',
                 'options' => [
                     'arguments' => [
-                        new Option('test_string_argument'),
-                        new Option(
+                        new \Magento\Framework\Validator\Constraint\Option('test_string_argument'),
+                        new \Magento\Framework\Validator\Constraint\Option(
                             ['option1' => 'value1', 'option2' => 'value2']
                         ),
-                        new Callback(
+                        new \Magento\Framework\Validator\Constraint\Option\Callback(
                             [\Magento\Framework\Validator\Test\Unit\Test\Callback::class, 'getId'],
                             null,
                             true
                         ),
                     ],
                     'callback' => [
-                        new Callback(
+                        new \Magento\Framework\Validator\Constraint\Option\Callback(
                             [\Magento\Framework\Validator\Test\Unit\Test\Callback::class, 'configureValidator'],
                             null,
                             true
@@ -274,15 +265,15 @@ class ConfigTest extends TestCase
                         'setOptionThree' => [
                             'method' => 'setOptionThree',
                             'arguments' => [
-                                new Option(
+                                new \Magento\Framework\Validator\Constraint\Option(
                                     ['argOption' => 'argOptionValue']
                                 ),
-                                new Callback(
+                                new \Magento\Framework\Validator\Constraint\Option\Callback(
                                     [\Magento\Framework\Validator\Test\Unit\Test\Callback::class, 'getId'],
                                     null,
                                     true
                                 ),
-                                new Option('10'),
+                                new \Magento\Framework\Validator\Constraint\Option('10'),
                             ],
                         ],
                         'enableOptionFour' => ['method' => 'enableOptionFour'],
@@ -299,12 +290,12 @@ class ConfigTest extends TestCase
      * Check XSD schema validates invalid config files
      *
      * @dataProvider getInvalidXmlFiles
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      *
      * @param array|string $configFile
      */
     public function testValidateInvalidConfigFiles($configFile)
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
         $this->_initConfig((array)$configFile);
     }
 

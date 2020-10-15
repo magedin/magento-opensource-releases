@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
-use Magento\Indexer\Console\Command\IndexerReindexCommand;
 use Magento\Setup\Fixtures\FixtureModel;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class FixtureModelTest extends TestCase
+class FixtureModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FixtureModel
+     * @var \Magento\Setup\Fixtures\FixtureModel
      */
     private $model;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $reindexCommandMock = $this->createMock(IndexerReindexCommand::class);
+        $reindexCommandMock = $this->createMock(\Magento\Indexer\Console\Command\IndexerReindexCommand::class);
         $this->model = new FixtureModel($reindexCommandMock);
     }
 
     public function testReindex()
     {
-        $outputMock = $this->getMockForAbstractClass(OutputInterface::class);
+        $outputMock = $this->createMock(\Symfony\Component\Console\Output\OutputInterface::class);
         $this->model->reindex($outputMock);
     }
 }

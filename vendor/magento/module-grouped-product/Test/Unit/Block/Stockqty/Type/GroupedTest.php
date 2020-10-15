@@ -3,40 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Block\Stockqty\Type;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GroupedProduct\Block\Stockqty\Type\Grouped;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Block\Stockqty\Type\Grouped
      */
     protected $block;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->registry = $this->createMock(Registry::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
         $this->block = $objectManager->getObject(
-            Grouped::class,
+            \Magento\GroupedProduct\Block\Stockqty\Type\Grouped::class,
             ['registry' => $this->registry]
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->block = null;
     }
@@ -44,26 +35,26 @@ class GroupedTest extends TestCase
     public function testGetIdentities()
     {
         $productTags = ['catalog_product_1'];
-        $childProduct = $this->createMock(Product::class);
-        $childProduct->expects($this->once())->method('getIdentities')->willReturn($productTags);
+        $childProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $childProduct->expects($this->once())->method('getIdentities')->will($this->returnValue($productTags));
         $typeInstance = $this->createMock(\Magento\GroupedProduct\Model\Product\Type\Grouped::class);
         $typeInstance->expects(
             $this->once()
         )->method(
             'getAssociatedProducts'
-        )->willReturn(
-            [$childProduct]
+        )->will(
+            $this->returnValue([$childProduct])
         );
-        $product = $this->createMock(Product::class);
-        $product->expects($this->once())->method('getTypeInstance')->willReturn($typeInstance);
+        $product = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $product->expects($this->once())->method('getTypeInstance')->will($this->returnValue($typeInstance));
         $this->registry->expects(
             $this->any()
         )->method(
             'registry'
         )->with(
             'current_product'
-        )->willReturn(
-            $product
+        )->will(
+            $this->returnValue($product)
         );
         $this->assertEquals($productTags, $this->block->getIdentities());
     }

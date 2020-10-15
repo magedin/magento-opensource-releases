@@ -6,8 +6,6 @@
 
 namespace Magento\Framework\Code\Test\Unit;
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Code\GeneratedFiles;
 use Magento\Framework\Exception\FileSystemException;
@@ -16,30 +14,33 @@ use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\Lock\Backend\FileLock;
 
-class GeneratedFilesTest extends TestCase
+/**
+ * Class GeneratedFilesTest
+ */
+class GeneratedFilesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DirectoryList|MockObject
+     * @var DirectoryList|\PHPUnit_Framework_MockObject_MockObject
      */
     private $directoryList;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writeInterface;
 
     /**
-     * @var WriteFactory|MockObject
+     * @var WriteFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writeFactory;
 
     /**
-     * @var FileLock|MockObject
+     * @var FileLock|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lockManager;
 
     /**
-     * @var GeneratedFiles
+     * @var \Magento\Framework\Code\GeneratedFiles
      */
     private $model;
 
@@ -63,7 +64,7 @@ class GeneratedFilesTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->directoryList = $this->createMock(DirectoryList::class);
         $this->writeFactory = $this->createMock(WriteFactory::class);
@@ -144,7 +145,7 @@ class GeneratedFilesTest extends TestCase
      * @param bool|null $processLocked
      * @return void
      */
-    private function expectProcessLocked(int $times, bool $processLocked = false): void
+    private function expectProcessLocked(int $times, bool $processLocked = null): void
     {
         $this->lockManager->expects($this->exactly($times))
             ->method('isLocked')

@@ -7,7 +7,7 @@
 namespace Magento\Review\Block\Product;
 
 /**
- * Test for \Magento\Review\Block\Product\ReviewRenderer
+ * Class ReviewRendererTest
  */
 class ReviewRendererTest extends \PHPUnit\Framework\TestCase
 {
@@ -29,6 +29,6 @@ class ReviewRendererTest extends \PHPUnit\Framework\TestCase
         $reviewRenderer = $objectManager->create(ReviewRenderer::class);
         $actualResult = $reviewRenderer->getReviewsSummaryHtml($product);
         $this->assertEquals(2, $reviewRenderer->getReviewsCount());
-        $this->assertStringContainsString('<span itemprop="reviewCount">2</span>', $actualResult);
+        $this->assertContains('<span itemprop="reviewCount">2</span>', $actualResult);
     }
 }

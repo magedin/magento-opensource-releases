@@ -33,7 +33,7 @@ class PriceFilterTest extends AbstractFiltersTest
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->scopeConfig = $this->objectManager->get(MutableScopeConfigInterface::class);

@@ -3,93 +3,76 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Backend\Model\View\Result\Page;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper;
-use Magento\Catalog\Controller\Adminhtml\Product\Save;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Test\Unit\Controller\Adminhtml\ProductTest;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends ProductTest
+class SaveTest extends \Magento\Catalog\Test\Unit\Controller\Adminhtml\ProductTest
 {
-    /** @var Save */
+    /** @var \Magento\Catalog\Controller\Adminhtml\Product\Save */
     protected $action;
 
-    /** @var Page|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Page|\PHPUnit_Framework_MockObject_MockObject */
     private $resultPage;
 
-    /** @var Forward|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject */
     private $resultForward;
 
-    /** @var Builder|MockObject */
+    /** @var \Magento\Catalog\Controller\Adminhtml\Product\Builder|\PHPUnit_Framework_MockObject_MockObject */
     private $productBuilder;
 
-    /** @var Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject */
     private $product;
 
-    /** @var RedirectFactory|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $resultRedirectFactory;
 
-    /** @var Redirect|MockObject */
+    /** @var \Magento\Backend\Model\View\Result\Redirect|\PHPUnit_Framework_MockObject_MockObject */
     private $resultRedirect;
 
-    /** @var Helper|MockObject */
+    /** @var Helper|\PHPUnit_Framework_MockObject_MockObject */
     private $initializationHelper;
 
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Message\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $messageManagerMock;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productBuilder = $this->createPartialMock(
-            Builder::class,
+            \Magento\Catalog\Controller\Adminhtml\Product\Builder::class,
             ['build']
         );
-        $this->product = $this->getMockBuilder(Product::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['addData', 'getSku', 'getTypeId', 'getStoreId', '__sleep'])->getMock();
-        $this->product->expects($this->any())->method('getTypeId')->willReturn('simple');
-        $this->product->expects($this->any())->method('getStoreId')->willReturn('1');
-        $this->productBuilder->expects($this->any())->method('build')->willReturn($this->product);
+        $this->product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)->disableOriginalConstructor()
+            ->setMethods(['addData', 'getSku', 'getTypeId', 'getStoreId', '__sleep', '__wakeup'])->getMock();
+        $this->product->expects($this->any())->method('getTypeId')->will($this->returnValue('simple'));
+        $this->product->expects($this->any())->method('getStoreId')->will($this->returnValue('1'));
+        $this->productBuilder->expects($this->any())->method('build')->will($this->returnValue($this->product));
 
         $this->messageManagerMock = $this->getMockForAbstractClass(
-            ManagerInterface::class
+            \Magento\Framework\Message\ManagerInterface::class
         );
 
-        $this->resultPage = $this->getMockBuilder(Page::class)
+        $this->resultPage = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $resultPageFactory = $this->getMockBuilder(PageFactory::class)
+        $resultPageFactory = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $resultPageFactory->expects($this->any())->method('create')->willReturn($this->resultPage);
 
-        $this->resultForward = $this->getMockBuilder(Forward::class)
+        $this->resultForward = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $resultForwardFactory = $this->getMockBuilder(ForwardFactory::class)
+        $resultForwardFactory = $this->getMockBuilder(\Magento\Backend\Model\View\Result\ForwardFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -98,20 +81,20 @@ class SaveTest extends ProductTest
             ->willReturn($this->resultForward);
         $this->resultPage->expects($this->any())->method('getLayout')->willReturn($this->layout);
         $this->resultRedirectFactory = $this->createPartialMock(
-            RedirectFactory::class,
+            \Magento\Backend\Model\View\Result\RedirectFactory::class,
             ['create']
         );
-        $this->resultRedirect = $this->createMock(Redirect::class);
+        $this->resultRedirect = $this->createMock(\Magento\Backend\Model\View\Result\Redirect::class);
         $this->resultRedirectFactory->expects($this->any())->method('create')->willReturn($this->resultRedirect);
 
         $this->initializationHelper = $this->createMock(
-            Helper::class
+            \Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper::class
         );
 
         $additionalParams = ['resultRedirectFactory' => $this->resultRedirectFactory];
 
         $storeManagerInterfaceMock = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false,
@@ -121,10 +104,11 @@ class SaveTest extends ProductTest
         );
 
         $storeManagerInterfaceMock->expects($this->any())
-            ->method('getStore')->willReturnSelf();
+            ->method('getStore')
+            ->will($this->returnSelf());
 
         $this->action = (new ObjectManagerHelper($this))->getObject(
-            Save::class,
+            \Magento\Catalog\Controller\Adminhtml\Product\Save::class,
             [
                 'context' => $this->initContext($additionalParams),
                 'resultRedirectFactory' => $this->resultRedirectFactory,
@@ -139,19 +123,19 @@ class SaveTest extends ProductTest
     }
 
     /**
-     * @param \Exception $exception
+     * @param string $exceptionType
      * @param string $methodExpected
      * @return void
      * @dataProvider exceptionTypeDataProvider
      */
-    public function testExecuteSetsProductDataToSessionAndRedirectsToNewActionOnError($exception, $methodExpected)
+    public function testExecuteSetsProductDataToSessionAndRedirectsToNewActionOnError($exceptionType, $methodExpected)
     {
         $productData = ['product' => ['name' => 'test-name']];
 
         $this->request->expects($this->any())->method('getPostValue')->willReturn($productData);
         $this->initializationHelper->expects($this->any())->method('initialize')
             ->willReturn($this->product);
-        $this->product->expects($this->any())->method('getSku')->willThrowException($exception);
+        $this->product->expects($this->any())->method('getSku')->willThrowException(new $exceptionType(__('message')));
 
         $this->resultRedirect->expects($this->once())->method('setPath')->with('catalog/*/new');
 
@@ -167,8 +151,8 @@ class SaveTest extends ProductTest
     public function exceptionTypeDataProvider()
     {
         return [
-            [new LocalizedException(__('Message')), 'addExceptionMessage'],
-            [new \Exception('Message'), 'addErrorMessage']
+            [\Magento\Framework\Exception\LocalizedException::class, 'addExceptionMessage'],
+            ['Exception', 'addErrorMessage']
         ];
     }
 }

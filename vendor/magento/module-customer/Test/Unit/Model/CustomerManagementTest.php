@@ -3,42 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model;
 
-use Magento\Customer\Model\CustomerManagement;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CustomerManagementTest extends TestCase
+class CustomerManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CustomerManagement
+     * @var \Magento\Customer\Model\CustomerManagement
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customersFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customersFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory::class,
             ['create']
         );
-        $this->model = new CustomerManagement(
+        $this->model = new \Magento\Customer\Model\CustomerManagement(
             $this->customersFactoryMock
         );
     }
 
     public function testGetCount()
     {
-        $customersMock = $this->createMock(Collection::class);
+        $customersMock = $this->createMock(\Magento\Customer\Model\ResourceModel\Customer\Collection::class);
 
         $this->customersFactoryMock
             ->expects($this->once())

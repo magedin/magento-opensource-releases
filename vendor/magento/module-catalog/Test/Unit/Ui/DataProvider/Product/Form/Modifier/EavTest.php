@@ -3,47 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductAttributeInterface;
-use Magento\Catalog\Api\ProductAttributeGroupRepositoryInterface;
-use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
-use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory as EavAttributeFactory;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav;
-use Magento\Eav\Api\Data\AttributeGroupInterface;
 use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\Group;
 use Magento\Eav\Model\Entity\Attribute\Source\SourceInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Phrase;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Ui\DataProvider\EavValidationRules;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\Collection as GroupCollection;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\CollectionFactory as GroupCollectionFactory;
+use Magento\Eav\Model\Entity\Attribute\Group;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as EavAttribute;
 use Magento\Eav\Model\Entity\Type as EntityType;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection as AttributeCollection;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory as AttributeCollectionFactory;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\Collection as GroupCollection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Group\CollectionFactory as GroupCollectionFactory;
-use Magento\Framework\Api\AbstractSimpleObject;
-use Magento\Framework\Api\AttributeInterface;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchResultsInterface;
-use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Currency;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Locale\Currency as CurrencyLocale;
-use Magento\Framework\Phrase;
-use Magento\Framework\Stdlib\ArrayManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Ui\DataProvider\EavValidationRules;
 use Magento\Ui\DataProvider\Mapper\FormElement as FormElementMapper;
 use Magento\Ui\DataProvider\Mapper\MetaProperties as MetaPropertiesMapper;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Catalog\Api\ProductAttributeGroupRepositoryInterface;
+use Magento\Framework\Api\SearchCriteria;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
+use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
+use Magento\Framework\Api\AttributeInterface;
+use Magento\Eav\Api\Data\AttributeGroupInterface;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
+use Magento\Framework\Currency;
+use Magento\Framework\Locale\Currency as CurrencyLocale;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Stdlib\ArrayManager;
+use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory as EavAttributeFactory;
+use Magento\Framework\Event\ManagerInterface;
 
 /**
+ * Class EavTest
+ *
  * @method Eav getModel
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -51,142 +49,142 @@ use PHPUnit\Framework\MockObject\MockObject;
 class EavTest extends AbstractModifierTest
 {
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eavConfigMock;
 
     /**
-     * @var EavValidationRules|MockObject
+     * @var EavValidationRules|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eavValidationRulesMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var GroupCollectionFactory|MockObject
+     * @var GroupCollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupCollectionFactoryMock;
 
     /**
-     * @var GroupCollection|MockObject
+     * @var GroupCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupCollectionMock;
 
     /**
-     * @var Group|MockObject
+     * @var Group|\PHPUnit_Framework_MockObject_MockObject
      */
     private $groupMock;
 
     /**
-     * @var EavAttribute|MockObject
+     * @var EavAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeMock;
 
     /**
-     * @var EntityType|MockObject
+     * @var EntityType|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityTypeMock;
 
     /**
-     * @var AttributeCollectionFactory|MockObject
+     * @var AttributeCollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeCollectionFactoryMock;
 
     /**
-     * @var AttributeCollection|MockObject
+     * @var AttributeCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeCollectionMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var FormElementMapper|MockObject
+     * @var FormElementMapper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $formElementMapperMock;
 
     /**
-     * @var MetaPropertiesMapper|MockObject
+     * @var MetaPropertiesMapper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $metaPropertiesMapperMock;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaBuilderMock;
 
     /**
-     * @var ProductAttributeGroupRepositoryInterface|MockObject
+     * @var ProductAttributeGroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeGroupRepositoryMock;
 
     /**
-     * @var SearchCriteria|MockObject
+     * @var SearchCriteria|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchCriteriaMock;
 
     /**
-     * @var SortOrderBuilder|MockObject
+     * @var SortOrderBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $sortOrderBuilderMock;
 
     /**
-     * @var ProductAttributeRepositoryInterface|MockObject
+     * @var ProductAttributeRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeRepositoryMock;
 
     /**
-     * @var AttributeGroupInterface|MockObject
+     * @var AttributeGroupInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeGroupMock;
 
     /**
-     * @var SearchResultsInterface|MockObject
+     * @var SearchResultsInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $searchResultsMock;
 
     /**
-     * @var Attribute|MockObject
+     * @var Attribute|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eavAttributeMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var Currency|MockObject
+     * @var Currency|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $currencyMock;
 
     /**
-     * @var CurrencyLocale|MockObject
+     * @var CurrencyLocale|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $currencyLocaleMock;
 
     /**
-     * @var ProductAttributeInterface|MockObject
+     * @var ProductAttributeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productAttributeMock;
 
     /**
-     * @var ArrayManager|MockObject
+     * @var ArrayManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $arrayManagerMock;
 
     /**
-     * @var EavAttributeFactory|MockObject
+     * @var EavAttributeFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eavAttributeFactoryMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
@@ -203,7 +201,7 @@ class EavTest extends AbstractModifierTest
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = new ObjectManager($this);
@@ -292,7 +290,7 @@ class EavTest extends AbstractModifierTest
             ->getMock();
         $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->eavAttributeFactoryMock->expects($this->any())
             ->method('create')
@@ -326,7 +324,7 @@ class EavTest extends AbstractModifierTest
             ->willReturn($this->attributeCollectionMock);
         $this->productMock->expects($this->any())
             ->method('getAttributes')
-            ->willReturn([$this->attributeMock]);
+            ->willReturn([$this->attributeMock,]);
         $this->storeMock = $this->getMockBuilder(StoreInterface::class)
             ->setMethods(['load', 'getId', 'getConfig', 'getBaseCurrencyCode'])
             ->getMockForAbstractClass();
@@ -416,7 +414,7 @@ class EavTest extends AbstractModifierTest
             ->willReturnSelf();
         $this->sortOrderBuilderMock->expects($this->once())->method('setAscendingDirection')
             ->willReturnSelf();
-        $dataObjectMock = $this->createMock(AbstractSimpleObject::class);
+        $dataObjectMock = $this->createMock(\Magento\Framework\Api\AbstractSimpleObject::class);
         $this->sortOrderBuilderMock->expects($this->once())->method('create')
             ->willReturn($dataObjectMock);
 
@@ -459,10 +457,8 @@ class EavTest extends AbstractModifierTest
      * @param string|null $attrValue
      * @param array $expected
      * @param bool $locked
-     * @param string|null $frontendInput
-     * @param array $expectedCustomize
-     * @covers       \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::isProductExists
-     * @covers       \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::setupAttributeMeta
+     * @covers \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::isProductExists
+     * @covers \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav::setupAttributeMeta
      * @dataProvider setupAttributeMetaDataProvider
      */
     public function testSetupAttributeMetaDefaultAttribute(
@@ -470,9 +466,7 @@ class EavTest extends AbstractModifierTest
         bool $productRequired,
         $attrValue,
         array $expected,
-        bool $locked = false,
-        string $frontendInput = null,
-        array $expectedCustomize = []
+        $locked = false
     ) : void {
         $configPath = 'arguments/data/config';
         $groupCode = 'product-details';
@@ -498,7 +492,6 @@ class EavTest extends AbstractModifierTest
         $this->productAttributeMock->method('getDefaultValue')->willReturn('required_value');
         $this->productAttributeMock->method('getAttributeCode')->willReturn('code');
         $this->productAttributeMock->method('getValue')->willReturn('value');
-        $this->productAttributeMock->method('getFrontendInput')->willReturn($frontendInput);
 
         $attributeMock = $this->getMockBuilder(AttributeInterface::class)
             ->setMethods(['getValue'])
@@ -510,8 +503,7 @@ class EavTest extends AbstractModifierTest
         $this->productMock->method('getCustomAttribute')->willReturn($attributeMock);
         $this->eavAttributeMock->method('usesSource')->willReturn(true);
 
-        $attributeSource = $this->getMockBuilder(SourceInterface::class)
-            ->getMockForAbstractClass();
+        $attributeSource = $this->getMockBuilder(SourceInterface::class)->getMockForAbstractClass();
         $attributeSource->method('getAllOptions')->willReturn($attributeOptions);
 
         $this->eavAttributeMock->method('getSource')->willReturn($attributeSource);
@@ -535,16 +527,14 @@ class EavTest extends AbstractModifierTest
                     }
                 )
             )
-            ->willReturn($expected + $expectedCustomize);
+            ->willReturn($expected);
 
         $this->arrayManagerMock->method('get')->willReturn([]);
         $this->arrayManagerMock->method('exists')->willReturn(true);
 
-        $actual = $this->eav->setupAttributeMeta($this->productAttributeMock, $groupCode, $sortOrder);
-
         $this->assertEquals(
-            $expected + $expectedCustomize,
-            $actual
+            $expected,
+            $this->eav->setupAttributeMeta($this->productAttributeMock, $groupCode, $sortOrder)
         );
     }
 
@@ -572,6 +562,7 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
             ],
             'default_null_prod_not_new_locked_and_required' => [
@@ -591,6 +582,7 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
                 'locked' => true,
             ],
@@ -611,6 +603,7 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
             ],
             'default_null_prod_new_and_not_required' => [
@@ -630,6 +623,7 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
             ],
             'default_null_prod_new_locked_and_not_required' => [
@@ -649,6 +643,7 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
                 'locked' => true,
             ],
@@ -669,30 +664,9 @@ class EavTest extends AbstractModifierTest
                     'scopeLabel' => '',
                     'globalScope' => false,
                     'sortOrder' => 0,
+                    '__disableTmpl' => ['label' => true, 'code' => true]
                 ],
-            ],
-            'datetime_null_prod_not_new_and_required' => [
-                'productId' => 1,
-                'productRequired' => true,
-                'attrValue' => 'val',
-                'expected' => [
-                    'dataType' => 'datetime',
-                    'formElement' => 'datetime',
-                    'visible' => null,
-                    'required' => true,
-                    'notice' => null,
-                    'default' => null,
-                    'label' => new Phrase(null),
-                    'code' => 'code',
-                    'source' => 'product-details',
-                    'scopeLabel' => '',
-                    'globalScope' => false,
-                    'sortOrder' => 0,
-                ],
-                'locked' => false,
-                'frontendInput' => 'datetime',
-                'expectedCustomize' => ['arguments' => ['data' => ['config' => ['options' => ['showsTime' => 1]]]]],
-            ],
+            ]
         ];
     }
 }

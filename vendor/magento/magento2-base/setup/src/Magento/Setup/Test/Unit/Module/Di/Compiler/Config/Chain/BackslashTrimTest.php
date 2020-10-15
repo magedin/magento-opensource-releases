@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\Compiler\Config\Chain;
 
-use Magento\Setup\Module\Di\Compiler\Config\Chain\BackslashTrim;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Module\Di\Compiler\Config\Chain\BackslashTrim;
 
-class BackslashTrimTest extends TestCase
+class BackslashTrimTest extends \PHPUnit\Framework\TestCase
 {
     public function testModifyArgumentsDoNotExist()
     {

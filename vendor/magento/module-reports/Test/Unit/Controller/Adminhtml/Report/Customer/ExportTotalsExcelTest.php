@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Customer;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Reports\Controller\Adminhtml\Report\Customer\ExportTotalsExcel;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
 
-class ExportTotalsExcelTest extends AbstractControllerTest
+class ExportTotalsExcelTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportTotalsExcel
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Customer\ExportTotalsExcel
      */
     protected $exportTotalsExcel;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -47,7 +44,7 @@ class ExportTotalsExcelTest extends AbstractControllerTest
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with('customer_totals.xml', ['export'], DirectoryList::VAR_DIR);
+            ->with('customer_totals.xml', ['export'], \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
         $this->exportTotalsExcel->execute();
     }
 }

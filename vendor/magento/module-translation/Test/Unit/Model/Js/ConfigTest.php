@@ -3,17 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Test\Unit\Model\Js;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Translation\Model\Js\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -21,7 +15,7 @@ class ConfigTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeMock;
 
@@ -30,14 +24,14 @@ class ConfigTest extends TestCase
      */
     protected $patterns = ['test_pattern'];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $objectManager = new ObjectManager($this);
+            ->getMock();
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Config::class,
+            \Magento\Translation\Model\Js\Config::class,
             [
                 'scopeConfig' => $this->scopeMock,
                 'patterns' => $this->patterns

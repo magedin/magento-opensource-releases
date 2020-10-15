@@ -3,29 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Message\Test\Unit;
 
 use Magento\Framework\Message\MessageInterface;
-use Magento\Framework\Message\Warning;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * \Magento\Framework\Message\Warning test case
  */
-class WarningTest extends TestCase
+class WarningTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Warning
+     * @var \Magento\Framework\Message\Warning
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->model = $objectManager->getObject(Warning::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->model = $objectManager->getObject(\Magento\Framework\Message\Warning::class);
     }
 
     public function testGetType()

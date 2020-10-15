@@ -56,7 +56,7 @@ class UploadTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->httpMethod = HttpRequest::METHOD_POST;
@@ -216,7 +216,7 @@ class UploadTest extends AbstractBackendController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $_FILES = [];
         $this->mediaDirectory->delete('tmp');

@@ -3,41 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Code\Generator;
 
-use Magento\Framework\Code\Generator\Io;
-use Magento\Framework\Filesystem\FileResolver;
-use Magento\Framework\ObjectManager\Code\Generator\Proxy;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProxyTest extends TestCase
+class ProxyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ioObjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->ioObjectMock = $this->createMock(Io::class);
+        $this->ioObjectMock = $this->createMock(\Magento\Framework\Code\Generator\Io::class);
     }
 
     public function testGenerate()
     {
         require_once __DIR__ . '/_files/Sample.php';
-        $model = $this->getMockBuilder(Proxy::class)
+        $model = $this->getMockBuilder(\Magento\Framework\ObjectManager\Code\Generator\Proxy::class)
             ->setMethods(['_validateData'])
             ->setConstructorArgs(
                 [
-                    \Magento\Framework\ObjectManager\Code\Generator\Sample::class,
+                \Magento\Framework\ObjectManager\Code\Generator\Sample::class,
                     null,
                     $this->ioObjectMock,
                     null,
                     null,
-                    $this->createMock(FileResolver::class)
+                    $this->createMock(\Magento\Framework\Filesystem\FileResolver::class)
                 ]
             )
             ->getMock();
@@ -45,11 +38,11 @@ class ProxyTest extends TestCase
 
         $this->ioObjectMock->expects($this->once())->method('generateResultFileName')
             ->with('\\' . \Magento\Framework\ObjectManager\Code\Generator\Sample_Proxy::class)
-            ->willReturn('sample_file.php');
+            ->will($this->returnValue('sample_file.php'));
         $this->ioObjectMock->expects($this->once())->method('writeResultFile')
             ->with('sample_file.php', $sampleProxyCode);
 
-        $model->expects($this->once())->method('_validateData')->willReturn(true);
+        $model->expects($this->once())->method('_validateData')->will($this->returnValue(true));
         $this->assertEquals('sample_file.php', $model->generate());
     }
 }

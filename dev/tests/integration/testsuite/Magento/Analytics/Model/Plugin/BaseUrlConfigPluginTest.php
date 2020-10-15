@@ -48,7 +48,7 @@ class BaseUrlConfigPluginTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->preparedValueFactory = $this->objectManager->get(PreparedValueFactory::class);

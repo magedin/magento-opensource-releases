@@ -3,41 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model;
 
-use Composer\Package\Version\VersionParser;
-use Composer\Semver\Constraint\ConstraintInterface;
-use Magento\Framework\Composer\ComposerInformation;
-use Magento\Framework\Convert\DataSize;
 use Magento\Setup\Controller\ResponseTypeInterface;
-use Magento\Setup\Model\PhpInformation;
 use Magento\Setup\Model\PhpReadinessCheck;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Convert\DataSize;
 
-class PhpReadinessCheckTest extends TestCase
+class PhpReadinessCheckTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ComposerInformation
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Composer\ComposerInformation
      */
     private $composerInfo;
 
     /**
-     * @var MockObject|PhpInformation
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\PhpInformation
      */
     private $phpInfo;
 
     /**
-     * @var MockObject|VersionParser
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Composer\Package\Version\VersionParser
      */
     private $versionParser;
 
     /**
      * Data size converter
      *
-     * @var DataSize|MockObject
+     * @var DataSize|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataSize;
 
@@ -46,12 +38,12 @@ class PhpReadinessCheckTest extends TestCase
      */
     private $phpReadinessCheck;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->composerInfo = $this->createMock(ComposerInformation::class);
-        $this->phpInfo = $this->createMock(PhpInformation::class);
-        $this->versionParser = $this->createMock(VersionParser::class);
-        $this->dataSize = $this->createMock(DataSize::class);
+        $this->composerInfo = $this->createMock(\Magento\Framework\Composer\ComposerInformation::class);
+        $this->phpInfo = $this->createMock(\Magento\Setup\Model\PhpInformation::class);
+        $this->versionParser = $this->createMock(\Composer\Package\Version\VersionParser::class);
+        $this->dataSize = $this->createMock(\Magento\Framework\Convert\DataSize::class);
         $this->phpReadinessCheck = new PhpReadinessCheck(
             $this->composerInfo,
             $this->phpInfo,
@@ -79,7 +71,7 @@ class PhpReadinessCheckTest extends TestCase
     {
         $this->composerInfo->expects($this->once())->method('getRequiredPhpVersion')->willReturn('1.0');
         $multipleConstraints = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -90,7 +82,7 @@ class PhpReadinessCheckTest extends TestCase
             ->willThrowException(new \UnexpectedValueException());
         $this->versionParser->expects($this->at(2))->method('normalize')->willReturn('1.0');
         $currentPhpVersion = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -111,7 +103,7 @@ class PhpReadinessCheckTest extends TestCase
     {
         $this->composerInfo->expects($this->once())->method('getRequiredPhpVersion')->willReturn('1.0');
         $multipleConstraints = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -122,7 +114,7 @@ class PhpReadinessCheckTest extends TestCase
             ->willThrowException(new \UnexpectedValueException());
         $this->versionParser->expects($this->at(2))->method('normalize')->willReturn('1.0');
         $currentPhpVersion = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -142,7 +134,7 @@ class PhpReadinessCheckTest extends TestCase
     private function setUpNoPrettyVersionParser()
     {
         $multipleConstraints = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -150,7 +142,7 @@ class PhpReadinessCheckTest extends TestCase
         $this->versionParser->expects($this->at(0))->method('parseConstraints')->willReturn($multipleConstraints);
         $this->versionParser->expects($this->at(1))->method('normalize')->willReturn('1.0');
         $currentPhpVersion = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -178,7 +170,7 @@ class PhpReadinessCheckTest extends TestCase
     {
         $this->composerInfo->expects($this->once())->method('getRequiredPhpVersion')->willReturn('1.0');
         $multipleConstraints = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -186,7 +178,7 @@ class PhpReadinessCheckTest extends TestCase
         $this->versionParser->expects($this->at(0))->method('parseConstraints')->willReturn($multipleConstraints);
         $this->versionParser->expects($this->at(1))->method('normalize')->willReturn('1.0');
         $currentPhpVersion = $this->getMockForAbstractClass(
-            ConstraintInterface::class,
+            \Composer\Semver\Constraint\ConstraintInterface::class,
             [],
             '',
             false
@@ -331,11 +323,12 @@ class PhpReadinessCheckTest extends TestCase
 
     public function testCheckPhpSettingsMemoryLimitError()
     {
+
         $this->dataSize->expects($this->any())->method('convertSizeToBytes')->willReturnMap(
             [
-                ['512M', 512],
-                ['756M', 756],
-                ['2G', 2048],
+               ['512M', 512],
+               ['756M', 756],
+               ['2G', 2048],
 
             ]
         );
@@ -406,7 +399,7 @@ class PhpReadinessCheckTest extends TestCase
         ];
         $this->assertEquals($expected, $this->phpReadinessCheck->checkPhpExtensions());
     }
-
+    
     /**
      * @return bool
      */

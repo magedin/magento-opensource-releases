@@ -3,16 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedImportExport\Test\Unit\Model\Export\Product;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\GroupedImportExport\Model\Export\RowCustomizer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RowCustomizerTest extends TestCase
+/**
+ * Class RowCustomizerTest
+ */
+class RowCustomizerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -20,18 +18,18 @@ class RowCustomizerTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var RowCustomizer|MockObject
+     * @var \Magento\GroupedImportExport\Model\Export\RowCustomizer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $rowCustomizerMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->rowCustomizerMock = $this->objectManagerHelper->getObject(
-            RowCustomizer::class
+            \Magento\GroupedImportExport\Model\Export\RowCustomizer::class
         );
     }
 

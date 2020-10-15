@@ -3,15 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Theme\Source;
 
-use Magento\Framework\View\Design\Theme\Label;
-use Magento\Theme\Model\Theme\Source\Theme;
-use PHPUnit\Framework\TestCase;
+use \Magento\Theme\Model\Theme\Source\Theme;
 
-class ThemeTest extends TestCase
+class ThemeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -21,7 +17,7 @@ class ThemeTest extends TestCase
     public function testGetAllOptions()
     {
         $expects = ['labels'];
-        $label = $this->getMockBuilder(Label::class)
+        $label = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Label::class)
             ->disableOriginalConstructor()
             ->getMock();
         $label->expects($this->once())
@@ -29,7 +25,7 @@ class ThemeTest extends TestCase
             ->with(__('-- Please Select --'))
             ->willReturn($expects);
 
-        /** @var Label $label */
+        /** @var $label \Magento\Framework\View\Design\Theme\Label */
         $object = new Theme($label);
         $this->assertEquals($expects, $object->getAllOptions());
     }

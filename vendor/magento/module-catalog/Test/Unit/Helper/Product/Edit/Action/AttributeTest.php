@@ -3,26 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Helper\Product\Edit\Action;
 
-use Magento\Catalog\Helper\Product\Edit\Action\Attribute;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AttributeTest extends TestCase
+/**
+ * Class AttributeTest
+ */
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var Attribute
+     * @var \Magento\Catalog\Helper\Product\Edit\Action\Attribute
      */
     protected $attribute;
 
@@ -31,19 +25,19 @@ class AttributeTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->storeManagerMock = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false
         );
 
         $this->attribute = $objectManager->getObject(
-            Attribute::class,
+            \Magento\Catalog\Helper\Product\Edit\Action\Attribute::class,
             [
                 'storeManager' => $this->storeManagerMock
             ]
@@ -59,15 +53,15 @@ class AttributeTest extends TestCase
     {
         $storeId = 20;
 
-        $storeMock = $this->createPartialMock(Store::class, ['getWebsiteId']);
+        $storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getWebsiteId']);
 
         $this->storeManagerMock->expects($this->once())
             ->method('getStore')
             ->with($storeId)
-            ->willReturn($storeMock);
+            ->will($this->returnValue($storeMock));
         $storeMock->expects($this->once())
             ->method('getWebsiteId')
-            ->willReturn('return-value');
+            ->will($this->returnValue('return-value'));
 
         $this->assertEquals('return-value', $this->attribute->getStoreWebsiteId($storeId));
     }

@@ -7,18 +7,19 @@ declare(strict_types=1);
 
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Category\Plugin\Store;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategortCollection;
 use Magento\CatalogUrlRewrite\Model\Category\Plugin\Store\View as StoreViewPlugin;
-use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
-use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
-use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Model\AbstractModel;
 use Magento\Store\Model\ResourceModel\Store;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
+use Magento\Catalog\Model\CategoryFactory;
+use Magento\Catalog\Model\ProductFactory;
+use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
+use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\Product;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -87,7 +88,7 @@ class ViewTest extends TestCase
      */
     private $productMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->abstractModelMock = $this->getMockBuilder(AbstractModel::class)
@@ -121,7 +122,7 @@ class ViewTest extends TestCase
             ->getMock();
         $this->productCollectionMock = $this->getMockBuilder(ProductCollection::class)
             ->disableOriginalConstructor()
-            ->setMethods(['addCategoryIds', 'addAttributeToSelect', 'addWebsiteFilter', 'getIterator'])
+            ->setMethods(['addCategoryIds', 'addAttributeToSelect', 'getIterator', 'addStoreFilter'])
             ->getMock();
         $this->productMock = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
@@ -155,9 +156,16 @@ class ViewTest extends TestCase
         $this->abstractModelMock->expects($this->any())
             ->method('isObjectNew')
             ->willReturn(true);
+        $categoryCollection = $this->getMockBuilder(CategortCollection::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getIterator'])
+            ->getMock();
+        $categoryCollection->expects($this->any())
+            ->method('getIterator')
+            ->willReturn(new \ArrayIterator([]));
         $this->categoryMock->expects($this->once())
             ->method('getCategories')
-            ->willReturn([]);
+            ->willReturn($categoryCollection);
         $this->categoryFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->categoryMock);
@@ -174,7 +182,7 @@ class ViewTest extends TestCase
             ->method('addAttributeToSelect')
             ->willReturn($this->productCollectionMock);
         $this->productCollectionMock->expects($this->once())
-            ->method('addWebsiteFilter')
+            ->method('addStoreFilter')
             ->willReturn($this->productCollectionMock);
         $iterator = new \ArrayIterator([$this->productMock]);
         $this->productCollectionMock->expects($this->once())

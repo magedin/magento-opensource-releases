@@ -34,6 +34,3 @@ $autoloadWrapper->addPsr4('Magento\\CodeMessDetector\\', $testsBaseDir . '/frame
 
 $generatedCode = DirectoryList::getDefaultConfig()[DirectoryList::GENERATED_CODE][DirectoryList::PATH];
 $autoloadWrapper->addPsr4('Magento\\', $baseDir . '/' . $generatedCode . '/Magento/');
-
-$setup = DirectoryList::getDefaultConfig()[DirectoryList::SETUP][DirectoryList::PATH];
-$autoloadWrapper->addPsr4('Magento\\Setup\\', $baseDir . '/' . $setup . '/Magento/Setup/');

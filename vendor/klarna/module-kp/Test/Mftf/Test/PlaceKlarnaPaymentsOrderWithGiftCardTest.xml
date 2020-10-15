@@ -36,9 +36,9 @@
         <after>
             <deleteData createDataKey="createSimpleProduct" stepKey="deleteSimpleProduct"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="signOutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="signOutFromAdmin"/>
         </after>
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin1"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin1"/>
 
         <!--Generate gift card pool-->
         <actionGroup ref="GenerateNewGiftCardCodePool" stepKey="generateNewGiftCardCodePool"/>
@@ -57,19 +57,18 @@
         </actionGroup>
 
         <!--Add product to shopping cart-->
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFromStorefrontProductPage">
             <argument name="productName" value="$$createSimpleProduct.name$$"/>
         </actionGroup>
 
         <!--Add gift card to order-->
-        <actionGroup ref="clickViewAndEditCartFromMiniCartActionGroup" stepKey="goToShoppingCartFromMinicart"/>
+        <actionGroup ref="clickViewAndEditCartFromMiniCart" stepKey="goToShoppingCartFromMinicart"/>
         <actionGroup ref="AddGiftCardToOrderFromCartActionGroup" stepKey="addGiftCardToOrder">
             <argument name="code" value="{$grabGiftCardCode}"/>
         </actionGroup>
 
         <!--Go to checkout-->
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart"/>
-        <waitForPageLoad stepKey="waitForCheckoutPageLoad"/>
 
         <!--Enter shipping information and continue to payments-->
         <actionGroup ref="GuestCheckoutFillingShippingSectionActionGroup" stepKey="guestCheckoutFillingShipping">
@@ -91,13 +90,9 @@
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber"/>
 
         <!--Verify order summary in admin-->
-        <actionGroup ref="OpenOrderByIdActionGroup" stepKey="goToOrderPage">
-            <argument name="orderId" value="{$grabOrderNumber}"/>
-        </actionGroup>
-        <actionGroup ref="ValidateAdminKlarnaOrderSummaryGrandTotal" stepKey="validateGrandTotal">
+        <actionGroup ref="ValidateAdminKlarnaOrderSummaryWithGiftCard" stepKey="validateOrderSummary">
+            <argument name="orderNumber" value="{$grabOrderNumber}"/>
             <argument name="grandTotalAmount" value="{$grabTotalAmount}"/>
-        </actionGroup>
-        <actionGroup ref="ValidateAdminKlarnaOrderSummaryWithGiftCard" stepKey="validateGiftcard">
             <argument name="giftCardAmount" value="{$grabGiftCardBalance}"/>
         </actionGroup>
     </test>

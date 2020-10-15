@@ -334,7 +334,6 @@ class Info
      *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @return bool
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isPaymentReviewRequired(\Magento\Payment\Model\InfoInterface $payment)
     {
@@ -351,7 +350,6 @@ class Info
      *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @return bool
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isFraudReviewAllowed(\Magento\Payment\Model\InfoInterface $payment)
     {
@@ -367,7 +365,6 @@ class Info
      *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @return bool
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isPaymentCompleted(\Magento\Payment\Model\InfoInterface $payment)
     {
@@ -380,7 +377,6 @@ class Info
      *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @return bool
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isPaymentSuccessful(\Magento\Payment\Model\InfoInterface $payment)
     {
@@ -411,7 +407,6 @@ class Info
      *
      * @param \Magento\Payment\Model\InfoInterface $payment
      * @return bool
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isPaymentFailed(\Magento\Payment\Model\InfoInterface $payment)
     {
@@ -436,7 +431,6 @@ class Info
      * @link https://cms.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=developer/e_howto_html_IPNandPDTVariables
      * @link https://cms.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=developer/e_howto_api_nvp_r_GetTransactionDetails
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function explainPendingReason($code)
     {
@@ -486,7 +480,6 @@ class Info
      * @return string
      * @link https://cms.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=developer/e_howto_html_IPNandPDTVariables
      * @link https://cms.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=developer/e_howto_api_nvp_r_GetTransactionDetails
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function explainReasonCode($code)
     {
@@ -525,7 +518,9 @@ class Info
             'duplicate' => __('Buyer claims that a possible duplicate payment was made to the merchant.'),
             'merchandise' => __('Buyer claims that the received merchandise is unsatisfactory, defective, or damaged.'),
         ];
-        return $comments[$code] ?? __('Unknown reason. Please contact PayPal customer service.');
+        return isset($comments[$code])
+            ? $comments[$code]
+            : __('Unknown reason. Please contact PayPal customer service.');
     }
 
     /**
@@ -533,7 +528,6 @@ class Info
      *
      * @param string $code
      * @return bool;
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function isReversalDisputable($code)
     {
@@ -548,7 +542,7 @@ class Info
             'chargeback_reimbursement' => false,
             'chargeback_settlement' => false,
         ];
-        return $listOfDisputeCodes[$code] ?? false;
+        return isset($listOfDisputeCodes[$code]) ? $listOfDisputeCodes[$code] : false;
     }
 
     /**
@@ -617,7 +611,9 @@ class Info
                 self::BUYER_TAX_ID_TYPE => __('Buyer\'s Tax ID Type'),
             ];
         }
-        return $this->_labelCodesCache[self::ITEM_LABELS][$key] ?? '';
+        return isset($this->_labelCodesCache[self::ITEM_LABELS][$key])
+            ? $this->_labelCodesCache[self::ITEM_LABELS][$key]
+            : '';
     }
 
     /**
@@ -625,7 +621,6 @@ class Info
      *
      * @param string $key
      * @return string
-     * phpcs:disable Magento2.Functions.StaticFunction
      */
     public static function getCaseTypeLabel($key)
     {
@@ -669,7 +664,6 @@ class Info
             case self::BUYER_TAX_ID_TYPE:
                 $outputValue = $this->_getBuyerIdTypeValue($outputValue);
                 // fall-through intentional
-                // no break
             default:
                 return $outputValue;
         }
@@ -711,7 +705,9 @@ class Info
                 '4' => __('N/A. Address not checked, or acquirer had no response. Service not available'),
             ];
         }
-        return $this->_labelCodesCache[self::PAYPAL_AVS_CODE][$value] ?? $value;
+        return isset($this->_labelCodesCache[self::PAYPAL_AVS_CODE][$value])
+            ? $this->_labelCodesCache[self::PAYPAL_AVS_CODE][$value]
+            : $value;
     }
 
     /**
@@ -741,7 +737,9 @@ class Info
                 '4' => __('N/A. Service not available'),
             ];
         }
-        return $this->_labelCodesCache[self::PAYPAL_CVV_2_MATCH][$value] ?? $value;
+        return isset($this->_labelCodesCache[self::PAYPAL_CVV_2_MATCH][$value])
+            ? $this->_labelCodesCache[self::PAYPAL_CVV_2_MATCH][$value]
+            : $value;
     }
 
     /**
@@ -758,6 +756,8 @@ class Info
                 self::BUYER_TAX_ID_TYPE_CPF => __('CPF'),
             ];
         }
-        return $this->_labelCodesCache[self::BUYER_TAX_ID_TYPE][$code] ?? '';
+        return isset($this->_labelCodesCache[self::BUYER_TAX_ID_TYPE][$code])
+            ? $this->_labelCodesCache[self::BUYER_TAX_ID_TYPE][$code]
+            : '';
     }
 }

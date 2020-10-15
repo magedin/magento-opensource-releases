@@ -4,7 +4,6 @@ namespace Codeception\Coverage;
 use Codeception\Configuration;
 use Codeception\Exception\ConfigurationException;
 use Codeception\Exception\ModuleException;
-use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 
 class Filter
@@ -92,16 +91,12 @@ class Filter
                 throw new ConfigurationException('Error parsing yaml. Config `whitelist: exclude:` should be an array');
             }
             foreach ($coverage['whitelist']['exclude'] as $fileOrDir) {
-                try {
-                    $finder = strpos($fileOrDir, '*') === false
-                        ? [Configuration::projectDir() . DIRECTORY_SEPARATOR . $fileOrDir]
-                        : $this->matchWildcardPattern($fileOrDir);
+                $finder = strpos($fileOrDir, '*') === false
+                    ? [Configuration::projectDir() . DIRECTORY_SEPARATOR . $fileOrDir]
+                    : $this->matchWildcardPattern($fileOrDir);
 
-                    foreach ($finder as $file) {
-                        $filter->removeFileFromWhitelist($file);
-                    }
-                } catch (DirectoryNotFoundException $e) {
-                    continue;
+                foreach ($finder as $file) {
+                    $filter->removeFileFromWhitelist($file);
                 }
             }
         }

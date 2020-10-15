@@ -3,12 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Importer\Processor;
 
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\RuntimeException;
 use Magento\Framework\Registry;
 use Magento\Store\Model\Config\Importer\DataDifferenceCalculator;
 use Magento\Store\Model\Config\Importer\Processor\Delete;
@@ -22,8 +19,7 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreRepository;
 use Magento\Store\Model\Website;
 use Magento\Store\Model\WebsiteRepository;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Test for Delete processor.
@@ -31,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  * @see Delete
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DeleteTest extends TestCase
+class DeleteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Delete
@@ -101,7 +97,7 @@ class DeleteTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->registryMock = $this->getMockBuilder(Registry::class)
             ->disableOriginalConstructor()
@@ -310,10 +306,12 @@ class DeleteTest extends TestCase
         $this->model->run($data);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\RuntimeException
+     * @expectedExceptionMessage Some exception
+     */
     public function testRunWithException()
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Some exception');
         $data = [
             ScopeInterface::SCOPE_WEBSITES => [],
             ScopeInterface::SCOPE_STORES => []

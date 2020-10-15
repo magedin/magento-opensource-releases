@@ -19,27 +19,34 @@
             <group value="Cms"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginGetFromGeneralFile"/>
-            <actionGroup ref="DisabledWYSIWYGActionGroup" stepKey="disableWYSIWYG"/>
+            <actionGroup ref="LoginActionGroup" stepKey="loginGetFromGeneralFile"/>
+            <actionGroup ref="DisabledWYSIWYG" stepKey="disableWYSIWYG"/>
         </before>
         <after>
             <actionGroup ref="deleteBlock" stepKey="deleteCreatedBlock">
                 <argument name="Block" value="_defaultBlock"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
-        <!-- Navigate to create cms block page and verify save split button -->
-        <actionGroup ref="VerifyCmsBlockSaveSplitButtonActionGroup" stepKey="verifyCmsBlockSaveButton" />
+        <amOnPage url="{{CmsNewBlock.url}}" stepKey="amOnBlocksCreationForm"/>
+        <waitForPageLoad stepKey="waitForPageLoad1"/>
+        <!--Verify Save&Duplicate button and Save&Close button-->
+        <click selector="{{BlockNewPagePageActionsSection.expandSplitButton}}"  stepKey="expandSplitBtn1" />
+        <see selector="{{BlockNewPagePageActionsSection.saveAndDuplicate}}" userInput="Save &amp; Duplicate" stepKey="seeSaveAndDuplicate"/>
+        <see selector="{{BlockNewPagePageActionsSection.saveAndClose}}" userInput="Save &amp; Close" stepKey="seeSaveAndClose"/>
         <!--Create new CMS Block page-->
         <actionGroup ref="FillOutBlockContent" stepKey="FillOutBlockContent"/>
-        <!-- Click save and duplicate action -->
-        <actionGroup ref="SaveAndDuplicateCMSBlockWithSplitButtonActionGroup" stepKey="clickSaveAndDuplicateButton" />
-
+        <click selector="{{BlockNewPagePageActionsSection.expandSplitButton}}"  stepKey="expandSplitBtn2" />
+        <click selector="{{BlockNewPagePageActionsSection.saveAndDuplicate}}" stepKey="clickSaveAndDuplicate" />
+        <waitForPageLoad stepKey="waitForPageLoad3"/>
+        <see userInput="You saved the block." stepKey="seeSavedBlockMsgOnForm"/>
+        <see userInput="You duplicated the block." stepKey="seeDuplicatedBlockMsg"/>
         <!--Verify duplicated CMS Block Page-->
         <seeElement selector="{{BlockNewPageBasicFieldsSection.isActive('0')}}" stepKey="seeBlockNotEnable" />
         <actionGroup ref="AssertBlockContent" stepKey="assertContent"/>
-        <!-- Click save and close button -->
-        <actionGroup ref="SaveAndCloseCMSBlockWithSplitButtonActionGroup" stepKey="saveAndCloseAction" />
+        <click selector="{{BlockNewPagePageActionsSection.expandSplitButton}}"  stepKey="expandSplitBtn3" />
+        <click selector="{{BlockNewPagePageActionsSection.saveAndClose}}" stepKey="clickSaveAndClose"/>
+        <see userInput="You saved the block." stepKey="seeSavedBlockMsgOnGrid"/>
         <seeElement selector="div[data-role='grid-wrapper']" stepKey="seeGridPage" />
     </test>
 </tests>

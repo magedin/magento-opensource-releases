@@ -4,13 +4,8 @@
  * See COPYING.txt for license details.
  */
 /* @var $block \Magento\Catalog\Block\Adminhtml\Product\Edit\NewCategory */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-<div id="<?= $block->escapeHtmlAttr($block->getNameInLayout()) ?>">
+<div id="<?= $block->escapeHtmlAttr($block->getNameInLayout()) ?>" style="display:none">
     <?= $block->getFormHtml() ?>
     <?= $block->getAfterElementHtml() ?>
 </div>
-<?= /* @noEscape */ $secureRenderer->renderStyleAsTag(
-    'display:none',
-    $block->escapeJs($block->getNameInLayout())
-) ?>

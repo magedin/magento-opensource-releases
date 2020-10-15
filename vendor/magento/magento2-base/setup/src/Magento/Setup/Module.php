@@ -6,18 +6,16 @@
 
 namespace Magento\Setup;
 
+use Magento\Framework\App\Response\HeaderProvider\XssProtection;
+use Magento\Setup\Mvc\View\Http\InjectTemplateListener;
 use Laminas\EventManager\EventInterface;
-use Laminas\EventManager\EventManager;
 use Laminas\ModuleManager\Feature\BootstrapListenerInterface;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\Mvc\ModuleRouteListener;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Stdlib\DispatchableInterface;
-use Magento\Framework\App\Response\HeaderProvider\XssProtection;
-use Magento\Setup\Mvc\View\Http\InjectTemplateListener;
 
 /**
- * Laminas module declaration
+ * Setup module bootstrap class
  */
 class Module implements
     BootstrapListenerInterface,
@@ -28,10 +26,10 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
-        /** @var MvcEvent $e */
+        /** @var \Laminas\Mvc\MvcEvent $e */
         /** @var \Laminas\Mvc\Application $application */
         $application = $e->getApplication();
-        /** @var EventManager $events */
+        /** @var \Laminas\EventManager\EventManager $events */
         $events = $application->getEventManager();
         /** @var \Laminas\EventManager\SharedEventManager $sharedEvents */
         $sharedEvents = $events->getSharedManager();
@@ -43,7 +41,7 @@ class Module implements
         // to process templates by Vendor/Module
         $injectTemplateListener = new InjectTemplateListener();
         $sharedEvents->attach(
-            DispatchableInterface::class,
+            \Laminas\Stdlib\DispatchableInterface::class,
             MvcEvent::EVENT_DISPATCH,
             [$injectTemplateListener, 'injectTemplate'],
             -89
@@ -78,7 +76,15 @@ class Module implements
             include __DIR__ . '/../../../config/router.config.php',
             include __DIR__ . '/../../../config/di.config.php',
             include __DIR__ . '/../../../config/states.install.config.php',
+            include __DIR__ . '/../../../config/states.update.config.php',
+            include __DIR__ . '/../../../config/states.home.config.php',
+            include __DIR__ . '/../../../config/states.extensionManager.config.php',
+            include __DIR__ . '/../../../config/states.upgrade.config.php',
+            include __DIR__ . '/../../../config/states.uninstall.config.php',
+            include __DIR__ . '/../../../config/states.enable.config.php',
+            include __DIR__ . '/../../../config/states.disable.config.php',
             include __DIR__ . '/../../../config/languages.config.php',
+            include __DIR__ . '/../../../config/marketplace.config.php'
         );
         // phpcs:enable
         return $result;

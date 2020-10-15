@@ -15,13 +15,6 @@ use Magento\Framework\Indexer\DimensionFactory;
 use Magento\Store\Model\Indexer\WebsiteDimensionProvider;
 use Magento\Framework\Search\Request\IndexScopeResolverInterface;
 
-/**
- * Class LinkedProductSelectBuilderByIndexPrice
- *
- * Provide Select object for retrieve product id by index price.
- *
- * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
- */
 class LinkedProductSelectBuilderByIndexPrice implements LinkedProductSelectBuilderInterface
 {
     /**
@@ -90,13 +83,13 @@ class LinkedProductSelectBuilderByIndexPrice implements LinkedProductSelectBuild
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function build(int $productId, int $storeId) : array
+    public function build($productId)
     {
         $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
         $productTable = $this->resource->getTableName('catalog_product_entity');
-        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+        $websiteId = $this->storeManager->getStore()->getWebsiteId();
         $customerGroupId = $this->customerSession->getCustomerGroupId();
 
         $priceSelect = $this->resource->getConnection()->select()

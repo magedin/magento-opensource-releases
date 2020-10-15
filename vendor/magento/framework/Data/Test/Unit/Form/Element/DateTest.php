@@ -3,54 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Date
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Date;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Escaper;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Form\Element\Date;
 
-class DateTest extends TestCase
+class DateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Date
+     * @var \Magento\Framework\Data\Form\Element\Date
      */
     protected $model;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $factoryMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Framework\Data\Form\Element\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaperMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeDateMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->factoryMock = $this->createMock(Factory::class);
-        $this->collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $this->escaperMock = $this->createMock(Escaper::class);
-        $this->localeDateMock = $this->getMockForAbstractClass(TimezoneInterface::class);
+        $this->factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $this->collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $this->escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->localeDateMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
         $this->model = new Date(
             $this->factoryMock,
             $this->collectionFactoryMock,
@@ -79,13 +72,11 @@ class DateTest extends TestCase
         $formMock = $this->getFormMock('once');
         $this->model->setForm($formMock);
 
-        $this->model->setData(
-            [
+        $this->model->setData([
                 $fieldName => 'yyyy-MM-dd',
                 'name' => 'test_name',
                 'html_id' => 'test_name',
-            ]
-        );
+            ]);
         $this->model->getElementHtml();
     }
 
@@ -102,16 +93,13 @@ class DateTest extends TestCase
 
     /**
      * @param $exactly
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getFormMock($exactly)
     {
-        $formMock = $this->getMockBuilder(\stdClass::class)->addMethods(
-            ['getFieldNameSuffix', 'getHtmlIdPrefix', 'getHtmlIdSuffix']
-        )
-            ->disableOriginalConstructor()
-            ->getMock();
-        foreach (['getFieldNameSuffix', 'getHtmlIdPrefix', 'getHtmlIdSuffix'] as $method) {
+        $functions = ['getFieldNameSuffix', 'getHtmlIdPrefix', 'getHtmlIdSuffix'];
+        $formMock = $this->createPartialMock(\stdClass::class, $functions);
+        foreach ($functions as $method) {
             switch ($exactly) {
                 case 'once':
                     $count = $this->once();

@@ -3,30 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Api\Data\GroupInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeFallbackResolver;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
-class ScopeFallbackResolverTest extends TestCase
+class ScopeFallbackResolverTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ScopeFallbackResolver */
     protected $model;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new ScopeFallbackResolver($this->storeManagerMock);
@@ -44,15 +40,15 @@ class ScopeFallbackResolverTest extends TestCase
      */
     public function testGetFallbackScope($scope, $scopeId, $forConfig, $websiteId, $groupId, $result)
     {
-        /** @var GroupInterface|MockObject $groupMock */
-        $groupMock = $this->getMockBuilder(GroupInterface::class)
+        /** @var GroupInterface|\PHPUnit_Framework_MockObject_MockObject $groupMock */
+        $groupMock = $this->getMockBuilder(\Magento\Store\Api\Data\GroupInterface::class)
             ->getMockForAbstractClass();
         $groupMock->expects($this->any())
             ->method('getWebsiteId')
             ->willReturn($websiteId);
 
-        /** @var StoreInterface|MockObject $storeMock */
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        /** @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject $storeMock */
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->getMockForAbstractClass();
         $storeMock->expects($this->any())
             ->method('getWebsiteId')

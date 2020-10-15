@@ -3,138 +3,118 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Variable\Test\Unit\Controller\Adminhtml\System\Variable;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Phrase;
-use Magento\Framework\Registry;
-use Magento\Framework\View\Element\Messages;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Variable\Controller\Adminhtml\System\Variable\Validate;
-use Magento\Variable\Model\Variable;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class ValidateTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ValidateTest extends TestCase
+class ValidateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Variable|MockObject
+     * @var \Magento\Variable\Model\Variable|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $variableMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var Validate|MockObject
+     * @var \Magento\Variable\Controller\Adminhtml\System\Variable\Validate | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $validateMock;
 
     /**
-     * @var Json|MockObject
+     * @var \Magento\Framework\Controller\Result\Json | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultJsonMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $messageManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->validateMock = $this->getMockBuilder(
-            Validate::class
+            \Magento\Variable\Controller\Adminhtml\System\Variable\Validate::class
         )->disableOriginalConstructor()
             ->getMock();
 
         $this->variableMock = $this->getMockBuilder(
-            Variable::class
+            \Magento\Variable\Model\Variable::class
         )->disableOriginalConstructor()
             ->getMock();
         $this->variableMock->expects($this->any())
             ->method('addData')
             ->willReturnSelf();
 
-        $messagesMock = $this->getMockBuilder(Messages::class)
+        $messagesMock = $this->getMockBuilder(\Magento\Framework\View\Element\Messages::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->layoutMock = $this->getMockBuilder(LayoutInterface::class)
+        $this->layoutMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->setMethods(['initMessages', 'getMessagesBlock'])
             ->getMockForAbstractClass();
         $this->layoutMock->expects($this->any())
             ->method('getMessagesBlock')
             ->willReturn($messagesMock);
-        $layoutFactoryMock = $this->getMockBuilder(LayoutFactory::class)
+        $layoutFactoryMock = $this->getMockBuilder(\Magento\Framework\View\LayoutFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $layoutFactoryMock->expects($this->any())->method('create')->willReturn($this->layoutMock);
 
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPost'])
             ->getMockForAbstractClass();
-        $responseMock = $this->getMockBuilder(ResponseInterface::class)
+        $responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->setMethods(['setError', 'setHtmlMessage'])
             ->getMockForAbstractClass();
-        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMockForAbstractClass();
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->any())
-            ->method('getRequest')->willReturn($this->requestMock);
+            ->method('getRequest')->will($this->returnValue($this->requestMock));
         $contextMock->expects($this->any())
-            ->method('getResponse')->willReturn($responseMock);
+            ->method('getResponse')->will($this->returnValue($responseMock));
         $contextMock->expects($this->any())
-            ->method('getMessageManager')->willReturn($this->messageManagerMock);
+            ->method('getMessageManager')->will($this->returnValue($this->messageManagerMock));
 
-        $this->resultJsonMock = $this->getMockBuilder(Json::class)
+        $this->resultJsonMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $resultJsonFactoryMock = $this->getMockBuilder(JsonFactory::class)
+        $resultJsonFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\Result\JsonFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $resultJsonFactoryMock->expects($this->any())->method('create')->willReturn($this->resultJsonMock);
 
-        $coreRegistryMock = $this->getMockBuilder(Registry::class)
+        $coreRegistryMock = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->validateMock = $this->getMockBuilder(
-            Validate::class
+            \Magento\Variable\Controller\Adminhtml\System\Variable\Validate::class
         )->setConstructorArgs(
             [
                 $contextMock,
                 $coreRegistryMock,
-                $this->getMockBuilder(ForwardFactory::class)
-                    ->disableOriginalConstructor()
-                    ->setMethods(['create'])->getMock(),
+                $this->getMockBuilder(\Magento\Backend\Model\View\Result\ForwardFactory::class)
+                    ->disableOriginalConstructor()->setMethods(['create'])->getMock(),
                 $resultJsonFactoryMock,
-                $this->getMockBuilder(PageFactory::class)
-                    ->disableOriginalConstructor()
-                    ->setMethods(['create'])->getMock(),
+                $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
+                    ->disableOriginalConstructor()->setMethods(['create'])->getMock(),
                 $layoutFactoryMock,
             ]
         )->setMethods(['_initVariable'])->getMock();
@@ -158,13 +138,13 @@ class ValidateTest extends TestCase
         $this->requestMock->expects($this->any())
             ->method('getParam')->willReturnMap($getParamMap);
         $this->requestMock->expects($this->any())
-            ->method('getPost')->with('variable')->willReturn([]);
+            ->method('getPost')->with('variable')->will($this->returnValue([]));
 
         $this->variableMock->expects($this->any())
             ->method('validate')
             ->willReturn($result);
 
-        if ($result instanceof Phrase) {
+        if ($result instanceof \Magento\Framework\Phrase) {
             $this->messageManagerMock->expects($this->once())
                 ->method('addError')
                 ->with($result->getText());

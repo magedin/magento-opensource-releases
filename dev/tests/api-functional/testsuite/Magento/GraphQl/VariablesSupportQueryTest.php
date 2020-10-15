@@ -18,7 +18,7 @@ class VariablesSupportQueryTest extends GraphQlAbstract
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
     }
@@ -70,7 +70,7 @@ QUERY;
 
         self::assertArrayHasKey('products', $response);
         self::assertArrayHasKey('items', $response['products']);
-        self::assertCount(1, $response['products']['items']);
+        self::assertEquals(1, count($response['products']['items']));
         self::assertArrayHasKey(0, $response['products']['items']);
         self::assertEquals($product->getSku(), $response['products']['items'][0]['sku']);
         self::assertEquals(

@@ -3,12 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Code\Generator;
 
 use Composer\Autoload\ClassLoader;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Cache\FrontendInterface;
 use Magento\Framework\Communication\Config\ReflectionGenerator;
 use Magento\Framework\Communication\ConfigInterface as CommunicationConfigInterface;
@@ -17,12 +14,12 @@ use Magento\Framework\Reflection\MethodsMap;
 use Magento\Framework\Reflection\TypeProcessor;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject_MockObject as MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RemoteServiceGeneratorTest extends TestCase
+class RemoteServiceGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CommunicationConfigInterface|MockObject
@@ -42,13 +39,13 @@ class RemoteServiceGeneratorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
         $this->communicationConfig = $this->getMockBuilder(CommunicationConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $loader = new ClassLoader();
         $loader->addPsr4(
@@ -96,7 +93,7 @@ class RemoteServiceGeneratorTest extends TestCase
     {
         return [
             [
-                '\\' . CustomerRepositoryInterface::class,
+                '\\' . \Magento\Customer\Api\CustomerRepositoryInterface::class,
                 '\\' . \Magento\Customer\Api\CustomerRepositoryInterfaceRemote::class,
                 'magento.customer.api.customerRepositoryInterface',
                 'RemoteService.txt'
@@ -162,13 +159,13 @@ class RemoteServiceGeneratorTest extends TestCase
     {
         $cache = $this->getMockBuilder(FrontendInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $cache->method('load')
             ->willReturn(false);
 
         $serializer = $this->getMockBuilder(SerializerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $typeProcessor = $this->objectManager->getObject(TypeProcessor::class);
 
         /** @var MethodsMap $serviceMethodMap */

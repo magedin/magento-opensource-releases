@@ -3,49 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Product\Frontend\Action;
 
-use Laminas\Http\AbstractMessage;
-use Laminas\Http\Response;
-use Magento\Catalog\Controller\Product\Frontend\Action\Synchronize;
-use Magento\Catalog\Model\Product\ProductFrontendAction\Synchronizer;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Json;
+use Magento\Catalog\Model\Product\ProductFrontendAction\Synchronizer;
 use Magento\Framework\Controller\Result\JsonFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\App\RequestInterface;
+use Magento\Catalog\Controller\Product\Frontend\Action\Synchronize;
 
-class SynchronizeTest extends TestCase
+class SynchronizeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Synchronize
+     * @var \Magento\Catalog\Controller\Product\Frontend\Action\Synchronize
      */
     private $synchronize;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var Synchronizer|MockObject
+     * @var Synchronizer|\PHPUnit_Framework_MockObject_MockObject
      */
     private $synchronizerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var JsonFactory|MockObject
+     * @var JsonFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $jsonFactoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
@@ -107,7 +101,7 @@ class SynchronizeTest extends TestCase
 
         $this->synchronize->execute();
     }
-
+    
     public function testExecuteActionException()
     {
         $data = [
@@ -134,13 +128,13 @@ class SynchronizeTest extends TestCase
 
         $this->synchronizerMock->expects($this->once())
             ->method('syncActions')
-            ->willThrowException(new \Exception());
+            ->willThrowException(new \Exception);
 
         $jsonObject->expects($this->once())
             ->method('setStatusHeader')
             ->with(
-                Response::STATUS_CODE_400,
-                AbstractMessage::VERSION_11,
+                \Zend\Http\Response::STATUS_CODE_400,
+                \Zend\Http\AbstractMessage::VERSION_11,
                 'Bad Request'
             );
         $jsonObject->expects($this->once())

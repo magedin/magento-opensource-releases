@@ -17,7 +17,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
 use Magento\TestModuleCatalogSearch\Model\ElasticsearchVersionChecker;
-use Magento\Framework\Search\EngineResolverInterface;
+use \Magento\Framework\Search\EngineResolverInterface;
 
 /**
  * Test for Magento\Catalog\Model\Indexer\Category\Product\Action\Rows class.
@@ -57,7 +57,7 @@ class RowsTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->rowsIndexer = $this->objectManager->get(Rows::class);
@@ -68,7 +68,7 @@ class RowsTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function assertPreConditions(): void
+    protected function assertPreConditions()
     {
         $currentEngine = $this->objectManager->get(EngineResolverInterface::class)->getCurrentSearchEngine();
         $this->assertEquals($this->getInstalledSearchEngine(), $currentEngine);

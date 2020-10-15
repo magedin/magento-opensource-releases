@@ -3,65 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Menu;
-
-use Magento\Backend\Model\Menu;
-use Magento\Backend\Model\Menu\Item;
-use Magento\Backend\Model\Menu\Item\Validator;
-use Magento\Backend\Model\MenuFactory;
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Module\Manager;
-use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ItemTest extends TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Item
+     * @var \Magento\Backend\Model\Menu\Item
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_aclMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_menuFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_urlModelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_scopeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleListMock;
 
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
     /**
@@ -77,20 +61,20 @@ class ItemTest extends TestCase
         'toolTip' => 'Item tooltip',
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_aclMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
-        $this->_scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->_menuFactoryMock = $this->createPartialMock(MenuFactory::class, ['create']);
-        $this->_urlModelMock = $this->createMock(Url::class);
-        $this->_moduleManager = $this->createMock(Manager::class);
-        $validatorMock = $this->createMock(Validator::class);
+        $this->_aclMock = $this->createMock(\Magento\Framework\AuthorizationInterface::class);
+        $this->_scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_menuFactoryMock = $this->createPartialMock(\Magento\Backend\Model\MenuFactory::class, ['create']);
+        $this->_urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
+        $this->_moduleManager = $this->createMock(\Magento\Framework\Module\Manager::class);
+        $validatorMock = $this->createMock(\Magento\Backend\Model\Menu\Item\Validator::class);
         $validatorMock->expects($this->any())->method('validate');
-        $this->_moduleListMock = $this->getMockForAbstractClass(ModuleListInterface::class);
+        $this->_moduleListMock = $this->createMock(\Magento\Framework\Module\ModuleListInterface::class);
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             [
                 'validator' => $validatorMock,
                 'authorization' => $this->_aclMock,
@@ -108,7 +92,7 @@ class ItemTest extends TestCase
     {
         $this->_params['action'] = '';
         $item = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             ['menuFactory' => $this->_menuFactoryMock, 'data' => $this->_params]
         );
         $this->assertEquals('#', $item->getUrl());
@@ -121,9 +105,9 @@ class ItemTest extends TestCase
         )->method(
             'getUrl'
         )->with(
-            '/system/config'
-        )->willReturn(
-            'Url'
+            $this->equalTo('/system/config')
+        )->will(
+            $this->returnValue('Url')
         );
         $this->assertEquals('Url', $this->_model->getUrl());
     }
@@ -137,7 +121,7 @@ class ItemTest extends TestCase
     {
         $this->_params['action'] = '';
         $item = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             ['menuFactory' => $this->_menuFactoryMock, 'data' => $this->_params]
         );
         $this->assertTrue($item->hasClickCallback());
@@ -147,7 +131,7 @@ class ItemTest extends TestCase
     {
         $this->_params['action'] = '';
         $item = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             ['menuFactory' => $this->_menuFactoryMock, 'data' => $this->_params]
         );
         $this->assertEquals('return false;', $item->getClickCallback());
@@ -160,35 +144,35 @@ class ItemTest extends TestCase
 
     public function testIsDisabledReturnsTrueIfModuleOutputIsDisabled()
     {
-        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->willReturn(false);
+        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->will($this->returnValue(false));
         $this->assertTrue($this->_model->isDisabled());
     }
 
     public function testIsDisabledReturnsTrueIfModuleDependenciesFail()
     {
-        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->willReturn(true);
+        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->will($this->returnValue(true));
 
-        $this->_moduleListMock->expects($this->once())->method('has')->willReturn(true);
+        $this->_moduleListMock->expects($this->once())->method('has')->will($this->returnValue(true));
 
         $this->assertTrue($this->_model->isDisabled());
     }
 
     public function testIsDisabledReturnsTrueIfConfigDependenciesFail()
     {
-        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->willReturn(true);
+        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->will($this->returnValue(true));
 
-        $this->_moduleListMock->expects($this->once())->method('has')->willReturn(true);
+        $this->_moduleListMock->expects($this->once())->method('has')->will($this->returnValue(true));
 
         $this->assertTrue($this->_model->isDisabled());
     }
 
     public function testIsDisabledReturnsFalseIfNoDependenciesFail()
     {
-        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->willReturn(true);
+        $this->_moduleManager->expects($this->once())->method('isOutputEnabled')->will($this->returnValue(true));
 
-        $this->_moduleListMock->expects($this->once())->method('has')->willReturn(true);
+        $this->_moduleListMock->expects($this->once())->method('has')->will($this->returnValue(true));
 
-        $this->_scopeConfigMock->expects($this->once())->method('isSetFlag')->willReturn(true);
+        $this->_scopeConfigMock->expects($this->once())->method('isSetFlag')->will($this->returnValue(true));
 
         $this->assertFalse($this->_model->isDisabled());
     }
@@ -201,8 +185,8 @@ class ItemTest extends TestCase
             'isAllowed'
         )->with(
             'Magento_Config::config'
-        )->willReturn(
-            true
+        )->will(
+            $this->returnValue(true)
         );
         $this->assertTrue($this->_model->isAllowed());
     }
@@ -215,17 +199,17 @@ class ItemTest extends TestCase
             'isAllowed'
         )->with(
             'Magento_Config::config'
-        )->willThrowException(
-            new LocalizedException(__('Error'))
+        )->will(
+            $this->throwException(new \Magento\Framework\Exception\LocalizedException(__('Error')))
         );
         $this->assertFalse($this->_model->isAllowed());
     }
 
     public function testGetChildrenCreatesSubmenuOnFirstCall()
     {
-        $menuMock = $this->createMock(Menu::class);
+        $menuMock = $this->createMock(\Magento\Backend\Model\Menu::class);
 
-        $this->_menuFactoryMock->expects($this->once())->method('create')->willReturn($menuMock);
+        $this->_menuFactoryMock->expects($this->once())->method('create')->will($this->returnValue($menuMock));
 
         $this->_model->getChildren();
         $this->_model->getChildren();
@@ -238,13 +222,13 @@ class ItemTest extends TestCase
      */
     public function testToArray(array $data, array $expected)
     {
-        $menuMock = $this->createMock(Menu::class);
-        $this->_menuFactoryMock->method('create')->willReturn($menuMock);
+        $menuMock = $this->createMock(\Magento\Backend\Model\Menu::class);
+        $this->_menuFactoryMock->method('create')->will($this->returnValue($menuMock));
         $menuMock->method('toArray')
             ->willReturn($data['sub_menu']);
 
         $model = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             [
                 'authorization' => $this->_aclMock,
                 'scopeConfig' => $this->_scopeConfigMock,
@@ -277,13 +261,13 @@ class ItemTest extends TestCase
         array $populateFromData,
         array $expected
     ) {
-        $menuMock = $this->createMock(Menu::class);
+        $menuMock = $this->createMock(\Magento\Backend\Model\Menu::class);
         $this->_menuFactoryMock->method('create')->willReturn($menuMock);
         $menuMock->method('toArray')
             ->willReturn(['submenuArray']);
 
         $model = $this->objectManager->getObject(
-            Item::class,
+            \Magento\Backend\Model\Menu\Item::class,
             [
                 'authorization' => $this->_aclMock,
                 'scopeConfig' => $this->_scopeConfigMock,

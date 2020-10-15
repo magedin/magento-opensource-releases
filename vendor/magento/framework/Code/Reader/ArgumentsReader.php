@@ -5,8 +5,11 @@
  */
 namespace Magento\Framework\Code\Reader;
 
+use Laminas\Code\Reflection\MethodReflection;
+use Laminas\Code\Reflection\ParameterReflection;
+
 /**
- * The class arguments reader
+ * Reader for a class arguments
  */
 class ArgumentsReader
 {
@@ -43,6 +46,7 @@ class ArgumentsReader
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @throws \ReflectionException
      */
     public function getConstructorArguments(\ReflectionClass $class, $groupByPosition = false, $inherited = false)
     {
@@ -57,7 +61,7 @@ class ArgumentsReader
             return $output;
         }
 
-        $constructor = new \Laminas\Code\Reflection\MethodReflection($class->getName(), '__construct');
+        $constructor = new MethodReflection($class->getName(), '__construct');
         foreach ($constructor->getParameters() as $parameter) {
             $name = $parameter->getName();
             $position = $parameter->getPosition();
@@ -93,10 +97,10 @@ class ArgumentsReader
      * Process argument type.
      *
      * @param \ReflectionClass $class
-     * @param \Laminas\Code\Reflection\ParameterReflection $parameter
+     * @param ParameterReflection $parameter
      * @return string
      */
-    private function processType(\ReflectionClass $class, \Laminas\Code\Reflection\ParameterReflection $parameter)
+    private function processType(\ReflectionClass $class, ParameterReflection $parameter)
     {
         if ($parameter->getClass()) {
             return NamespaceResolver::NS_SEPARATOR . $parameter->getClass()->getName();

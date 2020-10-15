@@ -5,8 +5,6 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 /** @var \Magento\Framework\Registry $registry */
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
@@ -43,7 +41,7 @@ $quote->load('test_order_1', 'reserved_order_id')->delete();
 $quoteIdMask = $objectManager->create(\Magento\Quote\Model\QuoteIdMask::class);
 $quoteIdMask->delete($quote->getId());
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address_rollback.php');
+require __DIR__ . '/../../Checkout/_files/quote_with_address_rollback.php';
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

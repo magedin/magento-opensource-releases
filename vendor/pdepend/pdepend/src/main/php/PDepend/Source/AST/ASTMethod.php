@@ -204,7 +204,6 @@ class ASTMethod extends AbstractASTCallable
         if ($this->parent === null) {
             throw new ASTCompilationUnitNotFoundException($this);
         }
-
         return $this->parent->getCompilationUnit();
     }
 
@@ -224,7 +223,7 @@ class ASTMethod extends AbstractASTCallable
      * gets serialized. It returns an array with those properties that should be
      * cached for method instances.
      *
-     * @return array<string>
+     * @return array(string)
      * @since  0.10.0
      */
     public function __sleep()

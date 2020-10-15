@@ -3,52 +3,43 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Hostedpro;
 
 use Magento\Framework\DataObject;
-use Magento\Framework\Locale\Resolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Paypal\Model\Hostedpro;
-use Magento\Paypal\Model\Hostedpro\Request;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Tax\Helper\Data;
-use Magento\Tax\Model\Config;
-use PHPUnit\Framework\TestCase;
 
-class RequestTest extends TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $helper;
 
     /**
-     * @var Request
+     * @var \Magento\Paypal\Model\Hostedpro\Request
      */
     protected $_model;
 
     protected $localeResolverMock;
 
     /**
-     * @var Data
+     * @var \Magento\Tax\Helper\Data
      */
     protected $taxData;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helper = new ObjectManager($this);
+        $this->helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->localeResolverMock = $this->getMockBuilder(Resolver::class)
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\Resolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->taxData = $this->helper->getObject(Data::class);
+        $this->taxData = $this->helper->getObject(\Magento\Tax\Helper\Data::class);
 
         $this->_model = $this->helper->getObject(
-            Request::class,
+            \Magento\Paypal\Model\Hostedpro\Request::class,
             [
                 'localeResolver' => $this->localeResolverMock,
                 'taxData' => $this->taxData
@@ -76,13 +67,13 @@ class RequestTest extends TestCase
             ->getMock();
         $order->expects(static::any())
             ->method('getPayment')
-            ->willReturn($payment);
+            ->will($this->returnValue($payment));
         $order->expects(static::any())
             ->method('getBillingAddress')
-            ->willReturn($billing);
+            ->will($this->returnValue($billing));
         $order->expects(static::any())
             ->method('getShippingAddress')
-            ->willReturn($shipping);
+            ->will($this->returnValue($shipping));
         $this->_model->setOrder($order);
         static::assertEquals($billingState, $this->_model->getData('billing_state'));
         static::assertEquals($state, $this->_model->getData('state'));
@@ -153,7 +144,7 @@ class RequestTest extends TestCase
             'showCardInfo' => 'true',
             'showHostedThankyouPage' => 'false'
         ];
-        $paymentMethodMock = $this->getMockBuilder(Hostedpro::class)
+        $paymentMethodMock = $this->getMockBuilder(\Magento\Paypal\Model\Hostedpro::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -180,7 +171,7 @@ class RequestTest extends TestCase
             'buyer_email' => 'buyer@email.com',
         ];
 
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -319,19 +310,19 @@ class RequestTest extends TestCase
      */
     public function testSetAmountWithIncludedTax()
     {
-        /** @var Config  $config */
-        $config = $this->helper->getObject(Config::class);
+        /** @var \Magento\Tax\Model\Config  $config */
+        $config = $this->helper->getObject(\Magento\Tax\Model\Config::class);
         $config->setPriceIncludesTax(true);
 
         $this->taxData = $this->helper->getObject(
-            Data::class,
+            \Magento\Tax\Helper\Data::class,
             [
                 'taxConfig' => $config
             ]
         );
 
         $this->_model = $this->helper->getObject(
-            Request::class,
+            \Magento\Paypal\Model\Hostedpro\Request::class,
             [
                 'localeResolver' => $this->localeResolverMock,
                 'taxData' => $this->taxData
@@ -347,11 +338,11 @@ class RequestTest extends TestCase
             'subtotal' => $amount
         ];
 
-        $payment = $this->getMockBuilder(Payment::class)
+        $payment = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Unit test for Magento\Customer\Test\Unit\Model\Account\Redirect
  *
@@ -9,29 +9,16 @@
 namespace Magento\Customer\Test\Unit\Model\Account;
 
 use Magento\Customer\Model\Account\Redirect;
-use Magento\Customer\Model\Session;
 use Magento\Customer\Model\Url as CustomerUrl;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Forward;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
-use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\DecoderInterface;
 use Magento\Framework\Url\HostChecker;
-use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\FrameworkMockObject\MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RedirectTest extends TestCase
+class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Redirect
@@ -39,122 +26,126 @@ class RedirectTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\RequestInterface
      */
     protected $request;
 
     /**
-     * @var MockObject|Session
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Model\Session
      */
     protected $customerSession;
 
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @var MockObject|StoreManagerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var MockObject|Store
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Store\Model\Store
      */
     protected $store;
 
     /**
-     * @var MockObject|UrlInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\UrlInterface
      */
     protected $url;
 
     /**
-     * @var MockObject|DecoderInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Url\DecoderInterface
      */
     protected $urlDecoder;
 
     /**
-     * @var MockObject|\Magento\Customer\Model\Url
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Model\Url
      */
     protected $customerUrl;
 
     /**
-     * @var MockObject|\Magento\Framework\Controller\Result\Redirect
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Controller\Result\Redirect
      */
     protected $resultRedirect;
 
     /**
-     * @var MockObject|Forward
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Controller\Result\Forward
      */
     protected $resultForward;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactory;
 
     /**
-     * @var CookieMetadataFactory|MockObject
-     */
-    protected $cookieMetadataFactory;
-
-    /**
-     * @var HostChecker|MockObject
+     * @var HostChecker | \PHPUnit_Framework_MockObject_MockObject
      */
     private $hostChecker;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->customerSession = $this->getMockBuilder(Session::class)
+        $this->request = $this->getMockForAbstractClass(\Magento\Framework\App\RequestInterface::class);
+
+        $this->customerSession = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'getLastCustomerId',
-                    'isLoggedIn',
-                    'getId',
-                    'setLastCustomerId',
-                    'unsBeforeAuthUrl',
-                    'getBeforeAuthUrl',
-                    'setBeforeAuthUrl',
-                    'getAfterAuthUrl',
-                    'setAfterAuthUrl',
-                    'getBeforeRequestParams',
-                    'getBeforeModuleName',
-                    'getBeforeControllerName',
-                    'getBeforeAction',
-                ]
-            )
+            ->setMethods([
+                'getLastCustomerId',
+                'isLoggedIn',
+                'getId',
+                'setLastCustomerId',
+                'unsBeforeAuthUrl',
+                'getBeforeAuthUrl',
+                'setBeforeAuthUrl',
+                'getAfterAuthUrl',
+                'setAfterAuthUrl',
+                'getBeforeRequestParams',
+                'getBeforeModuleName',
+                'getBeforeControllerName',
+                'getBeforeAction',
+            ])
             ->getMock();
 
-        $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->store = $this->createMock(Store::class);
-        $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->url = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->urlDecoder = $this->getMockForAbstractClass(DecoderInterface::class);
+        $this->scopeConfig = $this->getMockForAbstractClass(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+
+        $this->store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->storeManager = $this->getMockForAbstractClass(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->storeManager->expects($this->once())
+            ->method('getStore')
+            ->willReturn($this->store);
+
+        $this->url = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class);
+        $this->urlDecoder = $this->getMockForAbstractClass(\Magento\Framework\Url\DecoderInterface::class);
+
         $this->customerUrl = $this->getMockBuilder(\Magento\Customer\Model\Url::class)
-            ->setMethods(
-                [
-                    'DashboardUrl',
-                    'getAccountUrl',
-                    'getLoginUrl',
-                    'getLogoutUrl',
-                    'getDashboardUrl'
-                ]
-            )->disableOriginalConstructor()
+            ->setMethods(['DashboardUrl', 'getAccountUrl', 'getLoginUrl', 'getLogoutUrl', 'getDashboardUrl'])
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultRedirect = $this->createMock(\Magento\Framework\Controller\Result\Redirect::class);
-        $this->resultForward = $this->createMock(Forward::class);
-        $this->resultFactory = $this->createMock(ResultFactory::class);
-        $this->cookieMetadataFactory = $this->createMock(CookieMetadataFactory::class);
-        $this->hostChecker = $this->createMock(HostChecker::class);
+        $this->resultRedirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->resultForward = $this->getMockBuilder(\Magento\Framework\Controller\Result\Forward::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->resultFactory = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->hostChecker = $this->getMockBuilder(HostChecker::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $objectManager = new ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Redirect::class,
+            \Magento\Customer\Model\Account\Redirect::class,
             [
                 'request' => $this->request,
                 'customerSession' => $this->customerSession,
@@ -164,15 +155,12 @@ class RedirectTest extends TestCase
                 'urlDecoder' => $this->urlDecoder,
                 'customerUrl' => $this->customerUrl,
                 'resultFactory' => $this->resultFactory,
-                'cookieMetadataFactory' => $this->cookieMetadataFactory,
                 'hostChecker' => $this->hostChecker,
             ]
         );
     }
 
     /**
-     * Verify get redirect method
-     *
      * @param int $customerId
      * @param int $lastCustomerId
      * @param string $referer
@@ -213,9 +201,6 @@ class RedirectTest extends TestCase
             ->willReturnSelf();
 
         // Preparations for method prepareRedirectUrl()
-        $this->storeManager->expects($this->once())
-            ->method('getStore')
-            ->willReturn($this->store);
         $this->store->expects($this->once())->method('getBaseUrl')->willReturn($baseUrl);
 
         $this->customerSession->expects($this->any())->method('getBeforeAuthUrl')->willReturn($beforeAuthUrl);
@@ -259,8 +244,6 @@ class RedirectTest extends TestCase
     }
 
     /**
-     * Redirect data provider
-     *
      * @return array
      */
     public function getRedirectDataProvider()
@@ -309,12 +292,7 @@ class RedirectTest extends TestCase
         ];
     }
 
-    /**
-     * Verify before request params
-     *
-     * @return void
-     */
-    public function testBeforeRequestParams(): void
+    public function testBeforeRequestParams()
     {
         $requestParams = [
             'param1' => 'value1',
@@ -324,9 +302,6 @@ class RedirectTest extends TestCase
         $controller = 'controller';
         $action = 'action';
 
-        $this->storeManager->expects($this->once())
-            ->method('getStore')
-            ->willReturn($this->store);
         $this->customerSession->expects($this->exactly(2))
             ->method('getBeforeRequestParams')
             ->willReturn($requestParams);
@@ -339,6 +314,7 @@ class RedirectTest extends TestCase
         $this->customerSession->expects($this->once())
             ->method('getBeforeAction')
             ->willReturn($action);
+
         $this->resultForward->expects($this->once())
             ->method('setParams')
             ->with($requestParams)
@@ -355,6 +331,7 @@ class RedirectTest extends TestCase
             ->method('forward')
             ->with($action)
             ->willReturnSelf();
+
         $this->resultFactory->expects($this->once())
             ->method('create')
             ->with(ResultFactory::TYPE_FORWARD)
@@ -362,83 +339,5 @@ class RedirectTest extends TestCase
 
         $result = $this->model->getRedirect();
         $this->assertSame($this->resultForward, $result);
-    }
-
-    /**
-     * Verify set redirect cokkie method
-     *
-     * @return void
-     */
-    public function testSetRedirectCookie(): void
-    {
-        $coockieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
-        $publicMetadataMock = $this->createMock(PublicCookieMetadata::class);
-        $routeMock = 'route';
-
-        $this->model->setCookieManager($coockieManagerMock);
-
-        $this->storeManager->expects($this->once())
-            ->method('getStore')
-            ->willReturn($this->store);
-        $this->store->expects($this->once())
-            ->method('getStorePath')
-            ->willReturn('storePath');
-        $this->cookieMetadataFactory->expects($this->once())
-            ->method('createPublicCookieMetadata')
-            ->willReturn($publicMetadataMock);
-        $publicMetadataMock->expects($this->once())
-            ->method('setHttpOnly')
-            ->with(true)
-            ->willReturnSelf();
-        $publicMetadataMock->expects($this->once())
-            ->method('setDuration')
-            ->with(3600)
-            ->willReturnSelf();
-        $publicMetadataMock->expects($this->once())
-            ->method('setPath')
-            ->with('storePath')
-            ->willReturnSelf();
-        $coockieManagerMock->expects($this->once())
-            ->method('setPublicCookie')
-            ->with(
-                Redirect::LOGIN_REDIRECT_URL,
-                $routeMock,
-                $publicMetadataMock
-            );
-        $this->model->setRedirectCookie($routeMock);
-    }
-
-    /**
-     * Verify clear redirect cookie
-     *
-     * @return void
-     */
-    public function testClearRedirectCookie(): void
-    {
-        $coockieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
-        $publicMetadataMock = $this->createMock(PublicCookieMetadata::class);
-
-        $this->model->setCookieManager($coockieManagerMock);
-
-        $this->storeManager->expects($this->once())
-            ->method('getStore')
-            ->willReturn($this->store);
-        $this->store->expects($this->once())
-            ->method('getStorePath')
-            ->willReturn('storePath');
-        $this->cookieMetadataFactory->expects($this->once())
-            ->method('createPublicCookieMetadata')
-            ->willReturn($publicMetadataMock);
-        $publicMetadataMock->expects($this->once())
-            ->method('setPath')
-            ->with('storePath')
-            ->willReturnSelf();
-        $coockieManagerMock->expects($this->once())
-            ->method('deleteCookie')
-            ->with(
-                Redirect::LOGIN_REDIRECT_URL,
-                $publicMetadataMock
-            );
-        $this->model->clearRedirectCookie();
     }
 }

@@ -1,19 +1,14 @@
 
-6.0.2 / 2020-07-06
+5.1.1 / 2020-07-31
 ==================
 
-  * MAGE-2269 Add validation of notification requests
+  * MAGE-2270 Add validation of notification requests
 
-6.0.1 / 2020-06-04
+5.1.0 / 2020-06-04
 ==================
 
+  * MAGE-1840 Add ability to pass a reference in the capture and refund request
   * MAGE-2160 Fix capture and refund visibility in the Klarna merchant portal
-
-6.0.0 / 2020-04-28
-==================
-
-  * MAGE-1840 Add support for sending a merchant reference in capture and refund calls
-  * MAGE-1939 Updates for PHP 7.4
 
 5.0.8 / 2020-02-11
 ==================

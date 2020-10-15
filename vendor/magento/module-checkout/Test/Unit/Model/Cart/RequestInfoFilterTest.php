@@ -3,36 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Model\Cart;
 
-use Magento\Checkout\Model\Cart\RequestInfoFilter;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class RequestInfoFilterTest extends TestCase
+/**
+ * Class RequestInfoFilterTest
+ */
+class RequestInfoFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestInfoFilter
+     * @var \Magento\Checkout\Model\Cart\RequestInfoFilter
      */
     protected $model;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
      * Setup the test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->model = $this->objectManager->getObject(
-            RequestInfoFilter::class,
+            \Magento\Checkout\Model\Cart\RequestInfoFilter::class,
             [
                 'filterList' => ['efg', 'xyz'],
             ]
@@ -44,9 +40,9 @@ class RequestInfoFilterTest extends TestCase
      */
     public function testFilter()
     {
-        /** @var DataObject $params */
+        /** @var \Magento\Framework\DataObject $params */
         $params = $this->objectManager->getObject(
-            DataObject::class,
+            \Magento\Framework\DataObject::class,
             ['data' => ['abc' => 1, 'efg' => 1, 'xyz' => 1]]
         );
         $result = $this->model->filter($params);

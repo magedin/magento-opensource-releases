@@ -54,11 +54,3 @@ $a = $b === true ? $c : $d;
 
 $this->_args = $this->_getArgs(($_SERVER['argv'] ?? []));
 $args = ($_SERVER['argv'] ?? []);
-
-$a = [
-    'a' => ($foo) ? $foo : $bar,
-];
-
-$a = [
-    'a' => ($foo) ? fn() => return 1 : fn() => return 2,
-];

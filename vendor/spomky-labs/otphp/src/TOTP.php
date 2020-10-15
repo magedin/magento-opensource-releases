@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -14,57 +12,73 @@ declare(strict_types=1);
 namespace OTPHP;
 
 use Assert\Assertion;
-use function Safe\ksort;
 
 final class TOTP extends OTP implements TOTPInterface
 {
-    protected function __construct(?string $secret, int $period, string $digest, int $digits, int $epoch = 0)
+    /**
+     * TOTP constructor.
+     *
+     * @param string|null $label
+     * @param string|null $secret
+     * @param int         $period
+     * @param string      $digest
+     * @param int         $digits
+     */
+    public function __construct($label = null, $secret = null, $period = 30, $digest = 'sha1', $digits = 6)
     {
-        parent::__construct($secret, $digest, $digits);
+        parent::__construct($label, $secret, $digest, $digits);
         $this->setPeriod($period);
-        $this->setEpoch($epoch);
     }
 
-    public static function create(?string $secret = null, int $period = 30, string $digest = 'sha1', int $digits = 6, int $epoch = 0): TOTPInterface
+    /**
+     * @param int $period
+     *
+     * @return self
+     */
+    private function setPeriod($period)
     {
-        return new self($secret, $period, $digest, $digits, $epoch);
-    }
+        Assertion::integer($period, 'Period must be at least 1.');
+        Assertion::greaterThan($period, 0, 'Period must be at least 1.');
 
-    protected function setPeriod(int $period): void
-    {
         $this->setParameter('period', $period);
+
+        return $this;
     }
 
-    public function getPeriod(): int
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeriod()
     {
         return $this->getParameter('period');
     }
 
-    private function setEpoch(int $epoch): void
-    {
-        $this->setParameter('epoch', $epoch);
-    }
-
-    public function getEpoch(): int
-    {
-        return $this->getParameter('epoch');
-    }
-
-    public function at(int $timestamp): string
+    /**
+     * {@inheritdoc}
+     */
+    public function at($timestamp)
     {
         return $this->generateOTP($this->timecode($timestamp));
     }
 
-    public function now(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function now()
     {
         return $this->at(time());
     }
 
     /**
-     * If no timestamp is provided, the OTP is verified at the actual timestamp.
+     * If no timestamp is provided, the OTP is verified at the actual timestamp
+     * {@inheritdoc}
      */
-    public function verify(string $otp, ?int $timestamp = null, ?int $window = null): bool
+    public function verify($otp, $timestamp = null, $window = null)
     {
+        Assertion::string($otp, 'The OTP must be a string');
+        Assertion::nullOrInteger($timestamp, 'The timestamp must be null or an integer');
+        Assertion::nullOrInteger($window, 'The window parameter must be null or an integer');
+
         $timestamp = $this->getTimestamp($timestamp);
 
         if (null === $window) {
@@ -74,17 +88,19 @@ final class TOTP extends OTP implements TOTPInterface
         return $this->verifyOtpWithWindow($otp, $timestamp, $window);
     }
 
-    private function verifyOtpWithWindow(string $otp, int $timestamp, int $window): bool
+    /**
+     * @param string $otp
+     * @param int    $timestamp
+     * @param int    $window
+     *
+     * @return bool
+     */
+    private function verifyOtpWithWindow($otp, $timestamp, $window)
     {
         $window = abs($window);
 
-        for ($i = 0; $i <= $window; ++$i) {
-            $next = $i * $this->getPeriod() + $timestamp;
-            $previous = -$i * $this->getPeriod() + $timestamp;
-            $valid = $this->compareOTP($this->at($next), $otp) ||
-                $this->compareOTP($this->at($previous), $otp);
-
-            if ($valid) {
+        for ($i = -$window; $i <= $window; $i++) {
+            if ($this->compareOTP($this->at($i * $this->getPeriod() + $timestamp), $otp)) {
                 return true;
             }
         }
@@ -92,68 +108,39 @@ final class TOTP extends OTP implements TOTPInterface
         return false;
     }
 
-    private function getTimestamp(?int $timestamp): int
+    /**
+     * @param int|null $timestamp
+     *
+     * @return int
+     */
+    private function getTimestamp($timestamp)
     {
-        $timestamp = $timestamp ?? time();
+        $timestamp = null === $timestamp ? time() : $timestamp;
         Assertion::greaterOrEqualThan($timestamp, 0, 'Timestamp must be at least 0.');
 
         return $timestamp;
     }
 
-    public function getProvisioningUri(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function getProvisioningUri()
     {
         $params = [];
         if (30 !== $this->getPeriod()) {
-            $params['period'] = $this->getPeriod();
-        }
-
-        if (0 !== $this->getEpoch()) {
-            $params['epoch'] = $this->getEpoch();
+            $params = ['period' => $this->getPeriod()];
         }
 
         return $this->generateURI('totp', $params);
     }
 
-    private function timecode(int $timestamp): int
-    {
-        return (int) floor(($timestamp - $this->getEpoch()) / $this->getPeriod());
-    }
-
     /**
-     * @return array<string, mixed>
+     * @param int $timestamp
+     *
+     * @return int
      */
-    protected function getParameterMap(): array
+    private function timecode($timestamp)
     {
-        $v = array_merge(
-            parent::getParameterMap(),
-            [
-                'period' => function ($value): int {
-                    Assertion::greaterThan((int) $value, 0, 'Period must be at least 1.');
-
-                    return (int) $value;
-                },
-                'epoch' => function ($value): int {
-                    Assertion::greaterOrEqualThan((int) $value, 0, 'Epoch must be greater than or equal to 0.');
-
-                    return (int) $value;
-                },
-            ]
-        );
-
-        return $v;
-    }
-
-    /**
-     * @param array<string, mixed> $options
-     */
-    protected function filterOptions(array &$options): void
-    {
-        parent::filterOptions($options);
-
-        if (isset($options['epoch']) && 0 === $options['epoch']) {
-            unset($options['epoch']);
-        }
-
-        ksort($options);
+        return (int) floor($timestamp / $this->getPeriod());
     }
 }

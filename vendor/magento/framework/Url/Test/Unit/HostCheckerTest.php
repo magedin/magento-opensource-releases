@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Url\Test\Unit;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\HostChecker;
-use Magento\Framework\Url\ScopeInterface;
-use Magento\Framework\Url\ScopeResolverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class HostCheckerTest extends TestCase
+class HostCheckerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HostChecker */
+    /** @var \Magento\Framework\Url\HostChecker */
     private $object;
 
-    /** @var ScopeResolverInterface|MockObject */
+    /** @var \Magento\Framework\Url\ScopeResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $scopeResolver;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scopeResolver = $this->getMockBuilder(
-            ScopeResolverInterface::class
+            \Magento\Framework\Url\ScopeResolverInterface::class
         )->getMock();
 
         $objectManager = new ObjectManager($this);
         $this->object = $objectManager->getObject(
-            HostChecker::class,
+            \Magento\Framework\Url\HostChecker::class,
             [
                 'scopeResolver' => $this->scopeResolver
             ]
@@ -47,11 +40,9 @@ class HostCheckerTest extends TestCase
      */
     public function testIsOwnOrigin($url, $result)
     {
-        $scopes[0] = $this->getMockBuilder(ScopeInterface::class)
-            ->getMock();
+        $scopes[0] = $this->getMockBuilder(\Magento\Framework\Url\ScopeInterface::class)->getMock();
         $scopes[0]->expects($this->any())->method('getBaseUrl')->willReturn('http://www.example.com');
-        $scopes[1] = $this->getMockBuilder(ScopeInterface::class)
-            ->getMock();
+        $scopes[1] = $this->getMockBuilder(\Magento\Framework\Url\ScopeInterface::class)->getMock();
         $scopes[1]->expects($this->any())->method('getBaseUrl')->willReturn('https://www.example2.com');
 
         $this->scopeResolver->expects($this->atLeastOnce())->method('getScopes')->willReturn($scopes);

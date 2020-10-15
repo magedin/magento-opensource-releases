@@ -23,7 +23,7 @@ class RowCustomizerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->model = $this->objectManager->create(
@@ -58,7 +58,7 @@ class RowCustomizerTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('bundle_price_view', $result);
         $this->assertArrayHasKey('bundle_weight_type', $result);
         $this->assertArrayHasKey('bundle_values', $result);
-        $this->assertStringContainsString('sku=simple,', $result['bundle_values']);
+        $this->assertContains('sku=simple,', $result['bundle_values']);
         $this->assertEquals([], $this->model->addData([], $ids['simple']));
         $this->assertEquals($parsedAdditionalAttributes, $result['additional_attributes']);
     }

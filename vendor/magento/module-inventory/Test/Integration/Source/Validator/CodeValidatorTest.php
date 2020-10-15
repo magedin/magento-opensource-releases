@@ -25,7 +25,7 @@ class CodeValidatorTest extends TestCase
      */
     private $sourceFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -56,7 +56,7 @@ class CodeValidatorTest extends TestCase
         $errors = $result->getErrors();
         foreach ($errorStrings as $errorString) {
             $errorText = array_shift($errors);
-            $this->assertStringContainsString((string)$errorString, (string)$errorText);
+            $this->assertContains($errorString, (string)$errorText);
         }
     }
 

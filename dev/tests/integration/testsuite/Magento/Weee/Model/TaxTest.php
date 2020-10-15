@@ -27,18 +27,18 @@ class TaxTest extends \PHPUnit\Framework\TestCase
      */
     private $_extensibleDataObjectConverter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $weeeConfig = $this->createMock(\Magento\Weee\Model\Config::class);
-        $weeeConfig->expects($this->any())->method('isEnabled')->willReturn(true);
-        $weeeConfig->expects($this->any())->method('isTaxable')->willReturn(true);
+        $weeeConfig->expects($this->any())->method('isEnabled')->will($this->returnValue(true));
+        $weeeConfig->expects($this->any())->method('isTaxable')->will($this->returnValue(true));
         $attribute = $this->createMock(\Magento\Eav\Model\Entity\Attribute::class);
-        $attribute->expects($this->any())->method('getAttributeCodesByFrontendType')->willReturn(
-            ['weee']
+        $attribute->expects($this->any())->method('getAttributeCodesByFrontendType')->will(
+            $this->returnValue(['weee'])
         );
         $attributeFactory = $this->createPartialMock(\Magento\Eav\Model\Entity\AttributeFactory::class, ['create']);
-        $attributeFactory->expects($this->any())->method('create')->willReturn($attribute);
+        $attributeFactory->expects($this->any())->method('create')->will($this->returnValue($attribute));
         $this->_model = $objectManager->create(
             \Magento\Weee\Model\Tax::class,
             ['weeeConfig' => $weeeConfig, 'attributeFactory' => $attributeFactory]
@@ -92,7 +92,7 @@ class TaxTest extends \PHPUnit\Framework\TestCase
         $product = $productRepository->get('simple-with-ftp');
 
         $amount = $this->_model->getProductWeeeAttributes($product, $shipping, null, null, true);
-        $this->assertIsArray($amount);
+        $this->assertTrue(is_array($amount));
         $this->assertArrayHasKey(0, $amount);
         $this->assertEquals(12.70, $amount[0]->getAmount());
     }

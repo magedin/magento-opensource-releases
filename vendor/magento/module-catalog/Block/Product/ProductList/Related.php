@@ -6,15 +6,7 @@
 
 namespace Magento\Catalog\Block\Product\ProductList;
 
-use Magento\Catalog\Block\Product\AbstractProduct;
-use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Checkout\Model\ResourceModel\Cart as CartResourceModel;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\Module\Manager;
 use Magento\Framework\View\Element\AbstractBlock;
 
 /**
@@ -24,7 +16,8 @@ use Magento\Framework\View\Element\AbstractBlock;
  * @SuppressWarnings(PHPMD.LongVariable)
  * @since 100.0.2
  */
-class Related extends AbstractProduct implements IdentityInterface
+class Related extends \Magento\Catalog\Block\Product\AbstractProduct implements
+    \Magento\Framework\DataObject\IdentityInterface
 {
     /**
      * @var Collection
@@ -34,50 +27,53 @@ class Related extends AbstractProduct implements IdentityInterface
     /**
      * Checkout session
      *
-     * @var CheckoutSession
+     * @var \Magento\Checkout\Model\Session
      */
     protected $_checkoutSession;
 
     /**
      * Catalog product visibility
      *
-     * @var ProductVisibility
+     * @var \Magento\Catalog\Model\Product\Visibility
      */
     protected $_catalogProductVisibility;
 
     /**
      * Checkout cart
      *
-     * @var CartResourceModel
+     * @var \Magento\Checkout\Model\ResourceModel\Cart
      */
     protected $_checkoutCart;
 
     /**
-     * @var Manager
+     * @var \Magento\Framework\Module\Manager
      */
     protected $moduleManager;
 
     /**
-     * @param Context $context
-     * @param CartResourceModel $checkoutCart
-     * @param ProductVisibility $catalogProductVisibility
-     * @param CheckoutSession $checkoutSession
-     * @param Manager $moduleManager
+     * @param \Magento\Catalog\Block\Product\Context $context
+     * @param \Magento\Checkout\Model\ResourceModel\Cart $checkoutCart
+     * @param \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Magento\Framework\Module\Manager $moduleManager
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        CartResourceModel $checkoutCart,
-        ProductVisibility $catalogProductVisibility,
-        CheckoutSession $checkoutSession,
-        Manager $moduleManager,
+        \Magento\Catalog\Block\Product\Context $context,
+        \Magento\Checkout\Model\ResourceModel\Cart $checkoutCart,
+        \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Framework\Module\Manager $moduleManager,
         array $data = []
     ) {
         $this->_checkoutCart = $checkoutCart;
         $this->_catalogProductVisibility = $catalogProductVisibility;
         $this->_checkoutSession = $checkoutSession;
         $this->moduleManager = $moduleManager;
-        parent::__construct($context, $data);
+        parent::__construct(
+            $context,
+            $data
+        );
     }
 
     /**
@@ -88,7 +84,7 @@ class Related extends AbstractProduct implements IdentityInterface
     protected function _prepareData()
     {
         $product = $this->getProduct();
-        /* @var $product Product */
+        /* @var $product \Magento\Catalog\Model\Product */
 
         $this->_itemCollection = $product->getRelatedProductCollection()->addAttributeToSelect(
             'required_options'
@@ -143,11 +139,12 @@ class Related extends AbstractProduct implements IdentityInterface
      */
     public function getIdentities()
     {
-        $identities = [[]];
+        $identities = [];
         foreach ($this->getItems() as $item) {
-            $identities[] = $item->getIdentities();
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge
+            $identities = array_merge($identities, $item->getIdentities());
         }
-        return array_merge(...$identities);
+        return $identities;
     }
 
     /**

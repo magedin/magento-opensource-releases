@@ -3,112 +3,93 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Creditmemo;
-
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\CreditmemoRepositoryInterface;
-use Magento\Sales\Controller\Adminhtml\Order\Creditmemo\PrintAction;
-use Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader;
-use Magento\Sales\Model\Order\Creditmemo;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Sales\Controller\Adminhtml\Order\Creditmemo\PrintAction
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PrintActionTest extends TestCase
+class PrintActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PrintAction
+     * @var \Magento\Sales\Controller\Adminhtml\Order\Creditmemo\PrintAction
      */
     protected $printAction;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     protected $context;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var CreditmemoLoader|MockObject
+     * @var \Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoLoaderMock;
 
     /**
-     * @var CreditmemoRepositoryInterface|MockObject
+     * @var \Magento\Sales\Api\CreditmemoRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoRepositoryMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Creditmemo|MockObject
+     * @var \Magento\Sales\Model\Order\Creditmemo|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Pdf\Creditmemo|MockObject
+     * @var \Magento\Sales\Model\Order\Pdf\Creditmemo|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoPdfMock;
 
     /**
-     * @var \Zend_Pdf|MockObject
+     * @var \Zend_Pdf|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pdfMock;
 
     /**
-     * @var DateTime|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateTimeMock;
 
     /**
-     * @var FileFactory|MockObject
+     * @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fileFactoryMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $responseMock;
 
     /**
-     * @var ForwardFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\ForwardFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultForwardFactoryMock;
 
     /**
-     * @var Forward|MockObject
+     * @var \Magento\Backend\Model\View\Result\Forward|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultForwardMock;
 
     /**
      * test setup
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMock();
         $this->creditmemoLoaderMock = $this->getMockBuilder(
-            CreditmemoLoader::class
+            \Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader::class
         )->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -120,10 +101,10 @@ class PrintActionTest extends TestCase
                 ]
             )
             ->getMock();
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->getMock();
-        $this->creditmemoRepositoryMock = $this->getMockForAbstractClass(CreditmemoRepositoryInterface::class);
-        $this->creditmemoMock = $this->getMockBuilder(Creditmemo::class)
+        $this->creditmemoRepositoryMock = $this->createMock(\Magento\Sales\Api\CreditmemoRepositoryInterface::class);
+        $this->creditmemoMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Creditmemo::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->creditmemoPdfMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Pdf\Creditmemo::class)
@@ -132,33 +113,33 @@ class PrintActionTest extends TestCase
         $this->pdfMock = $this->getMockBuilder(\Zend_Pdf::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dateTimeMock = $this->getMockBuilder(DateTime::class)
+        $this->dateTimeMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->fileFactoryMock = $this->getMockBuilder(FileFactory::class)
+        $this->fileFactoryMock = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->getMock();
         $this->resultForwardFactoryMock = $this->getMockBuilder(
-            ForwardFactory::class
+            \Magento\Backend\Model\View\Result\ForwardFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->resultForwardMock = $this->getMockBuilder(Forward::class)
+        $this->resultForwardMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->context = $objectManager->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->requestMock,
                 'objectManager' => $this->objectManagerMock
             ]
         );
         $this->printAction = $objectManager->getObject(
-            PrintAction::class,
+            \Magento\Sales\Controller\Adminhtml\Order\Creditmemo\PrintAction::class,
             [
                 'context' => $this->context,
                 'fileFactory' => $this->fileFactoryMock,
@@ -185,7 +166,7 @@ class PrintActionTest extends TestCase
             ->method('create')
             ->willReturnMap(
                 [
-                    [Creditmemo::class, [], $this->creditmemoMock],
+                    [\Magento\Sales\Model\Order\Creditmemo::class, [], $this->creditmemoMock],
                     [\Magento\Sales\Model\Order\Pdf\Creditmemo::class, [], $this->creditmemoPdfMock]
                 ]
             );
@@ -199,7 +180,7 @@ class PrintActionTest extends TestCase
             ->willReturn($this->pdfMock);
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(DateTime::class)
+            ->with(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->willReturn($this->dateTimeMock);
         $this->dateTimeMock->expects($this->once())
             ->method('date')
@@ -213,13 +194,13 @@ class PrintActionTest extends TestCase
             ->with(
                 $fileName,
                 $fileData,
-                DirectoryList::VAR_DIR,
+                \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR,
                 'application/pdf'
             )
             ->willReturn($this->responseMock);
 
         $this->assertInstanceOf(
-            ResponseInterface::class,
+            \Magento\Framework\App\ResponseInterface::class,
             $this->printAction->execute()
         );
     }
@@ -240,7 +221,7 @@ class PrintActionTest extends TestCase
             ->willReturnSelf();
 
         $this->assertInstanceOf(
-            Forward::class,
+            \Magento\Backend\Model\View\Result\Forward::class,
             $this->printAction->execute()
         );
     }

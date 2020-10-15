@@ -3,37 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Action\Plugin;
 
-use Magento\Backend\App\AbstractAction;
-use Magento\Backend\App\Action\Plugin\MassactionKey;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Backend\App\AbstractAction;
+use Magento\Framework\App\RequestInterface;
 
-class MassactionKeyTest extends TestCase
+class MassactionKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MassactionKey
+     * @var \Magento\Backend\App\Action\Plugin\MassactionKey
      */
     protected $plugin;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|RequestInterface
      */
     protected $requestMock;
 
     /**
-     * @var MockObject|AbstractAction
+     * @var \PHPUnit_Framework_MockObject_MockObject|AbstractAction
      */
     protected $subjectMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->subjectMock = $this->createMock(AbstractAction::class);
+        $this->closureMock = function () {
+            return 'Expected';
+        };
+        $this->subjectMock = $this->createMock(\Magento\Backend\App\AbstractAction::class);
         $this->requestMock = $this->getMockForAbstractClass(
             RequestInterface::class,
             [],
@@ -46,7 +44,7 @@ class MassactionKeyTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->plugin = $objectManager->getObject(
-            MassactionKey::class,
+            \Magento\Backend\App\Action\Plugin\MassactionKey::class,
             [
                 'subject' => $this->subjectMock,
                 'request' => $this->requestMock,
@@ -64,11 +62,11 @@ class MassactionKeyTest extends TestCase
         $this->requestMock->expects($this->at(0))
             ->method('getPost')
             ->with('massaction_prepare_key')
-            ->willReturn('key');
+            ->will($this->returnValue('key'));
         $this->requestMock->expects($this->at(1))
             ->method('getPost')
             ->with('key')
-            ->willReturn($postData);
+            ->will($this->returnValue($postData));
         $this->requestMock->expects($this->once())
             ->method('setPostValue')
             ->with('key', $convertedData);
@@ -92,7 +90,7 @@ class MassactionKeyTest extends TestCase
         $this->requestMock->expects($this->once())
             ->method('getPost')
             ->with('massaction_prepare_key')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->requestMock->expects($this->never())
             ->method('setPostValue');
 

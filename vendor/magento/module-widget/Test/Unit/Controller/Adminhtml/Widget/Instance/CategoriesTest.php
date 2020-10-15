@@ -3,82 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Widget\Test\Unit\Controller\Adminhtml\Widget\Instance;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Raw;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Math\Random;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\Widget\Block\Adminhtml\Widget\Catalog\Category\Chooser;
-use Magento\Widget\Controller\Adminhtml\Widget\Instance\Categories;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CategoriesTest extends TestCase
+class CategoriesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var Random|MockObject
+     * @var \Magento\Framework\Math\Random|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mathRandom;
 
     /**
-     * @var Layout|MockObject
+     * @var \Magento\Framework\View\Layout|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $chooser;
 
     /**
      * @var string
      */
-    protected $blockClass = Chooser::class;
+    protected $blockClass = \Magento\Widget\Block\Adminhtml\Widget\Catalog\Category\Chooser::class;
 
     /**
-     * @var Layout|MockObject
+     * @var \Magento\Framework\View\Layout|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $layout;
 
     /**
-     * @var Raw|MockObject
+     * @var \Magento\Framework\Controller\Result\Raw|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultRaw;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultFactory;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var Categories
+     * @var \Magento\Widget\Controller\Adminhtml\Widget\Instance\Categories
      */
     protected $controller;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->mathRandom = $this->createMock(Random::class);
-        $this->chooser = $this->getMockBuilder($this->blockClass)
-            ->disableOriginalConstructor()
-            ->addMethods(['setUseMassaction', 'setId', 'setIsAnchorOnly'])
-            ->onlyMethods(['setSelectedCategories', 'toHtml'])
-            ->getMock();
-        $this->layout = $this->createMock(Layout::class);
-        $this->resultRaw = $this->createMock(Raw::class);
-        $this->resultFactory = $this->createMock(ResultFactory::class);
-        $this->context = $this->createMock(Context::class);
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->mathRandom = $this->createMock(\Magento\Framework\Math\Random::class);
+        $this->chooser = $this->createPartialMock(
+            $this->blockClass,
+            ['setUseMassaction', 'setId', 'setIsAnchorOnly', 'setSelectedCategories', 'toHtml']
+        );
+        $this->layout = $this->createMock(\Magento\Framework\View\Layout::class);
+        $this->resultRaw = $this->createMock(\Magento\Framework\Controller\Result\Raw::class);
+        $this->resultFactory = $this->createMock(\Magento\Framework\Controller\ResultFactory::class);
+        $this->context = $this->createMock(\Magento\Backend\App\Action\Context::class);
     }
 
     public function testExecute()
@@ -115,16 +101,16 @@ class CategoriesTest extends TestCase
 
         $this->resultFactory->expects($this->once())
             ->method('create')
-            ->with(ResultFactory::TYPE_RAW)
+            ->with(\Magento\Framework\Controller\ResultFactory::TYPE_RAW)
             ->willReturn($this->resultRaw);
 
         $this->context->expects($this->once())->method('getRequest')->willReturn($this->request);
         $this->context->expects($this->once())->method('getResultFactory')->willReturn($this->resultFactory);
 
-        /** @var Categories $controller */
-        $this->controller = (new ObjectManager($this))
+        /** @var \Magento\Widget\Controller\Adminhtml\Widget\Instance\Categories $controller */
+        $this->controller = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Categories::class,
+                \Magento\Widget\Controller\Adminhtml\Widget\Instance\Categories::class,
                 [
                     'context' => $this->context,
                     'mathRandom' => $this->mathRandom,

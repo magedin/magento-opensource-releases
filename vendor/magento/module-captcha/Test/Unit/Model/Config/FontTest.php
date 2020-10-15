@@ -8,11 +8,10 @@ declare(strict_types=1);
 
 namespace Magento\Captcha\Test\Unit\Model\Config;
 
-use Magento\Captcha\Helper\Data as HelperData;
-use Magento\Captcha\Model\Config\Font;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Magento\Captcha\Helper\Data as HelperData;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Captcha\Model\Config\Font;
 
 class FontTest extends TestCase
 {
@@ -27,14 +26,14 @@ class FontTest extends TestCase
     private $model;
 
     /**
-     * @var HelperData|MockObject
+     * @var HelperData|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helperDataMock;
 
     /**
      * Setup Environment For Testing
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->helperDataMock = $this->createMock(HelperData::class);
 

@@ -3,34 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Helper;
 
-use Magento\Bundle\Helper\Data;
-use Magento\Catalog\Model\Product\Type;
-use Magento\Catalog\Model\ProductTypes\ConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Catalog\Model\ProductTypes\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Data
+     * @var \Magento\Bundle\Helper\Data
      */
     protected $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->helper = (new ObjectManager($this))->getObject(
-            Data::class,
+        $this->config = $this->createMock(\Magento\Catalog\Model\ProductTypes\ConfigInterface::class);
+        $this->helper = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))->getObject(
+            \Magento\Bundle\Helper\Data::class,
             ['config' => $this->config]
         );
     }
@@ -38,7 +31,7 @@ class DataTest extends TestCase
     public function testGetAllowedSelectionTypes()
     {
         $configData = ['allowed_selection_types' => ['foo', 'bar', 'baz']];
-        $this->config->expects($this->once())->method('getType')->with('bundle')->willReturn($configData);
+        $this->config->expects($this->once())->method('getType')->with('bundle')->will($this->returnValue($configData));
 
         $this->assertEquals($configData['allowed_selection_types'], $this->helper->getAllowedSelectionTypes());
     }
@@ -47,8 +40,8 @@ class DataTest extends TestCase
     {
         $configData = [];
         $this->config->expects($this->once())->method('getType')
-            ->with(Type::TYPE_BUNDLE)
-            ->willReturn($configData);
+            ->with(\Magento\Catalog\Model\Product\Type::TYPE_BUNDLE)
+            ->will($this->returnValue($configData));
 
         $this->assertEquals([], $this->helper->getAllowedSelectionTypes());
     }

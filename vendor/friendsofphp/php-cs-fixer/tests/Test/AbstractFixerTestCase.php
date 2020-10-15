@@ -12,8 +12,8 @@
 
 namespace PhpCsFixer\Tests\Test;
 
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\Fixer\ConfigurableFixerInterface;
+use PhpCsFixer\Fixer\FixerInterface;
 use PhpCsFixer\Linter\CachingLinter;
 use PhpCsFixer\Linter\Linter;
 use PhpCsFixer\Linter\LinterInterface;
@@ -31,15 +31,14 @@ use Prophecy\Argument;
 abstract class AbstractFixerTestCase extends TestCase
 {
     use AssertTokensTrait;
-    use IsIdenticalConstraint;
 
     /**
-     * @var null|LinterInterface
+     * @var LinterInterface
      */
     protected $linter;
 
     /**
-     * @var null|AbstractFixer
+     * @var null|ConfigurableFixerInterface|FixerInterface
      */
     protected $fixer;
 
@@ -67,31 +66,8 @@ abstract class AbstractFixerTestCase extends TestCase
         Tokens::setLegacyMode(false);
     }
 
-    final public function testIsRisky()
-    {
-        static::assertInternalType('bool', $this->fixer->isRisky(), sprintf('Return type for ::isRisky of "%s" is invalid.', $this->fixer->getName()));
-
-        if ($this->fixer->isRisky()) {
-            self::assertValidDescription($this->fixer->getName(), 'risky description', $this->fixer->getDefinition()->getRiskyDescription());
-        } else {
-            static::assertNull($this->fixer->getDefinition()->getRiskyDescription(), sprintf('[%s] Fixer is not risky so no description of it expected.', $this->fixer->getName()));
-        }
-
-        if ($this->fixer instanceof AbstractProxyFixer) {
-            return;
-        }
-
-        $reflection = new \ReflectionMethod($this->fixer, 'isRisky');
-
-        // If fixer is not risky then the method `isRisky` from `AbstractFixer` must be used
-        static::assertSame(
-            !$this->fixer->isRisky(),
-            AbstractFixer::class === $reflection->getDeclaringClass()->getName()
-        );
-    }
-
     /**
-     * @return AbstractFixer
+     * @return FixerInterface
      */
     protected function createFixer()
     {
@@ -204,8 +180,6 @@ abstract class AbstractFixerTestCase extends TestCase
         } catch (\Exception $e) {
             return $e->getMessage()."\n\nSource:\n{$source}";
         }
-
-        return null;
     }
 
     /**
@@ -233,27 +207,26 @@ abstract class AbstractFixerTestCase extends TestCase
     }
 
     /**
-     * @param string $fixerName
-     * @param string $descriptionType
-     * @param mixed  $description
+     * @todo Remove me when this class will end up in dedicated package.
+     *
+     * @param string $expected
+     *
+     * @return PhpCsFixer\PhpunitConstraintIsIdenticalString\Constraint\IsIdenticalString|PHPUnit\Framework\Constraint\IsIdentical|PHPUnit_Framework_Constraint_IsIdentical
      */
-    private static function assertValidDescription($fixerName, $descriptionType, $description)
+    private static function createIsIdenticalStringConstraint($expected)
     {
-        static::assertInternalType('string', $description);
-        static::assertRegExp('/^[A-Z`][^"]+\.$/', $description, sprintf('[%s] The %s must start with capital letter or a ` and end with dot.', $fixerName, $descriptionType));
-        static::assertNotContains('phpdocs', $description, sprintf('[%s] `PHPDoc` must not be in the plural in %s.', $fixerName, $descriptionType), true);
-        static::assertCorrectCasing($description, 'PHPDoc', sprintf('[%s] `PHPDoc` must be in correct casing in %s.', $fixerName, $descriptionType));
-        static::assertCorrectCasing($description, 'PHPUnit', sprintf('[%s] `PHPUnit` must be in correct casing in %s.', $fixerName, $descriptionType));
-        static::assertFalse(strpos($descriptionType, '``'), sprintf('[%s] The %s must no contain sequential backticks.', $fixerName, $descriptionType));
-    }
+        $candidates = array_filter([
+            'PhpCsFixer\PhpunitConstraintIsIdenticalString\Constraint\IsIdenticalString',
+            'PHPUnit\Framework\Constraint\IsIdentical',
+            'PHPUnit_Framework_Constraint_IsIdentical',
+        ], function ($className) { return class_exists($className); });
 
-    /**
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
-     */
-    private static function assertCorrectCasing($needle, $haystack, $message)
-    {
-        static::assertSame(substr_count(strtolower($haystack), strtolower($needle)), substr_count($haystack, $needle), $message);
+        if (empty($candidates)) {
+            throw new \RuntimeException('PHPUnit not installed?!');
+        }
+
+        $candidate = array_shift($candidates);
+
+        return new $candidate($expected);
     }
 }

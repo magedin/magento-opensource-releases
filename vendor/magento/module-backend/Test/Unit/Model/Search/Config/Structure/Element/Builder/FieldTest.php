@@ -3,19 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Backend\Test\Unit\Model\Search\Config\Structure\Element\Builder;
 
 use Magento\Backend\Model\Search\Config\Structure\Element\Builder\Field;
 use Magento\Config\Model\Config\StructureElementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class FieldTest extends TestCase
 {
     /**
-     * @var StructureElementInterface|MockObject
+     * @var StructureElementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $structureElementMock;
 
@@ -24,7 +22,7 @@ class FieldTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->structureElementMock = $this->getMockForAbstractClass(StructureElementInterface::class);
         $this->model = new Field();

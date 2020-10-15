@@ -3,83 +3,75 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sitemap\Test\Unit\Model\Config\Backend;
 
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Robots\Model\Config\Value;
-use Magento\Sitemap\Model\Config\Backend\Robots;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RobotsTest extends TestCase
+class RobotsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Robots
+     * @var \Magento\Sitemap\Model\Config\Backend\Robots
      */
     private $model;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $contextMock;
+    private $context;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $registryMock;
+    private $registry;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $scopeConfigMock;
+    private $scopeConfig;
 
     /**
-     * @var TypeListInterface|MockObject
+     * @var \Magento\Framework\App\Cache\TypeListInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $cacheTypeListMock;
+    private $typeList;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreResolver|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $storeManagerMock;
+    private $storeResolver;
 
-    protected function setUp(): void
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $storeManager;
+
+    protected function setUp()
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->registryMock = $this->getMockBuilder(Registry::class)
+        $this->registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->cacheTypeListMock = $this->getMockBuilder(TypeListInterface::class)
+        $this->typeList = $this->getMockBuilder(\Magento\Framework\App\Cache\TypeListInterface::class)
             ->getMockForAbstractClass();
 
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeResolver = $this->getMockBuilder(\Magento\Store\Model\StoreResolver::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $objectManager = new ObjectManager($this);
-        $this->model = $objectManager->getObject(
-            Robots::class,
-            [
-                'context' => $this->contextMock,
-                'registry' => $this->registryMock,
-                'config' => $this->scopeConfigMock,
-                'cacheTypeList' => $this->cacheTypeListMock,
-                'storeManager' => $this->storeManagerMock
-            ]
+        $this->model = new \Magento\Sitemap\Model\Config\Backend\Robots(
+            $this->context,
+            $this->registry,
+            $this->scopeConfig,
+            $this->typeList,
+            $this->storeResolver,
+            $this->storeManager
         );
     }
 
@@ -90,10 +82,9 @@ class RobotsTest extends TestCase
     {
         $storeId = 1;
 
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
-            ->getMock();
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)->getMock();
 
-        $this->storeManagerMock->expects($this->once())
+        $this->storeManager->expects($this->once())
             ->method('getStore')
             ->willReturn($storeMock);
 
@@ -102,7 +93,7 @@ class RobotsTest extends TestCase
             ->willReturn($storeId);
 
         $expected = [
-            Value::CACHE_TAG . '_' . $storeId,
+            \Magento\Robots\Model\Config\Value::CACHE_TAG . '_' . $storeId,
         ];
         $this->assertEquals($expected, $this->model->getIdentities());
     }

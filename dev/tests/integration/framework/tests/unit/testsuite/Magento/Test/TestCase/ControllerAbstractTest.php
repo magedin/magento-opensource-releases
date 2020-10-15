@@ -16,26 +16,26 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
 {
     protected $_bootstrap;
 
-    /** @var \PHPUnit\Framework\MockObject\MockObject | \Magento\Framework\Message\Manager */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Message\Manager */
     private $messageManager;
 
-    /** @var \PHPUnit\Framework\MockObject\MockObject | InterpretationStrategyInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | InterpretationStrategyInterface */
     private $interpretationStrategyMock;
 
-    /** @var \PHPUnit\Framework\MockObject\MockObject | CookieManagerInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | CookieManagerInterface */
     private $cookieManagerMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Serialize\Serializer\Json
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Serialize\Serializer\Json
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $testObjectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->messageManager = $this->createMock(\Magento\Framework\Message\Manager::class);
-        $this->cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
+        $this->cookieManagerMock = $this->createMock(CookieManagerInterface::class);
         $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -44,7 +44,7 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
                 return json_decode($serializedData, true);
             }
         );
-        $this->interpretationStrategyMock = $this->getMockForAbstractClass(InterpretationStrategyInterface::class);
+        $this->interpretationStrategyMock = $this->createMock(InterpretationStrategyInterface::class);
         $this->interpretationStrategyMock->expects($this->any())
             ->method('interpret')
             ->willReturnCallback(
@@ -59,8 +59,8 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
             $this->createPartialMock(\Magento\TestFramework\ObjectManager::class, ['get', 'create']);
         $this->_objectManager->expects($this->any())
             ->method('get')
-            ->willReturnMap(
-                
+            ->will(
+                $this->returnValueMap(
                     [
                         [\Magento\Framework\App\RequestInterface::class, $request],
                         [\Magento\Framework\App\ResponseInterface::class, $response],
@@ -69,7 +69,7 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
                         [\Magento\Framework\Serialize\Serializer\Json::class, $this->serializerMock],
                         [InterpretationStrategyInterface::class, $this->interpretationStrategyMock],
                     ]
-                
+                )
             );
     }
 
@@ -120,11 +120,10 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
     }
 
     /**
+     * @expectedException \PHPUnit\Framework\AssertionFailedError
      */
     public function testAssertRedirectFailure()
     {
-        $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
-
         $this->assertRedirect();
     }
 
@@ -152,14 +151,14 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
     public function testAssertSessionMessagesSuccess(array $expectedMessages, $messageTypeFilter)
     {
         $this->addSessionMessages();
-        /** @var \PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\Constraint\Constraint $constraint */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\PHPUnit\Framework\Constraint\Constraint $constraint */
         $constraint =
             $this->createPartialMock(\PHPUnit\Framework\Constraint\Constraint::class, ['toString', 'matches']);
         $constraint->expects(
             $this->once()
         )->method('matches')
             ->with($expectedMessages)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->assertSessionMessages($constraint, $messageTypeFilter);
     }
 
@@ -210,7 +209,7 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
     {
         $messagesCollection =  new \Magento\Framework\Message\Collection();
         $this->messageManager->expects($this->any())->method('getMessages')
-            ->willReturn($messagesCollection);
+            ->will($this->returnValue($messagesCollection));
 
         $this->assertSessionMessages($this->isEmpty());
     }
@@ -226,7 +225,7 @@ class ControllerAbstractTest extends \Magento\TestFramework\TestCase\AbstractCon
             ->addMessage(new \Magento\Framework\Message\Notice('some_notice'))
             ->addMessage(new \Magento\Framework\Message\Success('success!'));
         $this->messageManager->expects($this->any())->method('getMessages')
-            ->willReturn($messagesCollection);
+            ->will($this->returnValue($messagesCollection));
 
         $cookieMessages = [
             [

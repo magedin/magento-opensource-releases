@@ -3,38 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Widget\Grid\Row;
 
-use Magento\Backend\Model\Url;
-use Magento\Backend\Model\Widget\Grid\Row\UrlGenerator;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
-
-class UrlGeneratorTest extends TestCase
+class UrlGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetUrl()
     {
         $itemId = 3;
         $urlPath = 'mng/item/edit';
 
-        $itemMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getItemId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $itemMock->expects($this->once())->method('getItemId')->willReturn($itemId);
+        $itemMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getItemId']);
+        $itemMock->expects($this->once())->method('getItemId')->will($this->returnValue($itemId));
 
-        $urlModelMock = $this->createMock(Url::class);
+        $urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
         $urlModelMock->expects(
             $this->once()
         )->method(
             'getUrl'
-        )->willReturn(
-            'http://localhost/' . $urlPath . '/flag/1/item_id/' . $itemId
+        )->will(
+            $this->returnValue('http://localhost/' . $urlPath . '/flag/1/item_id/' . $itemId)
         );
 
-        $model = new UrlGenerator(
+        $model = new \Magento\Backend\Model\Widget\Grid\Row\UrlGenerator(
             $urlModelMock,
             [
                 'path' => $urlPath,
@@ -45,8 +35,8 @@ class UrlGeneratorTest extends TestCase
 
         $url = $model->getUrl($itemMock);
 
-        $this->assertStringContainsString($urlPath, $url);
-        $this->assertStringContainsString('flag/1', $url);
-        $this->assertStringContainsString('item_id/' . $itemId, $url);
+        $this->assertContains($urlPath, $url);
+        $this->assertContains('flag/1', $url);
+        $this->assertContains('item_id/' . $itemId, $url);
     }
 }

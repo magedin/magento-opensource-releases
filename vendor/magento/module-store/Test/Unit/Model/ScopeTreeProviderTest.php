@@ -3,26 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Api\Data\GroupInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Api\GroupRepositoryInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Store\Api\WebsiteRepositoryInterface;
-use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Group;
 use Magento\Store\Model\ScopeTreeProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\Website;
 
 /**
  * @covers \Magento\Store\Model\ScopeTreeProvider
  */
-class ScopeTreeProviderTest extends TestCase
+class ScopeTreeProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ScopeTreeProvider
@@ -30,25 +30,25 @@ class ScopeTreeProviderTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject|WebsiteRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|WebsiteRepositoryInterface
      */
     private $websiteRepositoryMock;
 
     /**
-     * @var MockObject|GroupRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|GroupRepositoryInterface
      */
     private $groupRepositoryMock;
 
     /**
-     * @var MockObject|StoreRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|StoreRepositoryInterface
      */
     private $storeRepositoryMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->websiteRepositoryMock = $this->getMockForAbstractClass(WebsiteRepositoryInterface::class);
-        $this->groupRepositoryMock = $this->getMockForAbstractClass(GroupRepositoryInterface::class);
-        $this->storeRepositoryMock = $this->getMockForAbstractClass(StoreRepositoryInterface::class);
+        $this->websiteRepositoryMock = $this->createMock(WebsiteRepositoryInterface::class);
+        $this->groupRepositoryMock = $this->createMock(GroupRepositoryInterface::class);
+        $this->storeRepositoryMock = $this->createMock(StoreRepositoryInterface::class);
 
         $this->model = new ScopeTreeProvider(
             $this->websiteRepositoryMock,
@@ -83,7 +83,7 @@ class ScopeTreeProviderTest extends TestCase
             'scopes' => [$websiteData],
         ];
 
-        $websiteMock = $this->getMockForAbstractClass(WebsiteInterface::class);
+        $websiteMock = $this->createMock(WebsiteInterface::class);
         $websiteMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn($websiteId);
@@ -91,7 +91,7 @@ class ScopeTreeProviderTest extends TestCase
             ->method('getList')
             ->willReturn([$websiteMock]);
 
-        $groupMock = $this->getMockForAbstractClass(GroupInterface::class);
+        $groupMock = $this->createMock(GroupInterface::class);
         $groupMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn($groupId);
@@ -102,7 +102,7 @@ class ScopeTreeProviderTest extends TestCase
             ->method('getList')
             ->willReturn([$groupMock, $groupMock]);
 
-        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
+        $storeMock = $this->createMock(StoreInterface::class);
         $storeMock->expects($this->atLeastOnce())
             ->method('getId')
             ->willReturn($storeId);

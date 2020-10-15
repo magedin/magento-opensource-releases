@@ -174,9 +174,9 @@
             width: 100%;
 
             .price-box {
-                display: inline-block;
+                display: table-cell;
                 vertical-align: top;
-                width: auto;
+                width: 1px;
 
                 .price-container {
                     > span {
@@ -228,8 +228,7 @@
         }
 
         .product-info-stock-sku {
-            display: inline-block;
-            float: right;
+            display: table-cell;
             padding-bottom: @indent__s;
             padding-left: 10%;
             text-align: right;
@@ -623,6 +622,11 @@
 //  _____________________________________________
 
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__s) {
+    .product-social-links {
+        .action.tocompare {
+            display: none;
+        }
+    }
 
     .product-info-price {
         margin: 0 -@indent__s 0;
@@ -1002,7 +1006,8 @@
 }
 
 .media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
-    .compare.wrapper {
+    .compare.wrapper,
+    [class*='block-compare'] {
         display: none;
     }
     .catalog-product_compare-index {

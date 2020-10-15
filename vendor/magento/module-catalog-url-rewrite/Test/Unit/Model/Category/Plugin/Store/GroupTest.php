@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Category\Plugin\Store;
 
+use Magento\CatalogUrlRewrite\Model\Category\Plugin\Store\Group as GroupPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Model\AbstractModel;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ResourceModel\Group;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\Product as Product;
-use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\CatalogUrlRewrite\Model\Category\Plugin\Store\Group as GroupPlugin;
+use Magento\Catalog\Model\Product as Product;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\ResourceModel\Group;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ProductFactory;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GroupTest extends TestCase
+class GroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -37,51 +33,51 @@ class GroupTest extends TestCase
     private $plugin;
 
     /**
-     * @var AbstractModel|MockObject
+     * @var AbstractModel|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractModelMock;
 
     /**
-     * @var Group|MockObject
+     * @var Group|\PHPUnit_Framework_MockObject_MockObject
      */
     private $subjectMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var CategoryFactory|MockObject
+     * @var CategoryFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryFactoryMock;
 
     /**
-     * @var Category|MockObject
+     * @var Category|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryMock;
 
     /**
-     * @var ProductCollection|MockObject
+     * @var ProductCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productCollectionMock;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productMock;
 
     /**
-     * @var ProductFactory|MockObject
+     * @var ProductFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productFactoryMock;
 
     /**
-     * @var ProductUrlRewriteGenerator|MockObject
+     * @var ProductUrlRewriteGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $productUrlRewriteGeneratorMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->abstractModelMock = $this->getMockBuilder(AbstractModel::class)

@@ -15,11 +15,11 @@
             <title value="StoreFront Reports Review By Customers"/>
             <description value="Review By Customer Grid Filters"/>
             <severity value="AVERAGE"/>
-            <testCaseId value="MC-32340"/>
+            <testCaseId value="MC-32336"/>
         </annotations>
         <before>
             <!--Login-->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
             <!--Create product and Category-->
             <createData stepKey="category" entity="SimpleSubCategory"/>
             <createData stepKey="createProduct1" entity="SimpleProduct">
@@ -33,7 +33,7 @@
             <!-- Delete reviews -->
             <actionGroup ref="AdminOpenReviewsPageActionGroup" stepKey="openAllReviewsPage"/>
             <actionGroup ref="AdminDeleteReviewsByUserNicknameActionGroup" stepKey="deleteCustomerReview"/>
-            <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearNickNameReviewFilters"/>
+            <actionGroup ref="clearFiltersAdminDataGrid" stepKey="clearNickNameReviewFilters"/>
             <!-- Delete customer -->
             <actionGroup ref="AdminDeleteCustomerActionGroup" stepKey="deleteCustomer">
                 <argument name="customerEmail" value="CustomerEntityOne.email"/>
@@ -43,7 +43,7 @@
             <deleteData createDataKey="createProduct2" stepKey="deleteProduct2"/>
             <deleteData createDataKey="category" stepKey="deleteCategory"/>
             <!--Logout-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!-- Go to frontend and make a user account and login with it -->
         <actionGroup ref="SignUpNewUserFromStorefrontActionGroup" stepKey="signUpNewUser">
@@ -57,7 +57,7 @@
         <actionGroup ref="StorefrontAddProductReviewActionGroup" stepKey="addReview"/>
         <!-- Go to Pending reviews page and clear filters -->
         <actionGroup ref="AdminOpenPendingReviewsPageActionGroup" stepKey="openReviewsPage"/>
-        <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilters"/>
+        <actionGroup ref="clearFiltersAdminDataGrid" stepKey="clearFilters"/>
         <!-- Moderate first product reviews: change review status from pending to approved, save -->
         <actionGroup ref="AdminOpenReviewByUserNicknameActionGroup" stepKey="openFirstCustomerReviews"/>
         <actionGroup ref="AdminChangeReviewStatusActionGroup" stepKey="changeFirstReviewStatus"/>

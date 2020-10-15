@@ -20,22 +20,22 @@
 
         <before>
             <createData entity="defaultUrlRewrite" stepKey="urlRewrite"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
         </before>
         <after>
-            <actionGroup ref="AdminDeleteUrlRewriteActionGroup" stepKey="deleteCustomUrlRewrite">
+            <actionGroup ref="AdminDeleteUrlRewrite" stepKey="deleteCustomUrlRewrite">
                 <argument name="requestPath" value="{{customPermanentUrlRewrite.request_path}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Search default custom url rewrite in grid-->
-        <actionGroup ref="AdminSearchAndSelectUrlRewriteInGridActionGroup" stepKey="searchUrlRewrite">
+        <actionGroup ref="AdminSearchAndSelectUrlRewriteInGrid" stepKey="searchUrlRewrite">
             <argument name="requestPath" value="$$urlRewrite.request_path$$"/>
         </actionGroup>
 
         <!--Update default custom url rewrite as per requirement and verify AssertUrlRewriteSaveMessage-->
-        <actionGroup ref="AdminUpdateCustomUrlRewriteActionGroup" stepKey="updateUrlRewrite">
+        <actionGroup ref="AdminUpdateCustomUrlRewrite" stepKey="updateUrlRewrite">
             <argument name="storeValue" value="Default Store View"/>
             <argument name="requestPath" value="{{customPermanentUrlRewrite.request_path}}"/>
             <argument name="targetPath" value="{{customPermanentUrlRewrite.target_path}}"/>
@@ -44,7 +44,7 @@
         </actionGroup>
 
         <!--Search and verify updated AssertUrlRewriteInGrid-->
-        <actionGroup ref="AdminSearchByRequestPathActionGroup" stepKey="verifyUpdatedUrlRewriteInGrid">
+        <actionGroup ref="AdminSearchByRequestPath" stepKey="verifyUpdatedUrlRewriteInGrid">
             <argument name="redirectPath" value="{{customPermanentUrlRewrite.request_path}}"/>
             <argument name="redirectType" value="{{customPermanentUrlRewrite.redirect_type_label}}"/>
             <argument name="targetPath" value="{{customPermanentUrlRewrite.target_path}}"/>

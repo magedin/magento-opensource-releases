@@ -13,6 +13,9 @@ namespace Magento\Eav\Test\Unit\Model\Validator\Attribute;
 use Magento\Eav\Model\Validator\Attribute\Code;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class CodeTest
+ */
 class CodeTest extends TestCase
 {
     /**

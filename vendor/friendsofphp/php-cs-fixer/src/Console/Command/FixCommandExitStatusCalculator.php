@@ -31,11 +31,10 @@ final class FixCommandExitStatusCalculator
      * @param bool $hasChangedFiles
      * @param bool $hasInvalidErrors
      * @param bool $hasExceptionErrors
-     * @param bool $hasLintErrorsAfterFixing
      *
      * @return int
      */
-    public function calculate($isDryRun, $hasChangedFiles, $hasInvalidErrors, $hasExceptionErrors, $hasLintErrorsAfterFixing)
+    public function calculate($isDryRun, $hasChangedFiles, $hasInvalidErrors, $hasExceptionErrors)
     {
         $exitStatus = 0;
 
@@ -49,7 +48,7 @@ final class FixCommandExitStatusCalculator
             }
         }
 
-        if ($hasExceptionErrors || $hasLintErrorsAfterFixing) {
+        if ($hasExceptionErrors) {
             $exitStatus |= self::EXIT_STATUS_FLAG_EXCEPTION_IN_APP;
         }
 

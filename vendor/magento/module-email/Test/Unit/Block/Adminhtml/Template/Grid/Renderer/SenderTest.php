@@ -3,34 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Block\Adminhtml\Template\Grid\Renderer;
-
-use Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Sender;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Sender
  */
-class SenderTest extends TestCase
+class SenderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Sender
+     * @var \Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Sender
      */
     protected $sender;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $escaper = $objectManager->getObject(
-            Escaper::class
+            \Magento\Framework\Escaper::class
         );
         $this->sender = $objectManager->getObject(
-            Sender::class,
+            \Magento\Email\Block\Adminhtml\Template\Grid\Renderer\Sender::class,
             [
                 'escaper' => $escaper
             ]
@@ -42,7 +34,7 @@ class SenderTest extends TestCase
      */
     public function testRenderName()
     {
-        $row = new DataObject();
+        $row = new \Magento\Framework\DataObject();
         $row->setTemplateSenderName('Sender Name');
         $this->assertEquals('Sender Name ', $this->sender->render($row));
     }
@@ -52,7 +44,7 @@ class SenderTest extends TestCase
      */
     public function testRenderEmail()
     {
-        $row = new DataObject();
+        $row = new \Magento\Framework\DataObject();
         $row->setTemplateSenderEmail('Sender Email');
         $this->assertEquals('[Sender Email]', $this->sender->render($row));
     }
@@ -62,7 +54,7 @@ class SenderTest extends TestCase
      */
     public function testRenderNameAndEmail()
     {
-        $row = new DataObject();
+        $row = new \Magento\Framework\DataObject();
         $row->setTemplateSenderName('Sender Name');
         $row->setTemplateSenderEmail('Sender Email');
         $this->assertEquals('Sender Name [Sender Email]', $this->sender->render($row));
@@ -73,7 +65,7 @@ class SenderTest extends TestCase
      */
     public function testRenderEmpty()
     {
-        $row = new DataObject();
+        $row = new \Magento\Framework\DataObject();
         $this->assertEquals('---', $this->sender->render($row));
     }
 }

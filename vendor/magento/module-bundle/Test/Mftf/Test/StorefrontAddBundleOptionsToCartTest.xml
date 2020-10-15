@@ -19,7 +19,7 @@
             <group value="Bundle"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct1"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct2"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct3"/>
@@ -30,7 +30,6 @@
             <createData entity="SimpleProduct2" stepKey="simpleProduct8"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct9"/>
             <createData entity="SimpleProduct2" stepKey="simpleProduct10"/>
-            <magentoCron stepKey="runCronIndex" groups="index"/>
         </before>
         <after>
             <deleteData createDataKey="simpleProduct1" stepKey="deleteSimpleProduct1"/>
@@ -44,26 +43,26 @@
             <deleteData createDataKey="simpleProduct9" stepKey="deleteSimpleProduct9"/>
             <deleteData createDataKey="simpleProduct10" stepKey="deleteSimpleProduct10"/>
             <!--delete created bundle product-->
-            <actionGroup stepKey="deleteProduct1" ref="DeleteProductBySkuActionGroup">
+            <actionGroup stepKey="deleteProduct1" ref="deleteProductBySku">
                 <argument name="sku" value="{{BundleProduct.sku}}"/>
             </actionGroup>
             <conditionalClick selector="{{AdminProductGridFilterSection.clearFilters}}"
                               dependentSelector="{{AdminProductGridFilterSection.clearFilters}}" visible="true" stepKey="clickClearFilters"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Start creating a bundle product -->
         <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="goToProductList"/>
         <waitForPageLoad stepKey="waitForProductList"/>
-        <actionGroup ref="GoToCreateProductPageActionGroup" stepKey="goToCreateProduct">
+        <actionGroup ref="goToCreateProductPage" stepKey="goToCreateProduct">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
-        <actionGroup ref="FillProductNameAndSkuInProductFormActionGroup" stepKey="fillNameAndSku">
+        <actionGroup ref="fillProductNameAndSkuInProductForm" stepKey="fillNameAndSku">
             <argument name="product" value="BundleProduct"/>
         </actionGroup>
 
         <!-- Add Option One, a "Checkbox" type option, with tree products -->
-        <actionGroup ref="AddBundleOptionWithThreeProductsActionGroup" stepKey="addBundleOptionWithTreeProducts">
+        <actionGroup ref="addBundleOptionWithTreeProducts" stepKey="addBundleOptionWithTreeProducts">
             <argument name="x" value="0"/>
             <argument name="n" value="1"/>
             <argument name="prodOneSku" value="$$simpleProduct1.sku$$"/>
@@ -74,7 +73,7 @@
         </actionGroup>
 
         <!-- Add Option Two, a "Radio Buttons" type option, with one product -->
-        <actionGroup ref="AddBundleOptionWithOneProductActionGroup" stepKey="addBundleOptionWithOneProduct">
+        <actionGroup ref="addBundleOptionWithOneProduct" stepKey="addBundleOptionWithOneProduct">
             <argument name="x" value="1"/>
             <argument name="n" value="2"/>
             <argument name="prodOneSku" value="$$simpleProduct4.sku$$"/>
@@ -84,7 +83,7 @@
         </actionGroup>
 
         <!-- Add Option Tree, a "Checkbox" type option, with six products -->
-        <actionGroup ref="AddBundleOptionWithSixProductsActionGroup" stepKey="addBundleOptionWithSixProducts">
+        <actionGroup ref="addBundleOptionWithSixProducts" stepKey="addBundleOptionWithSixProducts">
             <argument name="x" value="2"/>
             <argument name="n" value="3"/>
             <argument name="prodOneSku" value="$$simpleProduct5.sku$$"/>
@@ -98,7 +97,7 @@
         </actionGroup>
 
         <!-- Save product-->
-        <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
+        <actionGroup ref="saveProductForm" stepKey="saveProduct"/>
 
         <!--Go to Storefront and open Bundle Product page-->
         <amOnPage url="{{BundleProduct.sku}}.html" stepKey="goToStorefront"/>
@@ -109,10 +108,7 @@
 
         <!--Assert Bundle Product Price-->
         <grabTextFrom selector="{{StorefrontBundledSection.bundleProductsPrice}}" stepKey="grabProductsPrice"/>
-        <assertEquals message="ExpectedPrice" stepKey="assertBundleProductPrice">
-			<actualResult type="const">$grabProductsPrice</actualResult>
-			<expectedResult type="string">$123.00</expectedResult>
-        </assertEquals>
+        <assertEquals expected='$123.00' expectedType="string" actual="$grabProductsPrice" message="ExpectedPrice" stepKey="assertBundleProductPrice"/>
 
         <!--Chose all products from 1st & 3rd options -->
         <click stepKey="selectProduct1" selector="{{StorefrontBundledSection.productCheckbox('1','1')}}"/>

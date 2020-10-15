@@ -22,9 +22,9 @@ To enable this adapter in Codeception tests simply put it in "enabled" extension
 ```yaml
 extensions:
     enabled:
-        - Yandex\Allure\Codeception\AllureCodeception
+        - Yandex\Allure\Adapter\AllureAdapter
     config:
-        Yandex\Allure\Codeception\AllureCodeception:
+        Yandex\Allure\Adapter\AllureAdapter:
             deletePreviousResults: false
             outputDirectory: allure-results
             ignoredAnnotations:

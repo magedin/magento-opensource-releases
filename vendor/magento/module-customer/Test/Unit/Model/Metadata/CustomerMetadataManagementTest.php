@@ -3,28 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Metadata;
 
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
 use Magento\Customer\Model\Attribute;
-use Magento\Customer\Model\Metadata\AttributeResolver;
+use Magento\Customer\Api\Data\AttributeMetadataInterface;
 use Magento\Customer\Model\Metadata\CustomerMetadataManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CustomerMetadataManagementTest extends TestCase
+class CustomerMetadataManagementTest extends \PHPUnit\Framework\TestCase
 {
     /** @var CustomerMetadataManagement */
     protected $model;
 
-    /** @var AttributeResolver|MockObject */
+    /** @var \Magento\Customer\Model\Metadata\AttributeResolver|\PHPUnit_Framework_MockObject_MockObject */
     protected $attributeResolverMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->attributeResolverMock = $this->getMockBuilder(AttributeResolver::class)
+        $this->attributeResolverMock = $this->getMockBuilder(\Magento\Customer\Model\Metadata\AttributeResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -35,12 +30,12 @@ class CustomerMetadataManagementTest extends TestCase
 
     public function testCanBeSearchableInGrid()
     {
-        /** @var AttributeMetadataInterface|MockObject $attributeMock */
-        $attributeMock = $this->getMockBuilder(AttributeMetadataInterface::class)
+        /** @var AttributeMetadataInterface|\PHPUnit_Framework_MockObject_MockObject $attributeMock */
+        $attributeMock = $this->getMockBuilder(\Magento\Customer\Api\Data\AttributeMetadataInterface::class)
             ->getMockForAbstractClass();
 
-        /** @var Attribute|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(Attribute::class)
+        /** @var Attribute|\PHPUnit_Framework_MockObject_MockObject $modelMock */
+        $modelMock = $this->getMockBuilder(\Magento\Customer\Model\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -58,12 +53,12 @@ class CustomerMetadataManagementTest extends TestCase
 
     public function testCanBeFilterableInGrid()
     {
-        /** @var AttributeMetadataInterface|MockObject $attributeMock */
-        $attributeMock = $this->getMockBuilder(AttributeMetadataInterface::class)
+        /** @var AttributeMetadataInterface|\PHPUnit_Framework_MockObject_MockObject $attributeMock */
+        $attributeMock = $this->getMockBuilder(\Magento\Customer\Api\Data\AttributeMetadataInterface::class)
             ->getMockForAbstractClass();
 
-        /** @var Attribute|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(Attribute::class)
+        /** @var Attribute|\PHPUnit_Framework_MockObject_MockObject $modelMock */
+        $modelMock = $this->getMockBuilder(\Magento\Customer\Model\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
 

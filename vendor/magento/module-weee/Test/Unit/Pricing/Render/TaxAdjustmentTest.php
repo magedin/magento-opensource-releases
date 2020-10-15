@@ -3,18 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Weee\Test\Unit\Pricing\Render;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Weee\Helper\Data;
-use Magento\Weee\Pricing\Adjustment;
-use Magento\Weee\Pricing\Render\TaxAdjustment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TaxAdjustmentTest extends TestCase
+class TaxAdjustmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Weee\Pricing\Render\TaxAdjustment
@@ -24,29 +16,29 @@ class TaxAdjustmentTest extends TestCase
     /**
      * Weee helper mock
      *
-     * @var \Magento\Weee\Helper\Data|MockObject
+     * @var \Magento\Weee\Helper\Data | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $weeeHelperMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
      * Init mocks and model
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->weeeHelperMock = $this->createPartialMock(
-            Data::class,
+            \Magento\Weee\Helper\Data::class,
             ['typeOfDisplay', 'isTaxable']
         );
 
         $this->model = $this->objectManager->getObject(
-            TaxAdjustment::class,
+            \Magento\Weee\Pricing\Render\TaxAdjustment::class,
             [
                 'weeeHelper' => $this->weeeHelperMock,
             ]
@@ -70,7 +62,7 @@ class TaxAdjustmentTest extends TestCase
         $taxCode = $this->model->getAdjustmentCode(); // since Weee's TaxAdjustment is a subclass of Tax's Adjustment
         $this->assertContains($taxCode, $defaultExclusions);
 
-        $weeeCode = Adjustment::ADJUSTMENT_CODE;
+        $weeeCode = \Magento\Weee\Pricing\Adjustment::ADJUSTMENT_CODE;
         if ($weeeIsExcluded) {
             $this->assertContains($weeeCode, $defaultExclusions);
         } else {

@@ -19,7 +19,7 @@
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
 
             <!-- Create Data -->
             <createData entity="Simple_US_Customer" stepKey="createCustomer"/>
@@ -39,21 +39,21 @@
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create Order -->
-        <actionGroup ref="NavigateToNewOrderPageExistingCustomerActionGroup" stepKey="navigateToNewOrderPage">
+        <actionGroup ref="navigateToNewOrderPageExistingCustomer" stepKey="navigateToNewOrderPage">
             <argument name="customer" value="$createCustomer$"/>
         </actionGroup>
-        <actionGroup ref="AddSimpleProductToOrderActionGroup" stepKey="addSecondProduct">
+        <actionGroup ref="addSimpleProductToOrder" stepKey="addSecondProduct">
             <argument name="product" value="$createProduct$"/>
         </actionGroup>
-        <actionGroup ref="FillOrderCustomerInformationActionGroup" stepKey="fillCustomerInfo">
+        <actionGroup ref="fillOrderCustomerInformation" stepKey="fillCustomerInfo">
             <argument name="customer" value="$createCustomer$"/>
             <argument name="address" value="US_Address_TX"/>
         </actionGroup>
-        <actionGroup ref="OrderSelectFlatRateShippingActionGroup" stepKey="selectFlatRate"/>
+        <actionGroup ref="orderSelectFlatRateShipping" stepKey="selectFlatRate"/>
         <conditionalClick selector="{{AdminOrderFormPaymentSection.linkPaymentOptions}}" dependentSelector="{{AdminOrderFormPaymentSection.linkPaymentOptions}}" visible="true" stepKey="openMoneyOption"/>
         <waitForElementVisible selector="{{AdminOrderFormPaymentSection.paymentBlock}}" stepKey="waitForPaymentOptions"/>
         <checkOption selector="{{AdminOrderFormPaymentSection.checkCashOnDelivery}}" stepKey="checkCashOnDelivery"/>
@@ -63,17 +63,15 @@
         <see stepKey="seeSuccessMessageForOrder" userInput="You created the order."/>
 
         <!-- Create Invoice -->
-        <actionGroup ref="StartCreateInvoiceFromOrderPageActionGroup" stepKey="startInvoice"/>
+        <actionGroup ref="StartCreateInvoiceFromOrderPage" stepKey="startInvoice"/>
         <click selector="{{AdminInvoiceMainActionsSection.submitInvoice}}" stepKey="clickSubmitInvoice"/>
         <waitForElementVisible selector="{{AdminMessagesSection.success}}" stepKey="waitForMessageAppears"/>
         <see selector="{{AdminMessagesSection.success}}" userInput="The invoice has been created." stepKey="seeInvoiceCreateSuccess"/>
 
         <!-- Go to Sales > Orders > find out placed order and open -->
         <grabTextFrom selector="|Order # (\d+)|" stepKey="grabOrderId" />
-        <assertNotEmpty stepKey="assertOrderIdIsNotEmpty" after="grabOrderId">
-			<actualResult type="const">$grabOrderId</actualResult>
-        </assertNotEmpty>
-        <actionGroup ref="OpenOrderByIdActionGroup" stepKey="openOrder">
+        <assertNotEmpty actual="$grabOrderId" stepKey="assertOrderIdIsNotEmpty" after="grabOrderId"/>
+        <actionGroup ref="OpenOrderById" stepKey="openOrder">
             <argument name="orderId" value="{$grabOrderId}"/>
         </actionGroup>
 
@@ -96,18 +94,14 @@
         <click selector="{{AdminOrderDetailsOrderViewSection.creditMemos}}" stepKey="clickCreditMemoTab"/>
         <waitForPageLoad stepKey="waitForTabLoad"/>
         <grabTextFrom selector="{{AdminCreditMemosGridSection.memoId}}" stepKey="grabMemoId"/>
-        <assertNotEmpty stepKey="assertMemoIdIsNotEmpty" after="grabMemoId">
-			<actualResult type="const">$grabMemoId</actualResult>
-        </assertNotEmpty>
+        <assertNotEmpty actual="$grabMemoId" stepKey="assertMemoIdIsNotEmpty" after="grabMemoId"/>
         <click selector="{{AdminCreditMemosGridSection.memoId}}" stepKey="clickView"/>
         <waitForPageLoad stepKey="waitForCreditMemo"/>
         <scrollTo selector="{{AdminCreditMemoViewTotalSection.subtotal}}" stepKey="scrollToTotal"/>
-        <actionGroup ref="AssertAdminCreditMemoViewPageTotalsActionGroup" stepKey="assertCreditMemoViewPageTotals">
-            <argument name="subtotal" value="$560.00"/>
-            <argument name="adjustmentRefund" value="$5.00"/>
-            <argument name="adjustmentFee" value="$10.00"/>
-            <argument name="grandTotal" value="$555.00"/>
-        </actionGroup>
+        <see selector="{{AdminCreditMemoViewTotalSection.subtotal}}" userInput="$560.00" stepKey="seeSubtotal"/>
+        <see selector="{{AdminCreditMemoViewTotalSection.adjustmentRefund}}" userInput="$5.00" stepKey="seeAdjustmentRefund"/>
+        <see selector="{{AdminCreditMemoViewTotalSection.adjustmentFee}}" userInput="$10.00" stepKey="seeAdjustmentFee"/>
+        <see selector="{{AdminCreditMemoViewTotalSection.grandTotal}}" userInput="$555.00" stepKey="assertRefundOnCreditMemoTab"/>
 
         <!--Login to storefront as previously created customer-->
         <actionGroup ref="LoginToStorefrontActionGroup" stepKey="loginAsCustomer">

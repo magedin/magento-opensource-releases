@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Stdlib\Test\Unit\DateTime\Timezone;
 
-use Magento\Framework\Stdlib\DateTime\Timezone\Validator;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Framework\Stdlib\DateTime\Timezone\Validator
      */
     protected $_validator;
 
     /**
      * @dataProvider validateWithTimestampOutOfSystemRangeDataProvider
+     * @expectedException \Magento\Framework\Exception\ValidatorException
      */
     public function testValidateWithTimestampOutOfSystemRangeThrowsException($range, $validateArgs)
     {
-        $this->expectException('Magento\Framework\Exception\ValidatorException');
-        $this->_validator = new Validator($range['min'], $range['max']);
+        $this->_validator = new \Magento\Framework\Stdlib\DateTime\Timezone\Validator($range['min'], $range['max']);
         $this->_validator->validate($validateArgs['timestamp'], $validateArgs['to_date']);
 
         $this->expectExceptionMessage(
@@ -31,11 +27,13 @@ class ValidatorTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\ValidatorException
+     * @expectedExceptionMessage Transition year is out of specified date range.
+     */
     public function testValidateWithTimestampOutOfSpecifiedRangeThrowsException()
     {
-        $this->expectException('Magento\Framework\Exception\ValidatorException');
-        $this->expectExceptionMessage('Transition year is out of specified date range.');
-        $this->_validator = new Validator();
+        $this->_validator = new \Magento\Framework\Stdlib\DateTime\Timezone\Validator();
         $this->_validator->validate(mktime(1, 2, 3, 4, 5, 2007), mktime(1, 2, 3, 4, 5, 2006));
     }
 

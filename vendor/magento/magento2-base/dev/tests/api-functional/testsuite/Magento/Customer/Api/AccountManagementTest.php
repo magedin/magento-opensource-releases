@@ -84,7 +84,7 @@ class AccountManagementTest extends WebapiAbstract
     /**
      * Execute per test initialization.
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->accountManagement = Bootstrap::getObjectManager()->get(
             \Magento\Customer\Api\AccountManagementInterface::class
@@ -125,7 +125,7 @@ class AccountManagementTest extends WebapiAbstract
         }
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         if (!empty($this->currentCustomerId)) {
             foreach ($this->currentCustomerId as $customerId) {
@@ -372,7 +372,7 @@ class AccountManagementTest extends WebapiAbstract
             }
             $this->fail("Expected exception to be thrown.");
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
+            $this->assertContains(
                 $expectedMessage,
                 $e->getMessage(),
                 "Exception message does not match"

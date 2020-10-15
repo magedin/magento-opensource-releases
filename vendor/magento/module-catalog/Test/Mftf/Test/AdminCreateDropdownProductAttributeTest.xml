@@ -12,19 +12,19 @@
             <stories value="Create/configure Dropdown product attribute"/>
             <title value="Admin should be able to create dropdown product attribute"/>
             <description value="Admin should be able to create dropdown product attribute"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-4982"/>
             <group value="Catalog"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
         </before>
         <after>
             <!-- Remove attribute -->
-            <actionGroup ref="DeleteProductAttributeActionGroup" stepKey="deleteAttribute">
+            <actionGroup ref="deleteProductAttribute" stepKey="deleteAttribute">
                 <argument name="ProductAttribute" value="productDropDownAttribute"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <amOnPage url="{{ProductAttributePage.url}}" stepKey="navigateToNewProductAttributePage"/>
@@ -60,15 +60,13 @@
         <seeElement selector="{{AdminProductMessagesSection.successMessage}}"
                     stepKey="waitForSuccessMessage"/>
 
-        <actionGroup ref="NavigateToCreatedProductAttributeActionGroup" stepKey="navigateToAttribute">
+        <actionGroup ref="navigateToCreatedProductAttribute" stepKey="navigateToAttribute">
             <argument name="ProductAttribute" value="productDropDownAttribute"/>
         </actionGroup>
         <!-- Check attribute data -->
         <grabValueFrom selector="{{DropdownAttributeOptionsSection.nthOptionAdminLabel('2')}}"
                        stepKey="secondOptionAdminLabel"/>
-        <assertEquals stepKey="assertSecondOption">
-			<actualResult type="const">$secondOptionAdminLabel</actualResult>
-			<expectedResult type="const">'Fish &amp; Chips'</expectedResult>
-        </assertEquals>
+        <assertEquals actual="$secondOptionAdminLabel" expected="'Fish &amp; Chips'"
+                      stepKey="assertSecondOption"/>
     </test>
 </tests>

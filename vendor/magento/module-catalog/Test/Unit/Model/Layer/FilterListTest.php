@@ -7,60 +7,42 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer;
 
-use Magento\Catalog\Model\Config\LayerCategoryConfig;
-use Magento\Catalog\Model\Layer;
-use Magento\Catalog\Model\Layer\Category\FilterableAttributeList;
-use Magento\Catalog\Model\Layer\FilterList;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Model\Layer\FilterList;
 
-/**
- * Check whenever the given filters list matches the expected result
- */
-class FilterListTest extends TestCase
+class FilterListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $attributeListMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $attributeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $layerMock;
 
     /**
-     * @var FilterList
+     * @var \Magento\Catalog\Model\Layer\FilterList
      */
     protected $model;
 
-    /**
-     * @var LayerCategoryConfig|MockObject
-     */
-    private $layerCategoryConfigMock;
-
-    /**
-     * Set Up
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->attributeListMock = $this->createMock(
-            FilterableAttributeList::class
+            \Magento\Catalog\Model\Layer\Category\FilterableAttributeList::class
         );
-        $this->attributeMock = $this->createMock(Attribute::class);
+        $this->attributeMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
         $filters = [
             FilterList::CATEGORY_FILTER => 'CategoryFilterClass',
             FilterList::PRICE_FILTER => 'PriceFilterClass',
@@ -68,15 +50,9 @@ class FilterListTest extends TestCase
             FilterList::ATTRIBUTE_FILTER => 'AttributeFilterClass',
 
         ];
-        $this->layerMock = $this->createMock(Layer::class);
-        $this->layerCategoryConfigMock = $this->createMock(LayerCategoryConfig::class);
+        $this->layerMock = $this->createMock(\Magento\Catalog\Model\Layer::class);
 
-        $this->model = new FilterList(
-            $this->objectManagerMock,
-            $this->attributeListMock,
-            $this->layerCategoryConfigMock,
-            $filters
-        );
+        $this->model = new FilterList($this->objectManagerMock, $this->attributeListMock, $filters);
     }
 
     /**
@@ -93,49 +69,9 @@ class FilterListTest extends TestCase
     {
         $this->objectManagerMock->expects($this->at(0))
             ->method('create')
-            ->willReturn('filter');
+            ->will($this->returnValue('filter'));
 
         $this->objectManagerMock->expects($this->at(1))
-            ->method('create')
-            ->with($expectedClass, [
-                'data' => ['attribute_model' => $this->attributeMock],
-                'layer' => $this->layerMock])
-            ->willReturn('filter');
-
-        $this->attributeMock->expects($this->once())
-            ->method($method)
-            ->willReturn($value);
-
-        $this->attributeListMock->expects($this->once())
-            ->method('getList')
-            ->willReturn([$this->attributeMock]);
-
-        $this->layerCategoryConfigMock->expects($this->once())
-            ->method('isCategoryFilterVisibleInLayerNavigation')
-            ->willReturn(true);
-
-        $this->assertEquals(['filter', 'filter'], $this->model->getFilters($this->layerMock));
-    }
-
-    /**
-     * Test filters list result when category should not be included
-     *
-     * @param string $method
-     * @param string $value
-     * @param string $expectedClass
-     * @param array $expectedResult
-     *
-     * @dataProvider getFiltersWithoutCategoryDataProvider
-     *
-     * @return void
-     */
-    public function testGetFiltersWithoutCategoryFilter(
-        string $method,
-        string $value,
-        string $expectedClass,
-        array $expectedResult
-    ): void {
-        $this->objectManagerMock->expects($this->at(0))
             ->method('create')
             ->with(
                 $expectedClass,
@@ -144,21 +80,17 @@ class FilterListTest extends TestCase
                     'layer' => $this->layerMock
                 ]
             )
-            ->willReturn('filter');
+            ->will($this->returnValue('filter'));
 
         $this->attributeMock->expects($this->once())
             ->method($method)
-            ->willReturn($value);
+            ->will($this->returnValue($value));
 
         $this->attributeListMock->expects($this->once())
             ->method('getList')
-            ->willReturn([$this->attributeMock]);
+            ->will($this->returnValue([$this->attributeMock]));
 
-        $this->layerCategoryConfigMock->expects($this->once())
-            ->method('isCategoryFilterVisibleInLayerNavigation')
-            ->willReturn(false);
-
-        $this->assertEquals($expectedResult, $this->model->getFilters($this->layerMock));
+        $this->assertEquals(['filter', 'filter'], $this->model->getFilters($this->layerMock));
     }
 
     /**
@@ -181,25 +113,6 @@ class FilterListTest extends TestCase
                 'method' => 'getAttributeCode',
                 'value' => null,
                 'expectedClass' => 'AttributeFilterClass',
-            ]
-        ];
-    }
-
-    /**
-     * Provides attribute filters without category item
-     *
-     * @return array
-     */
-    public function getFiltersWithoutCategoryDataProvider(): array
-    {
-        return [
-            'Filters contains only price attribute' => [
-                'method' => 'getAttributeCode',
-                'value' => FilterList::PRICE_FILTER,
-                'expectedClass' => 'PriceFilterClass',
-                'expectedResult' => [
-                    'filter'
-                ]
             ]
         ];
     }

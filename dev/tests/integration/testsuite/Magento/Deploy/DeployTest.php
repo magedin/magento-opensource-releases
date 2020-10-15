@@ -19,6 +19,8 @@ use Magento\Deploy\Config\BundleConfig;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 
 /**
+ * Class DeployTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DeployTest extends \PHPUnit\Framework\TestCase
@@ -88,7 +90,7 @@ class DeployTest extends \PHPUnit\Framework\TestCase
         Options::STRATEGY => DeployStrategyFactory::DEPLOY_STRATEGY_COMPACT,
     ];
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->prevMode = $objectManager->get(State::class)->getMode();
@@ -113,7 +115,7 @@ class DeployTest extends \PHPUnit\Framework\TestCase
         $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR)->delete(DirectoryList::TMP_MATERIALIZATION_DIR);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get(State::class)->setMode($this->prevMode);
@@ -184,7 +186,7 @@ class DeployTest extends \PHPUnit\Framework\TestCase
     {
         //_testA is included from Magento/zoom3
         //_testB is included from Magento/zoom2
-        $this->assertStringContainsString('color:#111', $actualRootCssContent);
+        $this->assertContains('color:#111', $actualRootCssContent);
     }
 
     /**
@@ -196,21 +198,21 @@ class DeployTest extends \PHPUnit\Framework\TestCase
     private function assertCssUrlFixerPostProcessor($actualRootCssContent)
     {
         //assert CssUrlFixer fix urls
-        $this->assertStringContainsString(
+        $this->assertContains(
             'url("../../../../../frontend/Magento/zoom1/default/images/logo-magento-1.png")',
             $actualRootCssContent
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'url("../../../../../frontend/Magento/zoom2/default/images/logo-magento-2.png")',
             $actualRootCssContent
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'url("../images/logo-magento-3.png")',
             $actualRootCssContent
         );
         //_testA is included from Magento/zoom3
         //_testB is included from Magento/zoom2
-        $this->assertStringContainsString('color:#111', $actualRootCssContent);
+        $this->assertContains('color:#111', $actualRootCssContent);
     }
 
     /**
@@ -257,7 +259,7 @@ class DeployTest extends \PHPUnit\Framework\TestCase
                     $bundleContent = $this->staticDir->readFile(
                         $this->staticDir->getRelativePath($file->getPathname())
                     );
-                    $this->assertStringNotContainsString('"' . $path . '":"', $bundleContent);
+                    $this->assertNotContains('"' . $path . '":"', $bundleContent);
                 }
             }
         }

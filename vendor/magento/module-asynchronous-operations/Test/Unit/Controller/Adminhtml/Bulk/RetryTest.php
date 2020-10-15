@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AsynchronousOperations\Test\Unit\Controller\Adminhtml\Bulk;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\App\RequestInterface;
+use Magento\Backend\Model\View\Result\RedirectFactory;
+use Magento\Backend\Model\View\Result\Redirect;
 use Magento\AsynchronousOperations\Controller\Adminhtml\Bulk\Retry;
 use Magento\AsynchronousOperations\Model\BulkManagement;
 use Magento\AsynchronousOperations\Model\BulkNotificationManagement;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Controller\Result\Json;
 
-class RetryTest extends TestCase
+class RetryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Retry
@@ -27,46 +23,46 @@ class RetryTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $bulkManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $notificationManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resultRedirectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $jsonResultMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->bulkManagementMock = $this->createMock(BulkManagement::class);
         $this->notificationManagementMock = $this->createMock(BulkNotificationManagement::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->requestMock = $this->createMock(RequestInterface::class);
         $this->resultFactoryMock = $this->createPartialMock(ResultFactory::class, ['create']);
         $this->jsonResultMock = $this->createMock(Json::class);
 
@@ -101,7 +97,7 @@ class RetryTest extends TestCase
             ],
         ];
 
-        $this->requestMock
+        $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap([
                 ['uuid', null, $bulkUuid],
@@ -139,7 +135,7 @@ class RetryTest extends TestCase
             ],
         ];
 
-        $this->requestMock
+        $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap([
                 ['uuid', null, $bulkUuid],

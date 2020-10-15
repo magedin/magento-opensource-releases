@@ -45,7 +45,7 @@ class SaveHandlerTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $objectManager->create(ProductRepositoryInterface::class);

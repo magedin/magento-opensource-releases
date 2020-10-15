@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Swatches\Test\Unit\Model\Form\Element;
 
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
-use Magento\Swatches\Model\Form\Element\AbstractSwatch;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractSwatchTest extends TestCase
+class AbstractSwatchTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var AbstractSwatch|MockObject */
+    /** @var \Magento\Swatches\Model\Form\Element\AbstractSwatch|\PHPUnit_Framework_MockObject_MockObject */
     private $swatch;
 
-    /** @var Attribute|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute|\PHPUnit_Framework_MockObject_MockObject */
     private $attribute;
 
-    /** @var AbstractSource|MockObject */
+    /** @var \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource|\PHPUnit_Framework_MockObject_MockObject */
     private $source;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->source = $this->getMockBuilder(AbstractSource::class)
+        $this->source = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\Source\AbstractSource::class)
             ->getMockForAbstractClass();
 
-        $this->attribute = $this->getMockBuilder(Attribute::class)
+        $this->attribute = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->swatch = $this->getMockBuilder(AbstractSwatch::class)
+        $this->swatch = $this->getMockBuilder(\Magento\Swatches\Model\Form\Element\AbstractSwatch::class)
             ->disableOriginalConstructor()
             ->setMethods(['getData'])
             ->getMockForAbstractClass();
@@ -52,7 +45,7 @@ class AbstractSwatchTest extends TestCase
             ->with('entity_attribute')
             ->willReturn($this->attribute);
 
-        $method = new \ReflectionMethod(AbstractSwatch::class, 'getValues');
+        $method = new \ReflectionMethod(\Magento\Swatches\Model\Form\Element\AbstractSwatch::class, 'getValues');
         $method->setAccessible(true);
 
         $this->assertEquals($expected, $method->invoke($this->swatch));
@@ -64,7 +57,7 @@ class AbstractSwatchTest extends TestCase
             ->with('entity_attribute')
             ->willReturn(null);
 
-        $method = new \ReflectionMethod(AbstractSwatch::class, 'getValues');
+        $method = new \ReflectionMethod(\Magento\Swatches\Model\Form\Element\AbstractSwatch::class, 'getValues');
         $method->setAccessible(true);
 
         $this->assertEmpty($method->invoke($this->swatch));

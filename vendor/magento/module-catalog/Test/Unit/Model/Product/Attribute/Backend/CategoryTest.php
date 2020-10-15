@@ -3,42 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Backend;
 
-use Magento\Catalog\Model\Product\Attribute\Backend\Category;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
-
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testAfterLoad()
     {
         $categoryIds = [1, 2, 3, 4, 5];
 
-        $product = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getCategoryIds'])
-            ->onlyMethods(['setData'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $product->expects($this->once())->method('getCategoryIds')->willReturn($categoryIds);
+        $product = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getCategoryIds', 'setData']);
+        $product->expects($this->once())->method('getCategoryIds')->will($this->returnValue($categoryIds));
 
         $product->expects($this->once())->method('setData')->with('category_ids', $categoryIds);
 
-        $categoryAttribute = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getAttributeCode'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $categoryAttribute = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getAttributeCode']);
         $categoryAttribute->expects(
             $this->once()
         )->method(
             'getAttributeCode'
-        )->willReturn(
-            'category_ids'
+        )->will(
+            $this->returnValue('category_ids')
         );
 
-        $model = new Category();
+        $model = new \Magento\Catalog\Model\Product\Attribute\Backend\Category();
         $model->setAttribute($categoryAttribute);
 
         $model->afterLoad($product);

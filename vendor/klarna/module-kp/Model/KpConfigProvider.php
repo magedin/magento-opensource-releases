@@ -15,7 +15,6 @@ use Klarna\Core\Helper\ConfigHelper;
 use Klarna\Kp\Api\Data\ResponseInterface;
 use Klarna\Kp\Model\Payment\Kp;
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\Framework\UrlInterface;
 
 class KpConfigProvider implements ConfigProviderInterface
 {
@@ -23,25 +22,20 @@ class KpConfigProvider implements ConfigProviderInterface
      * @var ConfigHelper
      */
     private $config;
+
     /**
      * @var Session
      */
     private $session;
-    /**
-     * @var UrlInterface
-     */
-    private $urlBuilder;
 
     /**
      * @param ConfigHelper $config
      * @param Session      $session
-     * @param UrlInterface $urlBuilder
      */
-    public function __construct(ConfigHelper $config, Session $session, UrlInterface $urlBuilder)
+    public function __construct(ConfigHelper $config, Session $session)
     {
-        $this->config     = $config;
-        $this->session    = $session;
-        $this->urlBuilder = $urlBuilder;
+        $this->config = $config;
+        $this->session = $session;
     }
 
     /**
@@ -95,10 +89,6 @@ class KpConfigProvider implements ConfigProviderInterface
             $paymentConfig['payment']['klarna_kp']['client_token'] = $klarnaQuote->getClientToken();
             $paymentConfig['payment']['klarna_kp']['authorization_token'] = $klarnaQuote->getAuthorizationToken();
             $paymentConfig['payment']['klarna_kp']['success'] = $response->isSuccessfull() ? 1 : 0;
-            $paymentConfig['payment']['klarna_kp']['redirect_url'] = $this->urlBuilder->getUrl(
-                'checkout/klarna/cookie'
-            );
-
             if (!$response->isSuccessfull()) {
                 $paymentConfig['payment']['klarna_kp']['message'] = $response->getMessage();
                 return $paymentConfig;

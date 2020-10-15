@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit\Converter;
 
-use Magento\Framework\Config\Converter\Dom;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Config\Converter\Dom;
 
-class DomTest extends TestCase
+class DomTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $sourceFile
@@ -34,7 +31,7 @@ class DomTest extends TestCase
     {
         return [
             ['cdata.xml', 'cdata.php'],
-            ['attributes.xml', 'attributes.php'],
+            ['attributes.xml', 'attributes.php',],
         ];
     }
 }

@@ -19,7 +19,7 @@ class IteratorTest extends \PHPUnit\Framework\TestCase
      */
     protected $_callbackCounter = 0;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             \Magento\Framework\Model\ResourceModel\Iterator::class
@@ -48,11 +48,10 @@ class IteratorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testWalkException()
     {
-        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_model->walk('test', [[$this, 'walkCallback']]);
     }
 }

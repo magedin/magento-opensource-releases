@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Observer;
 
-use Magento\Customer\Model\Session;
-use Magento\Wishlist\Observer\CustomerLogout as Observer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Wishlist\Observer\CustomerLogout as Observer;
 
-class CustomerLogoutTest extends TestCase
+class CustomerLogoutTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Observer
@@ -20,13 +15,13 @@ class CustomerLogoutTest extends TestCase
     protected $observer;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSession;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerSession = $this->getMockBuilder(Session::class)
+        $this->customerSession = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['setWishlistItemCount', 'isLoggedIn', 'getCustomerId'])
             ->getMock();
@@ -41,11 +36,11 @@ class CustomerLogoutTest extends TestCase
         $event = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var \Magento\Framework\Event\Observer $event */
+        /** @var $event \Magento\Framework\Event\Observer */
 
         $this->customerSession->expects($this->once())
             ->method('setWishlistItemCount')
-            ->with(0);
+            ->with($this->equalTo(0));
 
         $this->observer->execute($event);
     }

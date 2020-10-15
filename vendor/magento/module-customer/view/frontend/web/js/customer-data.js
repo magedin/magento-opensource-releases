@@ -24,8 +24,7 @@ define([
         invalidateCacheByCloseCookieSession,
         dataProvider,
         buffer,
-        customerData,
-        deferred = $.Deferred();
+        customerData;
 
     url.setBaseUrl(window.BASE_URL);
     options.sectionLoadUrl = url.build('customer/section/load');
@@ -343,15 +342,6 @@ define([
         },
 
         /**
-         * Checks if customer data is initialized.
-         *
-         * @returns {jQuery.Deferred}
-         */
-        getInitCustomerData: function () {
-            return deferred.promise();
-        },
-
-        /**
          * @param {Object} settings
          * @constructor
          */
@@ -360,7 +350,6 @@ define([
             invalidateCacheBySessionTimeOut(settings);
             invalidateCacheByCloseCookieSession();
             customerData.init();
-            deferred.resolve();
         }
     };
 

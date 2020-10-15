@@ -1,25 +1,24 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Developer\Test\Unit\Console\Command;
 
-use Magento\Developer\Console\Command\SourceThemeDeployCommand;
-use Magento\Framework\App\View\Asset\Publisher;
 use Magento\Framework\Validator\Locale;
-use Magento\Framework\View\Asset\File\NotFoundException;
-use Magento\Framework\View\Asset\LocalInterface;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\View\Asset\Publisher;
+use Magento\Framework\View\Asset\LocalInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Developer\Console\Command\SourceThemeDeployCommand;
 
 /**
+ * Class SourceThemeDeployCommandTest
+ *
  * @see \Magento\Developer\Console\Command\SourceThemeDeployCommand
  */
-class SourceThemeDeployCommandTest extends TestCase
+class SourceThemeDeployCommandTest extends \PHPUnit\Framework\TestCase
 {
     const AREA_TEST_VALUE = 'area-test-value';
 
@@ -41,24 +40,24 @@ class SourceThemeDeployCommandTest extends TestCase
     private $sourceThemeDeployCommand;
 
     /**
-     * @var Locale|MockObject
+     * @var Locale|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validatorMock;
 
     /**
-     * @var Publisher|MockObject
+     * @var Publisher|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetPublisherMock;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetRepositoryMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->validatorMock = $this->getMockBuilder(Locale::class)
             ->disableOriginalConstructor()
@@ -82,7 +81,7 @@ class SourceThemeDeployCommandTest extends TestCase
      */
     public function testExecute()
     {
-        /** @var OutputInterface|MockObject $outputMock */
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $outputMock */
         $outputMock = $this->getMockBuilder(OutputInterface::class)
             ->getMockForAbstractClass();
         $assetMock = $this->getMockBuilder(LocalInterface::class)
@@ -135,14 +134,13 @@ class SourceThemeDeployCommandTest extends TestCase
 
     /**
      * Run test for execute method with incorrect theme value
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Value "theme-value" of the option "theme" has invalid format. The format should be
      */
     public function testExecuteIncorrectThemeFormat()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage(
-            'Value "theme-value" of the option "theme" has invalid format. The format should be'
-        );
-        /** @var OutputInterface|MockObject $outputMock */
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $outputMock */
         $outputMock = $this->getMockBuilder(OutputInterface::class)
             ->getMockForAbstractClass();
         $this->validatorMock->expects(self::once())
@@ -165,12 +163,13 @@ class SourceThemeDeployCommandTest extends TestCase
 
     /**
      * Run test for execute method with non existing theme
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Verify entered values of the argument and options.
      */
     public function testExecuteNonExistingValue()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Verify entered values of the argument and options.');
-        /** @var OutputInterface|MockObject $outputMock */
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $outputMock */
         $outputMock = $this->getMockBuilder(OutputInterface::class)
             ->getMockForAbstractClass();
         $assetMock = $this->getMockBuilder(LocalInterface::class)
@@ -195,7 +194,7 @@ class SourceThemeDeployCommandTest extends TestCase
         $this->assetPublisherMock->expects(self::once())
             ->method('publish')
             ->with($assetMock)
-            ->willThrowException(new NotFoundException());
+            ->willThrowException(new \Magento\Framework\View\Asset\File\NotFoundException);
 
         $valueMap = [
             ['area', self::AREA_TEST_VALUE],
@@ -211,7 +210,7 @@ class SourceThemeDeployCommandTest extends TestCase
     }
 
     /**
-     * @return InputInterface|MockObject
+     * @return InputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getInputMock(array $valueMap = [])
     {

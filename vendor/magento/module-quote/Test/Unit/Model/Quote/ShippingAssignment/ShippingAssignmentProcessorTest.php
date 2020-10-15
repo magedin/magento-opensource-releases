@@ -3,29 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\ShippingAssignment;
 
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address as QuoteAddress;
-use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Magento\Quote\Model\Quote\Item\CartItemPersister;
 use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingProcessor;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Quote\Model\ShippingAssignmentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Model\Quote\ShippingAssignment\ShippingProcessor;
+use Magento\Quote\Model\Quote\Item\CartItemPersister;
+use Magento\Customer\Api\AddressRepositoryInterface;
+use Magento\Quote\Model\Quote;
+use Magento\Quote\Api\Data\ShippingAssignmentInterface;
+use Magento\Quote\Model\Quote\Address as QuoteAddress;
+use Magento\Quote\Api\Data\ShippingInterface;
+use Magento\Quote\Model\Quote\Item as QuoteItem;
+use Magento\Framework\Exception\NoSuchEntityException;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class ShippingAssignmentProcessorTest extends TestCase
+class ShippingAssignmentProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ShippingAssignmentProcessor
@@ -38,46 +31,46 @@ class ShippingAssignmentProcessorTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ShippingAssignmentFactory|MockObject
+     * @var ShippingAssignmentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAssignmentFactoryMock;
 
     /**
-     * @var ShippingProcessor|MockObject
+     * @var ShippingProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingProcessorMock;
 
     /**
-     * @var CartItemPersister|MockObject
+     * @var CartItemPersister|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cartItemPersisterMock;
 
     /**
-     * @var AddressRepositoryInterface|MockObject
+     * @var AddressRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressRepositoryMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var ShippingAssignmentInterface|MockObject
+     * @var ShippingAssignmentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAssignmentMock;
 
     /**
-     * @var QuoteAddress|MockObject
+     * @var QuoteAddress|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingAddressMock;
 
     /**
-     * @var ShippingInterface|MockObject
+     * @var ShippingInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->shippingAssignmentFactoryMock = $this->getMockBuilder(ShippingAssignmentFactory::class)
             ->disableOriginalConstructor()
@@ -178,7 +171,7 @@ class ShippingAssignmentProcessorTest extends TestCase
      *
      * @param int|string $id
      * @param bool $isDeleted
-     * @return QuoteItem|MockObject
+     * @return QuoteItem|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createQuoteItemMock($id, $isDeleted)
     {

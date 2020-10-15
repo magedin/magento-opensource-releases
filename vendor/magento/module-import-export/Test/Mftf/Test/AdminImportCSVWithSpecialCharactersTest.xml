@@ -20,10 +20,10 @@
             <group value="importExport"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
         </after>
         <actionGroup ref="AdminCheckDataForImportProductActionGroup" stepKey="adminImportProducts">
             <argument name="behavior" value="Add/Update"/>

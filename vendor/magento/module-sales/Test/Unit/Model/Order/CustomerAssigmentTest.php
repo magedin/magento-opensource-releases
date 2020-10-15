@@ -13,13 +13,11 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\CustomerAssignment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Sales\Model\Order\CustomerAssignment class.
  */
-class CustomerAssigmentTest extends TestCase
+class CustomerAssigmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CustomerAssignment
@@ -27,22 +25,22 @@ class CustomerAssigmentTest extends TestCase
     private $customerAssignment;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderMock;
 
     /**
-     * @var CustomerInterface|MockObject
+     * @var CustomerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerMock;
 
     /**
-     * @var OrderRepositoryInterface|MockObject
+     * @var OrderRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderRepositoryMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eventManagerMock;
 
@@ -95,13 +93,13 @@ class CustomerAssigmentTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->orderMock = $this->getMockForAbstractClass(OrderInterface::class);
-        $this->customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
-        $this->orderRepositoryMock = $this->getMockForAbstractClass(OrderRepositoryInterface::class);
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->orderMock = $this->createMock(OrderInterface::class);
+        $this->customerMock = $this->createMock(CustomerInterface::class);
+        $this->orderRepositoryMock = $this->createMock(OrderRepositoryInterface::class);
+        $this->eventManagerMock = $this->createMock(ManagerInterface::class);
         $this->customerAssignment = $objectManager->getObject(
             CustomerAssignment::class,
             [

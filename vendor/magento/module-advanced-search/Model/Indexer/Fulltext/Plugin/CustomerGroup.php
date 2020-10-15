@@ -12,6 +12,8 @@ use Magento\Customer\Model\ResourceModel\Group;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Catalog\Model\ResourceModel\Attribute;
 use Magento\AdvancedSearch\Model\Client\ClientOptionsInterface;
+use Magento\Framework\Search\EngineResolverInterface;
+use Magento\Search\Model\EngineResolver;
 
 class CustomerGroup extends AbstractPlugin
 {
@@ -21,15 +23,23 @@ class CustomerGroup extends AbstractPlugin
     protected $clientOptions;
 
     /**
+     * @var EngineResolverInterface
+     */
+    protected $engineResolver;
+
+    /**
      * @param IndexerRegistry $indexerRegistry
      * @param ClientOptionsInterface $clientOptions
+     * @param EngineResolverInterface $engineResolver
      */
     public function __construct(
         IndexerRegistry $indexerRegistry,
-        ClientOptionsInterface $clientOptions
+        ClientOptionsInterface $clientOptions,
+        EngineResolverInterface $engineResolver
     ) {
         parent::__construct($indexerRegistry);
         $this->clientOptions = $clientOptions;
+        $this->engineResolver = $engineResolver;
     }
 
     /**
@@ -46,7 +56,9 @@ class CustomerGroup extends AbstractPlugin
         \Closure $proceed,
         AbstractModel $group
     ) {
-        $needInvalidation = $group->isObjectNew() || $group->dataHasChangedFor('tax_class_id');
+        $needInvalidation =
+            ($this->engineResolver->getCurrentSearchEngine() != EngineResolver::CATALOG_SEARCH_MYSQL_ENGINE)
+            && ($group->isObjectNew() || $group->dataHasChangedFor('tax_class_id'));
         $result = $proceed($group);
         if ($needInvalidation) {
             $this->indexerRegistry->get(Fulltext::INDEXER_ID)->invalidate();

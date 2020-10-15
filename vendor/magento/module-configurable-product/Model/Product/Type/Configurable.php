@@ -103,14 +103,6 @@ class Configurable extends \Magento\Catalog\Model\Product\Type\AbstractType
     protected $_canConfigure = true;
 
     /**
-     * Local cache
-     *
-     * @var array
-     * @since 100.4.0
-     */
-    protected $isSaleableBySku = [];
-
-    /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
@@ -592,9 +584,8 @@ class Configurable extends \Magento\Catalog\Model\Product\Type\AbstractType
      *
      * @param  \Magento\Catalog\Model\Product $product
      * @return \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\Collection
-     * @since 100.4.0
      */
-    protected function getLinkedProductCollection($product)
+    public function getUsedProductCollection($product)
     {
         $collection = $this->_productCollectionFactory->create()->setFlag(
             'product_children',
@@ -607,17 +598,6 @@ class Configurable extends \Magento\Catalog\Model\Product\Type\AbstractType
         }
 
         return $collection;
-    }
-
-    /**
-     * Retrieve related products collection. Extension point for listing
-     *
-     * @param  \Magento\Catalog\Model\Product $product
-     * @return \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable\Product\Collection
-     */
-    public function getUsedProductCollection($product)
-    {
-        return $this->getLinkedProductCollection($product);
     }
 
     /**
@@ -764,26 +744,14 @@ class Configurable extends \Magento\Catalog\Model\Product\Type\AbstractType
      */
     public function isSalable($product)
     {
-        $storeId = $this->getStoreFilter($product);
-        if ($storeId instanceof \Magento\Store\Model\Store) {
-            $storeId = $storeId->getId();
-        }
-
-        $sku = $product->getSku();
-        if (isset($this->isSaleableBySku[$storeId][$sku])) {
-            return $this->isSaleableBySku[$storeId][$sku];
-        }
-
         $salable = parent::isSalable($product);
 
         if ($salable !== false) {
-            $collection = $this->getLinkedProductCollection($product);
-            $collection->addStoreFilter($storeId);
+            $collection = $this->getUsedProductCollection($product);
+            $collection->addStoreFilter($this->getStoreFilter($product));
             $collection = $this->salableProcessor->process($collection);
             $salable = 0 !== $collection->getSize();
         }
-
-        $this->isSaleableBySku[$storeId][$sku] = $salable;
 
         return $salable;
     }

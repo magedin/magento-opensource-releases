@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Cron;
 
-use Magento\CatalogRule\Cron\DailyCatalogUpdate;
-use Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DailyCatalogUpdateTest extends TestCase
+class DailyCatalogUpdateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Processor
      *
-     * @var RuleProductProcessor|MockObject
+     * @var \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleProductProcessor;
 
     /**
      * Cron object
      *
-     * @var DailyCatalogUpdate
+     * @var \Magento\CatalogRule\Cron\DailyCatalogUpdate
      */
     protected $cron;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->ruleProductProcessor = $this->createMock(
-            RuleProductProcessor::class
+            \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor::class
         );
 
         $this->cron = (new ObjectManager($this))->getObject(
-            DailyCatalogUpdate::class,
+            \Magento\CatalogRule\Cron\DailyCatalogUpdate::class,
             [
                 'ruleProductProcessor' => $this->ruleProductProcessor,
             ]

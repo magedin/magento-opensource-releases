@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter\Php\Tokenizer;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer;
 use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\PhraseCollector;
 use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer;
 
 /**
  * @covers \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\PhraseCollector
  */
-class PhraseCollectorTest extends TestCase
+class PhraseCollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PhraseCollector
@@ -25,23 +21,23 @@ class PhraseCollectorTest extends TestCase
     protected $phraseCollector;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Tokenizer|MockObject
+     * @var Tokenizer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $tokenizerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
-        $this->tokenizerMock = $this->getMockBuilder(Tokenizer::class)
+        $this->tokenizerMock = $this->getMockBuilder(\Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->phraseCollector = $this->objectManager->getObject(
-            PhraseCollector::class,
+            \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\PhraseCollector::class,
             [
                 'tokenizer' => $this->tokenizerMock
             ]
@@ -174,7 +170,7 @@ class PhraseCollectorTest extends TestCase
      * @param bool $isConstantEncapsedString
      * @param string $value
      * @param int|null $line
-     * @return Token|MockObject
+     * @return Token|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function createToken(
         $isEqualFunctionReturnValue,
@@ -184,7 +180,7 @@ class PhraseCollectorTest extends TestCase
         $value,
         $line = null
     ) {
-        $token = $this->getMockBuilder(Token::class)
+        $token = $this->getMockBuilder(\Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\Token::class)
             ->disableOriginalConstructor()
             ->getMock();
         $token->expects($this->any())
@@ -220,7 +216,7 @@ class PhraseCollectorTest extends TestCase
         $phraseString = "'first part' . ' second part'";
 
         $reflectionMethod = new \ReflectionMethod(
-            PhraseCollector::class,
+            \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer\PhraseCollector::class,
             '_collectPhrase'
         );
 

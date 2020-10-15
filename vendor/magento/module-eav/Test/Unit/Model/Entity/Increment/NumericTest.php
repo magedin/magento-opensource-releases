@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Increment;
 
 use Magento\Eav\Model\Entity\Increment\NumericValue;
-use PHPUnit\Framework\TestCase;
 
-class NumericTest extends TestCase
+class NumericTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var NumericValue
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->model = new NumericValue();
+        $this->model = new \Magento\Eav\Model\Entity\Increment\NumericValue();
     }
 
     /**

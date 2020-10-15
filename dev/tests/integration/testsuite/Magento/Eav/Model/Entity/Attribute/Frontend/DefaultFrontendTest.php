@@ -53,7 +53,7 @@ class DefaultFrontendTest extends \PHPUnit\Framework\TestCase
      */
     private $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         CacheCleaner::cleanAll();
         $this->objectManager = Bootstrap::getObjectManager();

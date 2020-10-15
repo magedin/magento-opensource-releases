@@ -3,45 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogRule\Model\Product\PriceModifier;
-use Magento\CatalogRule\Model\Rule;
-use Magento\CatalogRule\Model\RuleFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PriceModifierTest extends TestCase
+class PriceModifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PriceModifier
+     * @var \Magento\CatalogRule\Model\Product\PriceModifier
      */
     protected $priceModifier;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $ruleMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->ruleFactoryMock = $this->createPartialMock(RuleFactory::class, ['create']);
-        $this->productMock = $this->createMock(Product::class);
-        $this->ruleMock = $this->createMock(Rule::class);
-        $this->priceModifier = new PriceModifier($this->ruleFactoryMock);
+        $this->ruleFactoryMock = $this->createPartialMock(\Magento\CatalogRule\Model\RuleFactory::class, ['create']);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->ruleMock = $this->createMock(\Magento\CatalogRule\Model\Rule::class);
+        $this->priceModifier = new \Magento\CatalogRule\Model\Product\PriceModifier($this->ruleFactoryMock);
     }
 
     /**
@@ -51,7 +42,7 @@ class PriceModifierTest extends TestCase
      */
     public function testModifyPriceIfPriceExists($resultPrice, $expectedPrice)
     {
-        $this->ruleFactoryMock->expects($this->once())->method('create')->willReturn($this->ruleMock);
+        $this->ruleFactoryMock->expects($this->once())->method('create')->will($this->returnValue($this->ruleMock));
         $this->ruleMock->expects(
             $this->once()
         )->method(
@@ -59,8 +50,8 @@ class PriceModifierTest extends TestCase
         )->with(
             $this->productMock,
             100
-        )->willReturn(
-            $resultPrice
+        )->will(
+            $this->returnValue($resultPrice)
         );
         $this->assertEquals($expectedPrice, $this->priceModifier->modifyPrice(100, $this->productMock));
     }
@@ -76,6 +67,6 @@ class PriceModifierTest extends TestCase
     public function testModifyPriceIfPriceNotExist()
     {
         $this->ruleFactoryMock->expects($this->never())->method('create');
-        $this->assertNull($this->priceModifier->modifyPrice(null, $this->productMock));
+        $this->assertEquals(null, $this->priceModifier->modifyPrice(null, $this->productMock));
     }
 }

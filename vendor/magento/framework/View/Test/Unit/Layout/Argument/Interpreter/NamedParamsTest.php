@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\View\Layout\Argument\Interpreter\NamedParams;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Layout\Argument\Interpreter\NamedParams;
 
-class NamedParamsTest extends TestCase
+class NamedParamsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InterpreterInterface|MockObject
+     * @var \Magento\Framework\Data\Argument\InterpreterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_interpreter;
 
@@ -24,10 +19,10 @@ class NamedParamsTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_interpreter = $this->getMockForAbstractClass(
-            InterpreterInterface::class
+            \Magento\Framework\Data\Argument\InterpreterInterface::class
         );
         $this->_model = new NamedParams($this->_interpreter);
     }
@@ -44,8 +39,8 @@ class NamedParamsTest extends TestCase
             'evaluate'
         )->with(
             ['value' => 'value 1']
-        )->willReturn(
-            'value 1 (evaluated)'
+        )->will(
+            $this->returnValue('value 1 (evaluated)')
         );
         $this->_interpreter->expects(
             $this->at(1)
@@ -53,8 +48,8 @@ class NamedParamsTest extends TestCase
             'evaluate'
         )->with(
             ['value' => 'value 2']
-        )->willReturn(
-            'value 2 (evaluated)'
+        )->will(
+            $this->returnValue('value 2 (evaluated)')
         );
         $expected = ['param1' => 'value 1 (evaluated)', 'param2' => 'value 2 (evaluated)'];
 

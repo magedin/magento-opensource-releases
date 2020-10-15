@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\AdobeStockImage\Model\GetImageList Model.
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class GetImageListTest extends TestCase
 {

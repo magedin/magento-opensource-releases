@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Product;
 
-use Magento\Catalog\Block\Product\ListProduct;
-use Magento\Catalog\Block\Product\NewProduct;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class NewProductTest extends TestCase
+class NewProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ListProduct
+     * @var \Magento\Catalog\Block\Product\ListProduct
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->block = $objectManager->getObject(NewProduct::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->block = $objectManager->getObject(\Magento\Catalog\Block\Product\NewProduct::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->block = null;
     }
 
     public function testGetIdentities()
     {
-        $this->assertEquals([Product::CACHE_TAG], $this->block->getIdentities());
+        $this->assertEquals([\Magento\Catalog\Model\Product::CACHE_TAG], $this->block->getIdentities());
     }
 
     public function testScope()

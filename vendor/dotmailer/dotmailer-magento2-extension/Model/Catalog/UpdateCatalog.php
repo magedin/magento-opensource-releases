@@ -15,64 +15,48 @@ class UpdateCatalog
     private $catalogFactory;
 
     /**
-     * @var \Dotdigitalgroup\Email\Model\Product\ParentFinder
-     */
-    private $parentFinder;
-
-    /**
      * UpdateCatalog constructor.
+     * This class is being using by observers when we add new products manually or via CSV
      * @param \Dotdigitalgroup\Email\Model\ResourceModel\Catalog $catalogResource
      * @param \Dotdigitalgroup\Email\Model\CatalogFactory $catalogFactory
-     * @param \Dotdigitalgroup\Email\Model\Product\ParentFinder $parentFinder
      */
     public function __construct(
         \Dotdigitalgroup\Email\Model\ResourceModel\Catalog $catalogResource,
-        \Dotdigitalgroup\Email\Model\CatalogFactory $catalogFactory,
-        \Dotdigitalgroup\Email\Model\Product\ParentFinder $parentFinder
+        \Dotdigitalgroup\Email\Model\CatalogFactory $catalogFactory
     ) {
         $this->catalogResource = $catalogResource;
         $this->catalogFactory = $catalogFactory;
-        $this->parentFinder = $parentFinder;
     }
 
-    /**
-     * @param \Magento\Catalog\Api\Data\ProductInterface $product
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function execute($product)
+    public function execute($productId)
     {
         $emailCatalogModel = $this->catalogFactory->create();
-        $emailCatalog = $emailCatalogModel->loadProductById($product->getId());
+        $emailCatalog = $emailCatalogModel->loadProductById($productId);
 
         if ($emailCatalog->getId()) {
-            $this->updateEmailCatalog($product);
+            $this->updateEmailCatalog($emailCatalog);
         } else {
-            $this->createEmailCatalog($emailCatalogModel, $product->getId());
+            $this->createEmailCatalog($emailCatalogModel, $productId);
         }
     }
 
     /**
-     * @param \Magento\Catalog\Api\Data\ProductInterface $product
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * update email catalog item when imported
+     * @param $emailCatalog
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    private function updateEmailCatalog($product)
+    private function updateEmailCatalog($emailCatalog)
     {
-        $productsToUpdate = $this->parentFinder->getConfigurableParentsFromBunchOfProducts([$product]);
-        array_push($productsToUpdate, $product->getData());
-
-        $idsToUpdate = array_map(function ($products) {
-            return $products['entity_id'];
-        }, $productsToUpdate);
-
-        $this->catalogResource->setUnprocessedByIds($idsToUpdate);
+        if ($emailCatalog->getProcessed()) {
+            $emailCatalog->setProcessed(0);
+            $this->catalogResource->save($emailCatalog);
+        }
     }
 
     /**
      * create new email catalog item
      * @param $emailCatalogModel
      * @param $productId
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
     private function createEmailCatalog($emailCatalogModel, $productId)
     {

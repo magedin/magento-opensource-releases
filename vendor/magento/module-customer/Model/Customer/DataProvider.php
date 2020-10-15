@@ -365,7 +365,6 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         if (isset($meta[AddressInterface::COUNTRY_ID]) && !$this->getShareConfig()->isGlobalScope()) {
             $meta[AddressInterface::COUNTRY_ID]['arguments']['data']['config']['filterBy'] = [
                 'target' => '${ $.provider }:data.customer.website_id',
-                '__disableTmpl' => ['target' => false],
                 'field' => 'website_ids'
             ];
         }
@@ -376,7 +375,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      *
      * @param AttributeInterface $attribute
      * @param array $meta
-     * @return void
+     * @return array
      */
     private function processFrontendInput(AttributeInterface $attribute, array &$meta)
     {

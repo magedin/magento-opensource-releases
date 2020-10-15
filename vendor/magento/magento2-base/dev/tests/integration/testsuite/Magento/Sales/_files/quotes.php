@@ -13,9 +13,8 @@ use Magento\Quote\Model\QuoteRepository;
 use Magento\Store\Model\Store;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_store.php');
+require __DIR__ . '/../../Store/_files/second_store.php';
 
 /** @var $objectManager ObjectManager */
 $objectManager = Bootstrap::getObjectManager();

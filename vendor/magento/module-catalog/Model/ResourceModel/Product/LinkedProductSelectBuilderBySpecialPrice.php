@@ -12,10 +12,6 @@ use Magento\Framework\DB\Select;
 use Magento\Store\Model\Store;
 
 /**
- * LinkedProductSelectBuilderBySpecialPrice
- *
- * Provide Select object for retrieve product id by special price
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class LinkedProductSelectBuilderBySpecialPrice implements LinkedProductSelectBuilderInterface
@@ -92,16 +88,16 @@ class LinkedProductSelectBuilderBySpecialPrice implements LinkedProductSelectBui
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function build(int $productId, int $storeId) : array
+    public function build($productId)
     {
         $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
         $connection = $this->resource->getConnection();
         $specialPriceAttribute = $this->eavConfig->getAttribute(Product::ENTITY, 'special_price');
         $specialPriceFromDate = $this->eavConfig->getAttribute(Product::ENTITY, 'special_from_date');
         $specialPriceToDate = $this->eavConfig->getAttribute(Product::ENTITY, 'special_to_date');
-        $timestamp = $this->localeDate->scopeTimeStamp($this->storeManager->getStore($storeId));
+        $timestamp = $this->localeDate->scopeTimeStamp($this->storeManager->getStore());
         $currentDate = $this->dateTime->formatDate($timestamp, false);
         $productTable = $this->resource->getTableName('catalog_product_entity');
 
@@ -149,7 +145,7 @@ class LinkedProductSelectBuilderBySpecialPrice implements LinkedProductSelectBui
 
         if (!$this->catalogHelper->isPriceGlobal()) {
             $priceSelectStore = clone $specialPrice;
-            $priceSelectStore->where('t.store_id = ?', $storeId);
+            $priceSelectStore->where('t.store_id = ?', $this->storeManager->getStore()->getId());
             $selects[] = $priceSelectStore;
         }
 

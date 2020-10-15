@@ -3,44 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Hidden
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Hidden;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class HiddenTest extends TestCase
+class HiddenTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Hidden
+     * @var \Magento\Framework\Data\Form\Element\Hidden
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $escaperMock = $this->createMock(Escaper::class);
-        $this->_model = new Hidden(
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->_model = new \Magento\Framework\Data\Form\Element\Hidden(
             $factoryMock,
             $collectionFactoryMock,
             $escaperMock
         );
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->getHtmlIdPrefix('id_prefix');
         $formMock->getHtmlIdPrefix('id_suffix');
         $this->_model->setForm($formMock);
@@ -61,8 +52,8 @@ class HiddenTest extends TestCase
     public function testGetDefaultHtml()
     {
         $html = $this->_model->getDefaultHtml();
-        $this->assertStringContainsString('<input', $html);
-        $this->assertStringContainsString('type="hidden"', $html);
+        $this->assertContains('<input', $html);
+        $this->assertContains('type="hidden"', $html);
         $this->_model->setDefaultHtml('testhtml');
         $this->assertEquals('testhtml', $this->_model->getDefaultHtml());
     }

@@ -33,7 +33,7 @@ class CreateTest extends WebapiAbstract
      */
     private $stockId;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->stockRepository = Bootstrap::getObjectManager()->get(StockRepositoryInterface::class);
@@ -64,7 +64,7 @@ class CreateTest extends WebapiAbstract
         AssertArrayContains::assert($expectedData, $this->getStockDataById($stockId));
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         if (null !== $this->stockId) {
             $this->stockRepository->deleteById($this->stockId);

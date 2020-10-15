@@ -7,61 +7,141 @@ declare(strict_types=1);
 
 namespace Magento\InventoryIndexer\Indexer\SourceItem;
 
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\ResourceConnection;
+use Magento\InventoryMultiDimensionalIndexerApi\Model\Alias;
+use Magento\InventoryMultiDimensionalIndexerApi\Model\IndexHandlerInterface;
+use Magento\InventoryMultiDimensionalIndexerApi\Model\IndexNameBuilder;
+use Magento\InventoryMultiDimensionalIndexerApi\Model\IndexStructureInterface;
+use Magento\InventoryCatalogApi\Api\DefaultStockProviderInterface;
+use Magento\InventoryIndexer\Indexer\InventoryIndexer;
+use Magento\InventoryIndexer\Indexer\Stock\StockIndexer;
 
 /**
- * Index source items service.
+ * Source Item indexer
  *
  * @api
  */
 class SourceItemIndexer
 {
     /**
-     * @var SourceItemReindexStrategy
+     * @var GetSkuListInStock
      */
-    private $sourceItemReindexStrategy;
+    private $getSkuListInStock;
 
     /**
-     * @param SourceItemReindexStrategy $sourceItemReindexStrategy
+     * @var IndexStructureInterface
+     */
+    private $indexStructure;
+
+    /**
+     * @var IndexHandlerInterface
+     */
+    private $indexHandler;
+
+    /**
+     * @var IndexDataBySkuListProvider
+     */
+    private $indexDataBySkuListProvider;
+
+    /**
+     * @var IndexNameBuilder
+     */
+    private $indexNameBuilder;
+
+    /**
+     * @var StockIndexer
+     */
+    private $stockIndexer;
+
+    /**
+     * @var DefaultStockProviderInterface
+     */
+    private $defaultStockProvider;
+
+    /**
+     * $indexStructure is reserved name for construct variable (in index internal mechanism)
+     *
+     * @param GetSkuListInStock $getSkuListInStockToUpdate
+     * @param IndexStructureInterface $indexStructureHandler
+     * @param IndexHandlerInterface $indexHandler
+     * @param IndexDataBySkuListProvider $indexDataBySkuListProvider
+     * @param IndexNameBuilder $indexNameBuilder
+     * @param StockIndexer $stockIndexer
+     * @param DefaultStockProviderInterface $defaultStockProvider
      */
     public function __construct(
-        SourceItemReindexStrategy $sourceItemReindexStrategy
+        GetSkuListInStock $getSkuListInStockToUpdate,
+        IndexStructureInterface $indexStructureHandler,
+        IndexHandlerInterface $indexHandler,
+        IndexDataBySkuListProvider $indexDataBySkuListProvider,
+        IndexNameBuilder $indexNameBuilder,
+        StockIndexer $stockIndexer,
+        DefaultStockProviderInterface $defaultStockProvider
     ) {
-        $this->sourceItemReindexStrategy = $sourceItemReindexStrategy;
+        $this->getSkuListInStock = $getSkuListInStockToUpdate;
+        $this->indexStructure = $indexStructureHandler;
+        $this->indexHandler = $indexHandler;
+        $this->indexDataBySkuListProvider = $indexDataBySkuListProvider;
+        $this->indexNameBuilder = $indexNameBuilder;
+        $this->stockIndexer = $stockIndexer;
+        $this->defaultStockProvider = $defaultStockProvider;
     }
 
     /**
-     * Reindex all source items.
-     *
      * @return void
-     * @throws LocalizedException
      */
     public function executeFull()
     {
-        $this->sourceItemReindexStrategy->executeFull();
+        $this->stockIndexer->executeFull();
     }
 
     /**
-     * Reindex given source item.
-     *
      * @param int $sourceItemId
      * @return void
-     * @throws LocalizedException
      */
     public function executeRow(int $sourceItemId)
     {
-        $this->sourceItemReindexStrategy->executeRow($sourceItemId);
+        $this->executeList([$sourceItemId]);
     }
 
     /**
-     * Reindex given source items.
-     *
      * @param array $sourceItemIds
      * @return void
-     * @throws LocalizedException
      */
     public function executeList(array $sourceItemIds)
     {
-        $this->sourceItemReindexStrategy->executeList($sourceItemIds);
+        $skuListInStockList = $this->getSkuListInStock->execute($sourceItemIds);
+
+        foreach ($skuListInStockList as $skuListInStock) {
+            $stockId = $skuListInStock->getStockId();
+            if ($this->defaultStockProvider->getId() === $stockId) {
+                continue;
+            }
+
+            $skuList = $skuListInStock->getSkuList();
+
+            $mainIndexName = $this->indexNameBuilder
+                ->setIndexId(InventoryIndexer::INDEXER_ID)
+                ->addDimension('stock_', (string)$stockId)
+                ->setAlias(Alias::ALIAS_MAIN)
+                ->build();
+
+            if (!$this->indexStructure->isExist($mainIndexName, ResourceConnection::DEFAULT_CONNECTION)) {
+                $this->indexStructure->create($mainIndexName, ResourceConnection::DEFAULT_CONNECTION);
+            }
+
+            $this->indexHandler->cleanIndex(
+                $mainIndexName,
+                new \ArrayIterator($skuList),
+                ResourceConnection::DEFAULT_CONNECTION
+            );
+
+            $indexData = $this->indexDataBySkuListProvider->execute($stockId, $skuList);
+            $this->indexHandler->saveIndex(
+                $mainIndexName,
+                $indexData,
+                ResourceConnection::DEFAULT_CONNECTION
+            );
+        }
     }
 }

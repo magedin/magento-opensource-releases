@@ -3,32 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Model\Export;
 
-use Magento\Framework\Api\AttributeInterface;
 use Magento\Framework\Api\Search\DocumentInterface;
-use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponentInterface;
-use Magento\Ui\Component\Filters;
-use Magento\Ui\Component\Filters\Type\Select;
 use Magento\Ui\Component\Listing\Columns;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Ui\Model\Export\MetadataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class MetadataProviderTest extends TestCase
+class MetadataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MetadataProvider
@@ -36,36 +26,36 @@ class MetadataProviderTest extends TestCase
     private $model;
 
     /**
-     * @var Filter|MockObject
+     * @var Filter | \PHPUnit_Framework_MockObject_MockObject
      */
     private $filter;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var TimezoneInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $localeDate;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var ResolverInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $localeResolver;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->filter = $this->getMockBuilder(Filter::class)
+        $this->filter = $this->getMockBuilder(\Magento\Ui\Component\MassAction\Filter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->localeDate = $this->getMockBuilder(TimezoneInterface::class)
+        $this->localeDate = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->localeResolver = $this->getMockBuilder(ResolverInterface::class)
+        $this->localeResolver = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->localeResolver->expects($this->any())
             ->method('getLocale')
@@ -73,7 +63,7 @@ class MetadataProviderTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->model = $objectManager->getObject(
-            MetadataProvider::class,
+            \Magento\Ui\Model\Export\MetadataProvider::class,
             [
                 'filter' => $this->filter,
                 'localeDate' => $this->localeDate,
@@ -86,10 +76,8 @@ class MetadataProviderTest extends TestCase
     /**
      * @param array $columnLabels
      * @param array $expected
-     *
      * @return void
      * @dataProvider getColumnsDataProvider
-     * @throws \Exception
      */
     public function testGetHeaders(array $columnLabels, array $expected): void
     {
@@ -98,7 +86,7 @@ class MetadataProviderTest extends TestCase
 
         $component = $this->prepareColumns($componentName, $columnName, $columnLabels[0]);
         $result = $this->model->getHeaders($component);
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertCount(1, $result);
         $this->assertEquals($expected, $result);
     }
@@ -109,12 +97,12 @@ class MetadataProviderTest extends TestCase
     public function getColumnsDataProvider(): array
     {
         return [
-            [['ID'], ['ID']],
-            [['Name'], ['Name']],
-            [['Id'], ['Id']],
-            [['id'], ['id']],
-            [['IDTEST'], ['IDTEST']],
-            [['ID TEST'], ['ID TEST']],
+            [['ID'],['ID']],
+            [['Name'],['Name']],
+            [['Id'],['Id']],
+            [['id'],['id']],
+            [['IDTEST'],['IDTEST']],
+            [['ID TEST'],['ID TEST']],
         ];
     }
 
@@ -127,7 +115,7 @@ class MetadataProviderTest extends TestCase
         $component = $this->prepareColumns($componentName, $columnName, $columnLabel);
 
         $result = $this->model->getFields($component);
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertCount(1, $result);
         $this->assertEquals($columnName, $result[0]);
     }
@@ -138,8 +126,7 @@ class MetadataProviderTest extends TestCase
      * @param string $columnLabel
      * @param string $columnActionsName
      * @param string $columnActionsLabel
-     *
-     * @return UiComponentInterface|MockObject
+     * @return UiComponentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function prepareColumns(
         $componentName,
@@ -148,32 +135,32 @@ class MetadataProviderTest extends TestCase
         $columnActionsName = 'actions_name',
         $columnActionsLabel = 'actions_label'
     ) {
-        /** @var UiComponentInterface|MockObject $component */
-        $component = $this->getMockBuilder(UiComponentInterface::class)
+        /** @var UiComponentInterface|\PHPUnit_Framework_MockObject_MockObject $component */
+        $component = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->getMockForAbstractClass();
 
-        /** @var Columns|MockObject $columns */
-        $columns = $this->getMockBuilder(Columns::class)
+        /** @var Columns|\PHPUnit_Framework_MockObject_MockObject $columns */
+        $columns = $this->getMockBuilder(\Magento\Ui\Component\Listing\Columns::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var Column|MockObject $column */
-        $column = $this->getMockBuilder(Column::class)
+        /** @var Column|\PHPUnit_Framework_MockObject_MockObject $column */
+        $column = $this->getMockBuilder(\Magento\Ui\Component\Listing\Columns\Column::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var Column|MockObject $columnActions */
-        $columnActions = $this->getMockBuilder(Column::class)
+        /** @var Column|\PHPUnit_Framework_MockObject_MockObject $columnActions */
+        $columnActions = $this->getMockBuilder(\Magento\Ui\Component\Listing\Columns\Column::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $component->expects($this->any())
             ->method('getName')
             ->willReturn($componentName);
-        $component->expects($this->atLeastOnce())
+        $component->expects($this->once())
             ->method('getChildComponents')
             ->willReturn([$columns]);
 
-        $columns->expects($this->atLeastOnce())
+        $columns->expects($this->once())
             ->method('getChildComponents')
             ->willReturn([$column, $columnActions]);
 
@@ -209,16 +196,15 @@ class MetadataProviderTest extends TestCase
      * @param array $fields
      * @param array $options
      * @param array $expected
-     *
      * @dataProvider getRowDataProvider
      */
     public function testGetRowData($key, $fields, $options, $expected)
     {
-        /** @var DocumentInterface|MockObject $document */
-        $document = $this->getMockBuilder(DocumentInterface::class)
+        /** @var DocumentInterface|\PHPUnit_Framework_MockObject_MockObject $document */
+        $document = $this->getMockBuilder(\Magento\Framework\Api\Search\DocumentInterface::class)
             ->getMockForAbstractClass();
 
-        $attribute = $this->getMockBuilder(AttributeInterface::class)
+        $attribute = $this->getMockBuilder(\Magento\Framework\Api\AttributeInterface::class)
             ->getMockForAbstractClass();
 
         $document->expects($this->once())
@@ -231,7 +217,7 @@ class MetadataProviderTest extends TestCase
             ->willReturn($key);
 
         $result = $this->model->getRowData($document, $fields, $options);
-        $this->assertIsArray($result);
+        $this->assertTrue(is_array($result));
         $this->assertCount(1, $result);
         $this->assertEquals($expected, $result);
     }
@@ -263,7 +249,7 @@ class MetadataProviderTest extends TestCase
                     ],
                 ],
                 'expected' => [
-                    'key_2',
+                    '',
                 ],
             ],
             [
@@ -279,76 +265,37 @@ class MetadataProviderTest extends TestCase
 
     /**
      * @param string $filter
-     * @param array $filterOptions
-     * @param array $columnsOptions
+     * @param array $options
      * @param array $expected
-     *
-     * @throws LocalizedException
      * @dataProvider getOptionsDataProvider
      */
-    public function testGetOptions(string $filter, array $filterOptions, array $columnsOptions, array $expected)
+    public function testGetOptions($filter, $options, $expected)
     {
-        $component = $this->prepareColumnsWithOptions($filter, $filterOptions, $columnsOptions);
+        $component = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
+            ->getMockForAbstractClass();
 
-        $this->filter->expects($this->exactly(2))
+        $childComponent = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
+            ->getMockForAbstractClass();
+
+        $filters = $this->getMockBuilder(\Magento\Ui\Component\Filters::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $select = $this->getMockBuilder(\Magento\Ui\Component\Filters\Type\Select::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->filter->expects($this->once())
             ->method('getComponent')
             ->willReturn($component);
 
-        $result = $this->model->getOptions();
-        $this->assertIsArray($result);
-        $this->assertCount(2, $result);
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * @param string $filter
-     * @param array $filterOptions
-     *
-     * @param array $columnsOptions
-     *
-     * @return UiComponentInterface|MockObject
-     */
-    protected function prepareColumnsWithOptions(string $filter, array $filterOptions, array $columnsOptions)
-    {
-        /** @var UiComponentInterface|MockObject $component */
-        $component = $this->getMockBuilder(UiComponentInterface::class)
-            ->getMockForAbstractClass();
-
-        $listingTopComponent = $this->getMockBuilder(UiComponentInterface::class)
-            ->getMockForAbstractClass();
-
-        $filters = $this->getMockBuilder(Filters::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var Columns|MockObject $columns */
-        $columns = $this->getMockBuilder(Columns::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var Column|MockObject $column */
-        $column = $this->getMockBuilder(Column::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        /** @var Column|MockObject $columnActions */
-        $columnActions = $this->getMockBuilder(Column::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $component->expects($this->any())
-            ->method('getName')
-            ->willReturn('columns_component_name');
-        $component->expects($this->atLeastOnce())
+        $component->expects($this->once())
             ->method('getChildComponents')
-            ->willReturn(['columns' => $columns, 'listing_top' => $listingTopComponent]);
+            ->willReturn(['listing_top' => $childComponent]);
 
-        $listingTopComponent->expects($this->once())
+        $childComponent->expects($this->once())
             ->method('getChildComponents')
             ->willReturn([$filters]);
-
-        $select = $this->getMockBuilder(Select::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $filters->expects($this->once())
             ->method('getChildComponents')
@@ -360,50 +307,12 @@ class MetadataProviderTest extends TestCase
         $select->expects($this->any())
             ->method('getData')
             ->with('config/options')
-            ->willReturn($filterOptions);
+            ->willReturn($options);
 
-        $columns->expects($this->atLeastOnce())
-            ->method('getChildComponents')
-            ->willReturn([$column, $columnActions]);
-
-        $column->expects($this->any())
-            ->method('getName')
-            ->willReturn('column_name');
-
-        $optionSource = $this->getMockBuilder(OptionSourceInterface::class)
-            ->getMockForAbstractClass();
-        $optionSource->expects($this->once())
-            ->method('toOptionArray')
-            ->willReturn($columnsOptions);
-
-        $column->expects($this->any())
-            ->method('getData')
-            ->willReturnMap(
-                [
-                    ['config/label', null, 'column_label'],
-                    ['config/dataType', null, 'data_type'],
-                    ['options', null, $optionSource],
-                ]
-            );
-
-        $column->expects($this->once())
-            ->method('hasData')
-            ->willReturn(true)
-            ->with('options');
-
-        $columnActions->expects($this->any())
-            ->method('getName')
-            ->willReturn('column_actions_name');
-        $columnActions->expects($this->any())
-            ->method('getData')
-            ->willReturnMap(
-                [
-                    ['config/label', null, 'column_actions_label'],
-                    ['config/dataType', null, 'actions'],
-                ]
-            );
-
-        return $component;
+        $result = $this->model->getOptions();
+        $this->assertTrue(is_array($result));
+        $this->assertCount(1, $result);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -414,13 +323,7 @@ class MetadataProviderTest extends TestCase
         return [
             [
                 'filter' => 'filter_name',
-                'filterOptions' => [
-                    [
-                        'value' => 'value_1',
-                        'label' => 'label_1',
-                    ]
-                ],
-                'columnsOptions' => [
+                'options' => [
                     [
                         'value' => 'value_1',
                         'label' => 'label_1',
@@ -430,25 +333,11 @@ class MetadataProviderTest extends TestCase
                     'filter_name' => [
                         'value_1' => 'label_1',
                     ],
-                    'column_name' => [
-                        'value_1' => 'label_1',
-                    ]
                 ],
             ],
             [
                 'filter' => 'filter_name',
-                'filterOptions' => [
-                    [
-                        'value' => [
-                            [
-                                'value' => 'value_2',
-                                'label' => 'label_2',
-                            ],
-                        ],
-                        'label' => 'label_1',
-                    ]
-                ],
-                'columnsOptions' => [
+                'options' => [
                     [
                         'value' => [
                             [
@@ -463,14 +352,11 @@ class MetadataProviderTest extends TestCase
                     'filter_name' => [
                         'value_2' => 'label_1label_2',
                     ],
-                    'column_name' => [
-                        'value_2' => 'label_1label_2',
-                    ]
                 ],
             ],
             [
                 'filter' => 'filter_name',
-                'filterOptions' => [
+                'options' => [
                     [
                         'value' => [
                             [
@@ -486,12 +372,10 @@ class MetadataProviderTest extends TestCase
                         'label' => 'label_1',
                     ]
                 ],
-                'columnsOptions' => [],
                 'expected' => [
                     'filter_name' => [
                         'value_3' => 'label_1label_2label_3',
                     ],
-                    'column_name' => []
                 ],
             ],
         ];
@@ -502,16 +386,14 @@ class MetadataProviderTest extends TestCase
      *
      * @param string $fieldValue
      * @param string $expected
-     *
      * @dataProvider convertDateProvider
      * @covers       \Magento\Ui\Model\Export\MetadataProvider::convertDate()
-     * @throws \Exception
      */
     public function testConvertDate($fieldValue, $expected)
     {
         $componentName = 'component_name';
-        /** @var DocumentInterface|MockObject $document */
-        $document = $this->getMockBuilder(DataObject::class)
+        /** @var DocumentInterface|\PHPUnit_Framework_MockObject_MockObject $document */
+        $document = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 

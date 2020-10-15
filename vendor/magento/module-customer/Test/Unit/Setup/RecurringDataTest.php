@@ -7,21 +7,19 @@ declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Setup;
 
+use Magento\Framework\Indexer\IndexerInterface;
+use Magento\Framework\Indexer\StateInterface;
+use Magento\Framework\Indexer\IndexerRegistry;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Setup\RecurringData;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Indexer\StateInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for recurring data
  */
-class RecurringDataTest extends TestCase
+class RecurringDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -29,27 +27,27 @@ class RecurringDataTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var IndexerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexer;
 
     /**
-     * @var StateInterface|MockObject
+     * @var StateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $state;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     private $indexerRegistry;
 
     /**
-     * @var ModuleDataSetupInterface|MockObject
+     * @var ModuleDataSetupInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $setup;
 
     /**
-     * @var ModuleContextInterface|MockObject
+     * @var ModuleContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $context;
 
@@ -61,7 +59,7 @@ class RecurringDataTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->state = $this->getMockBuilder(StateInterface::class)

@@ -15,7 +15,7 @@ class AjaxTest extends \PHPUnit\Framework\TestCase
      */
     protected $_block = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->_block = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(

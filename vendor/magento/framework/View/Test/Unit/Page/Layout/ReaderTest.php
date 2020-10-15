@@ -3,89 +3,75 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Framework\View\Page\Layout\Reader
  */
 namespace Magento\Framework\View\Test\Unit\Page\Layout;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Design\Theme\ResolverInterface;
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File\CollectorInterface;
-use Magento\Framework\View\Layout\Element;
-use Magento\Framework\View\Layout\ProcessorFactory;
-use Magento\Framework\View\Layout\ProcessorInterface;
-use Magento\Framework\View\Layout\Reader\Context;
-use Magento\Framework\View\Layout\ReaderPool;
-use Magento\Framework\View\Page\Layout\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Framework\View\Page\Layout\Reader
      */
     protected $model;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\View\Design\Theme\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $themeResolver;
 
     /**
-     * @var ThemeInterface|MockObject
+     * @var \Magento\Framework\View\Design\ThemeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $themeInterface;
 
     /**
-     * @var ProcessorFactory|MockObject
+     * @var \Magento\Framework\View\Layout\ProcessorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorFactory;
 
     /**
-     * @var CollectorInterface|MockObject
+     * @var \Magento\Framework\View\File\CollectorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageLayoutFileSource;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\View\Layout\Reader\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerContext;
 
     /**
-     * @var ReaderPool|MockObject
+     * @var \Magento\Framework\View\Layout\ReaderPool|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerPool;
 
     /**
-     * @var ProcessorInterface|MockObject
+     * @var \Magento\Framework\View\Layout\ProcessorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processorInterface;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->processorInterface = $this->getMockForAbstractClass(ProcessorInterface::class);
-        $this->themeInterface = $this->getMockForAbstractClass(ThemeInterface::class);
+        $this->processorInterface = $this->createMock(\Magento\Framework\View\Layout\ProcessorInterface::class);
+        $this->themeInterface = $this->createMock(\Magento\Framework\View\Design\ThemeInterface::class);
         $this->processorFactory = $this->createPartialMock(
-            ProcessorFactory::class,
+            \Magento\Framework\View\Layout\ProcessorFactory::class,
             ['create']
         );
-        $this->themeResolver = $this->getMockForAbstractClass(ResolverInterface::class);
-        $this->pageLayoutFileSource = $this->getMockBuilder(CollectorInterface::class)
+        $this->themeResolver = $this->createMock(\Magento\Framework\View\Design\Theme\ResolverInterface::class);
+        $this->pageLayoutFileSource = $this->getMockBuilder(\Magento\Framework\View\File\CollectorInterface::class)
             ->getMock();
-        $this->readerPool = $this->getMockBuilder(ReaderPool::class)
+        $this->readerPool = $this->getMockBuilder(\Magento\Framework\View\Layout\ReaderPool::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->readerContext = $this->getMockBuilder(Context::class)
+        $this->readerContext = $this->getMockBuilder(\Magento\Framework\View\Layout\Reader\Context::class)
             ->setMethods(['getScheduledStructure'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->model = (new ObjectManager($this))
+        $this->model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Reader::class,
+                \Magento\Framework\View\Page\Layout\Reader::class,
                 [
                     'themeResolver' => $this->themeResolver,
                     'processorFactory' => $this->processorFactory,
@@ -101,11 +87,11 @@ class ReaderTest extends TestCase
         $xml = '<body>
                     <attribute name="body_attribute_name" value="body_attribute_value" />
                 </body>';
-        $this->processorInterface->expects($this->any())->method('load')->with($data)->willReturn(
-            $this->processorInterface
+        $this->processorInterface->expects($this->any())->method('load')->with($data)->will(
+            $this->returnValue($this->processorInterface)
         );
-        $this->themeResolver->expects($this->atLeastOnce())->method('get')->willReturn(
-            $this->themeInterface
+        $this->themeResolver->expects($this->atLeastOnce())->method('get')->will(
+            $this->returnValue($this->themeInterface)
         );
         $createData = [
             'theme' => $this->themeInterface,
@@ -113,9 +99,9 @@ class ReaderTest extends TestCase
             'cacheSuffix' => 'page_layout',
         ];
         $this->processorFactory->expects($this->once())->method('create')
-            ->with($createData)->willReturn($this->processorInterface);
-        $element = new Element($xml);
-        $this->processorInterface->expects($this->once())->method('asSimplexml')->willReturn($element);
+            ->with($createData)->will($this->returnValue($this->processorInterface));
+        $element = new \Magento\Framework\View\Layout\Element($xml);
+        $this->processorInterface->expects($this->once())->method('asSimplexml')->will($this->returnValue($element));
         $this->readerPool->expects($this->once())->method('interpret')->with($this->readerContext, $element);
         $this->model->read($this->readerContext, $data);
     }

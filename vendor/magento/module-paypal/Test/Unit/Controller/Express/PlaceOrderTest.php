@@ -4,17 +4,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Controller\Express;
 
-use Magento\CheckoutAgreements\Model\AgreementsValidator;
-use Magento\Framework\DataObject;
-use Magento\Payment\Model\Method\AbstractMethod;
-use Magento\Paypal\Model\Api\ProcessableException;
-use Magento\Paypal\Test\Unit\Controller\ExpressTest;
-
-class PlaceOrderTest extends ExpressTest
+class PlaceOrderTest extends \Magento\Paypal\Test\Unit\Controller\ExpressTest
 {
     protected $name = 'PlaceOrder';
 
@@ -28,7 +20,7 @@ class PlaceOrderTest extends ExpressTest
             $this->request->expects($this->once())
                 ->method('getPost')
                 ->with('agreement', [])
-                ->willReturn([]);
+                ->will($this->returnValue([]));
         }
         $this->_expectRedirect();
         $this->model->execute();
@@ -62,18 +54,19 @@ class PlaceOrderTest extends ExpressTest
         $this->request->expects($this->once())
             ->method('getPost')
             ->with('agreement', [])
-            ->willReturn([]);
+            ->will($this->returnValue([]));
         $oldCallback = &$this->objectManagerCallback;
         $this->objectManagerCallback = function ($className) use ($code, $oldCallback) {
             $instance = call_user_func($oldCallback, $className);
-            if ($className == AgreementsValidator::class) {
-                $exception = $this->createPartialMock(
-                    ProcessableException::class,
-                    ['getUserMessage']
+            if ($className == \Magento\CheckoutAgreements\Model\AgreementsValidator::class) {
+                $exception = $this->getMock(
+                    \Magento\Paypal\Model\Api\ProcessableException::class,
+                    ['getUserMessage'],
+                    ['message', $code]
                 );
                 $exception->expects($this->any())
                     ->method('getUserMessage')
-                    ->willReturn('User Message');
+                    ->will($this->returnValue('User Message'));
                 $instance->expects($this->once())
                     ->method('isValid')
                     ->will($this->throwException($exception));
@@ -83,7 +76,7 @@ class PlaceOrderTest extends ExpressTest
         if (isset($paymentAction)) {
             $this->config->expects($this->once())
                 ->method('getPaymentAction')
-                ->willReturn($paymentAction);
+                ->will($this->returnValue($paymentAction));
         }
         $this->_expectErrorCodes($code, $paymentAction);
         $this->model->execute();
@@ -95,14 +88,14 @@ class PlaceOrderTest extends ExpressTest
     public function executeProcessableExceptionDataProvider()
     {
         return [
-            [ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED],
-            [ProcessableException::API_TRANSACTION_EXPIRED],
-            [ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL],
+            [\Magento\Paypal\Model\Api\ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED],
+            [\Magento\Paypal\Model\Api\ProcessableException::API_TRANSACTION_EXPIRED],
+            [\Magento\Paypal\Model\Api\ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL],
             [
-                ProcessableException::API_UNABLE_TRANSACTION_COMPLETE,
-                AbstractMethod::ACTION_ORDER
+                \Magento\Paypal\Model\Api\ProcessableException::API_UNABLE_TRANSACTION_COMPLETE,
+                \Magento\Payment\Model\Method\AbstractMethod::ACTION_ORDER
             ],
-            [ProcessableException::API_UNABLE_TRANSACTION_COMPLETE, 'other'],
+            [\Magento\Paypal\Model\Api\ProcessableException::API_UNABLE_TRANSACTION_COMPLETE, 'other'],
             [999999],
         ];
     }
@@ -117,30 +110,30 @@ class PlaceOrderTest extends ExpressTest
         if (in_array(
             $code,
             [
-                ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED,
-                ProcessableException::API_TRANSACTION_EXPIRED,
+                \Magento\Paypal\Model\Api\ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED,
+                \Magento\Paypal\Model\Api\ProcessableException::API_TRANSACTION_EXPIRED,
             ]
         )
         ) {
-            $payment = new DataObject(['checkout_redirect_url' => $redirectUrl]);
+            $payment = new \Magento\Framework\DataObject(['checkout_redirect_url' => $redirectUrl]);
             $this->quote->expects($this->once())
                 ->method('getPayment')
-                ->willReturn($payment);
+                ->will($this->returnValue($payment));
         }
-        if ($code == ProcessableException::API_UNABLE_TRANSACTION_COMPLETE
-            && $paymentAction == AbstractMethod::ACTION_ORDER
+        if ($code == \Magento\Paypal\Model\Api\ProcessableException::API_UNABLE_TRANSACTION_COMPLETE
+            && $paymentAction == \Magento\Payment\Model\Method\AbstractMethod::ACTION_ORDER
         ) {
             $this->config->expects($this->once())
                 ->method('getExpressCheckoutOrderUrl')
-                ->willReturn($redirectUrl);
+                ->will($this->returnValue($redirectUrl));
         }
-        if ($code == ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL
-            || $code == ProcessableException::API_UNABLE_TRANSACTION_COMPLETE
-            && $paymentAction != AbstractMethod::ACTION_ORDER
+        if ($code == \Magento\Paypal\Model\Api\ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL
+            || $code == \Magento\Paypal\Model\Api\ProcessableException::API_UNABLE_TRANSACTION_COMPLETE
+            && $paymentAction != \Magento\Payment\Model\Method\AbstractMethod::ACTION_ORDER
         ) {
             $this->config->expects($this->once())
                 ->method('getExpressCheckoutStartUrl')
-                ->willReturn($redirectUrl);
+                ->will($this->returnValue($redirectUrl));
             $this->request->expects($this->once())
                 ->method('getParam')
                 ->with('token');
@@ -148,10 +141,10 @@ class PlaceOrderTest extends ExpressTest
         if (in_array(
             $code,
             [
-                ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED,
-                ProcessableException::API_TRANSACTION_EXPIRED,
-                ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL,
-                ProcessableException::API_UNABLE_TRANSACTION_COMPLETE,
+                \Magento\Paypal\Model\Api\ProcessableException::API_MAX_PAYMENT_ATTEMPTS_EXCEEDED,
+                \Magento\Paypal\Model\Api\ProcessableException::API_TRANSACTION_EXPIRED,
+                \Magento\Paypal\Model\Api\ProcessableException::API_DO_EXPRESS_CHECKOUT_FAIL,
+                \Magento\Paypal\Model\Api\ProcessableException::API_UNABLE_TRANSACTION_COMPLETE,
             ]
         )
         ) {

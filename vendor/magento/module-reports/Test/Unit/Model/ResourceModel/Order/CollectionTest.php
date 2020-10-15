@@ -3,149 +3,127 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Model\ResourceModel\Order;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Helper;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Reports\Model\ResourceModel\Order\Collection;
-use Magento\Sales\Model\Order\Config;
-use Magento\Sales\Model\ResourceModel\Report\Order;
-use Magento\Sales\Model\ResourceModel\Report\OrderFactory;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Reports\Model\ResourceModel\Order\Collection
      */
     protected $collection;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $managerMock;
 
     /**
-     * @var \Magento\Sales\Model\ResourceModel\EntitySnapshot|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\EntitySnapshot|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entitySnapshotMock;
 
     /**
-     * @var Helper|MockObject
+     * @var \Magento\Framework\DB\Helper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $timezoneMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Sales\Model\Order\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configMock;
 
     /**
-     * @var OrderFactory|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Report\OrderFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderFactoryMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $resourceMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->entityFactoryMock = $this->getMockBuilder(EntityFactory::class)
+        $this->entityFactoryMock = $this->getMockBuilder(\Magento\Framework\Data\Collection\EntityFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->getMock();
         $this->fetchStrategyMock = $this->getMockBuilder(
-            FetchStrategyInterface::class
+            \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class
         )->getMock();
-        $this->managerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->managerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->getMock();
-        $snapshotClassName = Snapshot::class;
+        $snapshotClassName = \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class;
         $this->entitySnapshotMock = $this->getMockBuilder($snapshotClassName)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->helperMock = $this->getMockBuilder(Helper::class)
+        $this->helperMock = $this->getMockBuilder(\Magento\Framework\DB\Helper::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMock();
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->getMock();
-        $this->timezoneMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->timezoneMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->getMock();
-        $this->configMock = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->orderFactoryMock = $this->getMockBuilder(OrderFactory::class)
+        $this->orderFactoryMock = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Report\OrderFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->selectMock = $this->getMockBuilder(Select::class)
+        $this->selectMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->selectMock
@@ -169,7 +147,7 @@ class CollectionTest extends TestCase
             ->method('getPart')
             ->willReturn([]);
 
-        $this->connectionMock = $this->getMockBuilder(Mysql::class)
+        $this->connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->setMethods(['select', 'getIfNullSql', 'getDateFormatSql', 'prepareSqlCondition', 'getCheckSql'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -178,7 +156,7 @@ class CollectionTest extends TestCase
             ->method('select')
             ->willReturn($this->selectMock);
 
-        $this->resourceMock = $this->getMockBuilder(AbstractDb::class)
+        $this->resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resourceMock
@@ -214,7 +192,7 @@ class CollectionTest extends TestCase
             ->method('getValue')
             ->with(
                 'sales/dashboard/use_aggregated_data',
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
 
         $this->collection->checkIsLive($range);
@@ -224,7 +202,7 @@ class CollectionTest extends TestCase
      * @param int $useAggregatedData
      * @param string $mainTable
      * @param int $isFilter
-     * @param InvokedCount $getIfNullSqlResult
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $getIfNullSqlResult
      * @dataProvider useAggregatedDataDataProvider
      * @return void
      */
@@ -239,11 +217,11 @@ class CollectionTest extends TestCase
             ->method('getValue')
             ->with(
                 'sales/dashboard/use_aggregated_data',
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn($useAggregatedData);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Report\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -298,12 +276,12 @@ class CollectionTest extends TestCase
             ->method('getValue')
             ->with(
                 $config,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn(1);
 
         $result = $this->collection->getDateRange($range, $customStart, $customEnd);
-        $this->assertCount(3, $result);
+        $this->assertEquals(3, count($result));
     }
 
     /**
@@ -311,8 +289,8 @@ class CollectionTest extends TestCase
      */
     public function testGetDateRangeWithReturnObject()
     {
-        $this->assertCount(2, $this->collection->getDateRange('7d', '', '', true));
-        $this->assertCount(3, $this->collection->getDateRange('7d', '', '', false));
+        $this->assertEquals(2, count($this->collection->getDateRange('7d', '', '', true)));
+        $this->assertEquals(3, count($this->collection->getDateRange('7d', '', '', false)));
     }
 
     /**
@@ -331,7 +309,7 @@ class CollectionTest extends TestCase
      * @param int $isFilter
      * @param int $useAggregatedData
      * @param string $mainTable
-     * @param InvokedCount $getIfNullSqlResult
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $getIfNullSqlResult
      * @dataProvider totalsDataProvider
      * @return void
      */
@@ -342,7 +320,7 @@ class CollectionTest extends TestCase
             ->method('getValue')
             ->with(
                 'sales/dashboard/use_aggregated_data',
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn($useAggregatedData);
 
@@ -373,11 +351,11 @@ class CollectionTest extends TestCase
             ->method('getValue')
             ->with(
                 'sales/dashboard/use_aggregated_data',
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn($useAggregatedData);
 
-        $storeMock = $this->getMockBuilder(Store::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -507,8 +485,8 @@ class CollectionTest extends TestCase
             'total' => 'SUM(main_table.base_grand_total * main_table.base_to_global_rate)',
             'invoiced' => 'SUM(main_table.base_total_paid * main_table.base_to_global_rate)',
             'refunded' => 'SUM(main_table.base_total_refunded * main_table.base_to_global_rate)',
-            'profit' => 'SUM(text *  main_table.base_to_global_rate) + SUM(text * main_table.base_to_global_rate) ' .
-                '- SUM(text * main_table.base_to_global_rate) - SUM(text * main_table.base_to_global_rate) ' .
+            'profit' => 'SUM(text *  main_table.base_to_global_rate) + SUM(text * main_table.base_to_global_rate) '.
+                '- SUM(text * main_table.base_to_global_rate) - SUM(text * main_table.base_to_global_rate) '.
                 '- SUM(text * main_table.base_to_global_rate)',
         ];
 

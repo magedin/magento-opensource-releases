@@ -3,40 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\Address;
 
-use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Customer\Api\Data\RegionInterface;
-use Magento\Customer\Model\Address\Mapper;
-use Magento\Framework\Api\ExtensibleDataObjectConverter;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class MapperTest extends TestCase
+class MapperTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager  */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager  */
     protected $_objectManager;
 
     /**
-     * @var Mapper
+     * @var \Magento\Customer\Model\Address\Mapper
      */
     protected $addressMapper;
 
-    /** @var ExtensibleDataObjectConverter|MockObject */
+    /** @var \Magento\Framework\Api\ExtensibleDataObjectConverter|\PHPUnit_Framework_MockObject_MockObject */
     protected $extensibleObjectConverter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->extensibleObjectConverter = $this->getMockBuilder(
-            ExtensibleDataObjectConverter::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_objectManager = new ObjectManager($this);
+            \Magento\Framework\Api\ExtensibleDataObjectConverter::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->addressMapper = $this->_objectManager->getObject(
-            Mapper::class,
+            \Magento\Customer\Model\Address\Mapper::class,
             [
                 'extensibleDataObjectConverter' => $this->extensibleObjectConverter
             ]
@@ -72,16 +62,16 @@ class MapperTest extends TestCase
     }
 
     /**
-     * @return AddressInterface|MockObject
+     * @return \Magento\Customer\Api\Data\AddressInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function createAddressMock()
     {
-        /** @var RegionInterface|MockObject $regionMock */
-        $regionMock = $this->getMockForAbstractClass(RegionInterface::class, [], '', false);
+        /** @var \Magento\Customer\Api\Data\RegionInterface|\PHPUnit_Framework_MockObject_MockObject $regionMock */
+        $regionMock = $this->getMockForAbstractClass(\Magento\Customer\Api\Data\RegionInterface::class, [], '', false);
         $regionMock->expects($this->any())->method('getRegion')->willReturn('Texas');
         $regionMock->expects($this->any())->method('getRegionId')->willReturn(1);
         $regionMock->expects($this->any())->method('getRegionCode')->willReturn('TX');
-        $addressMock = $this->getMockBuilder(AddressInterface::class)
+        $addressMock = $this->getMockBuilder(\Magento\Customer\Api\Data\AddressInterface::class)
             ->setMethods(
                 [
                     'getId',

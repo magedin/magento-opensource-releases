@@ -83,10 +83,6 @@ define([
                         component: 'Magento_Ui/js/grid/filters/range',
                         rangeType: 'date'
                     },
-                    datetimeRange: {
-                        component: 'Magento_Ui/js/grid/filters/range',
-                        rangeType: 'datetime'
-                    },
                     textRange: {
                         component: 'Magento_Ui/js/grid/filters/range',
                         rangeType: 'text'

@@ -13,10 +13,10 @@ class ViewTest extends \PHPUnit\Framework\TestCase
     /** @var \Magento\Customer\Helper\View */
     protected $_helper;
 
-    /** @var CustomerMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var CustomerMetadataInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $_customerMetadataService;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_customerMetadataService = $this->createMock(\Magento\Customer\Api\CustomerMetadataInterface::class);
         $this->_helper = Bootstrap::getObjectManager()->create(
@@ -42,23 +42,23 @@ class ViewTest extends \PHPUnit\Framework\TestCase
         $isSuffixAllowed = false
     ) {
         $visibleAttribute = $this->createMock(\Magento\Customer\Api\Data\AttributeMetadataInterface::class);
-        $visibleAttribute->expects($this->any())->method('isVisible')->willReturn(true);
+        $visibleAttribute->expects($this->any())->method('isVisible')->will($this->returnValue(true));
 
         $invisibleAttribute = $this->createMock(\Magento\Customer\Api\Data\AttributeMetadataInterface::class);
-        $invisibleAttribute->expects($this->any())->method('isVisible')->willReturn(false);
+        $invisibleAttribute->expects($this->any())->method('isVisible')->will($this->returnValue(false));
 
         $this->_customerMetadataService->expects(
             $this->any()
         )->method(
             'getAttributeMetadata'
-        )->willReturnMap(
-            
+        )->will(
+            $this->returnValueMap(
                 [
                     ['prefix', $isPrefixAllowed ? $visibleAttribute : $invisibleAttribute],
                     ['middlename', $isMiddleNameAllowed ? $visibleAttribute : $invisibleAttribute],
                     ['suffix', $isSuffixAllowed ? $visibleAttribute : $invisibleAttribute],
                 ]
-            
+            )
         );
 
         $this->assertEquals(

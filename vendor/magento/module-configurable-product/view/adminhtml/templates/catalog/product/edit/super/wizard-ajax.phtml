@@ -5,7 +5,6 @@
  */
 
 /** @var $block \Magento\ConfigurableProduct\Block\Adminhtml\Product\Edit\Tab\Variations\Config\Matrix */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 
 $productMatrix = $block->getProductMatrix();
 $attributes = $block->getProductAttributes();
@@ -16,18 +15,13 @@ $attributes = $block->getProductAttributes();
     'configurableModal' => $block->getForm() . '.' . $block->getModal()
 ]);
 ?>
-
-<?php $dataScope = /* @noEscape */ $block->getData('config/dataScope');
-$nameStep = /* @noEscape */ $block->getData('config/nameStepWizard');
-$scriptString = <<<script
+<script>
     require(['jquery', 'uiRegistry', 'underscore'], function ($, registry, _) {
         $('body').trigger('contentUpdated');
-        $('.{$dataScope}[data-role=steps-wizard-main]').applyBindings();
+        $('.<?= /* @noEscape */ $block->getData('config/dataScope') ?>[data-role=steps-wizard-main]').applyBindings();
 
-        registry.async('{$nameStep}')(function (component) {
+        registry.async('<?= /* @noEscape */ $block->getData('config/nameStepWizard') ?>')(function (component) {
             _.delay(component.open.bind(component), 500); // TODO: MAGETWO-50246
         })
     });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

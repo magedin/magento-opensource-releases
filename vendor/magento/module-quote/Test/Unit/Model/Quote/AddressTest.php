@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\Quote;
 
 use Magento\Directory\Model\Currency;
-use Magento\Directory\Model\Region;
-use Magento\Directory\Model\RegionFactory;
-use Magento\Framework\App\Config;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\CustomAttributeListInterface;
 use Magento\Quote\Model\Quote\Address\Rate;
-use Magento\Quote\Model\Quote\Address\RateCollectorInterface;
-use Magento\Quote\Model\Quote\Address\RateCollectorInterfaceFactory;
+use Magento\Quote\Model\ResourceModel\Quote\Address\Rate\CollectionFactory as RateCollectionFactory;
+use Magento\Quote\Model\ResourceModel\Quote\Address\Rate\Collection as RatesCollection;
+use Magento\Shipping\Model\Rate\Result;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Directory\Model\RegionFactory;
 use Magento\Quote\Model\Quote\Address\RateFactory;
+use Magento\Quote\Model\Quote\Address\RateCollectorInterfaceFactory;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateRequestFactory;
-use Magento\Quote\Model\Quote\Address\RateResult\AbstractResult;
-use Magento\Quote\Model\ResourceModel\Quote\Address\Item\Collection;
+use Magento\Quote\Model\Quote\Address\RateCollectorInterface;
 use Magento\Quote\Model\ResourceModel\Quote\Address\Item\CollectionFactory;
-use Magento\Quote\Model\ResourceModel\Quote\Address\Rate\Collection as RatesCollection;
-use Magento\Quote\Model\ResourceModel\Quote\Address\Rate\CollectionFactory as RateCollectionFactory;
-use Magento\Shipping\Model\Rate\Result;
+use Magento\Quote\Model\ResourceModel\Quote\Address\Item\Collection;
+use Magento\Directory\Model\Region;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Model\Quote\Address\RateResult\AbstractResult;
+use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Test class for sales quote address model
@@ -42,7 +35,7 @@ use PHPUnit\Framework\TestCase;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddressTest extends TestCase
+class AddressTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Address
@@ -50,85 +43,85 @@ class AddressTest extends TestCase
     private $address;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Quote\Model\Quote | \PHPUnit_Framework_MockObject_MockObject
      */
     private $quote;
 
     /**
-     * @var CustomAttributeListInterface|MockObject
+     * @var \Magento\Quote\Model\Quote\Address\CustomAttributeListInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeList;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\App\Config | \PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
     /**
-     * @var RateRequestFactory|MockObject
+     * @var RateRequestFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $requestFactory;
 
     /**
-     * @var RateFactory|MockObject
+     * @var RateFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $addressRateFactory;
 
     /**
-     * @var RateCollectionFactory|MockObject
+     * @var RateCollectionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $rateCollectionFactory;
 
     /**
-     * @var RateCollectorInterfaceFactory|MockObject
+     * @var RateCollectorInterfaceFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $rateCollector;
 
     /**
-     * @var RateCollectorInterface|MockObject
+     * @var RateCollectorInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $rateCollection;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $itemCollectionFactory;
 
     /**
-     * @var RegionFactory|MockObject
+     * @var RegionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $regionFactory;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $store;
 
     /**
-     * @var WebsiteInterface|MockObject
+     * @var WebsiteInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $website;
 
     /**
-     * @var Region|MockObject
+     * @var Region | \PHPUnit_Framework_MockObject_MockObject
      */
     private $region;
 
     /**
-     * @var Json|MockObject
+     * @var \Magento\Framework\Serialize\Serializer\Json | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->scopeConfig = $this->createMock(Config::class);
+        $this->scopeConfig = $this->createMock(\Magento\Framework\App\Config::class);
         $this->serializer = new Json();
 
         $this->requestFactory = $this->getMockBuilder(RateRequestFactory::class)
@@ -166,7 +159,7 @@ class AddressTest extends TestCase
 
         $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->store = $this->getMockBuilder(StoreInterface::class)
             ->disableOriginalConstructor()
@@ -175,15 +168,15 @@ class AddressTest extends TestCase
 
         $this->website = $this->getMockBuilder(WebsiteInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->attributeList = $this->createMock(
-            CustomAttributeListInterface::class
+            \Magento\Quote\Model\Quote\Address\CustomAttributeListInterface::class
         );
         $this->attributeList->method('getAttributes')->willReturn([]);
 
         $this->address = $objectManager->getObject(
-            Address::class,
+            \Magento\Quote\Model\Quote\Address::class,
             [
                 'attributeList' => $this->attributeList,
                 'scopeConfig' => $this->scopeConfig,
@@ -197,7 +190,7 @@ class AddressTest extends TestCase
                 '_addressRateFactory' => $this->addressRateFactory
             ]
         );
-        $this->quote = $this->createMock(Quote::class);
+        $this->quote = $this->createMock(\Magento\Quote\Model\Quote::class);
         $this->address->setQuote($this->quote);
     }
 
@@ -352,10 +345,40 @@ class AddressTest extends TestCase
 
         $currentCurrencyCode = 'UAH';
 
+        $this->quote->expects($this->any())
+            ->method('getStoreId')
+            ->willReturn($storeId);
+
+        $this->storeManager->expects($this->at(0))
+            ->method('getStore')
+            ->with($storeId)
+            ->willReturn($this->store);
+        $this->store->expects($this->any())
+            ->method('getWebsiteId')
+            ->willReturn($webSiteId);
+
+        $this->scopeConfig->expects($this->exactly(1))
+            ->method('getValue')
+            ->with(
+                'tax/calculation/price_includes_tax',
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+            ->willReturn(1);
+
         /** @var RateRequest */
         $request = $this->getMockBuilder(RateRequest::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setStoreId', 'setWebsiteId', 'setBaseCurrency', 'setPackageCurrency'])
+            ->setMethods(
+                [
+                    'setStoreId',
+                    'setWebsiteId',
+                    'setBaseCurrency',
+                    'setPackageCurrency',
+                    'getBaseSubtotalTotalInclTax',
+                    'getBaseSubtotal'
+                ]
+            )
             ->getMock();
 
         /** @var Collection */
@@ -434,13 +457,6 @@ class AddressTest extends TestCase
         $this->storeManager->method('getStore')
             ->willReturn($this->store);
 
-        $this->storeManager->expects($this->once())
-            ->method('getWebsite')
-            ->willReturn($this->website);
-
-        $this->store->method('getId')
-            ->willReturn($storeId);
-
         $this->store->method('getBaseCurrency')
             ->willReturn($baseCurrency);
 
@@ -451,10 +467,6 @@ class AddressTest extends TestCase
         $this->store->expects($this->once())
             ->method('getCurrentCurrencyCode')
             ->willReturn($currentCurrencyCode);
-
-        $this->website->expects($this->once())
-            ->method('getId')
-            ->willReturn($webSiteId);
 
         $this->addressRateFactory->expects($this->once())
             ->method('create')

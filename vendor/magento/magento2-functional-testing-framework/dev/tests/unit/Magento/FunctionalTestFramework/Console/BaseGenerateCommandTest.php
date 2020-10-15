@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace tests\unit\Magento\FunctionalTestFramework\Console;
+namespace Tests\unit\Magento\FunctionalTestingFramework\Console;
 
 use AspectMock\Test as AspectMock;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 
 class BaseGenerateCommandTest extends TestCase
 {
-    public function tearDown(): void
+    public function tearDown()
     {
         AspectMock::clean();
     }

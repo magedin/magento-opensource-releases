@@ -19,7 +19,7 @@
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref = "LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!--Create website-->
             <actionGroup ref="AdminCreateWebsiteActionGroup" stepKey="createWebsite">
                 <argument name="newWebsiteName" value="{{customWebsite.name}}"/>
@@ -30,23 +30,23 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="{{customWebsite.name}}"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Create custom store group with custom website and default category and verify AssertStoreGroupSuccessSaveMessage-->
-        <actionGroup ref="CreateCustomStoreActionGroup" stepKey="createCustomStoreGroup">
+        <actionGroup ref="CreateCustomStore" stepKey="createCustomStoreGroup">
             <argument name="website" value="{{customWebsite.name}}"/>
             <argument name="store" value="{{customStoreGroup.name}}"/>
             <argument name="rootCategory" value="Default Category"/>
         </actionGroup>
 
         <!--Search created store group(from above step) in grid and verify AssertStoreGroupInGrid message-->
-        <actionGroup ref="AssertStoreGroupInGridActionGroup" stepKey="seeCreatedStoreGroupInGrid">
+        <actionGroup ref="AssertStoreGroupInGrid" stepKey="seeCreatedStoreGroupInGrid">
             <argument name="storeGroupName" value="{{customStoreGroup.name}}"/>
         </actionGroup>
 
         <!--Go to store group form page and verify AssertStoreGroupForm-->
-        <actionGroup ref="AssertStoreGroupFormActionGroup" stepKey="seeCreatedStoreGroupForm">
+        <actionGroup ref="AssertStoreGroupForm" stepKey="seeCreatedStoreGroupForm">
             <argument name="website" value="{{customWebsite.name}}"/>
             <argument name="storeGroupName" value="{{customStoreGroup.name}}"/>
             <argument name="storeGroupCode" value="{{customStoreGroup.code}}"/>

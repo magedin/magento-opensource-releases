@@ -200,7 +200,7 @@ class ASTProperty extends AbstractASTArtifact
      * Returns the type of this property. This method will return <b>null</b>
      * for all scalar type, only class properties will have a type.
      *
-     * @return \PDepend\Source\AST\AbstractASTClassOrInterface|null
+     * @return \PDepend\Source\AST\AbstractASTClassOrInterface
      * @since  0.9.5
      */
     public function getClass()
@@ -342,9 +342,11 @@ class ASTProperty extends AbstractASTArtifact
      */
     public function __toString()
     {
+        $default = ($this->isDefault() === true ? ' <default>' : '');
         $static  = '';
 
         if ($this->isStatic() === true) {
+            $default = '';
             $static  = ' static';
         }
 
@@ -356,7 +358,8 @@ class ASTProperty extends AbstractASTArtifact
         }
 
         return sprintf(
-            'Property [%s%s %s ]%s',
+            'Property [%s%s%s %s ]%s',
+            $default,
             $visibility,
             $static,
             $this->getName(),

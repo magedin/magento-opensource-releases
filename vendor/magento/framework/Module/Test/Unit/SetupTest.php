@@ -3,27 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Module\Test\Unit;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Module\Setup;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Module\Setup;
 
-class SetupTest extends TestCase
+class SetupTest extends \PHPUnit\Framework\TestCase
 {
     const CONNECTION_NAME = 'connection';
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceModel;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
@@ -32,17 +27,17 @@ class SetupTest extends TestCase
      */
     private $object;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceModel = $this->createMock(ResourceConnection::class);
-        $this->connection = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->resourceModel = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->connection = $this->getMockForAbstractClass(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->resourceModel->expects($this->any())
             ->method('getConnection')
             ->with(self::CONNECTION_NAME)
             ->willReturn($this->connection);
         $this->resourceModel->expects($this->any())
             ->method('getConnectionByName')
-            ->with(ResourceConnection::DEFAULT_CONNECTION)
+            ->with(\Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION)
             ->willReturn($this->connection);
         $this->object = new Setup($this->resourceModel, self::CONNECTION_NAME);
     }
@@ -72,7 +67,7 @@ class SetupTest extends TestCase
         $this->resourceModel->expects($this->once())
             ->method('getTableName')
             ->with($tableName)
-            ->willReturn($expectedTableName);
+            ->will($this->returnValue($expectedTableName));
 
         $this->assertSame($expectedTableName, $this->object->getTable($tableName));
         // Check that table name is cached
@@ -86,7 +81,7 @@ class SetupTest extends TestCase
         $this->connection->expects($this->once())
             ->method('isTableExists')
             ->with($tableName)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->assertTrue($this->object->tableExists($tableName));
     }
 

@@ -24,8 +24,6 @@ use Magento\Store\Model\StoreManagerInterface;
 /**
  * Class Confirm
  *
- * Confirm class is responsible for account confirmation flow
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Confirm extends AbstractAccount implements HttpGetActionInterface
@@ -170,7 +168,7 @@ class Confirm extends AbstractAccount implements HttpGetActionInterface
                 $metadata->setPath('/');
                 $this->getCookieManager()->deleteCookie('mage-cache-sessid', $metadata);
             }
-            $this->messageManager->addSuccess($this->getSuccessMessage());
+            $this->messageManager->addSuccessMessage($this->getSuccessMessage());
             $resultRedirect->setUrl($this->getSuccessRedirect());
             return $resultRedirect;
         } catch (StateException $e) {

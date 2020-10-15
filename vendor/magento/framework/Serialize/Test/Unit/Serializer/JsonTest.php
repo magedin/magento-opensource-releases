@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Serialize\Test\Unit\Serializer;
 
 use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class JsonTest extends TestCase
+class JsonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $json;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->json = $objectManager->getObject(Json::class);
     }
 
@@ -86,20 +82,22 @@ class JsonTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to serialize value.
+     */
     public function testSerializeException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unable to serialize value.');
         $this->json->serialize(STDOUT);
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to unserialize value.
      * @dataProvider unserializeExceptionDataProvider
      */
     public function testUnserializeException($value)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Unable to unserialize value.');
         $this->json->unserialize($value);
     }
 

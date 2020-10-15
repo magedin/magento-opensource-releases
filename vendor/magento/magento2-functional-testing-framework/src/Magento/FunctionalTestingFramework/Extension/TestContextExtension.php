@@ -33,12 +33,6 @@ class TestContextExtension extends BaseExtension
     public static $events;
 
     /**
-     * The name of the currently running test
-     * @var string
-     */
-    public $currentTest;
-
-    /**
      * Initialize local vars
      *
      * @return void
@@ -61,20 +55,8 @@ class TestContextExtension extends BaseExtension
      * @throws \Exception
      * @return void
      */
-    public function testStart(\Codeception\Event\TestEvent $e)
+    public function testStart()
     {
-        if (getenv('ENABLE_CODE_COVERAGE') === 'true') {
-            // Curl against test.php and pass in the test name. Used when gathering code coverage.
-            $this->currentTest = $e->getTest()->getMetadata()->getName();
-            $cURLConnection = curl_init();
-            curl_setopt_array($cURLConnection, [
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => getenv('MAGENTO_BASE_URL') . "/test.php?test=" . $this->currentTest,
-            ]);
-            curl_exec($cURLConnection);
-            curl_close($cURLConnection);
-        }
-
         PersistedObjectHandler::getInstance()->clearHookObjects();
         PersistedObjectHandler::getInstance()->clearTestObjects();
     }
@@ -199,13 +181,9 @@ class TestContextExtension extends BaseExtension
      */
     public function afterStep(\Codeception\Event\StepEvent $e)
     {
-        $browserLog = [];
-        try {
-            $browserLog = $this->getDriver()->webDriver->manage()->getLog("browser");
-        } catch (\Exception $exception) {
-        }
+        $browserLog = $this->getDriver()->webDriver->manage()->getLog("browser");
         if (getenv('ENABLE_BROWSER_LOG') === 'true') {
-            foreach (explode(',', getenv('BROWSER_LOG_BLOCKLIST')) as $source) {
+            foreach (explode(',', getenv('BROWSER_LOG_BLACKLIST')) as $source) {
                 $browserLog = BrowserLogUtil::filterLogsOfType($browserLog, $source);
             }
             if (!empty($browserLog)) {

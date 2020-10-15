@@ -32,12 +32,8 @@ class UpgradeTestsCommand extends Command
     protected function configure()
     {
         $this->setName('upgrade:tests')
-            ->setDescription(
-                'This command will upgrade MFTF tests according to new MFTF Major version requirements. '
-                . 'It will upgrade MFTF tests in specific path when "path" argument is specified, otherwise it will '
-                . 'upgrade all MFTF tests installed.'
-            )
-            ->addArgument('path', InputArgument::OPTIONAL, 'path to MFTF tests to upgrade');
+            ->setDescription('This command will upgrade all tests in the provided path according to new MFTF Major version requirements.')
+            ->addArgument('path', InputArgument::REQUIRED, 'path to MFTF tests to upgrade');
         $this->upgradeScriptsList = new UpgradeScriptList();
     }
 
@@ -53,11 +49,10 @@ class UpgradeTestsCommand extends Command
     {
         /** @var \Magento\FunctionalTestingFramework\Upgrade\UpgradeInterface[] $upgradeScriptObjects */
         $upgradeScriptObjects = $this->upgradeScriptsList->getUpgradeScripts();
-        foreach ($upgradeScriptObjects as $scriptName => $upgradeScriptObject) {
-            $output->writeln('Running upgrade script: ' . $scriptName . PHP_EOL);
-            $upgradeOutput = $upgradeScriptObject->execute($input, $output);
+        foreach ($upgradeScriptObjects as $upgradeScriptObject) {
+            $upgradeOutput = $upgradeScriptObject->execute($input);
             LoggingUtil::getInstance()->getLogger(get_class($upgradeScriptObject))->info($upgradeOutput);
-            $output->writeln($upgradeOutput . PHP_EOL);
+            $output->writeln($upgradeOutput);
         }
     }
 }

@@ -23,7 +23,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
      */
     protected $editBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->editBlock = Bootstrap::getObjectManager()
             ->create(\Magento\Integration\Block\Adminhtml\Integration\Edit::class);
@@ -107,7 +107,7 @@ class EditTest extends \PHPUnit\Framework\TestCase
 
         // Assert that 'save' button is removed for integration of config type
         foreach ($buttonList as $button) {
-            $this->assertArrayNotHasKey('save', $button);
+            $this->assertFalse(array_key_exists('save', $button));
         }
 
         // Tear down
@@ -117,6 +117,6 @@ class EditTest extends \PHPUnit\Framework\TestCase
     public function testGetFormActionUrl()
     {
         $baseUrl = Bootstrap::getObjectManager()->get(\Magento\Framework\Url::class)->getBaseUrl();
-        $this->assertStringContainsString($baseUrl, $this->editBlock->getFormActionUrl());
+        $this->assertContains($baseUrl, $this->editBlock->getFormActionUrl());
     }
 }

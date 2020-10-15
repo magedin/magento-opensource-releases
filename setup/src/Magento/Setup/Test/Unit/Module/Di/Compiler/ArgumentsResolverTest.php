@@ -3,32 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\Compiler;
 
-use Magento\Framework\ObjectManager\ConfigInterface;
-use Magento\Setup\Module\Di\Compiler\ArgumentsResolver;
 use Magento\Setup\Module\Di\Compiler\ConstructorArgument;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ArgumentsResolverTest extends TestCase
+class ArgumentsResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ArgumentsResolver
+     * @var \Magento\Setup\Module\Di\Compiler\ArgumentsResolver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $diContainerConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->diContainerConfig = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->model = new ArgumentsResolver($this->diContainerConfig);
+        $this->diContainerConfig = $this->createMock(\Magento\Framework\ObjectManager\ConfigInterface::class);
+        $this->model = new \Magento\Setup\Module\Di\Compiler\ArgumentsResolver($this->diContainerConfig);
     }
 
     public function testGetResolvedArgumentsConstructorFormat()

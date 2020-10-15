@@ -26,7 +26,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->registerThemes();
@@ -70,7 +70,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
         $registration->register();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->objectManager->removeSharedInstance(
             \Magento\Framework\App\Arguments\ValidationState::class

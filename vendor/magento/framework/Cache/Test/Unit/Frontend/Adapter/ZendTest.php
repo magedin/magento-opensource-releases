@@ -3,15 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Cache\Test\Unit\Frontend\Adapter;
 
-use Magento\Framework\Cache\Frontend\Adapter\Zend;
-use Magento\Framework\TestFramework\Unit\Helper\ProxyTesting;
-use PHPUnit\Framework\TestCase;
-
-class ZendTest extends TestCase
+class ZendTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $method
@@ -26,8 +20,8 @@ class ZendTest extends TestCase
         $frontendFactory = function () use ($frontendMock) {
             return $frontendMock;
         };
-        $object = new Zend($frontendFactory);
-        $helper = new ProxyTesting();
+        $object = new \Magento\Framework\Cache\Frontend\Adapter\Zend($frontendFactory);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ProxyTesting();
         $result = $helper->invokeWithExpectations(
             $object,
             $frontendMock,
@@ -95,7 +89,7 @@ class ZendTest extends TestCase
         $frontendFactory = function () use ($frontendMock) {
             return $frontendMock;
         };
-        $object = new Zend($frontendFactory);
+        $object = new \Magento\Framework\Cache\Frontend\Adapter\Zend($frontendFactory);
         $object->clean($cleaningMode);
     }
 
@@ -126,7 +120,7 @@ class ZendTest extends TestCase
         $frontendFactory = function () use ($frontendMock) {
             return $frontendMock;
         };
-        $object = new Zend($frontendFactory);
+        $object = new \Magento\Framework\Cache\Frontend\Adapter\Zend($frontendFactory);
         $this->assertSame($frontendMock, $object->getLowLevelFrontend());
     }
 }

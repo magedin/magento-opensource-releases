@@ -34,7 +34,6 @@
                 <requiredEntity createDataKey="createBundleOption"/>
                 <requiredEntity createDataKey="createSimpleProduct"/>
             </createData>
-            <magentoCLI stepKey="runCronIndex" command="cron:run --group=index"/>
         </before>
         <after>
             <!-- Delete Simple Product -->
@@ -44,10 +43,10 @@
             <!-- Clear Filter -->
             <actionGroup ref="ClearProductsFilterActionGroup" stepKey="clearProductFilter"/>
             <!--Log Out Admin-->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutAsAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutAsAdmin"/>
         </after>
         <!-- Login as Admin -->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         <!-- Go to Catalog -> Catalog -> Products and Search created product in precondition and choose it -->
         <actionGroup ref="SearchForProductOnBackendActionGroup" stepKey="searchProduct">
             <argument name="product" value="$$createFixedBundleProduct$$"/>
@@ -56,23 +55,23 @@
         <actionGroup ref="AdminUpdateProductNameAndDescriptionAttributes" stepKey="updateProductAttribute">
             <argument name="product" value="UpdateAttributeNameAndDescription"/>
         </actionGroup>
-        <!-- Start message queue for product attribute consumer -->
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="startMessageQueue">
+        <comment userInput="Apply changes" stepKey="cronRun"/>
+        <actionGroup ref="CliConsumerStartActionGroup" stepKey="cronRunTwice">
             <argument name="consumerName" value="{{AdminProductAttributeUpdateMessageConsumerData.consumerName}}"/>
             <argument name="maxMessages" value="{{AdminProductAttributeUpdateMessageConsumerData.messageLimit}}"/>
         </actionGroup>
         <!-- Search for a product with a new name and Open Product -->
-        <actionGroup ref="FilterProductGridByNameActionGroup" stepKey="searchWithNewProductName">
+        <actionGroup ref="filterProductGridByName" stepKey="searchWithNewProductName">
             <argument name="product" value="UpdateAttributeNameAndDescription"/>
         </actionGroup>
         <actionGroup ref="OpenEditProductOnBackendActionGroup" stepKey="openProductPage">
             <argument name="product" value="$$createFixedBundleProduct$$"/>
         </actionGroup>
         <!-- Assert product name and description -->
-        <actionGroup ref="AssertProductNameInProductEditFormActionGroup" stepKey="assertProductName">
+        <actionGroup ref="AssertProductNameInProductEditForm" stepKey="assertProductName">
             <argument name="productName" value="{{UpdateAttributeNameAndDescription.name}}"/>
         </actionGroup>
-        <actionGroup ref="AssertProductDescriptionInProductEditFormActionGroup" stepKey="assertProductDescription">
+        <actionGroup ref="AssertProductDescriptionInProductEditForm" stepKey="assertProductDescription">
             <argument name="productDescription" value="{{UpdateAttributeNameAndDescription.description}}"/>
         </actionGroup>
     </test>

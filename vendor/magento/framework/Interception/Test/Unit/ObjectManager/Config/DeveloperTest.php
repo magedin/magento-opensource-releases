@@ -3,36 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Interception\Test\Unit\ObjectManager\Config;
 
-use Magento\Framework\Interception\ConfigInterface;
-use Magento\Framework\Interception\ObjectManager\Config\Developer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Interception\ObjectManager\Config\Developer;
 
-class DeveloperTest extends TestCase
+class DeveloperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Developer
+     * @var \Magento\Framework\Interception\ObjectManager\Config\Developer
      */
     private $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\Interception\ConfigInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $interceptionConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->interceptionConfig = $this->getMockForAbstractClass(ConfigInterface::class);
+        $this->interceptionConfig = $this->createMock(\Magento\Framework\Interception\ConfigInterface::class);
         $this->model = new Developer();
     }
 
     public function testGetInstanceTypeReturnsInterceptorClass()
     {
-        $this->interceptionConfig->expects($this->once())->method('hasPlugins')->willReturn(true);
+        $this->interceptionConfig->expects($this->once())->method('hasPlugins')->will($this->returnValue(true));
         $this->model->setInterceptionConfig($this->interceptionConfig);
 
         $this->assertEquals('SomeClass\Interceptor', $this->model->getInstanceType('SomeClass'));
@@ -52,7 +47,7 @@ class DeveloperTest extends TestCase
 
     public function testGetOriginalInstanceTypeReturnsInterceptedClass()
     {
-        $this->interceptionConfig->expects($this->once())->method('hasPlugins')->willReturn(true);
+        $this->interceptionConfig->expects($this->once())->method('hasPlugins')->will($this->returnValue(true));
         $this->model->setInterceptionConfig($this->interceptionConfig);
 
         $this->assertEquals('SomeClass\Interceptor', $this->model->getInstanceType('SomeClass'));

@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Filter\Test\Unit\FilterManager;
 
-use Magento\Framework\Filter\Factory;
-use Magento\Framework\Filter\FilterManager\Config;
-use Magento\Framework\Filter\ZendFactory;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Framework\Filter\FilterManager\Config
      */
     protected $_config;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_config = new Config(['test' => 'test']);
+        $this->_config = new \Magento\Framework\Filter\FilterManager\Config(['test' => 'test']);
     }
 
     public function testGetFactories()
     {
         $expectedConfig = [
-            'test' => 'test', Factory::class, ZendFactory::class,
+            'test' => 'test', \Magento\Framework\Filter\Factory::class, \Magento\Framework\Filter\ZendFactory::class,
         ];
         $this->assertEquals($expectedConfig, $this->_config->getFactories());
     }

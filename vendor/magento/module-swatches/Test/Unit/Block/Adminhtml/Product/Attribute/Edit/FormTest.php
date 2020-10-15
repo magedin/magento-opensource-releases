@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Swatches\Test\Unit\Block\Adminhtml\Product\Attribute\Edit;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Swatches\Block\Adminhtml\Product\Attribute\Edit\Form;
-use PHPUnit\Framework\TestCase;
+use Magento\Swatches\Model\Swatch;
 
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider dataForAddValues
      */
     public function testAddValues($values)
     {
-        $objectManager = new ObjectManager($this);
-        $block = $objectManager->getObject(Form::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $block = $objectManager->getObject(\Magento\Swatches\Block\Adminhtml\Product\Attribute\Edit\Form::class);
         $result= $block->addValues($values);
         $this->assertEquals($block, $result);
     }

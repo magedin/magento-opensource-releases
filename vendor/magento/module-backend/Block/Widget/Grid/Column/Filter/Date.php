@@ -7,8 +7,6 @@
 namespace Magento\Backend\Block\Widget\Grid\Column\Filter;
 
 use Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * Date grid column filter
@@ -33,18 +31,12 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
     protected $dateTimeFormatter;
 
     /**
-     * @var SecureHtmlRenderer
-     */
-    protected $secureHtmlRenderer;
-
-    /**
      * @param \Magento\Backend\Block\Context $context
      * @param \Magento\Framework\DB\Helper $resourceHelper
      * @param \Magento\Framework\Math\Random $mathRandom
      * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      * @param DateTimeFormatterInterface $dateTimeFormatter
      * @param array $data
-     * @param SecureHtmlRenderer|null $secureHtmlRenderer
      */
     public function __construct(
         \Magento\Backend\Block\Context $context,
@@ -52,18 +44,16 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
         \Magento\Framework\Math\Random $mathRandom,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,
         DateTimeFormatterInterface $dateTimeFormatter,
-        array $data = [],
-        ?SecureHtmlRenderer $secureHtmlRenderer = null
+        array $data = []
     ) {
         $this->mathRandom = $mathRandom;
         $this->localeResolver = $localeResolver;
         parent::__construct($context, $resourceHelper, $data);
         $this->dateTimeFormatter = $dateTimeFormatter;
-        $this->secureHtmlRenderer = $secureHtmlRenderer ?? ObjectManager::getInstance()->get(SecureHtmlRenderer::class);
     }
 
     /**
-     * @inheritDoc
+     * @return string
      */
     public function getHtml()
     {
@@ -109,7 +99,7 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
             ' value="' .
             $this->localeResolver->getLocale() .
             '"/>';
-        $scriptString = '
+        $html .= '<script>
             require(["jquery", "mage/calendar"], function($){
                 $("#' .
             $htmlId .
@@ -130,15 +120,12 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
             '_to"
                     }
                 })
-            });';
-        $html .= $this->secureHtmlRenderer->renderTag('script', [], $scriptString, false);
-
+            });
+        </script>';
         return $html;
     }
 
     /**
-     * Return escaped value.
-     *
      * @param string|null $index
      * @return array|string|int|float|null
      */
@@ -160,8 +147,6 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
     }
 
     /**
-     * Return value.
-     *
      * @param string|null $index
      * @return array|string|int|float|null
      */
@@ -181,8 +166,6 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
     }
 
     /**
-     * Return conditions.
-     *
      * @return array|string|int|float|null
      */
     public function getCondition()
@@ -193,8 +176,6 @@ class Date extends \Magento\Backend\Block\Widget\Grid\Column\Filter\AbstractFilt
     }
 
     /**
-     * Set value.
-     *
      * @param array|string|int|float $value
      * @return $this
      */

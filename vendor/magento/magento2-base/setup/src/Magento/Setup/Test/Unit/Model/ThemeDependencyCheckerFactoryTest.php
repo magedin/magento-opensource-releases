@@ -3,18 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Setup\Model\ObjectManagerProvider;
 use Magento\Setup\Model\ThemeDependencyCheckerFactory;
-use Magento\Theme\Model\Theme\ThemeDependencyChecker;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ThemeDependencyCheckerFactoryTest extends TestCase
+class ThemeDependencyCheckerFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ThemeDependencyCheckerFactory
@@ -22,20 +16,20 @@ class ThemeDependencyCheckerFactoryTest extends TestCase
     private $themeDependencyCheckerFactory;
 
     /**
-     * @var MockObject|ObjectManagerProvider
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Model\ObjectManagerProvider
      */
     private $objectManagerProvider;
 
     /**
-     * @var MockObject|ObjectManagerInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        $this->objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $this->objectManager = $this->getMockForAbstractClass(
-            ObjectManagerInterface::class,
+            \Magento\Framework\ObjectManagerInterface::class,
             [],
             '',
             false
@@ -47,7 +41,7 @@ class ThemeDependencyCheckerFactoryTest extends TestCase
         $this->objectManagerProvider->expects($this->once())->method('get')->willReturn($this->objectManager);
         $this->objectManager->expects($this->once())
             ->method('get')
-            ->with(ThemeDependencyChecker::class);
+            ->with(\Magento\Theme\Model\Theme\ThemeDependencyChecker::class);
         $this->themeDependencyCheckerFactory = new ThemeDependencyCheckerFactory($this->objectManagerProvider);
         $this->themeDependencyCheckerFactory->create();
     }

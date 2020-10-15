@@ -3,34 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
 use Magento\Framework\App\Config\Storage\Writer as ConfigWriter;
-use Magento\Setup\Fixtures\FixtureModel;
 use Magento\Setup\Fixtures\TaxRulesFixture;
 use Magento\Tax\Api\Data\TaxRateInterfaceFactory;
 use Magento\Tax\Api\Data\TaxRuleInterfaceFactory;
 use Magento\Tax\Api\TaxRateRepositoryInterface;
 use Magento\Tax\Api\TaxRuleRepositoryInterface;
 use Magento\Tax\Model\ResourceModel\Calculation\Rate\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TaxRulesFixtureTest extends TestCase
+class TaxRulesFixtureTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var MockObject|FixtureModel
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
     /**
-     * @var TaxRulesFixture
+     * @var \Magento\Setup\Fixtures\TaxRulesFixture
      */
     private $model;
 
@@ -66,7 +62,7 @@ class TaxRulesFixtureTest extends TestCase
 
     public function testExecute()
     {
-        $this->fixtureModelMock = $this->getMockBuilder(FixtureModel::class)
+        $this->fixtureModelMock = $this->getMockBuilder(\Magento\Setup\Fixtures\FixtureModel::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -76,7 +72,7 @@ class TaxRulesFixtureTest extends TestCase
 
         $this->taxRateRepositoryMock = $this->getMockBuilder(TaxRateRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->configWriterMock = $this->getMockBuilder(ConfigWriter::class)
             ->disableOriginalConstructor()
@@ -89,15 +85,17 @@ class TaxRulesFixtureTest extends TestCase
         $this->taxRuleRepositoryMock = $this->getMockBuilder(TaxRuleRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['save', 'get', 'delete', 'deleteById', 'getList'])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->fixtureModelMock
             ->expects($this->exactly(2))
             ->method('getValue')
-            ->willReturnMap([
-                ['tax_mode', 'VAT'],
-                ['tax_rules', 2]
-            ]);
+            ->will($this->returnValueMap(
+                [
+                    ['tax_mode', 'VAT'],
+                    ['tax_rules', 2]
+                ]
+            ));
 
         $this->taxRateCollectionFactoryMock = $this->getMockBuilder(CollectionFactory::class)
             ->disableOriginalConstructor()

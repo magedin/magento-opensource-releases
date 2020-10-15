@@ -3,30 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Mview\Test\Unit;
 
-use Magento\Framework\Mview\Config;
-use Magento\Framework\Mview\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Mview\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Framework\Mview\Config
      */
     protected $model;
 
     /**
-     * @var MockObject|Data
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Mview\Config\Data
      */
     protected $dataMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dataMock = $this->createMock(Data::class);
+        $this->dataMock = $this->createMock(\Magento\Framework\Mview\Config\Data::class);
         $this->model = new Config(
             $this->dataMock
         );
@@ -36,7 +32,7 @@ class ConfigTest extends TestCase
     {
         $this->dataMock->expects($this->once())
             ->method('get')
-            ->willReturn(['some_data']);
+            ->will($this->returnValue(['some_data']));
         $this->assertEquals(['some_data'], $this->model->getViews());
     }
 
@@ -45,7 +41,7 @@ class ConfigTest extends TestCase
         $this->dataMock->expects($this->once())
             ->method('get')
             ->with('some_view')
-            ->willReturn(['some_data']);
+            ->will($this->returnValue(['some_data']));
         $this->assertEquals(['some_data'], $this->model->getView('some_view'));
     }
 }

@@ -10,7 +10,7 @@ namespace Magento\Backend\Block\System\Store;
  */
 class EditTest extends \PHPUnit\Framework\TestCase
 {
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

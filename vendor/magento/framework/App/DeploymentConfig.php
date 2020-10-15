@@ -7,9 +7,6 @@
 namespace Magento\Framework\App;
 
 use Magento\Framework\Config\ConfigOptionsListConstants;
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\RuntimeException;
-use Magento\Framework\Phrase;
 
 /**
  * Application deployment configuration
@@ -67,8 +64,6 @@ class DeploymentConfig
      * @param string $key
      * @param mixed $defaultValue
      * @return mixed|null
-     * @throws FileSystemException
-     * @throws RuntimeException
      */
     public function get($key = null, $defaultValue = null)
     {
@@ -88,8 +83,6 @@ class DeploymentConfig
      * Checks if data available
      *
      * @return bool
-     * @throws FileSystemException
-     * @throws RuntimeException
      */
     public function isAvailable()
     {
@@ -102,8 +95,6 @@ class DeploymentConfig
      *
      * @param string $key
      * @return null|mixed
-     * @throws FileSystemException
-     * @throws RuntimeException
      */
     public function getConfigData($key = null)
     {
@@ -113,7 +104,11 @@ class DeploymentConfig
             return null;
         }
 
-        return $this->data[$key] ?? $this->data;
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+
+        return $this->data;
     }
 
     /**
@@ -130,8 +125,6 @@ class DeploymentConfig
      * Check if data from deploy files is available
      *
      * @return bool
-     * @throws FileSystemException
-     * @throws RuntimeException
      * @since 100.1.3
      */
     public function isDbAvailable()
@@ -144,8 +137,6 @@ class DeploymentConfig
      * Loads the configuration data
      *
      * @return void
-     * @throws FileSystemException
-     * @throws RuntimeException
      */
     private function load()
     {
@@ -167,15 +158,12 @@ class DeploymentConfig
      *
      * @param array $params
      * @param string $path
-     * @param array $flattenResult
      * @return array
-     * @throws RuntimeException
+     * @throws \Exception
      */
-    private function flattenParams(array $params, $path = null, array &$flattenResult = null) : array
+    private function flattenParams(array $params, $path = null)
     {
-        if (null === $flattenResult) {
-            $flattenResult = [];
-        }
+        $cache = [];
 
         foreach ($params as $key => $param) {
             if ($path) {
@@ -183,16 +171,17 @@ class DeploymentConfig
             } else {
                 $newPath = $key;
             }
-            if (isset($flattenResult[$newPath])) {
+            if (isset($cache[$newPath])) {
                 //phpcs:ignore Magento2.Exceptions.DirectThrow
-                throw new RuntimeException(new Phrase("Key collision '%1' is already defined.", [$newPath]));
+                throw new \Exception("Key collision {$newPath} is already defined.");
             }
-            $flattenResult[$newPath] = $param;
+            $cache[$newPath] = $param;
             if (is_array($param)) {
-                $this->flattenParams($param, $newPath, $flattenResult);
+                //phpcs:ignore Magento2.Performance.ForeachArrayMerge
+                $cache = array_merge($cache, $this->flattenParams($param, $newPath));
             }
         }
 
-        return $flattenResult;
+        return $cache;
     }
 }

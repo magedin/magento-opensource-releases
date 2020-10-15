@@ -186,6 +186,7 @@ class Websites extends AbstractModifier
                             'componentType' => Form\Field::NAME,
                             'formElement' => Form\Element\Checkbox::NAME,
                             'description' => __($website['name']),
+                            '__disableTmpl' => true,
                             'tooltip' => $tooltip,
                             'sortOrder' => $sortOrder,
                             'dataScope' => 'website_ids.' . $website['id'],
@@ -259,8 +260,7 @@ class Websites extends AbstractModifier
                         'columnsHeader' => true,
                         'dndConfig' => ['enabled' => false],
                         'imports' => [
-                            'visible' => '${$.namespace}.${$.namespace}.websites.' . $websiteId . ':checked',
-                            '__disableTmpl' => ['visible' => false],
+                            'visible' => '${$.namespace}.${$.namespace}.websites.' . $websiteId . ':checked'
                         ],
                         'itemTemplate' => 'record',
                         'dataScope' => '',
@@ -378,18 +378,21 @@ class Websites extends AbstractModifier
             $websiteOption = [
                 'value' => '0.' . $website['id'],
                 'label' => __($website['name']),
+                '__disableTmpl' => true,
             ];
             $groupOptions = [];
             foreach ($website['groups'] as $group) {
                 $groupOption = [
                     'value' => '0.' . $website['id'] . '.' . $group['id'],
                     'label' => __($group['name']),
+                    '__disableTmpl' => true,
                 ];
                 $storeViewOptions = [];
                 foreach ($group['stores'] as $storeView) {
                     $storeViewOptions[] = [
                         'value' => $storeView['id'],
                         'label' => __($storeView['name']),
+                        '__disableTmpl' => true,
                     ];
                 }
                 if (!empty($storeViewOptions)) {

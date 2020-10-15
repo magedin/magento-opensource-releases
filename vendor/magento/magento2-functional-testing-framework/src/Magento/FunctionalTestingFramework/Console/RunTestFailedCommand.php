@@ -96,6 +96,9 @@ class RunTestFailedCommand extends BaseGenerateCommand
             $allowSkipped
         );
 
+        $this->setOutputStyle($input, $output);
+        $this->showMftfNotices($output);
+
         $testConfiguration = $this->getFailedTestList();
 
         if ($testConfiguration === null) {
@@ -165,7 +168,11 @@ class RunTestFailedCommand extends BaseGenerateCommand
                     if ($suiteName == self::DEFAULT_TEST_GROUP) {
                         array_push($failedTestDetails['tests'], $testName);
                     } else {
-                        $suiteName = $this->sanitizeSuiteName($suiteName);
+                        // Trim potential suite_parallel_0 to suite_parallel
+                        $suiteNameArray = explode("_", $suiteName);
+                        if (is_numeric(array_pop($suiteNameArray))) {
+                            $suiteName = implode("_", $suiteNameArray);
+                        }
                         $failedTestDetails['suites'] = array_merge_recursive(
                             $failedTestDetails['suites'],
                             [$suiteName => [$testName]]
@@ -185,23 +192,6 @@ class RunTestFailedCommand extends BaseGenerateCommand
         }
         $testConfigurationJson = json_encode($failedTestDetails);
         return $testConfigurationJson;
-    }
-
-    /**
-     * Trim potential suite_parallel_0_G to suite_parallel
-     *
-     * @param string $suiteName
-     * @return string
-     */
-    private function sanitizeSuiteName($suiteName)
-    {
-        $suiteNameArray = explode("_", $suiteName);
-        if (array_pop($suiteNameArray) == 'G') {
-            if (is_numeric(array_pop($suiteNameArray))) {
-                $suiteName = implode("_", $suiteNameArray);
-            }
-        }
-        return $suiteName;
     }
 
     /**

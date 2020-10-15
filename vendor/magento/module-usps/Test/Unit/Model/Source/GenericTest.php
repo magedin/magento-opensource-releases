@@ -3,39 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Usps\Test\Unit\Model\Source;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Usps\Model\Carrier;
-use Magento\Usps\Model\Source\Generic;
-use PHPUnit\Framework\TestCase;
-
-class GenericTest extends TestCase
+class GenericTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Generic
+     * @var \Magento\Usps\Model\Source\Generic
      */
     protected $_generic;
 
     /**
-     * @var Carrier
+     * @var \Magento\Usps\Model\Carrier
      */
     protected $_uspsModel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_uspsModel = $this->getMockBuilder(
-            Carrier::class
+            \Magento\Usps\Model\Carrier::class
         )->setMethods(
             ['getCode']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
 
         $this->_generic = $helper->getObject(
-            Generic::class,
+            \Magento\Usps\Model\Source\Generic::class,
             ['shippingUsps' => $this->_uspsModel]
         );
     }
@@ -47,7 +39,7 @@ class GenericTest extends TestCase
      */
     public function testToOptionArray($expected, $options)
     {
-        $this->_uspsModel->expects($this->any())->method('getCode')->willReturn($options);
+        $this->_uspsModel->expects($this->any())->method('getCode')->will($this->returnValue($options));
 
         $this->assertEquals($expected, $this->_generic->toOptionArray());
     }

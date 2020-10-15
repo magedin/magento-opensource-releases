@@ -3,51 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Model\Total\Invoice;
 
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Invoice\Item;
-use Magento\Sales\Model\Order\Invoice\Total\Tax;
-use Magento\Weee\Helper\Data;
-use Magento\Weee\Model\Total\Invoice\Weee;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WeeeTest extends TestCase
+class WeeeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Weee
+     * @var \Magento\Weee\Model\Total\Invoice\Weee
      */
     protected $model;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $order;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoice;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Weee\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $weeeData;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->weeeData = $this->getMockBuilder(Data::class)
+        $this->weeeData = $this->getMockBuilder(\Magento\Weee\Helper\Data::class)
             ->setMethods(
                 [
                     'getRowWeeeTaxInclTax',
@@ -63,27 +52,30 @@ class WeeeTest extends TestCase
             )->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $serializer = $this->objectManager->getObject(Json::class);
-        /** @var Tax $model */
+        /** @var \Magento\Sales\Model\Order\Invoice\Total\Tax $model */
         $this->model = $this->objectManager->getObject(
-            Weee::class,
+            \Magento\Weee\Model\Total\Invoice\Weee::class,
             [
                 'weeeData' => $this->weeeData,
                 'serializer' => $serializer
             ]
         );
 
-        $this->order = $this->createPartialMock(Order::class, ['__wakeup']);
+        $this->order = $this->createPartialMock(\Magento\Sales\Model\Order::class, [
+                '__wakeup'
+            ]);
 
-        $this->invoice = $this->createPartialMock(Invoice::class, [
-            'getAllItems',
-            'getOrder',
-            'roundPrice',
-            'isLast',
-            'getStore'
-        ]);
-        $this->invoice->expects($this->atLeastOnce())->method('getOrder')->willReturn($this->order);
+        $this->invoice = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice::class, [
+                'getAllItems',
+                'getOrder',
+                'roundPrice',
+                'isLast',
+                'getStore',
+                '__wakeup',
+            ]);
+        $this->invoice->expects($this->atLeastOnce())->method('getOrder')->will($this->returnValue($this->order));
     }
 
     /**
@@ -112,40 +104,42 @@ class WeeeTest extends TestCase
         //Set up weeeData mock
         $this->weeeData->expects($this->once())
             ->method('includeInSubtotal')
-            ->willReturn($invoiceData['include_in_subtotal']);
+            ->will($this->returnValue($invoiceData['include_in_subtotal']));
 
         //Set up invoice mock
-        /** @var Item[] $invoiceItems */
+        /** @var \Magento\Sales\Model\Order\Invoice\Item[] $invoiceItems */
         $invoiceItems = [];
         foreach ($invoiceData['items'] as $itemKey => $invoiceItemData) {
             $invoiceItems[$itemKey] = $this->getInvoiceItem($invoiceItemData);
         }
         $this->invoice->expects($this->once())
             ->method('getAllItems')
-            ->willReturn($invoiceItems);
+            ->will($this->returnValue($invoiceItems));
         $this->invoice->expects($this->once())
             ->method('isLast')
-            ->willReturn($invoiceData['is_last']);
+            ->will($this->returnValue($invoiceData['is_last']));
         foreach ($invoiceData['data_fields'] as $key => $value) {
             $this->invoice->setData($key, $value);
         }
         $this->invoice->expects($this->any())
             ->method('roundPrice')
-            ->willReturnCallback(function ($price, $type) use (&$roundingDelta) {
-                if (!isset($roundingDelta[$type])) {
-                    $roundingDelta[$type] = 0;
-                }
-                $roundedPrice = round($price + $roundingDelta[$type], 2);
-                $roundingDelta[$type] = $price - $roundedPrice;
+            ->will($this->returnCallback(
+                function ($price, $type) use (&$roundingDelta) {
+                    if (!isset($roundingDelta[$type])) {
+                        $roundingDelta[$type] = 0;
+                    }
+                    $roundedPrice = round($price + $roundingDelta[$type], 2);
+                    $roundingDelta[$type] = $price - $roundedPrice;
 
-                return $roundedPrice;
-            });
+                    return $roundedPrice;
+                }
+            ));
 
         $this->model->collect($this->invoice);
 
         //verify invoice data
         foreach ($expectedResults['invoice_data'] as $key => $value) {
-            $this->assertEquals($value, $this->invoice->getData($key), 'Invoice data field ' . $key . ' is incorrect');
+            $this->assertEquals($value, $this->invoice->getData($key), 'Invoice data field '.$key.' is incorrect');
         }
         //verify invoice item data
         foreach ($expectedResults['invoice_items'] as $itemKey => $itemData) {
@@ -158,7 +152,7 @@ class WeeeTest extends TestCase
                     $this->assertEquals(
                         $value,
                         $invoiceItem->getData($key),
-                        'Invoice item field ' . $key . ' is incorrect'
+                        'Invoice item field '.$key.' is incorrect'
                     );
                 }
             }
@@ -677,14 +671,15 @@ class WeeeTest extends TestCase
 
     /**
      * @param $invoiceItemData array
-     * @return Item|MockObject
+     * @return \Magento\Sales\Model\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getInvoiceItem($invoiceItemData)
     {
-        /** @var \Magento\Sales\Model\Order\Item|MockObject $orderItem */
+        /** @var \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject $orderItem */
         $orderItem = $this->createPartialMock(\Magento\Sales\Model\Order\Item::class, [
-            'isDummy'
-        ]);
+                'isDummy',
+                '__wakeup'
+            ]);
         foreach ($invoiceItemData['order_item'] as $key => $value) {
             $orderItem->setData($key, $value);
         }
@@ -692,53 +687,58 @@ class WeeeTest extends TestCase
         $this->weeeData->expects($this->once())
             ->method('getRowWeeeTaxInclTax')
             ->with($orderItem)
-            ->willReturn($orderItem->getRowWeeeTaxInclTax());
+            ->will($this->returnValue($orderItem->getRowWeeeTaxInclTax()));
         $this->weeeData->expects($this->once())
             ->method('getBaseRowWeeeTaxInclTax')
             ->with($orderItem)
-            ->willReturn($orderItem->getBaseRowWeeeTaxInclTax());
+            ->will($this->returnValue($orderItem->getBaseRowWeeeTaxInclTax()));
         if ($invoiceItemData['is_last']) {
             $this->weeeData->expects($this->once())
                 ->method('getWeeeAmountInvoiced')
                 ->with($orderItem)
-                ->willReturn($orderItem->getWeeeAmountInvoiced());
+                ->will($this->returnValue($orderItem->getWeeeAmountInvoiced()));
             $this->weeeData->expects($this->once())
                 ->method('getBaseWeeeAmountInvoiced')
                 ->with($orderItem)
-                ->willReturn($orderItem->getBaseWeeeAmountInvoiced());
+                ->will($this->returnValue($orderItem->getBaseWeeeAmountInvoiced()));
             $this->weeeData->expects($this->once())
                 ->method('getWeeeTaxAmountInvoiced')
                 ->with($orderItem)
-                ->willReturn($orderItem->getWeeeTaxAmountInvoiced());
+                ->will($this->returnValue($orderItem->getWeeeTaxAmountInvoiced()));
             $this->weeeData->expects($this->once())
                 ->method('getBaseWeeeTaxAmountInvoiced')
                 ->with($orderItem)
-                ->willReturn($orderItem->getBaseWeeeTaxAmountInvoiced());
+                ->will($this->returnValue($orderItem->getBaseWeeeTaxAmountInvoiced()));
         }
-        /** @var Item|MockObject $invoiceItem */
-        $invoiceItem = $this->createPartialMock(Item::class, [
-            'getOrderItem',
-            'isLast'
-        ]);
-        $invoiceItem->expects($this->any())->method('getOrderItem')->willReturn($orderItem);
+        /** @var \Magento\Sales\Model\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject $invoiceItem */
+        $invoiceItem = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice\Item::class, [
+                'getOrderItem',
+                'isLast',
+                '__wakeup'
+            ]);
+        $invoiceItem->expects($this->any())->method('getOrderItem')->will($this->returnValue($orderItem));
         $invoiceItem->expects($this->any())
             ->method('isLast')
-            ->willReturn($invoiceItemData['is_last']);
+            ->will($this->returnValue($invoiceItemData['is_last']));
         foreach ($invoiceItemData['data_fields'] as $key => $value) {
             $invoiceItem->setData($key, $value);
         }
 
         $this->weeeData->expects($this->any())
             ->method('getApplied')
-            ->willReturnCallback(function ($item) {
-                return $item->getAppliedWeee();
-            });
+            ->will($this->returnCallback(
+                function ($item) {
+                    return $item->getAppliedWeee();
+                }
+            ));
 
         $this->weeeData->expects($this->any())
             ->method('setApplied')
-            ->willReturnCallback(function ($item, $weee) {
-                return $item->setAppliedWeee($weee);
-            });
+            ->will($this->returnCallback(
+                function ($item, $weee) {
+                    return $item->setAppliedWeee($weee);
+                }
+            ));
 
         return $invoiceItem;
     }

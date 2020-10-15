@@ -6,6 +6,8 @@
 namespace Magento\ProductAlert\Block\Email;
 
 use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\ProductAlert\Block\Product\ImageProvider;
 
 /**
  * Product Alert Abstract Email Block
@@ -42,22 +44,31 @@ abstract class AbstractEmail extends \Magento\Framework\View\Element\Template
     protected $imageBuilder;
 
     /**
+     * @var ImageProvider
+     */
+    private $imageProvider;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Framework\Filter\Input\MaliciousCode $maliciousCode
      * @param PriceCurrencyInterface $priceCurrency
      * @param \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder
      * @param array $data
+     * @param ImageProvider $imageProvider
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\Filter\Input\MaliciousCode $maliciousCode,
         PriceCurrencyInterface $priceCurrency,
         \Magento\Catalog\Block\Product\ImageBuilder $imageBuilder,
-        array $data = []
+        array $data = [],
+        ImageProvider $imageProvider = null
     ) {
         $this->imageBuilder = $imageBuilder;
         $this->priceCurrency = $priceCurrency;
         $this->_maliciousCode = $maliciousCode;
+        $this->imageProvider = $imageProvider ?: ObjectManager::getInstance()->get(ImageProvider::class);
+
         parent::__construct($context, $data);
     }
 
@@ -162,8 +173,6 @@ abstract class AbstractEmail extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get Price Render
-     *
      * @return \Magento\Framework\Pricing\Render
      */
     protected function getPriceRender()
@@ -218,6 +227,6 @@ abstract class AbstractEmail extends \Magento\Framework\View\Element\Template
      */
     public function getImage($product, $imageId, $attributes = [])
     {
-        return $this->imageBuilder->create($product, $imageId, $attributes);
+        return $this->imageProvider->getImage($product, $imageId, $attributes);
     }
 }

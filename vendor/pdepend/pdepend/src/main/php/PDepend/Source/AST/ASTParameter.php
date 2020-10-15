@@ -89,7 +89,7 @@ class ASTParameter extends AbstractASTArtifact
     /**
      * The wrapped formal parameter instance.
      *
-     * @var ASTFormalParameter
+     * @var \PDepend\Source\AST\ASTFormalParameter
      */
     private $formalParameter = null;
 
@@ -103,9 +103,9 @@ class ASTParameter extends AbstractASTArtifact
     /**
      * Constructs a new parameter instance for the given AST node.
      *
-     * @param ASTFormalParameter $formalParameter
+     * @param \PDepend\Source\AST\ASTFormalParameter $formalParameter
      */
-    public function __construct(ASTFormalParameter $formalParameter)
+    public function __construct(\PDepend\Source\AST\ASTFormalParameter $formalParameter)
     {
         $this->formalParameter    = $formalParameter;
         $this->variableDeclarator = $formalParameter->getFirstChildOfType(
@@ -172,7 +172,7 @@ class ASTParameter extends AbstractASTArtifact
      * This method will return the class where the parent method was declared.
      * The returned value will be <b>null</b> if the parent is a function.
      *
-     * @return \PDepend\Source\AST\AbstractASTClassOrInterface|null
+     * @return \PDepend\Source\AST\AbstractASTClassOrInterface
      * @since  0.9.5
      */
     public function getDeclaringClass()
@@ -210,7 +210,7 @@ class ASTParameter extends AbstractASTArtifact
      * Returns the class type of this parameter. This method will return
      * <b>null</b> for all scalar type, only classes or interfaces are used.
      *
-     * @return \PDepend\Source\AST\AbstractASTClassOrInterface|null
+     * @return \PDepend\Source\AST\AbstractASTClassOrInterface
      * @since  0.9.5
      */
     public function getClass()
@@ -327,8 +327,10 @@ class ASTParameter extends AbstractASTArtifact
     public function getDefaultValue()
     {
         $value = $this->variableDeclarator->getValue();
-
-        return $value === null ? null : $value->getValue();
+        if ($value === null) {
+            return null;
+        }
+        return $value->getValue();
     }
 
     /**

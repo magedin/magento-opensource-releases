@@ -5,13 +5,13 @@
 
 
 FILE_EXTENSIONS='.php\|.xml\|.xsd'
-BLOCKLIST='bin/blocklist.txt'
+BLACKLIST='bin/blacklist.txt'
 RESULT=''
 
 # Iterate through the list of tracked files
 # that have the expected extensions
 # that are not ignored
-for i in `git ls-tree --full-tree -r --name-only HEAD | grep $FILE_EXTENSIONS | grep -v -f $BLOCKLIST`
+for i in `git ls-tree --full-tree -r --name-only HEAD | grep $FILE_EXTENSIONS | grep -v -f $BLACKLIST`
 do
     if echo `cat $i` | grep -q -v "Copyright © Magento, Inc. All rights reserved."; then
         # Copyright is missing

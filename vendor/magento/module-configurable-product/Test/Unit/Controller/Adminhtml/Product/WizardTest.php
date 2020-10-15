@@ -3,54 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Controller\Adminhtml\Product;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
-use Magento\ConfigurableProduct\Controller\Adminhtml\Product\Wizard;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WizardTest extends TestCase
+class WizardTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resultFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $productBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $request;
 
     /**
-     * @var Wizard
+     * @var \Magento\ConfigurableProduct\Controller\Adminhtml\Product\Wizard
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resultFactory = $this->getMockBuilder(ResultFactory::class)
+        $this->resultFactory = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->productBuilder = $this->getMockBuilder(Builder::class)
+        $this->productBuilder = $this->getMockBuilder(\Magento\Catalog\Controller\Adminhtml\Product\Builder::class)
             ->disableOriginalConstructor()
             ->setMethods(['build'])
             ->getMock();
-        $this->request = $this->getMockBuilder(RequestInterface::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $context = $this->getMockBuilder(Context::class)
+            ->getMock();
+        $context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -59,7 +52,7 @@ class WizardTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            Wizard::class,
+            \Magento\ConfigurableProduct\Controller\Adminhtml\Product\Wizard::class,
             [
                 'context' => $context,
                 'productBuilder' => $this->productBuilder

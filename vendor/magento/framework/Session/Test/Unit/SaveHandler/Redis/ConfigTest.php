@@ -3,32 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Session\Test\Unit\SaveHandler\Redis;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\State;
-use Magento\Framework\Session\SaveHandler\Redis\Config;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Session\SaveHandler\Redis\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfigMock;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appStateMock;
 
     /**
-     * @var \Magento\Framework\App\Config|MockObject
+     * @var \Magento\Framework\App\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
@@ -37,13 +30,13 @@ class ConfigTest extends TestCase
      */
     private $config;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
-        $this->appStateMock = $this->createMock(State::class);
+        $this->deploymentConfigMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $this->appStateMock = $this->createMock(\Magento\Framework\App\State::class);
         $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->config = $objectManager->getObject(
             Config::class,
             [

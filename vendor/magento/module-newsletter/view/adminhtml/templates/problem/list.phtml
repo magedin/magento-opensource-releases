@@ -3,23 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
 <?= $block->getChildHtml('grid') ?>
 
-<?php if ($block->getShowButtons()): ?>
+<?php if ($block->getShowButtons()) : ?>
 <div class="form-buttons">
     <?= $block->getUnsubscribeButtonHtml() ?>
     <?= $block->getDeleteButtonHtml() ?>
 </div>
 <?php endif ?>
-<?php $scriptString = <<<script
+<script>
 require(["prototype", "mage/adminhtml/events"], function(){
 
     problemController = {
         checkCheckboxes:function (controlCheckbox) {
-            var elements = \$$('input.problemCheckbox');
+            var elements = $$('input.problemCheckbox');
             if (elements && elements.length) {
                 elements.each(function (obj) {
                     obj.checked = controlCheckbox.checked;
@@ -37,7 +35,7 @@ require(["prototype", "mage/adminhtml/events"], function(){
         },
 
         unsubscribe:function () {
-            var elements = \$$('input.problemCheckbox');
+            var elements = $$('input.problemCheckbox');
             var serializedElements = Form.serializeElements(elements, true);
             serializedElements._unsubscribe = '1';
             serializedElements.form_key = FORM_KEY;
@@ -50,7 +48,7 @@ require(["prototype", "mage/adminhtml/events"], function(){
         },
 
         deleteSelected:function () {
-            var elements = \$$('input.problemCheckbox');
+            var elements = $$('input.problemCheckbox');
             var serializedElements = Form.serializeElements(elements, true);
             serializedElements._delete = '1';
             serializedElements.form_key = FORM_KEY;
@@ -67,6 +65,4 @@ require(["prototype", "mage/adminhtml/events"], function(){
     //-->
 
 });
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

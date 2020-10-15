@@ -30,14 +30,6 @@ define([
         },
 
         /**
-         * Weight Change Toggle
-         * @returns {*|jQuery|HTMLElement}
-         */
-        $weightChangeToggle: function () {
-            return $('#toggle_weight');
-        },
-
-        /**
          * Is locked
          * @returns {*}
          */
@@ -60,36 +52,11 @@ define([
         },
 
         /**
-         * Disabled Switcher
-         */
-        disabledSwitcher: function () {
-            this.$weightSwitcher().find('input[type="radio"]').addClass('ignore-validate').prop('disabled', true);
-        },
-
-        /**
-         * Enabled Switcher
-         */
-        enabledSwitcher: function () {
-            this.$weightSwitcher().find('input[type="radio"]').removeClass('ignore-validate').prop('disabled', false);
-        },
-
-        /**
          * Switch Weight
          * @returns {*}
          */
         switchWeight: function () {
-            if (this.hasWeightChangeToggle()) {
-                return;
-            }
-
             return this.productHasWeightBySwitcher() ? this.enabled() : this.disabled();
-        },
-
-        /**
-         * Toggle Switcher
-         */
-        toggleSwitcher: function () {
-            this.isWeightChanging() ? this.enabledSwitcher() : this.disabledSwitcher();
         },
 
         /**
@@ -116,27 +83,11 @@ define([
         },
 
         /**
-         * Has weight change toggle
-         * @returns {*}
-         */
-        hasWeightChangeToggle: function () {
-            return this.$weightChangeToggle().is(':visible');
-        },
-
-        /**
          * Product has weight
          * @returns {Bool}
          */
         productHasWeightBySwitcher: function () {
             return $('input:checked', this.$weightSwitcher()).val() === '1';
-        },
-
-        /**
-         * Product weight toggle is checked
-         * @returns {Bool}
-         */
-        isWeightChanging: function () {
-            return this.$weightChangeToggle().is(':checked');
         },
 
         /**
@@ -158,10 +109,6 @@ define([
 
             if (this.hasWeightSwitcher()) {
                 this.switchWeight();
-            }
-
-            if (this.hasWeightChangeToggle()) {
-                this.toggleSwitcher();
             }
         },
 

@@ -7,25 +7,9 @@
 /**
  * Tax rate collection
  */
-
 namespace Magento\Tax\Model\ResourceModel\Calculation\Rate;
 
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Tax\Model\Calculation\Rate;
-use Magento\Tax\Model\ResourceModel\Calculation\Rate as RateResourceModel;
-use Psr\Log\LoggerInterface;
-
-/**
- * Collection of Calculation Rates
- */
-class Collection extends AbstractCollection
+class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     /**
      * Value of fetched from DB of rules per cycle
@@ -33,27 +17,27 @@ class Collection extends AbstractCollection
     const TAX_RULES_CHUNK_SIZE = 1000;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $_storeManager;
 
     /**
-     * @param EntityFactory $entityFactory
-     * @param LoggerInterface $logger
-     * @param FetchStrategyInterface $fetchStrategy
-     * @param ManagerInterface $eventManager
-     * @param StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
+     * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param mixed $connection
-     * @param AbstractDb $resource
+     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource
      */
     public function __construct(
-        EntityFactory $entityFactory,
-        LoggerInterface $logger,
-        FetchStrategyInterface $fetchStrategy,
-        ManagerInterface $eventManager,
-        StoreManagerInterface $storeManager,
-        AdapterInterface $connection = null,
-        AbstractDb $resource = null
+        \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         $this->_storeManager = $storeManager;
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
@@ -66,7 +50,10 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init(Rate::class, RateResourceModel::class);
+        $this->_init(
+            \Magento\Tax\Model\Calculation\Rate::class,
+            \Magento\Tax\Model\ResourceModel\Calculation\Rate::class
+        );
     }
 
     /**
@@ -103,7 +90,7 @@ class Collection extends AbstractCollection
     /**
      * Join rate title for specified store
      *
-     * @param Store|string|int $store
+     * @param \Magento\Store\Model\Store|string|int $store
      * @return $this
      */
     public function joinTitle($store = null)
@@ -183,10 +170,12 @@ class Collection extends AbstractCollection
     }
 
     /**
-     * Convert items array to hash for select options using fetchItem method
+     * Convert items array to hash for select options
+     * using fetchItem method
+     *
+     * @see fetchItem()
      *
      * @return array
-     * @see fetchItem()
      */
     public function toOptionHashOptimized()
     {
@@ -206,7 +195,7 @@ class Collection extends AbstractCollection
     {
         $size = self::TAX_RULES_CHUNK_SIZE;
         $page = 1;
-        $rates = [[]];
+        $rates = [];
         do {
             $offset = $size * ($page - 1);
             $this->getSelect()->reset();
@@ -217,11 +206,11 @@ class Collection extends AbstractCollection
                 )
                 ->limit($size, $offset);
 
-            $rates[] = $this->toOptionArray();
+            $rates = array_merge($rates, $this->toOptionArray());
             $this->clear();
             $page++;
         } while ($this->getSize() > $offset);
 
-        return array_merge(...$rates);
+        return $rates;
     }
 }

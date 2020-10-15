@@ -276,12 +276,10 @@ switch($a) {
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before BlankLineBeforeStatementFixer.
-     * Must run after CombineConsecutiveUnsetsFixer, FunctionToConstantFixer, NoEmptyCommentFixer, NoEmptyPhpdocFixer, NoEmptyStatementFixer, NoUnusedImportsFixer, NoUselessElseFixer, NoUselessReturnFixer.
      */
     public function getPriority()
     {
+        // should be run after the NoUnusedImportsFixer, NoEmptyPhpdocFixer, CombineConsecutiveUnsetsFixer and NoUselessElseFixer
         return -20;
     }
 
@@ -370,7 +368,7 @@ switch($a) {
         }
 
         $nextUseCandidate = $this->tokens->getNextMeaningfulToken($next);
-        if (null === $nextUseCandidate || !$this->tokens[$nextUseCandidate]->isGivenKind($this->tokens[$index]->getId()) || !$this->containsLinebreak($index, $nextUseCandidate)) {
+        if (null === $nextUseCandidate || 1 === $nextUseCandidate - $next || !$this->tokens[$nextUseCandidate]->isGivenKind($this->tokens[$index]->getId())) {
             return;
         }
 
@@ -463,22 +461,5 @@ switch($a) {
 
             $this->tokens[$i] = new Token([T_WHITESPACE, $newContent]);
         }
-    }
-
-    /**
-     * @param int $startIndex
-     * @param int $endIndex
-     *
-     * @return bool
-     */
-    private function containsLinebreak($startIndex, $endIndex)
-    {
-        for ($i = $endIndex; $i > $startIndex; --$i) {
-            if (Preg::match('/\R/', $this->tokens[$i]->getContent())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

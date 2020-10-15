@@ -3,18 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Filesystem\Test\Unit\Driver;
 
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem\Driver\Http;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Filesystem\Driver\Http;
 
-/**
- * Verify HttpTest class.
- */
-class HttpTest extends TestCase
+class HttpTest extends \PHPUnit\Framework\TestCase
 {
     /** @var array Result of get_headers() function */
     public static $headers;
@@ -28,10 +22,7 @@ class HttpTest extends TestCase
     /** @var bool Result of fsockopen() function */
     public static $fsockopen;
 
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         require_once __DIR__ . '/../_files/http_mock.php';
 
@@ -42,49 +33,35 @@ class HttpTest extends TestCase
     }
 
     /**
-     * Verify IsExists.
-     *
-     * @param string $status
-     * @param bool $result
      * @dataProvider dataProviderForTestIsExists
-     * @return void
      */
-    public function testIsExists(string $status, bool $result): void
+    public function testIsExists($status, $result)
     {
         self::$headers = [$status];
         $this->assertEquals($result, (new Http())->isExists(''));
     }
 
     /**
-     * Data provider fot test IsExists.
-     *
      * @return array
      */
-    public function dataProviderForTestIsExists(): array
+    public function dataProviderForTestIsExists()
     {
         return [['200 OK', true], ['404 Not Found', false]];
     }
 
     /**
-     * Verify Stat.
-     *
-     * @param array $headers
-     * @param array $result
      * @dataProvider dataProviderForTestStat
-     * @return void
      */
-    public function testStat(array $headers, array $result): void
+    public function testStat($headers, $result)
     {
         self::$headers = $headers;
         $this->assertEquals($result, (new Http())->stat(''));
     }
 
     /**
-     * Data provider for test Stat.
-     *
      * @return array
      */
-    public function dataProviderForTestStat(): array
+    public function dataProviderForTestStat()
     {
         $headers1 = [
             'Content-Length' => 128,
@@ -129,87 +106,45 @@ class HttpTest extends TestCase
         return array_merge($result, $nonEmptyValues);
     }
 
-    /**
-     * Verify File get contents.
-     *
-     * @throws FileSystemException
-     * @return void
-     */
-    public function testFileGetContents(): void
+    public function testFileGetContents()
     {
         $content = 'some content';
         self::$fileGetContents = $content;
         $this->assertEquals($content, (new Http())->fileGetContents(''));
     }
 
-    /**
-     * Verify File get contents without content.
-     *
-     * @throws FileSystemException
-     * @return void
-     */
-    public function testFileGetContentsNoContent(): void
+    public function testFileGetContentsNoContent()
     {
         $content = '';
         self::$fileGetContents = '';
         $this->assertEquals($content, (new Http())->fileGetContents(''));
     }
 
-    /**
-     * Verify File put contents.
-     *
-     * @throws FileSystemException
-     * @return void
-     */
-    public function testFilePutContents(): void
+    public function testFilePutContents()
     {
         self::$filePutContents = true;
         $this->assertTrue((new Http())->filePutContents('', ''));
     }
 
     /**
-     * Verify file put contents without content.
-     *
-     * @throws FileSystemException
-     * @return void
+     * @expectedException \Magento\Framework\Exception\FileSystemException
      */
-    public function testFilePutContentsNoContent(): void
+    public function testFilePutContentsFail()
     {
-        self::$filePutContents = 0;
-        $this->assertEquals(0, (new Http())->filePutContents('', ''));
-    }
-
-    /**
-     * Verify File put contents if is fail.
-     *
-     * @return void
-     */
-    public function testFilePutContentsFail(): void
-    {
-        $this->expectException('Magento\Framework\Exception\FileSystemException');
         self::$filePutContents = false;
         (new Http())->filePutContents('', '');
     }
 
     /**
-     * Verify File open invalid url.
-     *
-     * @return void
+     * @expectedException \Magento\Framework\Exception\FileSystemException
+     * @expectedExceptionMessage The download URL is incorrect. Verify and try again.
      */
-    public function testFileOpenInvalidUrl(): void
+    public function testFileOpenInvalidUrl()
     {
-        $this->expectException('Magento\Framework\Exception\FileSystemException');
-        $this->expectExceptionMessage('The download URL is incorrect. Verify and try again.');
         (new Http())->fileOpen('', '');
     }
 
-    /**
-     * Verify File open.
-     *
-     * @throws FileSystemException
-     * @return void
-     */
-    public function testFileOpen(): void
+    public function testFileOpen()
     {
         $fsockopenResult = 'resource';
         self::$fsockopen = $fsockopenResult;

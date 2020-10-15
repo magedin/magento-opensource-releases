@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Framework\View\Layout\Element
  */
 namespace Magento\Framework\View\Test\Unit\Layout;
 
-use Magento\Framework\View\Layout\Element;
-use PHPUnit\Framework\TestCase;
-
-class ElementTest extends TestCase
+class ElementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider elementNameDataProvider
      */
     public function testGetElementName($xml, $name)
     {
-        $model = new Element($xml);
+        $model = new \Magento\Framework\View\Layout\Element($xml);
         $this->assertEquals($name, $model->getElementName());
     }
 
@@ -61,7 +57,7 @@ class ElementTest extends TestCase
      */
     public function testIsCacheable($xml, $expected)
     {
-        $model = new Element($xml);
+        $model = new \Magento\Framework\View\Layout\Element($xml);
         $this->assertEquals($expected, $model->isCacheable());
     }
 }

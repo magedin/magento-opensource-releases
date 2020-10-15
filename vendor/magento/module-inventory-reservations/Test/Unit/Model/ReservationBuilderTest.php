@@ -8,38 +8,37 @@ declare(strict_types=1);
 namespace Magento\InventoryReservations\Test\Unit\Model;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Validation\ValidationResult;
 use Magento\Framework\Validation\ValidationResultFactory;
 use Magento\InventoryReservations\Model\ReservationBuilder;
 use Magento\InventoryReservations\Model\SnakeToCamelCaseConverter;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\InventoryReservationsApi\Model\ReservationInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ReservationBuilderTest extends TestCase
 {
     /**
-     * @var ObjectManager|MockObject
+     * @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
     /**
-     * @var ReservationInterface|MockObject
+     * @var ReservationInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $reservation;
 
     /**
-     * @var ValidationResult|MockObject
+     * @var ValidationResult|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validationResult;
 
     /**
-     * @var SnakeToCamelCaseConverter|MockObject
+     * @var SnakeToCamelCaseConverter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $snakeToCamelCaseConverter;
 
-    /** @var  ValidationResultFactory|MockObject */
+    /** @var  ValidationResultFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $validationResultFactory;
 
     /**
@@ -47,14 +46,11 @@ class ReservationBuilderTest extends TestCase
      */
     private $reservationBuilder;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
-            ->getMock();
-        $this->snakeToCamelCaseConverter = $this->getMockBuilder(SnakeToCamelCaseConverter::class)
-            ->getMock();
-        $this->reservation = $this->getMockBuilder(ReservationInterface::class)
-            ->getMock();
+        $this->objectManager = $this->getMockBuilder(ObjectManagerInterface::class)->getMock();
+        $this->snakeToCamelCaseConverter = $this->getMockBuilder(SnakeToCamelCaseConverter::class)->getMock();
+        $this->reservation = $this->getMockBuilder(ReservationInterface::class)->getMock();
         $this->validationResult = $this->getMockBuilder(ValidationResult::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -122,11 +118,11 @@ class ReservationBuilderTest extends TestCase
      * @param array $firstSetter
      * @param array $secondSetter
      * @dataProvider getSettersAndValues
+     * @expectedException \Magento\Framework\Validation\ValidationException
+     * @expectedExceptionMessage  Validation error
      */
     public function testThrowValidationException(array $firstSetter, array $secondSetter)
     {
-        $this->expectException('Magento\Framework\Validation\ValidationException');
-        $this->expectExceptionMessage('Validation error');
         $this->validationResultFactory
             ->expects($this->once())
             ->method('create')

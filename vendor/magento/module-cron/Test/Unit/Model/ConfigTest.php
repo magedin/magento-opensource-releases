@@ -3,45 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cron\Test\Unit\Model;
 
-use Magento\Cron\Model\Config;
-use Magento\Cron\Model\Config\Data as ConfigDataModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+/**
+ * Class \Magento\Cron\Model\Config
+ */
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConfigDataModel|MockObject
+     * @var \Magento\Cron\Model\Config\Data|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $configDataMock;
+    protected $_configData;
 
     /**
-     * @var Config
+     * @var \Magento\Cron\Model\Config
      */
-    private $config;
+    protected $_config;
 
-    protected function setUp(): void
+    /**
+     * Prepare data
+     */
+    protected function setUp()
     {
-        $this->configDataMock = $this->getMockBuilder(
-            ConfigDataModel::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->config = new Config($this->configDataMock);
+        $this->_configData = $this->getMockBuilder(
+            \Magento\Cron\Model\Config\Data::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_config = new \Magento\Cron\Model\Config($this->_configData);
     }
 
-    public function testGetJobsReturnsOriginalConfigData()
+    /**
+     * Test method call
+     */
+    public function testGetJobs()
     {
         $jobList = [
             'jobname1' => ['instance' => 'TestInstance', 'method' => 'testMethod', 'schedule' => '* * * * *'],
         ];
-        $this->configDataMock->expects($this->once())
-            ->method('getJobs')
-            ->willReturn($jobList);
-        $result = $this->config->getJobs();
+        $this->_configData->expects($this->once())->method('getJobs')->will($this->returnValue($jobList));
+        $result = $this->_config->getJobs();
         $this->assertEquals($jobList, $result);
     }
 }

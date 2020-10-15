@@ -44,7 +44,7 @@ class PriceTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->resourceRule = $this->objectManager->get(Rule::class);

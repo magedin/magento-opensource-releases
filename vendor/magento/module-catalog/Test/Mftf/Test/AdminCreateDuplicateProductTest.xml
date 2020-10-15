@@ -22,21 +22,20 @@
             <createData entity="Two_nested_categories" stepKey="subCategory">
                 <requiredEntity createDataKey="category"/>
             </createData>
-            <magentoCLI command="config:set catalog/seo/generate_category_product_rewrites 1" stepKey="enableGenerateUrlRewrite"/>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
         </before>
 
         <after>
             <deleteData createDataKey="subCategory" stepKey="deleteSubCategory"/>
             <deleteData createDataKey="category" stepKey="deleteCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Go to new simple product page -->
-        <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="goToCreateProductPage"/>
+        <actionGroup ref="GoToSpecifiedCreateProductPage" stepKey="goToCreateProductPage"/>
 
         <!-- Fill the main fields in the form -->
-        <actionGroup ref="FillMainProductFormByStringActionGroup" stepKey="fillMainProductForm">
+        <actionGroup ref="FillMainProductFormByString" stepKey="fillMainProductForm">
             <argument name="productName" value="$$subCategory.name$$"/>
             <argument name="productSku" value="{{defaultSimpleProduct.sku}}"/>
             <argument name="productPrice" value="{{defaultSimpleProduct.price}}"/>
@@ -46,17 +45,17 @@
         </actionGroup>
 
         <!-- Select the category that we created in the before block -->
-        <actionGroup ref="SetCategoryByNameActionGroup" stepKey="setCategory">
+        <actionGroup ref="SetCategoryByName" stepKey="setCategory">
             <argument name="categoryName" value="$$category.name$$"/>
         </actionGroup>
 
         <!-- Set the url key to match the subcategory created in the before block -->
-        <actionGroup ref="SetProductUrlKeyByStringActionGroup" stepKey="fillUrlKey">
+        <actionGroup ref="SetProductUrlKeyByString" stepKey="fillUrlKey">
             <argument name="urlKey" value="$$subCategory.custom_attributes[url_key]$$"/>
         </actionGroup>
 
         <!-- Save the product and expect to see an error message -->
-        <actionGroup ref="SaveProductFormNoSuccessCheckActionGroup" stepKey="tryToSaveProduct"/>
+        <actionGroup ref="SaveProductFormNoSuccessCheck" stepKey="tryToSaveProduct"/>
         <see selector="{{AdminProductFormSection.successMessage}}"  userInput="The value specified in the URL Key field would generate a URL that already exists." stepKey="seeErrorMessage"/>
     </test>
 </tests>

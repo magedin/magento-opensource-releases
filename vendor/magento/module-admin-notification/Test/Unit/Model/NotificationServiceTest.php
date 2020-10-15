@@ -3,53 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\AdminNotification\Model\NotificationService
  */
 namespace Magento\AdminNotification\Test\Unit\Model;
 
-use Magento\AdminNotification\Model\Inbox;
-use Magento\AdminNotification\Model\InboxFactory;
-use Magento\AdminNotification\Model\NotificationService;
-use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NotificationServiceTest extends TestCase
+class NotificationServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Retrieve instance of notification service model
      *
      * @param $notificationId
-     * @return NotificationService
+     * @return \Magento\AdminNotification\Model\NotificationService
      */
     protected function _getServiceInstanceForMarkAsReadTest($notificationId)
     {
         /**
-         * @var MockObject|InboxFactory $notificationFactory
+         * @var
+         *  $notificationFactory \PHPUnit_Framework_MockObject_MockObject|\Magento\AdminNotification\Model\InboxFactory
          */
         $notificationFactory = $this->createPartialMock(
-            InboxFactory::class,
+            \Magento\AdminNotification\Model\InboxFactory::class,
             ['create']
         );
-        $notification = $this->getMockBuilder(Inbox::class)
-            ->addMethods(['setIsRead'])
-            ->onlyMethods(['load', 'getId', 'save', 'setData', '__sleep', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $notification->expects($this->once())->method('load')->with($notificationId)->willReturnSelf();
-        $notification->expects($this->once())->method('getId')->willReturn($notificationId);
+        $notification = $this->createPartialMock(
+            \Magento\AdminNotification\Model\Inbox::class,
+            ['load', 'getId', 'save', 'setIsRead', '__sleep', '__wakeup']
+        );
+        $notification->expects($this->once())->method('load')->with($notificationId)->will($this->returnSelf());
+        $notification->expects($this->once())->method('getId')->will($this->returnValue($notificationId));
 
         // when notification Id is valid, add additional expectations
         if ($notificationId) {
-            $notification->expects($this->once())->method('save')->willReturnSelf();
-            $notification->expects($this->once())->method('setIsRead')->with(1)->willReturnSelf();
+            $notification->expects($this->once())->method('save')->will($this->returnSelf());
+            $notification->expects($this->once())->method('setIsRead')->with(1)->will($this->returnSelf());
         }
 
-        $notificationFactory->expects($this->once())->method('create')->willReturn($notification);
-        return new NotificationService($notificationFactory);
+        $notificationFactory->expects($this->once())->method('create')->will($this->returnValue($notification));
+        return new \Magento\AdminNotification\Model\NotificationService($notificationFactory);
     }
 
     public function testMarkAsRead()
@@ -59,11 +51,12 @@ class NotificationServiceTest extends TestCase
         $service->markAsRead($notificationId);
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Wrong notification ID specified.
+     */
     public function testMarkAsReadThrowsExceptionWhenNotificationIdIsInvalid()
     {
-        $this->expectException(LocalizedException::class);
-        $this->expectExceptionMessage('Wrong notification ID specified.');
-
         $notificationId = null;
         $service = $this->_getServiceInstanceForMarkAsReadTest($notificationId);
         $service->markAsRead($notificationId);

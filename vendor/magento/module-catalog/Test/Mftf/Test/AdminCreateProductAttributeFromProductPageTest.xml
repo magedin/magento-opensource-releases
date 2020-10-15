@@ -13,14 +13,14 @@
             <stories value="Create product Attribute"/>
             <title value="Create Product Attribute from Product Page"/>
             <description value="Login as admin and create new product attribute from product page with Text Field"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-10899"/>
             <group value="mtf_migrated"/>
         </annotations>
 
         <before>
             <!-- Login as admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
 
             <!--Create Category-->
             <createData entity="SimpleSubCategory" stepKey="createCategory"/>
@@ -35,11 +35,11 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
 
             <!--<deleteData createDataKey="createSimpleProduct" stepKey="deleteSimpleProduct"/>-->
-            <actionGroup ref="DeleteProductAttributeActionGroup" stepKey="deleteCreatedAttribute">
+            <actionGroup ref="deleteProductAttribute" stepKey="deleteCreatedAttribute">
                 <argument name="ProductAttribute" value="newProductAttribute"/>
             </actionGroup>
 
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Open Product Index Page-->
@@ -47,7 +47,7 @@
         <waitForPageLoad stepKey="waitForProductIndexPageToLoad"/>
 
         <!-- Select Created Product-->
-        <actionGroup ref="FilterProductGridBySkuActionGroup" stepKey="filterProductGridBySku">
+        <actionGroup ref="filterProductGridBySku" stepKey="filterProductGridBySku">
             <argument name="product" value="$$createSimpleProduct$$"/>
         </actionGroup>
         <click stepKey="openFirstProduct" selector="{{AdminProductGridSection.productRowBySku($$createSimpleProduct.sku$$)}}"/>
@@ -91,9 +91,7 @@
         <see selector="{{AdminCategoryMessagesSection.SuccessMessage}}" userInput="You saved the product." stepKey="messageYouSavedTheProductIsShown"/>
 
         <!--Run Re-Index task -->
-        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-            <argument name="indices" value=""/>
-        </actionGroup>
+        <magentoCLI command="indexer:reindex" stepKey="reindex"/>
 
         <!--Verify product attribute added in product form -->
         <scrollTo selector="{{AdminProductFormSection.contentTab}}" stepKey="scrollToContentTab"/>

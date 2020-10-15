@@ -10,8 +10,6 @@
 namespace Magento\Framework\View\Element;
 
 /**
- * Element with FormKey
- *
  * @api
  * @since 100.0.2
  */

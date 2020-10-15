@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command;
 
 use Magento\Deploy\Console\Command\ShowModeCommand;
-use Magento\Deploy\Model\Mode;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Framework\App\State;
 
-class ShowModeCommandTest extends TestCase
+/**
+ * @package Magento\Deploy\Test\Unit\Console\Command
+ */
+class ShowModeCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Mode|MockObject
+     * @var \Magento\Deploy\Model\Mode|\PHPUnit_Framework_MockObject_MockObject
      */
     private $modeMock;
 
@@ -28,18 +25,18 @@ class ShowModeCommandTest extends TestCase
     private $command;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->modeMock = $this->createMock(Mode::class);
+        $this->objectManagerMock = $this->getMockForAbstractClass(\Magento\Framework\ObjectManagerInterface::class);
+        $this->modeMock = $this->createMock(\Magento\Deploy\Model\Mode::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->command = $objectManager->getObject(
-            ShowModeCommand::class,
+            \Magento\Deploy\Console\Command\ShowModeCommand::class,
             ['objectManager' => $this->objectManagerMock]
         );
 
@@ -53,7 +50,7 @@ class ShowModeCommandTest extends TestCase
 
         $tester = new CommandTester($this->command);
         $tester->execute([]);
-        $this->assertStringContainsString(
+        $this->assertContains(
             $currentMode,
             $tester->getDisplay()
         );

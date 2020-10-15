@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Checks;
 
 use Magento\Payment\Model\Checks\CanUseForCountry;
-use Magento\Payment\Model\Checks\CanUseForCountry\CountryProvider;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CanUseForCountryTest extends TestCase
+class CanUseForCountryTest extends \PHPUnit\Framework\TestCase
 {
-    private const EXPECTED_COUNTRY_ID = 1;
+    /**
+     * Expected country id
+     */
+    const EXPECTED_COUNTRY_ID = 1;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $countryProvider;
 
@@ -28,10 +25,10 @@ class CanUseForCountryTest extends TestCase
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->countryProvider = $this->createMock(
-            CountryProvider::class
+            \Magento\Payment\Model\Checks\CanUseForCountry\CountryProvider::class
         );
         $this->_model = new CanUseForCountry($this->countryProvider);
     }
@@ -42,19 +39,16 @@ class CanUseForCountryTest extends TestCase
      */
     public function testIsApplicable($expectation)
     {
-        $quoteMock = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                []
-            )->getMock();
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->disableOriginalConstructor()->setMethods(
+            []
+        )->getMock();
 
         $paymentMethod = $this->getMockBuilder(
-            MethodInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
+            \Magento\Payment\Model\MethodInterface::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
         $paymentMethod->expects($this->once())->method('canUseForCountry')->with(
             self::EXPECTED_COUNTRY_ID
-        )->willReturn($expectation);
+        )->will($this->returnValue($expectation));
         $this->countryProvider->expects($this->once())->method('getCountry')->willReturn(self::EXPECTED_COUNTRY_ID);
 
         $this->assertEquals($expectation, $this->_model->isApplicable($paymentMethod, $quoteMock));

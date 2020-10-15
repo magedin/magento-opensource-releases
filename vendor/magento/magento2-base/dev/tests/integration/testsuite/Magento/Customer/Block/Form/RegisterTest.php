@@ -29,7 +29,7 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
             ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringContainsString('title="Company"', $block->toHtml());
+        $this->assertContains('title="Company"', $block->toHtml());
     }
 
     /**
@@ -46,7 +46,7 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
         ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringContainsString('title="Phone&#x20;Number"', $block->toHtml());
+        $this->assertContains('title="Phone&#x20;Number"', $block->toHtml());
     }
 
     /**
@@ -63,7 +63,7 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
         ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringNotContainsString('title="Fax"', $block->toHtml());
+        $this->assertNotContains('title="Fax"', $block->toHtml());
     }
 
     /**
@@ -87,7 +87,7 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
         ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringNotContainsString('title="Company"', $block->toHtml());
+        $this->assertNotContains('title="Company"', $block->toHtml());
     }
 
     /**
@@ -111,7 +111,7 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
         ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringNotContainsString('title="Phone&#x20;Number"', $block->toHtml());
+        $this->assertNotContains('title="Phone&#x20;Number"', $block->toHtml());
     }
 
     /**
@@ -135,13 +135,13 @@ class RegisterTest extends \PHPUnit\Framework\TestCase
         ->setShowAddressFields(true);
         $this->setAttributeDataProvider($block);
 
-        $this->assertStringContainsString('title="Fax"', $block->toHtml());
+        $this->assertContains('title="Fax"', $block->toHtml());
     }
 
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var \Magento\Eav\Model\Config $eavConfig */
         $eavConfig = Bootstrap::getObjectManager()->get(\Magento\Eav\Model\Config::class);

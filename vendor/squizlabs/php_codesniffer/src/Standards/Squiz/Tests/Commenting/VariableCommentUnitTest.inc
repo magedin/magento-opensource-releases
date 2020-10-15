@@ -340,26 +340,6 @@ class Foo
      *
      * @var array
      */
-     public static array $variableName = array();
+     public static $variableName = array();
 
 }
-
-class Foo
-{
-
-    /**
-     * Short description of the member variable.
-     *
-     * @var array
-     */
-     public array $variableName = array();
-
-
-     // Not "/**" style comment.
-     //
-     // @var   string
-     private ?Folder\ClassName $_incorrectCommentStyle = null;
-
-
-     var int $noComment = 1;
- }

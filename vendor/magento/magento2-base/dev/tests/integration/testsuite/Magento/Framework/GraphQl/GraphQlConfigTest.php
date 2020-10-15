@@ -26,7 +26,7 @@ class GraphQlConfigTest extends \PHPUnit\Framework\TestCase
    /** @var \Magento\Framework\GraphQl\Config  */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var ObjectManagerInterface $objectManager */
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -40,7 +40,7 @@ class GraphQlConfigTest extends \PHPUnit\Framework\TestCase
             file_get_contents(__DIR__ . '/_files/schemaC.graphqls'),
             file_get_contents(__DIR__ . '/_files/schemaD.graphqls')
         ];
-        $fileResolverMock->expects($this->any())->method('get')->willReturn($fileList);
+        $fileResolverMock->expects($this->any())->method('get')->will($this->returnValue($fileList));
         $graphQlReader = $objectManager->create(
             \Magento\Framework\GraphQlSchemaStitching\GraphQlReader::class,
             ['fileResolver' => $fileResolverMock]
@@ -231,7 +231,7 @@ class GraphQlConfigTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var ObjectManagerInterface $objectManager */
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();

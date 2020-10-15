@@ -3,20 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Tax\Model\Config
  */
 namespace Magento\Tax\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Tax\Model\Calculation;
-use Magento\Tax\Model\Config;
-use PHPUnit\Framework\TestCase;
+use \Magento\Tax\Model\Config;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests the setter/getter methods that bypass the ScopeConfigInterface object
@@ -30,9 +25,9 @@ class ConfigTest extends TestCase
     {
         // Need a mocked object with only dummy methods.  It is just needed for construction.
         // The setter/getter methods do not use this object (for this set of tests).
-        $scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $scopeConfigMock = $this->getMockForAbstractClass(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        /** @var Config */
+        /** @var \Magento\Tax\Model\Config */
         $model = new Config($scopeConfigMock);
         $model->{$setterMethod}($value);
         $this->assertEquals($value, $model->{$getterMethod}());
@@ -64,15 +59,15 @@ class ConfigTest extends TestCase
      */
     public function testGetCalculationSequence($applyTaxAfterDiscount, $discountTaxIncl, $expectedValue)
     {
-        $scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $scopeConfigMock = $this->getMockForAbstractClass(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $scopeConfigMock->expects($this->at(0))
             ->method('getValue')
-            ->willReturn($applyTaxAfterDiscount);
+            ->will($this->returnValue($applyTaxAfterDiscount));
         $scopeConfigMock->expects($this->at(1))
             ->method('getValue')
-            ->willReturn($discountTaxIncl);
+            ->will($this->returnValue($discountTaxIncl));
 
-        /** @var Config */
+        /** @var \Magento\Tax\Model\Config */
         $model = new Config($scopeConfigMock);
         $this->assertEquals($expectedValue, $model->getCalculationSequence());
     }
@@ -83,10 +78,10 @@ class ConfigTest extends TestCase
     public function dataProviderGetCalculationSequence()
     {
         return [
-            [true,  true,  Calculation::CALC_TAX_AFTER_DISCOUNT_ON_INCL],
-            [true,  false, Calculation::CALC_TAX_AFTER_DISCOUNT_ON_EXCL],
-            [false, true,  Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_INCL],
-            [false, false, Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_EXCL]
+            [true,  true,  \Magento\Tax\Model\Calculation::CALC_TAX_AFTER_DISCOUNT_ON_INCL],
+            [true,  false, \Magento\Tax\Model\Calculation::CALC_TAX_AFTER_DISCOUNT_ON_EXCL],
+            [false, true,  \Magento\Tax\Model\Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_INCL],
+            [false, false, \Magento\Tax\Model\Calculation::CALC_TAX_BEFORE_DISCOUNT_ON_EXCL]
         ];
     }
 
@@ -101,13 +96,13 @@ class ConfigTest extends TestCase
      */
     public function testScopeConfigMethods($method, $path, $configValue, $expectedValue)
     {
-        $scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $scopeConfigMock = $this->getMockForAbstractClass(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $scopeConfigMock->expects($this->once())
             ->method('getValue')
-            ->with($path, ScopeInterface::SCOPE_STORE, null)
-            ->willReturn($configValue);
+            ->with($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null)
+            ->will($this->returnValue($configValue));
 
-        /** @var Config */
+        /** @var \Magento\Tax\Model\Config */
         $model = new Config($scopeConfigMock);
         $this->assertEquals($expectedValue, $model->{$method}());
     }

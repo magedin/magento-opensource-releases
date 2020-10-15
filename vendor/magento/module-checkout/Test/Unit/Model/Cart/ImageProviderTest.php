@@ -3,48 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Checkout\Test\Unit\Model\Cart;
 
-use Magento\Checkout\CustomerData\DefaultItem;
-use Magento\Checkout\CustomerData\ItemPoolInterface;
-use Magento\Checkout\Model\Cart\ImageProvider;
-use Magento\Quote\Api\CartItemRepositoryInterface;
-use Magento\Quote\Model\Quote\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ImageProviderTest extends TestCase
+class ImageProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ImageProvider
+     * @var \Magento\Checkout\Model\Cart\ImageProvider
      */
     private $model;
 
     /**
-     * @var MockObject|CartItemRepositoryInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Quote\Api\CartItemRepositoryInterface
      */
     private $itemRepositoryMock;
 
     /**
-     * @var MockObject|ItemPoolInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Checkout\CustomerData\ItemPoolInterface
      */
     private $itemPoolMock;
 
     /**
-     * @var MockObject|DefaultItem
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Checkout\CustomerData\DefaultItem
      */
     private $customerItem;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->itemRepositoryMock = $this->getMockForAbstractClass(CartItemRepositoryInterface::class);
-        $this->itemPoolMock = $this->getMockForAbstractClass(ItemPoolInterface::class);
-        $this->customerItem = $this->getMockBuilder(DefaultItem::class)
+        $this->itemRepositoryMock = $this->createMock(\Magento\Quote\Api\CartItemRepositoryInterface::class);
+        $this->itemPoolMock = $this->createMock(\Magento\Checkout\CustomerData\ItemPoolInterface::class);
+        $this->customerItem = $this->getMockBuilder(\Magento\Checkout\CustomerData\DefaultItem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->model = new ImageProvider(
+        $this->model = new \Magento\Checkout\Model\Cart\ImageProvider(
             $this->itemRepositoryMock,
             $this->itemPoolMock,
             $this->customerItem
@@ -56,7 +47,7 @@ class ImageProviderTest extends TestCase
         $cartId = 42;
         $itemId = 74;
         $itemData = ['product_image' => 'Magento.png', 'random' => '3.1415926535'];
-        $itemMock = $this->createMock(Item::class);
+        $itemMock = $this->createMock(\Magento\Quote\Model\Quote\Item::class);
         $itemMock->expects($this->once())->method('getItemId')->willReturn($itemId);
 
         $expectedResult = [$itemId => $itemData['product_image']];

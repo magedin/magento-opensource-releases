@@ -3,42 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Adminhtml\Wysiwyg\Files;
 
-use Magento\Backend\Model\Url;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Tree;
-use Magento\Theme\Helper\Storage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TreeTest extends TestCase
+class TreeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Url|MockObject
+     * @var \Magento\Backend\Model\Url|PHPUnit_Framework_MockObject_MockObject
      */
     protected $_urlBuilder;
 
     /**
-     * @var Storage|MockObject
+     * @var \Magento\Theme\Helper\Storage|PHPUnit_Framework_MockObject_MockObject
      */
     protected $_helperStorage;
 
     /**
-     * @var Tree|MockObject
+     * @var \Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Tree|PHPUnit_Framework_MockObject_MockObject
      */
     protected $_filesTree;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_helperStorage = $this->createMock(Storage::class);
-        $this->_urlBuilder = $this->createMock(Url::class);
+        $this->_helperStorage = $this->createMock(\Magento\Theme\Helper\Storage::class);
+        $this->_urlBuilder = $this->createMock(\Magento\Backend\Model\Url::class);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_filesTree = $objectManagerHelper->getObject(
-            Tree::class,
+            \Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Tree::class,
             ['urlBuilder' => $this->_urlBuilder, 'storageHelper' => $this->_helperStorage]
         );
     }
@@ -46,9 +37,9 @@ class TreeTest extends TestCase
     public function testGetTreeLoaderUrl()
     {
         $requestParams = [
-            Storage::PARAM_THEME_ID => 1,
-            Storage::PARAM_CONTENT_TYPE => \Magento\Theme\Model\Wysiwyg\Storage::TYPE_IMAGE,
-            Storage::PARAM_NODE => 'root',
+            \Magento\Theme\Helper\Storage::PARAM_THEME_ID => 1,
+            \Magento\Theme\Helper\Storage::PARAM_CONTENT_TYPE => \Magento\Theme\Model\Wysiwyg\Storage::TYPE_IMAGE,
+            \Magento\Theme\Helper\Storage::PARAM_NODE => 'root',
         ];
         $expectedUrl = 'some_url';
 
@@ -56,8 +47,8 @@ class TreeTest extends TestCase
             $this->once()
         )->method(
             'getRequestParams'
-        )->willReturn(
-            $requestParams
+        )->will(
+            $this->returnValue($requestParams)
         );
 
         $this->_urlBuilder->expects(
@@ -67,8 +58,8 @@ class TreeTest extends TestCase
         )->with(
             'adminhtml/*/treeJson',
             $requestParams
-        )->willReturn(
-            $expectedUrl
+        )->will(
+            $this->returnValue($expectedUrl)
         );
 
         $this->assertEquals($expectedUrl, $this->_filesTree->getTreeLoaderUrl());

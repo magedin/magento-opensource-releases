@@ -11,12 +11,9 @@ use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResource;
 use Magento\Catalog\Model\ResourceModel\Category\Collection;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/categories_no_products.php');
+require __DIR__ . '/categories_no_products.php';
 
-$objectManager = Bootstrap::getObjectManager();
 $categoryFactory = $objectManager->get(CategoryFactory::class);
 $categoryResource = $objectManager->create(CategoryResource::class);
 $categoryCollectionFactory = $objectManager->get(CollectionFactory::class);

@@ -55,6 +55,8 @@ final class FixerOption implements FixerOptionInterface
      * @param bool          $isRequired
      * @param mixed         $default
      * @param null|string[] $allowedTypes
+     * @param null|array    $allowedValues
+     * @param null|\Closure $normalizer
      */
     public function __construct(
         $name,
@@ -162,6 +164,8 @@ final class FixerOption implements FixerOptionInterface
      * all elements are still referenced.
      *
      * See {@see https://bugs.php.net/bug.php?id=69639 Bug #69639} for details.
+     *
+     * @param \Closure $closure
      *
      * @return \Closure
      */

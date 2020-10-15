@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Backend\File;
 
-use Magento\Config\Model\Config\Backend\File\RequestData;
-use PHPUnit\Framework\TestCase;
-
-class RequestDataTest extends TestCase
+class RequestDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestData
+     * @var \Magento\Config\Model\Config\Backend\File\RequestData
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $_FILES = [
             'groups' => [
@@ -40,10 +35,10 @@ class RequestDataTest extends TestCase
             ],
         ];
 
-        $this->_model = new RequestData();
+        $this->_model = new \Magento\Config\Model\Config\Backend\File\RequestData();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_model);
     }

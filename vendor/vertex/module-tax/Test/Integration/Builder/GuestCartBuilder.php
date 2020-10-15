@@ -6,8 +6,6 @@
 
 namespace Vertex\Tax\Test\Integration\Builder;
 
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
@@ -79,8 +77,8 @@ class GuestCartBuilder
      * Build the Cart
      *
      * @return \Magento\Quote\Api\Data\CartInterface
-     * @throws CouldNotSaveException
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function create()
     {

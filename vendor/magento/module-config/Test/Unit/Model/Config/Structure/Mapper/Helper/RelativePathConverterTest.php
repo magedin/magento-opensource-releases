@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Mapper\Helper;
 
-use Magento\Config\Model\Config\Structure\Mapper\Helper\RelativePathConverter;
-use PHPUnit\Framework\TestCase;
-
-class RelativePathConverterTest extends TestCase
+class RelativePathConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RelativePathConverter
+     * @var \Magento\Config\Model\Config\Structure\Mapper\Helper\RelativePathConverter
      */
     protected $_sut;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_sut = new RelativePathConverter();
+        $this->_sut = new \Magento\Config\Model\Config\Structure\Mapper\Helper\RelativePathConverter();
     }
 
     public function testConvertWithInvalidRelativePath()

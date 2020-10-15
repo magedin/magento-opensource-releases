@@ -43,13 +43,13 @@ class OrderStatus
         $commentSelects = [];
         foreach (['invoice', 'shipment', 'creditmemo'] as $entityTypeCode) {
             $mainTable = $resource->getTableName('sales_' . $entityTypeCode);
-            $commentTable = $resource->getTableName('sales_' . $entityTypeCode . '_comment');
+            $slaveTable = $resource->getTableName('sales_' . $entityTypeCode . '_comment');
             $select = $read->select()->from(
                 ['main' => $mainTable],
                 ['entity_id' => 'order_id', 'entity_type_code' => new \Zend_Db_Expr("'{$entityTypeCode}'")]
             )->join(
-                ['comment' => $commentTable],
-                'main.entity_id = comment.parent_id',
+                ['slave' => $slaveTable],
+                'main.entity_id = slave.parent_id',
                 $fields
             )->where(
                 'main.order_id = ?',

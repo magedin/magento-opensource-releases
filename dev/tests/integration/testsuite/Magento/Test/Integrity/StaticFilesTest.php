@@ -56,7 +56,7 @@ class StaticFilesTest extends \PHPUnit\Framework\TestCase
      */
     private $filesystem;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $om = \Magento\TestFramework\Helper\Bootstrap::getObjectmanager();
         $this->fallback = $om->get(\Magento\Framework\View\Design\FileResolution\Fallback\StaticFile::class);

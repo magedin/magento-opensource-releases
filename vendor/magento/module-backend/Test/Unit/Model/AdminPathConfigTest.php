@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model;
 
-use Magento\Backend\App\ConfigInterface;
 use Magento\Backend\Model\AdminPathConfig;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AdminPathConfigTest extends TestCase
+class AdminPathConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $coreConfig;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Backend\App\ConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $backendConfig;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $url;
 
@@ -38,22 +30,22 @@ class AdminPathConfigTest extends TestCase
      */
     protected $adminPathConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->coreConfig = $this->getMockForAbstractClass(
-            ScopeConfigInterface::class,
+            \Magento\Framework\App\Config\ScopeConfigInterface::class,
             [],
             '',
             false
         );
         $this->backendConfig = $this->getMockForAbstractClass(
-            ConfigInterface::class,
+            \Magento\Backend\App\ConfigInterface::class,
             [],
             '',
             false
         );
         $this->url = $this->getMockForAbstractClass(
-            UrlInterface::class,
+            \Magento\Framework\UrlInterface::class,
             [],
             '',
             false,
@@ -67,7 +59,7 @@ class AdminPathConfigTest extends TestCase
     public function testGetCurrentSecureUrl()
     {
         $request = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [],
             '',
             false,
@@ -98,12 +90,12 @@ class AdminPathConfigTest extends TestCase
         $expected
     ) {
         $coreConfigValueMap = $this->returnValueMap([
-            [Store::XML_PATH_UNSECURE_BASE_URL, 'default', null, $unsecureBaseUrl],
-            [Store::XML_PATH_SECURE_BASE_URL, 'default', null, $secureBaseUrl],
+            [\Magento\Store\Model\Store::XML_PATH_UNSECURE_BASE_URL, 'default', null, $unsecureBaseUrl],
+            [\Magento\Store\Model\Store::XML_PATH_SECURE_BASE_URL, 'default', null, $secureBaseUrl],
             ['admin/url/custom', 'default', null, $customUrl],
         ]);
         $backendConfigFlagsMap = $this->returnValueMap([
-            [Store::XML_PATH_SECURE_IN_ADMINHTML, $useSecureInAdmin],
+            [\Magento\Store\Model\Store::XML_PATH_SECURE_IN_ADMINHTML, $useSecureInAdmin],
             ['admin/url/use_custom', $useCustomUrl],
         ]);
         $this->coreConfig->expects($this->atLeast(1))->method('getValue')

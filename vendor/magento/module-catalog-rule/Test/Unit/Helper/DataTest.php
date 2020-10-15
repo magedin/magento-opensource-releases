@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Helper;
 
-use Magento\CatalogRule\Helper\Data;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Helper object
@@ -21,9 +17,9 @@ class DataTest extends TestCase
      */
     protected $helper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->helper = (new ObjectManager($this))->getObject(Data::class);
+        $this->helper = (new ObjectManager($this))->getObject(\Magento\CatalogRule\Helper\Data::class);
     }
 
     /**

@@ -3,14 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Plugin\Model\ResourceModel;
 
-use Magento\Eav\Model\Cache\Type;
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Framework\App\Cache\StateInterface;
-use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**
@@ -26,12 +21,12 @@ class Config
     /**#@-*/
 
     /**#@-*/
-    private $cache;
+    protected $cache;
 
     /**
-     * @var bool
+     * @var bool|null
      */
-    private $isCacheEnabled;
+    protected $isCacheEnabled = null;
 
     /**
      * @var SerializerInterface
@@ -39,30 +34,30 @@ class Config
     private $serializer;
 
     /**
-     * @param CacheInterface $cache
-     * @param StateInterface $cacheState
+     * @param \Magento\Framework\App\CacheInterface $cache
+     * @param \Magento\Framework\App\Cache\StateInterface $cacheState
      * @param SerializerInterface $serializer
      */
     public function __construct(
-        CacheInterface $cache,
-        StateInterface $cacheState,
-        SerializerInterface $serializer
+        \Magento\Framework\App\CacheInterface $cache,
+        \Magento\Framework\App\Cache\StateInterface $cacheState,
+        SerializerInterface $serializer = null
     ) {
         $this->cache = $cache;
-        $this->isCacheEnabled = $cacheState->isEnabled(Type::TYPE_IDENTIFIER);
-        $this->serializer = $serializer;
+        $this->isCacheEnabled = $cacheState->isEnabled(\Magento\Eav\Model\Cache\Type::TYPE_IDENTIFIER);
+        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(SerializerInterface::class);
     }
 
     /**
      * Cache attribute used in listing.
      *
      * @param \Magento\Catalog\Model\ResourceModel\Config $config
-     * @param callable $proceed
+     * @param \Closure $proceed
      * @return array
      */
     public function aroundGetAttributesUsedInListing(
         \Magento\Catalog\Model\ResourceModel\Config $config,
-        callable $proceed
+        \Closure $proceed
     ) {
         $cacheId = self::PRODUCT_LISTING_ATTRIBUTES_CACHE_ID . $config->getEntityTypeId() . '_' . $config->getStoreId();
         if ($this->isCacheEnabled && ($attributes = $this->cache->load($cacheId))) {
@@ -74,8 +69,8 @@ class Config
                 $this->serializer->serialize($attributes),
                 $cacheId,
                 [
-                    Type::CACHE_TAG,
-                    Attribute::CACHE_TAG
+                    \Magento\Eav\Model\Cache\Type::CACHE_TAG,
+                    \Magento\Eav\Model\Entity\Attribute::CACHE_TAG
                 ]
             );
         }
@@ -86,12 +81,12 @@ class Config
      * Cache attributes used for sorting.
      *
      * @param \Magento\Catalog\Model\ResourceModel\Config $config
-     * @param callable $proceed
+     * @param \Closure $proceed
      * @return array
      */
     public function aroundGetAttributesUsedForSortBy(
         \Magento\Catalog\Model\ResourceModel\Config $config,
-        callable $proceed
+        \Closure $proceed
     ) {
         $cacheId = self::PRODUCT_LISTING_SORT_BY_ATTRIBUTES_CACHE_ID . $config->getEntityTypeId() . '_'
             . $config->getStoreId();
@@ -104,8 +99,8 @@ class Config
                 $this->serializer->serialize($attributes),
                 $cacheId,
                 [
-                    Type::CACHE_TAG,
-                    Attribute::CACHE_TAG
+                    \Magento\Eav\Model\Cache\Type::CACHE_TAG,
+                    \Magento\Eav\Model\Entity\Attribute::CACHE_TAG
                 ]
             );
         }

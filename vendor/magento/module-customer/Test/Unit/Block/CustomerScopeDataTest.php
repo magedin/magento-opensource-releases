@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block;
 
-use Magento\Customer\Block\CustomerScopeData;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Json\EncoderInterface;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Block\CustomerScopeData;
 
-class CustomerScopeDataTest extends TestCase
+class CustomerScopeDataTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CustomerScopeData */
+    /** @var \Magento\Customer\Block\CustomerScopeData */
     private $model;
 
-    /** @var Context|MockObject */
+    /** @var \Magento\Framework\View\Element\Template\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $contextMock;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $storeManagerMock;
 
-    /** @var ScopeConfigInterface|MockObject */
+    /** @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $scopeConfigMock;
 
-    /** @var EncoderInterface|MockObject */
+    /** @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $encoderMock;
 
-    /** @var Json|MockObject */
+    /** @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit_Framework_MockObject_MockObject */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
@@ -49,10 +43,10 @@ class CustomerScopeDataTest extends TestCase
         $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
             ->getMock();
 
-        $this->encoderMock = $this->getMockBuilder(EncoderInterface::class)
+        $this->encoderMock = $this->getMockBuilder(\Magento\Framework\Json\EncoderInterface::class)
             ->getMock();
 
-        $this->serializerMock = $this->getMockBuilder(Json::class)
+        $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->getMock();
 
         $this->contextMock->expects($this->exactly(2))

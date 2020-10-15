@@ -3,25 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Category\Image;
 
 use Magento\Catalog\Controller\Adminhtml\Category\Image\Upload as Model;
-use Magento\Catalog\Model\ImageUploader;
 use Magento\Framework\App\Request\Http as Request;
+use Magento\Catalog\Model\ImageUploader;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class UploadTest extends TestCase
+/**
+ * Class UploadTest
+ */
+class UploadTest extends \PHPUnit\Framework\TestCase
 {
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     /**
@@ -52,7 +51,7 @@ class UploadTest extends TestCase
 
         $resultFactory->expects($this->once())
             ->method('create')
-            ->willReturn(new DataObject());
+            ->will($this->returnValue(new DataObject()));
 
         $model = $this->objectManager->getObject(Model::class, [
             'request' => $request,
@@ -63,7 +62,7 @@ class UploadTest extends TestCase
         $uploader->expects($this->once())
             ->method('saveFileToTmpDir')
             ->with($savedName)
-            ->willReturn([]);
+            ->will($this->returnValue([]));
 
         $request->setParam('param_name', $name);
 

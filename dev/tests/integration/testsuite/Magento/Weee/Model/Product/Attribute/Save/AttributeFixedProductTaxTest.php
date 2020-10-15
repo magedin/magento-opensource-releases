@@ -32,7 +32,7 @@ class AttributeFixedProductTaxTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -85,14 +85,14 @@ class AttributeFixedProductTaxTest extends TestCase
                         'website_id' => '0',
                         'country' => 'GB',
                         'state' => '0',
-                        'value' => '15.0000',
+                        'value' => '15.000',
                         'website_value' => 15.0,
                     ],
                     [
                         'website_id' => '0',
                         'country' => 'US',
                         'state' => '0',
-                        'value' => '35.0000',
+                        'value' => '35.000',
                         'website_value' => 35.0
                     ],
                 ],

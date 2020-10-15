@@ -4,71 +4,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Persistent\Helper\Data;
-use Magento\Persistent\Helper\Session;
-use Magento\Persistent\Observer\SetRememberMeCheckedStatusObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SetRememberMeCheckedStatusObserverTest extends TestCase
+class SetRememberMeCheckedStatusObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SetRememberMeCheckedStatusObserver
+     * @var \Magento\Persistent\Observer\SetRememberMeCheckedStatusObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $checkoutSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->requestMock = $this->createMock(Http::class);
-        $this->helperMock = $this->createMock(Data::class);
-        $this->sessionHelperMock = $this->createMock(Session::class);
-        $this->checkoutSessionMock = $this->getMockBuilder(\Magento\Checkout\Model\Session::class)
-            ->addMethods(['setRememberMeChecked'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->observerMock = $this->createMock(Observer::class);
-        $this->eventManagerMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getRequest'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->model = new SetRememberMeCheckedStatusObserver(
+        $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->helperMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
+        $this->sessionHelperMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
+        $checkoutMethods = ['setRememberMeChecked', '__wakeUp'];
+        $this->checkoutSessionMock = $this->createPartialMock(
+            \Magento\Checkout\Model\Session::class,
+            $checkoutMethods
+        );
+        $this->observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $eventMethods = ['getRequest', '__wakeUp'];
+        $this->eventManagerMock = $this->createPartialMock(\Magento\Framework\Event::class, $eventMethods);
+        $this->model = new \Magento\Persistent\Observer\SetRememberMeCheckedStatusObserver(
             $this->helperMock,
             $this->sessionHelperMock,
             $this->checkoutSessionMock
@@ -81,7 +70,7 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
             ->expects($this->once())
             ->method('canProcess')
             ->with($this->observerMock)
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->helperMock->expects($this->never())->method('isEnabled');
         $this->observerMock->expects($this->never())->method('getEvent');
         $this->model->execute($this->observerMock);
@@ -94,23 +83,23 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
             ->expects($this->once())
             ->method('canProcess')
             ->with($this->observerMock)
-            ->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isEnabled')->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->willReturn(true);
+            ->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isEnabled')->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->will($this->returnValue(true));
 
         $this->observerMock
             ->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventManagerMock);
+            ->will($this->returnValue($this->eventManagerMock));
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getRequest')
-            ->willReturn($this->requestMock);
+            ->will($this->returnValue($this->requestMock));
         $this->requestMock
             ->expects($this->once())
             ->method('getPost')
             ->with('persistent_remember_me')
-            ->willReturn($rememberMeCheckbox);
+            ->will($this->returnValue($rememberMeCheckbox));
         $this->sessionHelperMock
             ->expects($this->once())
             ->method('setRememberMeChecked')
@@ -118,7 +107,7 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
         $this->requestMock
             ->expects($this->once())
             ->method('getFullActionName')
-            ->willReturn('checkout_onepage_saveBilling');
+            ->will($this->returnValue('checkout_onepage_saveBilling'));
         $this->checkoutSessionMock
             ->expects($this->once())
             ->method('setRememberMeChecked')
@@ -133,23 +122,23 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
             ->expects($this->once())
             ->method('canProcess')
             ->with($this->observerMock)
-            ->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isEnabled')->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->willReturn(true);
+            ->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isEnabled')->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->will($this->returnValue(true));
 
         $this->observerMock
             ->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventManagerMock);
+            ->will($this->returnValue($this->eventManagerMock));
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getRequest')
-            ->willReturn($this->requestMock);
+            ->will($this->returnValue($this->requestMock));
         $this->requestMock
             ->expects($this->once())
             ->method('getPost')
             ->with('persistent_remember_me')
-            ->willReturn($rememberMeCheckbox);
+            ->will($this->returnValue($rememberMeCheckbox));
         $this->sessionHelperMock
             ->expects($this->once())
             ->method('setRememberMeChecked')
@@ -157,7 +146,7 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
         $this->requestMock
             ->expects($this->exactly(2))
             ->method('getFullActionName')
-            ->willReturn('method_name');
+            ->will($this->returnValue('method_name'));
         $this->checkoutSessionMock
             ->expects($this->never())
             ->method('setRememberMeChecked');
@@ -170,14 +159,14 @@ class SetRememberMeCheckedStatusObserverTest extends TestCase
             ->expects($this->once())
             ->method('canProcess')
             ->with($this->observerMock)
-            ->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isEnabled')->willReturn(true);
-        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->willReturn(true);
+            ->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isEnabled')->will($this->returnValue(true));
+        $this->helperMock->expects($this->once())->method('isRememberMeEnabled')->will($this->returnValue(true));
 
         $this->observerMock
             ->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventManagerMock);
+            ->will($this->returnValue($this->eventManagerMock));
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getRequest');

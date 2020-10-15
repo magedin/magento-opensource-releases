@@ -3,72 +3,62 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Design\Config;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Theme\Api\Data\DesignConfigInterface;
 use Magento\Theme\Model\Design\Config\Plugin;
-use Magento\Theme\Model\DesignConfigRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PluginTest extends TestCase
+class PluginTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ManagerInterface|MockObject */
+    /** @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $eventManager;
 
-    /** @var StoreManagerInterface|MockObject */
+    /** @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $storeManager;
 
-    /** @var DesignConfigRepository|MockObject */
+    /** @var \Magento\Theme\Model\DesignConfigRepository|\PHPUnit_Framework_MockObject_MockObject */
     protected $repository;
 
-    /** @var DesignConfigInterface|MockObject */
+    /** @var \Magento\Theme\Api\Data\DesignConfigInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $designConfig;
 
-    /** @var WebsiteInterface|MockObject */
+    /** @var \Magento\Store\Api\Data\WebsiteInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $website;
 
-    /** @var StoreInterface|MockObject */
+    /** @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $store;
 
     /** @var  Plugin */
     protected $plugin;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->eventManager = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Event\ManagerInterface::class,
             [],
             '',
             false
         );
         $this->storeManager = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             false
         );
-        $this->repository = $this->createMock(DesignConfigRepository::class);
+        $this->repository = $this->createMock(\Magento\Theme\Model\DesignConfigRepository::class);
         $this->designConfig = $this->getMockForAbstractClass(
-            DesignConfigInterface::class,
+            \Magento\Theme\Api\Data\DesignConfigInterface::class,
             [],
             '',
             false
         );
         $this->website = $this->getMockForAbstractClass(
-            WebsiteInterface::class,
+            \Magento\Store\Api\Data\WebsiteInterface::class,
             [],
             '',
             false
         );
         $this->store = $this->getMockForAbstractClass(
-            StoreInterface::class,
+            \Magento\Store\Api\Data\StoreInterface::class,
             [],
             '',
             false

@@ -3,45 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Category\Product;
 
-use Magento\Catalog\Model\Indexer\Category\Product\RowSizeEstimator;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RowSizeEstimatorTest extends TestCase
+/**
+ * Class RowSizeEstimatorTest
+ * @package Magento\Catalog\Test\Unit\Model\Indexer\Category
+ */
+class RowSizeEstimatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
     /**
-     * @var RowSizeEstimator
+     * @var \Magento\Catalog\Model\Indexer\Category\Product\RowSizeEstimator
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
+        $this->resourceConnectionMock = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->model = new RowSizeEstimator(
+        $this->model = new \Magento\Catalog\Model\Indexer\Category\Product\RowSizeEstimator(
             $this->resourceConnectionMock
         );
     }
 
     public function testEstimateRowSize()
     {
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
+        $connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->getMock();
-        $storeGroupCounterMock = $this->getMockBuilder(Select::class)
+        $storeGroupCounterMock = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->resourceConnectionMock->expects($this->exactly(2))

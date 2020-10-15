@@ -45,7 +45,7 @@ class DeleteAddressTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->customerRegistry = $this->objectManager->get(CustomerRegistry::class);
@@ -80,14 +80,13 @@ class DeleteAddressTest extends TestCase
     /**
      * Assert that deleting non-existent address throws exception.
      *
+     * @expectedException \Magento\Framework\Exception\NoSuchEntityException
+     * @expectedExceptionMessage No such entity with addressId = 1
      *
      * @return void
      */
     public function testDeleteMissingAddress(): void
     {
-        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
-        $this->expectExceptionMessage('No such entity with addressId = 1');
-
         $this->addressRepository->deleteById(1);
     }
 }

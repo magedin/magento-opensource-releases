@@ -226,13 +226,11 @@ class FetchPolicy implements SimplePolicyInterface
             if ($this->areEventHandlersAllowed()) {
                 $sources[] = '\'unsafe-hashes\'';
             }
-            if (!$this->isInlineAllowed()) {
-                foreach ($this->getNonceValues() as $nonce) {
-                    $sources[] = '\'nonce-' . base64_encode($nonce) . '\'';
-                }
-                foreach ($this->getHashes() as $hash => $algorithm) {
-                    $sources[] = "'$algorithm-$hash'";
-                }
+            foreach ($this->getNonceValues() as $nonce) {
+                $sources[] = '\'nonce-' .base64_encode($nonce) .'\'';
+            }
+            foreach ($this->getHashes() as $hash => $algorithm) {
+                $sources[]= "'$algorithm-$hash'";
             }
 
             return implode(' ', $sources);

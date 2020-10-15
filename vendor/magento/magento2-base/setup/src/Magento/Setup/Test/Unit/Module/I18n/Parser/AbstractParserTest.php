@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser;
 
-use Magento\Setup\Module\I18n\Parser\AbstractParser;
-use Magento\Setup\Module\I18n\Parser\AdapterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractParserTest extends TestCase
+class AbstractParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractParser|MockObject
+     * @var \Magento\Setup\Module\I18n\Parser\AbstractParser|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_parserMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_parserMock = $this->getMockForAbstractClass(
-            AbstractParser::class,
+            \Magento\Setup\Module\I18n\Parser\AbstractParser::class,
             [],
             '',
             false
@@ -41,7 +34,7 @@ class AbstractParserTest extends TestCase
 
         $this->_parserMock->addAdapter(
             'php',
-            $this->getMockForAbstractClass(AdapterInterface::class)
+            $this->createMock(\Magento\Setup\Module\I18n\Parser\AdapterInterface::class)
         );
         $this->_parserMock->parse($options);
     }
@@ -65,6 +58,6 @@ class AbstractParserTest extends TestCase
 
     public function getPhrases()
     {
-        $this->assertIsArray($this->_parserMock->getPhrases());
+        $this->assertInternalType('array', $this->_parserMock->getPhrases());
     }
 }

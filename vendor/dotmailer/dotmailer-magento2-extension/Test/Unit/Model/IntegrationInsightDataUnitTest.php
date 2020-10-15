@@ -40,7 +40,7 @@ class IntegrationInsightDataUnitTest extends TestCase
      */
     private $timezoneMock;
 
-    public function setUp() :void
+    public function setUp()
     {
         $this->helperMock = $this->createMock(Data::class);
         $this->productMetadataMock = $this->createMock(ProductMetadataInterface::class);
@@ -123,7 +123,12 @@ class IntegrationInsightDataUnitTest extends TestCase
             ->willReturn(true);
 
         $data = $this->integrationInsightData->getIntegrationInsightData();
-
+        $this->assertArraySubset([
+            'platform' => self::PLATFORM,
+            'edition' => self::EDITION,
+            'version' => self::VERSION,
+            'connectorVersion' => self::CONNECTOR_VERSION,
+        ], reset($data));
         $this->assertArrayHasKey('phpVersion', reset($data));
     }
 

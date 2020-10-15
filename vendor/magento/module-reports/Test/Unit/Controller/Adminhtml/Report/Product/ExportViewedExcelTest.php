@@ -3,60 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Product;
 
-use Magento\Backend\Helper\Data;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\Filter\Date;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Block\Adminhtml\Product\Viewed\Grid;
 use Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedExcel;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ExportViewedExcelTest extends AbstractControllerTest
+class ExportViewedExcelTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportViewedExcel
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedExcel
      */
     protected $exportViewedExcel;
 
     /**
-     * @var Date|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\Filter\Date|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backend\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $helperMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $this->dateMock = $this->getMockBuilder(Date::class)
+        $this->dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->helperMock = $this->getMockBuilder(Data::class)
+        $this->helperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->objectManagerMock
             ->expects($this->any())
             ->method('get')
@@ -64,9 +55,9 @@ class ExportViewedExcelTest extends AbstractControllerTest
 
         $this->contextMock->expects($this->any())->method('getObjectManager')->willReturn($this->objectManagerMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exportViewedExcel = $objectManager->getObject(
-            ExportViewedExcel::class,
+            \Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedExcel::class,
             [
                 'context' => $this->contextMock,
                 'fileFactory' => $this->fileFactoryMock,
@@ -92,13 +83,13 @@ class ExportViewedExcelTest extends AbstractControllerTest
         $this->layoutMock
             ->expects($this->once())
             ->method('createBlock')
-            ->with(Grid::class)
+            ->with(\Magento\Reports\Block\Adminhtml\Product\Viewed\Grid::class)
             ->willReturn($this->abstractBlockMock);
 
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with($fileName, $content, DirectoryList::VAR_DIR);
+            ->with($fileName, $content, \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
 
         $this->exportViewedExcel->execute();
     }

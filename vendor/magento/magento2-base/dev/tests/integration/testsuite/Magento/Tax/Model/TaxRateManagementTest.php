@@ -56,7 +56,7 @@ class TaxRateManagementTest extends \PHPUnit\Framework\TestCase
      */
     private $taxRateManagement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->taxRuleRepository = $objectManager->get(\Magento\Tax\Api\TaxRuleRepositoryInterface::class);

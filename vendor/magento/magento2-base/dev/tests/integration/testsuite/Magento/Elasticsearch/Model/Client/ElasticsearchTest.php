@@ -58,7 +58,7 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
      */
     private $productRepository;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->connectionManager = $objectManager->create(ConnectionManager::class);
@@ -75,7 +75,7 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
     /**
      * Make sure that correct engine is set
      */
-    protected function assertPreConditions(): void
+    protected function assertPreConditions()
     {
         $currentEngine = Bootstrap::getObjectManager()->get(EngineResolverInterface::class)->getCurrentSearchEngine();
         $this->assertEquals($this->getInstalledSearchEngine(), $currentEngine);

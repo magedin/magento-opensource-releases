@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\PageCache\Test\Unit\Model\App\FrontController;
 
-use Magento\Framework\App\FrontControllerInterface;
-use Magento\Framework\App\PageCache\Version;
-use Magento\Framework\App\Response\Http as ResponseHttp;
-use Magento\Framework\App\State as AppState;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\PageCache\Model\App\FrontController\VarnishPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\PageCache\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\PageCache\Version;
+use Magento\Framework\App\State as AppState;
+use Magento\Framework\App\FrontControllerInterface;
+use Magento\Framework\App\Response\Http as ResponseHttp;
+use Magento\Framework\Controller\ResultInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class VarnishPluginTest extends TestCase
+class VarnishPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var VarnishPlugin
@@ -34,36 +30,36 @@ class VarnishPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var Version|MockObject
+     * @var Version|\PHPUnit_Framework_MockObject_MockObject
      */
     private $versionMock;
 
     /**
-     * @var AppState|MockObject
+     * @var AppState|\PHPUnit_Framework_MockObject_MockObject
      */
     private $stateMock;
 
     /**
-     * @var FrontControllerInterface|MockObject
+     * @var FrontControllerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $frontControllerMock;
 
     /**
-     * @var ResponseHttp|MockObject
+     * @var ResponseHttp|\PHPUnit_Framework_MockObject_MockObject
      */
     private $responseMock;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resultMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->configMock = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()

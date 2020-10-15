@@ -30,7 +30,7 @@ class SwitcherTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_objectManager = Bootstrap::getObjectManager();
         $this->decoder = Bootstrap::getObjectManager()->create(DecoderInterface::class);

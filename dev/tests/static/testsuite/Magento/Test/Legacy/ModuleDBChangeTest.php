@@ -35,7 +35,7 @@ class ModuleDBChangeTest extends \PHPUnit\Framework\TestCase
     /**
      *  Set changed files paths and list for all projects
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         foreach (glob(self::$branchesFilesPattern) as $branchesFile) {
             //get the current branchname from the first line

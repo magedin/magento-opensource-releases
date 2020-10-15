@@ -14,7 +14,7 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
-use Laminas\Uri\Uri;
+use Zend\Uri\Uri;
 
 /**
  * Class to get area front name.

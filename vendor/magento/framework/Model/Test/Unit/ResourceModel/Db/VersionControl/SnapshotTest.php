@@ -3,49 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Model\Test\Unit\ResourceModel\Db\VersionControl;
 
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Metadata;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SnapshotTest extends TestCase
+/**
+ * Class SnapshotTest
+ */
+class SnapshotTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Snapshot
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot
      */
     protected $entitySnapshot;
 
     /**
-     * @var MockObject|Metadata
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Model\ResourceModel\Db\VersionControl\Metadata
      */
     protected $entityMetadata;
 
     /**
-     * @var MockObject|AbstractModel
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Model\AbstractModel
      */
     protected $model;
 
     /**
      * Initialization
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->model = $this->createPartialMock(AbstractModel::class, ['getId']);
+        $this->model = $this->createPartialMock(\Magento\Framework\Model\AbstractModel::class, ['getId']);
 
         $this->entityMetadata = $this->createPartialMock(
-            Metadata::class,
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Metadata::class,
             ['getFields']
         );
 
         $this->entitySnapshot = $objectManager->getObject(
-            Snapshot::class,
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class,
             ['metadata' => $this->entityMetadata]
         );
     }

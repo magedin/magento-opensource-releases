@@ -17,11 +17,8 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use Magento\Eav\Model\Config;
-use Magento\Catalog\Model\Product;
 
-Resolver::getInstance()->requireDataFixture('Magento/ConfigurableProduct/_files/configurable_attribute.php');
+require __DIR__ . '/configurable_attribute.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var Factory $optionsFactory */
@@ -35,8 +32,6 @@ $productFactory = $objectManager->get(ProductFactory::class);
 /** @var WebsiteRepositoryInterface $websiteRepository */
 $websiteRepository = $objectManager->get(WebsiteRepositoryInterface::class);
 $baseWebsite = $websiteRepository->get('base');
-$eavConfig = Bootstrap::getObjectManager()->get(Config::class);
-$attribute = $eavConfig->getAttribute(Product::ENTITY, 'test_configurable');
 /** @var AttributeOptionInterface[] $options */
 $options = $attribute->getOptions();
 $associatedProductIds = $attributeValues = [];

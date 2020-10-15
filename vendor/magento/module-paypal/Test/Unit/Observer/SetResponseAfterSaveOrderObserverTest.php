@@ -3,67 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Observer;
 
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Paypal\Helper\Hss;
-use Magento\Paypal\Observer\SetResponseAfterSaveOrderObserver;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SetResponseAfterSaveOrderObserverTest extends TestCase
+/**
+ * Class SetResponseAfterSaveOrderObserverTest
+ */
+class SetResponseAfterSaveOrderObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SetResponseAfterSaveOrderObserver
+     * @var \Magento\Paypal\Observer\SetResponseAfterSaveOrderObserver
      */
     protected $_model;
 
     /**
-     * @var Observer
+     * @var \Magento\Framework\Event\Observer
      */
     protected $_observer;
 
     /**
-     * @var DataObject
+     * @var \Magento\Framework\DataObject
      */
     protected $_event;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $coreRegistryMock;
 
     /**
-     * @var Hss|MockObject
+     * @var \Magento\Paypal\Helper\Hss|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $paypalHssMock;
 
     /**
-     * @var ViewInterface|MockObject
+     * @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $viewMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_event = new DataObject();
+        $this->_event = new \Magento\Framework\DataObject();
 
-        $this->_observer = new Observer();
+        $this->_observer = new \Magento\Framework\Event\Observer();
         $this->_observer->setEvent($this->_event);
 
-        $this->coreRegistryMock = $this->createMock(Registry::class);
-        $this->paypalHssMock = $this->createPartialMock(Hss::class, ['getHssMethods']);
+        $this->coreRegistryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->paypalHssMock = $this->createPartialMock(\Magento\Paypal\Helper\Hss::class, ['getHssMethods']);
         $this->viewMock = $this->getMockForAbstractClass(
-            ViewInterface::class,
+            \Magento\Framework\App\ViewInterface::class,
             [],
             '',
             false,
@@ -71,9 +58,9 @@ class SetResponseAfterSaveOrderObserverTest extends TestCase
             true,
             []
         );
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $objectManagerHelper->getObject(
-            SetResponseAfterSaveOrderObserver::class,
+            \Magento\Paypal\Observer\SetResponseAfterSaveOrderObserver::class,
             [
                 'coreRegistry' => $this->coreRegistryMock,
                 'paypalHss' => $this->paypalHssMock,
@@ -125,22 +112,22 @@ class SetResponseAfterSaveOrderObserverTest extends TestCase
     {
         $testData = $this->getSetResponseAfterSaveOrderTestData();
 
-        $observerMock = $this->getMockBuilder(Observer::class)
+        $observerMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $paymentMock = $this->getMockBuilder(Payment::class)
+        $paymentMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $resultMock = $this->getMockBuilder(DataObject::class)
+        $resultMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $layoutMock = $this->getMockBuilder(LayoutInterface::class)
+        $layoutMock = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $blockMock = $this->getMockBuilder(BlockInterface::class)
+        $blockMock = $this->getMockBuilder(\Magento\Framework\View\Element\BlockInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 

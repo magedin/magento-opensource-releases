@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\AreaList;
-use Magento\Framework\App\State;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Area;
+use \Magento\Framework\App\AreaList;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-class StateTest extends TestCase
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var State
+     * @var \Magento\Framework\App\State
      */
     protected $model;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var \Magento\Framework\Config\ScopeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeMock;
 
     /**
-     * @var AreaList|MockObject
+     * @var AreaList|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $areaListMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManagerHelper($this);
         $this->scopeMock = $this->getMockForAbstractClass(
-            ScopeInterface::class,
+            \Magento\Framework\Config\ScopeInterface::class,
             ['setCurrentScope'],
             '',
             false
@@ -49,7 +43,7 @@ class StateTest extends TestCase
             ->willReturn([Area::AREA_ADMINHTML, Area::AREA_FRONTEND]);
 
         $this->model = $objectManager->getObject(
-            State::class,
+            \Magento\Framework\App\State::class,
             ['configScope' => $this->scopeMock]
         );
 
@@ -61,14 +55,14 @@ class StateTest extends TestCase
         $areaCode = Area::AREA_FRONTEND;
         $this->scopeMock->expects($this->once())->method('setCurrentScope')->with($areaCode);
         $this->model->setAreaCode($areaCode);
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->model->setAreaCode(Area::AREA_ADMINHTML);
     }
 
     public function testGetAreaCodeException()
     {
         $this->scopeMock->expects($this->never())->method('setCurrentScope');
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->model->getAreaCode();
     }
 
@@ -95,7 +89,7 @@ class StateTest extends TestCase
 
     /**
      * @return string
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function emulateAreaCodeCallback()
     {
@@ -132,10 +126,12 @@ class StateTest extends TestCase
         return $this->model->isAreaCodeEmulated();
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Some error
+     */
     public function testEmulateAreaCodeException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Some error');
         $areaCode = Area::AREA_FRONTEND;
         $emulatedCode = Area::AREA_ADMINHTML;
         $this->scopeMock->expects($this->once())->method('setCurrentScope')->with($areaCode);
@@ -155,8 +151,8 @@ class StateTest extends TestCase
      */
     public function testConstructor($mode)
     {
-        $model = new State(
-            $this->getMockForAbstractClass(ScopeInterface::class, [], '', false),
+        $model = new \Magento\Framework\App\State(
+            $this->getMockForAbstractClass(\Magento\Framework\Config\ScopeInterface::class, [], '', false),
             $mode
         );
         $this->assertEquals($mode, $model->getMode());
@@ -168,26 +164,30 @@ class StateTest extends TestCase
     public static function constructorDataProvider()
     {
         return [
-            'default mode' => [State::MODE_DEFAULT],
-            'production mode' => [State::MODE_PRODUCTION],
-            'developer mode' => [State::MODE_DEVELOPER]
+            'default mode' => [\Magento\Framework\App\State::MODE_DEFAULT],
+            'production mode' => [\Magento\Framework\App\State::MODE_PRODUCTION],
+            'developer mode' => [\Magento\Framework\App\State::MODE_DEVELOPER]
         ];
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Unknown application mode: unknown mode
+     */
     public function testConstructorException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Unknown application mode: unknown mode');
-        new State(
-            $this->getMockForAbstractClass(ScopeInterface::class, [], '', false),
+        new \Magento\Framework\App\State(
+            $this->getMockForAbstractClass(\Magento\Framework\Config\ScopeInterface::class, [], '', false),
             "unknown mode"
         );
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Area code "any code" does not exist
+     */
     public function testCheckAreaCodeException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('Area code "any code" does not exist');
         $this->model->setAreaCode('any code');
     }
 }

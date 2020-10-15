@@ -3,58 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\Attribute\Data;
 
-use Magento\Customer\Model\Attribute\Data\Postcode;
 use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class PostcodeTest extends TestCase
+class PostcodeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DirectoryHelper|MockObject
+     * @var DirectoryHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $directoryHelperMock;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var AbstractAttribute|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $attributeMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $localeMock;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $localeResolverMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->localeMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->localeMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->getMock();
-        $this->localeResolverMock = $this->getMockBuilder(ResolverInterface::class)
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->getMock();
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->getMock();
         $this->directoryHelperMock = $this->getMockBuilder(\Magento\Directory\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->attributeMock = $this->getMockBuilder(AbstractAttribute::class)
+        $this->attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStoreLabel'])
             ->getMock();
@@ -81,7 +74,7 @@ class PostcodeTest extends TestCase
                 [$countryId, $isOptional],
             ]);
 
-        $object = new Postcode(
+        $object = new \Magento\Customer\Model\Attribute\Data\Postcode(
             $this->localeMock,
             $this->loggerMock,
             $this->localeResolverMock,

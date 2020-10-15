@@ -21,7 +21,7 @@ class OrderItemGetListTest extends WebapiAbstract
      */
     protected $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -78,10 +78,10 @@ class OrderItemGetListTest extends WebapiAbstract
 
         $response = $this->_webApiCall($serviceInfo, $requestData);
 
-        $this->assertIsArray($response);
+        $this->assertTrue(is_array($response));
         $this->assertArrayHasKey('items', $response);
         $this->assertCount(3, $response['items']);
-        $this->assertIsArray($response['items'][0]);
+        $this->assertTrue(is_array($response['items'][0]));
         $rowTotals = [];
 
         foreach ($response['items'] as $item) {

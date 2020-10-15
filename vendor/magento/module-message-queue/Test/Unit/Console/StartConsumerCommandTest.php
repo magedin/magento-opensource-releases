@@ -3,50 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\MessageQueue\Test\Unit\Console;
 
-use Magento\Framework\App\State;
-use Magento\Framework\Console\Cli;
+use Magento\MessageQueue\Console\StartConsumerCommand;
 use Magento\Framework\Filesystem\File\WriteFactory;
 use Magento\Framework\Lock\LockManagerInterface;
-use Magento\Framework\MessageQueue\ConsumerFactory;
-use Magento\Framework\MessageQueue\ConsumerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\MessageQueue\Console\StartConsumerCommand;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Unit tests for StartConsumerCommand.
  */
-class StartConsumerCommandTest extends TestCase
+class StartConsumerCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConsumerFactory|MockObject
+     * @var \Magento\Framework\MessageQueue\ConsumerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $consumerFactory;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appState;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var WriteFactory|MockObject
+     * @var WriteFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $writeFactoryMock;
 
     /**
-     * @var LockManagerInterface|MockObject
+     * @var LockManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $lockManagerMock;
 
@@ -58,23 +48,21 @@ class StartConsumerCommandTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->lockManagerMock = $this->getMockBuilder(LockManagerInterface::class)
             ->getMockForAbstractClass();
-        $this->consumerFactory = $this->getMockBuilder(ConsumerFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->appState = $this->getMockBuilder(State::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->consumerFactory = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerFactory::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->appState = $this->getMockBuilder(\Magento\Framework\App\State::class)
+            ->disableOriginalConstructor()->getMock();
         $this->writeFactoryMock = $this->getMockBuilder(WriteFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->command = $this->objectManager->getObject(
-            StartConsumerCommand::class,
+            \Magento\MessageQueue\Console\StartConsumerCommand::class,
             [
                 'consumerFactory' => $this->consumerFactory,
                 'appState' => $this->appState,
@@ -113,22 +101,20 @@ class StartConsumerCommandTest extends TestCase
         $numberOfMessages = 10;
         $batchSize = null;
         $consumerName = 'consumer_name';
-        $input = $this->getMockBuilder(InputInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $output = $this->getMockBuilder(OutputInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $input = $this->getMockBuilder(\Symfony\Component\Console\Input\InputInterface::class)
+            ->disableOriginalConstructor()->getMock();
+        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\OutputInterface::class)
+            ->disableOriginalConstructor()->getMock();
         $input->expects($this->once())->method('getArgument')
-            ->with(StartConsumerCommand::ARGUMENT_CONSUMER)
+            ->with(\Magento\MessageQueue\Console\StartConsumerCommand::ARGUMENT_CONSUMER)
             ->willReturn($consumerName);
         $input->expects($this->exactly(5))->method('getOption')
             ->withConsecutive(
-                [StartConsumerCommand::OPTION_NUMBER_OF_MESSAGES],
-                [StartConsumerCommand::OPTION_BATCH_SIZE],
-                [StartConsumerCommand::OPTION_AREACODE],
-                [StartConsumerCommand::PID_FILE_PATH],
-                [StartConsumerCommand::OPTION_SINGLE_THREAD]
+                [\Magento\MessageQueue\Console\StartConsumerCommand::OPTION_NUMBER_OF_MESSAGES],
+                [\Magento\MessageQueue\Console\StartConsumerCommand::OPTION_BATCH_SIZE],
+                [\Magento\MessageQueue\Console\StartConsumerCommand::OPTION_AREACODE],
+                [\Magento\MessageQueue\Console\StartConsumerCommand::PID_FILE_PATH],
+                [\Magento\MessageQueue\Console\StartConsumerCommand::OPTION_SINGLE_THREAD]
             )->willReturnOnConsecutiveCalls(
                 $numberOfMessages,
                 $batchSize,
@@ -137,9 +123,8 @@ class StartConsumerCommandTest extends TestCase
                 $singleThread
             );
         $this->appState->expects($this->exactly($runProcessExpects))->method('setAreaCode')->with($areaCode);
-        $consumer = $this->getMockBuilder(ConsumerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $consumer = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerInterface::class)
+            ->disableOriginalConstructor()->getMock();
         $this->consumerFactory->expects($this->exactly($runProcessExpects))
             ->method('get')->with($consumerName, $batchSize)->willReturn($consumer);
         $consumer->expects($this->exactly($runProcessExpects))->method('process')->with($numberOfMessages);
@@ -176,7 +161,7 @@ class StartConsumerCommandTest extends TestCase
                 'isLocked' => false,
                 'unlockExpects' => 0,
                 'runProcessExpects' => 1,
-                'expectedReturn' => Cli::RETURN_SUCCESS,
+                'expectedReturn' => \Magento\Framework\Console\Cli::RETURN_SUCCESS,
             ],
             [
                 'pidFilePath' => '/var/consumer.pid',
@@ -186,7 +171,7 @@ class StartConsumerCommandTest extends TestCase
                 'isLocked' => false,
                 'unlockExpects' => 1,
                 'runProcessExpects' => 1,
-                'expectedReturn' => Cli::RETURN_SUCCESS,
+                'expectedReturn' => \Magento\Framework\Console\Cli::RETURN_SUCCESS,
             ],
             [
                 'pidFilePath' => '/var/consumer.pid',
@@ -196,7 +181,7 @@ class StartConsumerCommandTest extends TestCase
                 'isLocked' => true,
                 'unlockExpects' => 0,
                 'runProcessExpects' => 0,
-                'expectedReturn' => Cli::RETURN_FAILURE,
+                'expectedReturn' => \Magento\Framework\Console\Cli::RETURN_FAILURE,
             ],
         ];
     }
@@ -216,6 +201,6 @@ class StartConsumerCommandTest extends TestCase
         $this->command->getDefinition()->getOption(StartConsumerCommand::OPTION_AREACODE);
         $this->command->getDefinition()->getOption(StartConsumerCommand::PID_FILE_PATH);
         $this->command->getDefinition()->getOption(StartConsumerCommand::OPTION_SINGLE_THREAD);
-        $this->assertStringContainsString('To start consumer which will process', $this->command->getHelp());
+        $this->assertContains('To start consumer which will process', $this->command->getHelp());
     }
 }

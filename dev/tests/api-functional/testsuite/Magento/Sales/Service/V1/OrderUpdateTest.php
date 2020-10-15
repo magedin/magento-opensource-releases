@@ -32,7 +32,7 @@ class OrderUpdateTest extends WebapiAbstract
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }

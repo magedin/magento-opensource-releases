@@ -3,11 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images;
+use Magento\Catalog\Model\Product\Type;
 
 /**
  * @method \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images getModel
@@ -19,7 +17,7 @@ class ImagesTest extends AbstractModifierTest
      */
     protected function createModel()
     {
-        return $this->objectManager->getObject(Images::class, [
+        return $this->objectManager->getObject(\Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images::class, [
             'locator' => $this->locatorMock,
         ]);
     }
@@ -34,7 +32,7 @@ class ImagesTest extends AbstractModifierTest
     public function testModifyMeta()
     {
         $meta = [
-            Images::CODE_IMAGE_MANAGEMENT_GROUP => [
+            \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Images::CODE_IMAGE_MANAGEMENT_GROUP => [
                 'children' => [],
                 'label' => __('Images'),
                 'sortOrder' => '20',

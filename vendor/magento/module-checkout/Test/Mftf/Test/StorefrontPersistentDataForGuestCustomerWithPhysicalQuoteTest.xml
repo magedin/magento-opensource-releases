@@ -14,7 +14,7 @@
             <stories value="Checkout via Guest Checkout"/>
             <title value="Persistent Data for Guest Customer with physical quote"/>
             <description value="One can use Persistent Data for Guest Customer with physical quote"/>
-            <severity value="BLOCKER"/>
+            <severity value="MAJOR"/>
             <testCaseId value="MC-13479"/>
             <group value="checkout"/>
         </annotations>
@@ -31,11 +31,11 @@
             <createData entity="FreeShippinMethodDefault" stepKey="disableFreeShipping"/>
         </after>
         <!-- 1. Add simple product to cart and go to checkout-->
-        <actionGroup ref="AddSimpleProductToCartActionGroup" stepKey="addSimpleProductToCart">
+        <actionGroup ref="AddSimpleProductToCart" stepKey="addSimpleProductToCart">
             <argument name="product" value="$$createProduct$$"/>
         </actionGroup>
         <!-- 2. Go to Shopping Cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="goToCheckoutCartIndexPage"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCheckoutCartIndexPage"/>
         <!-- 3. Open "Estimate Shipping and Tax" section and input data -->
         <actionGroup ref="StorefrontCartEstimateShippingAndTaxActionGroup" stepKey="fillEstimateShippingAndTaxSection"/>
         <actionGroup ref="StorefrontAssertShippingMethodPresentInCartActionGroup" stepKey="assertShippingMethodFlatRateIsPresentInCart">
@@ -78,7 +78,7 @@
             <argument name="shippingMethod" value="Free Shipping"/>
         </actionGroup>
         <!-- 11. Go back to the shopping cart -->
-        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="goToCheckoutCartIndexPage1"/>
+        <amOnPage url="{{CheckoutCartPage.url}}" stepKey="goToCheckoutCartIndexPage1"/>
         <actionGroup ref="StorefrontAssertCartEstimateShippingAndTaxActionGroup" stepKey="assertCartEstimateShippingAndTaxAfterGoingBackToShoppingCart">
             <argument name="customerData" value="Simple_UK_Customer_For_Shipment"/>
         </actionGroup>

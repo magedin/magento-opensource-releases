@@ -5,10 +5,8 @@
  */
 
 /* @var $block \Magento\ConfigurableProduct\Block\Adminhtml\Product\Steps\SelectAttributes */
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
-<div class="select-attributes-block <?= /* @noEscape */ $block->getData('config/dataScope') ?>"
-     data-role="select-attributes-step">
+<div class="select-attributes-block <?= /* @noEscape */ $block->getData('config/dataScope') ?>" data-role="select-attributes-step">
     <div class="select-attributes-actions" data-type="skipKO">
         <?= /* @noEscape */  $block->getAddNewAttributeButton() ?>
     </div>
@@ -39,12 +37,9 @@
         }
     }
 </script>
-<?php $dataScope = /* @noEscape */ $block->getData('config/dataScope');
-$scriptString = <<<script
+<script>
     require(['jquery'], function ($) {
-        $('.{$dataScope}[data-role=select-attributes-step]').applyBindings();
+        $('.<?= /* @noEscape */ $block->getData('config/dataScope') ?>[data-role=select-attributes-step]').applyBindings();
         $('body').trigger('contentUpdated');
     })
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

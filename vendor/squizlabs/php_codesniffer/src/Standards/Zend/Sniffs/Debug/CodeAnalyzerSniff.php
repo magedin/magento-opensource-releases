@@ -39,7 +39,6 @@ class CodeAnalyzerSniff implements Sniff
      *                                               the token was found.
      *
      * @return int
-     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException If ZendCodeAnalyzer could not be run.
      */
     public function process(File $phpcsFile, $stackPtr)
     {

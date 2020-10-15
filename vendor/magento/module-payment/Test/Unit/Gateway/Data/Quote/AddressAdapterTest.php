@@ -3,28 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Data\Quote;
 
 use Magento\Payment\Gateway\Data\Quote\AddressAdapter;
 use Magento\Quote\Api\Data\AddressInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AddressAdapterTest extends TestCase
+/**
+ * Class AddressAdapterTest
+ */
+class AddressAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /** @var AddressAdapter */
     protected $model;
 
     /**
-     * @var AddressInterface|MockObject
+     * @var AddressInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteAddressMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->quoteAddressMock = $this->getMockBuilder(AddressInterface::class)
+        $this->quoteAddressMock = $this->getMockBuilder(\Magento\Quote\Api\Data\AddressInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new AddressAdapter($this->quoteAddressMock);
@@ -83,7 +82,7 @@ class AddressAdapterTest extends TestCase
     public function streetLine2DataProvider()
     {
         return [
-            [['Street Line 1', 'Street Line 2'], 'Street Line 2'], //$street, $expected
+            [['Street Line 1', 'Street Line 2',], 'Street Line 2'], //$street, $expected
             [['Street Line 1'], ''],
             [null, '']
         ];

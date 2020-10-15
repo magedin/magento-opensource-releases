@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model;
 
 use Magento\Analytics\Model\Connector;
-use Magento\Analytics\Model\Connector\SignUpCommand;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Analytics\Model\Connector\SignUpCommand;
 
-class ConnectorTest extends TestCase
+class ConnectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
@@ -26,7 +22,7 @@ class ConnectorTest extends TestCase
     private $connector;
 
     /**
-     * @var SignUpCommand|MockObject
+     * @var SignUpCommand|\PHPUnit_Framework_MockObject_MockObject
      */
     private $signUpCommandMock;
 
@@ -35,10 +31,14 @@ class ConnectorTest extends TestCase
      */
     private $commands;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->signUpCommandMock = $this->createMock(SignUpCommand::class);
+        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->signUpCommandMock = $this->getMockBuilder(SignUpCommand::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->commands = ['signUp' => SignUpCommand::class];
         $this->connector = new Connector($this->commands, $this->objectManagerMock);
     }
@@ -57,14 +57,10 @@ class ConnectorTest extends TestCase
     }
 
     /**
-     * Executing non-existing command
-     *
-     * @return void
+     * @expectedException \Magento\Framework\Exception\NotFoundException
      */
-    public function testExecuteCommandNotFound(): void
+    public function testExecuteCommandNotFound()
     {
-        $this->expectException('Magento\Framework\Exception\NotFoundException');
-        $this->expectExceptionMessage('Command "register" was not found.');
         $commandName = 'register';
         $this->connector->execute($commandName);
     }

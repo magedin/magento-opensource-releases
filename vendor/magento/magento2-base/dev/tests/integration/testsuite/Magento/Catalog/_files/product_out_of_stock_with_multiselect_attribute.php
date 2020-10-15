@@ -5,31 +5,26 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 /**
  * Create multiselect attribute
  */
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/multiselect_attribute.php');
+require __DIR__ . '/multiselect_attribute.php';
 
 /** Create product with options out of stock and multiselect attribute */
-$objectManager = Bootstrap::getObjectManager();
+
 /** @var $installer \Magento\Catalog\Setup\CategorySetup */
-$installer = $objectManager->create(
+$installer = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Catalog\Setup\CategorySetup::class
 );
-/** @var \Magento\Eav\Model\Config $eavConfig */
-$eavConfig = $objectManager->get(\Magento\Eav\Model\Config::class);
-$attribute = $eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'multiselect_attribute');
+
 /** @var $options \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection */
-$options = $objectManager->create(
+$options = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class
 );
 $options->setAttributeFilter($attribute->getId());
 $optionIds = $options->getAllIds();
 
-$product = $objectManager->create(\Magento\Catalog\Model\Product::class);
+$product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(\Magento\Catalog\Model\Product::class);
 $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setId($optionIds[1] * 20)
     ->setAttributeSetId($installer->getAttributeSetId('catalog_product', 'Default'))

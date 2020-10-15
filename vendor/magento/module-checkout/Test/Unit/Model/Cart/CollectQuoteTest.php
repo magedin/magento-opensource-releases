@@ -7,23 +7,22 @@ declare(strict_types=1);
 
 namespace Magento\Checkout\Test\Unit\Model\Cart;
 
-use Magento\Checkout\Model\Cart\CollectQuote;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\RegionInterface;
+use Magento\Checkout\Model\Cart\CollectQuote;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\EstimateAddressInterface;
 use Magento\Quote\Api\Data\EstimateAddressInterfaceFactory;
 use Magento\Quote\Api\ShippingMethodManagementInterface;
 use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class CollectQuoteTest
  */
 class CollectQuoteTest extends TestCase
 {
@@ -33,59 +32,59 @@ class CollectQuoteTest extends TestCase
     private $model;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var CustomerRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerRepositoryMock;
 
     /**
-     * @var AddressRepositoryInterface|MockObject
+     * @var AddressRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressRepositoryMock;
 
     /**
-     * @var EstimateAddressInterfaceFactory|MockObject
+     * @var EstimateAddressInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $estimateAddressFactoryMock;
 
     /**
-     * @var EstimateAddressInterface|MockObject
+     * @var EstimateAddressInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $estimateAddressMock;
 
     /**
-     * @var ShippingMethodManagementInterface|MockObject
+     * @var ShippingMethodManagementInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $shippingMethodManagerMock;
 
     /**
-     * @var CartRepositoryInterface|MockObject
+     * @var CartRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteRepositoryMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteMock;
 
     /**
-     * @var CustomerInterface|MockObject
+     * @var CustomerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $customerMock;
 
     /**
-     * @var AddressInterface|MockObject
+     * @var AddressInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $addressMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->customerSessionMock = $this->createMock(CustomerSession::class);
         $this->customerRepositoryMock = $this->getMockForAbstractClass(
@@ -97,15 +96,15 @@ class CollectQuoteTest extends TestCase
             true,
             ['getById']
         );
-        $this->addressRepositoryMock = $this->getMockForAbstractClass(AddressRepositoryInterface::class);
-        $this->estimateAddressMock = $this->getMockForAbstractClass(EstimateAddressInterface::class);
+        $this->addressRepositoryMock = $this->createMock(AddressRepositoryInterface::class);
+        $this->estimateAddressMock = $this->createMock(EstimateAddressInterface::class);
         $this->estimateAddressFactoryMock =
             $this->createPartialMock(EstimateAddressInterfaceFactory::class, ['create']);
-        $this->shippingMethodManagerMock = $this->getMockForAbstractClass(ShippingMethodManagementInterface::class);
-        $this->quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $this->shippingMethodManagerMock = $this->createMock(ShippingMethodManagementInterface::class);
+        $this->quoteRepositoryMock = $this->createMock(CartRepositoryInterface::class);
         $this->quoteMock = $this->createMock(Quote::class);
-        $this->customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
-        $this->addressMock = $this->getMockForAbstractClass(AddressInterface::class);
+        $this->customerMock = $this->createMock(CustomerInterface::class);
+        $this->addressMock = $this->createMock(AddressInterface::class);
 
         $this->model = new CollectQuote(
             $this->customerSessionMock,
@@ -126,7 +125,7 @@ class CollectQuoteTest extends TestCase
         $defaultAddressId = 999;
         $countryId = 'USA';
         $regionId = 'CA';
-        $regionMock = $this->getMockForAbstractClass(RegionInterface::class);
+        $regionMock = $this->createMock(RegionInterface::class);
 
         $this->customerSessionMock->expects(self::once())
             ->method('isLoggedIn')

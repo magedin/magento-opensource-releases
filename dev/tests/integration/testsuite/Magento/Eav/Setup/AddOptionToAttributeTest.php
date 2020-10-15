@@ -45,7 +45,7 @@ class AddOptionToAttributeTest extends TestCase
      */
     private $setup;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = ObjectManager::getInstance();
 
@@ -99,9 +99,7 @@ class AddOptionToAttributeTest extends TestCase
         );
         $optionsAfter = $this->getAttributeOptions(false);
         $this->assertEquals(count($optionsBefore) + 2, count($optionsAfter));
-        foreach ($optionsBefore as $option) {
-            $this->assertContainsEquals($option, $optionsAfter);
-        }
+        $this->assertArraySubset($optionsBefore, $optionsAfter);
     }
 
     /**
@@ -118,9 +116,7 @@ class AddOptionToAttributeTest extends TestCase
         );
         $optionsAfter = $this->getAttributeOptions();
         $this->assertEquals(count($optionsBefore), count($optionsAfter));
-        foreach ($optionsBefore as $option) {
-            $this->assertContainsEquals($option, $optionsAfter);
-        }
+        $this->assertArraySubset($optionsBefore, $optionsAfter);
     }
 
     /**
@@ -201,10 +197,8 @@ class AddOptionToAttributeTest extends TestCase
             ]
         );
         $updatedOptions = $this->getAttributeOptions();
+        $this->assertArraySubset($updatedOptions, $optionsBefore);
         $this->assertEquals(count($updatedOptions), count($optionsBefore) - 1);
-        foreach ($updatedOptions as $option) {
-            $this->assertContainsEquals($option, $optionsBefore);
-        }
     }
 
     /**

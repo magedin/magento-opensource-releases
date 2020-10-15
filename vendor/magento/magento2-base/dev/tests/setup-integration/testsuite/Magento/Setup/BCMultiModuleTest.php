@@ -51,7 +51,7 @@ class BCMultiModuleTest extends SetupTestCase
      */
     private $dbSchemaReader;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->moduleManager = $objectManager->get(TestModuleManager::class);

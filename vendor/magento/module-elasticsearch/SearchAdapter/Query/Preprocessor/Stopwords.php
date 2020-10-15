@@ -5,20 +5,12 @@
  */
 namespace Magento\Elasticsearch\SearchAdapter\Query\Preprocessor;
 
-use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
-use Magento\Framework\App\Cache\Type\Config;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Locale\Resolver;
-use Magento\Framework\Module\Dir;
-use Magento\Framework\Module\Dir\Reader;
+use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
 use Magento\Framework\Search\Adapter\Preprocessor\PreprocessorInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Module\Dir;
 
 /**
- * Elasticsearch stopwords preprocessor
- *
  * @api
  * @since 100.1.0
  */
@@ -35,13 +27,13 @@ class Stopwords implements PreprocessorInterface
     const STOPWORDS_FILE_MODIFICATION_TIME_GAP = 900;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      * @since 100.1.0
      */
     protected $storeManager;
 
     /**
-     * @var Resolver
+     * @var \Magento\Framework\Locale\Resolver
      * @since 100.1.0
      */
     protected $localeResolver;
@@ -53,7 +45,7 @@ class Stopwords implements PreprocessorInterface
     protected $readFactory;
 
     /**
-     * @var Config
+     * @var \Magento\Framework\App\Cache\Type\Config
      * @since 100.1.0
      */
     protected $configCache;
@@ -65,7 +57,7 @@ class Stopwords implements PreprocessorInterface
     protected $esConfig;
 
     /**
-     * @var Reader
+     * @var \Magento\Framework\Module\Dir\Reader
      * @since 100.1.0
      */
     protected $moduleDirReader;
@@ -81,33 +73,31 @@ class Stopwords implements PreprocessorInterface
     private $stopwordsDirectory;
 
     /**
-     * @var SerializerInterface
+     * @var \Magento\Framework\Serialize\SerializerInterface
      */
     private $serializer;
 
     /**
      * Initialize dependencies.
      *
-     * @param StoreManagerInterface $storeManager
-     * @param Resolver $localeResolver
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Locale\Resolver $localeResolver
      * @param ReadFactory $readFactory
-     * @param Config $configCache
+     * @param \Magento\Framework\App\Cache\Type\Config $configCache
      * @param EsConfigInterface $esConfig
-     * @param Reader $moduleDirReader
+     * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
      * @param string $stopwordsModule
      * @param string $stopwordsDirectory
-     * @param SerializerInterface|null $serializer
      */
     public function __construct(
-        StoreManagerInterface $storeManager,
-        Resolver $localeResolver,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Locale\Resolver $localeResolver,
         ReadFactory $readFactory,
-        Config $configCache,
+        \Magento\Framework\App\Cache\Type\Config $configCache,
         EsConfigInterface $esConfig,
-        Reader $moduleDirReader,
+        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
         $stopwordsModule = '',
-        $stopwordsDirectory = '',
-        ?SerializerInterface $serializer = null
+        $stopwordsDirectory = ''
     ) {
         $this->storeManager = $storeManager;
         $this->localeResolver = $localeResolver;
@@ -117,11 +107,10 @@ class Stopwords implements PreprocessorInterface
         $this->moduleDirReader = $moduleDirReader;
         $this->stopwordsModule = $stopwordsModule;
         $this->stopwordsDirectory = $stopwordsDirectory;
-        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(SerializerInterface::class);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @since 100.1.0
      */
     public function process($query)
@@ -147,11 +136,11 @@ class Stopwords implements PreprocessorInterface
         $fileStats = $source->stat($filename);
         if (((time() - $fileStats['mtime']) > self::STOPWORDS_FILE_MODIFICATION_TIME_GAP)
             && ($cachedValue = $this->configCache->load(self::CACHE_ID))) {
-            $stopwords = $this->serializer->unserialize($cachedValue);
+            $stopwords = $this->getSerializer()->unserialize($cachedValue);
         } else {
             $fileContent = $source->readFile($filename);
             $stopwords = explode("\n", $fileContent);
-            $this->configCache->save($this->serializer->serialize($stopwords), self::CACHE_ID);
+            $this->configCache->save($this->getSerializer()->serialize($stopwords), self::CACHE_ID);
         }
         return $stopwords;
     }
@@ -170,5 +159,20 @@ class Stopwords implements PreprocessorInterface
         $locale = $this->localeResolver->getLocale();
         $stopwordsFile = isset($stopwordsInfo[$locale]) ? $stopwordsInfo[$locale] : $stopwordsInfo['default'];
         return $stopwordsFile;
+    }
+
+    /**
+     * Get serializer
+     *
+     * @return \Magento\Framework\Serialize\SerializerInterface
+     * @deprecated 100.2.0
+     */
+    private function getSerializer()
+    {
+        if (null === $this->serializer) {
+            $this->serializer = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Framework\Serialize\SerializerInterface::class);
+        }
+        return $this->serializer;
     }
 }

@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Phrase\Test\Unit\Renderer;
 
-use Magento\Framework\Phrase\Renderer\Placeholder;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Phrase\Renderer\Placeholder;
 
-class PlaceholderTest extends TestCase
+class PlaceholderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Placeholder */
     protected $_renderer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->_renderer = $objectManager->getObject(Placeholder::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_renderer = $objectManager->getObject(\Magento\Framework\Phrase\Renderer\Placeholder::class);
     }
 
     /**

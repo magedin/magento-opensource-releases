@@ -3,33 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Rss;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\OrderFactory;
-use Magento\Sales\Model\ResourceModel\Order\Rss\OrderStatusFactory;
-use Magento\Sales\Model\Rss\OrderStatus;
 use Magento\Sales\Model\Rss\Signature;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class OrderStatusTest
  *
+ * @package Magento\Sales\Model\Rss
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OrderStatusTest extends TestCase
+class OrderStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderStatus
+     * @var \Magento\Sales\Model\Rss\OrderStatus
      */
     protected $model;
 
@@ -39,47 +27,47 @@ class OrderStatusTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlInterface;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestInterface;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderStatusFactory;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $timezoneInterface;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderFactory;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigInterface;
 
     /**
-     * @var \Magento\Sales\Model\Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $order;
 
     /**
-     * @var MockObject|Signature
+     * @var \PHPUnit_Framework_MockObject_MockObject|Signature
      */
     private $signature;
 
@@ -108,23 +96,25 @@ class OrderStatusTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->urlInterface = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->requestInterface = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->urlInterface = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->requestInterface = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->orderStatusFactory =
-            $this->getMockBuilder(OrderStatusFactory::class)
-                ->setMethods(['create'])
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->timezoneInterface = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->orderFactory = $this->createPartialMock(OrderFactory::class, ['create']);
-        $this->scopeConfigInterface = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+            $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Rss\OrderStatusFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->timezoneInterface = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->orderFactory = $this->createPartialMock(\Magento\Sales\Model\OrderFactory::class, ['create']);
+        $this->scopeConfigInterface = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->order = $this->getMockBuilder(Order::class)
+        $this->order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->setMethods(
                 [
+                    '__sleep',
+                    '__wakeup',
                     'getIncrementId',
                     'getId',
                     'getCustomerId',
@@ -136,17 +126,17 @@ class OrderStatusTest extends TestCase
             )
             ->disableOriginalConstructor()
             ->getMock();
-        $this->order->expects($this->any())->method('getId')->willReturn(1);
-        $this->order->expects($this->any())->method('getIncrementId')->willReturn('100000001');
-        $this->order->expects($this->any())->method('getCustomerId')->willReturn(1);
-        $this->order->expects($this->any())->method('getStatusLabel')->willReturn('Pending');
-        $this->order->expects($this->any())->method('formatPrice')->willReturn('15.00');
-        $this->order->expects($this->any())->method('getGrandTotal')->willReturn(15);
-        $this->order->expects($this->any())->method('load')->with(1)->willReturnSelf();
+        $this->order->expects($this->any())->method('getId')->will($this->returnValue(1));
+        $this->order->expects($this->any())->method('getIncrementId')->will($this->returnValue('100000001'));
+        $this->order->expects($this->any())->method('getCustomerId')->will($this->returnValue(1));
+        $this->order->expects($this->any())->method('getStatusLabel')->will($this->returnValue('Pending'));
+        $this->order->expects($this->any())->method('formatPrice')->will($this->returnValue('15.00'));
+        $this->order->expects($this->any())->method('getGrandTotal')->will($this->returnValue(15));
+        $this->order->expects($this->any())->method('load')->with(1)->will($this->returnSelf());
         $this->signature = $this->createMock(Signature::class);
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            OrderStatus::class,
+            \Magento\Sales\Model\Rss\OrderStatus::class,
             [
                 'objectManager' => $this->objectManager,
                 'urlBuilder' => $this->urlInterface,
@@ -196,18 +186,19 @@ class OrderStatusTest extends TestCase
         $this->orderStatusFactory->expects($this->once())->method('create')->willReturn($resource);
         $this->urlInterface->expects($this->any())->method('getUrl')
             ->with('sales/order/view', ['order_id' => 1])
-            ->willReturn('http://magento.com/sales/order/view/order_id/1');
+            ->will($this->returnValue('http://magento.com/sales/order/view/order_id/1'));
 
         $this->assertEquals($this->feedData, $this->model->getRssData());
     }
 
     /**
      * Case when invalid data is provided.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Order not found.
      */
     public function testGetRssDataWithError()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Order not found.');
         $this->orderFactory->expects($this->once())->method('create')->willReturn($this->order);
         $requestData = base64_encode('{"order_id":"1","increment_id":true,"customer_id":true}');
         $this->signature->expects($this->never())->method('signData');
@@ -230,11 +221,12 @@ class OrderStatusTest extends TestCase
 
     /**
      * Case when invalid signature is provided.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Order not found.
      */
     public function testGetRssDataWithWrongSignature()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Order not found.');
         $requestData = base64_encode('{"order_id":"1","increment_id":true,"customer_id":true}');
         $this->signature->expects($this->never())
             ->method('signData');
@@ -261,8 +253,8 @@ class OrderStatusTest extends TestCase
     public function testIsAllowed()
     {
         $this->scopeConfigInterface->expects($this->once())->method('getValue')
-            ->with('rss/order/status', ScopeInterface::SCOPE_STORE)
-            ->willReturn(true);
+            ->with('rss/order/status', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            ->will($this->returnValue(true));
         $this->assertTrue($this->model->isAllowed());
     }
 
@@ -287,7 +279,7 @@ class OrderStatusTest extends TestCase
             ->method('isValid')
             ->with($requestData, 'signature')
             ->willReturn(true);
-        $this->orderFactory->expects($this->once())->method('create')->willReturn($this->order);
+        $this->orderFactory->expects($this->once())->method('create')->will($this->returnValue($this->order));
         $this->assertEquals('rss_order_status_data_' . $result, $this->model->getCacheKey());
     }
 

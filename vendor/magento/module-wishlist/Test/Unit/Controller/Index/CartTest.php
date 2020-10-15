@@ -3,12 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Controller\Index;
 
-use Magento\Catalog\Helper\Product as ProductHelper;
-use Magento\Catalog\Model\Product;
+use Magento\Catalog\Helper\Product;
 use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Checkout\Model\Cart as CheckoutCart;
 use Magento\Checkout\Helper\Cart as CartHelper;
@@ -19,25 +16,18 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Data\Form\FormKey\Validator;
-use Magento\Framework\DataObject;
 use Magento\Framework\Escaper;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Quote\Model\Quote;
 use Magento\Wishlist\Controller\Index\Cart;
 use Magento\Wishlist\Controller\WishlistProviderInterface;
 use Magento\Wishlist\Helper\Data;
-use Magento\Wishlist\Model\Item;
-use Magento\Wishlist\Model\Item\Option;
 use Magento\Wishlist\Model\Item\OptionFactory;
 use Magento\Wishlist\Model\ItemFactory;
 use Magento\Wishlist\Model\LocaleQuantityProcessor;
-use Magento\Wishlist\Model\ResourceModel\Item\Option\Collection;
-use Magento\Wishlist\Model\Wishlist;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -83,7 +73,7 @@ class CartTest extends TestCase
     protected $optionFactoryMock;
 
     /**
-     * @var ProductHelper|MockObject
+     * @var Product|MockObject
      */
     protected $productHelperMock;
 
@@ -160,7 +150,7 @@ class CartTest extends TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->wishlistProviderMock = $this->getMockBuilder(
             WishlistProviderInterface::class
@@ -177,7 +167,7 @@ class CartTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->checkoutCartMock = $this->getMockBuilder(CheckoutCart::class)
+        $this->checkoutCartMock = $this->getMockBuilder(\Magento\Checkout\Model\Cart::class)
             ->disableOriginalConstructor()
             ->setMethods(['save', 'getQuote', 'getShouldRedirectToCart', 'getCartUrl'])
             ->getMock();
@@ -187,7 +177,7 @@ class CartTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->productHelperMock = $this->getMockBuilder(ProductHelper::class)
+        $this->productHelperMock = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -239,16 +229,16 @@ class CartTest extends TestCase
             ->getMock();
         $this->contextMock->expects($this->any())
             ->method('getRequest')
-            ->willReturn($this->requestMock);
+            ->will($this->returnValue($this->requestMock));
         $this->contextMock->expects($this->any())
             ->method('getRedirect')
-            ->willReturn($this->redirectMock);
+            ->will($this->returnValue($this->redirectMock));
         $this->contextMock->expects($this->any())
             ->method('getObjectManager')
-            ->willReturn($this->objectManagerMock);
+            ->will($this->returnValue($this->objectManagerMock));
         $this->contextMock->expects($this->any())
             ->method('getMessageManager')
-            ->willReturn($this->messageManagerMock);
+            ->will($this->returnValue($this->messageManagerMock));
         $this->contextMock->expects($this->any())
             ->method('getUrl')
             ->willReturn($this->urlMock);
@@ -268,7 +258,7 @@ class CartTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
+        $this->cookieManagerMock = $this->createMock(CookieManagerInterface::class);
 
         $this->cookieMetadataFactoryMock = $this->getMockBuilder(CookieMetadataFactory::class)
             ->disableOriginalConstructor()
@@ -325,7 +315,7 @@ class CartTest extends TestCase
             ->with($this->requestMock)
             ->willReturn(true);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -362,7 +352,7 @@ class CartTest extends TestCase
             ->with($this->requestMock)
             ->willReturn(true);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'getId', 'getWishlistId'])
             ->getMock();
@@ -450,7 +440,7 @@ class CartTest extends TestCase
         $params = ['item' => $itemId, 'qty' => $qty];
         $refererUrl = 'referer_url';
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -487,7 +477,7 @@ class CartTest extends TestCase
             ->method('getWishlistId')
             ->willReturn($wishlistId);
 
-        $wishlistMock = $this->getMockBuilder(Wishlist::class)
+        $wishlistMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -525,7 +515,7 @@ class CartTest extends TestCase
             ->with('*/*/configure/', ['id' => $itemId, 'product_id' => $productId])
             ->willReturn($configureUrl);
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -533,7 +523,7 @@ class CartTest extends TestCase
             ->method('create')
             ->willReturn($optionMock);
 
-        $optionsMock = $this->getMockBuilder(Collection::class)
+        $optionsMock = $this->getMockBuilder(\Magento\Wishlist\Model\ResourceModel\Item\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
@@ -561,7 +551,7 @@ class CartTest extends TestCase
             ->method('isAjax')
             ->willReturn($isAjax);
 
-        $buyRequestMock = $this->getMockBuilder(DataObject::class)
+        $buyRequestMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -587,7 +577,7 @@ class CartTest extends TestCase
             ->method('save')
             ->willReturnSelf();
 
-        $quoteMock = $this->getMockBuilder(Quote::class)
+        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
             ->setMethods(['getHasError', 'collectTotals'])
             ->getMock();
@@ -608,7 +598,7 @@ class CartTest extends TestCase
             ->method('getHasError')
             ->willReturn(false);
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -664,7 +654,7 @@ class CartTest extends TestCase
             ->with($this->requestMock)
             ->willReturn(true);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -701,7 +691,7 @@ class CartTest extends TestCase
             ->method('getWishlistId')
             ->willReturn($wishlistId);
 
-        $wishlistMock = $this->getMockBuilder(Wishlist::class)
+        $wishlistMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -739,7 +729,7 @@ class CartTest extends TestCase
             ->with('*/*/configure/', ['id' => $itemId, 'product_id' => $productId])
             ->willReturn($configureUrl);
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -747,7 +737,7 @@ class CartTest extends TestCase
             ->method('create')
             ->willReturn($optionMock);
 
-        $optionsMock = $this->getMockBuilder(Collection::class)
+        $optionsMock = $this->getMockBuilder(\Magento\Wishlist\Model\ResourceModel\Item\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
@@ -772,7 +762,7 @@ class CartTest extends TestCase
             ->method('getParams')
             ->willReturn($params);
 
-        $buyRequestMock = $this->getMockBuilder(DataObject::class)
+        $buyRequestMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -830,7 +820,7 @@ class CartTest extends TestCase
             ->with($this->requestMock)
             ->willReturn(true);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -867,7 +857,7 @@ class CartTest extends TestCase
             ->method('getWishlistId')
             ->willReturn($wishlistId);
 
-        $wishlistMock = $this->getMockBuilder(Wishlist::class)
+        $wishlistMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -905,7 +895,7 @@ class CartTest extends TestCase
             ->with('*/*/configure/', ['id' => $itemId, 'product_id' => $productId])
             ->willReturn($configureUrl);
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -913,7 +903,7 @@ class CartTest extends TestCase
             ->method('create')
             ->willReturn($optionMock);
 
-        $optionsMock = $this->getMockBuilder(Collection::class)
+        $optionsMock = $this->getMockBuilder(\Magento\Wishlist\Model\ResourceModel\Item\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
@@ -938,7 +928,7 @@ class CartTest extends TestCase
             ->method('getParams')
             ->willReturn($params);
 
-        $buyRequestMock = $this->getMockBuilder(DataObject::class)
+        $buyRequestMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -958,7 +948,7 @@ class CartTest extends TestCase
         $itemMock->expects($this->once())
             ->method('addToCart')
             ->with($this->checkoutCartMock, true)
-            ->willThrowException(new LocalizedException(__('message')));
+            ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('message')));
 
         $this->messageManagerMock->expects($this->once())
             ->method('addNoticeMessage')
@@ -997,7 +987,7 @@ class CartTest extends TestCase
             ->with($this->requestMock)
             ->willReturn(true);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -1034,7 +1024,7 @@ class CartTest extends TestCase
             ->method('getWishlistId')
             ->willReturn($wishlistId);
 
-        $wishlistMock = $this->getMockBuilder(Wishlist::class)
+        $wishlistMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1077,7 +1067,7 @@ class CartTest extends TestCase
             ->with('*/*/configure/', ['id' => $itemId, 'product_id' => $productId])
             ->willReturn($configureUrl);
 
-        $optionMock = $this->getMockBuilder(Option::class)
+        $optionMock = $this->getMockBuilder(\Magento\Wishlist\Model\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1085,7 +1075,7 @@ class CartTest extends TestCase
             ->method('create')
             ->willReturn($optionMock);
 
-        $optionsMock = $this->getMockBuilder(Collection::class)
+        $optionsMock = $this->getMockBuilder(\Magento\Wishlist\Model\ResourceModel\Item\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $optionMock->expects($this->once())
@@ -1110,7 +1100,7 @@ class CartTest extends TestCase
             ->method('getParams')
             ->willReturn($params);
 
-        $buyRequestMock = $this->getMockBuilder(DataObject::class)
+        $buyRequestMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1130,7 +1120,7 @@ class CartTest extends TestCase
         $itemMock->expects($this->once())
             ->method('addToCart')
             ->with($this->checkoutCartMock, true)
-            ->willThrowException(new LocalizedException(__('message')));
+            ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('message')));
 
         $this->messageManagerMock->expects($this->once())
             ->method('addNoticeMessage')

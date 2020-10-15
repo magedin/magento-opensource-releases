@@ -3,22 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\NewRelicReporting\Test\Unit\Model\Observer;
 
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Json\EncoderInterface;
-use Magento\NewRelicReporting\Model\Config;
 use Magento\NewRelicReporting\Model\Observer\ReportConcurrentAdmins;
-use Magento\NewRelicReporting\Model\Users;
-use Magento\NewRelicReporting\Model\UsersFactory;
-use Magento\User\Model\User;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReportConcurrentAdminsTest extends TestCase
+/**
+ * Class ReportConcurrentAdminsTest
+ */
+class ReportConcurrentAdminsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReportConcurrentAdmins
@@ -26,27 +18,27 @@ class ReportConcurrentAdminsTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\NewRelicReporting\Model\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Auth\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $backendAuthSession;
 
     /**
-     * @var UsersFactory|MockObject
+     * @var \Magento\NewRelicReporting\Model\UsersFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $usersFactory;
 
     /**
-     * @var Users|MockObject
+     * @var \Magento\NewRelicReporting\Model\Users|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $usersModel;
 
     /**
-     * @var EncoderInterface|MockObject
+     * @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $jsonEncoder;
 
@@ -55,24 +47,24 @@ class ReportConcurrentAdminsTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isNewRelicEnabled'])
             ->getMock();
-        $this->backendAuthSession = $this->getMockBuilder(Session::class)
+        $this->backendAuthSession = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['isLoggedIn', 'getUser'])
             ->getMock();
-        $this->usersFactory = $this->getMockBuilder(UsersFactory::class)
+        $this->usersFactory = $this->getMockBuilder(\Magento\NewRelicReporting\Model\UsersFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->usersModel = $this->getMockBuilder(Users::class)
+        $this->usersModel = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Users::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->jsonEncoder = $this->getMockBuilder(EncoderInterface::class)
+        $this->jsonEncoder = $this->getMockBuilder(\Magento\Framework\Json\EncoderInterface::class)
             ->getMock();
 
         $this->usersFactory->expects($this->any())
@@ -94,8 +86,8 @@ class ReportConcurrentAdminsTest extends TestCase
      */
     public function testReportConcurrentAdminsModuleDisabledFromConfig()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -113,8 +105,8 @@ class ReportConcurrentAdminsTest extends TestCase
      */
     public function testReportConcurrentAdminsUserIsNotLoggedIn()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -137,8 +129,8 @@ class ReportConcurrentAdminsTest extends TestCase
     {
         $testAction = 'JSON string';
 
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit_Framework_MockObject_MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -148,9 +140,7 @@ class ReportConcurrentAdminsTest extends TestCase
         $this->backendAuthSession->expects($this->once())
             ->method('isLoggedIn')
             ->willReturn(true);
-        $userMock = $this->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userMock = $this->getMockBuilder(\Magento\User\Model\User::class)->disableOriginalConstructor()->getMock();
         $this->backendAuthSession->expects($this->once())
             ->method('getUser')
             ->willReturn($userMock);

@@ -24,7 +24,7 @@ class TemplatesTest extends \PHPUnit\Framework\TestCase
     /**
      * Collect declarations of containers per layout file that have aliases
      */
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $count = 0;
         self::getBlockVirtualTypesWithDifferentModule();

@@ -3,44 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Checkbox
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\Checkbox;
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CheckboxTest extends TestCase
+class CheckboxTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Checkbox
+     * @var \Magento\Framework\Data\Form\Element\Checkbox
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $escaperMock = $this->createMock(Escaper::class);
-        $this->_model = new Checkbox(
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->_model = new \Magento\Framework\Data\Form\Element\Checkbox(
             $factoryMock,
             $collectionFactoryMock,
             $escaperMock
         );
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->getHtmlIdPrefix('id_prefix');
         $formMock->getHtmlIdPrefix('id_suffix');
         $this->_model->setForm($formMock);
@@ -75,10 +66,10 @@ class CheckboxTest extends TestCase
     {
         $this->_model->setIsChecked(false);
         $html = $this->_model->getElementHtml();
-        $this->assertStringContainsString('type="checkbox"', $html);
-        $this->assertStringNotContainsString('checked="checked"', $html);
+        $this->assertContains('type="checkbox"', $html);
+        $this->assertNotContains('checked="checked"', $html);
         $this->_model->setIsChecked(true);
         $html = $this->_model->getElementHtml();
-        $this->assertStringContainsString('checked="checked"', $html);
+        $this->assertContains('checked="checked"', $html);
     }
 }

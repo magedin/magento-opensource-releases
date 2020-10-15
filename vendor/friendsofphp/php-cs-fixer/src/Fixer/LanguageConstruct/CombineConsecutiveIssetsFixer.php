@@ -36,11 +36,10 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before MultilineWhitespaceBeforeSemicolonsFixer, NoSinglelineWhitespaceBeforeSemicolonsFixer, NoSpacesInsideParenthesisFixer, NoTrailingWhitespaceFixer, NoWhitespaceInBlankLineFixer.
      */
     public function getPriority()
     {
+        // should be run before MultilineWhitespaceBeforeSemicolonsFixer, NoTrailingWhitespaceFixer, NoWhitespaceInBlankLineFixer and NoSpacesInsideParenthesisFixer.
         return 3;
     }
 
@@ -60,8 +59,7 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
         $tokenCount = $tokens->count();
 
         for ($index = 1; $index < $tokenCount; ++$index) {
-            if (!$tokens[$index]->isGivenKind(T_ISSET)
-                || !$tokens[$tokens->getPrevMeaningfulToken($index)]->equalsAny(['(', '{', ';', '=', [T_OPEN_TAG], [T_BOOLEAN_AND], [T_BOOLEAN_OR]])) {
+            if (!$tokens[$index]->isGivenKind(T_ISSET) || $tokens[$tokens->getPrevMeaningfulToken($index)]->equals('!')) {
                 continue;
             }
 
@@ -81,15 +79,6 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
 
                 // fetch info about the 'isset' statement that we're merging
                 $nextIssetInfo = $this->getIssetInfo($tokens, $issetIndex);
-
-                $nextMeaningfulTokenIndex = $tokens->getNextMeaningfulToken(end($nextIssetInfo));
-                $nextMeaningfulToken = $tokens[$nextMeaningfulTokenIndex];
-
-                if (!$nextMeaningfulToken->equalsAny([')', '}', ';', [T_CLOSE_TAG], [T_BOOLEAN_AND], [T_BOOLEAN_OR]])) {
-                    $index = $nextMeaningfulTokenIndex;
-
-                    break;
-                }
 
                 // clone what we want to move, do not clone '(' and ')' of the 'isset' statement we're merging
                 $clones = $this->getTokenClones($tokens, \array_slice($nextIssetInfo, 1, -1));
@@ -113,7 +102,8 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
     }
 
     /**
-     * @param int[] $indexes
+     * @param Tokens $tokens
+     * @param int[]  $indexes
      */
     private function clearTokens(Tokens $tokens, array $indexes)
     {
@@ -123,7 +113,8 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
     }
 
     /**
-     * @param int $index of T_ISSET
+     * @param Tokens $tokens
+     * @param int    $index  of T_ISSET
      *
      * @return int[] indexes of meaningful tokens belonging to the isset statement
      */
@@ -155,7 +146,8 @@ final class CombineConsecutiveIssetsFixer extends AbstractFixer
     }
 
     /**
-     * @param int[] $indexes
+     * @param Tokens $tokens
+     * @param int[]  $indexes
      *
      * @return Token[]
      */

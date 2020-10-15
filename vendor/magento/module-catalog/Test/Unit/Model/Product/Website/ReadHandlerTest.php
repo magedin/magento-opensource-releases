@@ -3,39 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Website;
 
-use Magento\Catalog\Api\Data\ProductExtensionInterface;
+use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Website\ReadHandler;
 use Magento\Catalog\Model\ResourceModel\Product as ResourceModel;
-use Magento\Catalog\Model\ResourceModel\Product\Website\Link;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReadHandlerTest extends TestCase
+class ReadHandlerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ResourceModel\Website\Link|MockObject */
-    private $websiteLinkMock;
+    /** @var ResourceModel\Website\Link | \PHPUnit_Framework_MockObject_MockObject */
+    private $websiteLink;
 
-    /** @var MockObject  */
-    private $extensionAttributesMock;
+    /** @var \PHPUnit_Framework_MockObject_MockObject  */
+    private $extensionAttributes;
 
     /** @var  ReadHandler  */
     private $readHandler;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->websiteLinkMock = $this->getMockBuilder(Link::class)
+        $this->websiteLink = $this->getMockBuilder(ResourceModel\Website\Link::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->extensionAttributesMock = $this->getMockBuilder(ProductExtensionInterface::class)
+        $this->extensionAttributes = $this->getMockBuilder(ProductExtension::class)
             ->setMethods(['setWebsiteIds', 'getWebsiteIds'])
             ->disableArgumentCloning()
-            ->getMockForAbstractClass();
-        $this->readHandler = new ReadHandler($this->websiteLinkMock);
+            ->getMock();
+        $this->readHandler = new ReadHandler($this->websiteLink);
     }
 
     public function testExecuteWithNonCachedExtensionAttributes()
@@ -48,20 +44,20 @@ class ReadHandlerTest extends TestCase
             ->method('getId')
             ->willReturn($productId);
         $websiteIds = [1,2];
-        $this->websiteLinkMock->expects($this->once())
+        $this->websiteLink->expects($this->once())
             ->method("getWebsiteIdsByProductId")
             ->with($productId)
             ->willReturn($websiteIds);
         $product->expects($this->exactly(2))
             ->method('getExtensionAttributes')
-            ->willReturn($this->extensionAttributesMock);
-        $this->extensionAttributesMock->expects($this->once())
+            ->willReturn($this->extensionAttributes);
+        $this->extensionAttributes->expects($this->once())
             ->method("getWebsiteIds")
             ->willReturn(null);
 
         $product->expects($this->once())
             ->method('setExtensionAttributes')
-            ->with($this->extensionAttributesMock);
+            ->with($this->extensionAttributes);
 
         $this->assertEquals($this->readHandler->execute($product, []), $product);
     }
@@ -72,15 +68,15 @@ class ReadHandlerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $websiteIds = [1,2];
-        $this->extensionAttributesMock->expects($this->once())
+        $this->extensionAttributes->expects($this->once())
             ->method("getWebsiteIds")
             ->willReturn($websiteIds);
         $product->expects($this->never())
             ->method('setExtensionAttributes')
-            ->with($this->extensionAttributesMock);
+            ->with($this->extensionAttributes);
         $product->expects($this->once())
             ->method('getExtensionAttributes')
-            ->willReturn($this->extensionAttributesMock);
+            ->willReturn($this->extensionAttributes);
         $this->assertEquals($this->readHandler->execute($product, []), $product);
     }
 }

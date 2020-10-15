@@ -3,63 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Observer;
 
-use Magento\Downloadable\Model\Product\Type as DownloadableProductType;
-use Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\Collection as LinkItemCollection;
-use Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\CollectionFactory;
 use Magento\Downloadable\Observer\SetLinkStatusObserver;
-use Magento\Framework\App\Config;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Item;
+use Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\CollectionFactory;
+use Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\Collection as LinkItemCollection;
+use Magento\Downloadable\Model\Product\Type as DownloadableProductType;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SetLinkStatusObserverTest extends TestCase
+class SetLinkStatusObserverTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject|Order */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Sales\Model\Order */
     private $orderMock;
 
     /** @var SetLinkStatusObserver */
     private $setLinkStatusObserver;
 
     /**
-     * @var MockObject|Config
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\App\Config
      */
     private $scopeConfig;
 
     /**
-     * @var MockObject|CollectionFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject | CollectionFactory
      */
     private $itemsFactory;
 
     /**
-     * @var MockObject|DataObject
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\DataObject
      */
     private $resultMock;
 
     /**
-     * @var MockObject|DataObject
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\DataObject
      */
     private $storeMock;
 
     /**
-     * @var MockObject|Event
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Event
      */
     private $eventMock;
 
     /**
-     * @var MockObject|Observer
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Event\Observer
      */
     private $observerMock;
 
@@ -67,46 +57,46 @@ class SetLinkStatusObserverTest extends TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfig = $this->getMockBuilder(Config::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isSetFlag', 'getValue'])
             ->getMock();
 
         $this->itemsFactory = $this->getMockBuilder(
-            CollectionFactory::class
+            \Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\CollectionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultMock = $this->getMockBuilder(DataObject::class)
+        $this->resultMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->setMethods(['setIsAllowed'])
             ->getMock();
 
-        $this->storeMock = $this->getMockBuilder(DataObject::class)
+        $this->storeMock = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->eventMock = $this->getMockBuilder(Event::class)
+        $this->eventMock = $this->getMockBuilder(\Magento\Framework\Event::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStore', 'getResult', 'getQuote', 'getOrder'])
             ->getMock();
 
-        $this->orderMock = $this->getMockBuilder(Order::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', 'getStoreId', 'getState', 'isCanceled', 'getAllItems'])
             ->getMock();
 
-        $this->observerMock = $this->getMockBuilder(Observer::class)
+        $this->observerMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEvent'])
             ->getMock();
 
         $this->setLinkStatusObserver = (new ObjectManagerHelper($this))->getObject(
-            SetLinkStatusObserver::class,
+            \Magento\Downloadable\Observer\SetLinkStatusObserver::class,
             [
                 'scopeConfig' => $this->scopeConfig,
                 'itemsFactory' => $this->itemsFactory,
@@ -121,29 +111,29 @@ class SetLinkStatusObserverTest extends TestCase
     {
         return [
             [
-                'orderState' => Order::STATE_HOLDED,
+                'orderState' => \Magento\Sales\Model\Order::STATE_HOLDED,
                 'mapping' => [
-                    Order::STATE_HOLDED => 'pending',
-                    Order::STATE_PENDING_PAYMENT => 'payment_pending',
-                    Order::STATE_PAYMENT_REVIEW => 'payment_review'
+                    \Magento\Sales\Model\Order::STATE_HOLDED => 'pending',
+                    \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT => 'payment_pending',
+                    \Magento\Sales\Model\Order::STATE_PAYMENT_REVIEW => 'payment_review'
 
                 ],
             ],
             [
-                'orderState' => Order::STATE_PENDING_PAYMENT,
+                'orderState' => \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT,
                 'mapping' => [
-                    Order::STATE_HOLDED => 'pending',
-                    Order::STATE_PENDING_PAYMENT => 'pending_payment',
-                    Order::STATE_PAYMENT_REVIEW => 'payment_review'
+                    \Magento\Sales\Model\Order::STATE_HOLDED => 'pending',
+                    \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT => 'pending_payment',
+                    \Magento\Sales\Model\Order::STATE_PAYMENT_REVIEW => 'payment_review'
 
                 ],
             ],
             [
-                'orderState' => Order::STATE_PAYMENT_REVIEW,
+                'orderState' => \Magento\Sales\Model\Order::STATE_PAYMENT_REVIEW,
                 'mapping' => [
-                    Order::STATE_HOLDED => 'pending',
-                    Order::STATE_PENDING_PAYMENT => 'payment_pending',
-                    Order::STATE_PAYMENT_REVIEW => 'payment_review'
+                    \Magento\Sales\Model\Order::STATE_HOLDED => 'pending',
+                    \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT => 'payment_pending',
+                    \Magento\Sales\Model\Order::STATE_PAYMENT_REVIEW => 'payment_review'
 
                 ],
             ],
@@ -159,7 +149,7 @@ class SetLinkStatusObserverTest extends TestCase
     {
         $this->observerMock->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventMock);
+            ->will($this->returnValue($this->eventMock));
 
         $this->eventMock->expects($this->once())
             ->method('getOrder')
@@ -183,9 +173,9 @@ class SetLinkStatusObserverTest extends TestCase
                 [
                     $this->createOrderItem(1),
                     $this->createOrderItem(2),
-                    $this->createOrderItem(3, Item::STATUS_PENDING, null),
-                    $this->createOrderItem(4, Item::STATUS_PENDING, null, null),
-                    $this->createOrderItem(5, Item::STATUS_PENDING, null),
+                    $this->createOrderItem(3, \Magento\Sales\Model\Order\Item::STATUS_PENDING, null),
+                    $this->createOrderItem(4, \Magento\Sales\Model\Order\Item::STATUS_PENDING, null, null),
+                    $this->createOrderItem(5, \Magento\Sales\Model\Order\Item::STATUS_PENDING, null),
                 ]
             );
 
@@ -204,16 +194,16 @@ class SetLinkStatusObserverTest extends TestCase
             );
 
         $result = $this->setLinkStatusObserver->execute($this->observerMock);
-        $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
+        $this->assertInstanceOf(\Magento\Downloadable\Observer\SetLinkStatusObserver::class, $result);
     }
 
     public function testSetLinkStatusClosed()
     {
-        $orderState = Order::STATE_CLOSED;
+        $orderState = \Magento\Sales\Model\Order::STATE_CLOSED;
 
         $this->observerMock->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventMock);
+            ->will($this->returnValue($this->eventMock));
 
         $this->eventMock->expects($this->once())
             ->method('getOrder')
@@ -237,9 +227,9 @@ class SetLinkStatusObserverTest extends TestCase
                 [
                     $this->createOrderItem(1),
                     $this->createOrderItem(2),
-                    $this->createOrderItem(3, Item::STATUS_CANCELED, null),
-                    $this->createOrderItem(4, Item::STATUS_REFUNDED, null, null),
-                    $this->createOrderItem(5, Item::STATUS_REFUNDED, null),
+                    $this->createOrderItem(3, \Magento\Sales\Model\Order\Item::STATUS_CANCELED, null),
+                    $this->createOrderItem(4, \Magento\Sales\Model\Order\Item::STATUS_REFUNDED, null, null),
+                    $this->createOrderItem(5, \Magento\Sales\Model\Order\Item::STATUS_REFUNDED, null),
                 ]
             );
 
@@ -258,25 +248,25 @@ class SetLinkStatusObserverTest extends TestCase
             );
 
         $result = $this->setLinkStatusObserver->execute($this->observerMock);
-        $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
+        $this->assertInstanceOf(\Magento\Downloadable\Observer\SetLinkStatusObserver::class, $result);
     }
 
     public function testSetLinkStatusInvoiced()
     {
-        $orderState = Order::STATE_PROCESSING;
+        $orderState = \Magento\Sales\Model\Order::STATE_PROCESSING;
 
         $this->scopeConfig->expects($this->once())
             ->method('getValue')
             ->with(
-                \Magento\Downloadable\Model\Link\Purchased\Item::XML_PATH_ORDER_ITEM_STATUS,
-                ScopeInterface::SCOPE_STORE,
-                1
+                $this->equalTo(\Magento\Downloadable\Model\Link\Purchased\Item::XML_PATH_ORDER_ITEM_STATUS),
+                $this->equalTo(ScopeInterface::SCOPE_STORE),
+                $this->equalTo(1)
             )
-            ->willReturn(Item::STATUS_PENDING);
+            ->willReturn(\Magento\Sales\Model\Order\Item::STATUS_PENDING);
 
         $this->observerMock->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventMock);
+            ->will($this->returnValue($this->eventMock));
 
         $this->eventMock->expects($this->once())
             ->method('getOrder')
@@ -300,11 +290,11 @@ class SetLinkStatusObserverTest extends TestCase
                 [
                     $this->createOrderItem(1),
                     $this->createOrderItem(2),
-                    $this->createOrderItem(3, Item::STATUS_INVOICED, null),
-                    $this->createOrderItem(4, Item::STATUS_PENDING, null, null),
-                    $this->createOrderItem(5, Item::STATUS_PENDING, null),
-                    $this->createOrderItem(6, Item::STATUS_REFUNDED, null),
-                    $this->createOrderItem(7, Item::STATUS_BACKORDERED, null),
+                    $this->createOrderItem(3, \Magento\Sales\Model\Order\Item::STATUS_INVOICED, null),
+                    $this->createOrderItem(4, \Magento\Sales\Model\Order\Item::STATUS_PENDING, null, null),
+                    $this->createOrderItem(5, \Magento\Sales\Model\Order\Item::STATUS_PENDING, null),
+                    $this->createOrderItem(6, \Magento\Sales\Model\Order\Item::STATUS_REFUNDED, null),
+                    $this->createOrderItem(7, \Magento\Sales\Model\Order\Item::STATUS_BACKORDERED, null),
                 ]
             );
 
@@ -323,14 +313,14 @@ class SetLinkStatusObserverTest extends TestCase
             );
 
         $result = $this->setLinkStatusObserver->execute($this->observerMock);
-        $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
+        $this->assertInstanceOf(\Magento\Downloadable\Observer\SetLinkStatusObserver::class, $result);
     }
 
     public function testSetLinkStatusEmptyOrder()
     {
         $this->observerMock->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventMock);
+            ->will($this->returnValue($this->eventMock));
 
         $this->eventMock->expects($this->once())
             ->method('getOrder')
@@ -341,7 +331,7 @@ class SetLinkStatusObserverTest extends TestCase
             ->willReturn(null);
 
         $result = $this->setLinkStatusObserver->execute($this->observerMock);
-        $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
+        $this->assertInstanceOf(\Magento\Downloadable\Observer\SetLinkStatusObserver::class, $result);
     }
 
     /**
@@ -349,15 +339,15 @@ class SetLinkStatusObserverTest extends TestCase
      * @param int $statusId
      * @param string $productType
      * @param string $realProductType
-     * @return \Magento\Sales\Model\Order\Item|MockObject
+     * @return \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createOrderItem(
         $id,
-        $statusId = Item::STATUS_PENDING,
+        $statusId = \Magento\Sales\Model\Order\Item::STATUS_PENDING,
         $productType = DownloadableProductType::TYPE_DOWNLOADABLE,
         $realProductType = DownloadableProductType::TYPE_DOWNLOADABLE
     ) {
-        $item = $this->getMockBuilder(Item::class)
+        $item = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', 'getProductType', 'getRealProductType', 'getStatusId'])
             ->getMock();
@@ -380,7 +370,7 @@ class SetLinkStatusObserverTest extends TestCase
     /**
      * @param array $expectedOrderItemIds
      * @param array $items
-     * @return LinkItemCollection|MockObject
+     * @return LinkItemCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createLinkItemCollection(array $expectedOrderItemIds, array $items)
     {
@@ -392,7 +382,7 @@ class SetLinkStatusObserverTest extends TestCase
             ->getMock();
         $linkItemCollection->expects($this->once())
             ->method('addFieldToFilter')
-            ->with('order_item_id', ['in' => $expectedOrderItemIds])
+            ->with($this->equalTo('order_item_id'), $this->equalTo(['in' => $expectedOrderItemIds]))
             ->willReturn($items);
 
         return $linkItemCollection;
@@ -403,7 +393,7 @@ class SetLinkStatusObserverTest extends TestCase
      * @param $orderItemId
      * @param bool $isSaved
      * @param null|string $expectedStatus
-     * @return \Magento\Downloadable\Model\Link\Purchased\Item|MockObject
+     * @return \Magento\Downloadable\Model\Link\Purchased\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createLinkItem($status, $orderItemId, $isSaved = false, $expectedStatus = null)
     {
@@ -417,7 +407,7 @@ class SetLinkStatusObserverTest extends TestCase
         if ($isSaved) {
             $linkItem->expects($this->once())
                 ->method('setStatus')
-                ->with($expectedStatus)
+                ->with($this->equalTo($expectedStatus))
                 ->willReturnSelf();
             $linkItem->expects($this->once())
                 ->method('save')

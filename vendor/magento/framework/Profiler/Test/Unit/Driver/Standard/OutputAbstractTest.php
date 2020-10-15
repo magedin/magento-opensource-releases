@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Profiler\Driver\Standard\AbstractOutput
  *
@@ -7,23 +7,17 @@
  */
 namespace Magento\Framework\Profiler\Test\Unit\Driver\Standard;
 
-use Magento\Framework\Profiler\Driver\Standard\AbstractOutput;
-use Magento\Framework\Profiler\Driver\Standard\Stat;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class OutputAbstractTest extends TestCase
+class OutputAbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractOutput|MockObject
+     * @var \Magento\Framework\Profiler\Driver\Standard\AbstractOutput|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_output;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_output = $this->getMockForAbstractClass(
-            AbstractOutput::class
+            \Magento\Framework\Profiler\Driver\Standard\AbstractOutput::class
         );
     }
 
@@ -32,10 +26,7 @@ class OutputAbstractTest extends TestCase
      */
     public function testSetFilterPattern()
     {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-
-        $this->assertObjectHasAttribute('_filterPattern', $this->_output);
-        $this->assertEmpty($this->_output->getFilterPattern());
+        $this->assertAttributeEmpty('_filterPattern', $this->_output);
         $filterPattern = '/test/';
         $this->_output->setFilterPattern($filterPattern);
         $this->assertEquals($filterPattern, $this->_output->getFilterPattern());
@@ -46,12 +37,11 @@ class OutputAbstractTest extends TestCase
      */
     public function testSetThreshold()
     {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-
-        $thresholdKey = Stat::TIME;
+        $thresholdKey = \Magento\Framework\Profiler\Driver\Standard\Stat::TIME;
         $this->_output->setThreshold($thresholdKey, 100);
-        $this->assertObjectHasAttribute('_thresholds', $this->_output);
-        $thresholds = $this->_output->getThresholds();
+        $thresholds = class_exists('PHPUnit_Util_Class')
+            ? \PHPUnit_Util_Class::getObjectAttribute($this->_output, '_thresholds')
+            : \PHPUnit\Framework\Assert::readAttribute($this->_output, '_thresholds');
         $this->assertArrayHasKey($thresholdKey, $thresholds);
         $this->assertEquals(100, $thresholds[$thresholdKey]);
 
@@ -65,9 +55,9 @@ class OutputAbstractTest extends TestCase
     public function testConstructor()
     {
         $configuration = ['filterPattern' => '/filter pattern/', 'thresholds' => ['fetchKey' => 100]];
-        /** @var \Magento\Framework\Profiler\Driver\Standard\AbstractOutput $output  */
+        /** @var $output \Magento\Framework\Profiler\Driver\Standard\AbstractOutput  */
         $output = $this->getMockForAbstractClass(
-            AbstractOutput::class,
+            \Magento\Framework\Profiler\Driver\Standard\AbstractOutput::class,
             [$configuration]
         );
         $this->assertEquals('/filter pattern/', $output->getFilterPattern());
@@ -97,11 +87,11 @@ class OutputAbstractTest extends TestCase
     public function renderColumnValueDataProvider()
     {
         return [
-            ['someTimerId', Stat::ID, 'someTimerId'],
-            [10000.123, Stat::TIME, '10,000.123000'],
-            [200000.123456789, Stat::AVG, '200,000.123457'],
-            [1000000000.12345678, Stat::EMALLOC, '1,000,000,000'],
-            [2000000000.12345678, Stat::REALMEM, '2,000,000,000']
+            ['someTimerId', \Magento\Framework\Profiler\Driver\Standard\Stat::ID, 'someTimerId'],
+            [10000.123, \Magento\Framework\Profiler\Driver\Standard\Stat::TIME, '10,000.123000'],
+            [200000.123456789, \Magento\Framework\Profiler\Driver\Standard\Stat::AVG, '200,000.123457'],
+            [1000000000.12345678, \Magento\Framework\Profiler\Driver\Standard\Stat::EMALLOC, '1,000,000,000'],
+            [2000000000.12345678, \Magento\Framework\Profiler\Driver\Standard\Stat::REALMEM, '2,000,000,000']
         ];
     }
 
@@ -112,7 +102,7 @@ class OutputAbstractTest extends TestCase
     {
         $method = new \ReflectionMethod($this->_output, '_renderCaption');
         $method->setAccessible(true);
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             '/Code Profiler \(Memory usage: real - \d+, emalloc - \d+\)/',
             $method->invoke($this->_output)
         );
@@ -125,7 +115,7 @@ class OutputAbstractTest extends TestCase
     {
         $this->_output->setFilterPattern('/filter pattern/');
 
-        $mockStat = $this->createMock(Stat::class);
+        $mockStat = $this->createMock(\Magento\Framework\Profiler\Driver\Standard\Stat::class);
         $expectedTimerIds = ['test'];
         $mockStat->expects(
             $this->once()
@@ -134,8 +124,8 @@ class OutputAbstractTest extends TestCase
         )->with(
             $this->_output->getThresholds(),
             $this->_output->getFilterPattern()
-        )->willReturn(
-            $expectedTimerIds
+        )->will(
+            $this->returnValue($expectedTimerIds)
         );
 
         $method = new \ReflectionMethod($this->_output, '_getTimerIds');

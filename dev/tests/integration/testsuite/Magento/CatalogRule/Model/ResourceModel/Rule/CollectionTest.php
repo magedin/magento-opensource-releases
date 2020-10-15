@@ -37,7 +37,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
      */
     protected $resourceRuleCollection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->indexBuilder = $this->objectManager->get(IndexBuilder::class);

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Model;
 
 use Magento\Framework\App\Helper\Context;
@@ -15,15 +13,13 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Search\Helper\Data;
 use Magento\Search\Model\Query;
 use Magento\Search\Model\QueryFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class QueryFactoryTest tests Magento\Search\Model\QueryFactory
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class QueryFactoryTest extends TestCase
+class QueryFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QueryFactory
@@ -31,34 +27,34 @@ class QueryFactoryTest extends TestCase
     private $model;
 
     /**
-     * @var Data|MockObject
+     * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryHelper;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $request;
 
     /**
-     * @var StringUtils|MockObject
+     * @var StringUtils|\PHPUnit_Framework_MockObject_MockObject
      */
     private $string;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
     /**
-     * @var Query|MockObject
+     * @var Query|\PHPUnit_Framework_MockObject_MockObject
      */
     private $query;
 
     /**
      * SetUp method
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->queryHelper = $this->getMockBuilder(Data::class)
             ->disableOriginalConstructor()
@@ -79,7 +75,7 @@ class QueryFactoryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        /** @var Context|MockObject $context */
+        /** @var Context|\PHPUnit_Framework_MockObject_MockObject $context */
         $context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();

@@ -3,23 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Translation\Model\ResourceModel;
 
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Escaper;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Store\Model\Store;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * String translation utilities
  */
-class StringUtils extends AbstractDb
+class StringUtils extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     /**
      * @var Escaper
@@ -27,12 +19,12 @@ class StringUtils extends AbstractDb
     private $escaper;
 
     /**
-     * @var ResolverInterface
+     * @var \Magento\Framework\Locale\ResolverInterface
      */
     protected $_localeResolver;
 
     /**
-     * @var ScopeResolverInterface
+     * @var \Magento\Framework\App\ScopeResolverInterface
      */
     protected $scopeResolver;
 
@@ -42,25 +34,27 @@ class StringUtils extends AbstractDb
     protected $scope;
 
     /**
-     * @param Context $context
-     * @param ResolverInterface $localeResolver
-     * @param ScopeResolverInterface $scopeResolver
-     * @param Escaper $escaper
+     * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
+     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
+     * @param \Magento\Framework\App\ScopeResolverInterface $scopeResolver
      * @param string $connectionName
      * @param string|null $scope
+     * @param Escaper|null $escaper
      */
     public function __construct(
-        Context $context,
-        ResolverInterface $localeResolver,
-        ScopeResolverInterface $scopeResolver,
-        Escaper $escaper,
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
+        \Magento\Framework\Locale\ResolverInterface $localeResolver,
+        \Magento\Framework\App\ScopeResolverInterface $scopeResolver,
         $connectionName = null,
-        $scope = null
+        $scope = null,
+        Escaper $escaper = null
     ) {
         $this->_localeResolver = $localeResolver;
         $this->scopeResolver = $scopeResolver;
-        $this->escaper = $escaper;
         $this->scope = $scope;
+        $this->escaper = $escaper ?? ObjectManager::getInstance()->get(
+            Escaper::class
+        );
         parent::__construct($context, $connectionName);
     }
 
@@ -75,15 +69,14 @@ class StringUtils extends AbstractDb
     }
 
     /**
-     * Load an object
+     * Load
      *
-     * @param AbstractModel $object
+     * @param \Magento\Framework\Model\AbstractModel $object
      * @param String $value
      * @param String $field
-     *
      * @return array|$this
      */
-    public function load(AbstractModel $object, $value, $field = null)
+    public function load(\Magento\Framework\Model\AbstractModel $object, $value, $field = null)
     {
         if (is_string($value)) {
             $select = $this->getConnection()->select()->from(
@@ -95,9 +88,9 @@ class StringUtils extends AbstractDb
             $object->setData($result);
             $this->_afterLoad($object);
             return $result;
+        } else {
+            return parent::load($object, $value, $field);
         }
-
-        return parent::load($object, $value, $field);
     }
 
     /**
@@ -105,25 +98,23 @@ class StringUtils extends AbstractDb
      *
      * @param String $field
      * @param String $value
-     * @param AbstractModel $object
-     *
-     * @return Select
+     * @param \Magento\Framework\Model\AbstractModel $object
+     * @return \Magento\Framework\DB\Select
      */
     protected function _getLoadSelect($field, $value, $object)
     {
         $select = parent::_getLoadSelect($field, $value, $object);
-        $select->where('store_id = ?', Store::DEFAULT_STORE_ID);
+        $select->where('store_id = ?', \Magento\Store\Model\Store::DEFAULT_STORE_ID);
         return $select;
     }
 
     /**
      * After translation loading
      *
-     * @param AbstractModel $object
-     *
+     * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
      */
-    public function _afterLoad(AbstractModel $object)
+    public function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
     {
         $connection = $this->getConnection();
         $select = $connection->select()->from(
@@ -140,11 +131,10 @@ class StringUtils extends AbstractDb
     /**
      * Before save
      *
-     * @param AbstractModel $object
-     *
+     * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
      */
-    protected function _beforeSave(AbstractModel $object)
+    protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
         $connection = $this->getConnection();
         $select = $connection->select()
@@ -152,7 +142,7 @@ class StringUtils extends AbstractDb
             ->where('string = :string')
             ->where('store_id = :store_id');
 
-        $bind = ['string' => $object->getString(), 'store_id' => Store::DEFAULT_STORE_ID];
+        $bind = ['string' => $object->getString(), 'store_id' => \Magento\Store\Model\Store::DEFAULT_STORE_ID];
 
         $object->setId($connection->fetchOne($select, $bind));
         return parent::_beforeSave($object);
@@ -161,11 +151,10 @@ class StringUtils extends AbstractDb
     /**
      * After save
      *
-     * @param AbstractModel $object
-     *
+     * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
      */
-    protected function _afterSave(AbstractModel $object)
+    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
     {
         $connection = $this->getConnection();
         $select = $connection->select()->from(
@@ -203,7 +192,6 @@ class StringUtils extends AbstractDb
      * @param string $string
      * @param string $locale
      * @param int|null $storeId
-     *
      * @return $this
      */
     public function deleteTranslate($string, $locale = null, $storeId = null)
@@ -215,7 +203,7 @@ class StringUtils extends AbstractDb
         $where = ['locale = ?' => $locale, 'string = ?' => $string];
 
         if ($storeId === false) {
-            $where['store_id > ?'] = Store::DEFAULT_STORE_ID;
+            $where['store_id > ?'] = \Magento\Store\Model\Store::DEFAULT_STORE_ID;
         } elseif ($storeId !== null) {
             $where['store_id = ?'] = $storeId;
         }
@@ -232,7 +220,6 @@ class StringUtils extends AbstractDb
      * @param String $translate
      * @param String $locale
      * @param int|null $storeId
-     *
      * @return $this
      */
     public function saveTranslate($string, $translate, $locale = null, $storeId = null)

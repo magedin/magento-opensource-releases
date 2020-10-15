@@ -3,31 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\SampleData;
 
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Setup\SampleData\State;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StateTest extends TestCase
+/**
+ * Class StateTest
+ */
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\Setup\SampleData\State|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $state;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystem;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $writeInterface;
 
@@ -36,14 +30,14 @@ class StateTest extends TestCase
      */
     protected $absolutePath;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->setMethods(['getDirectoryWrite'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->writeInterface = $this->getMockForAbstractClass(
-            WriteInterface::class,
+            \Magento\Framework\Filesystem\Directory\WriteInterface::class,
             [],
             '',
             false,
@@ -51,9 +45,9 @@ class StateTest extends TestCase
             true,
             ['write', 'close']
         );
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->state = $objectManager->getObject(
-            State::class,
+            \Magento\Framework\Setup\SampleData\State::class,
             ['filesystem' => $this->filesystem]
         );
     }
@@ -77,7 +71,7 @@ class StateTest extends TestCase
         $this->writeInterface->expects($this->any())->method('close');
         $this->writeInterface->expects($this->any())->method('isExist')->willReturn(true);
         $this->writeInterface->expects($this->any())->method('read')
-            ->willReturn(State::ERROR);
+            ->willReturn(\Magento\Framework\Setup\SampleData\State::ERROR);
         $this->state->setError();
         $this->assertTrue($this->state->hasError());
     }
@@ -85,7 +79,7 @@ class StateTest extends TestCase
     /**
      * Clear state file
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->filesystem->expects($this->any())->method('getDirectoryWrite')->willReturn($this->writeInterface);
         $this->writeInterface->expects($this->any())->method('openFile')->willReturnSelf($this->absolutePath);

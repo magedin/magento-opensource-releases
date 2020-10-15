@@ -54,7 +54,7 @@ class PriceTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->priceModel = $this->objectManager->create(Price::class);

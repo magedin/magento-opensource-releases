@@ -7,7 +7,7 @@ namespace Magento\TestFramework\Indexer;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
             ->getApplication()

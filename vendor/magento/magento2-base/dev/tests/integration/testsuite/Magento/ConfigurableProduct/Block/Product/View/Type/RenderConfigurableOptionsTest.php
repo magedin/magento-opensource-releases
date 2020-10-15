@@ -65,7 +65,7 @@ class RenderConfigurableOptionsTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->configurableHelper = $this->objectManager->get(Data::class);
@@ -100,7 +100,7 @@ class RenderConfigurableOptionsTest extends TestCase
             $this->json->serialize($confAttrData['attributes'])
         );
         $optionsHtml = $this->getConfigurableOptionsHtml('Configurable product');
-        $this->assertMatchesRegularExpression("/\"spConfig\": {\"attributes\":{$attributesJson}/", $optionsHtml);
+        $this->assertRegExp("/\"spConfig\": {\"attributes\":{$attributesJson}/", $optionsHtml);
     }
 
     /**

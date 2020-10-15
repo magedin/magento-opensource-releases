@@ -20,7 +20,7 @@
             <group value="Catalog"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="login"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="login"/>
 
             <!--Create product-->
             <createData entity="SimpleProduct2" stepKey="createProduct"/>
@@ -38,11 +38,11 @@
             </actionGroup>
 
             <!--Delete Attribute-->
-            <actionGroup ref="DeleteProductAttributeActionGroup" stepKey="deleteAttribute">
+            <actionGroup ref="deleteProductAttribute" stepKey="deleteAttribute">
                 <argument name="ProductAttribute" value="productDropDownAttribute"/>
             </actionGroup>
 
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Create 2 store views-->
@@ -54,10 +54,8 @@
         </actionGroup>
 
         <!--Go to created product page and create new attribute-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="openAdminEditPage">
-            <argument name="productId" value="$$createProduct.id$$"/>
-        </actionGroup>
-        <actionGroup ref="AdminCreateAttributeWithValueWithTwoStoreViesFromProductPageActionGroup" stepKey="createAttribute">
+        <amOnPage url="{{AdminProductEditPage.url($$createProduct.id$$)}}" stepKey="openAdminEditPage"/>
+        <actionGroup ref="AdminCreateAttributeWithValueWithTwoStoreViesFromProductPage" stepKey="createAttribute">
             <argument name="attributeName" value="{{productDropDownAttribute.attribute_code}}"/>
             <argument name="attributeType" value="Dropdown"/>
             <argument name="firstStoreViewName" value="{{customStoreEN.name}}"/>

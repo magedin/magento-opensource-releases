@@ -3,43 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\SendFriend\Controller\Product;
 
-use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Session;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\Controller\Result\Forward;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Data\Form\FormKey\Validator;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Registry;
-use Magento\SendFriend\Controller\Product;
 use Magento\SendFriend\Model\CaptchaValidator;
-use Magento\SendFriend\Model\SendFriend;
 
 /**
  * Class Sendmail. Represents request flow logic of 'sendmail' feature
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Sendmail extends Product implements HttpPostActionInterface
+class Sendmail extends \Magento\SendFriend\Controller\Product implements HttpPostActionInterface
 {
     /**
-     * @var CategoryRepositoryInterface
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
      */
-    private $categoryRepository;
+    protected $categoryRepository;
 
     /**
-     * @var Session
+     * @var \Magento\Catalog\Model\Session
      */
-    private $catalogSession;
+    protected $catalogSession;
 
     /**
      * @var CaptchaValidator
@@ -47,49 +35,50 @@ class Sendmail extends Product implements HttpPostActionInterface
     private $captchaValidator;
 
     /**
-     * @param Context $context
-     * @param Registry $coreRegistry
-     * @param Validator $formKeyValidator
-     * @param SendFriend $sendFriend
-     * @param ProductRepositoryInterface $productRepository
-     * @param CategoryRepositoryInterface $categoryRepository
-     * @param Session $catalogSession
+     * Sendmail class construct
+     *
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Framework\Registry $coreRegistry
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
+     * @param \Magento\SendFriend\Model\SendFriend $sendFriend
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+     * @param \Magento\Catalog\Model\Session $catalogSession
      * @param CaptchaValidator|null $captchaValidator
      */
     public function __construct(
-        Context $context,
-        Registry $coreRegistry,
-        Validator $formKeyValidator,
-        SendFriend $sendFriend,
-        ProductRepositoryInterface $productRepository,
-        CategoryRepositoryInterface $categoryRepository,
-        Session $catalogSession,
-        CaptchaValidator $captchaValidator
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
+        \Magento\SendFriend\Model\SendFriend $sendFriend,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
+        \Magento\Catalog\Model\Session $catalogSession,
+        CaptchaValidator $captchaValidator = null
     ) {
         parent::__construct($context, $coreRegistry, $formKeyValidator, $sendFriend, $productRepository);
         $this->categoryRepository = $categoryRepository;
         $this->catalogSession = $catalogSession;
-        $this->captchaValidator = $captchaValidator;
+        $this->captchaValidator = $captchaValidator ?: ObjectManager::getInstance()->create(CaptchaValidator::class);
     }
 
     /**
      * Send Email Post Action
      *
-     * @return ResultInterface
-     *
+     * @return \Magento\Framework\Controller\ResultInterface
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
-        /** @var Redirect $resultRedirect */
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         $product = $this->_initProduct();
         $data = $this->getRequest()->getPostValue();
 
         if (!$product || !$data) {
-            /** @var Forward $resultForward */
+            /** @var \Magento\Framework\Controller\Result\Forward $resultForward */
             $resultForward = $this->resultFactory->create(ResultFactory::TYPE_FORWARD);
             $resultForward->forward('noroute');
             return $resultForward;
@@ -119,23 +108,23 @@ class Sendmail extends Product implements HttpPostActionInterface
 
             if ($validate === true) {
                 $this->sendFriend->send();
-                $this->messageManager->addSuccessMessage(__('The link to a friend was sent.'));
+                $this->messageManager->addSuccess(__('The link to a friend was sent.'));
                 $url = $product->getProductUrl();
                 $resultRedirect->setUrl($this->_redirect->success($url));
                 return $resultRedirect;
-            }
-
-            if (is_array($validate)) {
-                foreach ($validate as $errorMessage) {
-                    $this->messageManager->addErrorMessage($errorMessage);
-                }
             } else {
-                $this->messageManager->addErrorMessage(__('We found some problems with the data.'));
+                if (is_array($validate)) {
+                    foreach ($validate as $errorMessage) {
+                        $this->messageManager->addError($errorMessage);
+                    }
+                } else {
+                    $this->messageManager->addError(__('We found some problems with the data.'));
+                }
             }
-        } catch (LocalizedException $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
-            $this->messageManager->addExceptionMessage($e, __('Some emails were not sent.'));
+            $this->messageManager->addException($e, __('Some emails were not sent.'));
         }
 
         // save form data

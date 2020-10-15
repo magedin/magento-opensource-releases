@@ -3,35 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Block\Adminhtml\Edit\Tab\View;
 
-use Magento\Backend\Model\Session;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Customer\Block\Adminhtml\Edit\Tab\View\PersonalInfo;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Customer\Model\Log;
-use Magento\Customer\Model\Logger;
-use Magento\Framework\App\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Phrase;
 use Magento\Framework\Stdlib\DateTime;
-use Magento\Framework\Stdlib\DateTime\Timezone;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Customer personal information template block test.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PersonalInfoTest extends TestCase
+class PersonalInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -49,27 +31,27 @@ class PersonalInfoTest extends TestCase
     protected $block;
 
     /**
-     * @var Log|MockObject
+     * @var \Magento\Customer\Model\Log|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerLog;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $localeDate;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
     /**
-     * @var CustomerRegistry
+     * @var \Magento\Customer\Model\CustomerRegistry
      */
     protected $customerRegistry;
 
     /**
-     * @var Customer
+     * @var \Magento\Customer\Model\Customer
      */
     protected $customerModel;
 
@@ -77,42 +59,35 @@ class PersonalInfoTest extends TestCase
      * @return void
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $customer = $this->getMockForAbstractClass(CustomerInterface::class);
+        $customer = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
         $customer->expects($this->any())->method('getId')->willReturn(1);
         $customer->expects($this->any())->method('getStoreId')->willReturn(1);
 
         $customerDataFactory = $this->createPartialMock(
-            CustomerInterfaceFactory::class,
+            \Magento\Customer\Api\Data\CustomerInterfaceFactory::class,
             ['create']
         );
         $customerDataFactory->expects($this->any())->method('create')->willReturn($customer);
 
-        $backendSession = $this->getMockBuilder(Session::class)
-            ->addMethods(['getCustomerData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $backendSession = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['getCustomerData']);
         $backendSession->expects($this->any())->method('getCustomerData')->willReturn(['account' => []]);
 
-        $this->customerLog = $this->getMockBuilder(Log::class)
-            ->addMethods(['loadByCustomer'])
-            ->onlyMethods(['getLastLoginAt', 'getLastVisitAt', 'getLastLogoutAt'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->customerLog = $this->createPartialMock(
+            \Magento\Customer\Model\Log::class,
+            ['getLastLoginAt', 'getLastVisitAt', 'getLastLogoutAt', 'loadByCustomer']
+        );
         $this->customerLog->expects($this->any())->method('loadByCustomer')->willReturnSelf();
 
-        $customerLogger = $this->createPartialMock(Logger::class, ['get']);
+        $customerLogger = $this->createPartialMock(\Magento\Customer\Model\Logger::class, ['get']);
         $customerLogger->expects($this->any())->method('get')->willReturn($this->customerLog);
 
-        $dateTime = $this->getMockBuilder(DateTime::class)
-            ->addMethods(['now'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $dateTime = $this->createPartialMock(\Magento\Framework\Stdlib\DateTime::class, ['now']);
         $dateTime->expects($this->any())->method('now')->willReturn('2015-03-04 12:00:00');
 
         $this->localeDate = $this->createPartialMock(
-            Timezone::class,
+            \Magento\Framework\Stdlib\DateTime\Timezone::class,
             ['scopeDate', 'formatDateTime', 'getDefaultTimezonePath']
         );
         $this->localeDate
@@ -120,17 +95,17 @@ class PersonalInfoTest extends TestCase
             ->method('getDefaultTimezonePath')
             ->willReturn($this->pathToDefaultTimezone);
 
-        $this->scopeConfig = $this->createPartialMock(Config::class, ['getValue']);
+        $this->scopeConfig = $this->createPartialMock(\Magento\Framework\App\Config::class, ['getValue']);
         $this->customerRegistry = $this->createPartialMock(
-            CustomerRegistry::class,
+            \Magento\Customer\Model\CustomerRegistry::class,
             ['retrieve']
         );
-        $this->customerModel = $this->createPartialMock(Customer::class, ['isCustomerLocked']);
+        $this->customerModel = $this->createPartialMock(\Magento\Customer\Model\Customer::class, ['isCustomerLocked']);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->block = $objectManagerHelper->getObject(
-            PersonalInfo::class,
+            \Magento\Customer\Block\Adminhtml\Edit\Tab\View\PersonalInfo::class,
             [
                 'customerDataFactory' => $customerDataFactory,
                 'dateTime' => $dateTime,
@@ -153,7 +128,7 @@ class PersonalInfoTest extends TestCase
             ->method('getValue')
             ->with(
                 $this->pathToDefaultTimezone,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn($this->defaultTimezone);
 
@@ -174,7 +149,7 @@ class PersonalInfoTest extends TestCase
             ->method('getValue')
             ->with(
                 'customer/online_customers/online_minutes_interval',
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn(240); //TODO: it's value mocked because unit tests run data providers before all testsuite
 
@@ -233,7 +208,7 @@ class PersonalInfoTest extends TestCase
     {
         $this->customerLog->expects($this->once())->method('getLastLoginAt')->willReturn($lastLoginAt);
 
-        $this->localeDate->expects($this->any())->method('scopeDate')->willReturn($lastLoginAt);
+        $this->localeDate->expects($this->any())->method('scopeDate')->will($this->returnValue($lastLoginAt));
         $this->localeDate->expects($this->any())->method('formatDateTime')->willReturn($lastLoginAt);
 
         $this->assertEquals($result, $this->block->getStoreLastLoginDate());
@@ -260,7 +235,7 @@ class PersonalInfoTest extends TestCase
     {
         $this->customerRegistry->expects($this->once())->method('retrieve')->willReturn($this->customerModel);
         $this->customerModel->expects($this->once())->method('isCustomerLocked')->willReturn($value);
-        $expectedResult =  new Phrase($expectedResult);
+        $expectedResult =  new \Magento\Framework\Phrase($expectedResult);
         $this->assertEquals($expectedResult, $this->block->getAccountLock());
     }
 

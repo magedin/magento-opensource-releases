@@ -20,13 +20,13 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class CategoryProcessUrlRewriteMovingObserverTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CategoryProcessUrlRewriteMovingObserverTest extends TestCase
+class CategoryProcessUrlRewriteMovingObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CategoryProcessUrlRewriteMovingObserver
@@ -34,40 +34,40 @@ class CategoryProcessUrlRewriteMovingObserverTest extends TestCase
     private $observer;
 
     /**
-     * @var CategoryUrlRewriteGenerator|MockObject
+     * @var CategoryUrlRewriteGenerator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $categoryUrlRewriteGeneratorMock;
 
     /**
-     * @var UrlPersistInterface|MockObject
+     * @var UrlPersistInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlPersistMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var UrlRewriteHandler|MockObject
+     * @var UrlRewriteHandler|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urlRewriteHandlerMock;
 
     /**
-     * @var DatabaseMapPool|MockObject
+     * @var DatabaseMapPool|\PHPUnit_Framework_MockObject_MockObject
      */
     private $databaseMapPoolMock;
 
     /**
      * Set Up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->categoryUrlRewriteGeneratorMock = $this->createMock(CategoryUrlRewriteGenerator::class);
-        $this->urlPersistMock = $this->getMockForAbstractClass(UrlPersistInterface::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->urlPersistMock = $this->createMock(UrlPersistInterface::class);
+        $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
         $this->urlRewriteHandlerMock = $this->createMock(UrlRewriteHandler::class);
-        /** @var UrlRewriteBunchReplacer|MockObject $urlRewriteMock */
+        /** @var UrlRewriteBunchReplacer|\PHPUnit_Framework_MockObject_MockObject $urlRewriteMock */
         $urlRewriteMock = $this->createMock(UrlRewriteBunchReplacer::class);
         $this->databaseMapPoolMock = $this->createMock(DatabaseMapPool::class);
 
@@ -92,7 +92,7 @@ class CategoryProcessUrlRewriteMovingObserverTest extends TestCase
      */
     public function testCategoryProcessUrlRewriteAfterMovingWithChangedParentId()
     {
-        /** @var Observer|MockObject $observerMock */
+        /** @var Observer|\PHPUnit_Framework_MockObject_MockObject $observerMock */
         $observerMock = $this->createMock(Observer::class);
         $eventMock = $this->getMockBuilder(Event::class)
             ->disableOriginalConstructor()
@@ -131,7 +131,7 @@ class CategoryProcessUrlRewriteMovingObserverTest extends TestCase
      */
     public function testCategoryProcessUrlRewriteAfterMovingWithinNotChangedParent()
     {
-        /** @var Observer|MockObject $observerMock */
+        /** @var Observer|\PHPUnit_Framework_MockObject_MockObject $observerMock */
         $observerMock = $this->createMock(Observer::class);
         $eventMock = $this->getMockBuilder(Event::class)
             ->disableOriginalConstructor()

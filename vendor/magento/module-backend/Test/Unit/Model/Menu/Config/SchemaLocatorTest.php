@@ -3,30 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Menu\Config;
 
-use Magento\Backend\Model\Menu\Config\SchemaLocator;
-use Magento\Framework\Module\Dir\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_moduleReaderMock;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\Backend\Model\Menu\Config\SchemaLocator
      */
     protected $_model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_moduleReaderMock = $this->createMock(Reader::class);
+        $this->_moduleReaderMock = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
         $this->_moduleReaderMock->expects(
             $this->once()
         )->method(
@@ -34,10 +27,10 @@ class SchemaLocatorTest extends TestCase
         )->with(
             'etc',
             'Magento_Backend'
-        )->willReturn(
-            'schema_dir'
+        )->will(
+            $this->returnValue('schema_dir')
         );
-        $this->_model = new SchemaLocator($this->_moduleReaderMock);
+        $this->_model = new \Magento\Backend\Model\Menu\Config\SchemaLocator($this->_moduleReaderMock);
     }
 
     public function testGetSchema()
@@ -47,6 +40,6 @@ class SchemaLocatorTest extends TestCase
 
     public function testGetPerFileSchema()
     {
-        $this->assertNull($this->_model->getPerFileSchema());
+        $this->assertEquals(null, $this->_model->getPerFileSchema());
     }
 }

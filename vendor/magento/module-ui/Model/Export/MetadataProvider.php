@@ -3,28 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Model\Export;
 
-use DateTime;
-use DateTimeZone;
-use Exception;
 use Magento\Framework\Api\Search\DocumentInterface;
-use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Ui\Component\Filters;
 use Magento\Ui\Component\Filters\Type\Select;
 use Magento\Ui\Component\Listing\Columns;
-use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Ui\Component\MassAction\Filter;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
 /**
- * Metadata Provider for grid listing export.
- *
+ * Metadata Provider
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class MetadataProvider
@@ -84,29 +75,26 @@ class MetadataProvider
      * Returns Columns component
      *
      * @param UiComponentInterface $component
-     *
      * @return UiComponentInterface
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function getColumnsComponent(UiComponentInterface $component): UiComponentInterface
+    protected function getColumnsComponent(UiComponentInterface $component)
     {
         foreach ($component->getChildComponents() as $childComponent) {
             if ($childComponent instanceof Columns) {
                 return $childComponent;
             }
         }
-        throw new Exception('No columns found'); // @codingStandardsIgnoreLine
+        throw new \Exception('No columns found'); // @codingStandardsIgnoreLine
     }
 
     /**
      * Returns columns list
      *
      * @param UiComponentInterface $component
-     *
      * @return UiComponentInterface[]
-     * @throws Exception
      */
-    protected function getColumns(UiComponentInterface $component): array
+    protected function getColumns(UiComponentInterface $component)
     {
         if (!isset($this->columns[$component->getName()])) {
             $columns = $this->getColumnsComponent($component);
@@ -116,7 +104,6 @@ class MetadataProvider
                 }
             }
         }
-
         return $this->columns[$component->getName()];
     }
 
@@ -124,11 +111,9 @@ class MetadataProvider
      * Retrieve Headers row array for Export
      *
      * @param UiComponentInterface $component
-     *
      * @return string[]
-     * @throws Exception
      */
-    public function getHeaders(UiComponentInterface $component): array
+    public function getHeaders(UiComponentInterface $component)
     {
         $row = [];
         foreach ($this->getColumns($component) as $column) {
@@ -142,17 +127,14 @@ class MetadataProvider
      * Returns DB fields list
      *
      * @param UiComponentInterface $component
-     *
-     * @return string[]
-     * @throws Exception
+     * @return array
      */
-    public function getFields(UiComponentInterface $component): array
+    public function getFields(UiComponentInterface $component)
     {
         $row = [];
         foreach ($this->getColumns($component) as $column) {
             $row[] = $column->getName();
         }
-
         return $row;
     }
 
@@ -162,10 +144,9 @@ class MetadataProvider
      * @param DocumentInterface $document
      * @param array $fields
      * @param array $options
-     *
-     * @return string[]
+     * @return array
      */
-    public function getRowData(DocumentInterface $document, $fields, $options): array
+    public function getRowData(DocumentInterface $document, $fields, $options)
     {
         $row = [];
         foreach ($fields as $column) {
@@ -174,13 +155,12 @@ class MetadataProvider
                 if (isset($options[$column][$key])) {
                     $row[] = $options[$column][$key];
                 } else {
-                    $row[] = $key;
+                    $row[] = '';
                 }
             } else {
                 $row[] = $document->getCustomAttribute($column)->getValue();
             }
         }
-
         return $row;
     }
 
@@ -190,10 +170,9 @@ class MetadataProvider
      * @param array $list
      * @param string $label
      * @param array $output
-     *
      * @return void
      */
-    protected function getComplexLabel($list, $label, &$output): void
+    protected function getComplexLabel($list, $label, &$output)
     {
         foreach ($list as $item) {
             if (!is_array($item['value'])) {
@@ -205,75 +184,34 @@ class MetadataProvider
     }
 
     /**
-     * Prepare array of options.
+     * Returns array of Select options
      *
-     * @param array $options
-     *
+     * @param Select $filter
      * @return array
      */
-    protected function getOptionsArray(array $options): array
+    protected function getFilterOptions(Select $filter)
     {
-        $preparedOptions = [];
-        foreach ($options as $option) {
+        $options = [];
+        foreach ($filter->getData('config/options') as $option) {
             if (!is_array($option['value'])) {
-                $preparedOptions[$option['value']] = $option['label'];
+                $options[$option['value']] = $option['label'];
             } else {
                 $this->getComplexLabel(
                     $option['value'],
                     $option['label'],
-                    $preparedOptions
+                    $options
                 );
             }
         }
-
-        return $preparedOptions;
+        return $options;
     }
 
     /**
      * Returns Filters with options
      *
      * @return array
-     * @throws LocalizedException
      */
-    public function getOptions(): array
-    {
-        return array_merge(
-            $this->getColumnOptions(),
-            $this->getFilterOptions()
-        );
-    }
-
-    /**
-     * Get options from columns.
-     *
-     * @return array
-     * @throws LocalizedException
-     * @throws Exception
-     */
-    protected function getColumnOptions(): array
-    {
-        $options = [];
-        $component = $this->filter->getComponent();
-        /** @var Column $columnComponent */
-        foreach ($this->getColumns($component) as $columnComponent) {
-            if ($columnComponent->hasData('options')) {
-                $optionSource = $columnComponent->getData('options');
-                $optionsArray = $optionSource instanceof OptionSourceInterface ?
-                    $optionSource->toOptionArray() : $optionSource;
-                $options[$columnComponent->getName()] = $this->getOptionsArray($optionsArray ?: []);
-            }
-        }
-
-        return $options;
-    }
-
-    /**
-     * Get options from column filters.
-     *
-     * @return array
-     * @throws LocalizedException
-     */
-    protected function getFilterOptions(): array
+    public function getOptions()
     {
         $options = [];
         $component = $this->filter->getComponent();
@@ -283,25 +221,22 @@ class MetadataProvider
             if ($child instanceof Filters) {
                 foreach ($child->getChildComponents() as $filter) {
                     if ($filter instanceof Select) {
-                        $options[$filter->getName()] = $this->getOptionsArray($filter->getData('config/options'));
+                        $options[$filter->getName()] = $this->getFilterOptions($filter);
                     }
                 }
             }
         }
-
         return $options;
     }
 
     /**
      * Convert document date(UTC) fields to default scope specified
      *
-     * @param DocumentInterface $document
+     * @param \Magento\Framework\Api\Search\DocumentInterface $document
      * @param string $componentName
-     *
      * @return void
-     * @throws Exception
      */
-    public function convertDate($document, $componentName): void
+    public function convertDate($document, $componentName)
     {
         if (!isset($this->data[$componentName])) {
             return;
@@ -312,7 +247,7 @@ class MetadataProvider
                 continue;
             }
             $convertedDate = $this->localeDate->date(
-                new DateTime($fieldValue, new DateTimeZone('UTC')),
+                new \DateTime($fieldValue, new \DateTimeZone('UTC')),
                 $this->locale,
                 true
             );

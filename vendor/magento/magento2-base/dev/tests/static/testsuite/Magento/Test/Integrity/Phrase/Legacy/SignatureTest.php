@@ -19,7 +19,7 @@ class SignatureTest extends \Magento\Test\Integrity\Phrase\AbstractTestCase
      */
     protected $_phraseCollector;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_phraseCollector = new MethodCollector(
             new Tokenizer()

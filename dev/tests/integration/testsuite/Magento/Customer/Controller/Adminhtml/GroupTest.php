@@ -3,12 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Customer\Controller\Adminhtml;
 
-use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Message\MessageInterface;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * @magentoAppArea adminhtml
@@ -16,13 +15,9 @@ use Magento\TestFramework\Helper\Bootstrap;
 class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
     const TAX_CLASS_ID = 3;
-
     const TAX_CLASS_NAME = 'Retail Customer';
-
     const CUSTOMER_GROUP_CODE = 'custom_group';
-
     const BASE_CONTROLLER_URL = 'http://localhost/index.php/backend/customer/group/';
-
     const CUSTOMER_GROUP_ID = 2;
 
     /** @var  \Magento\Framework\Session\SessionManagerInterface */
@@ -36,7 +31,7 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
      *
      * @throws \Magento\Framework\Exception\AuthenticationException
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $objectManager = Bootstrap::getObjectManager();
@@ -51,13 +46,10 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
     {
         $this->dispatch('backend/customer/group/new');
         $responseBody = $this->getResponse()->getBody();
-        $this->assertMatchesRegularExpression(
-            '/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/',
-            $responseBody
-        );
+        $this->assertRegExp('/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/', $responseBody);
         $expected = '<input id="customer_group_code" name="code"  '
             . 'data-ui-id="group-form-fieldset-element-text-code"  value=""';
-        $this->assertStringContainsString($expected, $responseBody);
+        $this->assertContains($expected, $responseBody);
     }
 
     /**
@@ -83,13 +75,10 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
         $this->session->setCustomerGroupData($customerGroupData);
         $this->dispatch('backend/customer/group/new');
         $responseBody = $this->getResponse()->getBody();
-        $this->assertMatchesRegularExpression(
-            '/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/',
-            $responseBody
-        );
+        $this->assertRegExp('/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/', $responseBody);
         $expected = '<input id="customer_group_code" name="code"  '
             . 'data-ui-id="group-form-fieldset-element-text-code"  value="' . self::CUSTOMER_GROUP_CODE . '"';
-        $this->assertStringContainsString($expected, $responseBody);
+        $this->assertContains($expected, $responseBody);
     }
 
     /**
@@ -214,10 +203,7 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
         $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->dispatch('backend/customer/group/save');
         $responseBody = $this->getResponse()->getBody();
-        $this->assertMatchesRegularExpression(
-            '/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/',
-            $responseBody
-        );
+        $this->assertRegExp('/<h1 class\="page-title">\s*New Customer Group\s*<\/h1>/', $responseBody);
     }
 
     /**
@@ -233,10 +219,7 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
         $this->dispatch('backend/customer/group/save');
 
         $responseBody = $this->getResponse()->getBody();
-        $this->assertMatchesRegularExpression(
-            '/<h1 class\="page-title">\s*' . self::CUSTOMER_GROUP_CODE . '\s*<\/h1>/',
-            $responseBody
-        );
+        $this->assertRegExp('/<h1 class\="page-title">\s*' . self::CUSTOMER_GROUP_CODE . '\s*<\/h1>/', $responseBody);
     }
 
     /**
@@ -257,7 +240,7 @@ class GroupTest extends \Magento\TestFramework\TestCase\AbstractBackendControlle
             MessageInterface::TYPE_ERROR
         );
         $this->assertRedirect($this->stringStartsWith(self::BASE_CONTROLLER_URL . 'edit/'));
-        $this->assertNull($this->session->getCustomerGroupData());
+        $this->assertEquals(null, $this->session->getCustomerGroupData());
     }
 
     /**

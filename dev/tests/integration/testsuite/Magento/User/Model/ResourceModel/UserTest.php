@@ -38,7 +38,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = Bootstrap::getObjectManager()->get(UserResourceModel::class);
         $this->userRoleCollectionFactory = Bootstrap::getObjectManager()->get(UserRoleCollectionFactory::class);

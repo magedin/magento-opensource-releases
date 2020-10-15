@@ -1,10 +1,12 @@
 <?php
 namespace Codeception;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'shim.php';
+
 use Codeception\Stub\ConsecutiveMap;
 use Codeception\Stub\StubMarshaler;
 use PHPUnit\Framework\MockObject\Generator;
-use PHPUnit\Framework\MockObject\Rule\AnyInvokedCount;
+use PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount;
 use PHPUnit\Framework\MockObject\Stub\ConsecutiveCalls;
 use PHPUnit\Framework\MockObject\Stub\ReturnCallback;
 use PHPUnit\Framework\MockObject\Stub\ReturnStub;
@@ -52,12 +54,11 @@ class Stub
      * ], $this);
      * ```
      *
-     * @template RealInstanceType of object
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     * @param mixed $class - A class to be mocked
      * @param array $params - properties and methods to set
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType - mock
+     * @return object - mock
      * @throws \RuntimeException when class does not exist
      * @throws \Exception
      */
@@ -160,13 +161,13 @@ class Stub
      *      'save' => \Codeception\Stub\Expected::once()
      * ], $this);
      * ```
-     * @template
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     *
+     * @param mixed $class
      * @param string $method
      * @param array $params
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType
+     * @return object
      * @throws \Exception
      */
     public static function makeEmptyExcept($class, $method, $params = [], $testCase = false)
@@ -229,7 +230,7 @@ class Stub
      * ``` php
      * <?php
      * Stub::makeEmpty('User', ['save' => function () { return true; }]);
-     * Stub::makeEmpty('User', ['save' => true]);
+     * Stub::makeEmpty('User', ['save' => true));
      * ```
      *
      * **To create a mock, pass current testcase name as last argument:**
@@ -241,12 +242,11 @@ class Stub
      * ], $this);
      * ```
      *
-     * @template RealInstanceType of object
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     * @param mixed $class
      * @param array $params
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType
+     * @return object
      * @throws \Exception
      */
     public static function makeEmpty($class, $params = [], $testCase = false)
@@ -301,7 +301,7 @@ class Stub
      *
      * ``` php
      * <?php
-     * Stub::construct(new User, ['autosave' => false], ['name' => 'davert']);
+     * Stub::construct(new User, ['autosave' => false), ['name' => 'davert']);
      * ?>
      * ```
      *
@@ -324,13 +324,12 @@ class Stub
      * ], $this);
      * ```
      *
-     * @template RealInstanceType of object
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     * @param mixed $class
      * @param array $constructorParams
      * @param array $params
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType
+     * @return object
      * @throws \Exception
      */
     public static function construct($class, $constructorParams = [], $params = [], $testCase = false)
@@ -356,7 +355,7 @@ class Stub
      * ``` php
      * <?php
      * Stub::constructEmpty('User', ['autosave' => false]);
-     * Stub::constructEmpty('User', ['autosave' => false], ['name' => 'davert']);
+     * Stub::constructEmpty('User', ['autosave' => false), ['name' => 'davert']);
      * ```
      *
      * Accepts either name of class or object of that class
@@ -384,13 +383,12 @@ class Stub
      * ], $this);
      * ```
      *
-     * @template RealInstanceType of object
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     * @param mixed $class
      * @param array $constructorParams
      * @param array $params
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType
+     * @return object
      */
     public static function constructEmpty($class, $constructorParams = [], $params = [], $testCase = false)
     {
@@ -450,14 +448,13 @@ class Stub
      * ], $this);
      * ```
      *
-     * @template RealInstanceType of object
-     * @param class-string<RealInstanceType>|RealInstanceType|callable(): class-string<RealInstanceType> $class - A class to be mocked
+     * @param mixed $class
      * @param string $method
      * @param array $constructorParams
      * @param array $params
      * @param bool|\PHPUnit\Framework\TestCase $testCase
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject&RealInstanceType
+     * @return object
      */
     public static function constructEmptyExcept(
         $class,
@@ -672,7 +669,7 @@ class Stub
      *
      * ``` php
      * <?php
-     * $user = Stub::make('User', ['getName' => Stub::consecutive('david', 'emma', 'sam', 'amy')]);
+     * $user = Stub::make('User', array('getName' => Stub::consecutive('david', 'emma', 'sam', 'amy')));
      * $user->getName(); //david
      * $user->getName(); //emma
      * $user->getName(); //sam

@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Sender;
 
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity;
-use Magento\Sales\Model\Order\Email\Sender\OrderCommentSender;
+use \Magento\Sales\Model\Order\Email\Sender\OrderCommentSender;
 
 class OrderCommentSenderTest extends AbstractSenderTest
 {
     /**
-     * @var OrderCommentSender
+     * @var \Magento\Sales\Model\Order\Email\Sender\OrderCommentSender
      */
     protected $sender;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->stepMockSetup();
-        $this->stepIdentityContainerInit(OrderCommentIdentity::class);
+        $this->stepIdentityContainerInit(\Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity::class);
         $this->addressRenderer->expects($this->any())->method('format')->willReturn(1);
         $this->sender = new OrderCommentSender(
             $this->templateContainerMock,
@@ -49,7 +45,7 @@ class OrderCommentSenderTest extends AbstractSenderTest
         $this->stepAddressFormat($billingAddress);
         $this->orderMock->expects($this->once())
             ->method('getCustomerIsGuest')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->orderMock->expects($this->any())
             ->method('getCustomerName')
             ->willReturn($customerName);
@@ -59,22 +55,24 @@ class OrderCommentSenderTest extends AbstractSenderTest
 
         $this->identityContainerMock->expects($this->once())
             ->method('isEnabled')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->templateContainerMock->expects($this->once())
             ->method('setTemplateVars')
             ->with(
-                [
-                    'order' => $this->orderMock,
-                    'billing' => $billingAddress,
-                    'comment' => $comment,
-                    'store' => $this->storeMock,
-                    'formattedShippingAddress' => 1,
-                    'formattedBillingAddress' => 1,
-                    'order_data' => [
-                        'customer_name' => $customerName,
-                        'frontend_status_label' => $frontendStatusLabel
+                $this->equalTo(
+                    [
+                        'order' => $this->orderMock,
+                        'billing' => $billingAddress,
+                        'comment' => $comment,
+                        'store' => $this->storeMock,
+                        'formattedShippingAddress' => 1,
+                        'formattedBillingAddress' => 1,
+                        'order_data' => [
+                            'customer_name' => $customerName,
+                            'frontend_status_label' => $frontendStatusLabel
+                        ]
                     ]
-                ]
+                )
             );
         $this->stepSendWithoutSendCopy();
         $result = $this->sender->send($this->orderMock, true, $comment);
@@ -84,14 +82,14 @@ class OrderCommentSenderTest extends AbstractSenderTest
     public function testSendVirtualOrder()
     {
         $isVirtualOrder = true;
-        $this->orderMock->setData(OrderInterface::IS_VIRTUAL, $isVirtualOrder);
+        $this->orderMock->setData(\Magento\Sales\Api\Data\OrderInterface::IS_VIRTUAL, $isVirtualOrder);
         $this->stepAddressFormat($this->addressMock, $isVirtualOrder);
         $customerName='Test Customer';
         $frontendStatusLabel='Complete';
 
         $this->identityContainerMock->expects($this->once())
             ->method('isEnabled')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->orderMock->expects($this->any())
             ->method('getCustomerName')
             ->willReturn($customerName);
@@ -101,18 +99,20 @@ class OrderCommentSenderTest extends AbstractSenderTest
         $this->templateContainerMock->expects($this->once())
             ->method('setTemplateVars')
             ->with(
-                [
-                    'order' => $this->orderMock,
-                    'comment' => '',
-                    'billing' => $this->addressMock,
-                    'store' => $this->storeMock,
-                    'formattedShippingAddress' => null,
-                    'formattedBillingAddress' => 1,
-                    'order_data' => [
-                        'customer_name' => $customerName,
-                        'frontend_status_label' => $frontendStatusLabel
+                $this->equalTo(
+                    [
+                        'order' => $this->orderMock,
+                        'comment' => '',
+                        'billing' => $this->addressMock,
+                        'store' => $this->storeMock,
+                        'formattedShippingAddress' => null,
+                        'formattedBillingAddress' => 1,
+                        'order_data' => [
+                            'customer_name' => $customerName,
+                            'frontend_status_label' => $frontendStatusLabel
+                        ]
                     ]
-                ]
+                )
             );
         $this->assertFalse($this->sender->send($this->orderMock));
     }

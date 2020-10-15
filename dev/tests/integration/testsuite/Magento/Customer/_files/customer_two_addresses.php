@@ -7,9 +7,8 @@
  */
 
 use Magento\Customer\Model\CustomerRegistry;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
+require 'customer_address.php';
 
 /** @var \Magento\Customer\Model\Address $customerAddress */
 $customerAddress = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

@@ -44,7 +44,7 @@ class SourceThemeDeployCommandTest extends \PHPUnit\Framework\TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         global $installDir;
 
@@ -59,7 +59,7 @@ class SourceThemeDeployCommandTest extends \PHPUnit\Framework\TestCase
     {
         $error = [];
 
-        /** @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject $outputMock */
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $outputMock */
         $outputMock = $this->getMockBuilder(OutputInterface::class)
             ->getMockForAbstractClass();
 
@@ -114,7 +114,7 @@ class SourceThemeDeployCommandTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return InputInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return InputInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getInputMock()
     {

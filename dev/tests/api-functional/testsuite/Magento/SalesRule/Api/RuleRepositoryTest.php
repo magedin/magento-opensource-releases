@@ -20,7 +20,7 @@ class RuleRepositoryTest extends WebapiAbstract
      */
     private $objectManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -124,7 +124,7 @@ class RuleRepositoryTest extends WebapiAbstract
         $this->assertEquals($inputData, $result);
 
         //test delete
-        $this->assertTrue($this->deleteRule($ruleId));
+        $this->assertEquals(true, $this->deleteRule($ruleId));
     }
 
     public function verifyGetList($ruleId)

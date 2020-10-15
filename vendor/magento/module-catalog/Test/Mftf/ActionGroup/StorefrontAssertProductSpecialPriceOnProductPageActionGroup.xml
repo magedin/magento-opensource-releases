@@ -20,9 +20,6 @@
         <waitForPageLoad stepKey="waitForFirstProductPage"/>
         <waitForElementVisible selector="{{StorefrontProductInfoMainSection.specialPriceValue}}" stepKey="waitForProductSpecialPrice"/>
         <grabTextFrom selector="{{StorefrontProductInfoMainSection.specialPriceValue}}" stepKey="grabProductSpecialPrice"/>
-        <assertEquals stepKey="assertProductPriceValuesAreEqual">
-			<actualResult type="const">$grabProductSpecialPrice</actualResult>
-			<expectedResult type="string">{{specialPrice}}</expectedResult>
-        </assertEquals>
+        <assertEquals actual="$grabProductSpecialPrice" expectedType="string" expected="{{specialPrice}}" stepKey="assertProductPriceValuesAreEqual"/>
     </actionGroup>
 </actionGroups>

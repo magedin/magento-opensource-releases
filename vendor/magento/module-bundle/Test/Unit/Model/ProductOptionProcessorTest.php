@@ -3,23 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Model;
 
 use Magento\Bundle\Api\Data\BundleOptionInterface;
 use Magento\Bundle\Api\Data\BundleOptionInterfaceFactory;
-use Magento\Bundle\Model\BundleOption;
 use Magento\Bundle\Model\ProductOptionProcessor;
-use Magento\Catalog\Api\Data\ProductOptionExtensionInterface;
-use Magento\Catalog\Api\Data\ProductOptionInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\DataObject\Factory as DataObjectFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductOptionProcessorTest extends TestCase
+class ProductOptionProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductOptionProcessor
@@ -27,28 +20,28 @@ class ProductOptionProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObject;
 
     /**
-     * @var DataObjectFactory|MockObject
+     * @var DataObjectFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectFactory;
 
     /**
-     * @var BundleOptionInterfaceFactory|MockObject
+     * @var BundleOptionInterfaceFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $bundleOptionInterfaceFactory;
 
     /**
-     * @var BundleOptionInterface|MockObject
+     * @var BundleOptionInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $bundleOption;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dataObject = $this->getMockBuilder(DataObject::class)
+        $this->dataObject = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods([
                 'getBundleOption',
                 'getBundleOptionQty',
@@ -67,12 +60,12 @@ class ProductOptionProcessorTest extends TestCase
             ->willReturn($this->dataObject);
 
         $this->bundleOption = $this->getMockBuilder(
-            BundleOptionInterface::class
+            \Magento\Bundle\Api\Data\BundleOptionInterface::class
         )
             ->getMockForAbstractClass();
 
         $this->bundleOptionInterfaceFactory = $this->getMockBuilder(
-            BundleOptionInterfaceFactory::class
+            \Magento\Bundle\Api\Data\BundleOptionInterfaceFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -96,11 +89,11 @@ class ProductOptionProcessorTest extends TestCase
         $options,
         $requestData
     ) {
-        $productOptionMock = $this->getMockBuilder(ProductOptionInterface::class)
+        $productOptionMock = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductOptionInterface::class)
             ->getMockForAbstractClass();
 
         $productOptionExtensionMock = $this->getMockBuilder(
-            ProductOptionExtensionInterface::class
+            \Magento\Catalog\Api\Data\ProductOptionExtensionInterface::class
         )->setMethods(['getBundleOptions'])->getMockForAbstractClass();
 
         $productOptionMock->expects($this->any())
@@ -126,8 +119,8 @@ class ProductOptionProcessorTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        /** @var BundleOption $option */
-        $option = $objectManager->getObject(BundleOption::class);
+        /** @var \Magento\Bundle\Model\BundleOption $option */
+        $option = $objectManager->getObject(\Magento\Bundle\Model\BundleOption::class);
         $option->setOptionId(1);
         $option->setOptionQty(1);
         $option->setOptionSelections(['selection']);
@@ -191,7 +184,7 @@ class ProductOptionProcessorTest extends TestCase
 
         if (!empty($expected)) {
             $this->assertArrayHasKey($expected, $result);
-            $this->assertIsArray($result[$expected]);
+            $this->assertTrue(is_array($result[$expected]));
         } else {
             $this->assertEmpty($result);
         }

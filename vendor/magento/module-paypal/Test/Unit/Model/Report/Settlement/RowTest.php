@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Model\Report\Settlement;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Paypal\Model\Report\Settlement\Row;
-use PHPUnit\Framework\TestCase;
 
-class RowTest extends TestCase
+class RowTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Row
+     * @var \Magento\Paypal\Model\Report\Settlement\Row
      */
     protected $row;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->row = $objectManagerHelper->getObject(Row::class);
+        $this->row = $objectManagerHelper->getObject(\Magento\Paypal\Model\Report\Settlement\Row::class);
     }
 
     /**

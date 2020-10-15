@@ -291,7 +291,7 @@ class Product extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     }
 
     /**
-     * Get product collection array
+     * Get category collection array
      *
      * @param null|string|bool|int|Store $storeId
      *

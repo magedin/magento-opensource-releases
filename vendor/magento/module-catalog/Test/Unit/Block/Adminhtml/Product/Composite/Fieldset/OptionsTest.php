@@ -3,22 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Product\Composite\Fieldset;
-
-use Magento\Catalog\Block\Adminhtml\Product\Composite\Fieldset\Options;
-use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Configuration\Item\OptionFactory;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Option;
-use Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory;
-use Magento\Framework\Data\CollectionFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Catalog\Block\Adminhtml\Product\Composite\Fieldset\Options
@@ -26,79 +11,80 @@ use PHPUnit\Framework\TestCase;
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_objectHelper;
 
     /**
-     * @var Options
+     * @var \Magento\Catalog\Block\Adminhtml\Product\Composite\Fieldset\Options
      */
     protected $_optionsBlock;
 
     /**
-     * @var Option
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Option
      */
     protected $_optionResource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectHelper = new ObjectManager($this);
-        $this->_optionResource = $this->createMock(Option::class);
+        $this->_objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_optionResource = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Option::class);
     }
 
     public function testGetOptionHtml()
     {
         $layout = $this->createPartialMock(
-            Layout::class,
+            \Magento\Framework\View\Layout::class,
             ['getChildName', 'getBlock', 'renderElement']
         );
         $context = $this->_objectHelper->getObject(
-            Context::class,
+            \Magento\Framework\View\Element\Template\Context::class,
             ['layout' => $layout]
         );
         $optionFactoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Product\Option\ValueFactory::class)
+            ->setMethods(['create'])
             ->disableOriginalConstructor()
-            ->onlyMethods(['create'])
             ->getMock();
+
         $option = $this->_objectHelper->getObject(
             \Magento\Catalog\Model\Product\Option::class,
             ['resource' => $this->_optionResource, 'optionValueFactory' => $optionFactoryMock]
         );
-        $dateBlock = $this->getMockBuilder(Options::class)
+        $dateBlock = $this->getMockBuilder(\Magento\Catalog\Block\Adminhtml\Product\Composite\Fieldset\Options::class)
             ->setMethods(['setSkipJsReloadPrice'])
             ->setConstructorArgs(['context' => $context, 'option' => $option])
             ->disableOriginalConstructor()
             ->getMock();
-        $dateBlock->expects($this->any())->method('setSkipJsReloadPrice')->willReturn($dateBlock);
+        $dateBlock->expects($this->any())->method('setSkipJsReloadPrice')->will($this->returnValue($dateBlock));
 
-        $layout->expects($this->any())->method('getChildName')->willReturn('date');
-        $layout->expects($this->any())->method('getBlock')->with('date')->willReturn($dateBlock);
-        $layout->expects($this->any())->method('renderElement')->with('date', false)->willReturn('html');
+        $layout->expects($this->any())->method('getChildName')->will($this->returnValue('date'));
+        $layout->expects($this->any())->method('getBlock')->with('date')->will($this->returnValue($dateBlock));
+        $layout->expects($this->any())->method('renderElement')->with('date', false)->will($this->returnValue('html'));
 
         $this->_optionsBlock = $this->_objectHelper->getObject(
-            Options::class,
+            \Magento\Catalog\Block\Adminhtml\Product\Composite\Fieldset\Options::class,
             ['context' => $context, 'option' => $option]
         );
 
         $itemOptFactoryMock = $this->createPartialMock(
-            OptionFactory::class,
+            \Magento\Catalog\Model\Product\Configuration\Item\OptionFactory::class,
             ['create']
         );
         $stockItemFactoryMock = $this->createPartialMock(
-            StockItemInterfaceFactory::class,
+            \Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory::class,
             ['create']
         );
-        $productFactoryMock = $this->createPartialMock(ProductFactory::class, ['create']);
-        $categoryFactoryMock = $this->createPartialMock(CategoryFactory::class, ['create']);
+        $productFactoryMock = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
+        $categoryFactoryMock = $this->createPartialMock(\Magento\Catalog\Model\CategoryFactory::class, ['create']);
 
         $this->_optionsBlock->setProduct(
             $this->_objectHelper->getObject(
-                Product::class,
+                \Magento\Catalog\Model\Product::class,
                 [
-                    'collectionFactory' => $this->createMock(CollectionFactory::class),
+                    'collectionFactory' => $this->createMock(\Magento\Framework\Data\CollectionFactory::class),
                     'itemOptionFactory' => $itemOptFactoryMock,
                     'stockItemFactory' => $stockItemFactoryMock,
                     'productFactory' => $productFactoryMock,

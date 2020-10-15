@@ -12,33 +12,31 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Wishlist\Model\Product\AttributeValueProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * Class AttributeValueProviderTest
- *
- * PHPUnit test case for \Magento\Wishlist\Model\Product\AttributeValueProvider
+ * AttributeValueProviderTest
  */
 class AttributeValueProviderTest extends TestCase
 {
     /**
-     * @var AttributeValueProvider|MockObject
+     * @var AttributeValueProvider|PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeValueProvider;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|PHPUnit_Framework_MockObject_MockObject
      */
     private $productCollectionFactoryMock;
 
     /**
-     * @var Product|MockObject
+     * @var Product|PHPUnit_Framework_MockObject_MockObject
      */
     private $productMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $connectionMock;
 
@@ -47,7 +45,7 @@ class AttributeValueProviderTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->productCollectionFactoryMock = $this->createPartialMock(
             CollectionFactory::class,
@@ -121,8 +119,7 @@ class AttributeValueProviderTest extends TestCase
      */
     public function testGetAttributeTextWhenFlatIsEnabled(int $productId, string $attributeCode, string $attributeText)
     {
-        $this->connectionMock = $this->getMockBuilder(AdapterInterface::class)
-            ->getMockForAbstractClass();
+        $this->connectionMock = $this->getMockBuilder(AdapterInterface::class)->getMockForAbstractClass();
         $this->connectionMock->expects($this->any())
             ->method('fetchRow')
             ->willReturn([

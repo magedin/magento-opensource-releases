@@ -3,56 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Filters\Type;
 
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Filters\FilterModifier;
 use Magento\Ui\Component\Filters\Type\Date;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Ui\Component\Form\Element\DataType\Date as FormDate;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Test for Date grid filter functionality
+ * Class DateTest
  */
-class DateTest extends TestCase
+class DateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $contextMock;
 
     /**
-     * @var UiComponentFactory|MockObject
+     * @var UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $uiComponentFactory;
 
     /**
-     * @var FilterBuilder|MockObject
+     * @var FilterBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterBuilderMock;
 
     /**
-     * @var FilterModifier|MockObject
+     * @var FilterModifier|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filterModifierMock;
 
     /**
-     * @var DataProviderInterface|MockObject
+     * @var DataProviderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $dataProviderMock;
 
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
         $this->uiComponentFactory = $this->getMockBuilder(UiComponentFactory::class)
@@ -87,26 +82,25 @@ class DateTest extends TestCase
             []
         );
 
-        static::assertSame(Date::NAME, $date->getComponentName());
+        static::assertTrue($date->getComponentName() === Date::NAME);
     }
 
     /**
      * Run test prepare method
      *
      * @param string $name
-     * @param bool $showsTime
      * @param array $filterData
      * @param array|null $expectedCondition
      * @dataProvider getPrepareDataProvider
      * @return void
      */
-    public function testPrepare(string $name, bool $showsTime, array $filterData, ?array $expectedCondition)
+    public function testPrepare($name, $filterData, $expectedCondition)
     {
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->contextMock->expects(static::atLeastOnce())->method('getProcessor')->willReturn($processor);
-        /** @var FormDate|MockObject $uiComponent */
+        /** @var FormDate $uiComponent */
         $uiComponent = $this->getMockBuilder(FormDate::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -131,7 +125,7 @@ class DateTest extends TestCase
             ->willReturn($this->dataProviderMock);
 
         if ($expectedCondition !== null) {
-            $this->processFilters($name, $showsTime, $filterData, $expectedCondition, $uiComponent);
+            $this->processFilters($name, $filterData, $expectedCondition, $uiComponent);
         }
 
         $this->uiComponentFactory->expects($this->any())
@@ -145,10 +139,7 @@ class DateTest extends TestCase
             $this->filterBuilderMock,
             $this->filterModifierMock,
             [],
-            [
-                'name' => $name,
-                'config' => ['options' => ['showsTime' => $showsTime]],
-            ]
+            ['name' => $name]
         );
         $date->prepare();
     }
@@ -161,7 +152,7 @@ class DateTest extends TestCase
      * @param string $expectedDate
      * @param int $i
      *
-     * @return Filter|MockObject
+     * @return Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getFilterMock($name, $expectedType, $expectedDate, &$i)
     {
@@ -193,92 +184,57 @@ class DateTest extends TestCase
     {
         return [
             [
-                'name' => 'test_date',
-                'showsTime' => false,
-                'filterData' => ['test_date' => ['from' => '11-05-2015', 'to' => null]],
-                'expectedCondition' => ['date' => '2015-05-11 00:00:00', 'type' => 'gteq'],
+                'test_date',
+                ['test_date' => ['from' => '11-05-2015', 'to' => null]],
+                ['date' => '2015-05-11 00:00:00', 'type' => 'gteq'],
             ],
             [
-                'name' => 'test_date',
-                'showsTime' => false,
-                'filterData' => ['test_date' => ['from' => null, 'to' => '11-05-2015']],
-                'expectedCondition' => ['date' => '2015-05-11 23:59:59', 'type' => 'lteq'],
+                'test_date',
+                ['test_date' => ['from' => null, 'to' => '11-05-2015']],
+                ['date' => '2015-05-11 23:59:59', 'type' => 'lteq'],
             ],
             [
-                'name' => 'test_date',
-                'showsTime' => false,
-                'filterData' => ['test_date' => ['from' => '11-05-2015', 'to' => '11-05-2015']],
-                'expectedCondition' => [
+                'test_date',
+                ['test_date' => ['from' => '11-05-2015', 'to' => '11-05-2015']],
+                [
                     'date_from' => '2015-05-11 00:00:00', 'type_from' => 'gteq',
                     'date_to' => '2015-05-11 23:59:59', 'type_to' => 'lteq'
                 ],
             ],
             [
-                'name' => 'test_date',
-                'showsTime' => false,
-                'filterData' => ['test_date' => '11-05-2015'],
-                'expectedCondition' => ['date' => '2015-05-11 00:00:00', 'type' => 'eq'],
+                'test_date',
+                ['test_date' => '11-05-2015'],
+                ['date' => '2015-05-11 00:00:00', 'type' => 'eq'],
             ],
             [
-                'name' => 'test_date',
-                'showsTime' => false,
-                'filterData' => ['test_date' => ['from' => '', 'to' => '']],
-                'expectedCondition' => null,
-            ],
-            [
-                'name' => 'test_date',
-                'showsTime' => true,
-                'filterData' => ['test_date' => ['from' => '11-05-2015 10:20:00', 'to' => '11-05-2015 18:25:00']],
-                'expectedCondition' => [
-                    'date_from' => '2015-05-11 10:20:00', 'type_from' => 'gteq',
-                    'date_to' => '2015-05-11 18:25:00', 'type_to' => 'lteq'
-                ],
+                'test_date',
+                ['test_date' => ['from' => '', 'to' => '']],
+                null,
             ],
         ];
     }
 
     /**
-     * @param string $name
-     * @param bool $showsTime
-     * @param array $filterData
-     * @param array $expectedCondition
-     * @param MockObject $uiComponent
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @param $name
+     * @param $filterData
+     * @param $expectedCondition
+     * @param $uiComponent
      */
-    private function processFilters(
-        string $name,
-        bool $showsTime,
-        array $filterData,
-        array $expectedCondition,
-        FormDate $uiComponent
-    ) {
+    private function processFilters($name, $filterData, $expectedCondition, $uiComponent)
+    {
         if (is_string($filterData[$name])) {
             $uiComponent->expects(static::once())
-                ->method($showsTime ? 'convertDatetime' : 'convertDate')
+                ->method('convertDate')
                 ->with($filterData[$name])
                 ->willReturn(new \DateTime($filterData[$name]));
         } else {
-            if ($showsTime) {
-                $from = new \DateTime($filterData[$name]['from'] ?? 'now');
-                $to = new \DateTime($filterData[$name]['to'] ?? 'now');
-                $uiComponent->method('convertDatetime')
-                    ->willReturnMap(
-                        [
-                            [$filterData[$name]['from'], true, $from],
-                            [$filterData[$name]['to'], true, $to],
-                        ]
-                    );
-            } else {
-                $from = new \DateTime($filterData[$name]['from'] ?? 'now');
-                $to = new \DateTime($filterData[$name]['to'] ? $filterData[$name]['to'] . ' 23:59:59' : 'now');
-                $uiComponent->method('convertDate')
-                    ->willReturnMap(
-                        [
-                            [$filterData[$name]['from'], 0, 0, 0, true, $from],
-                            [$filterData[$name]['to'], 23, 59, 59, true, $to],
-                        ]
-                    );
-            }
+            $from = new \DateTime($filterData[$name]['from']);
+            $to = new \DateTime($filterData[$name]['to'] . ' 23:59:59');
+            $uiComponent->method('convertDate')
+                ->willReturnMap([
+                    [$filterData[$name]['from'], 0, 0, 0, true, $from],
+                    [$filterData[$name]['to'], 23, 59, 59, true, $to],
+                ]);
         }
 
         $i = 0;

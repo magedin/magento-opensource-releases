@@ -5,8 +5,6 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 \Magento\TestFramework\Helper\Bootstrap::getInstance()->getInstance()->reinitialize();
 
 /** @var $objectManager \Magento\TestFramework\ObjectManager */
@@ -30,5 +28,5 @@ try {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/ConfigurableProduct/_files/configurable_attribute_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/CatalogRule/_files/simple_products_rollback.php');
+require __DIR__ . '/simple_products_rollback.php';
+require __DIR__ . '/../../ConfigurableProduct/_files/configurable_attribute_rollback.php';

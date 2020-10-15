@@ -9,7 +9,6 @@ use Magento\CatalogInventory\Model\Stock\Status;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 
@@ -43,8 +42,8 @@ foreach ($list as $sku) {
     }
 }
 
-Resolver::getInstance()->requireDataFixture('Magento/ConfigurableProduct/_files/configurable_attribute_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/ConfigurableProduct/_files/configurable_attribute_2_rollback.php');
+require __DIR__ . '/../../../Magento/ConfigurableProduct/_files/configurable_attribute_rollback.php';
+require __DIR__ . '/../../../Magento/ConfigurableProduct/_files/configurable_attribute_2_rollback.php';
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

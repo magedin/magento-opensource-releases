@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Product;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Stdlib\DateTime\Filter\Date;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Reports\Controller\Adminhtml\Report\Product\ExportLowstockExcel;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ExportLowstockExcelTest extends AbstractControllerTest
+class ExportLowstockExcelTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportLowstockExcel
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Product\ExportLowstockExcel
      */
     protected $exportLowstockExcel;
 
     /**
-     * @var Date|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\Filter\Date|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dateMock;
 
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
-        $this->dateMock = $this->getMockBuilder(Date::class)
+        $this->dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exportLowstockExcel = $objectManager->getObject(
-            ExportLowstockExcel::class,
+            \Magento\Reports\Controller\Adminhtml\Report\Product\ExportLowstockExcel::class,
             [
                 'context' => $this->contextMock,
                 'fileFactory' => $this->fileFactoryMock,
@@ -69,7 +63,7 @@ class ExportLowstockExcelTest extends AbstractControllerTest
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with('products_lowstock.xml', $content, DirectoryList::VAR_DIR);
+            ->with('products_lowstock.xml', $content, \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
 
         $this->exportLowstockExcel->execute();
     }

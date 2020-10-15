@@ -31,11 +31,11 @@ class HostedproTest extends \PHPUnit\Framework\TestCase
     private $model;
 
     /**
-     * @var \Magento\Paypal\Model\Api\Nvp|\PHPUnit\Framework\MockObject\MockObject
+     * @var \Magento\Paypal\Model\Api\Nvp|\PHPUnit_Framework_MockObject_MockObject
      */
     private $api;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -81,7 +81,7 @@ class HostedproTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Get mock for config
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getConfig()
     {
@@ -98,7 +98,7 @@ class HostedproTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Create mock for Pro factory
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     protected function getProFactory()
     {

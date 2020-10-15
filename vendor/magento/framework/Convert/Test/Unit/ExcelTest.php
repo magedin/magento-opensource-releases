@@ -1,23 +1,15 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Magento_Convert Test Case for \Magento\Framework\Convert\Excel Export
  */
-
 namespace Magento\Framework\Convert\Test\Unit;
 
-use Magento\Framework\Convert\Excel;
-use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Filesystem\File\Write;
-use PHPUnit\Framework\TestCase;
-
-class ExcelTest extends TestCase
+class ExcelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test data
@@ -78,7 +70,7 @@ class ExcelTest extends TestCase
      */
     public function testConvert()
     {
-        $convert = new Excel(new \ArrayIterator($this->_testData));
+        $convert = new \Magento\Framework\Convert\Excel(new \ArrayIterator($this->_testData));
         $convert->setDataHeader($this->_testHeader);
         $convert->setDataFooter($this->_testFooter);
         $this->assertXmlStringEqualsXmlString(
@@ -95,15 +87,11 @@ class ExcelTest extends TestCase
      */
     public function testConvertCallback()
     {
-        $convert = new Excel(
+        $convert = new \Magento\Framework\Convert\Excel(
             new \ArrayIterator($this->_testData),
             [$this, 'callbackMethod']
         );
-        $this->assertStringContainsString(
-            '_TRUE_',
-            $convert->convert(),
-            'Failed asserting that callback method is called.'
-        );
+        $this->assertContains('_TRUE_', $convert->convert(), 'Failed asserting that callback method is called.');
     }
 
     /**
@@ -114,22 +102,22 @@ class ExcelTest extends TestCase
      */
     protected function _writeFile($callback = false)
     {
-        $name = hash('md5', (string)microtime());
+        $name = md5(microtime());
         $file = TESTS_TEMP_DIR . '/' . $name . '.xml';
 
-        $stream = new Write(
+        $stream = new \Magento\Framework\Filesystem\File\Write(
             $file,
-            new File(),
+            new \Magento\Framework\Filesystem\Driver\File(),
             'w+'
         );
         $stream->lock();
 
         if (!$callback) {
-            $convert = new Excel(new \ArrayIterator($this->_testData));
+            $convert = new \Magento\Framework\Convert\Excel(new \ArrayIterator($this->_testData));
             $convert->setDataHeader($this->_testHeader);
             $convert->setDataFooter($this->_testFooter);
         } else {
-            $convert = new Excel(
+            $convert = new \Magento\Framework\Convert\Excel(
                 new \ArrayIterator($this->_testData),
                 [$this, 'callbackMethod']
             );
@@ -166,10 +154,6 @@ class ExcelTest extends TestCase
     public function testWriteCallback()
     {
         $file = $this->_writeFile(true);
-        $this->assertStringContainsString(
-            '_TRUE_',
-            file_get_contents($file),
-            'Failed asserting that callback method is called.'
-        );
+        $this->assertContains('_TRUE_', file_get_contents($file), 'Failed asserting that callback method is called.');
     }
 }

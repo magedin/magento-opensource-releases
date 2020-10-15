@@ -3,77 +3,66 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Compiler\Config;
 
 use Magento\Framework\App\Area;
-use Magento\Framework\App\ObjectManager\ConfigLoader;
-use Magento\Framework\ObjectManager\ConfigInterface;
-use Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator;
-use Magento\Setup\Module\Di\Code\Reader\Type;
-use Magento\Setup\Module\Di\Compiler\ArgumentsResolver;
-use Magento\Setup\Module\Di\Compiler\ArgumentsResolverFactory;
-use Magento\Setup\Module\Di\Compiler\Config\Reader;
 use Magento\Setup\Module\Di\Definition\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Setup\Module\Di\Compiler\Config\Reader
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $diContainerConfig;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $configLoader;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $argumentsResolverFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $argumentsResolver;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $classReaderDecorator;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $typeReader;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->diContainerConfig =
-            $this->getMockForAbstractClass(ConfigInterface::class);
+            $this->createMock(\Magento\Framework\ObjectManager\ConfigInterface::class);
         $this->configLoader =
-            $this->createMock(ConfigLoader::class);
+            $this->createMock(\Magento\Framework\App\ObjectManager\ConfigLoader::class);
 
         $this->argumentsResolverFactory =
-            $this->createMock(ArgumentsResolverFactory::class);
-        $this->argumentsResolver = $this->createMock(ArgumentsResolver::class);
+            $this->createMock(\Magento\Setup\Module\Di\Compiler\ArgumentsResolverFactory::class);
+        $this->argumentsResolver = $this->createMock(\Magento\Setup\Module\Di\Compiler\ArgumentsResolver::class);
         $this->argumentsResolverFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->argumentsResolver);
         $this->classReaderDecorator =
-            $this->createMock(ClassReaderDecorator::class);
-        $this->typeReader = $this->createMock(Type::class);
+            $this->createMock(\Magento\Setup\Module\Di\Code\Reader\ClassReaderDecorator::class);
+        $this->typeReader = $this->createMock(\Magento\Setup\Module\Di\Code\Reader\Type::class);
 
-        $this->model = new Reader(
+        $this->model = new \Magento\Setup\Module\Di\Compiler\Config\Reader(
             $this->diContainerConfig,
             $this->configLoader,
             $this->argumentsResolverFactory,

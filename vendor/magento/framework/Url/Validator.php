@@ -4,13 +4,13 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * Validate URL
+ *
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
 namespace Magento\Framework\Url;
 
-use Laminas\Validator\Uri;
-
-/**
- * URL validator
- */
 class Validator extends \Zend_Validate_Abstract
 {
     /**#@+
@@ -20,15 +20,14 @@ class Validator extends \Zend_Validate_Abstract
     /**#@-*/
 
     /**
-     * @var Uri
+     * @var \Zend\Validator\Uri
      */
     private $validator;
 
     /**
-     * @param Uri $validator
-     * @throws \Zend_Validate_Exception
+     * Object constructor
      */
-    public function __construct(Uri $validator)
+    public function __construct(\Zend\Validator\Uri $validator)
     {
         // set translated message template
         $this->setMessage((string)new \Magento\Framework\Phrase("Invalid URL '%value%'."), self::INVALID_URL);

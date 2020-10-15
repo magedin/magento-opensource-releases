@@ -3,32 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Wysiwyg\Files;
 
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\Index;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Files */
+    /** @var \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files */
     protected $controller;
 
-    /** @var ViewInterface|MockObject */
+    /** @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $view;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->view = $this->getMockForAbstractClass(ViewInterface::class);
+        $this->view = $this->createMock(\Magento\Framework\App\ViewInterface::class);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->controller = $helper->getObject(
-            Index::class,
+            \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\Index::class,
             [
                 'view' => $this->view,
             ]
@@ -37,10 +28,10 @@ class IndexTest extends TestCase
 
     public function testExecute()
     {
-        $this->view->expects($this->once())
+        $this->view ->expects($this->once())
             ->method('loadLayout')
             ->with('overlay_popup');
-        $this->view->expects($this->once())
+        $this->view ->expects($this->once())
             ->method('renderLayout');
 
         $this->controller->execute();

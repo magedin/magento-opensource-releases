@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © Magento, Inc. All rights reserved.
@@ -7,64 +7,53 @@
 
 namespace Magento\ImportExport\Test\Unit\Block\Adminhtml\Import\Edit;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\Registry;
-use Magento\ImportExport\Block\Adminhtml\Import\Edit\Form;
-use Magento\ImportExport\Model\Import;
-use Magento\ImportExport\Model\Source\Import\Behavior\Factory;
-use Magento\ImportExport\Model\Source\Import\EntityFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
      * Basic import model
      *
-     * @var Import|MockObject
+     * @var \Magento\ImportExport\Model\Import|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_importModel;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\ImportExport\Model\Source\Import\EntityFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_entityFactory;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\ImportExport\Model\Source\Import\Behavior\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_behaviorFactory;
 
     /**
-     * @var Form|MockObject
+     * @var \Magento\ImportExport\Block\Adminhtml\Import\Edit\Form|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $form;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Backend\Block\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $registry = $this->getMockBuilder(Registry::class)
+        $registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $formFactory = $this->getMockBuilder(FormFactory::class)
+        $formFactory = $this->getMockBuilder(\Magento\Framework\Data\FormFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->_importModel = $this->getMockBuilder(Import::class)
+        $this->_importModel = $this->getMockBuilder(\Magento\ImportExport\Model\Import::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->_entityFactory = $this->getMockBuilder(EntityFactory::class)
+        $this->_entityFactory = $this->getMockBuilder(\Magento\ImportExport\Model\Source\Import\EntityFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->_behaviorFactory = $this->getMockBuilder(
-            Factory::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\ImportExport\Model\Source\Import\Behavior\Factory::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->form = $this->getMockBuilder(Form::class)
+        $this->form = $this->getMockBuilder(\Magento\ImportExport\Block\Adminhtml\Import\Edit\Form::class)
             ->setConstructorArgs([
                 $context,
                 $registry,

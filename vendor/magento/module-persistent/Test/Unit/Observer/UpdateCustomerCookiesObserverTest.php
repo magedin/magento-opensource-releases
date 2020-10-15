@@ -3,87 +3,70 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
-
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Persistent\Helper\Session;
-use Magento\Persistent\Model\Session as PersistentSessionModel;
-use Magento\Persistent\Observer\UpdateCustomerCookiesObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class UpdateCustomerCookiesTest
  */
-class UpdateCustomerCookiesObserverTest extends TestCase
+class UpdateCustomerCookiesObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UpdateCustomerCookiesObserver
+     * @var \Magento\Persistent\Observer\UpdateCustomerCookiesObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerRepository;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->sessionHelperMock = $this->createMock(Session::class);
+        $eventMethods = ['getCustomerCookies', '__wakeUp'];
+        $sessionMethods = ['getId', 'getGroupId', 'getCustomerId', '__wakeUp'];
+        $this->sessionHelperMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
         $this->customerRepository = $this->getMockForAbstractClass(
-            CustomerRepositoryInterface::class,
+            \Magento\Customer\Api\CustomerRepositoryInterface::class,
             [],
             '',
             false
         );
-        $this->observerMock = $this->createMock(Observer::class);
-        $this->eventManagerMock = $this->getMockBuilder(Event::class)
-            ->addMethods(['getCustomerCookies'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->sessionMock = $this->getMockBuilder(PersistentSessionModel::class)
-            ->addMethods(['getGroupId', 'getCustomerId'])
-            ->onlyMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
+        $this->eventManagerMock = $this->createPartialMock(\Magento\Framework\Event::class, $eventMethods);
+        $this->sessionMock = $this->createPartialMock(\Magento\Persistent\Model\Session::class, $sessionMethods);
         $this->customerMock = $this->getMockForAbstractClass(
-            CustomerInterface::class,
+            \Magento\Customer\Api\Data\CustomerInterface::class,
             [],
             '',
             false
         );
-        $this->model = new UpdateCustomerCookiesObserver(
+        $this->model = new \Magento\Persistent\Observer\UpdateCustomerCookiesObserver(
             $this->sessionHelperMock,
             $this->customerRepository
         );
@@ -91,7 +74,7 @@ class UpdateCustomerCookiesObserverTest extends TestCase
 
     public function testExecuteWhenSessionNotPersistent()
     {
-        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(false);
+        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->will($this->returnValue(false));
         $this->observerMock->expects($this->never())->method('getEvent');
         $this->model->execute($this->observerMock);
     }
@@ -100,35 +83,36 @@ class UpdateCustomerCookiesObserverTest extends TestCase
     {
         $customerId = 1;
         $customerGroupId = 2;
-        $cookieMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['setCustomerId', 'setCustomerGroupId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
+        $cookieMock = $this->createPartialMock(
+            \Magento\Framework\DataObject::class,
+            ['setCustomerId', 'setCustomerGroupId', '__wakeUp']
+        );
+        $this->sessionHelperMock->expects($this->once())->method('isPersistent')->will($this->returnValue(true));
         $this->observerMock
             ->expects($this->once())
             ->method('getEvent')
-            ->willReturn($this->eventManagerMock);
+            ->will($this->returnValue($this->eventManagerMock));
         $this->eventManagerMock
             ->expects($this->once())
             ->method('getCustomerCookies')
-            ->willReturn($cookieMock);
+            ->will($this->returnValue($cookieMock));
         $this->sessionHelperMock
             ->expects($this->once())
             ->method('getSession')
-            ->willReturn($this->sessionMock);
-        $this->sessionMock->expects($this->once())->method('getCustomerId')->willReturn($customerId);
+            ->will($this->returnValue($this->sessionMock));
+        $this->sessionMock->expects($this->once())->method('getCustomerId')->will($this->returnValue($customerId));
         $this->customerRepository
             ->expects($this->once())
             ->method('getById')
-            ->willReturn($this->customerMock);
-        $this->customerMock->expects($this->once())->method('getId')->willReturn($customerId);
-        $this->customerMock->expects($this->once())->method('getGroupId')->willReturn($customerGroupId);
-        $cookieMock->expects($this->once())->method('setCustomerId')->with($customerId)->willReturnSelf();
+            ->will($this->returnValue($this->customerMock));
+        $this->customerMock->expects($this->once())->method('getId')->will($this->returnValue($customerId));
+        $this->customerMock->expects($this->once())->method('getGroupId')->will($this->returnValue($customerGroupId));
+        $cookieMock->expects($this->once())->method('setCustomerId')->with($customerId)->will($this->returnSelf());
         $cookieMock
             ->expects($this->once())
             ->method('setCustomerGroupId')
-            ->with($customerGroupId)->willReturnSelf();
+            ->with($customerGroupId)
+            ->will($this->returnSelf());
         $this->model->execute($this->observerMock);
     }
 }

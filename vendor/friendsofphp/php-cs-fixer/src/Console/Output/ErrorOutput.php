@@ -106,14 +106,11 @@ final class ErrorOutput
 
                 $diff = $error->getDiff();
                 if (!empty($diff)) {
-                    $diffFormatter = new DiffConsoleFormatter(
-                        $this->isDecorated,
-                        sprintf(
-                            '<comment>      ---------- begin diff ----------</comment>%s%%s%s<comment>      ----------- end diff -----------</comment>',
-                            PHP_EOL,
-                            PHP_EOL
-                        )
-                    );
+                    $diffFormatter = new DiffConsoleFormatter($this->isDecorated, sprintf(
+                        '<comment>      ---------- begin diff ----------</comment>%s%%s%s<comment>      ----------- end diff -----------</comment>',
+                        PHP_EOL,
+                        PHP_EOL
+                    ));
 
                     $this->output->writeln($diffFormatter->format($diff));
                 }
@@ -121,6 +118,9 @@ final class ErrorOutput
         }
     }
 
+    /**
+     * @param array $trace
+     */
     private function outputTrace(array $trace)
     {
         if (isset($trace['class'], $trace['type'], $trace['function'])) {

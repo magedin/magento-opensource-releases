@@ -81,7 +81,8 @@ final class SquareBraceTransformer extends AbstractTransformer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function transformIntoArraySquareBrace(Tokens $tokens, $index)
     {
@@ -92,7 +93,8 @@ final class SquareBraceTransformer extends AbstractTransformer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function transformIntoDestructuringSquareBrace(Tokens $tokens, $index)
     {
@@ -118,7 +120,8 @@ final class SquareBraceTransformer extends AbstractTransformer
     /**
      * Check if token under given index is short array opening.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */
@@ -157,7 +160,8 @@ final class SquareBraceTransformer extends AbstractTransformer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool
      */

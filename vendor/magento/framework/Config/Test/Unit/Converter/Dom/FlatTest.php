@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit\Converter\Dom;
 
-use Magento\Framework\Config\Converter\Dom\Flat;
-use Magento\Framework\Config\Dom\ArrayNodeConfig;
-use Magento\Framework\Config\Dom\NodePathMatcher;
-use PHPUnit\Framework\TestCase;
-
-class FlatTest extends TestCase
+class FlatTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Flat
+     * @var \Magento\Framework\Config\Converter\Dom\Flat
      */
     protected $_model;
 
@@ -26,10 +19,10 @@ class FlatTest extends TestCase
      */
     protected $_fixturePath;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $arrayNodeConfig = new ArrayNodeConfig(
-            new NodePathMatcher(),
+        $arrayNodeConfig = new \Magento\Framework\Config\Dom\ArrayNodeConfig(
+            new \Magento\Framework\Config\Dom\NodePathMatcher(),
             [
                 '/root/multipleNode' => 'id',
                 '/root/wrongArray' => 'id',
@@ -38,7 +31,7 @@ class FlatTest extends TestCase
                 '/root/node_one/subnode',
             ]
         );
-        $this->_model = new Flat($arrayNodeConfig);
+        $this->_model = new \Magento\Framework\Config\Converter\Dom\Flat($arrayNodeConfig);
         $this->_fixturePath = realpath(__DIR__ . '/../../') . '/_files/converter/dom/flat/';
     }
 
@@ -53,22 +46,24 @@ class FlatTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Node path '/root/someOtherVal' is not unique, but it has not been marked as array.
+     */
     public function testConvertWithNotUnique()
     {
-        $this->expectException('UnexpectedValueException');
-        $this->expectExceptionMessage(
-            'Node path \'/root/someOtherVal\' is not unique, but it has not been marked as array.'
-        );
         $dom = new \DOMDocument();
         $dom->load($this->_fixturePath . 'source_notuniq.xml');
 
         $this->_model->convert($dom);
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage Array is expected to contain value for key 'id'.
+     */
     public function testConvertWrongArray()
     {
-        $this->expectException('UnexpectedValueException');
-        $this->expectExceptionMessage('Array is expected to contain value for key \'id\'.');
         $dom = new \DOMDocument();
         $dom->load($this->_fixturePath . 'source_wrongarray.xml');
 

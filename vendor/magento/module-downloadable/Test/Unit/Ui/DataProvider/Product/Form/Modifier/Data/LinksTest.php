@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier\Data;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Downloadable\Helper\File as DownloadableFile;
-use Magento\Downloadable\Model\Link as LinkModel;
-use Magento\Downloadable\Model\Product\Type;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Links;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Links;
+use \Magento\Framework\Escaper;
+use Magento\Downloadable\Model\Product\Type;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Downloadable\Helper\File as DownloadableFile;
 use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Model\Link as LinkModel;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 /**
+ * Class LinksTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LinksTest extends TestCase
+class LinksTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -32,37 +28,37 @@ class LinksTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var Escaper|MockObject
+     * @var Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $escaperMock;
 
     /**
-     * @var DownloadableFile|MockObject
+     * @var DownloadableFile|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $downloadableFileMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var LinkModel|MockObject
+     * @var LinkModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $linkModelMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $productMock;
 
@@ -74,17 +70,17 @@ class LinksTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->productMock = $this->getMockBuilder(ProductInterface::class)
             ->setMethods(['getLinksTitle', 'getId', 'getTypeId'])
             ->getMockForAbstractClass();
-        $this->locatorMock = $this->getMockForAbstractClass(LocatorInterface::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->locatorMock = $this->createMock(LocatorInterface::class);
+        $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
         $this->escaperMock = $this->createMock(Escaper::class);
         $this->downloadableFileMock = $this->createMock(DownloadableFile::class);
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlBuilderMock = $this->createMock(UrlInterface::class);
         $this->linkModelMock = $this->createMock(LinkModel::class);
         $this->links = $this->objectManagerHelper->getObject(
             Links::class,
@@ -102,8 +98,8 @@ class LinksTest extends TestCase
     /**
      * @param int|null $id
      * @param string $typeId
-     * @param InvokedCount $expectedGetTitle
-     * @param InvokedCount $expectedGetValue
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $expectedGetTitle
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $expectedGetValue
      * @return void
      * @dataProvider getLinksTitleDataProvider
      */

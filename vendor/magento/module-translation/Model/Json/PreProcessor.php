@@ -3,12 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Translation\Model\Json;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\App\AreaList;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\TranslateInterface;
 use Magento\Framework\View\Asset\File\FallbackContext;
 use Magento\Framework\View\Asset\PreProcessor\Chain;
@@ -57,27 +57,26 @@ class PreProcessor implements PreProcessorInterface
      * @param DataProviderInterface $dataProvider
      * @param AreaList $areaList
      * @param TranslateInterface $translate
-     * @param DesignInterface $viewDesign
+     * @param DesignInterface|null $viewDesign
      */
     public function __construct(
         Config $config,
         DataProviderInterface $dataProvider,
         AreaList $areaList,
         TranslateInterface $translate,
-        DesignInterface $viewDesign
+        DesignInterface $viewDesign = null
     ) {
         $this->config = $config;
         $this->dataProvider = $dataProvider;
         $this->areaList = $areaList;
         $this->translate = $translate;
-        $this->viewDesign = $viewDesign;
+        $this->viewDesign = $viewDesign ?? ObjectManager::getInstance()->get(DesignInterface::class);
     }
 
     /**
      * Transform content and/or content type for the specified preprocessing chain object
      *
      * @param Chain $chain
-     *
      * @return void
      */
     public function process(Chain $chain)
@@ -111,7 +110,6 @@ class PreProcessor implements PreProcessorInterface
      * Is provided path the path to translation dictionary
      *
      * @param string $path
-     *
      * @return bool
      */
     protected function isDictionaryPath($path)

@@ -3,46 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Creditmemo\Total;
 
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Creditmemo\Item;
-use Magento\Sales\Model\Order\Creditmemo\Total\Cost;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CostTest extends TestCase
+/**
+ * Class CostTest
+ */
+class CostTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Cost
+     * @var \Magento\Sales\Model\Order\Creditmemo\Total\Cost
      */
     protected $total;
 
     /**
-     * @var Creditmemo|MockObject
+     * @var \Magento\Sales\Model\Order\Creditmemo|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoMock;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Sales\Model\Order\Creditmemo\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $creditmemoItemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->creditmemoMock = $this->getMockBuilder(Creditmemo::class)
-            ->addMethods(['setBaseCost'])
-            ->onlyMethods(['getAllItems'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->creditmemoItemMock = $this->getMockBuilder(Item::class)
-            ->addMethods(['getHasChildren'])
-            ->onlyMethods(['getBaseCost', 'getQty'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->total = new Cost();
+        $this->creditmemoMock = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Creditmemo::class,
+            ['setBaseCost', 'getAllItems']
+        );
+        $this->creditmemoItemMock = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Creditmemo\Item::class,
+            ['getHasChildren', 'getBaseCost', 'getQty']
+        );
+        $this->total = new \Magento\Sales\Model\Order\Creditmemo\Total\Cost();
     }
 
     public function testCollect()

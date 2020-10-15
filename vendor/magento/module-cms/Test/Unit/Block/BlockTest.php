@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Block;
 
-use Magento\Cms\Block\Block;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class BlockTest extends TestCase
+class BlockTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Block
+     * @var \Magento\Cms\Block\Block
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->block = $objectManager->getObject(Block::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->block = $objectManager->getObject(\Magento\Cms\Block\Block::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->block = null;
     }

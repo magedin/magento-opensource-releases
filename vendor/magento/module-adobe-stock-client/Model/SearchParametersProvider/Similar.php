@@ -17,8 +17,6 @@ use Magento\Framework\Api\SearchCriteriaInterface;
  */
 class Similar implements SearchParameterProviderInterface
 {
-    private const SIMILAR = 'similar';
-
     /**
      * @inheritdoc
      */
@@ -26,7 +24,7 @@ class Similar implements SearchParameterProviderInterface
     {
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             foreach ($filterGroup->getFilters() as $filter) {
-                if ($filter->getField() === self::SIMILAR) {
+                if ($filter->getField() === 'similar') {
                     $searchParams->setSimilar((int)$filter->getValue());
                     break;
                 }

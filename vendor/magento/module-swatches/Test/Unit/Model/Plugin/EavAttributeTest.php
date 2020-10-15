@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Swatches\Test\Unit\Model\Plugin;
 
@@ -129,7 +128,7 @@ class EavAttributeTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
         $this->abstractSource = $this->createMock(AbstractSource::class);
@@ -215,11 +214,12 @@ class EavAttributeTest extends TestCase
 
     /**
      * Test beforeSave plugin on empty label
+     *
+     * @expectedException \Magento\Framework\Exception\InputException
+     * @expectedExceptionMessage Admin is a required field in each row
      */
     public function testBeforeSaveWithFailedValidation()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
-        $this->expectExceptionMessage('Admin is a required field in each row');
         $options = self::VISUAL_ATTRIBUTE_OPTIONS;
         $options['value'][self::NEW_OPTION_KEY][self::ADMIN_STORE_ID] = '';
         $this->attribute->setData(
@@ -299,13 +299,13 @@ class EavAttributeTest extends TestCase
     /**
      * Test afterSave plugin for visual swatch
      *
-     * @param int $swatchType
+     * @param string $swatchType
      * @param string $swatch1
      * @param string $swatch2
      *
      * @dataProvider visualSwatchProvider
      */
-    public function testAfterAfterSaveVisualSwatch(int $swatchType, string $swatch1, string $swatch2)
+    public function testAfterAfterSaveVisualSwatch(string $swatchType, string $swatch1, string $swatch2)
     {
         $options = self::VISUAL_SWATCH_OPTIONS;
         $options['value'][self::OPTION_1_ID] = $swatch1;
@@ -342,13 +342,13 @@ class EavAttributeTest extends TestCase
             ->method('getFirstItem')
             ->willReturnOnConsecutiveCalls(
                 $this->createSwatchMock(
-                    (string)$swatchType,
-                    (string)$swatch1 ?: null,
+                    $swatchType,
+                    $swatch1,
                     1
                 ),
                 $this->createSwatchMock(
-                    (string)$swatchType,
-                    (string)$swatch2 ?: null,
+                    $swatchType,
+                    $swatch2,
                     null,
                     self::OPTION_2_ID,
                     self::ADMIN_STORE_ID
@@ -403,24 +403,24 @@ class EavAttributeTest extends TestCase
             ->method('getFirstItem')
             ->willReturnOnConsecutiveCalls(
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::OPTION_1_ID][self::ADMIN_STORE_ID],
                     1
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::OPTION_1_ID][self::DEFAULT_STORE_ID],
                     1
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::NEW_OPTION_KEY][self::ADMIN_STORE_ID],
                     null,
                     self::OPTION_2_ID,
                     self::ADMIN_STORE_ID
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::NEW_OPTION_KEY][self::DEFAULT_STORE_ID],
                     null,
                     self::OPTION_2_ID,
@@ -471,7 +471,7 @@ class EavAttributeTest extends TestCase
             ->method('getFirstItem')
             ->willReturnOnConsecutiveCalls(
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_VISUAL_COLOR,
+                    Swatch::SWATCH_TYPE_VISUAL_COLOR,
                     self::VISUAL_SWATCH_OPTIONS['value'][self::NEW_OPTION_KEY],
                     null,
                     self::OPTION_2_ID,
@@ -525,14 +525,14 @@ class EavAttributeTest extends TestCase
             ->method('getFirstItem')
             ->willReturnOnConsecutiveCalls(
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::NEW_OPTION_KEY][self::ADMIN_STORE_ID],
                     null,
                     self::OPTION_2_ID,
                     self::ADMIN_STORE_ID
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     self::TEXT_SWATCH_OPTIONS['value'][self::NEW_OPTION_KEY][self::DEFAULT_STORE_ID],
                     null,
                     self::OPTION_2_ID,
@@ -593,24 +593,24 @@ class EavAttributeTest extends TestCase
             ->method('getFirstItem')
             ->willReturnOnConsecutiveCalls(
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     null,
                     1
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     null,
                     1
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     null,
                     null,
                     self::OPTION_2_ID,
                     self::ADMIN_STORE_ID
                 ),
                 $this->createSwatchMock(
-                    (string)Swatch::SWATCH_TYPE_TEXTUAL,
+                    Swatch::SWATCH_TYPE_TEXTUAL,
                     null,
                     null,
                     self::OPTION_2_ID,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright :copyright: Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 declare(strict_types=1);
@@ -31,7 +31,7 @@ class SourceAssignTest extends TestCase
      */
     private $sourceItemRepository;
 
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->bulkSourceAssign = Bootstrap::getObjectManager()->get(BulkSourceAssignInterface::class);
@@ -59,9 +59,9 @@ class SourceAssignTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/source_items_on_default_source.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/source_items_on_default_source.php
      * @magentoDbIsolation enabled
      */
     public function testBulkSourceAssignment()
@@ -119,8 +119,8 @@ class SourceAssignTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryCatalog::Test/_files/products_all_types.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryCatalog/Test/_files/products_all_types.php
      * @magentoDbIsolation enabled
      */
     public function testBulkSourceAssignmentOnMixedProducts()

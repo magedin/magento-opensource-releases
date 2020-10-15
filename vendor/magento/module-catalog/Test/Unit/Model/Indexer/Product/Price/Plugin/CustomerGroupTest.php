@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Price\Plugin;
 
 use Magento\Catalog\Model\Indexer\Product\Price\DimensionModeConfiguration;
@@ -16,12 +14,11 @@ use Magento\Customer\Model\Indexer\CustomerGroupDimensionProvider;
 use Magento\Framework\Indexer\DimensionFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for CustomerGroup plugin
  */
-class CustomerGroupTest extends TestCase
+class CustomerGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -53,7 +50,7 @@ class CustomerGroupTest extends TestCase
      */
     private $proceedMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
 
@@ -92,7 +89,7 @@ class CustomerGroupTest extends TestCase
      */
     public function testAroundSave($customerGroupId, $callTimes)
     {
-        $subjectMock = $this->getMockForAbstractClass(GroupRepositoryInterface::class);
+        $subjectMock = $this->createMock(GroupRepositoryInterface::class);
         $customerGroupMock = $this->createPartialMock(
             Group::class,
             ['getId']

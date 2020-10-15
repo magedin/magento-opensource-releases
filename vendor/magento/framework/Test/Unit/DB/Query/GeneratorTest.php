@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Test\Unit\DB\Query;
 
@@ -12,10 +11,8 @@ use Magento\Framework\DB\Query\BatchIteratorFactory;
 use Magento\Framework\DB\Query\BatchRangeIteratorFactory;
 use Magento\Framework\DB\Query\Generator;
 use Magento\Framework\DB\Select;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends TestCase
+class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Generator
@@ -23,29 +20,29 @@ class GeneratorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $selectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $factoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $iteratorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $rangeFactoryMock;
 
     /**
      * Setup test dependencies.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->factoryMock = $this->createMock(BatchIteratorFactory::class);
         $this->rangeFactoryMock = $this->createPartialMock(BatchRangeIteratorFactory::class, ['create']);
@@ -90,12 +87,12 @@ class GeneratorTest extends TestCase
     /**
      * Test batch generation with invalid select object.
      *
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage The select object must have the correct "FROM" part. Verify and try again.
      * @return void
      */
     public function testGenerateWithoutFromPart()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The select object must have the correct "FROM" part. Verify and try again.');
         $map = [
             [Select::FROM, []],
             [

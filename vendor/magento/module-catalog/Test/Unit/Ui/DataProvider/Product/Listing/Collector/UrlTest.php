@@ -3,60 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Listing\Collector;
 
-use Magento\Catalog\Api\Data\ProductRender\ButtonInterface;
-use Magento\Catalog\Api\Data\ProductRender\ButtonInterfaceFactory;
 use Magento\Catalog\Api\Data\ProductRenderInterface;
-use Magento\Catalog\Block\Product\AbstractProduct;
-use Magento\Catalog\Helper\Product\Compare;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Url;
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\Data\Helper\PostHelper;
+use Magento\Catalog\Api\Data\ProductRender\ButtonInterfaceFactory;
+use Magento\Catalog\Api\Data\ProductRender\ButtonInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UrlTest extends TestCase
+class UrlTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Url */
+    /** @var \Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Url */
     protected $model;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var AbstractProduct|MockObject */
+    /** @var \Magento\Catalog\Block\Product\AbstractProduct|\PHPUnit_Framework_MockObject_MockObject */
     protected $abstractProductMock;
 
-    /** @var Compare|MockObject */
+    /** @var \Magento\Catalog\Helper\Product\Compare|\PHPUnit_Framework_MockObject_MockObject */
     protected $catalogProductHelperMock;
 
-    /** @var PostHelper|MockObject */
+    /** @var \Magento\Framework\Data\Helper\PostHelper|\PHPUnit_Framework_MockObject_MockObject */
     protected $postHelperMock;
 
-    /** @var ButtonInterfaceFactory|MockObject */
+    /** @var ButtonInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject */
     private $buttonFactoryMock;
 
-    /** @var  ButtonInterface|MockObject */
+    /** @var  ButtonInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $buttonMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->abstractProductMock = $this->getMockBuilder(AbstractProduct::class)
+        $this->abstractProductMock = $this->getMockBuilder(\Magento\Catalog\Block\Product\AbstractProduct::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->catalogProductHelperMock = $this->getMockBuilder(Compare::class)
+        $this->catalogProductHelperMock = $this->getMockBuilder(\Magento\Catalog\Helper\Product\Compare::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->postHelperMock = $this->getMockBuilder(PostHelper::class)
+        $this->postHelperMock = $this->getMockBuilder(\Magento\Framework\Data\Helper\PostHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->buttonFactoryMock = $this->getMockBuilder(
-            ButtonInterfaceFactory::class
+            \Magento\Catalog\Api\Data\ProductRender\ButtonInterfaceFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -64,11 +55,11 @@ class UrlTest extends TestCase
 
         $this->buttonMock = $this->getMockBuilder(ButtonInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            Url::class,
+            \Magento\Catalog\Ui\DataProvider\Product\Listing\Collector\Url::class,
             [
                 'abstractProduct' => $this->abstractProductMock,
                 'compare' => $this->catalogProductHelperMock,
@@ -83,7 +74,7 @@ class UrlTest extends TestCase
         $product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $productRenderInfoDto = $this->getMockForAbstractClass(ProductRenderInterface::class);
+        $productRenderInfoDto = $this->createMock(ProductRenderInterface::class);
         $this->catalogProductHelperMock
             ->expects($this->once())
             ->method('getPostDataParams')
@@ -108,7 +99,7 @@ class UrlTest extends TestCase
                 'some:url',
                 [
                     'product' => 1,
-                    ActionInterface::PARAM_NAME_URL_ENCODED => "%uenc%"
+                    \Magento\Framework\App\ActionInterface::PARAM_NAME_URL_ENCODED => "%uenc%"
                 ]
             )
             ->willReturn(['some cart url post data']);

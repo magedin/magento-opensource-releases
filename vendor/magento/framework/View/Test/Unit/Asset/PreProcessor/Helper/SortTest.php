@@ -3,18 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Asset\PreProcessor\Helper;
 
 use Magento\Framework\View\Asset\PreProcessor\Helper\Sort;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class SortTest
  *
  * @see \Magento\Framework\View\Asset\PreProcessor\Helper\Sorter2
  */
-class SortTest extends TestCase
+class SortTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param array $arrayData

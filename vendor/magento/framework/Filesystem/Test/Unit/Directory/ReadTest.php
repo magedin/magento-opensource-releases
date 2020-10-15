@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Unit Test for \Magento\Framework\Filesystem\Directory\Read
  *
@@ -7,30 +7,24 @@
  */
 namespace Magento\Framework\Filesystem\Test\Unit\Directory;
 
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Filesystem\File\ReadFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReadTest extends TestCase
+class ReadTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * \Magento\Framework\Filesystem\Driver
      *
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $driver;
 
     /**
-     * @var Read
+     * @var \Magento\Framework\Filesystem\Directory\Read
      */
     protected $read;
 
     /**
      * \Magento\Framework\Filesystem\File\ReadFactory
      *
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $fileFactory;
 
@@ -44,11 +38,11 @@ class ReadTest extends TestCase
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->driver = $this->createMock(File::class);
-        $this->fileFactory = $this->createMock(ReadFactory::class);
-        $this->read = new Read(
+        $this->driver = $this->createMock(\Magento\Framework\Filesystem\Driver\File::class);
+        $this->fileFactory = $this->createMock(\Magento\Framework\Filesystem\File\ReadFactory::class);
+        $this->read = new \Magento\Framework\Filesystem\Directory\Read(
             $this->fileFactory,
             $this->driver,
             $this->path
@@ -58,7 +52,7 @@ class ReadTest extends TestCase
     /**
      * Tear down
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->driver = null;
         $this->fileFactory = null;
@@ -67,13 +61,13 @@ class ReadTest extends TestCase
 
     public function testIsExist()
     {
-        $this->driver->expects($this->once())->method('isExists')->willReturn(true);
+        $this->driver->expects($this->once())->method('isExists')->will($this->returnValue(true));
         $this->assertTrue($this->read->isExist('correct-path'));
     }
 
     public function testStat()
     {
-        $this->driver->expects($this->once())->method('stat')->willReturn(['some-stat-data']);
+        $this->driver->expects($this->once())->method('stat')->will($this->returnValue(['some-stat-data']));
         $this->assertEquals(['some-stat-data'], $this->read->stat('correct-path'));
     }
 
@@ -87,11 +81,11 @@ class ReadTest extends TestCase
         $this->driver->expects($this->once())
             ->method('getAbsolutePath')
             ->with($this->path, $path)
-            ->willReturn($path);
+            ->will($this->returnValue($path));
         $this->driver->expects($this->once())
             ->method('fileGetContents')
             ->with($path, $flag, $context)
-            ->willReturn($contents);
+            ->will($this->returnValue($contents));
 
         $this->assertEquals($contents, $this->read->readFile($path, $flag, $context));
     }

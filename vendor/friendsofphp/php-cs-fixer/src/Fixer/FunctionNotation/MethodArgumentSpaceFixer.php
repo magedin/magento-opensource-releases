@@ -17,16 +17,12 @@ use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
 use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use PhpCsFixer\FixerConfiguration\InvalidOptionsForEnvException;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\FixerDefinition\VersionSpecification;
-use PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
 use PhpCsFixer\Preg;
 use PhpCsFixer\Tokenizer\CT;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
-use Symfony\Component\OptionsResolver\Options;
 
 /**
  * Fixer for rules defined in PSR2 ¶4.4, ¶4.6.
@@ -38,7 +34,8 @@ final class MethodArgumentSpaceFixer extends AbstractFixer implements Configurat
     /**
      * Method to insert space after comma and remove space before comma.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     public function fixSpace(Tokens $tokens, $index)
     {
@@ -88,22 +85,6 @@ final class MethodArgumentSpaceFixer extends AbstractFixer implements Configurat
                         'keep_multiple_spaces_after_comma' => false,
                     ]
                 ),
-                new VersionSpecificCodeSample(
-                    <<<'SAMPLE'
-<?php
-sample(
-    <<<EOD
-        foo
-        EOD
-    ,
-    'bar'
-);
-
-SAMPLE
-                    ,
-                    new VersionSpecification(70300),
-                    ['after_heredoc' => true]
-                ),
             ]
         );
     }
@@ -127,13 +108,11 @@ SAMPLE
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before ArrayIndentationFixer.
-     * Must run after BracesFixer, CombineNestedDirnameFixer, ImplodeCallFixer, MethodChainingIndentationFixer, PowToExponentiationFixer.
      */
     public function getPriority()
     {
-        return -30;
+        // must be run after ImplodeCallFixer
+        return -2;
     }
 
     /**
@@ -141,11 +120,6 @@ SAMPLE
      */
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $expectedTokens = [T_LIST, T_FUNCTION];
-        if (\PHP_VERSION_ID >= 70400) {
-            $expectedTokens[] = T_FN;
-        }
-
         for ($index = $tokens->count() - 1; $index > 0; --$index) {
             $token = $tokens[$index];
 
@@ -156,7 +130,7 @@ SAMPLE
             $meaningfulTokenBeforeParenthesis = $tokens[$tokens->getPrevMeaningfulToken($index)];
             if (
                 $meaningfulTokenBeforeParenthesis->isKeyword()
-                && !$meaningfulTokenBeforeParenthesis->isGivenKind($expectedTokens)
+                && !$meaningfulTokenBeforeParenthesis->isGivenKind([T_LIST, T_FUNCTION])
             ) {
                 continue;
             }
@@ -197,17 +171,6 @@ SAMPLE
             ))
                 ->setAllowedValues(['ignore', 'ensure_single_line', 'ensure_fully_multiline'])
                 ->setDefault('ignore') // @TODO 3.0 should be 'ensure_fully_multiline'
-                ->getOption(),
-            (new FixerOptionBuilder('after_heredoc', 'Whether the whitespace between heredoc end and comma should be removed.'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->setNormalizer(static function (Options $options, $value) {
-                    if (\PHP_VERSION_ID < 70300 && $value) {
-                        throw new InvalidOptionsForEnvException('"after_heredoc" option can only be enabled with PHP 7.3+.');
-                    }
-
-                    return $value;
-                })
                 ->getOption(),
         ]);
     }
@@ -281,8 +244,9 @@ SAMPLE
     }
 
     /**
-     * @param int $startParenthesisIndex
-     * @param int $endParenthesisIndex
+     * @param Tokens $tokens
+     * @param int    $startParenthesisIndex
+     * @param int    $endParenthesisIndex
      *
      * @return null|int
      */
@@ -308,7 +272,8 @@ SAMPLE
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return bool Whether newlines were removed from the whitespace token
      */
@@ -319,7 +284,7 @@ SAMPLE
             return false;
         }
 
-        $content = Preg::replace('/\R\h*/', '', $tokens[$index]->getContent());
+        $content = Preg::replace('/\R[ \t]*/', '', $tokens[$index]->getContent());
         if ('' !== $content) {
             $tokens[$index] = new Token([T_WHITESPACE, $content]);
         } else {
@@ -330,7 +295,8 @@ SAMPLE
     }
 
     /**
-     * @param int $startFunctionIndex
+     * @param Tokens $tokens
+     * @param int    $startFunctionIndex
      */
     private function ensureFunctionFullyMultiline(Tokens $tokens, $startFunctionIndex)
     {
@@ -404,6 +370,7 @@ SAMPLE
     /**
      * Method to insert newline after comma or opening parenthesis.
      *
+     * @param Tokens $tokens
      * @param int    $index       index of a comma
      * @param string $indentation the indentation that should be used
      * @param bool   $override    whether to override the existing character or not
@@ -434,7 +401,8 @@ SAMPLE
     /**
      * Method to insert space after comma and remove space before comma.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private function fixSpace2(Tokens $tokens, $index)
     {
@@ -442,10 +410,7 @@ SAMPLE
         if ($tokens[$index - 1]->isWhitespace()) {
             $prevIndex = $tokens->getPrevNonWhitespace($index - 1);
 
-            if (
-                !$tokens[$prevIndex]->equals(',') && !$tokens[$prevIndex]->isComment() &&
-                ($this->configuration['after_heredoc'] || !$tokens[$prevIndex]->isGivenKind(T_END_HEREDOC))
-            ) {
+            if (!$tokens[$prevIndex]->equalsAny([',', [T_END_HEREDOC]]) && !$tokens[$prevIndex]->isComment()) {
                 $tokens->clearAt($index - 1);
             }
         }
@@ -501,6 +466,8 @@ SAMPLE
 
     /**
      * Checks if token is new line.
+     *
+     * @param Token $token
      *
      * @return bool
      */

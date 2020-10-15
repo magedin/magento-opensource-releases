@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mail\Test\Unit\Template;
 
-use Magento\Framework\Mail\Template\Factory;
-use Magento\Framework\Mail\TemplateInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $templateMock;
 
@@ -34,11 +27,11 @@ class FactoryTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->templateMock = $this->getMockForAbstractClass(TemplateInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->templateMock = $this->createMock(\Magento\Framework\Mail\TemplateInterface::class);
     }
 
     /**
@@ -50,7 +43,7 @@ class FactoryTest extends TestCase
     public function testGet($expectedArgument, $namespace)
     {
         $factory = $this->objectManagerHelper->getObject(
-            Factory::class,
+            \Magento\Framework\Mail\Template\Factory::class,
             ['objectManager' => $this->objectManagerMock]
         );
 
@@ -60,7 +53,7 @@ class FactoryTest extends TestCase
             ->willReturn($this->templateMock);
 
         $this->assertInstanceOf(
-            TemplateInterface::class,
+            \Magento\Framework\Mail\TemplateInterface::class,
             $factory->get('identifier', $namespace)
         );
     }
@@ -72,7 +65,7 @@ class FactoryTest extends TestCase
     {
         return [
             [
-                'expectedArgument' => TemplateInterface::class,
+                'expectedArgument' => \Magento\Framework\Mail\TemplateInterface::class,
                 'namespace' => null
             ],
             [

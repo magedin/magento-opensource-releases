@@ -3,60 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Captcha\Test\Unit\Model\Customer\Plugin;
 
-use Magento\Captcha\Helper\Data;
-use Magento\Captcha\Model\Customer\Plugin\AjaxLogin;
-use Magento\Captcha\Model\DefaultModel;
-use Magento\Checkout\Model\Session;
-use Magento\Customer\Controller\Ajax\Login;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Serialize\Serializer\Json;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AjaxLoginTest extends TestCase
+class AjaxLoginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Session
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Checkout\Model\Session
      */
     protected $sessionManagerMock;
 
     /**
-     * @var MockObject|Data
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Captcha\Helper\Data
      */
     protected $captchaHelperMock;
 
     /**
-     * @var MockObject|JsonFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Controller\Result\JsonFactory
      */
     protected $jsonFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $captchaMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $resultJsonMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject|Login
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Customer\Controller\Ajax\Login
      */
     protected $loginControllerMock;
 
     /**
-     * @var MockObject|Json
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Serialize\Serializer\Json
      */
     protected $serializerMock;
 
@@ -66,41 +54,38 @@ class AjaxLoginTest extends TestCase
     protected $formIds;
 
     /**
-     * @var AjaxLogin
+     * @var \Magento\Captcha\Model\Customer\Plugin\AjaxLogin
      */
     protected $model;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->sessionManagerMock = $this->getMockBuilder(Session::class)
-            ->addMethods(['setUsername'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->captchaHelperMock = $this->createMock(Data::class);
-        $this->captchaMock = $this->createMock(DefaultModel::class);
+        $this->sessionManagerMock = $this->createPartialMock(\Magento\Checkout\Model\Session::class, ['setUsername']);
+        $this->captchaHelperMock = $this->createMock(\Magento\Captcha\Helper\Data::class);
+        $this->captchaMock = $this->createMock(\Magento\Captcha\Model\DefaultModel::class);
         $this->jsonFactoryMock = $this->createPartialMock(
-            JsonFactory::class,
+            \Magento\Framework\Controller\Result\JsonFactory::class,
             ['create']
         );
         $this->resultJsonMock = $this->createMock(\Magento\Framework\Controller\Result\Json::class);
-        $this->requestMock = $this->createMock(Http::class);
-        $this->loginControllerMock = $this->createMock(Login::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->loginControllerMock = $this->createMock(\Magento\Customer\Controller\Ajax\Login::class);
 
         $this->loginControllerMock->expects($this->any())->method('getRequest')
-            ->willReturn($this->requestMock);
+            ->will($this->returnValue($this->requestMock));
 
         $this->captchaHelperMock
             ->expects($this->exactly(1))
             ->method('getCaptcha')
-            ->willReturn($this->captchaMock);
+            ->will($this->returnValue($this->captchaMock));
 
         $this->formIds = ['user_login'];
-        $this->serializerMock = $this->createMock(Json::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\Serializer\Json::class);
 
-        $this->model = new AjaxLogin(
+        $this->model = new \Magento\Captcha\Model\Customer\Plugin\AjaxLogin(
             $this->captchaHelperMock,
             $this->sessionManagerMock,
             $this->jsonFactoryMock,
@@ -123,13 +108,13 @@ class AjaxLoginTest extends TestCase
         ];
         $requestContent = json_encode($requestData);
 
-        $this->requestMock->expects($this->once())->method('getContent')->willReturn($requestContent);
+        $this->requestMock->expects($this->once())->method('getContent')->will($this->returnValue($requestContent));
         $this->captchaMock->expects($this->once())->method('isRequired')->with($username)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->captchaMock->expects($this->once())->method('logAttempt')->with($username);
         $this->captchaMock->expects($this->once())->method('isCorrect')->with($captchaString)
-            ->willReturn(true);
-        $this->serializerMock->expects($this->once())->method('unserialize')->willReturn($requestData);
+            ->will($this->returnValue(true));
+        $this->serializerMock->expects($this->once())->method('unserialize')->will($this->returnValue($requestData));
 
         $closure = function () {
             return 'result';
@@ -139,7 +124,7 @@ class AjaxLoginTest extends TestCase
             ->expects($this->exactly(1))
             ->method('getCaptcha')
             ->with('user_login')
-            ->willReturn($this->captchaMock);
+            ->will($this->returnValue($this->captchaMock));
 
         $this->assertEquals('result', $this->model->aroundExecute($this->loginControllerMock, $closure));
     }
@@ -158,22 +143,23 @@ class AjaxLoginTest extends TestCase
         ];
         $requestContent = json_encode($requestData);
 
-        $this->requestMock->expects($this->once())->method('getContent')->willReturn($requestContent);
+        $this->requestMock->expects($this->once())->method('getContent')->will($this->returnValue($requestContent));
         $this->captchaMock->expects($this->once())->method('isRequired')->with($username)
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->captchaMock->expects($this->once())->method('logAttempt')->with($username);
         $this->captchaMock->expects($this->once())->method('isCorrect')
-            ->with($captchaString)->willReturn(false);
-        $this->serializerMock->expects($this->once())->method('unserialize')->willReturn($requestData);
+            ->with($captchaString)->will($this->returnValue(false));
+        $this->serializerMock->expects($this->once())->method('unserialize')->will($this->returnValue($requestData));
 
         $this->sessionManagerMock->expects($this->once())->method('setUsername')->with($username);
         $this->jsonFactoryMock->expects($this->once())->method('create')
-            ->willReturn($this->resultJsonMock);
+            ->will($this->returnValue($this->resultJsonMock));
 
         $this->resultJsonMock
             ->expects($this->once())
             ->method('setData')
-            ->with(['errors' => true, 'message' => __('Incorrect CAPTCHA')])->willReturnSelf();
+            ->with(['errors' => true, 'message' => __('Incorrect CAPTCHA')])
+            ->will($this->returnSelf());
 
         $closure = function () {
         };
@@ -188,12 +174,12 @@ class AjaxLoginTest extends TestCase
     public function testAroundExecuteCaptchaIsNotRequired($username, $requestContent)
     {
         $this->requestMock->expects($this->once())->method('getContent')
-            ->willReturn(json_encode($requestContent));
+            ->will($this->returnValue(json_encode($requestContent)));
         $this->serializerMock->expects($this->once())->method('unserialize')
-            ->willReturn($requestContent);
+            ->will($this->returnValue($requestContent));
 
         $this->captchaMock->expects($this->once())->method('isRequired')->with($username)
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->captchaMock->expects($this->never())->method('logAttempt')->with($username);
         $this->captchaMock->expects($this->never())->method('isCorrect');
 
@@ -215,27 +201,30 @@ class AjaxLoginTest extends TestCase
             ],
             [
                 'username' => 'name',
-                'requestData' => [
-                    'username' => 'name',
-                    'captcha_string' => 'string',
-                    'captcha_form_id' => $this->formIds[0]
-                ],
+                'requestData' =>
+                    [
+                        'username' => 'name',
+                        'captcha_string' => 'string',
+                        'captcha_form_id' => $this->formIds[0]
+                    ],
             ],
             [
                 'username' => null,
-                'requestData' => [
-                    'username' => null,
-                    'captcha_string' => 'string',
-                    'captcha_form_id' => $this->formIds[0]
-                ],
+                'requestData' =>
+                    [
+                        'username' => null,
+                        'captcha_string' => 'string',
+                        'captcha_form_id' => $this->formIds[0]
+                    ],
             ],
             [
                 'username' => 'name',
-                'requestData' => [
-                    'username' => 'name',
-                    'captcha_string' => 'string',
-                    'captcha_form_id' => null
-                ],
+                'requestData' =>
+                    [
+                        'username' => 'name',
+                        'captcha_string' => 'string',
+                        'captcha_form_id' => null
+                    ],
             ],
         ];
     }

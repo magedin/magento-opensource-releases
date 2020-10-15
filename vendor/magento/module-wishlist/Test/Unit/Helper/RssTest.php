@@ -3,112 +3,94 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Wishlist\Test\Unit\Helper;
-
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\Data\CustomerInterfaceFactory;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Module\Manager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\DecoderInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Wishlist\Helper\Rss;
-use Magento\Wishlist\Model\Wishlist;
-use Magento\Wishlist\Model\WishlistFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RssTest extends TestCase
+class RssTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Rss
+     * @var \Magento\Wishlist\Helper\Rss
      */
     protected $model;
 
     /**
-     * @var WishlistFactory|MockObject
+     * @var \Magento\Wishlist\Model\WishlistFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $wishlistFactoryMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $requestMock;
 
     /**
-     * @var DecoderInterface|MockObject
+     * @var \Magento\Framework\Url\DecoderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $urlDecoderMock;
 
     /**
-     * @var CustomerInterfaceFactory|MockObject
+     * @var \Magento\Customer\Api\Data\CustomerInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerFactoryMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerRepositoryMock;
 
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Module\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $moduleManagerMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->wishlistFactoryMock = $this->getMockBuilder(WishlistFactory::class)
+        $this->wishlistFactoryMock = $this->getMockBuilder(\Magento\Wishlist\Model\WishlistFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->getMock();
 
-        $this->urlDecoderMock = $this->getMockBuilder(DecoderInterface::class)
+        $this->urlDecoderMock = $this->getMockBuilder(\Magento\Framework\Url\DecoderInterface::class)
             ->getMock();
 
-        $this->customerFactoryMock = $this->getMockBuilder(CustomerInterfaceFactory::class)
+        $this->customerFactoryMock = $this->getMockBuilder(\Magento\Customer\Api\Data\CustomerInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->customerRepositoryMock = $this->getMockBuilder(CustomerRepositoryInterface::class)
+        $this->customerRepositoryMock = $this->getMockBuilder(\Magento\Customer\Api\CustomerRepositoryInterface::class)
             ->getMock();
 
-        $this->moduleManagerMock = $this->getMockBuilder(Manager::class)
+        $this->moduleManagerMock = $this->getMockBuilder(\Magento\Framework\Module\Manager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->model = $objectManager->getObject(
-            Rss::class,
+            \Magento\Wishlist\Helper\Rss::class,
             [
                 'wishlistFactory' => $this->wishlistFactoryMock,
                 'httpRequest' => $this->requestMock,
@@ -126,7 +108,7 @@ class RssTest extends TestCase
     {
         $wishlistId = 1;
 
-        $wishlist = $this->getMockBuilder(Wishlist::class)
+        $wishlist = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->wishlistFactoryMock->expects($this->once())
@@ -153,7 +135,7 @@ class RssTest extends TestCase
         $customerId = 1;
         $data = $customerId . ',2';
 
-        $wishlist = $this->getMockBuilder(Wishlist::class)
+        $wishlist = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->wishlistFactoryMock->expects($this->once())
@@ -178,9 +160,9 @@ class RssTest extends TestCase
             ->method('getCustomerId')
             ->willReturn(0);
 
-        $customer = $this->getMockBuilder(CustomerInterface::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Api\Data\CustomerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->customerFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($customer);
@@ -218,9 +200,9 @@ class RssTest extends TestCase
             ->method('getCustomerId')
             ->willReturn($customerId);
 
-        $customer = $this->getMockBuilder(CustomerInterface::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Api\Data\CustomerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->customerRepositoryMock->expects($this->once())
             ->method('getById')
@@ -250,7 +232,7 @@ class RssTest extends TestCase
 
         $this->scopeConfigMock->expects($this->any())
             ->method('isSetFlag')
-            ->with('rss/wishlist/active', ScopeInterface::SCOPE_STORE)
+            ->with('rss/wishlist/active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn($isWishlistActive);
 
         $this->assertEquals($result, $this->model->isRssAllow());

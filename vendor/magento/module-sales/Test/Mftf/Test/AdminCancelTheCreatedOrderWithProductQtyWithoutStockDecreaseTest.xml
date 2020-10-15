@@ -14,13 +14,13 @@
             <stories value="Cancel Created Order"/>
             <title value="Cancel the created order with product quantity without stock decrease"/>
             <description value="Create an order with product quantity without stock decrease, cancel the order and verify product quantity in backend"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-16071"/>
             <group value="mtf_migrated"/>
         </annotations>
 
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <magentoCLI command="config:set {{DisableCatalogInventoryConfigData.path}} {{DisableCatalogInventoryConfigData.value}}" stepKey="disableDecreaseInQuantityAfterOrder"/>
 
             <!--Set default flat rate shipping method settings-->
@@ -43,16 +43,16 @@
             <deleteData createDataKey="simpleCustomer" stepKey="deleteSimpleCustomer"/>
             <deleteData createDataKey="simpleProduct" stepKey="deleteSimpleProduct"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Create new customer order-->
-        <actionGroup ref="NavigateToNewOrderPageExistingCustomerActionGroup" stepKey="navigateToNewOrderWithExistingCustomer">
+        <actionGroup ref="navigateToNewOrderPageExistingCustomer" stepKey="navigateToNewOrderWithExistingCustomer">
             <argument name="customer" value="$$simpleCustomer$$"/>
         </actionGroup>
 
         <!--Add Simple product to order-->
-        <actionGroup ref="AddSimpleProductToOrderActionGroup" stepKey="addSimpleProductToTheOrder">
+        <actionGroup ref="addSimpleProductToOrder" stepKey="addSimpleProductToTheOrder">
             <argument name="product" value="$$simpleProduct$$"/>
         </actionGroup>
 
@@ -63,11 +63,11 @@
         <click selector="{{AdminOrderFormActionSection.SubmitOrder}}" stepKey="submitOrder"/>
 
         <!--Verify order information-->
-        <actionGroup ref="VerifyCreatedOrderInformationActionGroup" stepKey="verifyCreatedOrderInformation"/>
+        <actionGroup ref="verifyCreatedOrderInformation" stepKey="verifyCreatedOrderInformation"/>
         <grabTextFrom selector="|Order # (\d+)|" stepKey="orderId"/>
 
         <!-- Assert Simple Product Quantity in backend after order -->
-        <actionGroup ref="FilterAndSelectProductActionGroup" stepKey="filterAndSelectTheProduct">
+        <actionGroup ref="filterAndSelectProduct" stepKey="filterAndSelectTheProduct">
             <argument name="productSku" value="$$simpleProduct.sku$$"/>
         </actionGroup>
         <waitForElementVisible selector="{{AdminProductFormSection.productName}}" stepKey="waitForProductDetailsToLoad"/>
@@ -80,16 +80,16 @@
         <waitForPageLoad stepKey="waitForPageLoad5"/>
 
         <!-- Filter Order using orderId -->
-        <actionGroup ref="FilterOrderGridByIdActionGroup" stepKey="filterOrderGridById">
+        <actionGroup ref="filterOrderGridById" stepKey="filterOrderGridById">
             <argument name="orderId" value="$orderId"/>
         </actionGroup>
         <click selector="{{AdminOrdersGridSection.rowViewAction('1')}}" stepKey="clickOnViewAction"/>
 
         <!-- Cancel the Order -->
-        <actionGroup ref="CancelPendingOrderActionGroup" stepKey="cancelPendingOrder"/>
+        <actionGroup ref="cancelPendingOrder" stepKey="cancelPendingOrder"/>
 
         <!-- Assert Simple Product Quantity in backend after Cancelling the order -->
-        <actionGroup ref="FilterAndSelectProductActionGroup" stepKey="filterAndSelectTheProduct1">
+        <actionGroup ref="filterAndSelectProduct" stepKey="filterAndSelectTheProduct1">
             <argument name="productSku" value="$$simpleProduct.sku$$"/>
         </actionGroup>
         <waitForElementVisible selector="{{AdminProductFormSection.productName}}" stepKey="waitForProductDetailsToLoad1"/>
@@ -102,7 +102,7 @@
         <waitForPageLoad stepKey="waitForPageLoad6"/>
 
         <!-- Filter Order using orderId -->
-        <actionGroup ref="FilterOrderGridByIdActionGroup" stepKey="filterOrderGridById1">
+        <actionGroup ref="filterOrderGridById" stepKey="filterOrderGridById1">
             <argument name="orderId" value="$orderId"/>
         </actionGroup>
         <click selector="{{AdminOrdersGridSection.rowViewAction('1')}}" stepKey="clickOnViewAction1"/>
@@ -114,7 +114,7 @@
         <click selector="{{AdminOrderFormActionSection.SubmitOrder}}" stepKey="submitOrder1"/>
 
         <!-- Assert Simple Product Quantity in backend after Reorder -->
-        <actionGroup ref="FilterAndSelectProductActionGroup" stepKey="filterAndSelectTheProduct2">
+        <actionGroup ref="filterAndSelectProduct" stepKey="filterAndSelectTheProduct2">
             <argument name="productSku" value="$$simpleProduct.sku$$"/>
         </actionGroup>
         <waitForElementVisible selector="{{AdminProductFormSection.productName}}" stepKey="waitForProductDetailsToLoad2"/>

@@ -63,10 +63,8 @@ if ($cacheConfigs) {
         }
         $cacheBackendClass = $cacheConfig[ConfigOptionsListConstants::CONFIG_PATH_BACKEND];
         try {
-            /** @var \Magento\Framework\App\Cache\Frontend\Factory $cacheFrontendFactory */
-            $cacheFrontendFactory = $objectManager->get(Magento\Framework\App\Cache\Frontend\Factory::class);
             /** @var \Zend_Cache_Backend_Interface $backend */
-            $backend = $cacheFrontendFactory->create($cacheConfig);
+            $backend = new $cacheBackendClass($cacheConfig[ConfigOptionsListConstants::CONFIG_PATH_BACKEND_OPTIONS]);
             $backend->test('test_cache_id');
         } catch (\Exception $e) {
             http_response_code(500);

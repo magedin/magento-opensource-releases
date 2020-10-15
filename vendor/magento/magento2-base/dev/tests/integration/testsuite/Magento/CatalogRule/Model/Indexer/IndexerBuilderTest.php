@@ -34,7 +34,7 @@ class IndexerBuilderTest extends \PHPUnit\Framework\TestCase
      */
     protected $productThird;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->indexerBuilder = Bootstrap::getObjectManager()->get(
             \Magento\CatalogRule\Model\Indexer\IndexBuilder::class
@@ -43,7 +43,7 @@ class IndexerBuilderTest extends \PHPUnit\Framework\TestCase
         $this->product = Bootstrap::getObjectManager()->get(\Magento\Catalog\Model\Product::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         /** @var \Magento\Framework\Registry $registry */
         $registry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

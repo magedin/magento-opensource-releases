@@ -3,37 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Service;
 
 use Magento\Deploy\Console\DeployStaticOptions;
 use Magento\Deploy\Package\Package;
 use Magento\Deploy\Process\Queue;
-use Magento\Deploy\Process\QueueFactory;
 use Magento\Deploy\Service\Bundle;
 use Magento\Deploy\Service\DeployPackage;
 use Magento\Deploy\Service\DeployRequireJsConfig;
 use Magento\Deploy\Service\DeployStaticContent;
+use Magento\Deploy\Process\QueueFactory;
 use Magento\Deploy\Service\DeployTranslationsDictionary;
 use Magento\Deploy\Service\MinifyTemplates;
 use Magento\Deploy\Strategy\CompactDeploy;
 use Magento\Deploy\Strategy\DeployStrategyFactory;
+
 use Magento\Framework\App\View\Deployment\Version\StorageInterface;
-
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-
-use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
+
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Static Content deploy service class unit tests
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DeployStaticContentTest extends TestCase
+class DeployStaticContentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DeployStaticContent|Mock
@@ -65,7 +62,7 @@ class DeployStaticContentTest extends TestCase
      */
     private $versionStorage;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->deployStrategyFactory = $this->createPartialMock(DeployStrategyFactory::class, ['create']);
         $this->queueFactory = $this->createPartialMock(QueueFactory::class, ['create']);
@@ -188,7 +185,7 @@ class DeployStaticContentTest extends TestCase
                 ->willReturnOnConsecutiveCalls($minifyTemplates);
         }
 
-        $this->assertNull($this->service->deploy($options));
+        $this->assertEquals(null, $this->service->deploy($options));
     }
 
     /**

@@ -19,14 +19,14 @@
             <group value="mtf_migrated"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminPanel"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminPanel"/>
             <createData entity="defaultSimpleProduct" stepKey="simpleProduct1"/>
             <createData entity="defaultSimpleProduct" stepKey="simpleProduct2"/>
         </before>
         <after>
             <deleteData createDataKey="simpleProduct1" stepKey="deleteSimpleProduct1"/>
             <deleteData createDataKey="simpleProduct2" stepKey="deleteSimpleProduct2"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open Product Index Page-->
@@ -34,12 +34,12 @@
         <waitForPageLoad stepKey="waitForProductIndexPageToLoad"/>
 
         <!--Search products using keyword -->
-        <actionGroup ref="SearchProductGridByKeyword2ActionGroup" stepKey="searchByKeyword">
+        <actionGroup ref="searchProductGridByKeyword2" stepKey="searchByKeyword">
             <argument name="keyword" value="Testp"/>
         </actionGroup>
 
         <!--Sort Products by ID in descending order-->
-        <actionGroup ref="SortProductsByIdDescendingActionGroup" stepKey="sortProductsByIdDescending"/>
+        <actionGroup ref="sortProductsByIdDescending" stepKey="sortProductsByIdDescending"/>
 
         <!--Select products-->
         <checkOption selector="{{AdminProductGridSection.productRowCheckboxBySku($$simpleProduct1.sku$$)}}" stepKey="selectFirstProduct"/>
@@ -57,12 +57,14 @@
         <see selector="{{AdminProductMessagesSection.successMessage}}" userInput="Message is added to queue" stepKey="seeAttributeUpateSuccessMsg"/>
 
         <!-- Start message queue -->
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="startMessageQueueConsumer">
+        <actionGroup ref="CliConsumerStartActionGroup" stepKey="runCron1">
             <argument name="consumerName" value="{{AdminProductAttributeUpdateConsumerData.consumerName}}"/>
             <argument name="maxMessages" value="{{AdminProductAttributeUpdateConsumerData.messageLimit}}"/>
         </actionGroup>
         <!-- Run cron -->
-        <magentoCLI command="cron:run --group=index" stepKey="runCron"/>
+        <magentoCLI command="cron:run --group=index" stepKey="runCron2"/>
+        <reloadPage stepKey="refreshPage"/>
+        <waitForPageLoad stepKey="waitFormToReload1"/>
 
         <!--Verify product name, sku and updated price-->
         <click stepKey="openFirstProduct" selector="{{AdminProductGridSection.productRowBySku($$simpleProduct1.sku$$)}}"/>

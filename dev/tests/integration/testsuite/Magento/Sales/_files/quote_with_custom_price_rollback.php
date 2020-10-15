@@ -5,6 +5,4 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/quote_rollback.php');
+include __DIR__ . '/quote_rollback.php';

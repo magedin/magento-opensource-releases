@@ -17,11 +17,11 @@ class EntityTest extends \PHPUnit\Framework\TestCase
     protected $_model;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_importConfigMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_importConfigMock = $this->createMock(\Magento\ImportExport\Model\Import\ConfigInterface::class);
         $this->_model = new \Magento\ImportExport\Model\Source\Import\Entity($this->_importConfigMock);
@@ -38,7 +38,7 @@ class EntityTest extends \PHPUnit\Framework\TestCase
             ['label' => __('entity_label_1'), 'value' => 'entity_name_1'],
             ['label' => __('entity_label_2'), 'value' => 'entity_name_2'],
         ];
-        $this->_importConfigMock->expects($this->any())->method('getEntities')->willReturn($entities);
+        $this->_importConfigMock->expects($this->any())->method('getEntities')->will($this->returnValue($entities));
         $this->assertEquals($expectedResult, $this->_model->toOptionArray());
     }
 }

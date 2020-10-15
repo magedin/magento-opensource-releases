@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column;
 
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
+use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Sales\Ui\Component\Listing\Column\Address;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AddressTest extends TestCase
+/**
+ * Class AddressTest
+ */
+class AddressTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Address
@@ -23,22 +20,22 @@ class AddressTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject|Escaper
+     * @var \PHPUnit_Framework_MockObject_MockObject | \Magento\Framework\Escaper
      */
     protected $escaper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $contextMock = $this->getMockBuilder(ContextInterface::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $contextMock->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->escaper = $this->createPartialMock(Escaper::class, ['escapeHtml']);
+        $this->escaper = $this->createPartialMock(\Magento\Framework\Escaper::class, ['escapeHtml']);
         $this->model = $objectManager->getObject(
-            Address::class,
+            \Magento\Sales\Ui\Component\Listing\Column\Address::class,
             [
                 'context' => $contextMock,
                 'escaper' => $this->escaper,

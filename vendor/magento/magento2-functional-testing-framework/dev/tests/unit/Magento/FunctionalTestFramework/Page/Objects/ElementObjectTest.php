@@ -8,7 +8,7 @@ namespace tests\unit\Magento\FunctionalTestFramework\Page\Objects;
 
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
-use tests\unit\Util\MagentoTestCase;
+use Magento\FunctionalTestingFramework\Util\MagentoTestCase;
 
 /**
  * Class ElementObjectTest
@@ -32,7 +32,7 @@ class ElementObjectTest extends MagentoTestCase
         $element = new ElementObject('name', 'type', 'selector', null, '15', false);
         $timeout = $element->getTimeout();
         $this->assertEquals(15, $timeout);
-        $this->assertIsInt($timeout);
+        $this->assertInternalType('int', $timeout);
     }
 
     /**
@@ -43,7 +43,7 @@ class ElementObjectTest extends MagentoTestCase
         $element = new ElementObject('name', 'type', 'selector', null, 'helloString', true);
         $timeout = $element->getTimeout();
         $this->assertEquals(0, $timeout);
-        $this->assertIsInt($timeout);
+        $this->assertInternalType('int', $timeout);
     }
 
     /**

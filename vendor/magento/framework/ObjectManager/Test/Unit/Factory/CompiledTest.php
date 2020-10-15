@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\ObjectManager\Test\Unit\Factory;
 
@@ -15,21 +14,19 @@ use Magento\Framework\ObjectManager\Test\Unit\Factory\Fixture\Compiled\Dependenc
 use Magento\Framework\ObjectManager\Test\Unit\Factory\Fixture\Compiled\SimpleClassTesting;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CompiledTest extends TestCase
+class CompiledTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject */
     protected $objectManagerMock;
 
-    /** @var ConfigInterface|MockObject */
+    /** @var ConfigInterface | \PHPUnit_Framework_MockObject_MockObject */
     protected $config;
 
-    /** @var DefinitionInterface|MockObject */
+    /** @var DefinitionInterface | \PHPUnit_Framework_MockObject_MockObject */
     private $definitionsMock;
 
     /** @var Compiled */
@@ -44,23 +41,22 @@ class CompiledTest extends TestCase
     /**
      * Setup tests
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->config = $this->getMockBuilder(ConfigInterface::class)
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->sharedInstances = [];
         $this->factory = new Compiled($this->config, $this->sharedInstances, []);
         $this->factory->setObjectManager($this->objectManagerMock);
 
-        $this->definitionsMock = $this->getMockBuilder(DefinitionInterface::class)
-            ->getMock();
+        $this->definitionsMock = $this->getMockBuilder(DefinitionInterface::class)->getMock();
         $this->objectManager->setBackwardCompatibleProperty($this->factory, 'definitions', $this->definitionsMock);
     }
 
@@ -218,7 +214,7 @@ class CompiledTest extends TestCase
         $this->assertInstanceOf($nonSharedType, $result->getNonSharedDependency());
         $this->assertEquals('value', $result->getValue());
         $this->assertEquals(['default_value1', 'default_value2'], $result->getValueArray());
-        $this->assertSame('', $result->getGlobalValue());
+        $this->assertEquals(null, $result->getGlobalValue());
         $this->assertNull($result->getNullValue());
     }
 
@@ -320,50 +316,50 @@ class CompiledTest extends TestCase
     {
         return [
             0 => [
-                0 => 'nonSharedDependency',
-                1 => DependencyTesting::class,
-                2 => true,
-                3 => null,
-                4 => false,
-            ],
-            1 => [
-                0 => 'sharedDependency',
-                1 => DependencySharedTesting::class,
-                2 => true,
-                3 => null,
-                4 => false,
-            ],
-            2 => [
-                0 => 'value',
-                1 => null,
-                2 => false,
-                3 => 'value',
-                4 => false,
-            ],
-            3 => [
-                0 => 'valueArray',
-                1 => null,
-                2 => false,
-                3 => [
-                    0 => 'default_value1',
-                    1 => 'default_value2',
+                    0 => 'nonSharedDependency',
+                    1 => DependencyTesting::class,
+                    2 => true,
+                    3 => null,
+                    4 => false,
                 ],
-                4 => false,
-            ],
+            1 => [
+                    0 => 'sharedDependency',
+                    1 => DependencySharedTesting::class,
+                    2 => true,
+                    3 => null,
+                    4 => false,
+                ],
+            2 => [
+                    0 => 'value',
+                    1 => null,
+                    2 => false,
+                    3 => 'value',
+                    4 => false,
+                ],
+            3 => [
+                    0 => 'valueArray',
+                    1 => null,
+                    2 => false,
+                    3 => [
+                            0 => 'default_value1',
+                            1 => 'default_value2',
+                        ],
+                    4 => false,
+                ],
             4 => [
-                0 => 'globalValue',
-                1 => null,
-                2 => false,
-                3 => '',
-                4 => false,
-            ],
+                    0 => 'globalValue',
+                    1 => null,
+                    2 => false,
+                    3 => '',
+                    4 => false,
+                ],
             5 => [
-                0 => 'nullValue',
-                1 => null,
-                2 => false,
-                3 => null,
-                4 => false,
-            ],
+                    0 => 'nullValue',
+                    1 => null,
+                    2 => false,
+                    3 => null,
+                    4 => false,
+                ],
         ];
     }
 }

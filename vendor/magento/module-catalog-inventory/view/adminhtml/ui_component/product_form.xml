@@ -49,9 +49,6 @@
                         <scopeLabel>[GLOBAL]</scopeLabel>
                         <label translate="true">Manage Stock</label>
                         <dataScope>manage_stock</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                     <formElements>
                         <select>
@@ -74,9 +71,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.manage_stock</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.manage_stock:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -132,9 +129,6 @@
                         </validation>
                         <label translate="true">Out-of-Stock Threshold</label>
                         <dataScope>min_qty</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                 </field>
                 <field name="use_config_min_qty" component="Magento_CatalogInventory/js/components/use-config-settings" formElement="checkbox">
@@ -150,9 +144,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.min_qty</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.min_qty:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -193,7 +187,6 @@
                         <dataScope>min_sale_qty</dataScope>
                         <imports>
                             <link name="handleChanges">${$.provider}:data.product.stock_data.is_qty_decimal</link>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
                         </imports>
                     </settings>
                 </field>
@@ -214,9 +207,6 @@
                             <class name="admin__field-no-label">true</class>
                         </additionalClasses>
                         <dataScope>use_config_min_sale_qty</dataScope>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -297,9 +287,6 @@
                         </validation>
                         <label translate="true">Maximum Qty Allowed in Shopping Cart</label>
                         <dataScope>max_sale_qty</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                 </field>
                 <field name="use_config_max_sale_qty" component="Magento_CatalogInventory/js/components/use-config-settings" formElement="checkbox">
@@ -315,9 +302,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.max_sale_qty</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.max_sale_qty:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -401,9 +388,6 @@
                         <scopeLabel>[GLOBAL]</scopeLabel>
                         <label translate="true">Backorders</label>
                         <dataScope>backorders</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                     <formElements>
                         <select>
@@ -426,9 +410,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.backorders</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.backorders:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -466,9 +450,6 @@
                         </validation>
                         <label translate="true">Notify for Quantity Below</label>
                         <dataScope>notify_stock_qty</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                 </field>
                 <field name="use_config_notify_stock_qty" component="Magento_CatalogInventory/js/components/use-config-settings" formElement="checkbox">
@@ -484,9 +465,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.notify_stock_qty</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.notify_stock_qty:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -519,9 +500,6 @@
                         <scopeLabel>[GLOBAL]</scopeLabel>
                         <label translate="true">Enable Qty Increments</label>
                         <dataScope>enable_qty_increments</dataScope>
-                        <imports>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
-                        </imports>
                     </settings>
                     <formElements>
                         <select>
@@ -544,9 +522,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.enable_qty_increments</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.enable_qty_increments:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -587,7 +565,6 @@
                         <dataScope>qty_increments</dataScope>
                         <imports>
                             <link name="handleChanges">${$.provider}:data.product.stock_data.is_qty_decimal</link>
-                            <link name="disabled">${$.parentName}.use_config_${$.index}:disableParent</link>
                         </imports>
                     </settings>
                 </field>
@@ -604,9 +581,9 @@
                         <links>
                             <link name="linkedValue">${$.provider}:data.product.stock_data.qty_increments</link>
                         </links>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
+                        <exports>
+                            <link name="checked">${$.parentName}.qty_increments:disabled</link>
+                        </exports>
                     </settings>
                     <formElements>
                         <checkbox class="Magento\CatalogInventory\Ui\Component\Product\Form\Element\UseConfigSettings">
@@ -641,9 +618,6 @@
                         <scopeLabel>[GLOBAL]</scopeLabel>
                         <label translate="true">Stock Status</label>
                         <dataScope>is_in_stock</dataScope>
-                        <imports>
-                            <link name="disabled">ns = ${ $.ns }, index = stock_data:disabled</link>
-                        </imports>
                     </settings>
                     <formElements>
                         <select>

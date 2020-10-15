@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit\Cache\Tag;
 
-use Magento\Framework\App\Cache\Tag\Resolver;
-use Magento\Framework\App\Cache\Tag\Strategy\Factory;
-use Magento\Framework\App\Cache\Tag\StrategyInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Cache\Tag\Resolver;
 
-class ResolverTest extends TestCase
+class ResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Factory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Tag\Strategy\Factory
      */
     private $strategyFactory;
 
     /**
-     * @var MockObject|StrategyInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Cache\Tag\StrategyInterface
      */
     private $strategy;
 
@@ -30,11 +25,11 @@ class ResolverTest extends TestCase
      */
     private $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->strategyFactory = $this->createMock(Factory::class);
+        $this->strategyFactory = $this->createMock(\Magento\Framework\App\Cache\Tag\Strategy\Factory::class);
 
-        $this->strategy = $this->getMockForAbstractClass(StrategyInterface::class);
+        $this->strategy = $this->getMockForAbstractClass(\Magento\Framework\App\Cache\Tag\StrategyInterface::class);
 
         $this->strategyFactory->expects($this->any())
             ->method('getStrategy')
@@ -53,7 +48,7 @@ class ResolverTest extends TestCase
     public function testGetTagsForObject()
     {
         $strategyReturnValue = ['test tag'];
-        $object = new \stdClass();
+        $object = new \stdClass;
         $this->strategy->expects($this->once())
             ->method('getTags')
             ->with($object)

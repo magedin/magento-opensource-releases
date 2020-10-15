@@ -7,13 +7,11 @@ declare(strict_types=1);
 
 namespace Magento\Framework\Indexer\Test\Unit;
 
-use Magento\Framework\Indexer\Dimension;
-use Magento\Framework\Indexer\DimensionProviderInterface;
-use Magento\Framework\Indexer\MultiDimensionProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Indexer\MultiDimensionProvider;
+use \Magento\Framework\Indexer\DimensionProviderInterface;
+use \Magento\Framework\Indexer\Dimension;
 
-class MultiDimensionProviderTest extends TestCase
+class MultiDimensionProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * tests that MultiDimensionProvider will return [[]] in case it has no dimension providers
@@ -151,11 +149,12 @@ class MultiDimensionProviderTest extends TestCase
 
     /**
      * tests that MultiDimensionProvider will throw exception when all dimension providers has nothing to return
+     *
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can`t multiple dimensions because some of them are empty.
      */
     public function testMultiDimensionProviderWithEmptyDataProvider()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Can`t multiple dimensions because some of them are empty.');
         // collect actual dimensions
         $multiDimensionProvider = new MultiDimensionProvider(
             [
@@ -172,11 +171,13 @@ class MultiDimensionProviderTest extends TestCase
 
     /**
      * tests that MultiDimensionProvider will throw exception when one dimension providers has nothing to return
+     *
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can`t multiple dimensions because some of them are empty.
      */
     public function testMultiDimensionProviderWithMixedDataProvider()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Can`t multiple dimensions because some of them are empty.');
+
         // prepare expected dimensions
         $dimensionXData = [
             $this->getDimensionMock('x', '1'),
@@ -212,7 +213,7 @@ class MultiDimensionProviderTest extends TestCase
     /**
      * @param $dimensions
      *
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getDimensionProviderMock($dimensions)
     {
@@ -226,10 +227,12 @@ class MultiDimensionProviderTest extends TestCase
 
         $dimensionProviderMock->expects($this->any())
             ->method('getIterator')
-            ->willReturnCallback(
-                function () use ($dimensions) {
-                    return \SplFixedArray::fromArray($dimensions);
-                }
+            ->will(
+                $this->returnCallback(
+                    function () use ($dimensions) {
+                        return \SplFixedArray::fromArray($dimensions);
+                    }
+                )
             );
 
         return $dimensionProviderMock;
@@ -239,7 +242,7 @@ class MultiDimensionProviderTest extends TestCase
      * @param string $name
      * @param string $value
      *
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getDimensionMock(string $name, string $value)
     {

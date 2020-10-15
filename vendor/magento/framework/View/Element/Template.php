@@ -10,7 +10,6 @@ use Magento\Framework\Filesystem;
 
 /**
  * Standard Magento block.
- *
  * Should be used when you declare a block in frontend area layout handle.
  *
  * Avoid extending this class.
@@ -168,7 +167,6 @@ class Template extends AbstractBlock
 
     /**
      * Internal constructor, that is called from real constructor
-     *
      * @return void
      */
     protected function _construct()

@@ -3,21 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Filter\Test\Unit\Template\Tokenizer;
 
-use Magento\Framework\Filter\Template\Tokenizer\Variable;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Filter\Template\Tokenizer\Variable;
 
-class VariableTest extends TestCase
+class VariableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Variable
+     * @var \Magento\Framework\Filter\Template\Tokenizer\Variable
      */
     protected $_filter;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_filter = new Variable();
     }

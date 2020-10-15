@@ -397,37 +397,27 @@ class Catalog extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $write = $this->getConnection();
         $catalogTable = $this->getTable(Schema::EMAIL_CATALOG_TABLE);
+        $select = $write->select();
+        $select->reset()
+            ->from(
+                ['c' => $catalogTable],
+                ['c.product_id']
+            )
+            ->joinLeft(
+                [
+                    'e' => $this->getTable(
+                        'catalog_product_entity'
+                    ),
+                ],
+                'c.product_id = e.entity_id'
+            )
+            ->where('e.entity_id is NULL');
 
-        $batchSize = 500;
-        $startPoint = 0;
-        $endPoint = $startPoint + $batchSize;
+        //delete sql statement
+        $deleteSql = $select->deleteFromSelect('c');
 
-        do {
-            $select = $write->select();
-            $batching = $select->reset()
-                ->from(
-                    ['c' => $catalogTable],
-                    ['c.product_id']
-                )
-                ->joinLeft(
-                    [
-                        'e' => $this->getTable(
-                            'catalog_product_entity'
-                        ),
-                    ],
-                    'c.product_id = e.entity_id'
-                )
-                ->where('c.id >= ?', $startPoint)
-                ->where('c.id < ?', $endPoint);
-
-            $rowCount = $write->query($batching)->rowCount();
-            $select = $batching->where('e.entity_id is NULL');
-            $deleteSql = $select->deleteFromSelect('c');
-            $write->query($deleteSql);
-
-            $startPoint += $batchSize;
-            $endPoint += $batchSize;
-        } while ($rowCount > 0);
+        //run query
+        $write->query($deleteSql);
     }
 
     /**

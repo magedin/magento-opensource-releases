@@ -17,10 +17,7 @@
             <severity value="MAJOR"/>
             <testCaseId value="MC-20359"/>
             <group value="Bundle"/>
-            <group value="SearchEngineElasticsearch"/>
-            <skip>
-                <issueId value="MC-34217"/>
-            </skip>
+            <group value="SearchEngineMysql"/>
         </annotations>
         <before>
             <createData entity="ApiProductWithDescription" stepKey="simple1" before="simple2"/>
@@ -39,7 +36,8 @@
                 <requiredEntity createDataKey="bundleOption"/>
                 <requiredEntity createDataKey="simple2"/>
             </createData>
-            <magentoCron stepKey="runCronReindex" groups="index"/>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
+            <magentoCLI command="cache:flush" stepKey="flushCache"/>
         </before>
         <after>
             <deleteData createDataKey="simple1" stepKey="deleteSimple1" before="deleteSimple2"/>

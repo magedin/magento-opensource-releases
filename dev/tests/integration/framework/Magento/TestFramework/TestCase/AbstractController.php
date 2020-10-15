@@ -7,25 +7,21 @@
 /**
  * Abstract class for the controller tests
  */
-
 namespace Magento\TestFramework\TestCase;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Data\Form\FormKey;
 use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Element\Message\InterpretationStrategyInterface;
 use Magento\Theme\Controller\Result\MessagePlugin;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Request\Http as HttpRequest;
+use Magento\Framework\App\Response\Http as HttpResponse;
 
 /**
- * Set of methods useful for performing requests to Controllers.
- *
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractController extends TestCase
+abstract class AbstractController extends \PHPUnit\Framework\TestCase
 {
     protected $_runCode = '';
 
@@ -34,12 +30,12 @@ abstract class AbstractController extends TestCase
     protected $_runOptions = [];
 
     /**
-     * @var RequestInterface
+     * @var \Magento\Framework\App\RequestInterface
      */
     protected $_request;
 
     /**
-     * @var ResponseInterface
+     * @var \Magento\Framework\App\ResponseInterface
      */
     protected $_response;
 
@@ -68,7 +64,7 @@ abstract class AbstractController extends TestCase
     /**
      * Bootstrap application before any test
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_assertSessionErrors = false;
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -79,7 +75,7 @@ abstract class AbstractController extends TestCase
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_request = null;
         $this->_response = null;
@@ -89,7 +85,7 @@ abstract class AbstractController extends TestCase
     /**
      * Ensure that there were no error messages displayed on the admin panel
      */
-    protected function assertPostConditions(): void
+    protected function assertPostConditions()
     {
         if ($this->_assertSessionErrors) {
             // equalTo() is intentionally used instead of isEmpty() to provide the informative diff
@@ -107,12 +103,11 @@ abstract class AbstractController extends TestCase
      */
     public function dispatch($uri)
     {
+        /** @var HttpRequest $request */
         $request = $this->getRequest();
-
-        $request->setDispatched(false);
         $request->setRequestUri($uri);
         if ($request->isPost()
-            && !property_exists($request->getPost(), 'form_key')
+            && !array_key_exists('form_key', $request->getPost())
         ) {
             /** @var FormKey $formKey */
             $formKey = $this->_objectManager->get(FormKey::class);
@@ -124,36 +119,25 @@ abstract class AbstractController extends TestCase
     /**
      * Request getter
      *
-     * @return RequestInterface
+     * @return \Magento\Framework\App\RequestInterface|HttpRequest
      */
     public function getRequest()
     {
         if (!$this->_request) {
-            $this->_request = $this->_objectManager->get(RequestInterface::class);
+            $this->_request = $this->_objectManager->get(\Magento\Framework\App\RequestInterface::class);
         }
         return $this->_request;
     }
 
     /**
-     * Reset Request parameters
-     *
-     * @return void
-     */
-    protected function resetRequest(): void
-    {
-        $this->_objectManager->removeSharedInstance(RequestInterface::class);
-        $this->_request = null;
-    }
-
-    /**
      * Response getter
      *
-     * @return ResponseInterface
+     * @return \Magento\Framework\App\ResponseInterface|HttpResponse
      */
     public function getResponse()
     {
         if (!$this->_response) {
-            $this->_response = $this->_objectManager->get(ResponseInterface::class);
+            $this->_response = $this->_objectManager->get(\Magento\Framework\App\ResponseInterface::class);
         }
         return $this->_response;
     }
@@ -164,7 +148,7 @@ abstract class AbstractController extends TestCase
     public function assert404NotFound()
     {
         $this->assertEquals('noroute', $this->getRequest()->getControllerName());
-        $this->assertStringContainsString('404 Not Found', $this->getResponse()->getBody());
+        $this->assertContains('404 Not Found', $this->getResponse()->getBody());
     }
 
     /**

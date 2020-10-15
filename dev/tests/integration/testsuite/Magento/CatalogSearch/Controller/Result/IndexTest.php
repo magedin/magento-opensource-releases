@@ -10,7 +10,7 @@ namespace Magento\CatalogSearch\Controller\Result;
 use Magento\TestFramework\TestCase\AbstractController;
 
 /**
- * Test cases for catalog quick search using search engine.
+ * Test cases for catalog quick search using mysql search engine.
  *
  * @magentoDbIsolation disabled
  * @magentoAppIsolation enabled
@@ -20,6 +20,7 @@ class IndexTest extends AbstractController
     /**
      * Quick search test by difference product attributes.
      *
+     * @magentoConfigFixture default/catalog/search/engine mysql
      * @magentoAppArea frontend
      * @magentoDataFixture Magento/CatalogSearch/_files/product_for_search.php
      * @magentoDataFixture Magento/CatalogSearch/_files/full_reindex.php
@@ -33,7 +34,7 @@ class IndexTest extends AbstractController
         $this->getRequest()->setParam('q', $searchString);
         $this->dispatch('catalogsearch/result');
         $responseBody = $this->getResponse()->getBody();
-        $this->assertStringContainsString('Simple product name', $responseBody);
+        $this->assertContains('Simple product name', $responseBody);
     }
 
     /**

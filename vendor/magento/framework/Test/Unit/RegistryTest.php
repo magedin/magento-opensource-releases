@@ -3,22 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Test\Unit;
 
-use Magento\Customer\Model\Customer;
-use Magento\Framework\Registry;
-use Magento\ImportExport\Model\Export\Adapter\Csv;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Registry;
 
 /**
  * Registry model test. Test cases for managing values in registry
  */
-class RegistryTest extends TestCase
+class RegistryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Registry
+     * @var \Magento\Framework\Registry
      */
     protected $registry;
 
@@ -27,17 +22,17 @@ class RegistryTest extends TestCase
      */
     protected $data;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->registry = new Registry();
         $this->data = [
             'key' => 'customer',
-            'value' => Customer::class,
+            'value' => \Magento\Customer\Model\Customer::class,
         ];
         $this->registry->register($this->data['key'], $this->data['value']);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->registry);
     }
@@ -59,16 +54,18 @@ class RegistryTest extends TestCase
         $this->registry->register($key, $value, $graceful);
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testRegisterKeyExists()
     {
-        $this->expectException('RuntimeException');
         $this->registry->register($this->data['key'], $this->data['value']);
     }
 
     public function testUnregister()
     {
         $key = 'csv_adapter';
-        $valueObj = $this->createMock(Csv::class);
+        $valueObj = $this->createMock(\Magento\ImportExport\Model\Export\Adapter\Csv::class);
         $this->registry->register($key, $valueObj);
         $this->assertEquals($valueObj, $this->registry->registry($key));
         $this->registry->unregister($key);

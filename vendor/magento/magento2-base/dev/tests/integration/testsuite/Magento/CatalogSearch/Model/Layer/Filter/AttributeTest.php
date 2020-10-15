@@ -27,7 +27,7 @@ class AttributeTest extends \PHPUnit\Framework\TestCase
      */
     protected $_layer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** @var $attribute \Magento\Catalog\Model\Entity\Attribute */
         $attribute = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -88,7 +88,7 @@ class AttributeTest extends \PHPUnit\Framework\TestCase
         $this->_model->apply($request);
         $items = $this->_model->getItems();
 
-        $this->assertIsArray($items);
+        $this->assertInternalType('array', $items);
         $this->assertEmpty($items);
     }
 }

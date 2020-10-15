@@ -3,58 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Config\Backend\Grid;
 
-use Magento\Framework\App\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\Manager;
-use Magento\Framework\Model\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Config\Backend\Grid\AsyncIndexing;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test of backend model for global configuration value
  * 'dev/grid/async_indexing'.
  */
-class AsyncIndexingTest extends TestCase
+class AsyncIndexingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AsyncIndexing
+     * @var \Magento\Sales\Model\Config\Backend\Grid\AsyncIndexing
      */
     protected $object;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\App\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Event\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->config = $this->createMock(Config::class);
+        $this->config = $this->createMock(\Magento\Framework\App\Config::class);
 
-        $this->eventManager = $this->createMock(Manager::class);
+        $this->eventManager = $this->createMock(\Magento\Framework\Event\Manager::class);
 
-        $this->context = $this->createPartialMock(Context::class, ['getEventDispatcher']);
+        $this->context = $this->createPartialMock(\Magento\Framework\Model\Context::class, ['getEventDispatcher']);
         $this->context->expects($this->any())->method('getEventDispatcher')->willReturn($this->eventManager);
 
         $this->object = $objectManager->getObject(
-            AsyncIndexing::class,
+            \Magento\Sales\Model\Config\Backend\Grid\AsyncIndexing::class,
             [
                 'config' => $this->config,
                 'context' => $this->context
@@ -72,7 +63,7 @@ class AsyncIndexingTest extends TestCase
     public function testAfterSave($value, $oldValue, $eventName)
     {
         $path = 'dev/grid/async_indexing';
-        $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+        $scope = \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
 
         $this->object->setData(['value' => $value, 'path' => $path, 'scope' => $scope]);
 

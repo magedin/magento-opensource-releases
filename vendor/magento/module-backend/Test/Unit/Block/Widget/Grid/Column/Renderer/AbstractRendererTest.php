@@ -3,48 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Column\Renderer;
 
-use Magento\Backend\Block\Widget\Grid\Column;
-use Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractRendererTest extends TestCase
+class AbstractRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Column|MockObject
+     * @var \Magento\Backend\Block\Widget\Grid\Column|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $columnMock;
 
     /**
-     * @var DataObject|MockObject
+     * @var \Magento\Framework\DataObject|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectMock;
 
     /**
-     * @var AbstractRenderer
+     * @var \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer
      */
     protected $renderer;
 
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dataObjectMock = $this->createPartialMock(DataObject::class, ['getData']);
-        $this->columnMock = $this->getMockBuilder(Column::class)
+        $this->dataObjectMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getData']);
+        $this->columnMock = $this->getMockBuilder(\Magento\Backend\Block\Widget\Grid\Column::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEditable', 'getIndex', 'getEditOnly', 'getId'])
             ->getMock();
         $this->renderer =
-            $this->getMockBuilder(AbstractRenderer::class)
-                ->disableOriginalConstructor()
-                ->setMethods(null)
-                ->getMock();
+            $this->getMockBuilder(\Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
     }
 
     /**

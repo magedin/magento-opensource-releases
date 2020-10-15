@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product\Initialization;
 
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\StockDataFilter;
-use Magento\CatalogInventory\Model\Configuration;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StockDataFilterTest extends TestCase
+/**
+ * Class StockDataFilterTest
+ */
+class StockDataFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfigMock;
 
@@ -30,17 +27,17 @@ class StockDataFilterTest extends TestCase
      */
     protected $stockDataFilter;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $stockConfiguration;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->scopeConfigMock->expects($this->any())->method('getValue')->willReturn(1);
+        $this->scopeConfigMock->expects($this->any())->method('getValue')->will($this->returnValue(1));
 
         $this->stockConfiguration = $this->createPartialMock(
-            Configuration::class,
+            \Magento\CatalogInventory\Model\Configuration::class,
             ['getManageStock']
         );
 
@@ -59,7 +56,7 @@ class StockDataFilterTest extends TestCase
         if (isset($inputStockData['use_config_manage_stock']) && $inputStockData['use_config_manage_stock'] === 1) {
             $this->stockConfiguration->expects($this->once())
                 ->method('getManageStock')
-                ->willReturn($outputStockData['manage_stock']);
+                ->will($this->returnValue($outputStockData['manage_stock']));
         }
 
         $this->assertEquals($outputStockData, $this->stockDataFilter->filter($inputStockData));

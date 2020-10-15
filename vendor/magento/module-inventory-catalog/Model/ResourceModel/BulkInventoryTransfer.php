@@ -78,8 +78,6 @@ class BulkInventoryTransfer
     }
 
     /**
-     * Returns source item data.
-     *
      * @param string $sku
      * @param string $source
      * @return array|null
@@ -94,7 +92,7 @@ class BulkInventoryTransfer
             ->where(SourceItemInterface::SKU . ' = ?', $sku);
 
         $res = $connection->fetchRow($query);
-        if (empty($res)) {
+        if ($res === false) {
             return null;
         }
 
@@ -102,8 +100,6 @@ class BulkInventoryTransfer
     }
 
     /**
-     * Transfer inventory from one source to another.
-     *
      * @param string $sku
      * @param string $originSource
      * @param string $destinationSource
@@ -157,8 +153,6 @@ class BulkInventoryTransfer
     }
 
     /**
-     * Clear source data.
-     *
      * @param string[] $skus
      * @param string $source
      * @param bool $unassign
@@ -192,7 +186,6 @@ class BulkInventoryTransfer
 
     /**
      * Assign sources to products
-     *
      * @param array $skus
      * @param string $originSource
      * @param string $destinationSource

@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Stdlib\Test\Unit;
 
-use Magento\Framework\Stdlib\StringUtils;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Stdlib\StringUtils;
 
 /**
  * Magento\Framework\Stdlib\StringUtilsTest test case
  */
-class StringUtilsTest extends TestCase
+class StringUtilsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StringUtils
+     * @var \Magento\Framework\Stdlib\StringUtils
      */
     protected $_string;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_string = new StringUtils();
     }

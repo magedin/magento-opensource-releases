@@ -3,58 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Invoice;
 
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\ResourceModel\Order\Invoice\Comment;
-use Magento\Sales\Model\ResourceModel\Order\Invoice\Item;
-use Magento\Sales\Model\ResourceModel\Order\Invoice\Relation;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RelationTest extends TestCase
+/**
+ * Class RelationTest
+ */
+class RelationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Relation
+     * @var \Magento\Sales\Model\ResourceModel\Order\Invoice\Relation
      */
     protected $relationProcessor;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceItemResourceMock;
 
     /**
-     * @var Comment|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Invoice\Comment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceCommentResourceMock;
 
     /**
-     * @var Invoice|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Invoice\Item|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceItemMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Invoice\Comment|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice\Comment|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $invoiceCommentMock;
 
     /**
-     * @var \Magento\Sales\Model\Order\Item|MockObject
+     * @var \Magento\Sales\Model\Order\Item|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderItemMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->invoiceItemResourceMock = $this->getMockBuilder(
-            Item::class
+            \Magento\Sales\Model\ResourceModel\Order\Invoice\Item::class
         )
             ->disableOriginalConstructor()
             ->setMethods(
@@ -64,15 +59,15 @@ class RelationTest extends TestCase
             )
             ->getMock();
         $this->invoiceCommentResourceMock =
-            $this->getMockBuilder(Comment::class)
-                ->disableOriginalConstructor()
-                ->setMethods(
-                    [
-                        'save'
-                    ]
-                )
-                ->getMock();
-        $this->invoiceMock = $this->getMockBuilder(Invoice::class)
+            $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Order\Invoice\Comment::class)
+            ->disableOriginalConstructor()
+            ->setMethods(
+                [
+                    'save'
+                ]
+            )
+            ->getMock();
+        $this->invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -94,7 +89,7 @@ class RelationTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->relationProcessor = new Relation(
+        $this->relationProcessor = new \Magento\Sales\Model\ResourceModel\Order\Invoice\Relation(
             $this->invoiceItemResourceMock,
             $this->invoiceCommentResourceMock
         );

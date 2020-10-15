@@ -57,7 +57,8 @@ final class TrimArraySpacesFixer extends AbstractFixer
     /**
      * Method to trim leading/trailing whitespace within single line arrays.
      *
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      */
     private static function fixArray(Tokens $tokens, $index)
     {

@@ -3,46 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Customer\Ui\Component\Listing\Column\Actions;
-use Magento\Framework\Phrase;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Framework\View\Element\UiComponentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/** test for Listing Colummn
+/**
+ * Class ActionsTest
  */
-class ActionsTest extends TestCase
+class ActionsTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Actions */
     protected $component;
 
-    /** @var ContextInterface|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
-    /** @var UiComponentFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $uiComponentFactory;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $urlBuilder;
 
-    protected function setup(): void
+    public function setup()
     {
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder(Processor::class)
+        $processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $this->uiComponentFactory = $this->createMock(UiComponentFactory::class);
+        $this->uiComponentFactory = $this->createMock(\Magento\Framework\View\Element\UiComponentFactory::class);
         $this->urlBuilder = $this->getMockForAbstractClass(
-            UrlInterface::class,
+            \Magento\Framework\UrlInterface::class,
             [],
             '',
             false
@@ -74,8 +66,9 @@ class ActionsTest extends TestCase
                         'name' => [
                             'edit' => [
                                 'href' => 'http://magento.com/customer/index/edit',
-                                'label' => new Phrase('Edit'),
+                                'label' => new \Magento\Framework\Phrase('Edit'),
                                 'hidden' => false,
+                                '__disableTmpl' => true,
                             ]
                         ]
                     ],

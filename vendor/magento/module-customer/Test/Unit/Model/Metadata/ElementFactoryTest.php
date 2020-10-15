@@ -3,25 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Metadata;
 
-use Magento\Customer\Model\Attribute\Data\Postcode;
-use Magento\Customer\Model\Data\AttributeMetadata;
 use Magento\Customer\Model\Metadata\ElementFactory;
-use Magento\Customer\Model\Metadata\Form\Text;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\StringUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ElementFactoryTest extends TestCase
+class ElementFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface | \PHPUnit_Framework_MockObject_MockObject */
     private $_objectManager;
 
-    /** @var AttributeMetadata|MockObject */
+    /** @var \Magento\Customer\Model\Data\AttributeMetadata | \PHPUnit_Framework_MockObject_MockObject */
     private $_attributeMetadata;
 
     /** @var string */
@@ -30,11 +21,11 @@ class ElementFactoryTest extends TestCase
     /** @var ElementFactory */
     private $_elementFactory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_attributeMetadata = $this->createMock(AttributeMetadata::class);
-        $this->_elementFactory = new ElementFactory($this->_objectManager, new StringUtils());
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_attributeMetadata = $this->createMock(\Magento\Customer\Model\Data\AttributeMetadata::class);
+        $this->_elementFactory = new ElementFactory($this->_objectManager, new \Magento\Framework\Stdlib\StringUtils());
     }
 
     /** TODO fix when Validation is implemented MAGETWO-17341 */
@@ -44,12 +35,12 @@ class ElementFactoryTest extends TestCase
             $this->once()
         )->method(
             'getDataModel'
-        )->willReturn(
-            Postcode::class
+        )->will(
+            $this->returnValue(\Magento\Customer\Model\Attribute\Data\Postcode::class)
         );
 
-        $dataModel = $this->createMock(Text::class);
-        $this->_objectManager->expects($this->once())->method('create')->willReturn($dataModel);
+        $dataModel = $this->createMock(\Magento\Customer\Model\Metadata\Form\Text::class);
+        $this->_objectManager->expects($this->once())->method('create')->will($this->returnValue($dataModel));
 
         $actual = $this->_elementFactory->create($this->_attributeMetadata, '95131', $this->_entityTypeCode);
         $this->assertSame($dataModel, $actual);
@@ -57,16 +48,16 @@ class ElementFactoryTest extends TestCase
 
     public function testAttributeEmptyDataModelClass()
     {
-        $this->_attributeMetadata->expects($this->once())->method('getDataModel')->willReturn('');
+        $this->_attributeMetadata->expects($this->once())->method('getDataModel')->will($this->returnValue(''));
         $this->_attributeMetadata->expects(
             $this->once()
         )->method(
             'getFrontendInput'
-        )->willReturn(
-            'text'
+        )->will(
+            $this->returnValue('text')
         );
 
-        $dataModel = $this->createMock(Text::class);
+        $dataModel = $this->createMock(\Magento\Customer\Model\Metadata\Form\Text::class);
         $params = [
             'entityTypeCode' => $this->_entityTypeCode,
             'value' => 'Some Text',
@@ -78,10 +69,10 @@ class ElementFactoryTest extends TestCase
         )->method(
             'create'
         )->with(
-            Text::class,
+            \Magento\Customer\Model\Metadata\Form\Text::class,
             $params
-        )->willReturn(
-            $dataModel
+        )->will(
+            $this->returnValue($dataModel)
         );
 
         $actual = $this->_elementFactory->create($this->_attributeMetadata, 'Some Text', $this->_entityTypeCode);

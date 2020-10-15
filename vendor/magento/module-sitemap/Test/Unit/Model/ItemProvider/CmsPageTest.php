@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model\ItemProvider;
 
@@ -15,10 +14,8 @@ use Magento\Sitemap\Model\ResourceModel\Cms\Page as CmsPageResource;
 use Magento\Sitemap\Model\ResourceModel\Cms\PageFactory;
 use Magento\Sitemap\Model\SitemapItem;
 use Magento\Sitemap\Model\SitemapItemInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CmsPageTest extends TestCase
+class CmsPageTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetItemsEmpty()
     {
@@ -46,7 +43,7 @@ class CmsPageTest extends TestCase
         $resolver = new CmsPageItemResolver($configReaderMock, $cmsPageFactoryMock, $itemFactoryMock);
         $items = $resolver->getItems(1);
 
-        $this->assertCount(count($pages), $items);
+        $this->assertTrue(count($items) == count($pages));
         foreach ($pages as $index => $page) {
             $this->assertSame($page->getUpdatedAt(), $items[$index]->getUpdatedAt());
             $this->assertSame('daily', $items[$index]->getChangeFrequency());
@@ -75,7 +72,7 @@ class CmsPageTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getItemFactoryMock()
     {
@@ -97,7 +94,7 @@ class CmsPageTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getCmsPageFactoryMock($returnValue)
     {
@@ -114,7 +111,7 @@ class CmsPageTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getConfigReaderMock()
     {
@@ -131,7 +128,7 @@ class CmsPageTest extends TestCase
 
     /**
      * @param $returnValue
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getCmsPageCollectionMock($returnValue)
     {

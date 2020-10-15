@@ -21,18 +21,14 @@
         </annotations>
         <before>
             <magentoCLI command="config:set {{ChangedCookieDomainForMainWebsiteConfigData.path}} --scope={{ChangedCookieDomainForMainWebsiteConfigData.scope}} --scope-code={{ChangedCookieDomainForMainWebsiteConfigData.scope_code}} {{ChangedCookieDomainForMainWebsiteConfigData.value}}" stepKey="changeDomainForMainWebsiteBeforeTestRun"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCacheBeforeTestRun">
-                <argument name="tags" value="config"/>
-            </actionGroup>
+            <magentoCLI command="cache:flush config" stepKey="flushCacheBeforeTestRun"/>
         </before>
         <after>
             <magentoCLI command="config:set {{EmptyCookieDomainForMainWebsiteConfigData.path}} --scope={{EmptyCookieDomainForMainWebsiteConfigData.scope}} --scope-code={{EmptyCookieDomainForMainWebsiteConfigData.scope_code}} {{EmptyCookieDomainForMainWebsiteConfigData.value}}" stepKey="changeDomainForMainWebsiteAfterTestComplete"/>
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCacheAfterTestComplete">
-                <argument name="tags" value="config"/>
-            </actionGroup>
+            <magentoCLI command="cache:flush config" stepKey="flushCacheAfterTestComplete"/>
         </after>
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         <actionGroup ref="AssertAdminDashboardPageIsVisibleActionGroup" stepKey="seeDashboardPage"/>
-        <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+        <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
     </test>
 </tests>

@@ -15,7 +15,7 @@ class RoleTest extends \PHPUnit\Framework\TestCase
      */
     protected $_model = null;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Authorization\Model\Role::class);

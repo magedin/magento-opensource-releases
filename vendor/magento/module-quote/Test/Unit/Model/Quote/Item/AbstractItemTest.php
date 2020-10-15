@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Item;
 
-use Magento\Quote\Model\Quote\Item\AbstractItem;
-use PHPUnit\Framework\TestCase;
-
-class AbstractItemTest extends TestCase
+/**
+ * Class AbstractItemTest
+ */
+class AbstractItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test the getTotalDiscountAmount function
@@ -24,7 +22,7 @@ class AbstractItemTest extends TestCase
     public function testGetTotalDiscountAmount($expectedDiscountAmount, $children, $calculated, $myDiscountAmount)
     {
         $abstractItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,
@@ -34,13 +32,13 @@ class AbstractItemTest extends TestCase
         );
         $abstractItemMock->expects($this->any())
             ->method('getChildren')
-            ->willReturn($children);
+            ->will($this->returnValue($children));
         $abstractItemMock->expects($this->any())
             ->method('isChildrenCalculated')
-            ->willReturn($calculated);
+            ->will($this->returnValue($calculated));
         $abstractItemMock->expects($this->any())
             ->method('getDiscountAmount')
-            ->willReturn($myDiscountAmount);
+            ->will($this->returnValue($myDiscountAmount));
 
         $totalDiscountAmount = $abstractItemMock->getTotalDiscountAmount();
         $this->assertEquals($expectedDiscountAmount, $totalDiscountAmount);
@@ -53,7 +51,7 @@ class AbstractItemTest extends TestCase
     {
         $childOneDiscountAmount = 1000;
         $childOneItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,
@@ -63,11 +61,11 @@ class AbstractItemTest extends TestCase
         );
         $childOneItemMock->expects($this->any())
             ->method('getDiscountAmount')
-            ->willReturn($childOneDiscountAmount);
+            ->will($this->returnValue($childOneDiscountAmount));
 
         $childTwoDiscountAmount = 50;
         $childTwoItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,
@@ -77,7 +75,7 @@ class AbstractItemTest extends TestCase
         );
         $childTwoItemMock->expects($this->any())
             ->method('getDiscountAmount')
-            ->willReturn($childTwoDiscountAmount);
+            ->will($this->returnValue($childTwoDiscountAmount));
 
         $valueHasNoEffect = 0;
 

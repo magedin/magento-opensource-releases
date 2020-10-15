@@ -3,66 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Model\Layout\Update;
 
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\Config\Dom\ValidationException;
-use Magento\Framework\Config\Dom\ValidationSchemaException;
-use Magento\Framework\Config\DomFactory;
-use Magento\Framework\Config\ValidationStateInterface;
 use Magento\Framework\Phrase;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Model\Layout\Update\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $_objectHelper;
 
     /**
-     * @var DomFactory|MockObject
+     * @var \Magento\Framework\Config\DomFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $domConfigFactory;
 
     /**
-     * @var \Magento\Framework\View\Model\Layout\Update\Validator|MockObject
+     * @var \Magento\Framework\View\Model\Layout\Update\Validator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $model;
 
     /**
-     * @var UrnResolver|MockObject
+     * @var \Magento\Framework\Config\Dom\UrnResolver|\PHPUnit_Framework_MockObject_MockObject
      */
     private $urnResolver;
 
     /**
-     * @var ValidationStateInterface|MockObject
+     * @var \Magento\Framework\Config\ValidationStateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $validationState;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectHelper = new ObjectManager($this);
+        $this->_objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->domConfigFactory = $this->getMockBuilder(
-            DomFactory::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Config\DomFactory::class
+        )->disableOriginalConstructor()->getMock();
         $this->urnResolver = $this->getMockBuilder(
-            UrnResolver::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Config\Dom\UrnResolver::class
+        )->disableOriginalConstructor()->getMock();
         $this->validationState = $this->getMockBuilder(
-            ValidationStateInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Config\ValidationStateInterface::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->model = $this->_objectHelper->getObject(
-            Validator::class,
+            \Magento\Framework\View\Model\Layout\Update\Validator::class,
             [
                 'domConfigFactory' => $this->domConfigFactory,
                 'urnResolver' => $this->urnResolver,
@@ -89,7 +76,7 @@ class ValidatorTest extends TestCase
         )->method(
             'createDom'
         )->with(
-            $params
+            $this->equalTo($params)
         )->willReturnSelf();
 
         return $this->model;
@@ -205,32 +192,38 @@ XML;
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Config\Dom\ValidationException
+     * @expectedExceptionMessage Please correct the XML data and try again.
+     */
     public function testIsValidThrowsValidationException()
     {
-        $this->expectException('Magento\Framework\Config\Dom\ValidationException');
-        $this->expectExceptionMessage('Please correct the XML data and try again.');
         $this->domConfigFactory->expects($this->once())->method('createDom')->willThrowException(
-            new ValidationException('Please correct the XML data and try again.')
+            new \Magento\Framework\Config\Dom\ValidationException('Please correct the XML data and try again.')
         );
         $this->model->isValid('test');
     }
 
+    /**
+     * @expectedException \Magento\Framework\Config\Dom\ValidationSchemaException
+     * @expectedExceptionMessage Please correct the XSD data and try again.
+     */
     public function testIsValidThrowsValidationSchemaException()
     {
-        $this->expectException('Magento\Framework\Config\Dom\ValidationSchemaException');
-        $this->expectExceptionMessage('Please correct the XSD data and try again.');
         $this->domConfigFactory->expects($this->once())->method('createDom')->willThrowException(
-            new ValidationSchemaException(
+            new \Magento\Framework\Config\Dom\ValidationSchemaException(
                 new Phrase('Please correct the XSD data and try again.')
             )
         );
         $this->model->isValid('test');
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Exception.
+     */
     public function testIsValidThrowsException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage('Exception.');
         $this->domConfigFactory->expects($this->once())->method('createDom')->willThrowException(
             new \Exception('Exception.')
         );

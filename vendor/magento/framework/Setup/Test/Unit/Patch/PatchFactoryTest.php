@@ -3,17 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Patch;
 
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Setup\Patch\PatchFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Setup\Patch\PatchFactory;
+use Magento\Framework\Setup\Patch\PatchHistory;
+use Magento\Framework\Setup\Patch\PatchInterface;
 
-class PatchFactoryTest extends TestCase
+/**
+ * Class PatchFactoryTest
+ * @package Magento\Framework\Setup\Test\Unit\Patch
+ */
+class PatchFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PatchFactory
@@ -21,14 +26,14 @@ class PatchFactoryTest extends TestCase
     private $patchFactory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(ObjectManagerInterface::class);
         $this->patchFactory = $objectManager->getObject(
             PatchFactory::class,
             [
@@ -37,12 +42,12 @@ class PatchFactoryTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage stdClass should implement Magento\Framework\Setup\Patch\PatchInterface interface
+     */
     public function testCreateNonPatchInterface()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage(
-            'stdClass should implement Magento\Framework\Setup\Patch\PatchInterface interface'
-        );
         $patchNonPatchInterface = $this->createMock(\stdClass::class);
         $this->objectManagerMock->expects($this->any())
             ->method('create')

@@ -105,5 +105,3 @@ public function foo()
 'bad indent here leads to bad indent for closer', function () {
 });
 }
-
-$fn1 = fn($x) => $x + $y;

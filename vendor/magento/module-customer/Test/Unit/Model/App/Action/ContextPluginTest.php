@@ -3,75 +3,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\App\Action;
 
-use Magento\Customer\Model\App\Action\ContextPlugin;
 use Magento\Customer\Model\Context;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Http\Context as HttpContext;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Unit Tests to cover ContextPlugin for Action Context
+ * Class ContextPluginTest
  */
-class ContextPluginTest extends TestCase
+class ContextPluginTest extends \PHPUnit\Framework\TestCase
 {
-    const STUB_CUSTOMER_GROUP = 'UAH';
-    const STUB_CUSTOMER_NOT_LOGGED_IN = 0;
     /**
-     * @var ContextPlugin
+     * @var \Magento\Customer\Model\App\Action\ContextPlugin
      */
     protected $plugin;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var HttpContext|MockObject
+     * @var \Magento\Framework\App\Http\Context $httpContext|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $httpContextMock;
 
     /**
-     * @var Action|MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $subjectMock;
 
     /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $requestMock;
+
+    /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->customerSessionMock = $this->createMock(Session::class);
-        $this->httpContextMock = $this->createMock(HttpContext::class);
-        $this->subjectMock = $this->createMock(Action::class);
-        $this->plugin = new ContextPlugin(
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
+        $this->httpContextMock = $this->createMock(\Magento\Framework\App\Http\Context::class);
+        $this->subjectMock = $this->createMock(\Magento\Framework\App\Action\Action::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->plugin = new \Magento\Customer\Model\App\Action\ContextPlugin(
             $this->customerSessionMock,
             $this->httpContextMock
         );
     }
 
-    public function testBeforeExecute()
+    /**
+     * Test aroundDispatch
+     */
+    public function testBeforeDispatch()
     {
         $this->customerSessionMock->expects($this->once())
             ->method('getCustomerGroupId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
         $this->customerSessionMock->expects($this->once())
             ->method('isLoggedIn')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->httpContextMock->expects($this->atLeastOnce())
             ->method('setValue')
-            ->willReturnMap(
-                [
-                    [Context::CONTEXT_GROUP, self::STUB_CUSTOMER_GROUP, $this->httpContextMock],
-                    [Context::CONTEXT_AUTH, self::STUB_CUSTOMER_NOT_LOGGED_IN, $this->httpContextMock],
-                ]
+            ->will(
+                $this->returnValueMap(
+                    [
+                        [Context::CONTEXT_GROUP, 'UAH', $this->httpContextMock],
+                        [Context::CONTEXT_AUTH, 0, $this->httpContextMock],
+                    ]
+                )
             );
-        $this->plugin->beforeExecute($this->subjectMock);
+        $this->plugin->beforeDispatch($this->subjectMock, $this->requestMock);
     }
 }

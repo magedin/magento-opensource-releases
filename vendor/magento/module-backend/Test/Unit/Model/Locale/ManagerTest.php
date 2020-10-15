@@ -3,77 +3,66 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Locale;
 
-use Magento\Backend\App\ConfigInterface;
-use Magento\Backend\Model\Locale\Manager;
-use Magento\Backend\Model\Session;
-use Magento\Framework\DataObject;
 use Magento\Framework\Locale\Resolver;
-use Magento\Framework\TranslateInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ManagerTest extends TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Manager
+     * @var \Magento\Backend\Model\Locale\Manager
      */
     private $_model;
 
     /**
-     * @var MockObject|TranslateInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\TranslateInterface
      */
     private $_translator;
 
     /**
-     * @var Session
+     * @var \Magento\Backend\Model\Session
      */
     private $_session;
 
     /**
-     * @var MockObject|\Magento\Backend\Model\Auth\Session
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Backend\Model\Auth\Session
      */
     private $_authSession;
 
     /**
-     * @var MockObject|ConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Backend\App\ConfigInterface
      */
     private $_backendConfig;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_session = $this->createMock(Session::class);
+        $this->_session = $this->createMock(\Magento\Backend\Model\Session::class);
 
-        $this->_authSession = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)->addMethods(['getUser'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_authSession = $this->createPartialMock(\Magento\Backend\Model\Auth\Session::class, ['getUser']);
 
         $this->_backendConfig = $this->getMockForAbstractClass(
-            ConfigInterface::class,
+            \Magento\Backend\App\ConfigInterface::class,
             [],
             '',
             false
         );
 
-        $userMock = new DataObject();
+        $userMock = new \Magento\Framework\DataObject();
 
-        $this->_authSession->expects($this->any())->method('getUser')->willReturn($userMock);
+        $this->_authSession->expects($this->any())->method('getUser')->will($this->returnValue($userMock));
 
-        $this->_translator = $this->getMockBuilder(TranslateInterface::class)
+        $this->_translator = $this->getMockBuilder(\Magento\Framework\TranslateInterface::class)
             ->setMethods(['init', 'setLocale'])
             ->getMockForAbstractClass();
 
-        $this->_translator->expects($this->any())->method('setLocale')->willReturn($this->_translator);
+        $this->_translator->expects($this->any())->method('setLocale')->will($this->returnValue($this->_translator));
 
-        $this->_translator->expects($this->any())->method('init')->willReturn(false);
+        $this->_translator->expects($this->any())->method('init')->will($this->returnValue(false));
 
-        $this->_model = new Manager(
+        $this->_model = new \Magento\Backend\Model\Locale\Manager(
             $this->_session,
             $this->_authSession,
             $this->_translator,

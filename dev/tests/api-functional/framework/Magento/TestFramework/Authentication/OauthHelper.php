@@ -7,18 +7,12 @@
  */
 namespace Magento\TestFramework\Authentication;
 
-use Magento\Framework\Exception\IntegrationException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Oauth\Exception;
 use Magento\TestFramework\Authentication\Rest\OauthClient;
 use Magento\TestFramework\Helper\Bootstrap;
 use OAuth\Common\Consumer\Credentials;
-use Laminas\Stdlib\Exception\LogicException;
+use Zend\Stdlib\Exception\LogicException;
 use Magento\Integration\Model\Integration;
 
-/**
- * Authentication Oauth helper
- */
 class OauthHelper
 {
     /** @var array */
@@ -26,7 +20,6 @@ class OauthHelper
 
     /**
      * Generate authentication credentials
-     *
      * @param string $date consumer creation date
      * @return array
      * <pre>
@@ -38,8 +31,6 @@ class OauthHelper
      *   'token' => $token // retrieved token Model
      *   );
      * </pre>
-     * @throws LocalizedException
-     * @throws Exception
      */
     public static function getConsumerCredentials($date = null)
     {
@@ -78,9 +69,6 @@ class OauthHelper
      *   'oauth_client' => $oauthClient // OauthClient instance used to fetch the access token
      *   );
      * </pre>
-     * @throws LocalizedException
-     * @throws Exception
-     * @throws \OAuth\Common\Http\Exception\TokenResponseException
      */
     public static function getAccessToken()
     {
@@ -116,8 +104,7 @@ class OauthHelper
      *   'integration' => $integration // Integration instance associated with access token
      *   );
      * </pre>
-     * @throws LocalizedException
-     * @throws Exception
+     * @throws LogicException
      */
     public static function getApiAccessCredentials($resources = null, Integration $integrationModel = null)
     {
@@ -183,8 +170,7 @@ class OauthHelper
      *
      * @param array $resources
      * @return \Magento\Integration\Model\Integration
-     * @throws LogicException
-     * @throws IntegrationException
+     * @throws \Zend\Stdlib\Exception\LogicException
      */
     protected static function _createIntegration($resources)
     {

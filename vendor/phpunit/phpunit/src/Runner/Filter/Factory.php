@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of PHPUnit.
  *
@@ -9,28 +9,27 @@
  */
 namespace PHPUnit\Runner\Filter;
 
+use FilterIterator;
+use InvalidArgumentException;
+use Iterator;
 use PHPUnit\Framework\TestSuite;
-use PHPUnit\Runner\Exception;
+use ReflectionClass;
 
-/**
- * @internal This class is not covered by the backward compatibility promise for PHPUnit
- */
-final class Factory
+class Factory
 {
     /**
-     * @psalm-var array<int,array{0: \ReflectionClass, 1: array|string}>
+     * @var array
      */
     private $filters = [];
 
     /**
-     * @param array|string $args
-     *
-     * @throws Exception
+     * @param ReflectionClass $filter
+     * @param mixed           $args
      */
-    public function addFilter(\ReflectionClass $filter, $args): void
+    public function addFilter(ReflectionClass $filter, $args)
     {
         if (!$filter->isSubclassOf(\RecursiveFilterIterator::class)) {
-            throw new Exception(
+            throw new InvalidArgumentException(
                 \sprintf(
                     'Class "%s" does not extend RecursiveFilterIterator',
                     $filter->name
@@ -41,14 +40,15 @@ final class Factory
         $this->filters[] = [$filter, $args];
     }
 
-    public function factory(\Iterator $iterator, TestSuite $suite): \FilterIterator
+    /**
+     * @return FilterIterator
+     */
+    public function factory(Iterator $iterator, TestSuite $suite)
     {
         foreach ($this->filters as $filter) {
-            [$class, $args] = $filter;
-            $iterator       = $class->newInstance($iterator, $args, $suite);
+            list($class, $args) = $filter;
+            $iterator           = $class->newInstance($iterator, $args, $suite);
         }
-
-        \assert($iterator instanceof \FilterIterator);
 
         return $iterator;
     }

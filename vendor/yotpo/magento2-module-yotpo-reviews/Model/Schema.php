@@ -87,29 +87,22 @@ class Schema
                     if (!($product && $product->getId())) {
                         continue;
                     }
-                    if (
-                        $orderItem->getData('amount_refunded') >= $orderItem->getData('row_total_incl_tax') ||
-                        $orderItem->getData('qty_ordered') <= ($orderItem->getData('qty_refunded') + $orderItem->getData('qty_canceled'))
-                    ) {
-                        //Skip if item is fully canceled or refunded
-                        continue;
-                    }
                     if ($orderItem->getProductType() === ProductTypeGrouped::TYPE_CODE && isset($productsData[$product->getId()])) {
-                        $productsData[$product->getId()]['price'] += $orderItem->getData('row_total_incl_tax') - $orderItem->getData('amount_refunded');
+                        $productsData[$product->getId()]['price'] += $orderItem->getData('row_total_incl_tax');
                     } else {
                         $productsData[$product->getId()] = [
                                 'name'        => $product->getName(),
                                 'url'         => $product->getProductUrl(),
                                 'image'       => $this->getProductMainImageUrl($product),
                                 'description' => $this->escaper->escapeHtml(strip_tags($product->getDescription())),
-                                'price'       => $orderItem->getData('row_total_incl_tax') - $orderItem->getData('amount_refunded'),
+                                'price'       => $orderItem->getData('row_total_incl_tax'),
                                 'specs'       => array_filter(
                                     [
                                     'external_sku' => $product->getSku(),
                                     'upc'          => $product->getUpc(),
                                     'isbn'         => $product->getIsbn(),
                                     'mpn'          => $product->getMpn(),
-                                    'brand'        => $product->getBrand() ? $product->getAttributeText('brand') : null,
+                                    'brand'        => $product->getBrand(),
                                     ]
                                 ),
                             ];

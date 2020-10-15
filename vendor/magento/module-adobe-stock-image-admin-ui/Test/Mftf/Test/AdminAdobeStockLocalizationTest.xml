@@ -10,6 +10,9 @@
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
     <test name="AdminAdobeStockLocalizationTest">
         <annotations>
+            <skip>
+                <issueId value="https://github.com/magento/adobe-stock-integration/issues/1346" />
+            </skip>
             <features value="AdobeStockImagePanel"/>
             <stories value="[Story #18] User sees stock image attributes localized"/>
             <useCaseId value="https://github.com/magento/adobe-stock-integration/issues/41"/>
@@ -20,7 +23,7 @@
             <group value="adobe_stock_integration"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!-- Deploy ru_RU locale static content -->
             <magentoCLI command="setup:static-content:deploy" arguments="-f ru_RU --area adminhtml" stepKey="staticDeployBeforeChangeLocaleToRU"/>
             <!--Set Admin "Interface Locale" to ru_RU-->
@@ -29,11 +32,11 @@
             </actionGroup>
         </before>
         <after>
-            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="resetAdminDataGridToDefaultView"/>
+            <actionGroup ref="resetAdminDataGridToDefaultView" stepKey="resetAdminDataGridToDefaultView"/>
             <actionGroup ref="SetAdminAccountActionGroup" stepKey="setAdminInterfaceLocaleToDefaultValue">
                 <argument name="InterfaceLocaleByValue" value="en_US"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
         <!-- verify that user can search adobe stock image in ru_RU locale -->
         <actionGroup ref="AdminOpenMediaGalleryForPageNoEditorActionGroup" stepKey="openMediaGalleryForPage"/>
@@ -43,13 +46,13 @@
         </actionGroup>
         <actionGroup ref="AdminAdobeStockExpandImagePreviewActionGroup" stepKey="expandImagePreview"/>
         <wait time="5" stepKey="waitBeforeExpandSectionLoadFull"/>
-        <grabTextFrom selector="{{AdminAdobeStockImagePreviewSection.firstKeyword}}" stepKey="grabKeyword"/>
-        <grabTextFrom selector="{{AdminAdobeStockImagePreviewSection.imagePreviewCategoryText}}" stepKey="grabCategoryText"/>
+        <grabTextFrom selector="{{AdobeStockImagePreviewSection.firstKeyword}}" stepKey="grabKeyword"/>
+        <grabTextFrom selector="{{AdobeStockImagePreviewSection.imagePreviewCategoryText}}" stepKey="grabCategoryText"/>
         <actionGroup ref="AssertAdminAdobeStockKeywordLocalizedActionGroup" stepKey="assertKeywordLocalized">
-             <argument name="stringToBeVerified" value="{$grabKeyword}"/>
+            <argument name="stringToBeVerified" value="{$grabKeyword}"/>
         </actionGroup>
         <actionGroup ref="AssertAdminAdobeStockKeywordLocalizedActionGroup" stepKey="assertCategoryLocalized">
-             <argument name="stringToBeVerified" value="{$grabCategoryText}"/>
+            <argument name="stringToBeVerified" value="{$grabCategoryText}"/>
         </actionGroup>
     </test>
 </tests>

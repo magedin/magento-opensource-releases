@@ -3,36 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Layer\Filter;
 
-use Magento\Catalog\Model\Layer\Filter\DataProvider\DecimalFactory;
-use Magento\Catalog\Model\Layer\Filter\Decimal;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class DecimalTest extends TestCase
+class DecimalTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructorRequestVarIsOverwrittenCorrectlyInParent()
     {
         $attributeModel = $this->createPartialMock(
-            Attribute::class,
-            ['getAttributeCode']
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
+            ['getAttributeCode', '__wakeup']
         );
-        $attributeModel->expects($this->once())->method('getAttributeCode')->willReturn('price1');
+        $attributeModel->expects($this->once())->method('getAttributeCode')->will($this->returnValue('price1'));
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $dataProviderFactory = $this->getMockBuilder(
-            DecimalFactory::class
+            \Magento\Catalog\Model\Layer\Filter\DataProvider\DecimalFactory::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $instance = $objectManager->getObject(
-            Decimal::class,
+            \Magento\Catalog\Model\Layer\Filter\Decimal::class,
             [
                 'data' => [
                     'attribute_model' => $attributeModel,

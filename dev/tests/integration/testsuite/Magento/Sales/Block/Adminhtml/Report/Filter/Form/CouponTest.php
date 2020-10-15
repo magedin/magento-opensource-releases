@@ -18,7 +18,7 @@ class CouponTest extends \PHPUnit\Framework\TestCase
      */
     protected $_layout;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->_layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
@@ -41,7 +41,7 @@ class CouponTest extends \PHPUnit\Framework\TestCase
             'sales_report_price_rule_type',
         ];
         foreach ($expectedStrings as $expectedString) {
-            $this->assertStringContainsString($expectedString, $html);
+            $this->assertContains($expectedString, $html);
         }
     }
 }

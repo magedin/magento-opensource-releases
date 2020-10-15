@@ -3,19 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Acl\Test\Unit\AclResource\Config;
 
-use Magento\Framework\Acl\AclResource\Config\SchemaLocator;
-use Magento\Framework\Config\Dom\UrnResolver;
-use Magento\Framework\TestFramework\Unit\Utility\XsdValidator;
-use PHPUnit\Framework\TestCase;
-
-class MergedXsdTest extends TestCase
+class MergedXsdTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Framework\Acl\AclResource\Config\SchemaLocator
      */
     protected $_schemaLocator;
 
@@ -26,20 +19,20 @@ class MergedXsdTest extends TestCase
     protected $_xsdSchema;
 
     /**
-     * @var XsdValidator
+     * @var \Magento\Framework\TestFramework\Unit\Utility\XsdValidator
      */
     protected $_xsdValidator;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!function_exists('libxml_set_external_entity_loader')) {
             $this->markTestSkipped('Skipped on HHVM. Will be fixed in MAGETWO-45033');
         }
-        $this->_schemaLocator = new SchemaLocator(
-            new UrnResolver()
+        $this->_schemaLocator = new \Magento\Framework\Acl\AclResource\Config\SchemaLocator(
+            new \Magento\Framework\Config\Dom\UrnResolver()
         );
         $this->_xsdSchema = $this->_schemaLocator->getSchema();
-        $this->_xsdValidator = new XsdValidator();
+        $this->_xsdValidator = new \Magento\Framework\TestFramework\Unit\Utility\XsdValidator();
     }
 
     /**

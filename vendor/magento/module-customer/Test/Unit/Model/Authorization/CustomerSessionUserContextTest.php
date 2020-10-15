@@ -3,47 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\Authorization;
 
 use Magento\Authorization\Model\UserContextInterface;
-use Magento\Customer\Model\Authorization\CustomerSessionUserContext;
-use Magento\Customer\Model\Session;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\Customer\Model\Authorization\CustomerSessionUserContext
  */
-class CustomerSessionUserContextTest extends TestCase
+class CustomerSessionUserContextTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var CustomerSessionUserContext
+     * @var \Magento\Customer\Model\Authorization\CustomerSessionUserContext
      */
     protected $customerSessionUserContext;
 
     /**
-     * @var Session
+     * @var \Magento\Customer\Model\Session
      */
     protected $customerSession;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->customerSession = $this->getMockBuilder(Session::class)
+        $this->customerSession = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
             ->getMock();
 
         $this->customerSessionUserContext = $this->objectManager->getObject(
-            CustomerSessionUserContext::class,
+            \Magento\Customer\Model\Authorization\CustomerSessionUserContext::class,
             ['customerSession' => $this->customerSession]
         );
     }
@@ -75,6 +70,6 @@ class CustomerSessionUserContextTest extends TestCase
     {
         $this->customerSession->expects($this->once())
             ->method('getId')
-            ->willReturn($userId);
+            ->will($this->returnValue($userId));
     }
 }

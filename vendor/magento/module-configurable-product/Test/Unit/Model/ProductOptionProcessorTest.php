@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model;
 
-use Magento\Catalog\Api\Data\ProductOptionExtensionInterface;
-use Magento\Catalog\Api\Data\ProductOptionInterface;
 use Magento\ConfigurableProduct\Api\Data\ConfigurableItemOptionValueInterface;
 use Magento\ConfigurableProduct\Model\ProductOptionProcessor;
-use Magento\ConfigurableProduct\Model\Quote\Item\ConfigurableItemOptionValue;
 use Magento\ConfigurableProduct\Model\Quote\Item\ConfigurableItemOptionValueFactory;
 use Magento\Framework\DataObject;
 use Magento\Framework\DataObject\Factory as DataObjectFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProductOptionProcessorTest extends TestCase
+class ProductOptionProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductOptionProcessor
@@ -30,28 +23,28 @@ class ProductOptionProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObject;
 
     /**
-     * @var DataObjectFactory|MockObject
+     * @var DataObjectFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectFactory;
 
     /**
-     * @var ConfigurableItemOptionValueFactory|MockObject
+     * @var ConfigurableItemOptionValueFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemOptionValueFactory;
 
     /**
-     * @var ConfigurableItemOptionValueInterface|MockObject
+     * @var ConfigurableItemOptionValueInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $itemOptionValue;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dataObject = $this->getMockBuilder(DataObject::class)
+        $this->dataObject = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods([
                 'getSuperAttribute', 'addData'
             ])
@@ -67,12 +60,12 @@ class ProductOptionProcessorTest extends TestCase
             ->willReturn($this->dataObject);
 
         $this->itemOptionValue = $this->getMockBuilder(
-            ConfigurableItemOptionValueInterface::class
+            \Magento\ConfigurableProduct\Api\Data\ConfigurableItemOptionValueInterface::class
         )
             ->getMockForAbstractClass();
 
         $this->itemOptionValueFactory = $this->getMockBuilder(
-            ConfigurableItemOptionValueFactory::class
+            \Magento\ConfigurableProduct\Model\Quote\Item\ConfigurableItemOptionValueFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -96,11 +89,11 @@ class ProductOptionProcessorTest extends TestCase
         $options,
         $requestData
     ) {
-        $productOptionMock = $this->getMockBuilder(ProductOptionInterface::class)
+        $productOptionMock = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductOptionInterface::class)
             ->getMockForAbstractClass();
 
         $productOptionExtensionMock = $this->getMockBuilder(
-            ProductOptionExtensionInterface::class
+            \Magento\Catalog\Api\Data\ProductOptionExtensionInterface::class
         )
             ->setMethods([
                 'getConfigurableItemOptions',
@@ -130,9 +123,9 @@ class ProductOptionProcessorTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        /** @var ConfigurableItemOptionValue $option */
+        /** @var \Magento\ConfigurableProduct\Model\Quote\Item\ConfigurableItemOptionValue $option */
         $option = $objectManager->getObject(
-            ConfigurableItemOptionValue::class
+            \Magento\ConfigurableProduct\Model\Quote\Item\ConfigurableItemOptionValue::class
         );
         $option->setOptionId(1);
         $option->setOptionValue('test');
@@ -178,7 +171,7 @@ class ProductOptionProcessorTest extends TestCase
 
         if (!empty($expected)) {
             $this->assertArrayHasKey($expected, $result);
-            $this->assertIsArray($result[$expected]);
+            $this->assertTrue(is_array($result[$expected]));
         } else {
             $this->assertEmpty($result);
         }

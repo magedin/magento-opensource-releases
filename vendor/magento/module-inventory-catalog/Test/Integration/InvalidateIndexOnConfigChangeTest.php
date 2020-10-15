@@ -29,7 +29,7 @@ class InvalidateIndexOnConfigChangeTest extends TestCase
      */
     private $inventoryIndexer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->eventManager = Bootstrap::getObjectManager()->get(EventManagerInterface::class);
         $indexerRegistry = Bootstrap::getObjectManager()->get(IndexerRegistry::class);

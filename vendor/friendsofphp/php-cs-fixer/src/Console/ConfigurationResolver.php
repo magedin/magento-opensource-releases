@@ -150,7 +150,10 @@ final class ConfigurationResolver
     private $fixerFactory;
 
     /**
-     * @param string $cwd
+     * @param ConfigInterface   $config
+     * @param array             $options
+     * @param string            $cwd
+     * @param ToolInfoInterface $toolInfo
      */
     public function __construct(
         ConfigInterface $config,
@@ -302,15 +305,11 @@ final class ConfigurationResolver
     {
         if (null === $this->directory) {
             $path = $this->getCacheFile();
-            if (null === $path) {
-                $absolutePath = $this->cwd;
-            } else {
-                $filesystem = new Filesystem();
+            $filesystem = new Filesystem();
 
-                $absolutePath = $filesystem->isAbsolutePath($path)
-                    ? $path
-                    : $this->cwd.\DIRECTORY_SEPARATOR.$path;
-            }
+            $absolutePath = $filesystem->isAbsolutePath($path)
+                ? $path
+                : $this->cwd.\DIRECTORY_SEPARATOR.$path;
 
             $this->directory = new Directory(\dirname($absolutePath));
         }
@@ -379,13 +378,7 @@ final class ConfigurationResolver
                 $this->path = $this->options['path'];
             } else {
                 $this->path = array_map(
-                    static function ($rawPath) use ($cwd, $filesystem) {
-                        $path = trim($rawPath);
-
-                        if ('' === $path) {
-                            throw new InvalidConfigurationException("Invalid path: \"{$rawPath}\".");
-                        }
-
+                    static function ($path) use ($cwd, $filesystem) {
                         $absolutePath = $filesystem->isAbsolutePath($path)
                             ? $path
                             : $cwd.\DIRECTORY_SEPARATOR.$path;
@@ -688,7 +681,7 @@ final class ConfigurationResolver
         if ('{' === $rules[0]) {
             $rules = json_decode($rules, true);
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new InvalidConfigurationException(sprintf('Invalid JSON rules input: "%s".', json_last_error_msg()));
+                throw new InvalidConfigurationException(sprintf('Invalid JSON rules input: %s.', json_last_error_msg()));
             }
 
             return $rules;
@@ -713,6 +706,8 @@ final class ConfigurationResolver
     }
 
     /**
+     * @param array $rules
+     *
      * @throws InvalidConfigurationException
      */
     private function validateRules(array $rules)
@@ -768,7 +763,7 @@ final class ConfigurationResolver
             if (isset($rules[$fixerName]) && $fixer instanceof DeprecatedFixerInterface) {
                 $successors = $fixer->getSuccessorsNames();
                 $messageEnd = [] === $successors
-                    ? sprintf(' and will be removed in version %d.0.', Application::getMajorVersion())
+                    ? sprintf(' and will be removed in version %d.0.', (int) Application::VERSION + 1)
                     : sprintf('. Use %s instead.', str_replace('`', '"', Utils::naturalLanguageJoinWithBackticks($successors)));
 
                 $message = "Rule \"{$fixerName}\" is deprecated{$messageEnd}";
@@ -853,7 +848,7 @@ final class ConfigurationResolver
             }
 
             return new \CallbackFilterIterator(
-                new \IteratorIterator($nestedFinder),
+                $nestedFinder,
                 static function (\SplFileInfo $current) use ($pathsByType) {
                     $currentRealPath = $current->getRealPath();
 

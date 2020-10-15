@@ -11,20 +11,15 @@ namespace Magento\AdobeStockImage\Model\Storage;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Driver\Https;
 use Magento\Framework\Filesystem\DriverInterface;
-use Magento\MediaGalleryApi\Api\IsPathExcludedInterface;
-use Magento\Cms\Model\Wysiwyg\Images\Storage;
 
 /**
- * Save images to the file system
+ * Class Save
  */
 class Save
 {
-    private const IMAGE_FILE_NAME_PATTERN = '#\.(jpg|jpeg|gif|png)$# i';
-
     /**
      * @var Filesystem
      */
@@ -36,31 +31,16 @@ class Save
     private $driver;
 
     /**
-     * @var IsPathExcludedInterface
-     */
-    private $isPathExcluded;
-
-    /**
-     * @var Storage
-     */
-    private $storage;
-
-    /**
+     * Storage constructor.
      * @param Filesystem $filesystem
      * @param Https $driver
-     * @param IsPathExcludedInterface $isPathExcluded
-     * @param Storage $storage
      */
     public function __construct(
         Filesystem $filesystem,
-        Https $driver,
-        IsPathExcludedInterface $isPathExcluded,
-        Storage $storage
+        Https $driver
     ) {
         $this->filesystem = $filesystem;
         $this->driver = $driver;
-        $this->isPathExcluded = $isPathExcluded;
-        $this->storage = $storage;
     }
 
     /**
@@ -68,21 +48,13 @@ class Save
      *
      * @param string $imageUrl
      * @param string $destinationPath
+     * @return string
      * @throws AlreadyExistsException
      * @throws FileSystemException
-     * @throws LocalizedException
      */
-    public function execute(string $imageUrl, string $destinationPath): void
+    public function execute(string $imageUrl, string $destinationPath = '') : string
     {
         $mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-
-        if ($this->isPathExcluded->execute($destinationPath)) {
-            throw new LocalizedException(__('Could not save image: destination directory is restricted.'));
-        }
-
-        if (!preg_match(self::IMAGE_FILE_NAME_PATTERN, $destinationPath)) {
-            throw new LocalizedException(__('Could not save image: unsupported file type.'));
-        }
 
         if ($mediaDirectory->isExist($destinationPath)) {
             throw new AlreadyExistsException(__('Image with the same file name already exits.'));
@@ -90,7 +62,8 @@ class Save
 
         $fileContents = $this->driver->fileGetContents($this->getUrlWithoutProtocol($imageUrl));
         $mediaDirectory->writeFile($destinationPath, $fileContents);
-        $this->storage->resizeFile($mediaDirectory->getAbsolutePath($destinationPath));
+
+        return $destinationPath;
     }
 
     /**

@@ -3,30 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter;
 
-use Magento\Setup\Module\I18n\Parser\Adapter\AbstractAdapter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractAdapterTest extends TestCase
+class AbstractAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractAdapter|MockObject
+     * @var \Magento\Setup\Module\I18n\Parser\Adapter\AbstractAdapter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_adapterMock;
 
     /**
-     * @var AbstractAdapter
+     * @var \Magento\Setup\Module\I18n\Parser\Adapter\AbstractAdapter
      */
     protected $_adapterReflection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_adapterMock = $this->getMockForAbstractClass(
-            AbstractAdapter::class,
+            \Magento\Setup\Module\I18n\Parser\Adapter\AbstractAdapter::class,
             [],
             '',
             false,
@@ -35,7 +29,7 @@ class AbstractAdapterTest extends TestCase
             ['_parse']
         );
         $this->_adapterReflection = new \ReflectionMethod(
-            AbstractAdapter::class,
+            \Magento\Setup\Module\I18n\Parser\Adapter\AbstractAdapter::class,
             '_addPhrase'
         );
         $this->_adapterReflection->setAccessible(true);
@@ -50,7 +44,7 @@ class AbstractAdapterTest extends TestCase
 
     public function getPhrases()
     {
-        $this->assertIsArray($this->_adapterMock->getPhrases());
+        $this->assertInternalType('array', $this->_adapterMock->getPhrases());
     }
 
     public function testAddPhrase()

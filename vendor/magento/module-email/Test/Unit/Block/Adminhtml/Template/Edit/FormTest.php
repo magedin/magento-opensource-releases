@@ -3,60 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Block\Adminhtml\Template\Edit;
-
-use Magento\Email\Block\Adminhtml\Template\Edit\Form;
-use Magento\Email\Model\Template;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Variable\Model\Source\Variables;
-use Magento\Variable\Model\Variable;
-use Magento\Variable\Model\VariableFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Email\Block\Adminhtml\Template\Edit\Form
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Form */
+    /** @var \Magento\Email\Block\Adminhtml\Template\Edit\Form */
     protected $form;
 
-    /** @var Variables|MockObject */
+    /** @var \Magento\Variable\Model\Source\Variables|\PHPUnit_Framework_MockObject_MockObject */
     protected $variablesMock;
 
-    /** @var VariableFactory|MockObject */
+    /** @var \Magento\Variable\Model\VariableFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $variableFactoryMock;
 
-    /** @var Variable|MockObject */
+    /** @var \Magento\Variable\Model\Variable|\PHPUnit_Framework_MockObject_MockObject */
     protected $variableMock;
 
-    /** @var Template|MockObject */
+    /** @var \Magento\Email\Model\Template|\PHPUnit_Framework_MockObject_MockObject */
     protected $templateMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->variablesMock = $this->getMockBuilder(Variables::class)
+        $this->variablesMock = $this->getMockBuilder(\Magento\Variable\Model\Source\Variables::class)
             ->disableOriginalConstructor()
             ->setMethods(['toOptionArray'])
             ->getMock();
-        $this->variableFactoryMock = $this->getMockBuilder(VariableFactory::class)
+        $this->variableFactoryMock = $this->getMockBuilder(\Magento\Variable\Model\VariableFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->variableMock = $this->getMockBuilder(Variable::class)
+        $this->variableMock = $this->getMockBuilder(\Magento\Variable\Model\Variable::class)
             ->disableOriginalConstructor()
             ->setMethods(['getVariablesOptionArray'])
             ->getMock();
-        $this->templateMock = $this->getMockBuilder(Template::class)
+        $this->templateMock = $this->getMockBuilder(\Magento\Email\Model\Template::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', 'getVariablesOptionArray'])
             ->getMock();
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->form = $objectManager->getObject(
-            Form::class,
+            \Magento\Email\Block\Adminhtml\Template\Edit\Form::class,
             [
                 'variableFactory' => $this->variableFactoryMock,
                 'variables' => $this->variablesMock

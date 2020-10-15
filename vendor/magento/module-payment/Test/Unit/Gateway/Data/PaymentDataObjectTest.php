@@ -3,67 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Data;
 
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObject;
+use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Model\InfoInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Tests for PaymentDataObject
+ * Class PaymentDataObjectTest
  */
-class PaymentDataObjectTest extends TestCase
+class PaymentDataObjectTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var PaymentDataObject
-     */
+    /** @var PaymentDataObject */
     protected $model;
 
     /**
-     * @var OrderAdapterInterface|MockObject
+     * @var OrderAdapterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $orderMock;
 
     /**
-     * @var InfoInterface|\MockObject
+     * @var InfoInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $paymentMock;
 
-    /**
-     * @inheritdoc
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->orderMock = $this->getMockBuilder(OrderAdapterInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Payment\Gateway\Data\OrderAdapterInterface::class)
             ->getMockForAbstractClass();
 
-        $this->paymentMock = $this->getMockBuilder(InfoInterface::class)
+        $this->paymentMock = $this->getMockBuilder(\Magento\Payment\Model\InfoInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new PaymentDataObject($this->orderMock, $this->paymentMock);
     }
 
-    /**
-     * Verify can get order
-     *
-     * @return void
-     */
-    public function testGetOrder(): void
+    public function testGetOrder()
     {
-        $this->assertSame($this->orderMock, $this->model->getOrder());
+        $this->assertSame($this->orderMock, $this->model->getOrder()) ;
     }
 
-    /**
-     * Verify can get payment
-     *
-     * @return void
-     */
-    public function testGetPayment(): void
+    public function testGetPayment()
     {
-        $this->assertSame($this->paymentMock, $this->model->getPayment());
+        $this->assertSame($this->paymentMock, $this->model->getPayment()) ;
     }
 }

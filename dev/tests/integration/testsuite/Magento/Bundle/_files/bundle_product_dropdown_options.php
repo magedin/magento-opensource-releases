@@ -15,10 +15,9 @@ use Magento\Catalog\Model\ProductFactory;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Bundle\Model\PrepareBundleLinks;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_duplicated.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/second_product_simple.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_duplicated.php';
+require __DIR__ . '/../../../Magento/Catalog/_files/second_product_simple.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var WebsiteRepositoryInterface $websiteRepository */
@@ -27,8 +26,6 @@ $baseWebsiteId = $websiteRepository->get('base')->getId();
 /** @var ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
 $productRepository->cleanCache();
-$product = $productRepository->get('simple-1');
-$product2 = $productRepository->get('simple2');
 /** @var PrepareBundleLinks $prepareBundleLinks */
 $prepareBundleLinks = $objectManager->get(PrepareBundleLinks::class);
 /** @var ProductFactory $productFactory */

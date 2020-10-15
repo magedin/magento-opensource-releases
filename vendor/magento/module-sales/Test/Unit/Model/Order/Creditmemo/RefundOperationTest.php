@@ -3,92 +3,80 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Creditmemo;
 
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Sales\Api\Data\CreditmemoInterface;
-use Magento\Sales\Api\Data\CreditmemoItemInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Creditmemo\RefundOperation;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for refund operation.
  */
-class RefundOperationTest extends TestCase
+class RefundOperationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RefundOperation
+     * @var \Magento\Sales\Model\Order\Creditmemo\RefundOperation
      */
     private $subject;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $orderMock;
 
     /**
-     * @var CreditmemoInterface|MockObject
+     * @var \Magento\Sales\Api\Data\CreditmemoInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $creditmemoMock;
 
     /**
-     * @var OrderPaymentInterface|MockObject
+     * @var \Magento\Sales\Api\Data\OrderPaymentInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $paymentMock;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $priceCurrencyMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->orderMock = $this->getMockBuilder(OrderInterface::class)
+        $this->orderMock = $this->getMockBuilder(\Magento\Sales\Api\Data\OrderInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->creditmemoMock = $this->getMockBuilder(CreditmemoInterface::class)
+        $this->creditmemoMock = $this->getMockBuilder(\Magento\Sales\Api\Data\CreditmemoInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getBaseCost', 'setDoTransaction', 'getPaymentRefundDisallowed'])
             ->getMockForAbstractClass();
 
-        $this->paymentMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $this->paymentMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['refund'])
             ->getMockForAbstractClass();
 
-        $this->priceCurrencyMock = $this->getMockBuilder(PriceCurrencyInterface::class)
+        $this->priceCurrencyMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceCurrencyInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['round'])
             ->getMockForAbstractClass();
 
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Framework\Model\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEventDispatcher'])
             ->getMock();
 
-        $this->eventManagerMock = $this->getMockBuilder(ManagerInterface::class)
+        $this->eventManagerMock = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $contextMock->expects($this->once())
             ->method('getEventDispatcher')
             ->willReturn($this->eventManagerMock);
 
-        $this->subject = new RefundOperation(
+        $this->subject = new \Magento\Sales\Model\Order\Creditmemo\RefundOperation(
             $contextMock,
             $this->priceCurrencyMock
         );
@@ -419,11 +407,11 @@ class RefundOperationTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getCreditmemoItemMock()
     {
-        return $this->getMockBuilder(CreditmemoItemInterface::class)
+        return $this->getMockBuilder(\Magento\Sales\Api\Data\CreditmemoItemInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['isDeleted', 'setCreditMemo', 'getQty', 'register'])
             ->getMockForAbstractClass();

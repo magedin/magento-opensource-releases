@@ -15,7 +15,7 @@
             <title value="Checking Tax Report grid"/>
             <description value="Tax Report Grid displays Tax amount in rows 'Total' and 'Subtotal' is a sum of all tax amounts"/>
             <severity value="MAJOR"/>
-            <testCaseId value="MC-25815"/>
+            <testCaseId value="MC-6230"/>
             <useCaseId value="MAGETWO-91521"/>
             <group value="Tax"/>
         </annotations>
@@ -46,7 +46,7 @@
             </getData>
 
             <!-- Login to Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!-- Go to Tax Rule page, add Tax Rate, unassign Default Tax Rate -->
             <amOnPage url="{{AdminEditTaxRulePage.url($createTaxRule.id$)}}" stepKey="goToTaxRulePage"/>
@@ -119,11 +119,11 @@
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilterCustomer"/>
 
             <!-- Logout Admin -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdmin"/>
         </after>
 
         <!--Open Created product. In Tax Class select new created Product Tax class.-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="openProductForEdit">
+        <actionGroup ref="GoToProductPageViaIDActionGroup" stepKey="openProductForEdit">
             <argument name="productId" value="$createFirstProduct.id$"/>
         </actionGroup>
         <selectOption selector="{{AdminProductFormSection.productTaxClass}}" userInput="$productTaxClass.class_name$" stepKey="selectTexClassForProduct"/>
@@ -131,7 +131,7 @@
         <actionGroup ref="SaveProductFormActionGroup" stepKey="saveProduct"/>
 
         <!--Open Created Second Product. In Tax Class select new created Product Tax class.-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="openSecondProductForEdit">
+        <actionGroup ref="GoToProductPageViaIDActionGroup" stepKey="openSecondProductForEdit">
             <argument name="productId" value="$createSecondProduct.id$"/>
         </actionGroup>
 
@@ -141,7 +141,7 @@
         <actionGroup ref="SaveProductFormActionGroup" stepKey="saveSecondProduct"/>
 
         <!--Create an order with these 2 products in that zip code.-->
-        <actionGroup ref="NavigateToNewOrderPageNewCustomerActionGroup" stepKey="navigateToNewOrder"/>
+        <actionGroup ref="navigateToNewOrderPageNewCustomer" stepKey="navigateToNewOrder"/>
         <!--Check if order can be submitted without the required fields including email address-->
         <scrollToTopOfPage stepKey="scrollToTopOfOrderFormPage"/>
         <waitForElementVisible selector="{{AdminOrderFormItemsSection.addProducts}}" stepKey="waitForAddProductButton"/>
@@ -158,15 +158,15 @@
         <fillField selector="{{AdminOrderFormAccountSection.email}}" userInput="{{Simple_US_Customer.email}}" stepKey="fillCustomerEmail"/>
 
         <!--Fill customer address information-->
-        <actionGroup ref="FillOrderCustomerInformationActionGroup" stepKey="fillCustomerAddress">
+        <actionGroup ref="fillOrderCustomerInformation" stepKey="fillCustomerAddress">
             <argument name="customer" value="Simple_US_Customer"/>
             <argument name="address" value="US_Address_TX"/>
         </actionGroup>
 
         <!-- Select shipping -->
-        <actionGroup ref="OrderSelectFlatRateShippingActionGroup" stepKey="selectFlatRateShipping"/>
+        <actionGroup ref="orderSelectFlatRateShipping" stepKey="selectFlatRateShipping"/>
         <!-- Checkout select Check/Money Order payment -->
-        <actionGroup ref="SelectCheckMoneyPaymentMethodActionGroup" stepKey="selectCheckMoneyPayment"/>
+        <actionGroup ref="SelectCheckMoneyPaymentMethod" stepKey="selectCheckMoneyPayment"/>
         <!--Submit Order and verify information-->
         <actionGroup ref="AdminSubmitOrderActionGroup" stepKey="submitOrder"/>
 
@@ -177,13 +177,13 @@
         <grabTextFrom selector="{{AdminOrderFormTotalSection.totalTax}}" stepKey="amountOfTotalTax"/>
 
         <!--Create Invoice and Shipment for this Order.-->
-        <actionGroup ref="StartCreateInvoiceFromOrderPageActionGroup" stepKey="startCreatingInvoice"/>
+        <actionGroup ref="StartCreateInvoiceFromOrderPage" stepKey="startCreatingInvoice"/>
 
         <actionGroup ref="SubmitInvoiceActionGroup" stepKey="clickSubmitInvoice"/>
 
-        <actionGroup ref="GoToShipmentIntoOrderActionGroup" stepKey="seeShipmentOrderPage"/>
+        <actionGroup ref="goToShipmentIntoOrder" stepKey="seeShipmentOrderPage"/>
         <!--Submit Shipment-->
-        <actionGroup ref="SubmitShipmentIntoOrderActionGroup" stepKey="clickSubmitShipment"/>
+        <actionGroup ref="submitShipmentIntoOrder" stepKey="clickSubmitShipment"/>
         <!--Go to "Reports" -> "Sales" -> "Tax"-->
         <amOnPage url="{{AdminSalesTaxReportPage.url}}" stepKey="navigateToReportsTaxPage"/>
         <waitForPageLoad stepKey="waitForReportsTaxPageLoad"/>

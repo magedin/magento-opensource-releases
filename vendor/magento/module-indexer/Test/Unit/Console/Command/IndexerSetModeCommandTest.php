@@ -3,12 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Console\Command;
 
 use Magento\Backend\App\Area\FrontNameResolver;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Indexer\Console\Command\IndexerSetModeCommand;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -29,25 +26,29 @@ class IndexerSetModeCommandTest extends AbstractIndexerCommandCommonSetup
         $this->stateMock->expects($this->never())->method('setAreaCode')->with(FrontNameResolver::AREA_CODE);
         $this->command = new IndexerSetModeCommand($this->objectManagerFactory);
         $optionsList = $this->command->getInputList();
-        $this->assertCount(2, $optionsList);
+        $this->assertSame(2, count($optionsList));
         $this->assertSame('mode', $optionsList[0]->getName());
         $this->assertSame('index', $optionsList[1]->getName());
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Missing argument 'mode'. Accepted values for mode are 'realtime' or 'schedule'
+     */
     public function testExecuteInvalidArgument()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage("Missing argument 'mode'. Accepted values for mode are 'realtime' or 'schedule'");
         $this->stateMock->expects($this->never())->method('setAreaCode')->with(FrontNameResolver::AREA_CODE);
         $this->command = new IndexerSetModeCommand($this->objectManagerFactory);
         $commandTester = new CommandTester($this->command);
         $commandTester->execute([]);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Accepted values for mode are 'realtime' or 'schedule'
+     */
     public function testExecuteInvalidMode()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Accepted values for mode are \'realtime\' or \'schedule\'');
         $this->stateMock->expects($this->never())->method('setAreaCode')->with(FrontNameResolver::AREA_CODE);
         $this->command = new IndexerSetModeCommand($this->objectManagerFactory);
         $commandTester = new CommandTester($this->command);
@@ -75,7 +76,7 @@ class IndexerSetModeCommandTest extends AbstractIndexerCommandCommonSetup
         $commandTester->execute(['mode' => 'realtime']);
         $actualValue = $commandTester->getDisplay();
         $this->assertSame(
-            'Index mode for Indexer Title_indexerOne was changed from ' . '\'Update by Schedule\' to \'Update on Save\''
+            'Index mode for Indexer Title_indexerOne was changed from '. '\'Update by Schedule\' to \'Update on Save\''
             . PHP_EOL,
             $actualValue
         );
@@ -157,8 +158,8 @@ class IndexerSetModeCommandTest extends AbstractIndexerCommandCommonSetup
             ['isScheduled', 'setScheduled'],
             ['indexer_id' => 'id_indexerOne']
         );
-        $localizedException = new LocalizedException(__('Some Exception Message'));
-        $indexerOne->expects($this->once())->method('setScheduled')->willThrowException($localizedException);
+        $localizedException = new \Magento\Framework\Exception\LocalizedException(__('Some Exception Message'));
+        $indexerOne->expects($this->once())->method('setScheduled')->will($this->throwException($localizedException));
         $this->initIndexerCollectionByItems([$indexerOne]);
         $this->command = new IndexerSetModeCommand($this->objectManagerFactory);
         $commandTester = new CommandTester($this->command);
@@ -175,7 +176,7 @@ class IndexerSetModeCommandTest extends AbstractIndexerCommandCommonSetup
             ['indexer_id' => 'id_indexerOne', 'title' => 'Title_indexerOne']
         );
         $exception = new \Exception();
-        $indexerOne->expects($this->once())->method('setScheduled')->willThrowException($exception);
+        $indexerOne->expects($this->once())->method('setScheduled')->will($this->throwException($exception));
         $this->initIndexerCollectionByItems([$indexerOne]);
         $this->command = new IndexerSetModeCommand($this->objectManagerFactory);
         $commandTester = new CommandTester($this->command);

@@ -3,7 +3,7 @@
 
 @echo off
 SETLOCAL EnableDelayedExpansion
-SET BLOCKLIST_FILE=bin/blocklist.txt
+SET BLACKLIST_FILE=bin/blacklist.txt
 SET i=0
 
 FOR /F %%x IN ('git ls-tree --full-tree -r --name-only HEAD') DO (
@@ -12,14 +12,14 @@ FOR /F %%x IN ('git ls-tree --full-tree -r --name-only HEAD') DO (
     if "%%~xx"==".xml" set GOOD_EXT=1
     if "%%~xx"==".xsd" set GOOD_EXT=1
     IF DEFINED GOOD_EXT (
-        SET BLOCKLISTED=
-        FOR /F "tokens=* skip=5" %%f IN (%BLOCKLIST_FILE%) DO (
+        SET BLACKLISTED=
+        FOR /F "tokens=* skip=5" %%f IN (%BLACKLIST_FILE%) DO (
             SET LINE=%%x
             IF NOT "!LINE!"=="!LINE:%%f=!" (
-                SET BLOCKLISTED=1
+                SET BLACKLISTED=1
             )
         )
-        IF NOT DEFINED BLOCKLISTED (
+        IF NOT DEFINED BLACKLISTED (
             FIND "Copyright © Magento, Inc. All rights reserved." %%x >nul
             IF ERRORLEVEL 1 (
                 SET /A i+=1

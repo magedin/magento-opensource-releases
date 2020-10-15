@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Tests for \Magento\Webapi\Model\Soap\Wsdl\Generator.
  *
@@ -7,107 +7,88 @@
  */
 namespace Magento\Webapi\Test\Unit\Model\Soap\Wsdl;
 
-use Magento\Eav\Model\TypeLocator;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Reflection\TypeProcessor;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Webapi\Authorization;
-use Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface;
-use Magento\Framework\Webapi\Exception;
-use Magento\Webapi\Model\Cache\Type\Webapi;
-use Magento\Webapi\Model\ServiceMetadata;
-use Magento\Webapi\Model\Soap\Wsdl;
-use Magento\Webapi\Model\Soap\Wsdl\Generator;
-use Magento\Webapi\Model\Soap\WsdlFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class GeneratorTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GeneratorTest extends TestCase
+class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
-    /**  @var Generator */
+    /**  @var \Magento\Webapi\Model\Soap\Wsdl\Generator */
     protected $_wsdlGenerator;
 
     /**
-     * @var CustomAttributeTypeLocatorInterface|MockObject
+     * @var \Magento\Framework\Webapi\CustomAttributeTypeLocatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $customAttributeTypeLocator = null;
 
-    /**  @var ServiceMetadata|MockObject */
+    /**  @var \Magento\Webapi\Model\ServiceMetadata|\PHPUnit_Framework_MockObject_MockObject */
     protected $serviceMetadata;
 
-    /**  @var WsdlFactory|MockObject */
+    /**  @var \Magento\Webapi\Model\Soap\WsdlFactory|\PHPUnit_Framework_MockObject_MockObject */
     protected $_wsdlFactoryMock;
 
-    /** @var Webapi|MockObject */
+    /** @var \Magento\Webapi\Model\Cache\Type\Webapi|\PHPUnit_Framework_MockObject_MockObject */
     protected $_cacheMock;
 
-    /** @var TypeProcessor|MockObject */
+    /** @var \Magento\Framework\Reflection\TypeProcessor|\PHPUnit_Framework_MockObject_MockObject */
     protected $_typeProcessor;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $serializer;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->serviceMetadata = $this->getMockBuilder(
-            ServiceMetadata::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Webapi\Model\ServiceMetadata::class
+        )->disableOriginalConstructor()->getMock();
 
         $_wsdlMock = $this->getMockBuilder(
-            Wsdl::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'addSchemaTypeSection',
-                    'addService',
-                    'addPortType',
-                    'addBinding',
-                    'addSoapBinding',
-                    'addElement',
-                    'addComplexType',
-                    'addMessage',
-                    'addPortOperation',
-                    'addBindingOperation',
-                    'addSoapOperation',
-                    'toXML',
-                ]
-            )->getMock();
+            \Magento\Webapi\Model\Soap\Wsdl::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'addSchemaTypeSection',
+                'addService',
+                'addPortType',
+                'addBinding',
+                'addSoapBinding',
+                'addElement',
+                'addComplexType',
+                'addMessage',
+                'addPortOperation',
+                'addBindingOperation',
+                'addSoapOperation',
+                'toXML',
+            ]
+        )->getMock();
         $this->_wsdlFactoryMock = $this->getMockBuilder(
-            WsdlFactory::class
+            \Magento\Webapi\Model\Soap\WsdlFactory::class
         )->setMethods(
             ['create']
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_wsdlFactoryMock->expects($this->any())->method('create')->willReturn($_wsdlMock);
+        )->disableOriginalConstructor()->getMock();
+        $this->_wsdlFactoryMock->expects($this->any())->method('create')->will($this->returnValue($_wsdlMock));
 
         $this->_cacheMock = $this->getMockBuilder(
-            Webapi::class
-        )->disableOriginalConstructor()
-            ->getMock();
-        $this->_cacheMock->expects($this->any())->method('load')->willReturn(false);
-        $this->_cacheMock->expects($this->any())->method('save')->willReturn(true);
+            \Magento\Webapi\Model\Cache\Type\Webapi::class
+        )->disableOriginalConstructor()->getMock();
+        $this->_cacheMock->expects($this->any())->method('load')->will($this->returnValue(false));
+        $this->_cacheMock->expects($this->any())->method('save')->will($this->returnValue(true));
 
-        $this->_typeProcessor = $this->createMock(TypeProcessor::class);
+        $this->_typeProcessor = $this->createMock(\Magento\Framework\Reflection\TypeProcessor::class);
 
-        /** @var Authorization|MockObject $authorizationMock */
-        $authorizationMock = $this->getMockBuilder(Authorization::class)
+        /** @var \Magento\Framework\Webapi\Authorization|\PHPUnit_Framework_MockObject_MockObject $authorizationMock */
+        $authorizationMock = $this->getMockBuilder(\Magento\Framework\Webapi\Authorization::class)
             ->disableOriginalConstructor()
             ->getMock();
         $authorizationMock->expects($this->any())->method('isAllowed')->willReturn(true);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->customAttributeTypeLocator = $objectManager
-            ->getObject(TypeLocator::class);
+            ->getObject(\Magento\Eav\Model\TypeLocator::class);
 
-        $this->serializer = $this->getMockBuilder(Json::class)
+        $this->serializer = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializer->expects($this->any())
@@ -117,16 +98,16 @@ class GeneratorTest extends TestCase
                     return json_encode($value);
                 }
             );
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturnMap([
-                [Json::class, $this->serializer]
+                [\Magento\Framework\Serialize\Serializer\Json::class, $this->serializer]
             ]);
         \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
 
         $this->_wsdlGenerator = $objectManager->getObject(
-            Generator::class,
+            \Magento\Webapi\Model\Soap\Wsdl\Generator::class,
             [
                 'wsdlFactory' => $this->_wsdlFactoryMock,
                 'cache' => $this->_cacheMock,
@@ -201,11 +182,11 @@ class GeneratorTest extends TestCase
      * Test exception for handle
      *
      * @covers \Magento\Webapi\Model\AbstractSchemaGenerator::generate()
+     * @expectedException        \Magento\Framework\Webapi\Exception
+     * @expectedExceptionMessage exception message
      */
     public function testHandleWithException()
     {
-        $this->expectException('Magento\Framework\Webapi\Exception');
-        $this->expectExceptionMessage('exception message');
         $genWSDL = 'generatedWSDL';
         $exceptionMsg = 'exception message';
         $requestedService = ['catalogProduct'];
@@ -216,7 +197,7 @@ class GeneratorTest extends TestCase
             ->willReturn($serviceMetadata);
         $this->_typeProcessor->expects($this->once())
             ->method('processInterfaceCallInfo')
-            ->willThrowException(new Exception(__($exceptionMsg)));
+            ->willThrowException(new \Magento\Framework\Webapi\Exception(__($exceptionMsg)));
 
         $this->assertEquals(
             $genWSDL,

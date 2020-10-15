@@ -9,12 +9,12 @@ declare(strict_types=1);
 namespace Magento\AdobeStockAsset\Model;
 
 use Magento\AdobeStockAssetApi\Api\Data\CreatorSearchResultsInterface;
-use Magento\Framework\Api\SearchResults;
+use Magento\Framework\Api\SearchResults as ApiSearchResultsAlias;
 
 /**
  * Marker class
  */
-class CreatorSearchResults extends SearchResults implements CreatorSearchResultsInterface
+class CreatorSearchResults extends ApiSearchResultsAlias implements CreatorSearchResultsInterface
 {
 
 }

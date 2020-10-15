@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
 ?>
 <div data-mage-init='{"floatingHeader": {}}' class="page-actions">
     <?= $block->getBackButtonHtml() ?>
@@ -16,8 +14,7 @@
 <div class="hidden" id="formContainer">
     <?= $block->getFormHtml() ?>
 </div>
-<?php $scriptString = <<<script
-
+<script>
 require([
     "jquery",
     "mage/mage",
@@ -28,7 +25,4 @@ require([
    $('#edit_form').mage('form').mage('validation');
 
 });
-
-script;
-?>
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+</script>

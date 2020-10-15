@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright :copyright: Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 declare(strict_types=1);
@@ -24,7 +24,7 @@ class InventoryTransferValidatorTest extends TestCase
      */
     private $defaultSourceProvider;
 
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->bulkInventoryTransferValidator =
@@ -33,7 +33,7 @@ class InventoryTransferValidatorTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
      */
     public function testNotExistingSources()
     {
@@ -66,7 +66,7 @@ class InventoryTransferValidatorTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
      */
     public function testExistingSources()
     {
@@ -86,7 +86,7 @@ class InventoryTransferValidatorTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
      */
     public function testNonSenseTransfer()
     {

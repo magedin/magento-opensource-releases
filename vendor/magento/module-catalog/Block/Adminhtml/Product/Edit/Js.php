@@ -9,8 +9,6 @@ namespace Magento\Catalog\Block\Adminhtml\Product\Edit;
 use Magento\Customer\Helper\Session\CurrentCustomer;
 use Magento\Tax\Api\TaxCalculationInterface;
 use Magento\Tax\Model\TaxClass\Source\Product as ProductTaxClassSource;
-use Magento\Framework\App\ObjectManager;
-use Magento\Tax\Helper\Data as TaxHelper;
 
 class Js extends \Magento\Backend\Block\Template
 {
@@ -53,7 +51,6 @@ class Js extends \Magento\Backend\Block\Template
      * @param TaxCalculationInterface $calculationService
      * @param ProductTaxClassSource $productTaxClassSource
      * @param array $data
-     * @param TaxHelper|null $taxHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -62,15 +59,13 @@ class Js extends \Magento\Backend\Block\Template
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         TaxCalculationInterface $calculationService,
         ProductTaxClassSource $productTaxClassSource,
-        array $data = [],
-        ?TaxHelper $taxHelper = null
+        array $data = []
     ) {
         $this->coreRegistry = $registry;
         $this->currentCustomer = $currentCustomer;
         $this->jsonHelper = $jsonHelper;
         $this->calculationService = $calculationService;
         $this->productTaxClassSource = $productTaxClassSource;
-        $data['taxHelper'] = $taxHelper ?? ObjectManager::getInstance()->get(TaxHelper::class);
         parent::__construct($context, $data);
     }
 

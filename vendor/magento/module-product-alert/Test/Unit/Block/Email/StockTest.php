@@ -3,53 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ProductAlert\Test\Unit\Block\Email;
-
-use Magento\Catalog\Block\Product\Image;
-use Magento\Catalog\Block\Product\ImageBuilder;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Filter\Input\MaliciousCode;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ProductAlert\Block\Email\Stock;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\ProductAlert\Block\Product\View\Stock
  */
-class StockTest extends TestCase
+class StockTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Stock
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\ProductAlert\Block\Email\Stock
      */
     protected $_block;
 
     /**
-     * @var MockObject|MaliciousCode
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Filter\Input\MaliciousCode
      */
     protected $_filter;
 
     /**
-     * @var ImageBuilder|MockObject
+     * @var \Magento\Catalog\Block\Product\ImageBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $imageBuilder;
 
-    protected function setUp(): void
-    {
-        $objectManager = new ObjectManager($this);
-        $this->_filter = $this->createPartialMock(MaliciousCode::class, ['filter']);
+    /**
+     * @var \Magento\ProductAlert\Block\Product\ImageProvider|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $imageProviderMock;
 
-        $this->imageBuilder = $this->getMockBuilder(ImageBuilder::class)
+    protected function setUp()
+    {
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_filter = $this->createPartialMock(\Magento\Framework\Filter\Input\MaliciousCode::class, ['filter']);
+
+        $this->imageBuilder = $this->getMockBuilder(\Magento\Catalog\Block\Product\ImageBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->imageProviderMock = $this->getMockBuilder(\Magento\ProductAlert\Block\Product\ImageProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->_block = $objectManager->getObject(
-            Stock::class,
+            \Magento\ProductAlert\Block\Email\Stock::class,
             [
                 'maliciousCode' => $this->_filter,
-                'imageBuilder' => $this->imageBuilder
+                'imageBuilder' => $this->imageBuilder,
+                'imageProvider' => $this->imageProviderMock
             ]
         );
     }
@@ -62,7 +61,7 @@ class StockTest extends TestCase
     public function testGetFilteredContent($contentToFilter, $contentFiltered)
     {
         $this->_filter->expects($this->once())->method('filter')->with($contentToFilter)
-            ->willReturn($contentFiltered);
+            ->will($this->returnValue($contentFiltered));
         $this->assertEquals($contentFiltered, $this->_block->getFilteredContent($contentToFilter));
     }
 
@@ -82,16 +81,17 @@ class StockTest extends TestCase
         $imageId = 'test_image_id';
         $attributes = [];
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $productImageMock = $this->getMockBuilder(Image::class)
+        $productImageMock = $this->getMockBuilder(\Magento\Catalog\Block\Product\Image::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->imageBuilder->expects($this->atLeastOnce())->method('create')->willReturn($productImageMock);
+        $this->imageProviderMock->expects($this->atLeastOnce())->method('getImage')->willReturn($productImageMock);
+
         $this->assertInstanceOf(
-            Image::class,
+            \Magento\Catalog\Block\Product\Image::class,
             $this->_block->getImage($productMock, $imageId, $attributes)
         );
     }

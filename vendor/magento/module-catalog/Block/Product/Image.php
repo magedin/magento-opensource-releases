@@ -14,7 +14,7 @@ namespace Magento\Catalog\Block\Product;
  * @method string getHeight()
  * @method string getLabel()
  * @method float getRatio()
- * @method array getCustomAttributes()
+ * @method string getCustomAttributes()
  * @method string getClass()
  * @since 100.0.2
  */

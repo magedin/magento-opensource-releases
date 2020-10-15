@@ -108,7 +108,6 @@ class Config implements \Magento\Framework\Locale\ConfigInterface
         'es_VE', /*Spanish (Venezuela)*/
         'en_IE', /*English (Ireland)*/
         'es_BO', /*Spanish (Bolivia)*/
-        'es_US', /*Spanish (United States)*/
     ];
 
     /**
@@ -130,7 +129,7 @@ class Config implements \Magento\Framework\Locale\ConfigInterface
         'BHD', /*Bahraini Dinar*/
         'BDT', /*Bangladesh Taka*/
         'BBD', /*Barbados Dollar*/
-        'BYN', /*Belarussian Ruble*/
+        'BYR', /*Belarussian Ruble*/
         'BZD', /*Belize Dollar*/
         'BMD', /*Bermudan Dollar*/
         'BTN', /*Bhutan Ngultrum*/

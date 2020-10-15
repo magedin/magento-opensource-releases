@@ -516,17 +516,17 @@
     },
     {
         "name": "seld/jsonlint",
-        "version": "1.8.0",
-        "version_normalized": "1.8.0.0",
+        "version": "1.8.1",
+        "version_normalized": "1.8.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Seldaek/jsonlint.git",
-            "reference": "ff2aa5420bfbc296cf6a0bc785fa5b35736de7c1"
+            "reference": "3d5eb71705adfa34bd34b993400622932b2f62fd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/ff2aa5420bfbc296cf6a0bc785fa5b35736de7c1",
-            "reference": "ff2aa5420bfbc296cf6a0bc785fa5b35736de7c1",
+            "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/3d5eb71705adfa34bd34b993400622932b2f62fd",
+            "reference": "3d5eb71705adfa34bd34b993400622932b2f62fd",
             "shasum": ""
         },
         "require": {
@@ -535,7 +535,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
         },
-        "time": "2020-04-30T19:05:18+00:00",
+        "time": "2020-08-13T09:07:59+00:00",
         "bin": [
             "bin/jsonlint"
         ],
@@ -613,17 +613,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
+        "version": "v5.1.3",
+        "version_normalized": "5.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "34ac555a3627e324b660e318daa07572e1140123"
+            "reference": "2226c68009627934b8cfc01260b4d287eab070df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/34ac555a3627e324b660e318daa07572e1140123",
-            "reference": "34ac555a3627e324b660e318daa07572e1140123",
+            "url": "https://api.github.com/repos/symfony/console/zipball/2226c68009627934b8cfc01260b4d287eab070df",
+            "reference": "2226c68009627934b8cfc01260b4d287eab070df",
             "shasum": ""
         },
         "require": {
@@ -659,7 +659,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2020-06-15T12:59:21+00:00",
+        "time": "2020-07-06T13:23:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -694,8 +694,8 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
+        "version": "v5.1.3",
+        "version_normalized": "5.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
@@ -746,8 +746,8 @@
     },
     {
         "name": "symfony/finder",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
+        "version": "v5.1.3",
+        "version_normalized": "5.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/finder.git",
@@ -797,8 +797,8 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -861,8 +861,8 @@
     },
     {
         "name": "symfony/polyfill-intl-grapheme",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
@@ -927,8 +927,8 @@
     },
     {
         "name": "symfony/polyfill-intl-normalizer",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -996,8 +996,8 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -1061,8 +1061,8 @@
     },
     {
         "name": "symfony/polyfill-php73",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php73.git",
@@ -1125,8 +1125,8 @@
     },
     {
         "name": "symfony/polyfill-php80",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php80.git",
@@ -1193,24 +1193,24 @@
     },
     {
         "name": "symfony/process",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
+        "version": "v5.1.3",
+        "version_normalized": "5.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/process.git",
-            "reference": "7f6378c1fa2147eeb1b4c385856ce9de0d46ebd1"
+            "reference": "1864216226af21eb76d9477f691e7cbf198e0402"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/7f6378c1fa2147eeb1b4c385856ce9de0d46ebd1",
-            "reference": "7f6378c1fa2147eeb1b4c385856ce9de0d46ebd1",
+            "url": "https://api.github.com/repos/symfony/process/zipball/1864216226af21eb76d9477f691e7cbf198e0402",
+            "reference": "1864216226af21eb76d9477f691e7cbf198e0402",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-php80": "^1.15"
         },
-        "time": "2020-05-30T20:35:19+00:00",
+        "time": "2020-07-23T08:36:24+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1309,17 +1309,17 @@
     },
     {
         "name": "symfony/string",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
+        "version": "v5.1.3",
+        "version_normalized": "5.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/string.git",
-            "reference": "ac70459db781108db7c6d8981dd31ce0e29e3298"
+            "reference": "f629ba9b611c76224feb21fe2bcbf0b6f992300b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/string/zipball/ac70459db781108db7c6d8981dd31ce0e29e3298",
-            "reference": "ac70459db781108db7c6d8981dd31ce0e29e3298",
+            "url": "https://api.github.com/repos/symfony/string/zipball/f629ba9b611c76224feb21fe2bcbf0b6f992300b",
+            "reference": "f629ba9b611c76224feb21fe2bcbf0b6f992300b",
             "shasum": ""
         },
         "require": {
@@ -1336,7 +1336,7 @@
             "symfony/translation-contracts": "^1.1|^2",
             "symfony/var-exporter": "^4.4|^5.0"
         },
-        "time": "2020-06-11T12:16:36+00:00",
+        "time": "2020-07-08T08:27:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

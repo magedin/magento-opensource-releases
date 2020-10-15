@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -6,31 +6,33 @@
 namespace Magento\Developer\Test\Unit\Model\Config\Source;
 
 use Magento\Developer\Model\Config\Source\WorkflowType;
-use Magento\Framework\Option\ArrayInterface;
-use Magento\Framework\Phrase;
-use PHPUnit\Framework\TestCase;
 
-class WorkflowTypeTest extends TestCase
+/**
+ * Class WorkflowTypeTest
+ *
+ * @package Magento\Backend\Model\Config\Source\Dev
+ */
+class WorkflowTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WorkflowType
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->model = new WorkflowType();
     }
 
     public function testToOptionArray()
     {
-        $this->assertInstanceOf(ArrayInterface::class, $this->model);
+        $this->assertInstanceOf(\Magento\Framework\Option\ArrayInterface::class, $this->model);
         $this->assertCount(2, $this->model->toOptionArray());
         $option = current($this->model->toOptionArray());
 
-        /** @var Phrase $label */
+        /** @var \Magento\Framework\Phrase $label */
         $label = $option['label'];
-        $this->assertInstanceOf(Phrase::class, $label);
+        $this->assertInstanceOf(\Magento\Framework\Phrase::class, $label);
     }
 
     public function testOptionStructure()

@@ -10,7 +10,7 @@ use Magento\TestFramework\TestCase\WebapiAbstract;
 use Magento\Framework\Webapi\Exception as HTTPExceptionCodes;
 
 /**
- * Catalog Cost Storage API test.
+ * CostStorage test.
  */
 class CostStorageTest extends WebapiAbstract
 {
@@ -26,7 +26,7 @@ class CostStorageTest extends WebapiAbstract
     /**
      * Set up.
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -58,7 +58,7 @@ class CostStorageTest extends WebapiAbstract
         $product = $productRepository->get(self::SIMPLE_PRODUCT_SKU);
 
         $this->assertNotEmpty($response);
-        $this->assertEquals($cost, (int)$product->getCost());
+        $this->assertEquals($product->getCost(), $cost);
     }
 
     /**
@@ -97,7 +97,7 @@ class CostStorageTest extends WebapiAbstract
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $productRepository->get(self::SIMPLE_PRODUCT_SKU);
         $this->assertEmpty($response);
-        $this->assertEquals($newCost, (int)$product->getCost());
+        $this->assertEquals($product->getCost(), $newCost);
     }
 
     /**

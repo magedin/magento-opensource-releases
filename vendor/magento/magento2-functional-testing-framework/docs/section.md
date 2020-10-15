@@ -48,7 +48,7 @@ The following conventions apply to MFTF sections:
 -  `*Section.xml` is stored in the _Section_ directory of a module.
 -  The name format is `{Admin|Storefront}{SectionDescription}Section.xml`.
 -  Camel case is used for `<section>` elements.
--  One `<section>` tag is allowed per section XML file.
+  They describe the function of the element rather than attempting to describe the selector used.
 
 ## Example
 

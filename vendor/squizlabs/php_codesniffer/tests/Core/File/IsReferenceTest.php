@@ -9,10 +9,54 @@
 
 namespace PHP_CodeSniffer\Tests\Core\File;
 
-use PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest;
+use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Ruleset;
+use PHP_CodeSniffer\Files\DummyFile;
+use PHPUnit\Framework\TestCase;
 
-class IsReferenceTest extends AbstractMethodUnitTest
+class IsReferenceTest extends TestCase
 {
+
+    /**
+     * The PHP_CodeSniffer_File object containing parsed contents of the test case file.
+     *
+     * @var \PHP_CodeSniffer\Files\File
+     */
+    private $phpcsFile;
+
+
+    /**
+     * Initialize & tokenize \PHP_CodeSniffer\Files\File with code from the test case file.
+     *
+     * Methods used for these tests can be found in a test case file in the same
+     * directory and with the same name, using the .inc extension.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $config            = new Config();
+        $config->standards = ['Generic'];
+
+        $ruleset = new Ruleset($config);
+
+        $pathToTestFile  = dirname(__FILE__).'/'.basename(__FILE__, '.php').'.inc';
+        $this->phpcsFile = new DummyFile(file_get_contents($pathToTestFile), $ruleset, $config);
+        $this->phpcsFile->process();
+
+    }//end setUp()
+
+
+    /**
+     * Clean up after finished test.
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->phpcsFile);
+
+    }//end tearDown()
 
 
     /**
@@ -27,8 +71,17 @@ class IsReferenceTest extends AbstractMethodUnitTest
      */
     public function testIsReference($identifier, $expected)
     {
-        $bitwiseAnd = $this->getTargetToken($identifier, T_BITWISE_AND);
-        $result     = self::$phpcsFile->isReference($bitwiseAnd);
+        $start      = ($this->phpcsFile->numTokens - 1);
+        $delim      = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            $identifier
+        );
+        $bitwiseAnd = $this->phpcsFile->findNext(T_BITWISE_AND, ($delim + 1));
+
+        $result = $this->phpcsFile->isReference($bitwiseAnd);
         $this->assertSame($expected, $result);
 
     }//end testIsReference()
@@ -45,187 +98,183 @@ class IsReferenceTest extends AbstractMethodUnitTest
     {
         return [
             [
-                '/* testBitwiseAndA */',
+                '/* bitwiseAndA */',
                 false,
             ],
             [
-                '/* testBitwiseAndB */',
+                '/* bitwiseAndB */',
                 false,
             ],
             [
-                '/* testBitwiseAndC */',
+                '/* bitwiseAndC */',
                 false,
             ],
             [
-                '/* testBitwiseAndD */',
+                '/* bitwiseAndD */',
                 false,
             ],
             [
-                '/* testBitwiseAndE */',
+                '/* bitwiseAndE */',
                 false,
             ],
             [
-                '/* testBitwiseAndF */',
+                '/* bitwiseAndF */',
                 false,
             ],
             [
-                '/* testBitwiseAndG */',
+                '/* bitwiseAndG */',
                 false,
             ],
             [
-                '/* testBitwiseAndH */',
+                '/* bitwiseAndH */',
                 false,
             ],
             [
-                '/* testBitwiseAndI */',
+                '/* bitwiseAndI */',
                 false,
             ],
             [
-                '/* testFunctionReturnByReference */',
+                '/* functionReturnByReference */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceA */',
+                '/* functionPassByReferenceA */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceB */',
+                '/* functionPassByReferenceB */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceC */',
+                '/* functionPassByReferenceC */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceD */',
+                '/* functionPassByReferenceD */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceE */',
+                '/* functionPassByReferenceE */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceF */',
+                '/* functionPassByReferenceF */',
                 true,
             ],
             [
-                '/* testFunctionPassByReferenceG */',
+                '/* functionPassByReferenceG */',
                 true,
             ],
             [
-                '/* testForeachValueByReference */',
+                '/* foreachValueByReference */',
                 true,
             ],
             [
-                '/* testForeachKeyByReference */',
+                '/* foreachKeyByReference */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceA */',
+                '/* arrayValueByReferenceA */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceB */',
+                '/* arrayValueByReferenceB */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceC */',
+                '/* arrayValueByReferenceC */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceD */',
+                '/* arrayValueByReferenceD */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceE */',
+                '/* arrayValueByReferenceE */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceF */',
+                '/* arrayValueByReferenceF */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceG */',
+                '/* arrayValueByReferenceG */',
                 true,
             ],
             [
-                '/* testArrayValueByReferenceH */',
+                '/* arrayValueByReferenceH */',
                 true,
             ],
             [
-                '/* testAssignByReferenceA */',
+                '/* assignByReferenceA */',
                 true,
             ],
             [
-                '/* testAssignByReferenceB */',
+                '/* assignByReferenceB */',
                 true,
             ],
             [
-                '/* testAssignByReferenceC */',
+                '/* assignByReferenceC */',
                 true,
             ],
             [
-                '/* testAssignByReferenceD */',
+                '/* assignByReferenceD */',
                 true,
             ],
             [
-                '/* testAssignByReferenceE */',
+                '/* assignByReferenceE */',
                 true,
             ],
             [
-                '/* testPassByReferenceA */',
+                '/* passByReferenceA */',
                 true,
             ],
             [
-                '/* testPassByReferenceB */',
+                '/* passByReferenceB */',
                 true,
             ],
             [
-                '/* testPassByReferenceC */',
+                '/* passByReferenceC */',
                 true,
             ],
             [
-                '/* testPassByReferenceD */',
+                '/* passByReferenceD */',
                 true,
             ],
             [
-                '/* testPassByReferenceE */',
+                '/* passByReferenceE */',
                 true,
             ],
             [
-                '/* testPassByReferenceF */',
+                '/* passByReferenceF */',
                 true,
             ],
             [
-                '/* testPassByReferenceG */',
+                '/* passByReferenceG */',
                 true,
             ],
             [
-                '/* testPassByReferenceH */',
+                '/* passByReferenceH */',
                 true,
             ],
             [
-                '/* testPassByReferenceI */',
+                '/* passByReferenceI */',
                 true,
             ],
             [
-                '/* testPassByReferenceJ */',
+                '/* passByReferenceJ */',
                 true,
             ],
             [
-                '/* testNewByReferenceA */',
+                '/* newByReferenceA */',
                 true,
             ],
             [
-                '/* testNewByReferenceB */',
+                '/* newByReferenceB */',
                 true,
             ],
             [
-                '/* testUseByReference */',
-                true,
-            ],
-            [
-                '/* testArrowFunctionReturnByReference */',
+                '/* useByReference */',
                 true,
             ],
         ];

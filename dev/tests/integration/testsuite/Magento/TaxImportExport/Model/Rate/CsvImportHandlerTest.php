@@ -12,13 +12,13 @@ class CsvImportHandlerTest extends \PHPUnit\Framework\TestCase
      */
     protected $_importHandler;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->_importHandler = $objectManager->create(\Magento\TaxImportExport\Model\Rate\CsvImportHandler::class);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->_importHandler = null;
     }
@@ -56,12 +56,11 @@ class CsvImportHandlerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoDbIsolation enabled
+     * @expectedException \Magento\Framework\Exception\LocalizedException
+     * @expectedExceptionMessage Country code is invalid: ZZ
      */
     public function testImportFromCsvFileThrowsExceptionWhenCountryCodeIsInvalid()
     {
-        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-        $this->expectExceptionMessage('Country code is invalid: ZZ');
-
         $importFileName = __DIR__ . '/_files/rates_import_file_incorrect_country.csv';
         $this->_importHandler->importFromCsvFile(['tmp_name' => $importFileName]);
     }

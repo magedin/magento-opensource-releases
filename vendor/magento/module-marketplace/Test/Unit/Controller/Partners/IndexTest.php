@@ -3,27 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Marketplace\Test\Unit\Controller\Partners;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\HTTP\PhpEnvironment\Response;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Marketplace\Controller\Adminhtml\Partners\Index;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Index
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Marketplace\Controller\Adminhtml\Partners\Index
      */
     private $partnersControllerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->partnersControllerMock = $this->getControllerIndexMock(
             [
@@ -42,38 +32,38 @@ class IndexTest extends TestCase
         $requestMock = $this->getRequestMock(['isAjax']);
         $requestMock->expects($this->once())
             ->method('isAjax')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
 
         $this->partnersControllerMock->expects($this->once())
             ->method('getRequest')
-            ->willReturn($requestMock);
+            ->will($this->returnValue($requestMock));
 
         $layoutMock = $this->getLayoutMock();
         $blockMock = $this->getBlockInterfaceMock();
         $blockMock->expects($this->once())
             ->method('toHtml')
-            ->willReturn('');
+            ->will($this->returnValue(''));
 
         $layoutMock->expects($this->once())
             ->method('createBlock')
-            ->willReturn($blockMock);
+            ->will($this->returnValue($blockMock));
 
         $layoutMockFactory = $this->getLayoutFactoryMock(['create']);
         $layoutMockFactory->expects($this->once())
             ->method('create')
-            ->willReturn($layoutMock);
+            ->will($this->returnValue($layoutMock));
 
         $this->partnersControllerMock->expects($this->once())
             ->method('getLayoutFactory')
-            ->willReturn($layoutMockFactory);
+            ->will($this->returnValue($layoutMockFactory));
 
         $responseMock = $this->getResponseMock(['appendBody']);
         $responseMock->expects($this->once())
             ->method('appendBody')
-            ->willReturn('');
+            ->will($this->returnValue(''));
         $this->partnersControllerMock->expects($this->once())
             ->method('getResponse')
-            ->willReturn($responseMock);
+            ->will($this->returnValue($responseMock));
 
         $this->partnersControllerMock->execute();
     }
@@ -81,50 +71,50 @@ class IndexTest extends TestCase
     /**
      * Gets partners controller mock
      *
-     * @return MockObject|Index
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Marketplace\Controller\Adminhtml\Partners\Index
      */
     public function getControllerIndexMock($methods = null)
     {
-        return $this->createPartialMock(Index::class, $methods);
+        return $this->createPartialMock(\Magento\Marketplace\Controller\Adminhtml\Partners\Index::class, $methods);
     }
 
     /**
-     * @return MockObject|LayoutFactory
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\LayoutFactory
      */
     public function getLayoutFactoryMock($methods = null)
     {
-        return $this->createPartialMock(LayoutFactory::class, $methods, []);
+        return $this->createPartialMock(\Magento\Framework\View\LayoutFactory::class, $methods, []);
     }
 
     /**
-     * @return MockObject|LayoutInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\LayoutInterface
      */
     public function getLayoutMock()
     {
-        return $this->getMockForAbstractClass(LayoutInterface::class);
+        return $this->getMockForAbstractClass(\Magento\Framework\View\LayoutInterface::class);
     }
 
     /**
-     * @return MockObject|Response
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\HTTP\PhpEnvironment\Response
      */
     public function getResponseMock($methods = null)
     {
-        return $this->createPartialMock(Response::class, $methods, []);
+        return $this->createPartialMock(\Magento\Framework\HTTP\PhpEnvironment\Response::class, $methods, []);
     }
 
     /**
-     * @return MockObject|Http
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Request\Http
      */
     public function getRequestMock($methods = null)
     {
-        return $this->createPartialMock(Http::class, $methods, []);
+        return $this->createPartialMock(\Magento\Framework\App\Request\Http::class, $methods, []);
     }
 
     /**
-     * @return MockObject|BlockInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\View\Element\BlockInterface
      */
     public function getBlockInterfaceMock()
     {
-        return $this->getMockForAbstractClass(BlockInterface::class);
+        return $this->getMockForAbstractClass(\Magento\Framework\View\Element\BlockInterface::class);
     }
 }

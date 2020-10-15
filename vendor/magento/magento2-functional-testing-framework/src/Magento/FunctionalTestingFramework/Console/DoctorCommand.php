@@ -8,7 +8,7 @@ declare(strict_types = 1);
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Codeception\Configuration;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
+use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Codeception\SuiteManager;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
@@ -16,6 +16,7 @@ use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver;
 use Magento\FunctionalTestingFramework\Module\MagentoWebDriver;
 use Magento\FunctionalTestingFramework\Module\MagentoWebDriverDoctor;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -124,7 +125,7 @@ class DoctorCommand extends Command
         $result = false;
         try {
             $this->ioStyle->text("Requesting API token for admin user through cURL ...");
-            WebApiAuth::getAdminToken();
+            ModuleResolver::getInstance()->getAdminToken();
             $this->ioStyle->success('Successful');
             $result = true;
         } catch (TestFrameworkException $e) {

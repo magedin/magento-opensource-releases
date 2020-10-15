@@ -3,22 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Columns;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Timestamp;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Comment;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Nullable;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\OnUpdate;
-use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Timestamp;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Columns\Boolean as BooleanColumn;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TimestampTest extends TestCase
+class TimestampTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -26,31 +21,31 @@ class TimestampTest extends TestCase
     private $objectManager;
 
     /**
-     * @var Timestamp
+     * @var \Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Timestamp
      */
     private $timestamp;
 
     /**
-     * @var Nullable|MockObject
+     * @var Nullable|\PHPUnit_Framework_MockObject_MockObject
      */
     private $nullableMock;
 
     /**
-     * @var Comment|MockObject
+     * @var Comment|\PHPUnit_Framework_MockObject_MockObject
      */
     private $commentMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceConnectionMock;
 
     /**
-     * @var OnUpdate|MockObject
+     * @var OnUpdate|\PHPUnit_Framework_MockObject_MockObject
      */
     private $onUpdateMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->nullableMock = $this->getMockBuilder(Nullable::class)
@@ -86,7 +81,7 @@ class TimestampTest extends TestCase
      */
     public function testToDefinition($default, $nullable, $onUpdate, $expectedStatement)
     {
-        /** @var BooleanColumn|MockObject $column */
+        /** @var BooleanColumn|\PHPUnit_Framework_MockObject_MockObject $column */
         $column = $this->getMockBuilder(BooleanColumn::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -99,9 +94,9 @@ class TimestampTest extends TestCase
         $column->expects($this->any())
             ->method('getDefault')
             ->willReturn($default);
-        $adapterMock = $this->getMockBuilder(AdapterInterface::class)
+        $adapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->resourceConnectionMock->expects($this->once())->method('getConnection')->willReturn($adapterMock);
         $adapterMock->expects($this->once())
             ->method('quoteIdentifier')

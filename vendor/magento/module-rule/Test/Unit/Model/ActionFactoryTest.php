@@ -3,20 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Rule\Test\Unit\Model;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Rule\Model\ActionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ActionFactoryTest extends TestCase
+class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ActionFactory
+     * @var \Magento\Rule\Model\ActionFactory
      */
     protected $actionFactory;
 
@@ -26,17 +21,17 @@ class ActionFactoryTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->actionFactory = $this->objectManagerHelper->getObject(
-            ActionFactory::class,
+            \Magento\Rule\Model\ActionFactory::class,
             [
                 'objectManager' => $this->objectManagerMock
             ]

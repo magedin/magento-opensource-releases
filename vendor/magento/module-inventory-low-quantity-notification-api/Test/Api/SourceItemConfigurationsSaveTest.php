@@ -18,7 +18,6 @@ class SourceItemConfigurationsSaveTest extends WebapiAbstract
     const SERVICE_NAME_SAVE = 'inventoryLowQuantityNotificationApiSourceItemConfigurationsSaveV1';
 
     /**
-     * @magentoApiDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
      * @magentoApiDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
      * @magentoApiDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
      */

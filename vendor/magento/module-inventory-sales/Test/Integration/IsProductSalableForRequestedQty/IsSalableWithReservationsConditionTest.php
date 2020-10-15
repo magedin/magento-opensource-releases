@@ -10,11 +10,10 @@ namespace Magento\InventorySales\Test\Integration\IsProductSalableForRequestedQt
 use Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\GetStockItemConfigurationInterface;
 use Magento\InventoryConfigurationApi\Api\SaveStockItemConfigurationInterface;
-use Magento\InventoryReservationsApi\Model\AppendReservationsInterface;
 use Magento\InventoryReservationsApi\Model\CleanupReservationsInterface;
+use Magento\InventoryReservationsApi\Model\AppendReservationsInterface;
 use Magento\InventoryReservationsApi\Model\ReservationBuilderInterface;
-use Magento\InventorySalesApi\Api\AreProductsSalableForRequestedQtyInterface;
-use Magento\InventorySalesApi\Api\Data\IsProductSalableForRequestedQtyRequestInterfaceFactory;
+use Magento\InventorySalesApi\Api\IsProductSalableForRequestedQtyInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
@@ -36,9 +35,9 @@ class IsSalableWithReservationsConditionTest extends TestCase
     private $cleanupReservations;
 
     /**
-     * @var AreProductsSalableForRequestedQtyInterface
+     * @var IsProductSalableForRequestedQtyInterface
      */
-    private $areProductsSalableForRequestedQty;
+    private $isProductSalableForRequestedQty;
 
     /**
      * @var GetStockItemConfigurationInterface
@@ -51,24 +50,17 @@ class IsSalableWithReservationsConditionTest extends TestCase
     private $saveStockItemConfiguration;
 
     /**
-     * @var IsProductSalableForRequestedQtyRequestInterfaceFactory
-     */
-    private $isProductSalableForRequestedQtyRequestFactory;
-
-    /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
         $this->reservationBuilder = Bootstrap::getObjectManager()->get(ReservationBuilderInterface::class);
         $this->appendReservations = Bootstrap::getObjectManager()->get(AppendReservationsInterface::class);
         $this->cleanupReservations = Bootstrap::getObjectManager()->get(CleanupReservationsInterface::class);
-        $this->areProductsSalableForRequestedQty
-            = Bootstrap::getObjectManager()->get(AreProductsSalableForRequestedQtyInterface::class);
-        $this->isProductSalableForRequestedQtyRequestFactory = Bootstrap::getObjectManager()
-            ->get(IsProductSalableForRequestedQtyRequestInterfaceFactory::class);
+        $this->isProductSalableForRequestedQty
+            = Bootstrap::getObjectManager()->get(IsProductSalableForRequestedQtyInterface::class);
         $this->getStockItemConfiguration = Bootstrap::getObjectManager()->get(
             GetStockItemConfigurationInterface::class
         );
@@ -78,12 +70,12 @@ class IsSalableWithReservationsConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -95,15 +87,10 @@ class IsSalableWithReservationsConditionTest extends TestCase
      */
     public function testProductIsSalable(string $sku, int $stockId, float $qty, bool $isSalable)
     {
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $qty,
-            ]
+        self::assertEquals(
+            $isSalable,
+            $this->isProductSalableForRequestedQty->execute($sku, $stockId, $qty)->isSalable()
         );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-        self::assertEquals($isSalable, $result->isSalable());
     }
 
     /**
@@ -125,12 +112,12 @@ class IsSalableWithReservationsConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @magentoConfigFixture default_store cataloginventory/item_options/min_qty 5
      *
@@ -149,15 +136,10 @@ class IsSalableWithReservationsConditionTest extends TestCase
         $stockItemConfiguration->setUseConfigMinQty(true);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $qty,
-            ]
+        self::assertEquals(
+            $isSalable,
+            $this->isProductSalableForRequestedQty->execute($sku, $stockId, $qty)->isSalable()
         );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-        self::assertEquals($isSalable, $result->isSalable());
     }
 
     /**
@@ -178,12 +160,12 @@ class IsSalableWithReservationsConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @param string $sku
      * @param int $stockId
@@ -201,15 +183,10 @@ class IsSalableWithReservationsConditionTest extends TestCase
         $stockItemConfiguration->setMinQty(5);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => $qty,
-            ]
+        self::assertEquals(
+            $isSalable,
+            $this->isProductSalableForRequestedQty->execute($sku, $stockId, $qty)->isSalable()
         );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-        self::assertEquals($isSalable, $result->isSalable());
     }
 
     /**
@@ -230,12 +207,12 @@ class IsSalableWithReservationsConditionTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @magentoDbIsolation disabled
      */
@@ -245,15 +222,7 @@ class IsSalableWithReservationsConditionTest extends TestCase
         $this->appendReservations->execute([
             $this->reservationBuilder->setStockId(10)->setSku('SKU-1')->setQuantity(-8.5)->build(),
         ]);
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => 'SKU-1',
-                'qty' => 1,
-            ]
-        );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], 10);
-        $result = current($result);
-        self::assertFalse($result->isSalable());
+        self::assertFalse($this->isProductSalableForRequestedQty->execute('SKU-1', 10, 1)->isSalable());
 
         $this->appendReservations->execute([
             // unreserve 8.5 units for cleanup
@@ -265,12 +234,12 @@ class IsSalableWithReservationsConditionTest extends TestCase
     /**
      * @see https://app.hiptest.com/projects/69435/test-plan/folders/909051/scenarios/3041232
      *
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/products.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/sources.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stocks.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/stock_source_links.php
-     * @magentoDataFixture Magento_InventoryApi::Test/_files/source_items.php
-     * @magentoDataFixture Magento_InventoryIndexer::Test/_files/reindex_inventory.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/products.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/sources.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stocks.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/stock_source_links.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryApi/Test/_files/source_items.php
+     * @magentoDataFixture ../../../../app/code/Magento/InventoryIndexer/Test/_files/reindex_inventory.php
      *
      * @magentoDbIsolation disabled
      */
@@ -289,21 +258,14 @@ class IsSalableWithReservationsConditionTest extends TestCase
         $stockItemConfiguration->setBackorders(StockItemConfigurationInterface::BACKORDERS_YES_NONOTIFY);
         $this->saveStockItemConfiguration->execute($sku, $stockId, $stockItemConfiguration);
 
-        $this->appendReservations->execute(
-            [
-                $this->reservationBuilder->setStockId($stockId)->setSku($sku)->setQuantity(-9.33)->build()
-            ]
-        );
+        $this->appendReservations->execute([
+            $this->reservationBuilder->setStockId($stockId)->setSku($sku )->setQuantity(-9.33)->build(),
+        ]);
 
-        $request = $this->isProductSalableForRequestedQtyRequestFactory->create(
-            [
-                'sku' => $sku,
-                'qty' => 0.17,
-            ]
+        self::assertEquals(
+            true,
+            $this->isProductSalableForRequestedQty->execute($sku, $stockId, 0.17)->isSalable()
         );
-        $result = $this->areProductsSalableForRequestedQty->execute([$request], $stockId);
-        $result = current($result);
-        self::assertTrue($result->isSalable());
 
         $this->appendReservations->execute([
             $this->reservationBuilder->setStockId(10)->setSku('SKU-1')->setQuantity(9.33)->build(),

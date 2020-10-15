@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Ui\Component\Listing\Column\Confirmation;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Phrase;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Framework\View\Element\UiComponentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfirmationTest extends TestCase
+class ConfirmationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Confirmation
@@ -25,48 +20,48 @@ class ConfirmationTest extends TestCase
     protected $confirmation;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $context;
 
     /**
-     * @var UiComponentFactory|MockObject
+     * @var UiComponentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $uiComponentFactory;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $scopeConfig;
 
     /**
-     * @var Processor|MockObject
+     * @var Processor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $processor;
 
     /**
-     * @var AccountConfirmation|MockObject
+     * @var AccountConfirmation|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $accountConfirmation;
 
-    protected function setup(): void
+    public function setup()
     {
-        $this->processor = $this->getMockBuilder(Processor::class)
+        $this->processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->context = $this->getMockBuilder(ContextInterface::class)
+        $this->context = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextInterface::class)
             ->getMockForAbstractClass();
 
         $this->context->expects($this->never())
             ->method('getProcessor')
             ->willReturn($this->processor);
 
-        $this->uiComponentFactory = $this->getMockBuilder(UiComponentFactory::class)
+        $this->uiComponentFactory = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
         $this->accountConfirmation = $this->createMock(AccountConfirmation::class);
@@ -84,7 +79,7 @@ class ConfirmationTest extends TestCase
     /**
      * @param int $isConfirmationRequired
      * @param string|null $confirmation
-     * @param Phrase $expected
+     * @param \Magento\Framework\Phrase $expected
      * @dataProvider dataProviderPrepareDataSource
      */
     public function testPrepareDataSource(
@@ -121,7 +116,7 @@ class ConfirmationTest extends TestCase
             ->method('isConfirmationRequired')
             ->with($websiteId, $customerId, $customerEmail)
             ->willReturn($isConfirmationRequired);
-
+        
         $this->confirmation->setData('name', 'confirmation');
         $result = $this->confirmation->prepareDataSource($dataSource);
 

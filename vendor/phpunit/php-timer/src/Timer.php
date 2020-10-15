@@ -1,166 +1,105 @@
-<?php declare(strict_types=1);
+<?php
 /*
- * This file is part of phpunit/php-timer.
+ * This file is part of the PHP_Timer package.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace SebastianBergmann\Timer;
 
-final class Timer
+/**
+ * Utility class for timing.
+ */
+class PHP_Timer
 {
     /**
-     * @psalm-var array<string,int>
+     * @var array
      */
-    private const SIZES = [
-        'GB' => 1073741824,
-        'MB' => 1048576,
-        'KB' => 1024,
-    ];
+    private static $times = array(
+      'hour'   => 3600000,
+      'minute' => 60000,
+      'second' => 1000
+    );
 
     /**
-     * @psalm-var list<float>
+     * @var array
      */
-    private static $startTimes = [];
+    private static $startTimes = array();
 
-    public static function start(): void
+    /**
+     * @var float
+     */
+    public static $requestTime;
+
+    /**
+     * Starts the timer.
+     */
+    public static function start()
     {
-        self::$startTimes[] = \hrtime(true) / 1000000000;
-    }
-
-    public static function stop(): float
-    {
-        return (\hrtime(true) / 1000000000) - \array_pop(self::$startTimes);
-    }
-
-    public static function bytesToString(float $bytes): string
-    {
-        foreach (self::SIZES as $unit => $value) {
-            if ($bytes >= $value) {
-                return \sprintf('%.2f %s', $bytes >= 1024 ? $bytes / $value : $bytes, $unit);
-            }
-        }
-
-        return $bytes . ' byte' . ((int) $bytes !== 1 ? 's' : '');
-    }
-
-    public static function secondsToShortTimeString(float $timeInSeconds): string
-    {
-        $integerFragments = self::timeInSecondsToFragments($timeInSeconds);
-        $result           = '';
-
-        if ($integerFragments['hours'] > 0) {
-            $result = \sprintf('%02d', $integerFragments['hours']) . ':';
-        }
-
-        $result .= \sprintf('%02d', $integerFragments['minutes']) . ':';
-        $result .= \sprintf('%02d', $integerFragments['seconds']);
-
-        if ($integerFragments['milliseconds'] > 0) {
-            $result .= '.' . \sprintf('%03d', $integerFragments['milliseconds']);
-        }
-
-        return $result;
-    }
-
-    public static function secondsToTimeString(float $timeInSeconds): string
-    {
-        $fragments = self::timeInSecondsToFragments($timeInSeconds);
-
-        $result = [];
-
-        if ($fragments['hours'] > 0) {
-            if ($fragments['hours'] === 1) {
-                $result[] = '1 hour';
-            } else {
-                $result[] = $fragments['hours'] . ' hours';
-            }
-        }
-
-        if ($fragments['minutes'] > 0) {
-            if ($fragments['minutes'] === 1) {
-                $result[] = '1 minute';
-            } else {
-                $result[] = $fragments['minutes'] . ' minutes';
-            }
-        }
-
-        if ($fragments['seconds'] > 0) {
-            if ($fragments['seconds'] === 1) {
-                $result[] = '1 second';
-            } else {
-                $result[] = $fragments['seconds'] . ' seconds';
-            }
-        }
-
-        if ($fragments['milliseconds'] > 0) {
-            if ($fragments['milliseconds'] === 1) {
-                $result[] = '1 millisecond';
-            } else {
-                $result[] = $fragments['milliseconds'] . ' milliseconds';
-            }
-        }
-
-        if (!empty($result)) {
-            return \implode(', ', $result);
-        }
-
-        return '0 milliseconds';
+        array_push(self::$startTimes, microtime(true));
     }
 
     /**
-     * @throws RuntimeException
+     * Stops the timer and returns the elapsed time.
+     *
+     * @return float
      */
-    public static function timeSinceStartOfRequest(): string
+    public static function stop()
     {
-        if (!isset($_SERVER['REQUEST_TIME_FLOAT'])) {
-            throw new RuntimeException(
-                'Cannot determine time at which the request started because $_SERVER[\'REQUEST_TIME_FLOAT\'] is not available'
-            );
-        }
-
-        if (!\is_float($_SERVER['REQUEST_TIME_FLOAT'])) {
-            throw new RuntimeException(
-                'Cannot determine time at which the request started because $_SERVER[\'REQUEST_TIME_FLOAT\'] is not of type float'
-            );
-        }
-
-        return self::secondsToShortTimeString(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+        return microtime(true) - array_pop(self::$startTimes);
     }
 
     /**
-     * @throws RuntimeException
+     * Formats the elapsed time as a string.
+     *
+     * @param  float  $time
+     * @return string
      */
-    public static function resourceUsage(): string
+    public static function secondsToTimeString($time)
     {
-        return \sprintf(
-            'Time: %s, Memory: %s',
+        $ms = round($time * 1000);
+
+        foreach (self::$times as $unit => $value) {
+            if ($ms >= $value) {
+                $time = floor($ms / $value * 100.0) / 100.0;
+
+                return $time . ' ' . ($time == 1 ? $unit : $unit . 's');
+            }
+        }
+
+        return $ms . ' ms';
+    }
+
+    /**
+     * Formats the elapsed time since the start of the request as a string.
+     *
+     * @return string
+     */
+    public static function timeSinceStartOfRequest()
+    {
+        return self::secondsToTimeString(microtime(true) - self::$requestTime);
+    }
+
+    /**
+     * Returns the resources (time, memory) of the request as a string.
+     *
+     * @return string
+     */
+    public static function resourceUsage()
+    {
+        return sprintf(
+            'Time: %s, Memory: %4.2fMB',
             self::timeSinceStartOfRequest(),
-            self::bytesToString(\memory_get_peak_usage(true))
+            memory_get_peak_usage(true) / 1048576
         );
     }
+}
 
-    /**
-     * @psalm-return array<string,int>
-     */
-    private static function timeInSecondsToFragments(float $timeInSeconds): array
-    {
-        $timeInMilliseconds    = \round($timeInSeconds * 1000);
-        $hours                 = \floor($timeInMilliseconds / 60 / 60 / 1000);
-        $hoursInMilliseconds   = $hours * 60 * 60 * 1000;
-        $minutes               = \floor($timeInMilliseconds / 60 / 1000) % 60;
-        $minutesInMilliseconds = $minutes * 60 * 1000;
-        $seconds               = \floor(($timeInMilliseconds - $hoursInMilliseconds - $minutesInMilliseconds) / 1000);
-        $secondsInMilliseconds = $seconds * 1000;
-        $milliseconds          = $timeInMilliseconds - $hoursInMilliseconds - $minutesInMilliseconds - $secondsInMilliseconds;
-
-        return [
-            'hours'        => (int) $hours,
-            'minutes'      => $minutes,
-            'seconds'      => (int) $seconds,
-            'milliseconds' => (int) $milliseconds,
-        ];
-    }
+if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
+    PHP_Timer::$requestTime = $_SERVER['REQUEST_TIME_FLOAT'];
+} elseif (isset($_SERVER['REQUEST_TIME'])) {
+    PHP_Timer::$requestTime = $_SERVER['REQUEST_TIME'];
+} else {
+    PHP_Timer::$requestTime = microtime(true);
 }

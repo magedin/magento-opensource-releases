@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Product\Type\Configurable;
 
@@ -16,9 +15,8 @@ use Magento\Framework\Pricing\Price\PriceInterface;
 use Magento\Framework\Pricing\PriceInfo\Base as PriceInfoBase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PriceTest extends TestCase
+class PriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -38,7 +36,7 @@ class PriceTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -70,11 +68,11 @@ class PriceTest extends TestCase
         /** @var PriceInterface|MockObject $price */
         $price = $this->getMockBuilder(PriceInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         /** @var AmountInterface|MockObject $amount */
         $amount = $this->getMockBuilder(AmountInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $configurableProduct->expects($this->any())
             ->method('getCustomOption')
@@ -95,22 +93,20 @@ class PriceTest extends TestCase
         $customerGroupId = 1;
 
         /** @var Product|MockObject $configurableProduct */
-        $configurableProduct = $this->getMockBuilder(Product::class)
-            ->addMethods(['getCustomerGroupId'])
-            ->onlyMethods(['getCustomOption', 'setFinalPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configurableProduct = $this->createPartialMock(
+            Product::class,
+            ['getCustomOption', 'setFinalPrice', 'getCustomerGroupId']
+        );
         /** @var Option|MockObject $customOption */
-        $customOption = $this->getMockBuilder(Option::class)
-            ->addMethods(['getProduct'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $customOption = $this->createPartialMock(
+            Option::class,
+            ['getProduct']
+        );
         /** @var Product|MockObject $simpleProduct */
-        $simpleProduct = $this->getMockBuilder(Product::class)
-            ->addMethods(['setCustomerGroupId'])
-            ->onlyMethods(['setFinalPrice', 'getPrice', 'getTierPrice', 'getData', 'getCustomOption'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $simpleProduct = $this->createPartialMock(
+            Product::class,
+            ['setCustomerGroupId', 'setFinalPrice', 'getPrice', 'getTierPrice', 'getData', 'getCustomOption']
+        );
 
         $configurableProduct->method('getCustomOption')
             ->willReturnMap([

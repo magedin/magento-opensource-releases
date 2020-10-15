@@ -7,8 +7,6 @@ namespace Magento\Bundle\Block\Adminhtml\Sales\Order\Items;
 
 use Magento\Catalog\Model\Product\Type\AbstractType;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\App\ObjectManager;
-use Magento\Catalog\Helper\Data as CatalogHelper;
 
 /**
  * Adminhtml sales order item renderer
@@ -32,7 +30,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
      * @param \Magento\Framework\Registry $registry
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json $serializer
-     * @param CatalogHelper|null $catalogHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -40,11 +37,11 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
         \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration,
         \Magento\Framework\Registry $registry,
         array $data = [],
-        Json $serializer = null,
-        ?CatalogHelper $catalogHelper = null
+        Json $serializer = null
     ) {
-        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
-        $data['catalogHelper'] = $catalogHelper ?? ObjectManager::getInstance()->get(CatalogHelper::class);
+        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(Json::class);
+
         parent::__construct($context, $stockRegistry, $stockConfiguration, $registry, $data);
     }
 
@@ -86,6 +83,7 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
         }
 
         if ($items) {
+            $itemsArray[$item->getOrderItem()->getId()][$item->getOrderItemId()] = $item;
             foreach ($items as $value) {
                 $parentItem = $value->getOrderItem()->getParentItem();
                 if ($parentItem) {

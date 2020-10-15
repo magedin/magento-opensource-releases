@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Model;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Search\Model\SynonymGroup;
-use PHPUnit\Framework\TestCase;
-
-class SynonymGroupTest extends TestCase
+class SynonymGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SynonymGroup
+     * @var \Magento\Search\Model\SynonymGroup
      */
     private $model;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->model = (new ObjectManager($this))
-            ->getObject(SynonymGroup::class);
+        $this->model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
+            ->getObject(\Magento\Search\Model\SynonymGroup::class);
     }
 
     public function testSetGetStoreId()

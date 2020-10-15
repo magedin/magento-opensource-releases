@@ -3,30 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Platform;
 
-use Magento\Framework\DB\Platform\Quote;
 use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class QuoteTest extends TestCase
+/**
+ * Class QuoteTest
+ */
+class QuoteTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Quote
+     * @var \Magento\Framework\DB\Platform\Quote
      */
     protected $model;
 
     /**
-     * @var \Zend_Db_Expr|MockObject
+     * @var \Zend_Db_Expr|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $zendDbExprMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $selectMock;
 
@@ -35,12 +33,12 @@ class QuoteTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
-        $this->model = $objectManager->getObject(Quote::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->model = $objectManager->getObject(\Magento\Framework\DB\Platform\Quote::class);
         $this->zendDbExprMock = $this->createPartialMock(\Zend_Db_Expr::class, ['__toString']);
-        $this->selectMock = $this->createPartialMock(Select::class, ['assemble']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['assemble']);
     }
 
     public function testQuoteIdentifierWithZendDbExpr()

@@ -3,47 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Wysiwyg\Files;
 
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files;
-use Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\OnInsert;
-use Magento\Theme\Helper\Storage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class OnInsertTest extends TestCase
+class OnInsertTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Files */
+    /** @var \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files */
     protected $controller;
 
-    /** @var ViewInterface|MockObject */
+    /** @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $view;
 
-    /** @var MockObject|MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject|\PHPUnit_Framework_MockObject_MockObject */
     protected $objectManager;
 
-    /** @var Storage|MockObject */
+    /** @var \Magento\Theme\Helper\Storage|\PHPUnit_Framework_MockObject_MockObject */
     protected $storageHelper;
 
-    /** @var Http|MockObject */
+    /** @var \Magento\Framework\App\Response\Http|\PHPUnit_Framework_MockObject_MockObject */
     protected $response;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->view = $this->getMockForAbstractClass(ViewInterface::class);
-        $this->storageHelper = $this->createMock(Storage::class);
-        $this->response = $this->createPartialMock(Http::class, ['setBody']);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->view = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $this->storageHelper = $this->createMock(\Magento\Theme\Helper\Storage::class);
+        $this->response = $this->createPartialMock(\Magento\Framework\App\Response\Http::class, ['setBody']);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->controller = $helper->getObject(
-            OnInsert::class,
+            \Magento\Theme\Controller\Adminhtml\System\Design\Wysiwyg\Files\OnInsert::class,
             [
                 'objectManager' => $this->objectManager,
                 'view' => $this->view,
@@ -56,7 +44,7 @@ class OnInsertTest extends TestCase
     {
         $this->objectManager->expects($this->once())
             ->method('get')
-            ->with(Storage::class)
+            ->with(\Magento\Theme\Helper\Storage::class)
             ->willReturn($this->storageHelper);
         $this->storageHelper
             ->expects($this->once())

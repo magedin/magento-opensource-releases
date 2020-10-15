@@ -8,12 +8,13 @@ namespace Magento\Customer\Model\App\Action;
 
 use Magento\Customer\Model\Context;
 use Magento\Customer\Model\GroupManagement;
+use Magento\Framework\App\Action\AbstractAction;
+use Magento\Framework\App\RequestInterface;
 use Magento\Customer\Model\Session;
-use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\Http\Context as HttpContext;
 
 /**
- * Introduces Context information for ActionInterface of Customer Action
+ * Class ContextPlugin
  */
 class ContextPlugin
 {
@@ -40,11 +41,12 @@ class ContextPlugin
     /**
      * Set customer group and customer session id to HTTP context
      *
-     * @param ActionInterface $subject
+     * @param AbstractAction $subject
+     * @param RequestInterface $request
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeExecute(ActionInterface $subject)
+    public function beforeDispatch(AbstractAction $subject, RequestInterface $request)
     {
         $this->httpContext->setValue(
             Context::CONTEXT_GROUP,

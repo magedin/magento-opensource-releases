@@ -3,29 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\ResourceModel;
 
 use Magento\CatalogSearch\Model\ResourceModel\EngineInterface;
 use Magento\CatalogSearch\Model\ResourceModel\EngineProvider;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Search\EngineResolverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class EngineProviderTest extends TestCase
+class EngineProviderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var EngineProvider */
     private $model;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $objectManagerMock;
 
-    /** @var EngineResolverInterface|MockObject */
+    /** @var EngineResolverInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $engineResolverMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
             ->getMockForAbstractClass();
@@ -42,8 +38,8 @@ class EngineProviderTest extends TestCase
         ];
 
         $this->engineResolverMock->expects($this->once())
-            ->method('getCurrentSearchEngine')
-            ->willReturn($currentEngine);
+        ->method('getCurrentSearchEngine')
+        ->willReturn($currentEngine);
 
         $engineMock = $this->getMockBuilder($currentEngineClass)
             ->setMethods(['isAvailable'])
@@ -68,10 +64,12 @@ class EngineProviderTest extends TestCase
         $this->assertEquals($engineMock, $this->model->get());
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage There is no such engine: current_engine
+     */
     public function testGetWithoutEngines()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('There is no such engine: current_engine');
         $currentEngine = 'current_engine';
         $engines = [];
 
@@ -91,10 +89,12 @@ class EngineProviderTest extends TestCase
         $this->model->get();
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage current_engine doesn't implement
+     */
     public function testGetWithWrongEngine()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('current_engine doesn\'t implement');
         $currentEngine = 'current_engine';
         $currentEngineClass = \stdClass::class;
         $engines = [
@@ -122,10 +122,12 @@ class EngineProviderTest extends TestCase
         $this->model->get();
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Engine is not available: current_engine
+     */
     public function testGetWithoutAvailableEngine()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Engine is not available: current_engine');
         $currentEngine = 'current_engine';
         $currentEngineClass = EngineInterface::class;
         $engines = [

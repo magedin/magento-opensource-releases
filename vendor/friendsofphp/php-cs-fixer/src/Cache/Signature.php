@@ -49,6 +49,7 @@ final class Signature implements SignatureInterface
      * @param string $fixerVersion
      * @param string $indent
      * @param string $lineEnding
+     * @param array  $rules
      */
     public function __construct($phpVersion, $fixerVersion, $indent, $lineEnding, array $rules)
     {

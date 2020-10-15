@@ -111,13 +111,11 @@ class Report extends \Magento\Framework\App\Helper\AbstractHelper
      * Retrieve report file size
      *
      * @param string $filename
-     * @return int|null
+     * @return int|mixed
      */
     public function getReportSize($filename)
     {
-        $statResult = $this->varDirectory->stat($this->getFilePath($filename));
-
-        return $statResult['size'] ?? null;
+        return $this->varDirectory->stat($this->getFilePath($filename))['size'];
     }
 
     /**

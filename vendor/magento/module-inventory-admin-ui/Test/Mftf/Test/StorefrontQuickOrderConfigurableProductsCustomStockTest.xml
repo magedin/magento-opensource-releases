@@ -36,7 +36,7 @@
                 <requiredEntity createDataKey="stock"/>
                 <requiredEntity createDataKey="source2"/>
             </createData>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginToAdmin"/>
             <!--Create configurable product1.-->
             <createData entity="ApiConfigurableProduct" stepKey="configurableProduct1">
                 <requiredEntity createDataKey="category"/>
@@ -122,10 +122,10 @@
             <actionGroup ref="DisableSourceActionGroup" stepKey="disableSource2">
                 <argument name="sourceCode" value="$source2.source[source_code]$"/>
             </actionGroup>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <remove keyForRemoval="quickOrderAddProductToCart"/>

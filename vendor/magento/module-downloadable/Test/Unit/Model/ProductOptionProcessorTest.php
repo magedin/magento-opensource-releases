@@ -3,22 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model;
 
-use Magento\Catalog\Api\Data\ProductOptionExtensionInterface;
-use Magento\Catalog\Api\Data\ProductOptionInterface;
 use Magento\Downloadable\Api\Data\DownloadableOptionInterface;
 use Magento\Downloadable\Model\DownloadableOptionFactory;
 use Magento\Downloadable\Model\ProductOptionProcessor;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\DataObject;
 use Magento\Framework\DataObject\Factory as DataObjectFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductOptionProcessorTest extends TestCase
+class ProductOptionProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductOptionProcessor
@@ -26,33 +20,33 @@ class ProductOptionProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObject;
 
     /**
-     * @var DataObjectFactory|MockObject
+     * @var DataObjectFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectFactory;
 
     /**
-     * @var DataObjectHelper|MockObject
+     * @var DataObjectHelper | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $dataObjectHelper;
 
     /**
-     * @var DownloadableOptionFactory|MockObject
+     * @var DownloadableOptionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $downloadableOptionFactory;
 
     /**
-     * @var DownloadableOptionInterface|MockObject
+     * @var DownloadableOptionInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $downloadableOption;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->dataObject = $this->getMockBuilder(DataObject::class)
+        $this->dataObject = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->setMethods([
                 'getLinks', 'addData'
             ])
@@ -67,12 +61,12 @@ class ProductOptionProcessorTest extends TestCase
             ->method('create')
             ->willReturn($this->dataObject);
 
-        $this->dataObjectHelper = $this->getMockBuilder(DataObjectHelper::class)
+        $this->dataObjectHelper = $this->getMockBuilder(\Magento\Framework\Api\DataObjectHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->downloadableOption = $this->getMockBuilder(
-            DownloadableOptionInterface::class
+            \Magento\Downloadable\Api\Data\DownloadableOptionInterface::class
         )
             ->setMethods([
                 'getDownloadableLinks',
@@ -80,7 +74,7 @@ class ProductOptionProcessorTest extends TestCase
             ->getMockForAbstractClass();
 
         $this->downloadableOptionFactory = $this->getMockBuilder(
-            DownloadableOptionFactory::class
+            \Magento\Downloadable\Model\DownloadableOptionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -105,11 +99,11 @@ class ProductOptionProcessorTest extends TestCase
         $options,
         $requestData
     ) {
-        $productOptionMock = $this->getMockBuilder(ProductOptionInterface::class)
+        $productOptionMock = $this->getMockBuilder(\Magento\Catalog\Api\Data\ProductOptionInterface::class)
             ->getMockForAbstractClass();
 
         $productOptionExtensionMock = $this->getMockBuilder(
-            ProductOptionExtensionInterface::class
+            \Magento\Catalog\Api\Data\ProductOptionExtensionInterface::class
         )
             ->setMethods([
                 'getDownloadableOption',
@@ -171,7 +165,7 @@ class ProductOptionProcessorTest extends TestCase
             ->with(
                 $this->downloadableOption,
                 ['downloadable_links' => $options],
-                DownloadableOptionInterface::class
+                \Magento\Downloadable\Api\Data\DownloadableOptionInterface::class
             )
             ->willReturnSelf();
 

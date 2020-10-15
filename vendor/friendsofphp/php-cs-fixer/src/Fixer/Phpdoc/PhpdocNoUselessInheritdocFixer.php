@@ -43,12 +43,11 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoEmptyPhpdocFixer, NoTrailingWhitespaceInCommentFixer, PhpdocAlignFixer.
-     * Must run after CommentToPhpdocFixer, PhpdocIndentFixer, PhpdocScalarFixer, PhpdocToCommentFixer, PhpdocToCommentFixer, PhpdocTypesFixer.
      */
     public function getPriority()
     {
+        // Should run before NoEmptyPhpdocFixer, NoTrailingWhitespaceInCommentFixer
+        // and after PhpdocToCommentFixer.
         return 6;
     }
 
@@ -74,7 +73,8 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */
@@ -105,9 +105,10 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int  $classOpenIndex
-     * @param int  $classEndIndex
-     * @param bool $fixThisLevel
+     * @param Tokens $tokens
+     * @param int    $classOpenIndex
+     * @param int    $classEndIndex
+     * @param bool   $fixThisLevel
      */
     private function fixClassyInside(Tokens $tokens, $classOpenIndex, $classEndIndex, $fixThisLevel)
     {
@@ -121,7 +122,8 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int $classIndex
+     * @param Tokens $tokens
+     * @param int    $classIndex
      */
     private function fixClassyOutside(Tokens $tokens, $classIndex)
     {
@@ -132,7 +134,8 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int $tokenIndex
+     * @param Tokens $tokens
+     * @param int    $tokenIndex
      */
     private function fixToken(Tokens $tokens, $tokenIndex)
     {
@@ -153,8 +156,9 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int $classIndex
-     * @param int $classOpenIndex
+     * @param Tokens $tokens
+     * @param int    $classIndex
+     * @param int    $classOpenIndex
      *
      * @return bool
      */
@@ -170,9 +174,10 @@ final class PhpdocNoUselessInheritdocFixer extends AbstractFixer
     }
 
     /**
-     * @param int $classIndex
-     * @param int $classOpenIndex
-     * @param int $classCloseIndex
+     * @param Tokens $tokens
+     * @param int    $classIndex
+     * @param int    $classOpenIndex
+     * @param int    $classCloseIndex
      *
      * @return bool
      */

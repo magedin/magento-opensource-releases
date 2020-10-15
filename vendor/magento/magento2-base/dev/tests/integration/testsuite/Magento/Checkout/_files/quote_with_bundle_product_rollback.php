@@ -5,14 +5,12 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
 /*
  * Since the bundle product creation GUI doesn't allow to choose values for bundled products' custom options,
  * bundled items should not contain products with required custom options.
  * However, if to create such a bundle product, it will be always out of stock.
  */
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/products_rollback.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/products_rollback.php';
 
 /** @var \Magento\Framework\Registry $registry */
 $registry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(\Magento\Framework\Registry::class);

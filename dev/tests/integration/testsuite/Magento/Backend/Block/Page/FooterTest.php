@@ -3,12 +3,10 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Backend\Block\Page;
 
 /**
  * Test \Magento\Backend\Block\Page\Footer
- *
  * @magentoAppArea adminhtml
  */
 class FooterTest extends \PHPUnit\Framework\TestCase
@@ -23,10 +21,10 @@ class FooterTest extends \PHPUnit\Framework\TestCase
      */
     protected $block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
-        $productMetadataMock = $this->getMockBuilder(\Magento\Framework\App\ProductMetadata::class)
+        $productMetadataMock =  $this->getMockBuilder(\Magento\Framework\App\ProductMetadata::class)
             ->setMethods(['getVersion'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -45,10 +43,6 @@ class FooterTest extends \PHPUnit\Framework\TestCase
     public function testToHtml()
     {
         $footerContent = $this->block->toHtml();
-        $this->assertStringContainsString(
-            'ver. ' . $this::TEST_PRODUCT_VERSION,
-            $footerContent,
-            'No or wrong product version.'
-        );
+        $this->assertContains('ver. ' . $this::TEST_PRODUCT_VERSION, $footerContent, 'No or wrong product version.');
     }
 }

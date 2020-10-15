@@ -4,42 +4,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\GuestCart\GuestShippingAddressManagement;
-use Magento\Quote\Model\GuestCart\GuestShippingAddressManagementInterface;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\ShippingAddressManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestShippingAddressManagementTest extends TestCase
+class GuestShippingAddressManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GuestShippingAddressManagementInterface
+     * @var \Magento\Quote\Model\GuestCart\GuestShippingAddressManagementInterface
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteAddressMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteIdMaskMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $shippingAddressManagementMock;
 
@@ -53,14 +43,14 @@ class GuestShippingAddressManagementTest extends TestCase
      */
     protected $cartId;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->shippingAddressManagementMock = $this->createMock(
-            ShippingAddressManagementInterface::class
+            \Magento\Quote\Model\ShippingAddressManagementInterface::class
         );
-        $this->quoteAddressMock = $this->createMock(Address::class);
+        $this->quoteAddressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
 
         $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
         $this->cartId = 123;
@@ -72,7 +62,7 @@ class GuestShippingAddressManagementTest extends TestCase
         );
 
         $this->model = $objectManager->getObject(
-            GuestShippingAddressManagement::class,
+            \Magento\Quote\Model\GuestCart\GuestShippingAddressManagement::class,
             [
                 'shippingAddressManagement' => $this->shippingAddressManagementMock,
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock

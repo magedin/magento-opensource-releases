@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of PHP Copy/Paste Detector (PHPCPD).
  *
@@ -10,39 +10,44 @@
 
 namespace SebastianBergmann\PHPCPD;
 
-final class CodeCloneMap implements \Countable, \IteratorAggregate
+class CodeCloneMap implements \Countable, \Iterator
 {
     /**
-     * @var CodeClone[]
+     * @var CodeClone[] The clones in the clone map
      */
     private $clones = [];
 
     /**
-     * @var CodeClone[]
+     * @var CodeClone[] The clones in the clone map, stored by ID
      */
     private $clonesById = [];
 
     /**
-     * @var int
+     * @var int Current position while iterating the clone map
+     */
+    private $position = 0;
+
+    /**
+     * @var int Number of duplicate lines in the clone map
      */
     private $numberOfDuplicatedLines = 0;
 
     /**
-     * @var int
+     * @var int Number of lines analyzed
      */
     private $numLines = 0;
-
-    /**
-     * @var int
-     */
-    private $largestCloneSize = 0;
 
     /**
      * @var array
      */
     private $filesWithClones = [];
 
-    public function addClone(CodeClone $clone): void
+    /**
+     * Adds a clone to the map.
+     *
+     * @param CodeClone $clone
+     */
+    public function addClone(CodeClone $clone)
     {
         $id = $clone->getId();
 
@@ -64,19 +69,24 @@ final class CodeCloneMap implements \Countable, \IteratorAggregate
                 $this->filesWithClones[$file->getName()] = true;
             }
         }
-
-        $this->largestCloneSize = \max($this->largestCloneSize, $clone->getSize());
     }
 
     /**
+     * Returns the clones stored in this map.
+     *
      * @return CodeClone[]
      */
-    public function getClones(): array
+    public function getClones()
     {
         return $this->clones;
     }
 
-    public function getPercentage(): string
+    /**
+     * Returns the percentage of duplicated code lines in the project.
+     *
+     * @return string
+     */
+    public function getPercentage()
     {
         if ($this->numLines > 0) {
             $percent = ($this->numberOfDuplicatedLines / $this->numLines) * 100;
@@ -87,48 +97,93 @@ final class CodeCloneMap implements \Countable, \IteratorAggregate
         return \sprintf('%01.2F%%', $percent);
     }
 
-    public function getNumLines(): int
+    /**
+     * Returns the number of lines analyzed.
+     *
+     * @return int
+     */
+    public function getNumLines()
     {
         return $this->numLines;
     }
 
-    public function setNumLines(int $numLines): void
+    /**
+     * Sets the number of physical source code lines in the project.
+     *
+     * @param int $numLines
+     */
+    public function setNumLines($numLines)
     {
         $this->numLines = $numLines;
     }
 
-    public function count(): int
+    /**
+     * Returns the number of clones stored in this map.
+     */
+    public function count()
     {
         return \count($this->clones);
     }
 
-    public function getNumberOfFilesWithClones(): int
+    /**
+     * @return int
+     */
+    public function getNumberOfFilesWithClones()
     {
         return \count($this->filesWithClones);
     }
 
-    public function getNumberOfDuplicatedLines(): int
+    /**
+     * @return int
+     */
+    public function getNumberOfDuplicatedLines()
     {
         return $this->numberOfDuplicatedLines;
     }
 
-    public function getIterator(): CodeCloneMapIterator
+    /**
+     * Rewinds the Iterator to the first element.
+     */
+    public function rewind()
     {
-        return new CodeCloneMapIterator($this);
+        $this->position = 0;
     }
 
-    public function isEmpty(): bool
+    /**
+     * Checks if there is a current element after calls to rewind() or next().
+     *
+     * @return bool
+     */
+    public function valid()
     {
-        return empty($this->clones);
+        return $this->position < \count($this->clones);
     }
 
-    public function getAverageSize(): float
+    /**
+     * Returns the key of the current element.
+     *
+     * @return int
+     */
+    public function key()
     {
-        return $this->getNumberOfDuplicatedLines() / $this->count();
+        return $this->position;
     }
 
-    public function getLargestSize(): int
+    /**
+     * Returns the current element.
+     *
+     * @return CodeClone
+     */
+    public function current()
     {
-        return $this->largestCloneSize;
+        return $this->clones[$this->position];
+    }
+
+    /**
+     * Moves forward to next element.
+     */
+    public function next()
+    {
+        $this->position++;
     }
 }

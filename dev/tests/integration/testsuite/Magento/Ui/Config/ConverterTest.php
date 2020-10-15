@@ -22,7 +22,7 @@ class ConverterTest extends \PHPUnit\Framework\TestCase
      */
     private $fixturePath;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->converter = $objectManager->create(Converter::class);

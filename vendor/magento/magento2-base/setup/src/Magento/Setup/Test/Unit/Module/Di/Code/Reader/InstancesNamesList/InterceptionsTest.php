@@ -3,79 +3,72 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Reader\InstancesNamesList;
 
-use Magento\Framework\Code\Reader\ClassReader;
-use Magento\Framework\Code\Validator;
-use Magento\Framework\Code\Validator\ConstructorIntegrity;
-use Magento\Framework\Exception\ValidatorException;
-use Magento\Framework\Phrase;
-use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
-use Magento\Setup\Module\Di\Code\Reader\Decorator\Directory;
-use Magento\Setup\Module\Di\Code\Reader\Decorator\Interceptions;
 use Magento\Setup\Module\Di\Compiler\Log\Log;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class InterceptionsTest extends TestCase
+/**
+ * Class InterceptionsTest
+ *
+ * @package Magento\Setup\Module\Di\Code\Reader\Decorator
+ */
+class InterceptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClassesScanner|MockObject
+     * @var \Magento\Setup\Module\Di\Code\Reader\ClassesScanner | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classesScanner;
 
     /**
-     * @var ClassReader|MockObject
+     * @var \Magento\Framework\Code\Reader\ClassReader | \PHPUnit_Framework_MockObject_MockObject
      */
     private $classReaderMock;
 
     /**
-     * @var Directory
+     * @var \Magento\Setup\Module\Di\Code\Reader\Decorator\Directory
      */
     private $model;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Framework\Code\Validator | \PHPUnit_Framework_MockObject_MockObject
      */
     private $validatorMock;
 
     /**
-     * @var Log|MockObject
+     * @var \Magento\Setup\Module\Di\Compiler\Log\Log | \PHPUnit_Framework_MockObject_MockObject
      */
     private $logMock;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->logMock = $this->getMockBuilder(Log::class)
+        $this->logMock = $this->getMockBuilder(\Magento\Setup\Module\Di\Compiler\Log\Log::class)
             ->disableOriginalConstructor()
             ->setMethods(['add', 'report'])
             ->getMock();
 
-        $this->classesScanner = $this->getMockBuilder(ClassesScanner::class)
+        $this->classesScanner = $this->getMockBuilder(\Magento\Setup\Module\Di\Code\Reader\ClassesScanner::class)
             ->disableOriginalConstructor()
             ->setMethods(['getList'])
             ->getMock();
 
-        $this->classReaderMock = $this->getMockBuilder(ClassReader::class)
+        $this->classReaderMock = $this->getMockBuilder(\Magento\Framework\Code\Reader\ClassReader::class)
             ->disableOriginalConstructor()
             ->setMethods(['getParents'])
             ->getMock();
 
-        $this->validatorMock = $this->getMockBuilder(Validator::class)
+        $this->validatorMock = $this->getMockBuilder(\Magento\Framework\Code\Validator::class)
             ->disableOriginalConstructor()
             ->setMethods(['validate', 'add'])
             ->getMock();
 
-        $this->model = new Interceptions(
+        $this->model = new \Magento\Setup\Module\Di\Code\Reader\Decorator\Interceptions(
             $this->classesScanner,
             $this->classReaderMock,
             $this->validatorMock,
-            new ConstructorIntegrity(),
+            new \Magento\Framework\Code\Validator\ConstructorIntegrity(),
             $this->logMock
         );
     }
@@ -150,8 +143,8 @@ class InterceptionsTest extends TestCase
 
         $this->validatorMock->expects($this->exactly(count($classes)))
             ->method('validate')
-            ->willThrowException(
-                $exception
+            ->will(
+                $this->throwException($exception)
             );
 
         $this->logMock->expects($this->once())->method('report');
@@ -169,7 +162,7 @@ class InterceptionsTest extends TestCase
     public function getListExceptionDataProvider()
     {
         return [
-            [new ValidatorException(new Phrase('Not Valid!'))],
+            [new \Magento\Framework\Exception\ValidatorException(new \Magento\Framework\Phrase('Not Valid!'))],
             [new \ReflectionException('Not Valid!')]
         ];
     }

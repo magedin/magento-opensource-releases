@@ -4,7 +4,6 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Sales\Api\CreditmemoItemRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Creditmemo;
@@ -13,23 +12,18 @@ use Magento\Sales\Model\Order\Creditmemo\ItemFactory;
 use Magento\Sales\Model\Order\CreditmemoFactory;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/default_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
+require 'default_rollback.php';
+require __DIR__ . '/order.php';
 
-$objectManager = Bootstrap::getObjectManager();
-/** @var ProductRepositoryInterface $productRepository */
-$productRepository = $objectManager->create(ProductRepositoryInterface::class);
-$product = $productRepository->get('simple');
-$orderCollection = $objectManager->create(Order::class)->getCollection();
+$orderCollection = Bootstrap::getObjectManager()->create(Order::class)->getCollection();
 /** @var \Magento\Sales\Model\Order $order */
 $order = $orderCollection->getFirstItem();
 
 /** @var ItemFactory $creditmemoItemFactory */
-$creditmemoItemFactory = $objectManager->create(ItemFactory::class);
+$creditmemoItemFactory = Bootstrap::getObjectManager()->create(ItemFactory::class);
 /** @var CreditmemoFactory $creditmemoFactory */
-$creditmemoFactory = $objectManager->get(CreditmemoFactory::class);
+$creditmemoFactory = Bootstrap::getObjectManager()->get(CreditmemoFactory::class);
 /** @var Creditmemo $creditmemo */
 $creditmemo = $creditmemoFactory->createByOrder($order, $order->getData());
 $creditmemo->setOrder($order);

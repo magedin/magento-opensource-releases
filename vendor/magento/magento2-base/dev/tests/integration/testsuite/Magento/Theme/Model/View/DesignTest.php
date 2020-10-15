@@ -30,7 +30,7 @@ class DesignTest extends \PHPUnit\Framework\TestCase
      */
     protected $_viewConfig;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var \Magento\Framework\Filesystem $filesystem */
@@ -43,7 +43,7 @@ class DesignTest extends \PHPUnit\Framework\TestCase
         $libDir->copyFile('prototype/prototype.js', 'prototype/prototype.min.js');
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         /** @var \Magento\Framework\Filesystem $filesystem */
         $filesystem = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
@@ -52,7 +52,7 @@ class DesignTest extends \PHPUnit\Framework\TestCase
         $libDir->delete('prototype/prototype.min.js');
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         /** @var \Magento\Theme\Model\Theme\Registration $registration */

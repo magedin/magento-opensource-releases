@@ -3,92 +3,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Attribute\Source;
 
-use Magento\Eav\Model\Entity\AbstractEntity;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
-use Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend;
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
-use Magento\Eav\Model\Entity\Attribute\Source\Table;
-use Magento\Eav\Model\Entity\Collection\AbstractCollection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection as AttributeOptionCollection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TableTest extends TestCase
+class TableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Table
+     * @var \Magento\Eav\Model\Entity\Attribute\Source\Table
      */
     private $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory
+     *      | \PHPUnit_Framework_MockObject_MockObject
      */
     private $collectionFactory;
 
     /**
-     * @var OptionFactory|MockObject
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     private $attrOptionFactory;
 
     /**
-     * @var AbstractSource|MockObject
+     * @var AbstractSource | \PHPUnit_Framework_MockObject_MockObject
      */
     private $sourceMock;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var AbstractAttribute | \PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractAttributeMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeMock;
 
     /**
-     * @var AttributeOptionCollection|MockObject
+     * @var AttributeOptionCollection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $attributeOptionCollectionMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = new ObjectManager($this);
 
-        $this->collectionFactory = $this->getMockBuilder(CollectionFactory::class)
-            ->addMethods(
-                [
-                    'setPositionOrder',
-                    'setAttributeFilter',
-                    'addFieldToFilter',
-                    'setStoreFilter',
-                    'load',
-                    'toOptionArray'
-                ]
-            )
-            ->onlyMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->collectionFactory = $this->createPartialMock(
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory::class,
+            [
+                'create',
+                'setPositionOrder',
+                'setAttributeFilter',
+                'addFieldToFilter',
+                'setStoreFilter',
+                'load',
+                'toOptionArray'
+            ]
+        );
 
         $this->attributeOptionCollectionMock = $this->getMockBuilder(AttributeOptionCollection::class)
             ->setMethods(['toOptionArray'])
@@ -96,7 +81,7 @@ class TableTest extends TestCase
             ->getMock();
 
         $this->attrOptionFactory = $this->createPartialMock(
-            OptionFactory::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory::class,
             ['create']
         );
 
@@ -115,7 +100,7 @@ class TableTest extends TestCase
             ->getMockForAbstractClass();
 
         $this->model = $objectManager->getObject(
-            Table::class,
+            \Magento\Eav\Model\Entity\Attribute\Source\Table::class,
             [
                 'attrOptionCollectionFactory' => $this->collectionFactory,
                 'attrOptionFactory' => $this->attrOptionFactory
@@ -135,15 +120,15 @@ class TableTest extends TestCase
 
     public function testGetFlatColumns()
     {
-        $abstractFrontendMock = $this->createMock(AbstractFrontend::class);
+        $abstractFrontendMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend::class);
 
         $this->abstractAttributeMock->expects($this->any())->method('getFrontend')->willReturn(($abstractFrontendMock));
         $this->abstractAttributeMock->expects($this->any())->method('getAttributeCode')->willReturn('code');
 
         $flatColumns = $this->model->getFlatColumns();
 
-        $this->assertIsArray($flatColumns, 'FlatColumns must be an array value');
-        $this->assertNotEmpty($flatColumns, 'FlatColumns must be not empty');
+        $this->assertTrue(is_array($flatColumns), 'FlatColumns must be an array value');
+        $this->assertTrue(!empty($flatColumns), 'FlatColumns must be not empty');
 
         foreach ($flatColumns as $result) {
             $this->assertArrayHasKey('unsigned', $result, 'FlatColumns must have "unsigned" column');
@@ -287,26 +272,26 @@ class TableTest extends TestCase
     public function testAddValueSortToCollection()
     {
         $attributeCode = 'attribute_code';
-        $dir = Select::SQL_ASC;
-        $collection = $this->getMockBuilder(AbstractCollection::class)
+        $dir = \Magento\Framework\DB\Select::SQL_ASC;
+        $collection = $this->getMockBuilder(\Magento\Eav\Model\Entity\Collection\AbstractCollection::class)
             ->setMethods([ 'getSelect', 'getStoreId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
         $this->abstractAttributeMock->expects($this->any())->method('getAttributeCode')->willReturn($attributeCode);
-        $entity = $this->getMockBuilder(AbstractEntity::class)
+        $entity = $this->getMockBuilder(\Magento\Eav\Model\Entity\AbstractEntity::class)
             ->setMethods(['getLinkField'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->abstractAttributeMock->expects($this->once())->method('getEntity')->willReturn($entity);
         $entity->expects($this->once())->method('getLinkField')->willReturn('entity_id');
-        $select = $this->getMockBuilder(Select::class)
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->setMethods(['joinLeft', 'getConnection', 'order'])
             ->disableOriginalConstructor()
             ->getMock();
         $collection->expects($this->any())->method('getSelect')->willReturn($select);
         $select->expects($this->any())->method('joinLeft')->willReturnSelf();
-        $backend = $this->getMockBuilder(AbstractBackend::class)
+        $backend = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend::class)
             ->setMethods(['getTable'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -314,25 +299,22 @@ class TableTest extends TestCase
         $backend->expects($this->any())->method('getTable')->willReturn('table_name');
         $this->abstractAttributeMock->expects($this->any())->method('getId')->willReturn(1);
         $collection->expects($this->once())->method('getStoreId')->willReturn(1);
-        $connection = $this->getMockBuilder(AdapterInterface::class)
+        $connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $expr = $this->getMockBuilder(\Zend_Db_Expr::class)
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->once())->method('getCheckSql')->willReturn($expr);
         $select->expects($this->once())->method('getConnection')->willReturn($connection);
-        $attrOption = $this->getMockBuilder(Option::class)
+        $attrOption = $this->getMockBuilder(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->attrOptionFactory->expects($this->once())->method('create')->willReturn($attrOption);
         $attrOption->expects($this->once())->method('addOptionValueToCollection')
             ->with($collection, $this->abstractAttributeMock, $expr)
             ->willReturnSelf();
-        $attrOption->expects($this->once())->method('addOptionToCollection')
-            ->with($collection, $this->abstractAttributeMock, $expr)
-            ->willReturnSelf();
-        $select->expects($this->once())->method('order')->with("{$attributeCode}_order {$dir}");
+        $select->expects($this->once())->method('order')->with("{$attributeCode}_value {$dir}");
 
         $this->assertEquals($this->model, $this->model->addValueSortToCollection($collection, $dir));
     }

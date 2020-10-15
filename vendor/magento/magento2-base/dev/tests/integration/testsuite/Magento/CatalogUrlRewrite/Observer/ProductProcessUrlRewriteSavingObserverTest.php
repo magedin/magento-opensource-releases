@@ -21,7 +21,7 @@ class ProductProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Test
     /**
      * Set up
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
     }
@@ -85,7 +85,7 @@ class ProductProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Test
         ];
         $actual = $this->getActualResults($productFilter);
         foreach ($expected as $row) {
-            $this->assertContainsEquals($row, $actual);
+            $this->assertContains($row, $actual);
         }
 
         $product->setData('save_rewrites_history', true);
@@ -126,7 +126,7 @@ class ProductProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Test
 
         $actual = $this->getActualResults($productFilter);
         foreach ($expected as $row) {
-            $this->assertContainsEquals($row, $actual);
+            $this->assertContains($row, $actual);
         }
     }
 
@@ -182,7 +182,7 @@ class ProductProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Test
 
         $actual = $this->getActualResults($productFilter);
         foreach ($expected as $row) {
-            $this->assertContainsEquals($row, $actual);
+            $this->assertContains($row, $actual);
         }
     }
 
@@ -231,7 +231,7 @@ class ProductProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\Test
 
         $actual = $this->getActualResults($productFilter);
         foreach ($expected as $row) {
-            $this->assertContainsEquals($row, $actual);
+            $this->assertContains($row, $actual);
         }
     }
 }

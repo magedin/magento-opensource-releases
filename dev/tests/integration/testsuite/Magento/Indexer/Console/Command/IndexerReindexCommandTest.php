@@ -8,8 +8,9 @@ declare(strict_types=1);
 namespace Magento\Indexer\Console\Command;
 
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Indexer\Model\Indexer\CollectionFactory as IndexerCollectionFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -27,12 +28,12 @@ class IndexerReindexCommandTest extends \PHPUnit\Framework\TestCase
     private $objectManager;
 
     /**
-     * @var InputInterface|Mock
+     * @var InputInterface|MockObject
      */
     private $inputMock;
 
     /**
-     * @var OutputInterface|Mock
+     * @var OutputInterface|MockObject
      */
     private $outputMock;
 
@@ -42,9 +43,14 @@ class IndexerReindexCommandTest extends \PHPUnit\Framework\TestCase
     private $command;
 
     /**
+     * @var IndexerCollectionFactory
+     */
+    private $indexerCollectionFactory;
+
+    /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -52,6 +58,7 @@ class IndexerReindexCommandTest extends \PHPUnit\Framework\TestCase
         $this->outputMock = $this->getMockBuilder(OutputInterface::class)->getMockForAbstractClass();
 
         $this->command = $this->objectManager->get(IndexerReindexCommand::class);
+        $this->indexerCollectionFactory = $this->objectManager->create(IndexerCollectionFactory::class);
     }
 
     /**
@@ -64,6 +71,20 @@ class IndexerReindexCommandTest extends \PHPUnit\Framework\TestCase
             \Magento\Framework\Console\Cli::RETURN_SUCCESS,
             $status,
             'Index wasn\'t success'
+        );
+
+        $notValidIndexers = [];
+        $indexers = $this->indexerCollectionFactory->create()->getItems();
+        foreach ($indexers as $indexer) {
+            if ($indexer->isValid()) {
+                continue;
+            }
+
+            $notValidIndexers[] = $indexer->getId();
+        }
+        $this->assertEmpty(
+            $notValidIndexers,
+            'Following indexers are not valid: ' . implode(', ', $notValidIndexers)
         );
     }
 }

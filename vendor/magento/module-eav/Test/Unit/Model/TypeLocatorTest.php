@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Eav\Test\Unit\Model;
 
 use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Eav\Model\TypeLocator;
 use Magento\Eav\Model\TypeLocator\ComplexType as ComplexTypeLocator;
-use Magento\Framework\Stdlib\StringUtils;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test class for \Magento\Eav\Model\TypeLocator
  */
-class TypeLocatorTest extends TestCase
+class TypeLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TypeLocator
@@ -33,13 +27,13 @@ class TypeLocatorTest extends TestCase
     private $objectManger;
 
     /**
-     * @var ComplexTypeLocator|MockObject
+     * @var ComplexTypeLocator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $complexType;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManger = new ObjectManager($this);
+        $this->objectManger = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->complexType = $this->getMockBuilder(ComplexTypeLocator::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -58,7 +52,7 @@ class TypeLocatorTest extends TestCase
      * @param string $attributeCode
      * @param string $serviceClass
      * @param array $attributeRepositoryResponse
-     * @param StringUtils $stringUtility ,
+     * @param \Magento\Framework\Stdlib\StringUtils $stringUtility,
      * @param array $serviceEntityTypeMapData
      * @param array $serviceBackendModelDataInterfaceMapData
      * @param string $expected
@@ -85,13 +79,13 @@ class TypeLocatorTest extends TestCase
      */
     public function getTypeDataProvider()
     {
-        $serviceInterface = ProductInterface::class;
+        $serviceInterface = \Magento\Catalog\Api\Data\ProductInterface::class;
         $eavEntityType = 'catalog_product';
         $mediaBackEndModelClass = ProductAttributeMediaGalleryEntryInterface::class;
         $mediaAttributeDataInterface = ProductAttributeMediaGalleryEntryInterface::class;
 
         $attribute = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
             ['getBackendModel']
         );
 
@@ -100,7 +94,7 @@ class TypeLocatorTest extends TestCase
             ->willReturn($mediaBackEndModelClass);
 
         $attributeNoBackendModel = $this->createPartialMock(
-            Attribute::class,
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
             ['getBackendModel', 'getFrontendInput']
         );
 

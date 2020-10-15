@@ -8,11 +8,11 @@ namespace Magento\Test\Helper;
 class MemoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $_shell;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_shell = $this->createPartialMock(\Magento\Framework\Shell::class, ['execute']);
     }
@@ -26,8 +26,8 @@ class MemoryTest extends \PHPUnit\Framework\TestCase
             'execute'
         )->with(
             $this->stringStartsWith('ps ')
-        )->willReturn(
-            '26321'
+        )->will(
+            $this->returnValue('26321')
         );
         $this->assertEquals(26952704, $object->getRealMemoryUsage());
     }
@@ -49,8 +49,8 @@ class MemoryTest extends \PHPUnit\Framework\TestCase
             'execute'
         )->with(
             $this->stringStartsWith('tasklist.exe ')
-        )->willReturn(
-            '"php.exe","12345","N/A","0","26,321 K"'
+        )->will(
+            $this->returnValue('"php.exe","12345","N/A","0","26,321 K"')
         );
         $object = new \Magento\TestFramework\Helper\Memory($this->_shell);
         $this->assertEquals(26952704, $object->getRealMemoryUsage());
@@ -87,11 +87,10 @@ class MemoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @param string $number
      * @dataProvider convertToBytesBadFormatDataProvider
+     * @expectedException \InvalidArgumentException
      */
     public function testConvertToBytesBadFormat($number)
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         \Magento\TestFramework\Helper\Memory::convertToBytes($number);
     }
 
@@ -133,20 +132,18 @@ class MemoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
      */
     public function testConvertToBytesInvalidArgument()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         \Magento\TestFramework\Helper\Memory::convertToBytes('3Z');
     }
 
     /**
+     * @expectedException \OutOfBoundsException
      */
     public function testConvertToBytesOutOfBounds()
     {
-        $this->expectException(\OutOfBoundsException::class);
-
         if (PHP_INT_SIZE > 4) {
             $this->markTestSkipped('A 32-bit system is required to perform this test.');
         }

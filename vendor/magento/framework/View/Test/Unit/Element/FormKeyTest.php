@@ -3,35 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Element;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\FormKey;
-use PHPUnit\Framework\TestCase;
-
-class FormKeyTest extends TestCase
+class FormKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FormKey
+     * @var \Magento\Framework\View\Element\FormKey
      */
     protected $formKeyElement;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $formKeyMock = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey::class)
-            ->setMethods(['getFormKey'])->disableOriginalConstructor()
-            ->getMock();
+            ->setMethods(['getFormKey'])->disableOriginalConstructor()->getMock();
 
         $formKeyMock->expects($this->any())
             ->method('getFormKey')
-            ->willReturn('form_key');
+            ->will($this->returnValue('form_key'));
 
         $this->formKeyElement = $objectManagerHelper->getObject(
-            FormKey::class,
+            \Magento\Framework\View\Element\FormKey::class,
             ['formKey' => $formKeyMock]
         );
     }

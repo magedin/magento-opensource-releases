@@ -8,139 +8,112 @@ declare(strict_types=1);
 
 namespace Magento\Email\Test\Unit\Model\Template;
 
-use Magento\Backend\Model\UrlInterface;
 use Magento\Email\Model\Template\Css\Processor;
 use Magento\Email\Model\Template\Filter;
 use Magento\Framework\App\Area;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\App\State;
-use Magento\Framework\Css\PreProcessor\Adapter\CssInliner;
-use Magento\Framework\Escaper;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filter\DirectiveProcessor\DependDirective;
-use Magento\Framework\Filter\DirectiveProcessor\IfDirective;
-use Magento\Framework\Filter\DirectiveProcessor\LegacyDirective;
-use Magento\Framework\Filter\DirectiveProcessor\TemplateDirective;
-use Magento\Framework\Filter\VariableResolver\StrategyResolver;
-use Magento\Framework\Stdlib\StringUtils;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\ContentProcessorInterface;
-use Magento\Framework\View\Asset\File;
 use Magento\Framework\View\Asset\File\FallbackContext;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Variable\Model\Source\Variables;
-use Magento\Variable\Model\VariableFactory;
-use Pelago\Emogrifier;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class FilterTest extends TestCase
+class FilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var StringUtils|MockObject
+     * @var \Magento\Framework\Stdlib\StringUtils|\PHPUnit_Framework_MockObject_MockObject
      */
     private $string;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $logger;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $escaper;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Framework\View\Asset\Repository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assetRepo;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $scopeConfig;
 
     /**
-     * @var VariableFactory|MockObject
+     * @var \Magento\Variable\Model\VariableFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $coreVariableFactory;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $storeManager;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layout;
 
     /**
-     * @var LayoutFactory|MockObject
+     * @var \Magento\Framework\View\LayoutFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $layoutFactory;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit_Framework_MockObject_MockObject
      */
     private $appState;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Backend\Model\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backendUrlBuilder;
 
     /**
-     * @var Variables|MockObject
+     * @var \Magento\Variable\Model\Source\Variables|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configVariables;
 
     /**
-     * @var Emogrifier
+     * @var \Pelago\Emogrifier
      */
     private $emogrifier;
 
     /**
-     * @var CssInliner
+     * @var \Magento\Framework\Css\PreProcessor\Adapter\CssInliner
      */
     private $cssInliner;
 
     /**
-     * @var MockObject|Processor
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Email\Model\Template\Css\Processor
      */
     private $cssProcessor;
 
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Filesystem
      */
     private $pubDirectory;
 
     /**
-     * @var MockObject|Read
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Filesystem\Directory\Read
      */
     private $pubDirectoryRead;
 
     /**
-     * @var MockObject|StrategyResolver
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Filter\VariableResolver\StrategyResolver
      */
     private $variableResolver;
 
@@ -149,101 +122,101 @@ class FilterTest extends TestCase
      */
     private $directiveProcessors;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->string = $this->getMockBuilder(StringUtils::class)
+        $this->string = $this->getMockBuilder(\Magento\Framework\Stdlib\StringUtils::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->escaper = $this->objectManager->getObject(Escaper::class);
-
-        $this->assetRepo = $this->getMockBuilder(Repository::class)
+        $this->logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->escaper = $this->objectManager->getObject(\Magento\Framework\Escaper::class);
 
-        $this->coreVariableFactory = $this->getMockBuilder(VariableFactory::class)
+        $this->assetRepo = $this->getMockBuilder(\Magento\Framework\View\Asset\Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->layout = $this->getMockBuilder(LayoutInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
-        $this->layoutFactory = $this->getMockBuilder(LayoutFactory::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->appState = $this->getMockBuilder(State::class)
+        $this->coreVariableFactory = $this->getMockBuilder(\Magento\Variable\Model\VariableFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->backendUrlBuilder = $this->getMockBuilder(UrlInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->emogrifier = $this->objectManager->getObject(Emogrifier::class);
+        $this->layout = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->configVariables = $this->getMockBuilder(Variables::class)
+        $this->layoutFactory = $this->getMockBuilder(\Magento\Framework\View\LayoutFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->appState = $this->getMockBuilder(\Magento\Framework\App\State::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->backendUrlBuilder = $this->getMockBuilder(\Magento\Backend\Model\UrlInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->emogrifier = $this->objectManager->getObject(\Pelago\Emogrifier::class);
+
+        $this->configVariables = $this->getMockBuilder(\Magento\Variable\Model\Source\Variables::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->cssInliner = $this->objectManager->getObject(
-            CssInliner::class
+            \Magento\Framework\Css\PreProcessor\Adapter\CssInliner::class
         );
 
-        $this->cssProcessor = $this->getMockBuilder(Processor::class)
+        $this->cssProcessor = $this->getMockBuilder(\Magento\Email\Model\Template\Css\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pubDirectory = $this->getMockBuilder(Filesystem::class)
+        $this->pubDirectory = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pubDirectoryRead = $this->getMockBuilder(Read::class)
+        $this->pubDirectoryRead = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Read::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->variableResolver =
-            $this->getMockBuilder(StrategyResolver::class)
+            $this->getMockBuilder(\Magento\Framework\Filter\VariableResolver\StrategyResolver::class)
                 ->disableOriginalConstructor()
                 ->getMock();
 
         $this->directiveProcessors = [
-            'depend' => $this->getMockBuilder(DependDirective::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
-            'if' => $this->getMockBuilder(IfDirective::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
-            'template' => $this->getMockBuilder(TemplateDirective::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
-            'legacy' => $this->getMockBuilder(LegacyDirective::class)
-                ->disableOriginalConstructor()
-                ->getMock(),
+            'depend' => $this->getMockBuilder(\Magento\Framework\Filter\DirectiveProcessor\DependDirective::class)
+                    ->disableOriginalConstructor()
+                    ->getMock(),
+            'if' => $this->getMockBuilder(\Magento\Framework\Filter\DirectiveProcessor\IfDirective::class)
+                    ->disableOriginalConstructor()
+                    ->getMock(),
+            'template' => $this->getMockBuilder(\Magento\Framework\Filter\DirectiveProcessor\TemplateDirective::class)
+                    ->disableOriginalConstructor()
+                    ->getMock(),
+            'legacy' => $this->getMockBuilder(\Magento\Framework\Filter\DirectiveProcessor\LegacyDirective::class)
+                    ->disableOriginalConstructor()
+                    ->getMock(),
         ];
     }
 
     /**
      * @param array|null $mockedMethods Methods to mock
-     * @return Filter|MockObject
+     * @return Filter|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function getModel($mockedMethods = null)
     {
-        return $this->getMockBuilder(Filter::class)
+        return $this->getMockBuilder(\Magento\Email\Model\Template\Filter::class)
             ->setConstructorArgs(
                 [
                     $this->string,
@@ -296,7 +269,7 @@ class FilterTest extends TestCase
 
         $filter->expects($this->exactly(count($expectedResults)))
             ->method('getCssFilesContent')
-            ->willReturn($css);
+            ->will($this->returnValue($css));
 
         $designParams = [
             'area' => Area::AREA_FRONTEND,
@@ -306,7 +279,7 @@ class FilterTest extends TestCase
         $filter->setDesignParams($designParams);
 
         foreach ($expectedResults as $expectedResult) {
-            $this->assertStringContainsString($expectedResult, $filter->applyInlineCss($html));
+            $this->assertContains($expectedResult, $filter->applyInlineCss($html));
         }
     }
 
@@ -322,7 +295,7 @@ class FilterTest extends TestCase
         ];
         $filter = $this->getModel();
 
-        $asset = $this->getMockBuilder(File::class)
+        $asset = $this->getMockBuilder(\Magento\Framework\View\Asset\File::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -376,7 +349,7 @@ class FilterTest extends TestCase
             ],
             'CSS with error does not get inlined' => [
                 '<html><p></p></html>',
-                ContentProcessorInterface::ERROR_MESSAGE_PREFIX,
+                \Magento\Framework\View\Asset\ContentProcessorInterface::ERROR_MESSAGE_PREFIX,
                 ['<html><p></p></html>'],
             ],
             'Ensure disableStyleBlocksParsing option is working' => [
@@ -390,9 +363,11 @@ class FilterTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \Magento\Framework\Exception\MailException
+     */
     public function testApplyInlineCssThrowsExceptionWhenDesignParamsNotSet()
     {
-        $this->expectException('Magento\Framework\Exception\MailException');
         $filter = $this->getModel();
         $cssProcessor = $this->getMockBuilder(Processor::class)
             ->disableOriginalConstructor()
@@ -415,9 +390,9 @@ class FilterTest extends TestCase
         $construction = ["{{config path={$path}}}", 'config', " path={$path}"];
         $scopeConfigValue = 'value';
 
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->storeManager->expects($this->once())->method('getStore')->willReturn($storeMock);
         $storeMock->expects($this->once())->method('getId')->willReturn(1);
@@ -439,9 +414,9 @@ class FilterTest extends TestCase
         $construction = ["{{config path={$path}}}", 'config', " path={$path}"];
         $scopeConfigValue = '';
 
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->storeManager->expects($this->once())->method('getStore')->willReturn($storeMock);
         $storeMock->expects($this->once())->method('getId')->willReturn(1);
 
@@ -475,14 +450,11 @@ class FilterTest extends TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\MailException
      * @throws NoSuchEntityException
      */
     public function testProtocolDirectiveWithInvalidSchema()
     {
-        $this->expectException(
-            \Magento\Framework\Exception\MailException::class
-        );
-
         $model = $this->getModel();
         $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $storeMock->expects($this->once())->method('isCurrentlySecure')->willReturn(true);

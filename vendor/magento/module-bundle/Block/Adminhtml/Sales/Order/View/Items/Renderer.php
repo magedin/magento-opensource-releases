@@ -6,9 +6,7 @@
 namespace Magento\Bundle\Block\Adminhtml\Sales\Order\View\Items;
 
 use Magento\Catalog\Model\Product\Type\AbstractType;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Catalog\Helper\Data as CatalogHelper;
 
 /**
  * Adminhtml sales order item renderer
@@ -34,7 +32,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json $serializer
-     * @param CatalogHelper|null $catalogHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -44,11 +41,10 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
         \Magento\GiftMessage\Helper\Message $messageHelper,
         \Magento\Checkout\Helper\Data $checkoutHelper,
         array $data = [],
-        Json $serializer = null,
-        ?CatalogHelper $catalogHelper = null
+        Json $serializer = null
     ) {
-        $this->serializer = $serializer ?? ObjectManager::getInstance()->get(Json::class);
-        $data['catalogHelper'] = $catalogHelper ?? ObjectManager::getInstance()->get(CatalogHelper::class);
+        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(Json::class);
 
         parent::__construct(
             $context,
@@ -67,7 +63,7 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
      * @param string $value
      * @param int $length
      * @param string $etc
-     * @param string $remainder
+     * @param string &$remainder
      * @param bool $breakWords
      * @return string
      */
@@ -80,8 +76,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Get is shipment separately.
-     *
      * @param null|object $item
      * @return bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -115,8 +109,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Get is child calculated.
-     *
      * @param null|object $item
      * @return bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -152,8 +144,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Return selection attributes.
-     *
      * @param mixed $item
      * @return mixed
      */
@@ -171,8 +161,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Return order options.
-     *
      * @return array
      */
     public function getOrderOptions()
@@ -194,8 +182,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Return value html.
-     *
      * @param object $item
      * @return string
      */
@@ -218,8 +204,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\
     }
 
     /**
-     * Return can show price.
-     *
      * @param object $item
      * @return bool
      */

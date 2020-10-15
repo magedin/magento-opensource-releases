@@ -40,7 +40,7 @@ class SendTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -54,7 +54,7 @@ class SendTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $this->customerSession->setCustomerId(null);
 
@@ -77,8 +77,8 @@ class SendTest extends AbstractController
         );
         $this->assertNotNull($this->transportBuilder->getSentMessage());
         $messageContent = $this->transportBuilder->getSentMessage()->getBody()->getParts()[0]->getRawContent();
-        $this->assertStringContainsString($shareMessage, $messageContent);
-        $this->assertStringContainsString(
+        $this->assertContains($shareMessage, $messageContent);
+        $this->assertContains(
             sprintf(
                 '%s wants to share this Wish List',
                 $this->customerNameGeneration->getCustomerName($this->customerSession->getCustomerDataObject())
@@ -116,7 +116,7 @@ class SendTest extends AbstractController
         $this->customerSession->setCustomerId(1);
         $postValues = ['emails' => 'test@example.com, test2@example.com, test3@example.com'];
         $this->dispatchSendWishListRequest($postValues);
-        $this->assertResponseWithError('Maximum of 2 emails can be sent.');
+        $this->assertResponseWithError('This wish list can be shared 2 more times.');
     }
 
     /**

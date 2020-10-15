@@ -3,155 +3,161 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml;
-
-use Magento\Analytics\ReportXml\Config;
-use Magento\Analytics\ReportXml\DB\Assembler\AssemblerInterface;
-use Magento\Analytics\ReportXml\DB\SelectBuilder;
-use Magento\Analytics\ReportXml\DB\SelectBuilderFactory;
-use Magento\Analytics\ReportXml\Query;
-use Magento\Analytics\ReportXml\QueryFactory;
-use Magento\Analytics\ReportXml\SelectHydrator;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * A unit test for testing of the query factory.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class QueryFactoryTest extends TestCase
+class QueryFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    const STUB_QUERY_NAME = 'test_query';
-    const STUB_CONNECTION = 'default';
-
     /**
-     * @var QueryFactory
+     * @var \Magento\Analytics\ReportXml\QueryFactory
      */
     private $subject;
 
     /**
-     * @var Query|MockObject
+     * @var \Magento\Analytics\ReportXml\Query|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Analytics\ReportXml\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectMock;
 
     /**
-     * @var AssemblerInterface|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\Assembler\AssemblerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $assemblerMock;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\App\CacheInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryCacheMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var SelectHydrator|MockObject
+     * @var \Magento\Analytics\ReportXml\SelectHydrator|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectHydratorMock;
 
     /**
-     * @var ObjectManagerHelper
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManagerHelper;
 
     /**
-     * @var SelectBuilderFactory|MockObject
+     * @var \Magento\Analytics\ReportXml\DB\SelectBuilderFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectBuilderFactoryMock;
 
     /**
-     * @var Json|MockObject
-     */
-    private $jsonSerializerMock;
-
-    /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->queryMock = $this->createMock(Query::class);
+        $this->queryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\Query::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->configMock = $this->createMock(Config::class);
+        $this->configMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\Config::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->selectMock = $this->createMock(Select::class);
+        $this->selectMock = $this->getMockBuilder(
+            \Magento\Framework\DB\Select::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->assemblerMock = $this->getMockForAbstractClass(AssemblerInterface::class);
+        $this->assemblerMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\Assembler\AssemblerInterface::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->queryCacheMock = $this->getMockForAbstractClass(CacheInterface::class);
+        $this->queryCacheMock = $this->getMockBuilder(
+            \Magento\Framework\App\CacheInterface::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->getMockBuilder(
+            \Magento\Framework\ObjectManagerInterface::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->selectHydratorMock = $this->createMock(SelectHydrator::class);
+        $this->selectHydratorMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\SelectHydrator::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->selectBuilderFactoryMock = $this->createMock(SelectBuilderFactory::class);
+        $this->selectBuilderFactoryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\SelectBuilderFactory::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->jsonSerializerMock =  $this->createMock(Json::class);
+        $this->objectManagerHelper =
+            new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->subject = $this->objectManagerHelper->getObject(
-            QueryFactory::class,
+            \Magento\Analytics\ReportXml\QueryFactory::class,
             [
-                'queryCache' => $this->queryCacheMock,
-                'selectHydrator' => $this->selectHydratorMock,
-                'objectManager' => $this->objectManagerMock,
-                'selectBuilderFactory' => $this->selectBuilderFactoryMock,
                 'config' => $this->configMock,
+                'selectBuilderFactory' => $this->selectBuilderFactoryMock,
                 'assemblers' => [$this->assemblerMock],
-                'jsonSerializer' => $this->jsonSerializerMock
+                'queryCache' => $this->queryCacheMock,
+                'objectManager' => $this->objectManagerMock,
+                'selectHydrator' => $this->selectHydratorMock
             ]
         );
     }
 
     /**
-     * Test create() if query cached
-     *
      * @return void
-     * @dataProvider queryDataProvider
      */
-    public function testCreateIfQueryCached(array $queryDataMock, string $jsonEncodeData): void
+    public function testCreateCached()
     {
-        $queryConfigMock = $queryDataMock['config'];
-        $queryName = $queryConfigMock['name'];
+        $queryName = 'test_query';
 
-        $this->queryCacheMock
+        $this->queryCacheMock->expects($this->any())
             ->method('load')
             ->with($queryName)
-            ->willReturn($jsonEncodeData);
+            ->willReturn('{"connectionName":"sales","config":{},"select_parts":{}}');
 
-        $this->jsonSerializerMock->expects($this->once())
-            ->method('unserialize')
-            ->willReturn($queryDataMock);
-
-        $this->selectHydratorMock
+        $this->selectHydratorMock->expects($this->any())
             ->method('recreate')
             ->with([])
             ->willReturn($this->selectMock);
 
-        $this->createQueryObjectMock($queryDataMock);
+        $this->objectManagerMock->expects($this->once())
+            ->method('create')
+            ->with(
+                \Magento\Analytics\ReportXml\Query::class,
+                [
+                    'select' => $this->selectMock,
+                    'selectHydrator' => $this->selectHydratorMock,
+                    'connectionName' => 'sales',
+                    'config' => []
+                ]
+            )
+            ->willReturn($this->queryMock);
 
         $this->queryCacheMock->expects($this->never())
             ->method('save');
@@ -163,38 +169,43 @@ class QueryFactoryTest extends TestCase
     }
 
     /**
-     * Test create() if query not cached
-     *
      * @return void
-     * @dataProvider queryDataProvider
      */
-    public function testCreateIfQueryNotCached(array $queryDataMock, string $jsonEncodeData): void
+    public function testCreateNotCached()
     {
-        $queryConfigMock = $queryDataMock['config'];
-        $queryName = $queryConfigMock['name'];
+        $queryName = 'test_query';
 
-        $selectBuilderMock = $this->createMock(SelectBuilder::class);
+        $queryConfigMock = [
+            'name' => 'test_query',
+            'connection' => 'sales'
+        ];
+
+        $selectBuilderMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\DB\SelectBuilder::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
         $selectBuilderMock->expects($this->once())
             ->method('setConnectionName')
             ->with($queryConfigMock['connection']);
-        $selectBuilderMock
+        $selectBuilderMock->expects($this->any())
             ->method('create')
             ->willReturn($this->selectMock);
-        $selectBuilderMock
+        $selectBuilderMock->expects($this->any())
             ->method('getConnectionName')
             ->willReturn($queryConfigMock['connection']);
 
-        $this->queryCacheMock
+        $this->queryCacheMock->expects($this->any())
             ->method('load')
             ->with($queryName)
             ->willReturn(null);
 
-        $this->configMock
+        $this->configMock->expects($this->any())
             ->method('get')
             ->with($queryName)
             ->willReturn($queryConfigMock);
 
-        $this->selectBuilderFactoryMock
+        $this->selectBuilderFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($selectBuilderMock);
 
@@ -203,65 +214,26 @@ class QueryFactoryTest extends TestCase
             ->with($selectBuilderMock, $queryConfigMock)
             ->willReturn($selectBuilderMock);
 
-        $this->createQueryObjectMock($queryDataMock);
-
-        $this->jsonSerializerMock->expects($this->once())
-            ->method('serialize')
-            ->willReturn($jsonEncodeData);
+        $this->objectManagerMock->expects($this->once())
+            ->method('create')
+            ->with(
+                \Magento\Analytics\ReportXml\Query::class,
+                [
+                    'select' => $this->selectMock,
+                    'selectHydrator' => $this->selectHydratorMock,
+                    'connectionName' => $queryConfigMock['connection'],
+                    'config' => $queryConfigMock
+                ]
+            )
+            ->willReturn($this->queryMock);
 
         $this->queryCacheMock->expects($this->once())
             ->method('save')
-            ->with($jsonEncodeData, $queryName);
+            ->with(json_encode($this->queryMock), $queryName);
 
         $this->assertEquals(
             $this->queryMock,
             $this->subject->create($queryName)
         );
-    }
-
-    /**
-     * Get Query Data Provider
-     *
-     * @return array
-     */
-    public function queryDataProvider(): array
-    {
-        return [
-            [
-                'getQueryDataMock' => [
-                    'connectionName' => self::STUB_CONNECTION,
-                    'config' => [
-                        'name' => self::STUB_QUERY_NAME,
-                        'connection' => self::STUB_CONNECTION
-                    ],
-                    'select_parts' => []
-                ],
-                'getQueryDataJsonEncodeMock' => '{"connectionName":"default",' .
-                    '"config":{"name":"test_query",' .
-                    '"connection":"default"},"select_parts":[]}'
-            ]
-        ];
-    }
-
-    /**
-     * ObjectManager Mock with Query class
-     *
-     * @param array $queryDataMock
-     * @return void
-     */
-    private function createQueryObjectMock($queryDataMock): void
-    {
-        $this->objectManagerMock->expects($this->once())
-            ->method('create')
-            ->with(
-                Query::class,
-                [
-                    'select' => $this->selectMock,
-                    'selectHydrator' => $this->selectHydratorMock,
-                    'connectionName' => $queryDataMock['connectionName'],
-                    'config' => $queryDataMock['config']
-                ]
-            )
-            ->willReturn($this->queryMock);
     }
 }

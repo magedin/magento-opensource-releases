@@ -36,7 +36,7 @@ class DataProviderTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->stringUtils = $objectManager->get(StringUtils::class);
@@ -63,7 +63,7 @@ class DataProviderTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         try {
             $this->stringUtils->deleteTranslate('Proceed to Checkout');

@@ -4,15 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/cart_rule_free_shipping.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var Magento\Framework\Registry $registry */
-$registry = $objectManager->get(\Magento\Framework\Registry::class);
-$salesRule = $registry->registry('cart_rule_free_shipping');
+require 'cart_rule_free_shipping.php';
 $row =
     [
         'name' => 'Free shipping if item weight <= 1',

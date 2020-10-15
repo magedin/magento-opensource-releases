@@ -5,7 +5,5 @@
  */
 declare(strict_types=1);
 
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/import_export/customers_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/website_rollback.php');
+include __DIR__ . '/customers_rollback.php';
+include __DIR__ . '/../../../Store/_files/website_rollback.php';

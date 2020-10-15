@@ -2,9 +2,9 @@
 
 namespace Dotdigitalgroup\Email\Model\Apiconnector;
 
-use Dotdigitalgroup\Email\Helper\Data;
-use Dotdigitalgroup\Email\Helper\File;
 use Dotdigitalgroup\Email\Logger\Logger;
+use Dotdigitalgroup\Email\Helper\File;
+use Dotdigitalgroup\Email\Helper\Data;
 use Magento\Framework\Filesystem\DriverInterface;
 
 /**
@@ -248,7 +248,7 @@ class Rest
     {
         // clear any recent error response message
         $this->responseMessage = null;
-        // @codingStandardsIgnoreLine
+
         $ch = curl_init();
         $this->setAuth($ch);
         try {
@@ -272,11 +272,9 @@ class Rest
                     );
             }
         } catch (\InvalidArgumentException $e) {
-            // @codingStandardsIgnoreLine
             curl_close($ch);
             throw $e;
         } catch (\Exception $e) {
-            // @codingStandardsIgnoreLine
             curl_close($ch);
             throw $e;
         }
@@ -354,10 +352,10 @@ class Rest
         if (!is_string($this->requestBody)) {
             $this->buildPostBody();
         }
-        // @codingStandardsIgnoreStart
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->requestBody);
         curl_setopt($ch, CURLOPT_POST, true);
-        // @codingStandardsIgnoreEnd
+
         $this->doExecute($ch);
     }
 
@@ -366,7 +364,7 @@ class Rest
      *
      * @param mixed $filename
      *
-     * @return void
+     * @return null
      */
     public function buildPostBodyFromFile($filename)
     {
@@ -381,7 +379,6 @@ class Rest
      * @param mixed $ch
      *
      * @return null
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     private function executePut($ch)
     {
@@ -394,11 +391,9 @@ class Rest
         $this->driver->fileWrite($fh, $this->requestBody);
         rewind($fh);
 
-        // @codingStandardsIgnoreStart
         curl_setopt($ch, CURLOPT_INFILE, $fh);
         curl_setopt($ch, CURLOPT_INFILESIZE, $this->requestLength);
         curl_setopt($ch, CURLOPT_PUT, true);
-        // @codingStandardsIgnoreEnd
 
         $this->doExecute($ch);
 
@@ -410,11 +405,10 @@ class Rest
      *
      * @param mixed $ch
      *
-     * @return void
+     * @return null
      */
     private function executeDelete($ch)
     {
-        // @codingStandardsIgnoreLine
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         $this->doExecute($ch);
     }
@@ -424,20 +418,18 @@ class Rest
      *
      * @param mixed $ch
      *
-     * @return void
+     * @return null
      */
     private function doExecute(&$ch)
     {
         $this->setCurlOpts($ch);
 
         if ($this->isNotJson) {
-            // @codingStandardsIgnoreLine
             $this->responseBody = curl_exec($ch);
         } else {
-            // @codingStandardsIgnoreLine
             $this->responseBody = json_decode(curl_exec($ch));
         }
-        // @codingStandardsIgnoreStart
+
         $this->responseInfo = curl_getinfo($ch);
 
         //if curl error found
@@ -447,7 +439,6 @@ class Rest
         }
 
         curl_close($ch);
-        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -455,11 +446,10 @@ class Rest
      *
      * @param mixed $ch
      *
-     * @return void
+     * @return null
      */
     private function setCurlOpts(&$ch)
     {
-        // @codingStandardsIgnoreStart
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_URL, $this->url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -473,7 +463,6 @@ class Rest
                 'Content-Type: application/json',
             ]
         );
-        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -481,19 +470,17 @@ class Rest
      *
      * @param mixed $ch
      *
-     * @return void
+     * @return null
      */
     private function setAuth(&$ch)
     {
         if ($this->apiUsername !== null && $this->apiPassword !== null) {
-            // @codingStandardsIgnoreStart
             curl_setopt($ch, CURLAUTH_BASIC, CURLAUTH_DIGEST);
             curl_setopt(
                 $ch,
                 CURLOPT_USERPWD,
                 $this->apiUsername . ':' . $this->apiPassword
             );
-            // @codingStandardsIgnoreEnd
         }
     }
 

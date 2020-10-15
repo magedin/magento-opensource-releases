@@ -29,7 +29,7 @@ class SubtotalTest extends \Magento\TestFramework\Indexer\TestCase
      */
     private $productRepository;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         $db = \Magento\TestFramework\Helper\Bootstrap::getInstance()->getBootstrap()
             ->getApplication()
@@ -42,7 +42,7 @@ class SubtotalTest extends \Magento\TestFramework\Indexer\TestCase
         parent::setUpBeforeClass();
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);

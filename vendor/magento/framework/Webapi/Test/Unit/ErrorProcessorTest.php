@@ -5,56 +5,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit;
 
-use Magento\Framework\App\State;
+use \Magento\Framework\Webapi\ErrorProcessor;
+
 use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Json\Encoder;
-use Magento\Framework\Phrase;
-use Magento\Framework\Webapi\ErrorProcessor;
-
 use Magento\Framework\Webapi\Exception as WebapiException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Phrase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class ErrorProcessorTest extends TestCase
+class ErrorProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ErrorProcessor */
     protected $_errorProcessor;
 
-    /** @var Encoder */
+    /** @var \Magento\Framework\Json\Encoder */
     protected $encoderMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $_appStateMock;
 
-    /** @var LoggerInterface */
+    /** @var \Psr\Log\LoggerInterface */
     protected $_loggerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         /** Set up mocks for SUT. */
-        $this->encoderMock = $this->getMockBuilder(Encoder::class)
+        $this->encoderMock = $this->getMockBuilder(\Magento\Framework\Json\Encoder::class)
             ->disableOriginalConstructor()
             ->setMethods(['encode'])
             ->getMock();
 
-        $this->_appStateMock = $this->getMockBuilder(State::class)
+        $this->_appStateMock = $this->getMockBuilder(\Magento\Framework\App\State::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->_loggerMock = $this->getMockBuilder(LoggerInterface::class)
-        ->getMock();
+        $this->_loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
 
-        $filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -69,7 +57,7 @@ class ErrorProcessorTest extends TestCase
         parent::setUp();
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_errorProcessor);
         unset($this->encoderMock);
@@ -90,8 +78,8 @@ class ErrorProcessorTest extends TestCase
             $this->once()
         )->method(
             'encode'
-        )->willReturnCallback(
-            [$this, 'callbackJsonEncode'], $this->returnArgument(0)
+        )->will(
+            $this->returnCallback([$this, 'callbackJsonEncode'], $this->returnArgument(0))
         );
         /** Init output buffering to catch output via echo function. */
         ob_start();
@@ -124,14 +112,14 @@ class ErrorProcessorTest extends TestCase
     {
         $_SERVER['HTTP_ACCEPT'] = 'json';
         /** Mock app to return enabled developer mode flag. */
-        $this->_appStateMock->expects($this->any())->method('getMode')->willReturn('developer');
+        $this->_appStateMock->expects($this->any())->method('getMode')->will($this->returnValue('developer'));
         /** Assert that jsonEncode method will be executed once. */
         $this->encoderMock->expects(
             $this->once()
         )->method(
             'encode'
-        )->willReturnCallback(
-            [$this, 'callbackJsonEncode'], $this->returnArgument(0)
+        )->will(
+            $this->returnCallback([$this, 'callbackJsonEncode'], $this->returnArgument(0))
         );
         ob_start();
         $this->_errorProcessor->renderErrorMessage('Message', 'Message trace.', 401);
@@ -167,7 +155,7 @@ class ErrorProcessorTest extends TestCase
     {
         $_SERVER['HTTP_ACCEPT'] = 'xml';
         /** Mock app to return enabled developer mode flag. */
-        $this->_appStateMock->expects($this->any())->method('getMode')->willReturn('developer');
+        $this->_appStateMock->expects($this->any())->method('getMode')->will($this->returnValue('developer'));
         /** Init output buffering to catch output via echo function. */
         ob_start();
         $this->_errorProcessor->renderErrorMessage('Message', 'Trace message.', 401);
@@ -200,7 +188,7 @@ class ErrorProcessorTest extends TestCase
     public function testMaskExceptionInDeveloperMode()
     {
         /** Mock app isDeveloperMode to return true. */
-        $this->_appStateMock->expects($this->once())->method('getMode')->willReturn('developer');
+        $this->_appStateMock->expects($this->once())->method('getMode')->will($this->returnValue('developer'));
         /** Init Logical exception. */
         $errorMessage = 'Error Message';
         $logicalException = new \LogicException($errorMessage);
@@ -246,12 +234,12 @@ class ErrorProcessorTest extends TestCase
 
         $this->_loggerMock->expects($this->once())
             ->method('critical')
-            ->willReturnCallback(
-                
+            ->will(
+                $this->returnCallback(
                     function (\Exception $loggedException) use ($thrownException) {
                         $this->assertSame($thrownException, $loggedException->getPrevious());
                     }
-                
+                )
             );
         $this->_errorProcessor->maskException($thrownException);
     }
@@ -340,7 +328,7 @@ class ErrorProcessorTest extends TestCase
             "Masked exception HTTP code is invalid: expected '{$expectedHttpCode}', " .
             "given '{$maskedException->getHttpCode()}'."
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             $expectedMessage,
             $maskedException->getMessage(),
             "Masked exception message is invalid: expected '{$expectedMessage}', " .

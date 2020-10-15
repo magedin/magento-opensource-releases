@@ -3,33 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Helper\Oauth;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Integration\Helper\Oauth\Data;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ScopeConfigInterface */
+    /** @var \Magento\Framework\App\Config\ScopeConfigInterface */
     protected $_scopeConfigMock;
 
-    /** @var Data */
+    /** @var \Magento\Integration\Helper\Oauth\Data */
     protected $_dataHelper;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_scopeConfigMock = $this->getMockBuilder(
-            ScopeConfigInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->_dataHelper = new Data($this->_scopeConfigMock);
+        $this->_dataHelper = new \Magento\Integration\Helper\Oauth\Data($this->_scopeConfigMock);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->_scopeConfigMock);
         unset($this->_dataHelper);
@@ -37,55 +30,55 @@ class DataTest extends TestCase
 
     public function testIsCleanupProbabilityZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(0);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(0));
         $this->assertFalse($this->_dataHelper->isCleanupProbability());
     }
 
     public function testIsCleanupProbabilityRandomOne()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(1);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(1));
         $this->assertTrue($this->_dataHelper->isCleanupProbability());
     }
 
     public function testGetCleanupExpirationPeriodZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(0);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(0));
         $this->assertEquals(
-            Data::CLEANUP_EXPIRATION_PERIOD_DEFAULT,
+            \Magento\Integration\Helper\Oauth\Data::CLEANUP_EXPIRATION_PERIOD_DEFAULT,
             $this->_dataHelper->getCleanupExpirationPeriod()
         );
     }
 
     public function testGetCleanupExpirationPeriodNonZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(10);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(10));
         $this->assertEquals(10, $this->_dataHelper->getCleanupExpirationPeriod());
     }
 
     public function testConsumerPostMaxRedirectsZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(0);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(0));
         $this->assertEquals(0, $this->_dataHelper->getConsumerPostMaxRedirects());
     }
 
     public function testConsumerPostMaxRedirectsNonZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(10);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(10));
         $this->assertEquals(10, $this->_dataHelper->getConsumerPostMaxRedirects());
     }
 
     public function testGetConsumerPostTimeoutZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(0);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(0));
         $this->assertEquals(
-            Data::CONSUMER_POST_TIMEOUT_DEFAULT,
+            \Magento\Integration\Helper\Oauth\Data::CONSUMER_POST_TIMEOUT_DEFAULT,
             $this->_dataHelper->getConsumerPostTimeout()
         );
     }
 
     public function testGetConsumerPostTimeoutNonZero()
     {
-        $this->_scopeConfigMock->expects($this->once())->method('getValue')->willReturn(10);
+        $this->_scopeConfigMock->expects($this->once())->method('getValue')->will($this->returnValue(10));
         $this->assertEquals(10, $this->_dataHelper->getConsumerPostTimeout());
     }
 
@@ -95,7 +88,7 @@ class DataTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with('oauth/access_token_lifetime/customer')
-            ->willReturn(10);
+            ->will($this->returnValue(10));
         $this->assertEquals(10, $this->_dataHelper->getCustomerTokenLifetime());
     }
 
@@ -105,7 +98,7 @@ class DataTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with('oauth/access_token_lifetime/customer')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->assertEquals(0, $this->_dataHelper->getCustomerTokenLifetime());
     }
 
@@ -115,7 +108,7 @@ class DataTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with('oauth/access_token_lifetime/admin')
-            ->willReturn(10);
+            ->will($this->returnValue(10));
         $this->assertEquals(10, $this->_dataHelper->getAdminTokenLifetime());
     }
 
@@ -125,7 +118,7 @@ class DataTest extends TestCase
             ->expects($this->once())
             ->method('getValue')
             ->with('oauth/access_token_lifetime/admin')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $this->assertEquals(0, $this->_dataHelper->getAdminTokenLifetime());
     }
 }

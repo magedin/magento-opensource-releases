@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Scanner;
 
-use Magento\Setup\Module\Di\Code\Scanner\XmlScanner;
-use Magento\Setup\Module\Di\Compiler\Log\Log;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class XmlScannerTest extends TestCase
+class XmlScannerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var XmlScanner
+     * @var \Magento\Setup\Module\Di\Code\Scanner\XmlScanner
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_logMock;
 
@@ -29,10 +23,10 @@ class XmlScannerTest extends TestCase
      */
     protected $_testFiles = [];
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_model = new XmlScanner(
-            $this->_logMock = $this->createMock(Log::class)
+        $this->_model = new \Magento\Setup\Module\Di\Code\Scanner\XmlScanner(
+            $this->_logMock = $this->createMock(\Magento\Setup\Module\Di\Compiler\Log\Log::class)
         );
         $testDir = __DIR__ . '/../../' . '/_files';
         $this->_testFiles = [

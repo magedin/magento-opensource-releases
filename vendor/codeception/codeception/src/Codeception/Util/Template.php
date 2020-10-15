@@ -46,13 +46,6 @@ class Template
         $this->vars = $vars;
     }
 
-    public function getVar($name)
-    {
-        if (isset($this->vars[$name])) {
-            return $this->vars[$name];
-        }
-    }
-
     /**
      * Fills up template string with placed variables.
      *

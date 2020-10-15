@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Console\Command\ConfigSet;
 
 use Magento\Config\App\Config\Type\System;
 use Magento\Config\Console\Command\ConfigSet\DefaultProcessor;
 use Magento\Config\Model\Config;
 use Magento\Config\Model\Config\Factory as ConfigFactory;
-use Magento\Config\Model\PreparedValueFactory;
 use Magento\Framework\App\Config\ConfigPathResolver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Config\Value;
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
+use Magento\Config\Model\PreparedValueFactory;
+use Magento\Framework\App\Config\Value;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * Test for DefaultProcessor.
@@ -27,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @see DefaultProcessor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DefaultProcessorTest extends TestCase
+class DefaultProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DefaultProcessor
@@ -67,7 +64,7 @@ class DefaultProcessorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
         $this->configPathResolverMock = $this->createMock(ConfigPathResolver::class);
@@ -149,15 +146,13 @@ class DefaultProcessorTest extends TestCase
     }
 
     /**
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      * @codingStandardsIgnoreStart
+     * @expectedExceptionMessage The value you set has already been locked. To change the value, use the --lock-env option.
      * @codingStandardsIgnoreEnd
      */
     public function testProcessLockedValue()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage(
-            'The value you set has already been locked. To change the value, use the --lock-env option.'
-        );
         $path = 'test/test/test';
         $value = 'value';
 

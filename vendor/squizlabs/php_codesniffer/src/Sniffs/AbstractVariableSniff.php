@@ -21,6 +21,7 @@ use PHP_CodeSniffer\Util\Tokens;
 abstract class AbstractVariableSniff extends AbstractScopeSniff
 {
 
+
     /**
      * List of PHP Reserved variables.
      *

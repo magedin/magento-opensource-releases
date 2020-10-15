@@ -3,48 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\User\Test\Unit\Block\User\Edit\Tab;
-
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Json\EncoderInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\User\Block\User\Edit\Tab\Roles;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class RolesTest to cover \Magento\User\Block\User\Edit\Tab\Roles
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RolesTest extends TestCase
+class RolesTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Roles */
+    /** @var \Magento\User\Block\User\Edit\Tab\Roles */
     protected $model;
 
-    /** @var EncoderInterface|MockObject */
+    /** @var \Magento\Framework\Json\EncoderInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $jsonEncoderMock;
 
-    /** @var RequestInterface|MockObject */
+    /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestInterfaceMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->jsonEncoderMock = $this->getMockBuilder(EncoderInterface::class)
+        $this->jsonEncoderMock = $this->getMockBuilder(\Magento\Framework\Json\EncoderInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->requestInterfaceMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestInterfaceMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManagerHelper->getObject(
-            Roles::class,
+            \Magento\User\Block\User\Edit\Tab\Roles::class,
             [
                 'jsonEncoder' => $this->jsonEncoderMock,
                 'request' => $this->requestInterfaceMock,

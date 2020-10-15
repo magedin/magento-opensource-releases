@@ -14,7 +14,7 @@ class MinsaleqtyTest extends \PHPUnit\Framework\TestCase
     /** @var Minsaleqty */
     private $minSaleQtyConfig;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->minSaleQtyConfig = $objectManager->create(Minsaleqty::class);

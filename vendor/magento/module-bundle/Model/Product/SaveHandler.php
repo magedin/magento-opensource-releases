@@ -3,37 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Model\Product;
 
-use Magento\Bundle\Api\Data\OptionInterface;
 use Magento\Bundle\Model\Option\SaveAction;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Bundle\Api\ProductOptionRepositoryInterface as OptionRepository;
 use Magento\Bundle\Api\ProductLinkManagementInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 
 /**
- * Bundle product save handler
+ * Class SaveHandler
  */
 class SaveHandler implements ExtensionInterface
 {
     /**
      * @var OptionRepository
      */
-    private $optionRepository;
+    protected $optionRepository;
 
     /**
      * @var ProductLinkManagementInterface
      */
-    private $productLinkManagement;
-
-    /**
-     * @var SaveAction
-     */
-    private $optionSave;
+    protected $productLinkManagement;
 
     /**
      * @var MetadataPool
@@ -41,21 +34,27 @@ class SaveHandler implements ExtensionInterface
     private $metadataPool;
 
     /**
+     * @var SaveAction
+     */
+    private $optionSave;
+
+    /**
      * @param OptionRepository $optionRepository
      * @param ProductLinkManagementInterface $productLinkManagement
      * @param SaveAction $optionSave
-     * @param MetadataPool $metadataPool
+     * @param MetadataPool|null $metadataPool
      */
     public function __construct(
         OptionRepository $optionRepository,
         ProductLinkManagementInterface $productLinkManagement,
         SaveAction $optionSave,
-        MetadataPool $metadataPool
+        MetadataPool $metadataPool = null
     ) {
         $this->optionRepository = $optionRepository;
         $this->productLinkManagement = $productLinkManagement;
         $this->optionSave = $optionSave;
-        $this->metadataPool = $metadataPool;
+        $this->metadataPool = $metadataPool
+            ?: ObjectManager::getInstance()->get(MetadataPool::class);
     }
 
     /**
@@ -70,7 +69,7 @@ class SaveHandler implements ExtensionInterface
      */
     public function execute($entity, $arguments = [])
     {
-        /** @var OptionInterface[] $bundleProductOptions */
+        /** @var \Magento\Bundle\Api\Data\OptionInterface[] $bundleProductOptions */
         $bundleProductOptions = $entity->getExtensionAttributes()->getBundleProductOptions() ?: [];
         //Only processing bundle products.
         if ($entity->getTypeId() !== Type::TYPE_CODE || empty($bundleProductOptions)) {
@@ -102,8 +101,7 @@ class SaveHandler implements ExtensionInterface
      * Remove option product links
      *
      * @param string $entitySku
-     * @param OptionInterface $option
-     *
+     * @param \Magento\Bundle\Api\Data\OptionInterface $option
      * @return void
      */
     protected function removeOptionLinks($entitySku, $option)
@@ -122,7 +120,6 @@ class SaveHandler implements ExtensionInterface
      * @param object $entity
      * @param array $options
      * @param array $newOptionsIds
-     *
      * @return void
      */
     private function saveOptions($entity, array $options, array $newOptionsIds = []): void
@@ -140,7 +137,6 @@ class SaveHandler implements ExtensionInterface
      * Get options ids from array of the options entities.
      *
      * @param array $options
-     *
      * @return array
      */
     private function getOptionIds(array $options): array
@@ -148,7 +144,7 @@ class SaveHandler implements ExtensionInterface
         $optionIds = [];
 
         if (!empty($options)) {
-            /** @var OptionInterface $option */
+            /** @var \Magento\Bundle\Api\Data\OptionInterface $option */
             foreach ($options as $option) {
                 if ($option->getOptionId()) {
                     $optionIds[] = $option->getOptionId();
@@ -165,7 +161,6 @@ class SaveHandler implements ExtensionInterface
      * @param ProductInterface $entity
      * @param array $existingOptionsIds
      * @param array $optionIds
-     *
      * @return void
      */
     private function processRemovedOptions(ProductInterface $entity, array $existingOptionsIds, array $optionIds): void

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Collection\Db\FetchStrategy;
 
 use Magento\Framework\Cache\FrontendInterface;
@@ -13,10 +11,8 @@ use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cache
@@ -24,34 +20,34 @@ class CacheTest extends TestCase
     private $fetchStrategyCache;
 
     /**
-     * @var FrontendInterface|MockObject
+     * @var FrontendInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $cacheMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var FetchStrategyInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $fetchStrategyMock;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit_Framework_MockObject_MockObject
      */
     private $selectMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $serializerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->selectMock = $this->createPartialMock(Select::class, ['assemble']);
         $this->selectMock->expects($this->once())
             ->method('assemble')
             ->willReturn('SELECT * FROM fixture_table');
-        $this->cacheMock = $this->getMockForAbstractClass(FrontendInterface::class);
-        $this->fetchStrategyMock = $this->getMockForAbstractClass(FetchStrategyInterface::class);
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->cacheMock = $this->createMock(FrontendInterface::class);
+        $this->fetchStrategyMock = $this->createMock(FetchStrategyInterface::class);
+        $this->serializerMock = $this->createMock(SerializerInterface::class);
         $this->fetchStrategyCache = (new ObjectManager($this))->getObject(
             Cache::class,
             [

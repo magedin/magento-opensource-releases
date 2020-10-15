@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Product\CopyConstructor\Composite;
-use Magento\Catalog\Model\Product\CopyConstructorFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Model\Product\CopyConstructorFactory;
 
-class CopyConstructorFactoryTest extends TestCase
+class CopyConstructorFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CopyConstructorFactory
@@ -22,13 +15,13 @@ class CopyConstructorFactoryTest extends TestCase
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $_objectManagerMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->_model = new CopyConstructorFactory($this->_objectManagerMock);
     }
 
@@ -39,7 +32,7 @@ class CopyConstructorFactoryTest extends TestCase
             'Magento\Framework\DataObject does not implement \Magento\Catalog\Model\Product\CopyConstructorInterface'
         );
         $this->_objectManagerMock->expects($this->never())->method('create');
-        $this->_model->create(DataObject::class);
+        $this->_model->create(\Magento\Framework\DataObject::class);
     }
 
     public function testCreateWithValidType()
@@ -49,13 +42,13 @@ class CopyConstructorFactoryTest extends TestCase
         )->method(
             'create'
         )->with(
-            Composite::class
-        )->willReturn(
-            'object'
+            \Magento\Catalog\Model\Product\CopyConstructor\Composite::class
+        )->will(
+            $this->returnValue('object')
         );
         $this->assertEquals(
             'object',
-            $this->_model->create(Composite::class)
+            $this->_model->create(\Magento\Catalog\Model\Product\CopyConstructor\Composite::class)
         );
     }
 }

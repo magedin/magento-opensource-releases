@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Filter\Builder;
 
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
 use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term;
-use Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term as TermBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @see \Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term
  */
-class TermTest extends TestCase
+class TermTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Term
@@ -25,12 +20,12 @@ class TermTest extends TestCase
     private $model;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $fieldMapper;
 
     /**
-     * @var \Magento\Framework\Search\Request\Filter\Term|MockObject
+     * @var \Magento\Framework\Search\Request\Filter\Term|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filterInterface;
 
@@ -39,11 +34,11 @@ class TermTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->fieldMapper = $this->getMockBuilder(FieldMapperInterface::class)
+        $this->fieldMapper = $this->getMockBuilder(\Magento\Elasticsearch\Model\Adapter\FieldMapperInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->filterInterface = $this->getMockBuilder(\Magento\Framework\Search\Request\Filter\Term::class)
             ->disableOriginalConstructor()
@@ -55,7 +50,7 @@ class TermTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            TermBuilder::class,
+            \Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term::class,
             [
                 'fieldMapper' => $this->fieldMapper
             ]

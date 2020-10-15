@@ -3,30 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Usps\Test\Unit\Helper;
 
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Usps\Helper\Data;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Usps\Helper\Data
      */
     protected $_helperData;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $arguments = [
-            'context' => $this->createMock(Context::class),
+            'context' => $this->createMock(\Magento\Framework\App\Helper\Context::class),
         ];
 
-        $this->_helperData = $helper->getObject(Data::class, $arguments);
+        $this->_helperData = $helper->getObject(\Magento\Usps\Helper\Data::class, $arguments);
     }
 
     /**

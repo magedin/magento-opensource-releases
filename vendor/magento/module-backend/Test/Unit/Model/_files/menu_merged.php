@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 ?>
 <?php return [
     [
@@ -18,7 +16,7 @@ declare(strict_types=1);
         'resource' => 'Module_One::one_zero',
         'dependsOnModule' => 'Module_One',
         'dependsOnConfig' => '/one/two',
-    ],
+        ],
     [
         'type' => 'add',
         'id' => 'elem_one_one',
@@ -29,7 +27,7 @@ declare(strict_types=1);
         'action' => 'adminhtml/system',
         'resource' => 'Module_One::one_one',
         'parent' => 'elem_one_zero',
-    ],
+        ],
     [
         'type' => 'update',
         'id' => 'elem_one_zero',
@@ -39,11 +37,11 @@ declare(strict_types=1);
         'sortOrder' => 90,
         'action' => 'adminhtml/system',
         'parent' => 'elem_one_zero',
-    ],
+        ],
     [
         'type' => 'remove',
         'id' => 'elem_one_one',
-    ],
+        ],
     [
         'type' => 'add',
         'id' => 'elem_two_zero',
@@ -53,7 +51,7 @@ declare(strict_types=1);
         'resource' => 'Module_Two::two_zero',
         'sortOrder' => 90,
         'action' => 'adminhtml/system',
-    ],
+        ],
     [
         'type' => 'add',
         'id' => 'elem_two_two',
@@ -64,7 +62,7 @@ declare(strict_types=1);
         'action' => 'adminhtml/system',
         'resource' => 'Module_Two::two_two',
         'parent' => 'elem_two_zero',
-    ],
+        ],
     [
         'type' => 'update',
         'id' => 'elem_two_zero',
@@ -74,9 +72,9 @@ declare(strict_types=1);
         'sortOrder' => 90,
         'action' => 'adminhtml/system',
         'parent' => 'elem_two_zero',
-    ],
+        ],
     [
         'type' => 'remove',
         'id' => 'elem_two_two',
-    ],
+        ],
 ];

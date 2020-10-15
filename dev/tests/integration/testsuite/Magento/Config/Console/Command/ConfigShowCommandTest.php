@@ -67,7 +67,7 @@ class ConfigShowCommandTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->configFilePool = $this->objectManager->get(ConfigFilePool::class);
@@ -125,7 +125,7 @@ class ConfigShowCommandTest extends \PHPUnit\Framework\TestCase
 
             $commandOutput = $this->commandTester->getDisplay();
             foreach ($configValue as $value) {
-                $this->assertStringContainsString($value, $commandOutput);
+                $this->assertContains($value, $commandOutput);
             }
         }
     }
@@ -303,7 +303,7 @@ class ConfigShowCommandTest extends \PHPUnit\Framework\TestCase
         return $this->reader->load(ConfigFilePool::APP_ENV);
     }
 
-    protected function tearDown(): void
+    public function tearDown()
     {
         $_ENV = $this->env;
 

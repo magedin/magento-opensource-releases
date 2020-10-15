@@ -3,55 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Model;
 
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Weee\Helper\Data;
-use Magento\Weee\Model\Config;
-use Magento\Weee\Model\WeeeConfigProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class WeeeConfigProviderTest extends TestCase
+class WeeeConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $weeeHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $weeeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $storeMock;
 
     /**
-     * @var WeeeConfigProvider
+     * @var \Magento\Weee\Model\WeeeConfigProvider
      */
     protected $model;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->weeeHelperMock = $this->createMock(Data::class);
-        $this->weeeConfigMock = $this->createMock(Config::class);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->storeMock = $this->createMock(Store::class);
+        $this->weeeHelperMock = $this->createMock(\Magento\Weee\Helper\Data::class);
+        $this->weeeConfigMock = $this->createMock(\Magento\Weee\Model\Config::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->storeMock = $this->createMock(\Magento\Store\Model\Store::class);
 
-        $this->storeManagerMock->expects($this->any())->method('getStore')->willReturn($this->storeMock);
+        $this->storeManagerMock->expects($this->any())->method('getStore')->will($this->returnValue($this->storeMock));
 
-        $this->model = new WeeeConfigProvider(
+        $this->model = new \Magento\Weee\Model\WeeeConfigProvider(
             $this->weeeHelperMock,
             $this->storeManagerMock,
             $this->weeeConfigMock
@@ -74,16 +64,16 @@ class WeeeConfigProviderTest extends TestCase
         $includeInSubtotal
     ) {
         $storeId = 1;
-        $this->storeMock->expects($this->any())->method('getId')->willReturn($storeId);
+        $this->storeMock->expects($this->any())->method('getId')->will($this->returnValue($storeId));
         $this->weeeHelperMock->expects($this->any())->method('isEnabled')->with($storeId)
-            ->willReturn($weeeHelperEnabled);
+            ->will($this->returnValue($weeeHelperEnabled));
         $this->weeeHelperMock->expects($this->any())->method('typeOfDisplay')
-            ->willReturn($displayWeeeDetails);
+            ->will($this->returnValue($displayWeeeDetails));
 
         $this->weeeConfigMock->expects($this->any())->method('isEnabled')
-            ->willReturn($weeeConfigEnabled);
+            ->will($this->returnValue($weeeConfigEnabled));
         $this->weeeConfigMock->expects($this->any())->method('includeInSubtotal')
-            ->willReturn($includeInSubtotal);
+            ->will($this->returnValue($includeInSubtotal));
 
         $this->assertEquals($expectedResult, $this->model->getConfig());
     }

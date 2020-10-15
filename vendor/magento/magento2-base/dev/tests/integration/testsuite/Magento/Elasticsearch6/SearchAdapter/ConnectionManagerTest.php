@@ -25,7 +25,7 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
      */
     private $connectionManager;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
 

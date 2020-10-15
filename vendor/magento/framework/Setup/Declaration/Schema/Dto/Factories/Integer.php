@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Declaration\Schema\Dto\Factories;
 
@@ -14,6 +13,18 @@ use Magento\Framework\ObjectManagerInterface;
  */
 class Integer implements FactoryInterface
 {
+    /**
+     * Describe default for different integer types.
+     *
+     * @var array
+     */
+    private static $defaultPadding = [
+        'int' => '11',
+        'tinyint' => '2',
+        'smallint' => '5',
+        'bigint' => '20'
+    ];
+
     /**
      * @var ObjectManagerInterface
      */
@@ -27,8 +38,8 @@ class Integer implements FactoryInterface
     /**
      * Constructor.
      *
-     * @param ObjectManagerInterface    $objectManager
-     * @param string                    $className
+     * @param ObjectManagerInterface $objectManager
+     * @param string                 $className
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -43,8 +54,9 @@ class Integer implements FactoryInterface
      */
     public function create(array $data)
     {
-        unset($data['padding']);
-
+        if (!isset($data['padding'])) {
+            $data['padding'] = self::$defaultPadding[$data['type']];
+        }
         //Auto increment field can`t be null
         if (isset($data['identity']) && $data['identity']) {
             $data['nullable'] = false;

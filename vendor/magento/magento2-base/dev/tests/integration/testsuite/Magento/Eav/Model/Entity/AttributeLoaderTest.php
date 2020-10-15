@@ -30,7 +30,7 @@ class AttributeLoaderTest extends \PHPUnit\Framework\TestCase
      */
     private $resource;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         CacheCleaner::cleanAll();
         $this->objectManager = Bootstrap::getObjectManager();
@@ -62,8 +62,8 @@ class AttributeLoaderTest extends \PHPUnit\Framework\TestCase
         // Before load all attributes
         $attributesByCode = $this->resource->getAttributesByCode();
         $attributesByTable = $this->resource->getAttributesByTable();
-        $this->assertCount(0, $attributesByCode);
-        $this->assertCount(0, $attributesByTable);
+        $this->assertEquals(0, count($attributesByCode));
+        $this->assertEquals(0, count($attributesByTable));
 
         // Load all attributes
         $resource2 = $this->attributeLoader->loadAllAttributes(

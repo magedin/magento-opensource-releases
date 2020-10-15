@@ -7,11 +7,12 @@ declare(strict_types=1);
 
 namespace Magento\PageCache\Model\Layout;
 
-use Magento\Framework\App\MaintenanceMode;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Layout;
 use Magento\PageCache\Model\Config;
+use Magento\PageCache\Model\Spi\PageCacheTagsPreprocessorInterface;
 
 /**
  * Append cacheable pages response headers.
@@ -27,25 +28,25 @@ class LayoutPlugin
      * @var ResponseInterface
      */
     private $response;
-
     /**
-     * @var MaintenanceMode
+     * @var PageCacheTagsPreprocessorInterface
      */
-    private $maintenanceMode;
+    private $pageCacheTagsPreprocessor;
 
     /**
      * @param ResponseInterface $response
      * @param Config $config
-     * @param MaintenanceMode $maintenanceMode
+     * @param PageCacheTagsPreprocessorInterface|null $pageCacheTagsPreprocessor
      */
     public function __construct(
         ResponseInterface $response,
         Config $config,
-        MaintenanceMode $maintenanceMode
+        ?PageCacheTagsPreprocessorInterface $pageCacheTagsPreprocessor = null
     ) {
         $this->response = $response;
         $this->config = $config;
-        $this->maintenanceMode = $maintenanceMode;
+        $this->pageCacheTagsPreprocessor = $pageCacheTagsPreprocessor
+            ?? ObjectManager::getInstance()->get(PageCacheTagsPreprocessorInterface::class);
     }
 
     /**
@@ -58,7 +59,7 @@ class LayoutPlugin
      */
     public function afterGenerateElements(Layout $subject)
     {
-        if ($subject->isCacheable() && !$this->maintenanceMode->isOn() && $this->config->isEnabled()) {
+        if ($subject->isCacheable() && $this->config->isEnabled()) {
             $this->response->setPublicHeaders($this->config->getTtl());
         }
     }
@@ -85,6 +86,7 @@ class LayoutPlugin
                 }
             }
             $tags = array_unique(array_merge(...$tags));
+            $tags = $this->pageCacheTagsPreprocessor->process($tags);
             $this->response->setHeader('X-Magento-Tags', implode(',', $tags));
         }
 

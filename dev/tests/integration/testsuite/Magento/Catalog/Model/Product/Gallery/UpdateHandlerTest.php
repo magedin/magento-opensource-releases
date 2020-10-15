@@ -78,11 +78,15 @@ class UpdateHandlerTest extends \PHPUnit\Framework\TestCase
      * @var int
      */
     private $mediaAttributeId;
+    /**
+     * @var \Magento\Eav\Model\ResourceModel\UpdateHandler
+     */
+    private $eavUpdateHandler;
 
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->fileName = 'image.txt';
         $this->objectManager = Bootstrap::getObjectManager();
@@ -96,6 +100,8 @@ class UpdateHandlerTest extends \PHPUnit\Framework\TestCase
         $this->mediaDirectory = $this->objectManager->get(Filesystem::class)
             ->getDirectoryWrite(DirectoryList::MEDIA);
         $this->mediaDirectory->writeFile($this->fileName, 'Test');
+        $this->updateHandler = $this->objectManager->create(UpdateHandler::class);
+        $this->eavUpdateHandler = $this->objectManager->create(\Magento\Eav\Model\ResourceModel\UpdateHandler::class);
     }
 
     /**
@@ -140,7 +146,7 @@ class UpdateHandlerTest extends \PHPUnit\Framework\TestCase
         $this->updateHandler->execute($product);
         $productImages = $this->galleryResource->loadProductGalleryByAttributeId($product, $this->mediaAttributeId);
         $updatedImage = reset($productImages);
-        $this->assertIsArray($updatedImage);
+        $this->assertTrue(is_array($updatedImage));
         $this->assertEquals('New image', $updatedImage['label']);
         $this->assertEquals('New image', $updatedImage['label_default']);
         $this->assertEquals('1', $updatedImage['disabled']);
@@ -185,6 +191,15 @@ class UpdateHandlerTest extends \PHPUnit\Framework\TestCase
         $secondStoreId = (int)$this->storeRepository->get('fixture_second_store')->getId();
         $imageRoles = ['image', 'small_image', 'thumbnail', 'swatch_image'];
         $product = $this->getProduct($secondStoreId);
+        $entityIdField = $product->getResource()->getLinkField();
+        $entityData = [];
+        $entityData['store_id'] = $product->getStoreId();
+        $entityData[$entityIdField] = $product->getData($entityIdField);
+        $entityData = array_merge($entityData, $roles);
+        $this->eavUpdateHandler->execute(
+            \Magento\Catalog\Api\Data\ProductInterface::class,
+            $entityData
+        );
         $product->addData($roles);
         $this->updateHandler->execute($product);
 
@@ -342,7 +357,7 @@ class UpdateHandlerTest extends \PHPUnit\Framework\TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
         $this->mediaDirectory->getDriver()->deleteFile($this->mediaDirectory->getAbsolutePath($this->fileName));

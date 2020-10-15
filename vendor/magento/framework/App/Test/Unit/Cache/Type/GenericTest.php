@@ -3,23 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * The test covers \Magento\Framework\App\Cache_Type_* classes all at once, as all of them are similar
  */
 namespace Magento\Framework\App\Test\Unit\Cache\Type;
 
-use Magento\Framework\App\Cache\Type\Block;
-use Magento\Framework\App\Cache\Type\Collection;
-use Magento\Framework\App\Cache\Type\Config;
-use Magento\Framework\App\Cache\Type\FrontendPool;
-use Magento\Framework\App\Cache\Type\Layout;
-use Magento\Framework\App\Cache\Type\Translate;
-use Magento\Framework\Cache\FrontendInterface;
-use PHPUnit\Framework\TestCase;
-
-class GenericTest extends TestCase
+class GenericTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $className
@@ -27,9 +17,9 @@ class GenericTest extends TestCase
      */
     public function testConstructor($className)
     {
-        $frontendMock = $this->getMockForAbstractClass(FrontendInterface::class);
+        $frontendMock = $this->createMock(\Magento\Framework\Cache\FrontendInterface::class);
 
-        $poolMock = $this->createMock(FrontendPool::class);
+        $poolMock = $this->createMock(\Magento\Framework\App\Cache\Type\FrontendPool::class);
         /** @noinspection PhpUndefinedFieldInspection */
         $poolMock->expects(
             $this->atLeastOnce()
@@ -37,8 +27,8 @@ class GenericTest extends TestCase
             'get'
         )->with(
             $className::TYPE_IDENTIFIER
-        )->willReturn(
-            $frontendMock
+        )->will(
+            $this->returnValue($frontendMock)
         );
 
         $model = new $className($poolMock);
@@ -58,12 +48,12 @@ class GenericTest extends TestCase
     public static function constructorDataProvider()
     {
         return [
-            [Block::class],
-            [Collection::class],
-            [Config::class],
-            [Layout::class],
-            [Translate::class],
-            [Block::class]
+            [\Magento\Framework\App\Cache\Type\Block::class],
+            [\Magento\Framework\App\Cache\Type\Collection::class],
+            [\Magento\Framework\App\Cache\Type\Config::class],
+            [\Magento\Framework\App\Cache\Type\Layout::class],
+            [\Magento\Framework\App\Cache\Type\Translate::class],
+            [\Magento\Framework\App\Cache\Type\Block::class]
         ];
     }
 }

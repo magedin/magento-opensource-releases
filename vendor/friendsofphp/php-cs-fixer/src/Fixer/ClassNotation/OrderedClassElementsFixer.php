@@ -30,7 +30,6 @@ final class OrderedClassElementsFixer extends AbstractFixer implements Configura
 {
     /** @internal */
     const SORT_ALPHA = 'alpha';
-
     /** @internal */
     const SORT_NONE = 'none';
 
@@ -211,12 +210,11 @@ class Example
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before ClassAttributesSeparationFixer, MethodSeparationFixer, NoBlankLinesAfterClassOpeningFixer, SpaceAfterSemicolonFixer.
-     * Must run after NoPhp4ConstructorFixer, ProtectedToPrivateFixer.
      */
     public function getPriority()
     {
+        // must run before MethodSeparationFixer, NoBlankLinesAfterClassOpeningFixer and SpaceAfterSemicolonFixer.
+        // must run after ProtectedToPrivateFixer.
         return 65;
     }
 
@@ -233,7 +231,7 @@ class Example
             $i = $tokens->getNextTokenOfKind($i, ['{']);
             $elements = $this->getElements($tokens, $i);
 
-            if (0 === \count($elements)) {
+            if (!$elements) {
                 continue;
             }
 
@@ -282,7 +280,8 @@ class Example
     }
 
     /**
-     * @param int $startIndex
+     * @param Tokens $tokens
+     * @param int    $startIndex
      *
      * @return array[]
      */
@@ -334,7 +333,7 @@ class Example
 
                 if ('property' === $element['type']) {
                     $element['name'] = $tokens[$i]->getContent();
-                } elseif (\in_array($element['type'], ['use_trait', 'constant', 'method', 'magic', 'construct', 'destruct'], true)) {
+                } elseif (\in_array($element['type'], ['use_trait', 'constant', 'method', 'magic'], true)) {
                     $element['name'] = $tokens[$tokens->getNextMeaningfulToken($i)]->getContent();
                 }
 
@@ -349,7 +348,8 @@ class Example
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return array|string type or array of type and name
      */
@@ -398,7 +398,8 @@ class Example
     }
 
     /**
-     * @param int $index
+     * @param Tokens $tokens
+     * @param int    $index
      *
      * @return int
      */
@@ -481,6 +482,7 @@ class Example
     }
 
     /**
+     * @param Tokens  $tokens
      * @param int     $startIndex
      * @param int     $endIndex
      * @param array[] $elements

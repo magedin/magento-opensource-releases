@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout\ScheduledStructure;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Layout\ScheduledStructure;
 
 /**
  * Test class for \Magento\Framework\View\Layout\ScheduledStructure
  */
-class ScheduledStructureTest extends TestCase
+class ScheduledStructureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ScheduledStructure
@@ -29,7 +25,7 @@ class ScheduledStructureTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->scheduledData = [
             'scheduledStructure' => [
@@ -66,9 +62,9 @@ class ScheduledStructureTest extends TestCase
             ],
         ];
 
-        $helperObjectManager = new ObjectManager($this);
+        $helperObjectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $helperObjectManager->getObject(
-            ScheduledStructure::class,
+            \Magento\Framework\View\Layout\ScheduledStructure::class,
             ['data' => $this->scheduledData]
         );
     }

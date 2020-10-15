@@ -17,7 +17,7 @@ class ListTest extends \PHPUnit\Framework\TestCase
      */
     protected $_block;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->_layout = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             \Magento\Framework\View\LayoutInterface::class

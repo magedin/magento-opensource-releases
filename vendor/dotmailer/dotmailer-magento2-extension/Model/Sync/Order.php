@@ -2,8 +2,6 @@
 
 namespace Dotdigitalgroup\Email\Model\Sync;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-
 /**
  * Sync Orders.
  */
@@ -102,16 +100,6 @@ class Order implements SyncInterface
     private $bunch;
 
     /**
-     * @var \Dotdigitalgroup\Email\Model\Catalog\UpdateCatalogBulk
-     */
-    private $bulkUpdate;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
      * Order constructor.
      * @param \Dotdigitalgroup\Email\Model\ImporterFactory $importerFactory
      * @param \Dotdigitalgroup\Email\Model\OrderFactory $orderFactory
@@ -122,10 +110,8 @@ class Order implements SyncInterface
      * @param \Dotdigitalgroup\Email\Model\ResourceModel\Order $orderResource
      * @param \Dotdigitalgroup\Email\Helper\Data $helper
      * @param \Magento\Sales\Model\OrderFactory $salesOrderFactory
-     * @param \Dotdigitalgroup\Email\Model\ResourceModel\Catalog $catalogResource
-     * @param \Dotdigitalgroup\Email\Model\Product\Bunch $bunch
-     * @param \Dotdigitalgroup\Email\Model\Catalog\UpdateCatalogBulk $bulkUpdate
-     * @param ScopeConfigInterface $scopeConfig
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Dotdigitalgroup\Email\Model\ImporterFactory $importerFactory,
@@ -138,9 +124,7 @@ class Order implements SyncInterface
         \Dotdigitalgroup\Email\Helper\Data $helper,
         \Magento\Sales\Model\OrderFactory $salesOrderFactory,
         \Dotdigitalgroup\Email\Model\ResourceModel\Catalog $catalogResource,
-        \Dotdigitalgroup\Email\Model\Product\Bunch $bunch,
-        \Dotdigitalgroup\Email\Model\Catalog\UpdateCatalogBulk $bulkUpdate,
-        ScopeConfigInterface $scopeConfig
+        \Dotdigitalgroup\Email\Model\Product\Bunch $bunch
     ) {
         $this->importerFactory       = $importerFactory;
         $this->orderFactory          = $orderFactory;
@@ -153,8 +137,6 @@ class Order implements SyncInterface
         $this->contactCollectionFactory = $contactCollectionFactory;
         $this->catalogResource = $catalogResource;
         $this->bunch = $bunch;
-        $this->bulkUpdate = $bulkUpdate;
-        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -169,12 +151,8 @@ class Order implements SyncInterface
     {
         $response = ['success' => true, 'message' => 'Done.'];
 
-        $limit = $this->scopeConfig->getValue(
-            \Dotdigitalgroup\Email\Helper\Config::XML_PATH_CONNECTOR_TRANSACTIONAL_DATA_SYNC_LIMIT
-        );
-
         // Initialise a return hash containing results of our sync attempt
-        $this->searchWebsiteAccounts($limit);
+        $this->searchWebsiteAccounts();
 
         foreach ($this->accounts as $account) {
             $orders = $account->getOrders();
@@ -208,7 +186,7 @@ class Order implements SyncInterface
 
             //Mark ordered products as unprocessed to be imported again
             $mergedProducts = $this->getAllProducts($orders + $ordersForSingleSync);
-            $this->bulkUpdate->execute($mergedProducts);
+            $this->catalogResource->setUnprocessedByIds($this->bunch->getProductIdsBySkuInBunch($mergedProducts));
 
             unset($this->accounts[$account->getApiUsername()]);
         }
@@ -245,11 +223,11 @@ class Order implements SyncInterface
     /**
      * Search the configuration data per website.
      *
-     * @param string $limit
-     * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
+     *
+     * @return null
      */
-    public function searchWebsiteAccounts($limit)
+    public function searchWebsiteAccounts()
     {
         $websites = $this->helper->getWebsites();
         foreach ($websites as $website) {
@@ -264,7 +242,11 @@ class Order implements SyncInterface
             ) {
                 $this->apiUsername = $this->helper->getApiUsername($website);
                 $this->apiPassword = $this->helper->getApiPassword($website);
-
+                // limit for orders included to sync
+                $limit = $this->helper->getWebsiteConfig(
+                    \Dotdigitalgroup\Email\Helper\Config::XML_PATH_CONNECTOR_TRANSACTIONAL_DATA_SYNC_LIMIT,
+                    $website
+                );
                 //set account for later use
                 if (! isset($this->accounts[$this->apiUsername])) {
                     $account = $this->accountFactory->create();
@@ -291,7 +273,7 @@ class Order implements SyncInterface
 
     /**
      * @param \Magento\Store\Api\Data\WebsiteInterface $website
-     * @param string|int $limit
+     * @param int $limit
      *
      * @return array
      */
@@ -324,7 +306,7 @@ class Order implements SyncInterface
 
     /**
      * @param \Magento\Store\Api\Data\WebsiteInterface $website
-     * @param string|int $limit
+     * @param int $limit
      *
      * @return array
      */
@@ -426,7 +408,7 @@ class Order implements SyncInterface
     {
         $allProducts = [];
         foreach ($orders as $order) {
-            if (!isset($order['products'])) {
+            if (!isset($orders['products'])) {
                 continue;
             }
             foreach ($order['products'] as $products) {

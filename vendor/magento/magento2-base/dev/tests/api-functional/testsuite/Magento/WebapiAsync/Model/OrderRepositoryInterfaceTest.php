@@ -36,7 +36,7 @@ class OrderRepositoryInterfaceTest extends WebapiAbstract
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         $this->objectManager = Bootstrap::getObjectManager();
@@ -70,7 +70,7 @@ class OrderRepositoryInterfaceTest extends WebapiAbstract
     /**
      * @inheritDoc
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         $this->publisherConsumerController->stopConsumers();
         parent::tearDown();

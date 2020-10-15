@@ -13,22 +13,15 @@
 namespace PhpCsFixer\Fixer\ArrayNotation;
 
 use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use PhpCsFixer\FixerConfiguration\InvalidOptionsForEnvException;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\FixerDefinition\VersionSpecification;
-use PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
 use PhpCsFixer\Tokenizer\CT;
 use PhpCsFixer\Tokenizer\Tokens;
-use Symfony\Component\OptionsResolver\Options;
 
 /**
  * @author Adam Marczuk <adam@marczuk.info>
  */
-final class NoWhitespaceBeforeCommaInArrayFixer extends AbstractFixer implements ConfigurationDefinitionFixerInterface
+final class NoWhitespaceBeforeCommaInArrayFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
@@ -37,23 +30,7 @@ final class NoWhitespaceBeforeCommaInArrayFixer extends AbstractFixer implements
     {
         return new FixerDefinition(
             'In array declaration, there MUST NOT be a whitespace before each comma.',
-            [
-                new CodeSample("<?php \$x = array(1 , \"2\");\n"),
-                new VersionSpecificCodeSample(
-                    <<<'SAMPLE'
-<?php
-    $x = [<<<EOD
-foo
-EOD
-        , 'bar'
-    ];
-
-SAMPLE
-                    ,
-                    new VersionSpecification(70300),
-                    ['after_heredoc' => true]
-                ),
-            ]
+            [new CodeSample("<?php \$x = array(1 , \"2\");\n")]
         );
     }
 
@@ -78,29 +55,10 @@ SAMPLE
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function createConfigurationDefinition()
-    {
-        return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('after_heredoc', 'Whether the whitespace between heredoc end and comma should be removed.'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->setNormalizer(static function (Options $options, $value) {
-                    if (\PHP_VERSION_ID < 70300 && $value) {
-                        throw new InvalidOptionsForEnvException('"after_heredoc" option can only be enabled with PHP 7.3+.');
-                    }
-
-                    return $value;
-                })
-                ->getOption(),
-        ]);
-    }
-
-    /**
      * Method to fix spacing in array declaration.
      *
-     * @param int $index
+     * @param int    $index
+     * @param Tokens $tokens
      */
     private function fixSpacing($index, Tokens $tokens)
     {
@@ -116,11 +74,7 @@ SAMPLE
             $i = $this->skipNonArrayElements($i, $tokens);
             $currentToken = $tokens[$i];
             $prevIndex = $tokens->getPrevNonWhitespace($i - 1);
-
-            if (
-                $currentToken->equals(',') && !$tokens[$prevIndex]->isComment() &&
-                ($this->configuration['after_heredoc'] || !$tokens[$prevIndex]->equals([T_END_HEREDOC]))
-            ) {
+            if ($currentToken->equals(',') && !$tokens[$prevIndex]->equals([T_END_HEREDOC]) && !$tokens[$prevIndex]->isComment()) {
                 $tokens->removeLeadingWhitespace($i);
             }
         }
@@ -129,7 +83,8 @@ SAMPLE
     /**
      * Method to move index over the non-array elements like function calls or function declarations.
      *
-     * @param int $index
+     * @param int    $index
+     * @param Tokens $tokens
      *
      * @return int New index
      */

@@ -14,7 +14,7 @@
             <stories value="OnePageCheckout within Offline Payment Methods"/>
             <title value="OnePageCheckout with all product types test"/>
             <description value="Checkout with all product types"/>
-            <severity value="BLOCKER"/>
+            <severity value="CRITICAL"/>
             <testCaseId value="MC-14742"/>
             <group value="checkout"/>
             <group value="mtf_migrated"/>
@@ -88,9 +88,7 @@
             <!-- Create customer -->
             <createData entity="Simple_Customer_Without_Address" stepKey="createCustomer"/>
 
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-                <argument name="indices" value=""/>
-            </actionGroup>
+            <magentoCLI command="indexer:reindex" stepKey="reindex"/>
         </before>
         <after>
             <magentoCLI stepKey="removeDownloadableDomain" command="downloadable:domains:remove static.magento.com"/>
@@ -115,13 +113,13 @@
             <actionGroup ref="StorefrontCustomerLogoutActionGroup" stepKey="customerLogoutStorefront"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Add Simple Product to cart -->
         <amOnPage url="{{StorefrontProductPage.url($$createSimpleProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToSimpleProductPage"/>
         <waitForPageLoad stepKey="waitForSimpleProductPageLoad"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFromStorefrontProductPage">
             <argument name="productName" value="$$createSimpleProduct.name$$"/>
         </actionGroup>
 
@@ -136,14 +134,14 @@
         <!-- Add Virtual Product to cart -->
         <amOnPage url="{{StorefrontProductPage.url($$createVirtualProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToVirtualProductPage"/>
         <waitForPageLoad stepKey="waitForVirtualProductPageLoad"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartVirtualProductFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartVirtualProductFromStorefrontProductPage">
             <argument name="productName" value="$$createVirtualProduct.name$$"/>
         </actionGroup>
 
         <!-- Add Downloadable Product to cart -->
         <amOnPage url="{{StorefrontProductPage.url($$createDownloadableProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToDownloadableProductPage"/>
         <waitForPageLoad stepKey="waitForDownloadableProductPageLoad"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartDownloadableProductFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartDownloadableProductFromStorefrontProductPage">
             <argument name="productName" value="$$createDownloadableProduct.name$$"/>
         </actionGroup>
 
@@ -151,7 +149,7 @@
         <amOnPage url="{{StorefrontProductPage.url($$createGroupedProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToGroupedProductPage"/>
         <waitForPageLoad stepKey="waitForGroupedProductPageLoad"/>
         <fillField selector="{{StorefrontProductPageSection.qtyInput}}" userInput="1" stepKey="fillFieldQtyInput"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartGroupedProductFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartGroupedProductFromStorefrontProductPage">
             <argument name="productName" value="$$createGroupedProduct.name$$"/>
         </actionGroup>
 
@@ -159,12 +157,12 @@
         <amOnPage url="{{StorefrontProductPage.url($$createFixedBundleProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToBundleProductPage"/>
         <waitForPageLoad stepKey="waitForFixedBundleProductPageLoad"/>
         <click selector="{{StorefrontBundleProductActionSection.customizeAndAddToCartButton}}" stepKey="clickCustomizeAndAddToCart"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFixedBundleProductFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFixedBundleProductFromStorefrontProductPage">
             <argument name="productName" value="$$createFixedBundleProduct.name$$"/>
         </actionGroup>
 
         <!--Go to shopping cart-->
-        <actionGroup ref="ClickViewAndEditCartFromMiniCartActionGroup" stepKey="goToShoppingCartFromMinicart"/>
+        <actionGroup ref="clickViewAndEditCartFromMiniCart" stepKey="goToShoppingCartFromMinicart"/>
         <actionGroup ref="FillShippingZipForm" stepKey="fillShippingZipForm">
             <argument name="address" value="US_Address_CA"/>
         </actionGroup>
@@ -197,22 +195,19 @@
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderNumber"/>
 
         <!-- Login as admin -->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
         <!-- Open created order -->
         <amOnPage url="{{AdminOrdersPage.url}}" stepKey="goToOrders"/>
         <waitForPageLoad stepKey="waitForOrderPageLoad"/>
-        <actionGroup ref="OpenOrderByIdActionGroup" stepKey="filterOrderGridById">
+        <actionGroup ref="OpenOrderById" stepKey="filterOrderGridById">
             <argument name="orderId" value="$grabOrderNumber"/>
         </actionGroup>
 
         <!-- Assert that addresses on order page the same -->
         <grabTextFrom selector="{{AdminShipmentAddressInformationSection.shippingAddress}}" stepKey="shippingAddressOrderPage"/>
         <grabTextFrom selector="{{AdminShipmentAddressInformationSection.billingAddress}}" stepKey="billingAddressOrderPage"/>
-        <assertEquals stepKey="assertAddressOrderPage">
-			<actualResult type="const">$billingAddressOrderPage</actualResult>
-			<expectedResult type="const">$shippingAddressOrderPage</expectedResult>
-        </assertEquals>
+        <assertEquals actual="$billingAddressOrderPage" expected="$shippingAddressOrderPage" stepKey="assertAddressOrderPage"/>
 
         <!-- Assert order total -->
         <amOnPage url="{{StorefrontCustomerDashboardPage.url}}" stepKey="navigateToCustomerDashboardPage"/>
@@ -227,13 +222,7 @@
         <!-- Asserts that addresses in address book equal to addresses in order -->
         <grabTextFrom selector="{{CheckoutOrderSummarySection.shippingAddress}}" stepKey="shippingAddress"/>
         <grabTextFrom selector="{{CheckoutOrderSummarySection.billingAddress}}" stepKey="billingAddress"/>
-        <assertEquals stepKey="assertShippingAddress">
-			<actualResult type="const">$shippingAddress</actualResult>
-			<expectedResult type="const">$shippingAddressOrderPage</expectedResult>
-        </assertEquals>
-        <assertEquals stepKey="assertBillingAddress">
-			<actualResult type="const">$billingAddress</actualResult>
-			<expectedResult type="const">$billingAddressOrderPage</expectedResult>
-        </assertEquals>
+        <assertEquals actual="$shippingAddress" expected="$shippingAddressOrderPage" stepKey="assertShippingAddress"/>
+        <assertEquals actual="$billingAddress" expected="$billingAddressOrderPage" stepKey="assertBillingAddress"/>
     </test>
 </tests>

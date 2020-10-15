@@ -14,7 +14,7 @@ use Magento\Customer\Api\MetadataManagementInterface;
 use Magento\Customer\Model\Indexer\Attribute\Filter;
 
 /**
- * Attribute Repository Managment
+ * Class AttributeRepository
  */
 class AttributeRepository
 {
@@ -156,10 +156,10 @@ class AttributeRepository
      * Return customer group's metadata by given group code
      *
      * @param string $code
-     * @return array | null
+     * @return []
      */
     public function getMetadataByCode($code)
     {
-        return $this->getList()[$code] ?? null;
+        return isset($this->getList()[$code]) ? $this->getList()[$code] : null;
     }
 }

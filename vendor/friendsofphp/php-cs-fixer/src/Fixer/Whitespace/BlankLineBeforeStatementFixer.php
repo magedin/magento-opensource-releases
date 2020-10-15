@@ -76,8 +76,6 @@ final class BlankLineBeforeStatementFixer extends AbstractFixer implements Confi
         foreach ($this->configuration['statements'] as $key) {
             $this->fixTokenMap[$key] = self::$tokenMap[$key];
         }
-
-        $this->fixTokenMap = array_values($this->fixTokenMap);
     }
 
     /**
@@ -214,7 +212,7 @@ switch ($a) {
                     '<?php
 if (null === $a) {
     $foo->bar();
-    throw new \UnexpectedValueException("A cannot be null.");
+    throw new \UnexpectedValueException("A cannot be null");
 }
 ',
                     [
@@ -252,11 +250,10 @@ if (true) {
 
     /**
      * {@inheritdoc}
-     *
-     * Must run after NoExtraBlankLinesFixer, NoUselessReturnFixer, ReturnAssignmentFixer.
      */
     public function getPriority()
     {
+        // should be run after NoUselessReturnFixer and NoExtraBlankLinesFixer
         return -21;
     }
 
@@ -265,7 +262,7 @@ if (true) {
      */
     public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isAnyTokenKindsFound($this->fixTokenMap);
+        return $tokens->isAnyTokenKindsFound(array_values($this->fixTokenMap));
     }
 
     /**
@@ -273,26 +270,40 @@ if (true) {
      */
     protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
+        $lineEnding = $this->whitespacesConfig->getLineEnding();
+        $tokenKinds = array_values($this->fixTokenMap);
         $analyzer = new TokensAnalyzer($tokens);
 
-        for ($index = $tokens->count() - 1; $index > 0; --$index) {
+        for ($index = 0, $limit = $tokens->count(); $index < $limit; ++$index) {
             $token = $tokens[$index];
 
-            if (!$token->isGivenKind($this->fixTokenMap)) {
+            if (!$token->isGivenKind($tokenKinds) || ($token->isGivenKind(T_WHILE) && $analyzer->isWhilePartOfDoWhile($index))) {
                 continue;
             }
 
-            if ($token->isGivenKind(T_WHILE) && $analyzer->isWhilePartOfDoWhile($index)) {
+            $prevNonWhitespaceToken = $tokens[$tokens->getPrevNonWhitespace($index)];
+
+            if (!$prevNonWhitespaceToken->equalsAny([';', '}'])) {
                 continue;
             }
 
-            $prevNonWhitespace = $tokens->getPrevNonWhitespace($index);
+            $prevIndex = $index - 1;
+            $prevToken = $tokens[$prevIndex];
 
-            if ($this->shouldAddBlankLine($tokens, $prevNonWhitespace)) {
-                $this->insertBlankLine($tokens, $index);
+            if ($prevToken->isWhitespace()) {
+                $countParts = substr_count($prevToken->getContent(), "\n");
+
+                if (0 === $countParts) {
+                    $tokens[$prevIndex] = new Token([T_WHITESPACE, rtrim($prevToken->getContent(), " \t").$lineEnding.$lineEnding]);
+                } elseif (1 === $countParts) {
+                    $tokens[$prevIndex] = new Token([T_WHITESPACE, $lineEnding.$prevToken->getContent()]);
+                }
+            } else {
+                $tokens->insertAt($index, new Token([T_WHITESPACE, $lineEnding.$lineEnding]));
+
+                ++$index;
+                ++$limit;
             }
-
-            $index = $prevNonWhitespace;
         }
     }
 
@@ -315,53 +326,5 @@ if (true) {
                 ])
                 ->getOption(),
         ]);
-    }
-
-    /**
-     * @param int $prevNonWhitespace
-     *
-     * @return bool
-     */
-    private function shouldAddBlankLine(Tokens $tokens, $prevNonWhitespace)
-    {
-        $prevNonWhitespaceToken = $tokens[$prevNonWhitespace];
-
-        if ($prevNonWhitespaceToken->isComment()) {
-            for ($j = $prevNonWhitespace - 1; $j >= 0; --$j) {
-                if (false !== strpos($tokens[$j]->getContent(), "\n")) {
-                    return false;
-                }
-
-                if ($tokens[$j]->isWhitespace() || $tokens[$j]->isComment()) {
-                    continue;
-                }
-
-                return $tokens[$j]->equalsAny([';', '}']);
-            }
-        }
-
-        return $prevNonWhitespaceToken->equalsAny([';', '}']);
-    }
-
-    /**
-     * @param int $index
-     */
-    private function insertBlankLine(Tokens $tokens, $index)
-    {
-        $prevIndex = $index - 1;
-        $prevToken = $tokens[$prevIndex];
-        $lineEnding = $this->whitespacesConfig->getLineEnding();
-
-        if ($prevToken->isWhitespace()) {
-            $newlinesCount = substr_count($prevToken->getContent(), "\n");
-
-            if (0 === $newlinesCount) {
-                $tokens[$prevIndex] = new Token([T_WHITESPACE, rtrim($prevToken->getContent(), " \t").$lineEnding.$lineEnding]);
-            } elseif (1 === $newlinesCount) {
-                $tokens[$prevIndex] = new Token([T_WHITESPACE, $lineEnding.$prevToken->getContent()]);
-            }
-        } else {
-            $tokens->insertAt($index, new Token([T_WHITESPACE, $lineEnding.$lineEnding]));
-        }
     }
 }

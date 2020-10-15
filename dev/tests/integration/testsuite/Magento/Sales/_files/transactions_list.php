@@ -4,17 +4,13 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Model\Order;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/transactions_list_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/transactions_detailed.php');
-$objectManager = Bootstrap::getObjectManager();
+require 'transactions_list_rollback.php';
+require 'transactions_detailed.php';
+
 /** @var Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000006');
-$payment = $order->getPayment();
+/** @var  Order\Payment $payment */
 
 $transactions = [
     [

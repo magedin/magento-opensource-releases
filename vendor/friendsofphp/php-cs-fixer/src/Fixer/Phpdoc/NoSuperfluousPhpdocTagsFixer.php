@@ -36,67 +36,36 @@ final class NoSuperfluousPhpdocTagsFixer extends AbstractFixer implements Config
     public function getDefinition()
     {
         return new FixerDefinition(
-            'Removes `@param`, `@return` and `@var` tags that don\'t provide any useful information.',
+            'Removes `@param` and `@return` tags that don\'t provide any useful information.',
             [
                 new CodeSample('<?php
 class Foo {
     /**
      * @param Bar $bar
-     * @param mixed $baz
      */
-    public function doFoo(Bar $bar, $baz) {}
+    public function doFoo(Bar $bar) {}
 }
 '),
-                new CodeSample('<?php
-class Foo {
-    /**
-     * @param Bar $bar
-     * @param mixed $baz
-     */
-    public function doFoo(Bar $bar, $baz) {}
-}
-', ['allow_mixed' => true]),
                 new VersionSpecificCodeSample('<?php
 class Foo {
     /**
      * @param Bar $bar
-     * @param mixed $baz
      *
      * @return Baz
      */
-    public function doFoo(Bar $bar, $baz): Baz {}
+    public function doFoo(Bar $bar): Baz {}
 }
 ', new VersionSpecification(70000)),
-                new CodeSample('<?php
-class Foo {
-    /**
-     * @inheritDoc
-     */
-    public function doFoo(Bar $bar, $baz) {}
-}
-', ['remove_inheritdoc' => true]),
-                new CodeSample('<?php
-class Foo {
-    /**
-     * @param Bar $bar
-     * @param mixed $baz
-     * @param string|int|null $qux
-     */
-    public function doFoo(Bar $bar, $baz /*, $qux = null */) {}
-}
-', ['allow_unused_params' => true]),
             ]
         );
     }
 
     /**
      * {@inheritdoc}
-     *
-     * Must run before NoEmptyPhpdocFixer, PhpdocAlignFixer.
-     * Must run after CommentToPhpdocFixer, FullyQualifiedStrictTypesFixer, PhpdocAddMissingParamAnnotationFixer, PhpdocIndentFixer, PhpdocReturnSelfReferenceFixer, PhpdocScalarFixer, PhpdocToCommentFixer, PhpdocToParamTypeFixer, PhpdocToReturnTypeFixer, PhpdocTypesFixer.
      */
     public function getPriority()
     {
+        // should run before NoEmptyPhpdocFixer
         return 6;
     }
 
@@ -125,29 +94,46 @@ class Foo {
                 continue;
             }
 
-            $content = $initialContent = $token->getContent();
-
-            $documentedElementIndex = $this->findDocumentedElement($tokens, $index);
-
-            if (null === $documentedElementIndex) {
+            $functionIndex = $this->findDocumentedFunction($tokens, $index);
+            if (null === $functionIndex) {
                 continue;
             }
 
-            $token = $tokens[$documentedElementIndex];
+            $docBlock = new DocBlock($token->getContent());
 
-            if ($token->isGivenKind(T_FUNCTION)) {
-                $content = $this->fixFunctionDocComment($content, $tokens, $index, $shortNames);
-            } elseif ($token->isGivenKind(T_VARIABLE)) {
-                $content = $this->fixPropertyDocComment($content, $tokens, $index, $shortNames);
+            $openingParenthesisIndex = $tokens->getNextTokenOfKind($functionIndex, ['(']);
+            $closingParenthesisIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openingParenthesisIndex);
+
+            $argumentsInfo = $this->getArgumentsInfo(
+                $tokens,
+                $openingParenthesisIndex + 1,
+                $closingParenthesisIndex - 1
+            );
+
+            foreach ($docBlock->getAnnotationsOfType('param') as $annotation) {
+                if (0 === Preg::match('/@param(?:\s+[^\$]\S+)?\s+(\$\S+)/', $annotation->getContent(), $matches)) {
+                    continue;
+                }
+
+                $argumentName = $matches[1];
+
+                if (
+                    !isset($argumentsInfo[$argumentName])
+                    || $this->annotationIsSuperfluous($annotation, $argumentsInfo[$argumentName], $shortNames)
+                ) {
+                    $annotation->remove();
+                }
             }
 
-            if ($this->configuration['remove_inheritdoc']) {
-                $content = $this->removeSuperfluousInheritDoc($content);
+            $returnTypeInfo = $this->getReturnTypeInfo($tokens, $closingParenthesisIndex);
+
+            foreach ($docBlock->getAnnotationsOfType('return') as $annotation) {
+                if ($this->annotationIsSuperfluous($annotation, $returnTypeInfo, $shortNames)) {
+                    $annotation->remove();
+                }
             }
 
-            if ($content !== $initialContent) {
-                $tokens[$index] = new Token([T_DOC_COMMENT, $content]);
-            }
+            $tokens[$index] = new Token([T_DOC_COMMENT, $docBlock->getContent()]);
         }
     }
 
@@ -161,127 +147,26 @@ class Foo {
                 ->setAllowedTypes(['bool'])
                 ->setDefault(false)
                 ->getOption(),
-            (new FixerOptionBuilder('remove_inheritdoc', 'Remove `@inheritDoc` tags'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->getOption(),
-            (new FixerOptionBuilder('allow_unused_params', 'Whether `param` annotation without actual signature is allowed (`true`) or considered superfluous (`false`)'))
-                ->setAllowedTypes(['bool'])
-                ->setDefault(false)
-                ->getOption(),
         ]);
     }
 
-    /**
-     * @param int $docCommentIndex
-     *
-     * @return null|int
-     */
-    private function findDocumentedElement(Tokens $tokens, $docCommentIndex)
+    private function findDocumentedFunction(Tokens $tokens, $index)
     {
-        $index = $docCommentIndex;
-
         do {
             $index = $tokens->getNextMeaningfulToken($index);
 
-            if (null === $index || $tokens[$index]->isGivenKind([T_FUNCTION, T_CLASS, T_INTERFACE])) {
+            if (null === $index || $tokens[$index]->isGivenKind(T_FUNCTION)) {
                 return $index;
             }
         } while ($tokens[$index]->isGivenKind([T_ABSTRACT, T_FINAL, T_STATIC, T_PRIVATE, T_PROTECTED, T_PUBLIC]));
-
-        $index = $tokens->getNextMeaningfulToken($docCommentIndex);
-
-        $kindsBeforeProperty = [T_STATIC, T_PRIVATE, T_PROTECTED, T_PUBLIC, CT::T_NULLABLE_TYPE, CT::T_ARRAY_TYPEHINT, T_STRING, T_NS_SEPARATOR];
-
-        if (!$tokens[$index]->isGivenKind($kindsBeforeProperty)) {
-            return null;
-        }
-
-        do {
-            $index = $tokens->getNextMeaningfulToken($index);
-
-            if ($tokens[$index]->isGivenKind(T_VARIABLE)) {
-                return $index;
-            }
-        } while ($tokens[$index]->isGivenKind($kindsBeforeProperty));
 
         return null;
     }
 
     /**
-     * @param string $content
-     * @param int    $functionIndex
-     *
-     * @return string
-     */
-    private function fixFunctionDocComment($content, Tokens $tokens, $functionIndex, array $shortNames)
-    {
-        $docBlock = new DocBlock($content);
-
-        $openingParenthesisIndex = $tokens->getNextTokenOfKind($functionIndex, ['(']);
-        $closingParenthesisIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openingParenthesisIndex);
-
-        $argumentsInfo = $this->getArgumentsInfo(
-            $tokens,
-            $openingParenthesisIndex + 1,
-            $closingParenthesisIndex - 1
-        );
-
-        foreach ($docBlock->getAnnotationsOfType('param') as $annotation) {
-            if (0 === Preg::match('/@param(?:\s+[^\$]\S+)?\s+(\$\S+)/', $annotation->getContent(), $matches)) {
-                continue;
-            }
-
-            $argumentName = $matches[1];
-
-            if (!isset($argumentsInfo[$argumentName]) && $this->configuration['allow_unused_params']) {
-                continue;
-            }
-
-            if (!isset($argumentsInfo[$argumentName]) || $this->annotationIsSuperfluous($annotation, $argumentsInfo[$argumentName], $shortNames)) {
-                $annotation->remove();
-            }
-        }
-
-        $returnTypeInfo = $this->getReturnTypeInfo($tokens, $closingParenthesisIndex);
-
-        foreach ($docBlock->getAnnotationsOfType('return') as $annotation) {
-            if ($this->annotationIsSuperfluous($annotation, $returnTypeInfo, $shortNames)) {
-                $annotation->remove();
-            }
-        }
-
-        return $docBlock->getContent();
-    }
-
-    /**
-     * @param string $content
-     * @param int    $index   Index of the DocComment token
-     *
-     * @return string
-     */
-    private function fixPropertyDocComment($content, Tokens $tokens, $index, array $shortNames)
-    {
-        $docBlock = new DocBlock($content);
-
-        do {
-            $index = $tokens->getNextMeaningfulToken($index);
-        } while ($tokens[$index]->isGivenKind([T_STATIC, T_PRIVATE, T_PROTECTED, T_PUBLIC]));
-
-        $propertyTypeInfo = $this->getPropertyTypeInfo($tokens, $index);
-
-        foreach ($docBlock->getAnnotationsOfType('var') as $annotation) {
-            if ($this->annotationIsSuperfluous($annotation, $propertyTypeInfo, $shortNames)) {
-                $annotation->remove();
-            }
-        }
-
-        return $docBlock->getContent();
-    }
-
-    /**
-     * @param int $start
-     * @param int $end
+     * @param Tokens $tokens
+     * @param int    $start
+     * @param int    $end
      *
      * @return array<string, array>
      */
@@ -338,24 +223,8 @@ class Foo {
     }
 
     /**
-     * @param int $index The index of the first token of the type hint
-     *
-     * @return array
-     */
-    private function getPropertyTypeInfo(Tokens $tokens, $index)
-    {
-        if ($tokens[$index]->isGivenKind(T_VARIABLE)) {
-            return [
-                'type' => null,
-                'allows_null' => true,
-            ];
-        }
-
-        return $this->parseTypeHint($tokens, $index);
-    }
-
-    /**
-     * @param int $index The index of the first token of the type hint
+     * @param Tokens $tokens
+     * @param int    $index  The index of the first token of the type hint
      *
      * @return array
      */
@@ -375,12 +244,14 @@ class Foo {
         }
 
         return [
-            'type' => '' === $type ? null : $type,
+            'type' => $type,
             'allows_null' => $allowsNull,
         ];
     }
 
     /**
+     * @param Annotation            $annotation
+     * @param array                 $info
      * @param array<string, string> $symbolShortNames
      *
      * @return bool
@@ -388,9 +259,7 @@ class Foo {
     private function annotationIsSuperfluous(Annotation $annotation, array $info, array $symbolShortNames)
     {
         if ('param' === $annotation->getTag()->getName()) {
-            $regex = '/@param\s+(?:\S|\s(?!\$))++\s\$\S+\s+\S/';
-        } elseif ('var' === $annotation->getTag()->getName()) {
-            $regex = '/@var\s+\S+(\s+\$\S+)?(\s+)([^$\s]+)/';
+            $regex = '/@param\s+(?:\S|\s(?!\$))+\s\$\S+\s+\S/';
         } else {
             $regex = '/@return\s+\S+\s+\S/';
         }
@@ -431,7 +300,7 @@ class Foo {
     private function toComparableNames(array $types, array $symbolShortNames)
     {
         $normalized = array_map(
-            static function ($type) use ($symbolShortNames) {
+            function ($type) use ($symbolShortNames) {
                 $type = strtolower($type);
 
                 if (isset($symbolShortNames[$type])) {
@@ -446,61 +315,5 @@ class Foo {
         sort($normalized);
 
         return $normalized;
-    }
-
-    /**
-     * @param string $docComment
-     *
-     * @return string
-     */
-    private function removeSuperfluousInheritDoc($docComment)
-    {
-        return Preg::replace('~
-            # $1: before @inheritDoc tag
-            (
-                # beginning of comment or a PHPDoc tag
-                (?:
-                    ^/\*\*
-                    (?:
-                        \R
-                        [ \t]*(?:\*[ \t]*)?
-                    )*?
-                    |
-                    @\N+
-                )
-
-                # empty comment lines
-                (?:
-                    \R
-                    [ \t]*(?:\*[ \t]*?)?
-                )*
-            )
-
-            # spaces before @inheritDoc tag
-            [ \t]*
-
-            # @inheritDoc tag
-            (?:@inheritDocs?|\{@inheritDocs?\})
-
-            # $2: after @inheritDoc tag
-            (
-                # empty comment lines
-                (?:
-                    \R
-                    [ \t]*(?:\*[ \t]*)?
-                )*
-
-                # a PHPDoc tag or end of comment
-                (?:
-                    @\N+
-                    |
-                    (?:
-                        \R
-                        [ \t]*(?:\*[ \t]*)?
-                    )*
-                    [ \t]*\*/$
-                )
-            )
-        ~ix', '$1$2', $docComment);
     }
 }

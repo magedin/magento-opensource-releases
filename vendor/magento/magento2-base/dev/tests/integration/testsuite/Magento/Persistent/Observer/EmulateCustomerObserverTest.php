@@ -36,7 +36,7 @@ class EmulateCustomerObserverTest extends \PHPUnit\Framework\TestCase
      */
     protected $_customerSession;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $this->_objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 

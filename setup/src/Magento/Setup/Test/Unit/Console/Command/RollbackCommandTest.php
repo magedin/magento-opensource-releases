@@ -3,33 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console\Command;
 
 use Magento\Framework\App\Console\MaintenanceModeEnabler;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\MaintenanceMode;
-use Magento\Framework\App\State;
-use Magento\Framework\ObjectManager\ConfigLoaderInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Setup\BackupRollback;
-use Magento\Framework\Setup\BackupRollbackFactory;
 use Magento\Setup\Console\Command\RollbackCommand;
-use Magento\Setup\Model\ObjectManagerProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RollbackCommandTest extends TestCase
+class RollbackCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $objectManager;
 
@@ -39,27 +25,27 @@ class RollbackCommandTest extends TestCase
     private $tester;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $deploymentConfig;
 
     /**
-     * @var BackupRollback|MockObject
+     * @var \Magento\Framework\Setup\BackupRollback|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupRollback;
 
     /**
-     * @var BackupRollbackFactory|MockObject
+     * @var \Magento\Framework\Setup\BackupRollbackFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $backupRollbackFactory;
 
     /**
-     * @var HelperSet|MockObject
+     * @var \Symfony\Component\Console\Helper\HelperSet|\PHPUnit_Framework_MockObject_MockObject
      */
     private $helperSet;
 
     /**
-     * @var QuestionHelper|MockObject
+     * @var \Symfony\Component\Console\Helper\QuestionHelper|\PHPUnit_Framework_MockObject_MockObject
      */
     private $question;
 
@@ -68,26 +54,26 @@ class RollbackCommandTest extends TestCase
      */
     private $command;
 
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
-        $maintenanceMode = $this->createMock(MaintenanceMode::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $maintenanceMode = $this->createMock(\Magento\Framework\App\MaintenanceMode::class);
         $this->objectManager = $this->getMockForAbstractClass(
-            ObjectManagerInterface::class,
+            \Magento\Framework\ObjectManagerInterface::class,
             [],
             '',
             false
         );
-        $objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        $objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $objectManagerProvider->expects($this->any())->method('get')->willReturn($this->objectManager);
-        $this->backupRollback = $this->createMock(BackupRollback::class);
-        $this->backupRollbackFactory = $this->createMock(BackupRollbackFactory::class);
+        $this->backupRollback = $this->createMock(\Magento\Framework\Setup\BackupRollback::class);
+        $this->backupRollbackFactory = $this->createMock(\Magento\Framework\Setup\BackupRollbackFactory::class);
         $this->backupRollbackFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->backupRollback);
-        $appState = $this->createMock(State::class);
+        $appState = $this->createMock(\Magento\Framework\App\State::class);
         $configLoader = $this->getMockForAbstractClass(
-            ConfigLoaderInterface::class,
+            \Magento\Framework\ObjectManager\ConfigLoaderInterface::class,
             [],
             '',
             false
@@ -95,22 +81,22 @@ class RollbackCommandTest extends TestCase
         $configLoader->expects($this->any())->method('load')->willReturn([]);
         $this->objectManager->expects($this->any())
             ->method('get')
-            ->willReturnMap([
-                [BackupRollbackFactory::class, $this->backupRollbackFactory],
-                [State::class, $appState],
-                [ConfigLoaderInterface::class, $configLoader],
-            ]);
-        $this->helperSet = $this->createMock(HelperSet::class);
-        $this->question = $this->createMock(QuestionHelper::class);
+            ->will($this->returnValueMap([
+                [\Magento\Framework\Setup\BackupRollbackFactory::class, $this->backupRollbackFactory],
+                [\Magento\Framework\App\State::class, $appState],
+                [\Magento\Framework\ObjectManager\ConfigLoaderInterface::class, $configLoader],
+            ]));
+        $this->helperSet = $this->createMock(\Symfony\Component\Console\Helper\HelperSet::class);
+        $this->question = $this->createMock(\Symfony\Component\Console\Helper\QuestionHelper::class);
         $this->question
             ->expects($this->any())
             ->method('ask')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->helperSet
             ->expects($this->any())
             ->method('get')
             ->with('question')
-            ->willReturn($this->question);
+            ->will($this->returnValue($this->question));
         $this->command = new RollbackCommand(
             $objectManagerProvider,
             $maintenanceMode,
@@ -125,7 +111,7 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('codeRollback')
             ->willReturn($this->backupRollback);
@@ -136,7 +122,7 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('codeRollback')
             ->willReturn($this->backupRollback);
@@ -147,7 +133,7 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->backupRollback->expects($this->once())
             ->method('dbRollback')
             ->willReturn($this->backupRollback);
@@ -158,7 +144,7 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->tester->execute(['--db-file' => 'C.gz']);
         $this->assertStringMatchesFormat(
             'No information is available: the Magento application is not installed.%w',
@@ -170,7 +156,7 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->tester->execute([]);
         $expected = 'Enabling maintenance mode' . PHP_EOL
             . 'Not enough information provided to roll back.' . PHP_EOL
@@ -182,16 +168,16 @@ class RollbackCommandTest extends TestCase
     {
         $this->deploymentConfig->expects($this->once())
             ->method('isAvailable')
-            ->willReturn(true);
+            ->will($this->returnValue(true));
         $this->question
             ->expects($this->atLeast(2))
             ->method('ask')
-            ->willReturn(false);
+            ->will($this->returnValue(false));
         $this->helperSet
             ->expects($this->once())
             ->method('get')
             ->with('question')
-            ->willReturn($this->question);
+            ->will($this->returnValue($this->question));
         $this->command->setHelperSet($this->helperSet);
         $this->tester = new CommandTester($this->command);
         $this->tester->execute(['--db-file' => 'C.gz']);

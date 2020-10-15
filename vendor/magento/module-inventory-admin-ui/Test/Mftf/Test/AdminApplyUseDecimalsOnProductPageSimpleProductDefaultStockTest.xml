@@ -35,10 +35,10 @@
             <deleteData createDataKey="product" stepKey="deleteProduct"/>
             <!--Disable additional source.-->
             <actionGroup ref="DisableAllSourcesActionGroup" stepKey="disableAllSources"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdminArea"/>
+            <actionGroup ref="logout" stepKey="logoutFromAdminArea"/>
         </after>
         <!--Set 'Qty Use Decimals' on product edit page.-->
-        <actionGroup ref="AdminLoginActionGroup" stepKey="loginToAdminArea"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="loginToAdminArea"/>
         <amOnPage url="{{AdminProductEditPage.url($$product.id$$)}}" stepKey="openProductEditPage"/>
         <actionGroup ref="AdminApplyUseDecimalsOnProductEditPageActionGroup" stepKey="setQtyUseDecimals">
             <argument name="useDecimals" value="Yes"/>

@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Customer;
 
+use Magento\Reports\Controller\Adminhtml\Report\Customer\Orders;
 use Magento\Framework\DataObject;
 use Magento\Framework\Phrase;
-use Magento\Framework\View\Page\Title;
-use Magento\Reports\Controller\Adminhtml\Report\Customer\Orders;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
 
-class OrdersTest extends AbstractControllerTest
+class OrdersTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
      * @var \Magento\Reports\Controller\Adminhtml\Report\Customer\Orders
@@ -23,7 +20,7 @@ class OrdersTest extends AbstractControllerTest
     /**
      * {@inheritDoc}
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -38,7 +35,7 @@ class OrdersTest extends AbstractControllerTest
      */
     public function testExecute()
     {
-        $titleMock = $this->getMockBuilder(Title::class)
+        $titleMock = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
         $titleMock

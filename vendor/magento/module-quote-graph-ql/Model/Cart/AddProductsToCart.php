@@ -13,7 +13,7 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 
 /**
- * Adding products to cart using GraphQL
+ * Add products to cart
  */
 class AddProductsToCart
 {
@@ -52,6 +52,16 @@ class AddProductsToCart
     {
         foreach ($cartItems as $cartItemData) {
             $this->addProductToCart->execute($cart, $cartItemData);
+        }
+
+        if ($cart->getData('has_error')) {
+            $e = new GraphQlInputException(__('Shopping cart errors'));
+            $errors = $cart->getErrors();
+            foreach ($errors as $error) {
+                /** @var MessageInterface $error */
+                $e->addError(new GraphQlInputException(__($error->getText())));
+            }
+            throw $e;
         }
 
         $this->cartRepository->save($cart);

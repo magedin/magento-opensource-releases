@@ -27,7 +27,7 @@ class DryRunTest extends SetupTestCase
      */
     private $cliCommad;
 
-    protected function setUp(): void
+    public function setUp()
     {
         $objectManager = Bootstrap::getObjectManager();
         $this->moduleManager = $objectManager->get(TestModuleManager::class);
@@ -47,7 +47,7 @@ class DryRunTest extends SetupTestCase
         );
         self::assertFileExists($logFileName);
         $data = file_get_contents($logFileName);
-        self::assertEquals($this->getData()[0], $data);
+        self::assertEquals($data, $this->getData()[0]);
     }
 
     /**
@@ -67,6 +67,6 @@ class DryRunTest extends SetupTestCase
         $this->cliCommad->upgrade(['dry-run' => true]);
         self::assertFileExists($logFileName);
         $data = file_get_contents($logFileName);
-        self::assertEquals($this->getData()[0], $data);
+        self::assertEquals($data, $this->getData()[0]);
     }
 }

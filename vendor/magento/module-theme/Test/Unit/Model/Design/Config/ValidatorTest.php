@@ -7,31 +7,26 @@ declare(strict_types=1);
 
 namespace Magento\Theme\Test\Unit\Model\Design\Config;
 
-use Magento\Framework\Mail\TemplateInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Api\Data\DesignConfigInterface;
-use Magento\Theme\Model\Data\Design\Config\Data;
 use Magento\Theme\Model\Design\Config\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Magento\Theme\Test\Unit\Model\Design\Config\Validator.
  */
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \Magento\Framework\Mail\TemplateInterfaceFactory|MockObject
+     * @var \Magento\Framework\Mail\TemplateInterfaceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $templateFactory;
 
     /**
-     * @var TemplateInterface|MockObject
+     * @var \Magento\Framework\Mail\TemplateInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $template;
 
     /**
-     * @var DesignConfigInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $designConfig;
 
@@ -43,14 +38,14 @@ class ValidatorTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->objectManager = new ObjectManager($this);
         $this->templateFactory = $this->getMockBuilder(\Magento\Framework\Mail\TemplateInterfaceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();
-        $this->template = $this->getMockBuilder(TemplateInterface::class)
+        $this->template = $this->getMockBuilder(\Magento\Framework\Mail\TemplateInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -63,7 +58,7 @@ class ValidatorTest extends TestCase
             )
             ->getMockForAbstractClass();
         $this->templateFactory->expects($this->any())->method('create')->willReturn($this->template);
-        $this->designConfig = $this->getMockBuilder(DesignConfigInterface::class)
+        $this->designConfig = $this->getMockBuilder(\Magento\Theme\Api\Data\DesignConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getExtensionAttributes'])
             ->getMockForAbstractClass();
@@ -116,12 +111,12 @@ class ValidatorTest extends TestCase
      * Returns design config data object.
      *
      * @param array $data
-     * @return Data
+     * @return \Magento\Theme\Model\Data\Design\Config\Data
      */
-    private function getDesignConfigData(array $data = []): Data
+    private function getDesignConfigData(array $data = []): \Magento\Theme\Model\Data\Design\Config\Data
     {
         return $this->objectManager->getObject(
-            Data::class,
+            \Magento\Theme\Model\Data\Design\Config\Data::class,
             [
                 'data' => $data,
             ]

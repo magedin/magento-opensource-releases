@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Tests Magento\Framework\App\Router\Base
  *
@@ -7,77 +7,62 @@
  */
 namespace Magento\Framework\App\Test\Unit\Router;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\ActionFactory;
-use Magento\Framework\App\DefaultPathInterface;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Route\ConfigInterface;
-use Magento\Framework\App\Router\ActionList;
-use Magento\Framework\App\Router\Base;
-use Magento\Framework\App\State;
-use Magento\Framework\Code\NameBuilder;
-use Magento\Framework\TestFramework\Unit\BaseTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
-
 /**
  * Base router unit test.
  */
-class BaseTest extends BaseTestCase
+class BaseTest extends \Magento\Framework\TestFramework\Unit\BaseTestCase
 {
     /**
-     * @var Base
+     * @var \Magento\Framework\App\Router\Base
      */
     private $model;
 
     /**
-     * @var MockObject|Http
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Request\Http
      */
     private $requestMock;
 
     /**
-     * @var MockObject|ConfigInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Route\ConfigInterface
      */
     private $routeConfigMock;
 
     /**
-     * @var MockObject|State
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\State
      */
     private $appStateMock;
 
     /**
-     * @var MockObject|ActionList
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\Router\ActionList
      */
     private $actionListMock;
 
     /**
-     * @var MockObject|ActionFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\ActionFactory
      */
     private $actionFactoryMock;
 
     /**
-     * @var MockObject|NameBuilder
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\Code\NameBuilder
      */
     private $nameBuilderMock;
 
     /**
-     * @var MockObject|DefaultPathInterface
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Magento\Framework\App\DefaultPathInterface
      */
     private $defaultPathMock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
         // Create mocks
-        $this->requestMock = $this->basicMock(Http::class);
-        $this->routeConfigMock = $this->basicMock(ConfigInterface::class);
-        $this->appStateMock = $this->getMockBuilder(State::class)
-            ->addMethods(['isInstalled'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->actionListMock = $this->basicMock(ActionList::class);
-        $this->actionFactoryMock = $this->basicMock(ActionFactory::class);
-        $this->nameBuilderMock = $this->basicMock(NameBuilder::class);
-        $this->defaultPathMock = $this->basicMock(DefaultPathInterface::class);
+        $this->requestMock = $this->basicMock(\Magento\Framework\App\Request\Http::class);
+        $this->routeConfigMock = $this->basicMock(\Magento\Framework\App\Route\ConfigInterface::class);
+        $this->appStateMock = $this->createPartialMock(\Magento\Framework\App\State::class, ['isInstalled']);
+        $this->actionListMock = $this->basicMock(\Magento\Framework\App\Router\ActionList::class);
+        $this->actionFactoryMock = $this->basicMock(\Magento\Framework\App\ActionFactory::class);
+        $this->nameBuilderMock = $this->basicMock(\Magento\Framework\Code\NameBuilder::class);
+        $this->defaultPathMock = $this->basicMock(\Magento\Framework\App\DefaultPathInterface::class);
 
         // Prepare SUT
         $mocks = [
@@ -88,7 +73,7 @@ class BaseTest extends BaseTestCase
             'nameBuilder' => $this->nameBuilderMock,
             'defaultPath' => $this->defaultPathMock,
         ];
-        $this->model = $this->objectManager->getObject(Base::class, $mocks);
+        $this->model = $this->objectManager->getObject(\Magento\Framework\App\Router\Base::class, $mocks);
     }
 
     public function testMatch()
@@ -98,7 +83,7 @@ class BaseTest extends BaseTestCase
         $moduleFrontName = 'module front name';
         $actionPath = 'action path';
         $actionName = 'action name';
-        $actionClassName = Action::class;
+        $actionClassName = \Magento\Framework\App\Action\Action::class;
         $moduleName = 'module name';
         $moduleList = [$moduleName];
         $paramList = $moduleFrontName . '/' . $actionPath . '/' . $actionName . '/key/val/key2/val2/';
@@ -129,7 +114,7 @@ class BaseTest extends BaseTestCase
         $moduleFrontName = 'module front name';
         $actionPath = 'action path';
         $actionName = 'action name';
-        $actionClassName = Action::class;
+        $actionClassName = \Magento\Framework\App\Action\Action::class;
         $moduleName = 'module name';
         $moduleList = [$moduleName];
         $paramList = $moduleFrontName . '/' . $actionPath . '/' . $actionName . '/key/val/key2/val2/';
@@ -157,7 +142,7 @@ class BaseTest extends BaseTestCase
         $moduleFrontName = 'module front name';
         $actionPath = 'action path';
         $actionName = 'action name';
-        $actionClassName = Action::class;
+        $actionClassName = \Magento\Framework\App\Action\Action::class;
         $moduleName = 'module name';
         $moduleList = [$moduleName];
         $paramList = $moduleFrontName . '/' . $actionPath . '/' . $actionName . '/key/val/key2/val2/';
@@ -191,7 +176,7 @@ class BaseTest extends BaseTestCase
         $moduleFrontName = 'module front name';
         $actionPath = 'action path';
         $actionName = 'action name';
-        $actionClassName = Action::class;
+        $actionClassName = \Magento\Framework\App\Action\Action::class;
         $emptyModuleList = [];
         $paramList = $moduleFrontName . '/' . $actionPath . '/' . $actionName . '/key/val/key2/val2/';
 
@@ -216,7 +201,7 @@ class BaseTest extends BaseTestCase
         $moduleFrontName = 'module front name';
         $actionPath = 'action path';
         $actionName = 'action name';
-        $actionClassName = Action::class;
+        $actionClassName = \Magento\Framework\App\Action\Action::class;
         $moduleName = 'module name';
         $moduleList = [$moduleName];
         $paramList = $moduleFrontName . '/' . $actionPath . '/' . $actionName . '/key/val/key2/val2/';

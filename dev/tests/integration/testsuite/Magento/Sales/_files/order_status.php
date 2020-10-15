@@ -4,15 +4,8 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Sales\Api\Data\OrderInterfaceFactory;
-use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
+require __DIR__ . '/order.php';
 
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/order.php');
-
-$objectManager = Bootstrap::getObjectManager();
-/** @var \Magento\Sales\Model\Order $order */
-$order = $objectManager->get(OrderInterfaceFactory::class)->create()->loadByIncrementId('100000001');
 $orderStatus = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
     \Magento\Sales\Model\Order\Status::class
 );

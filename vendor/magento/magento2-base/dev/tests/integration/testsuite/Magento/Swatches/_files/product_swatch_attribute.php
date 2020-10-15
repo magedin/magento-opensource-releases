@@ -10,9 +10,8 @@ use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
 use Magento\Catalog\Setup\CategorySetup;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Swatches/_files/swatch_attribute.php');
+include __DIR__ . '/swatch_attribute.php';
 
 $objectManager = Bootstrap::getObjectManager();
 $installer = $objectManager->create(CategorySetup::class);

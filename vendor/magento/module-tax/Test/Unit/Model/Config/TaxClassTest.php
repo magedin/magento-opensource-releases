@@ -3,66 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Tax\Model\Config\TaxClass
  */
 namespace Magento\Tax\Test\Unit\Model\Config;
 
-use Magento\Eav\Model\Entity\Attribute;
-use Magento\Eav\Model\Entity\AttributeFactory;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Model\Config\TaxClass;
-use PHPUnit\Framework\TestCase;
 
-class TaxClassTest extends TestCase
+class TaxClassTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests the afterSave method indirectly
      */
     public function testAfterSave()
     {
-        $attributeMock = $this->getMockBuilder(Attribute::class)
+        $attributeMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
             ->disableOriginalConstructor()
             ->setMethods(['loadByCode', 'getId', 'setData', 'save', '__wakeup'])
             ->getMock();
         $attributeMock
             ->expects($this->any())
             ->method('getId')
-            ->willReturn(1);
+            ->will($this->returnValue(1));
 
-        $attributeFactoryMock = $this->getMockBuilder(AttributeFactory::class)
+        $attributeFactoryMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\AttributeFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create', '__wakeup'])
             ->getMock();
         $attributeFactoryMock
             ->expects($this->any())
             ->method('create')
-            ->willReturn($attributeMock);
+            ->will($this->returnValue($attributeMock));
 
-        $resourceMock = $this->getMockBuilder(AbstractDb::class)
+        $resourceMock = $this->getMockBuilder(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class)
             ->disableOriginalConstructor()
             ->setMethods(['beginTransaction', '_construct', 'getIdFieldName', 'addCommitCallback', 'commit',
-                'save', '__wakeup', ])
+                          'save', '__wakeup', ])
             ->getMock();
         $resourceMock
             ->expects($this->any())
             ->method('beginTransaction')
-            ->willReturn(null);
+            ->will($this->returnValue(null));
         $resourceMock
             ->expects($this->any())
             ->method('getIdFieldName')
-            ->willReturn('tax');
+            ->will($this->returnValue('tax'));
         $resourceMock
             ->expects($this->any())
             ->method('addCommitCallback')
-            ->willReturn($resourceMock);
+            ->will($this->returnValue($resourceMock));
 
         $objectManager = new ObjectManager($this);
         $taxClass = $objectManager->getObject(
-            TaxClass::class,
+            \Magento\Tax\Model\Config\TaxClass::class,
             [
                 'resource' => $resourceMock,
                 'attributeFactory' => $attributeFactoryMock

@@ -20,7 +20,7 @@
             <group value="checkout"/>
         </annotations>
         <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
 
             <!--Create a product-->
             <createData entity="SimpleProduct2" stepKey="createProduct"/>
@@ -32,7 +32,7 @@
                 <argument name="customStore" value="customStore"/>
             </actionGroup>
 
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!-- Create store view -->
@@ -41,13 +41,11 @@
         </actionGroup>
 
         <!--Go to created product page-->
-        <actionGroup ref="AdminProductPageOpenByIdActionGroup" stepKey="goToEditPage">
-            <argument name="productId" value="$$createProduct.id$$"/>
-        </actionGroup>
+        <amOnPage url="{{AdminProductEditPage.url($$createProduct.id$$)}}" stepKey="goToEditPage"/>
         <waitForPageLoad stepKey="waitForProductPage"/>
 
         <!--Switch to second store view and change the product name-->
-        <actionGroup ref="SwitchToTheNewStoreViewActionGroup" stepKey="switchToCustomStoreView">
+        <actionGroup ref="SwitchToTheNewStoreView" stepKey="switchToCustomStoreView">
             <argument name="storeViewName" value="{{customStore.name}}"/>
         </actionGroup>
         <waitForPageLoad stepKey="waitForPageLoad"/>
@@ -58,7 +56,7 @@
         <!--Add product to cart-->
         <amOnPage url="{{StorefrontProductPage.url($$createProduct.name$$)}}" stepKey="amOnSimpleProductPage"/>
         <waitForPageLoad stepKey="waitForProductPageLoad"/>
-        <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartFromStorefrontProductPage">
+        <actionGroup ref="addToCartFromStorefrontProductPage" stepKey="addToCartFromStorefrontProductPage">
             <argument name="productName" value="$createProduct.name$$"/>
         </actionGroup>
 
@@ -69,42 +67,24 @@
         <waitForPageLoad stepKey="waitForStoreView"/>
 
         <!--Check product name in Minicart-->
-        <actionGroup ref="StorefrontClickOnMiniCartActionGroup" stepKey="clickCart"/>
+        <click selector="{{StorefrontMinicartSection.showCart}}" stepKey="clickCart"/>
         <grabTextFrom selector="{{StorefrontMinicartSection.productName}}" stepKey="grabProductNameMinicart"/>
-        <assertStringContainsString stepKey="assertProductNameMinicart">
-			<actualResult type="const">$grabProductNameMinicart</actualResult>
-			<expectedResult type="const">$$createProduct.name$$</expectedResult>
-        </assertStringContainsString>
-        <assertStringContainsString stepKey="assertProductNameMinicart1">
-			<actualResult type="const">$grabProductNameMinicart</actualResult>
-			<expectedResult type="string">-new</expectedResult>
-        </assertStringContainsString>
+        <assertContains expected="$$createProduct.name$$" actual="$grabProductNameMinicart" stepKey="assertProductNameMinicart"/>
+        <assertContains expectedType="string" expected="-new" actual="$grabProductNameMinicart" stepKey="assertProductNameMinicart1"/>
 
         <!--Check product name in Shopping Cart page-->
         <click selector="{{StorefrontMinicartSection.viewAndEditCart}}" stepKey="clickViewAndEdit"/>
         <waitForPageLoad stepKey="waitForShoppingCartPageLoad"/>
         <grabTextFrom selector="{{CheckoutCartProductSection.productName}}" stepKey="grabProductNameCart"/>
-        <assertStringContainsString stepKey="assertProductNameCart">
-			<actualResult type="const">$grabProductNameCart</actualResult>
-			<expectedResult type="const">$$createProduct.name$$</expectedResult>
-        </assertStringContainsString>
-        <assertStringContainsString stepKey="assertProductNameCart1">
-			<actualResult type="const">$grabProductNameCart</actualResult>
-			<expectedResult type="string">-new</expectedResult>
-        </assertStringContainsString>
+        <assertContains expected="$$createProduct.name$$" actual="$grabProductNameCart" stepKey="assertProductNameCart"/>
+        <assertContains expectedType="string" expected="-new" actual="$grabProductNameCart" stepKey="assertProductNameCart1"/>
 
         <!--Proceed to checkout and check product name in Order Summary area-->
         <click selector="{{CheckoutCartSummarySection.proceedToCheckout}}" stepKey="proceedToCheckout"/>
         <waitForPageLoad stepKey="waitForShippingPageLoad"/>
         <click selector="{{CheckoutShippingGuestInfoSection.itemInCart}}" stepKey="clickItemInCart"/>
         <grabTextFrom selector="{{CheckoutShippingGuestInfoSection.productName}}" stepKey="grabProductNameShipping"/>
-        <assertStringContainsString stepKey="assertProductNameShipping">
-			<actualResult type="const">$grabProductNameShipping</actualResult>
-			<expectedResult type="const">$$createProduct.name$$</expectedResult>
-        </assertStringContainsString>
-        <assertStringContainsString stepKey="assertProductNameShipping1">
-			<actualResult type="const">$grabProductNameShipping</actualResult>
-			<expectedResult type="string">-new</expectedResult>
-        </assertStringContainsString>
+        <assertContains expected="$$createProduct.name$$" actual="$grabProductNameShipping" stepKey="assertProductNameShipping"/>
+        <assertContains expectedType="string" expected="-new" actual="$grabProductNameShipping" stepKey="assertProductNameShipping1"/>
     </test>
 </tests>

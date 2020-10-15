@@ -9,19 +9,10 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DB\Select;
 
-/**
- * LinkedProductSelectBuilderByTierPrice
- *
- * Provide Select object for retrieve product id by tier price
- *
- * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
- */
 class LinkedProductSelectBuilderByTierPrice implements LinkedProductSelectBuilderInterface
 {
     /**
      * Default website id
-     *
-     * Constant represents default website id
      */
     const DEFAULT_WEBSITE_ID = 0;
 
@@ -81,9 +72,9 @@ class LinkedProductSelectBuilderByTierPrice implements LinkedProductSelectBuilde
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function build(int $productId, int $storeId) : array
+    public function build($productId)
     {
         $linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
         $productTable = $this->resource->getTableName('catalog_product_entity');
@@ -112,7 +103,7 @@ class LinkedProductSelectBuilderByTierPrice implements LinkedProductSelectBuilde
 
         if (!$this->catalogHelper->isPriceGlobal()) {
             $priceSelectStore = clone $priceSelect;
-            $priceSelectStore->where('t.website_id = ?', $this->storeManager->getStore($storeId)->getWebsiteId());
+            $priceSelectStore->where('t.website_id = ?', $this->storeManager->getStore()->getWebsiteId());
             $selects[] = $priceSelectStore;
         }
 

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Element\Html;
 
 use Magento\Framework\Locale\ResolverInterface;
@@ -12,13 +10,12 @@ use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\Html\Calendar;
 use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @see Calendar
  */
-class CalendarTest extends TestCase
+class CalendarTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @see MAGETWO-60828
