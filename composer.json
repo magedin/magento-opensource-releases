@@ -11,7 +11,7 @@
         "sort-packages": true
     },
     "require": {
-        "magento/product-community-edition": "2.4.0",
+        "magento/product-community-edition": "2.4.0-p1",
         "magento/composer-root-update-plugin": "~1.0"
     },
     "require-dev": {
@@ -64,7 +64,7 @@
             "Magento\\PhpStan\\": "dev/tests/static/framework/Magento/PhpStan/"
         }
     },
-    "version": "2.4.0",
+    "version": "2.4.0-p1",
     "minimum-stability": "stable",
     "repositories": [
         {
