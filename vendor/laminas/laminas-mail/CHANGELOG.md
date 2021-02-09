@@ -2,6 +2,178 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.13.0 - 2021-01-26
+
+
+-----
+
+### Release Notes for [2.13.0](https://github.com/laminas/laminas-mail/milestone/4)
+
+
+
+### 2.13.0
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **6**
+- Total contributors: **6**
+
+#### Bug
+
+ - [129: Tests: Resolve duplicate data provider key](https://github.com/laminas/laminas-mail/pull/129) thanks to @glensc
+ - [125: Merge release 2.12.5 into 2.13.x](https://github.com/laminas/laminas-mail/pull/125) thanks to @github-actions[bot]
+
+#### Duplicate,Enhancement
+
+ - [127: phpunit9 and php8](https://github.com/laminas/laminas-mail/pull/127) thanks to @delboy1978uk
+
+#### Enhancement
+
+ - [117: Add PHP 8.0 support](https://github.com/laminas/laminas-mail/pull/117) thanks to @bfoosness
+ - [109: Code style fixes in tests](https://github.com/laminas/laminas-mail/pull/109) thanks to @glensc
+ - [101: Fixes #34 replace call&#95;user&#95;func* with self invoked function](https://github.com/laminas/laminas-mail/pull/101) thanks to @samsonasik
+ - [34: replace call&#95;user&#95;func* with self invoked function](https://github.com/laminas/laminas-mail/issues/34) thanks to @michalbundyra
+
+## 2.12.5 - 2020-12-31
+
+
+-----
+
+### Release Notes for [2.12.5](https://github.com/laminas/laminas-mail/milestone/9)
+
+2.12.x bugfix release (patch)
+
+### 2.12.5
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
+
+#### Bug
+
+ - [108: Fix Invalid header line for Content-Disposition string - incomplete continuation](https://github.com/laminas/laminas-mail/pull/108) thanks to @glensc
+
+## 2.12.3 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#107](https://github.com/laminas/laminas-mail/pull/107) corrects a return type annotation in Laminas\Mail\Address\AddressInterface and in implementer.
+
+## 2.12.2 - 2020-08-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#103](https://github.com/laminas/laminas-mail/pull/103) fixes issues on Windows whereby the "Subject" and "To" headers were duplicated.
+
+- [#104](https://github.com/laminas/laminas-mail/pull/104) fixes an issue that occured when the `Sendmail` transport was configured with a `-f` option (From address). Prior to the fix, the option would be overwritten by the message `From` or `Sender` headers, which could lead to errors on systems where all mail must be sent from a specific address. The fixed behavior is to always honor the `-f` option, and ignore the `From` and `Sender` headers if it was provided to the transport.
+
+## 2.12.1 - 2020-08-05
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#102](https://github.com/laminas/laminas-mail/pull/102) corrects a parameter typehint and a return type within the `Protocol\Imap` subcomponent to correctly detail what they allow.
+
+## 2.12.0 - 2020-07-30
+
+### Added
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) adds a new interface, `Laminas\Mail\Header\HeaderLocatorInterface`. This defines classes that will locate header classes based on an email header name.
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) adds a new class, `Laminas\Mail\Header\HeaderLocator`, implementing `Laminas\Mail\Header\HeaderLocatorInterface`. This is the default implementation of that new interface.
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) adds the methods `setHeaderLocator(Laminas\Mail\Header\HeaderLocatorInterface $locator)` and `getHeaderLocator(): Laminas\Mail\Header\HeaderLocatorInterface` to the `Laminas\Mail\Headers` implementation. Users are encouraged to use these when providing custom header implementations in order to prepare for a 3.0 release.  **The value of `getHeaderLocator()` will now be used as the default mechanism for resolving header names to header classes.**
+
+- [#94](https://github.com/laminas/laminas-mail/pull/94) and [#99](https://github.com/laminas/laminas-mail/pull/99) add the "novalidatecert" option for each of the POP3, IMAP, and SMTP protocol implementations. When toggled true, you can connect to servers using self-signed certificates.
+
+### Changed
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) bumps the minimum supported PHP version to 7.1.
+
+### Deprecated
+
+- [#99](https://github.com/laminas/laminas-mail/pull/99) deprecates the `Laminas\Mail\Protocol\AbstractProtocol::_connect()` method, as it is no longer used internally.
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) deprecates `Laminas\Mail\Header\HeaderLoader` in favor of the new `Laminas\Mail\Header\HeaderLocator` class. The class will be removed in version 3.0.0.
+
+- [#95](https://github.com/laminas/laminas-mail/pull/95) deprecates the `Headers::getPluginClassLoader()` and `Headers::setPluginClassLoader()` methods, in favor of the new `setHeaderLocator()` and `getHeaderLocator()` methods. These methods will be removed in version 3.0.0, and laminas-loader `PluginClassLocator` instances will no longer be supported. Please update your code to use the new `HeaderLocatorInterface` instead.
+
+### Removed
+
+- [#98](https://github.com/laminas/laminas-mail/pull/98) removes `Laminas\Mail\Transport\Null`, as it is unusable with the new minimum supported PHP version (7.1). Users should use `Laminas\Mail\Transport\InMemory` instead. As this has been the default when requesting a "null" transport from `Laminas\Mail\Transport\Factory` for the past several minor releases, end-users should be unaffected. However, **users are encouraged to specify "inmemory" instead of "null" when requiring a no-op transport.**
+
+### Fixed
+
+- Nothing.
+
+## 2.11.1 - 2020-07-28
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#97](https://github.com/laminas/laminas-mail/pull/97) adds code to `Header\ContentType::addParameter()` to ensure the value is trimmed of whitespace, fixing issues whereby filenames might contain a leading or trailing space.
+
 ## 2.11.0 - 2020-06-30
 
 ### Added

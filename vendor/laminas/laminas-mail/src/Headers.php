@@ -6,6 +6,8 @@
  * @license   https://github.com/laminas/laminas-mail/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Laminas\Mail;
 
 use ArrayIterator;
@@ -24,15 +26,21 @@ use Traversable;
 class Headers implements Countable, Iterator
 {
     /** @var string End of Line for fields */
-    const EOL = "\r\n";
+    public const EOL = "\r\n";
 
     /** @var string Start of Line when folding */
-    const FOLDING = "\r\n ";
+    public const FOLDING = "\r\n ";
 
     /**
-     * @var \Laminas\Loader\PluginClassLoader
+     * @var null|Header\HeaderLocatorInterface
      */
-    protected $pluginClassLoader = null;
+    private $headerLocator;
+
+    /**
+     * @todo Remove for 3.0.0.
+     * @var null|PluginClassLocator
+     */
+    protected $pluginClassLoader;
 
     /**
      * @var array key names for $headers array
@@ -119,28 +127,71 @@ class Headers implements Countable, Iterator
     }
 
     /**
-     * Set an alternate implementation for the PluginClassLoader
+     * Set an alternate PluginClassLocator implementation for loading header classes.
      *
-     * @param  PluginClassLocator $pluginClassLoader
-     * @return Headers
+     * @deprecated since 2.12.0
+     * @todo Remove for version 3.0.0
+     * @return $this
      */
     public function setPluginClassLoader(PluginClassLocator $pluginClassLoader)
     {
+        // Silenced; can be caught in custom error handlers.
+        @trigger_error(sprintf(
+            'Since laminas/laminas-mail 2.12.0: Usage of %s is deprecated; use %s::setHeaderLocator() instead',
+            __METHOD__,
+            __CLASS__
+        ), E_USER_DEPRECATED);
+
         $this->pluginClassLoader = $pluginClassLoader;
         return $this;
     }
 
     /**
-     * Return an instance of a PluginClassLocator, lazyload and inject map if necessary
+     * Return a PluginClassLocator instance for customizing headers.
      *
+     * Lazyloads a Header\HeaderLoader if necessary.
+     *
+     * @deprecated since 2.12.0
+     * @todo Remove for version 3.0.0
      * @return PluginClassLocator
      */
     public function getPluginClassLoader()
     {
-        if ($this->pluginClassLoader === null) {
+        // Silenced; can be caught in custom error handlers.
+        @trigger_error(sprintf(
+            'Since laminas/laminas-mail 2.12.0: Usage of %s is deprecated; use %s::getHeaderLocator() instead',
+            __METHOD__,
+            __CLASS__
+        ), E_USER_DEPRECATED);
+
+        if (! $this->pluginClassLoader) {
             $this->pluginClassLoader = new Header\HeaderLoader();
         }
+
         return $this->pluginClassLoader;
+    }
+
+    /**
+     * Retrieve the header class locator for customizing headers.
+     *
+     * Lazyloads a Header\HeaderLocator instance if necessary.
+     */
+    public function getHeaderLocator(): Header\HeaderLocatorInterface
+    {
+        if (! $this->headerLocator) {
+            $this->setHeaderLocator(new Header\HeaderLocator());
+        }
+        return $this->headerLocator;
+    }
+
+    /**
+     * @todo Return self when we update to 7.4 or later as minimum PHP version.
+     * @return $this
+     */
+    public function setHeaderLocator(Header\HeaderLocatorInterface $headerLocator)
+    {
+        $this->headerLocator = $headerLocator;
+        return $this;
     }
 
     /**
@@ -270,9 +321,20 @@ class Headers implements Countable, Iterator
      */
     public function removeHeader($instanceOrFieldName)
     {
+        if (! $instanceOrFieldName instanceof Header\HeaderInterface && ! is_string($instanceOrFieldName)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '%s requires a string or %s instance; received %s',
+                __METHOD__,
+                Header\HeaderInterface::class,
+                is_object($instanceOrFieldName) ? get_class($instanceOrFieldName) : gettype($instanceOrFieldName)
+            ));
+        }
+
         if ($instanceOrFieldName instanceof Header\HeaderInterface) {
             $indexes = array_keys($this->headers, $instanceOrFieldName, true);
-        } else {
+        }
+
+        if (is_string($instanceOrFieldName)) {
             $key = $this->normalizeFieldName($instanceOrFieldName);
             $indexes = array_keys($this->headersKeys, $key, true);
         }
@@ -328,10 +390,8 @@ class Headers implements Countable, Iterator
             case 1:
                 if ($results[0] instanceof Header\MultipleHeadersInterface) {
                     return new ArrayIterator($results);
-                } else {
-                    return $results[0];
                 }
-                //fall-trough
+                return $results[0];
             default:
                 return new ArrayIterator($results);
         }
@@ -478,10 +538,10 @@ class Headers implements Countable, Iterator
      */
     public function loadHeader($headerLine)
     {
-        list($name, ) = Header\GenericHeader::splitHeaderLine($headerLine);
+        list($name) = Header\GenericHeader::splitHeaderLine($headerLine);
 
         /** @var HeaderInterface $class */
-        $class = $this->getPluginClassLoader()->load($name) ?: Header\GenericHeader::class;
+        $class = $this->resolveHeaderClass($name);
         return $class::fromString($headerLine);
     }
 
@@ -496,7 +556,7 @@ class Headers implements Countable, Iterator
         $key   = $this->headersKeys[$index];
 
         /** @var GenericHeader $class */
-        $class = ($this->getPluginClassLoader()->load($key)) ?: Header\GenericHeader::class;
+        $class = $this->resolveHeaderClass($key);
 
         $encoding = $current->getEncoding();
         $headers  = $class::fromString($current->toString());
@@ -527,5 +587,17 @@ class Headers implements Countable, Iterator
     protected function normalizeFieldName($fieldName)
     {
         return str_replace(['-', '_', ' ', '.'], '', strtolower($fieldName));
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    private function resolveHeaderClass($key)
+    {
+        if ($this->pluginClassLoader) {
+            return $this->pluginClassLoader->load($key) ?: Header\GenericHeader::class;
+        }
+        return $this->getHeaderLocator()->get($key, Header\GenericHeader::class);
     }
 }

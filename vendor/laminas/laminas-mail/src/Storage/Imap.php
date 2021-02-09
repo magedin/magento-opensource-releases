@@ -121,7 +121,7 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
 
         $flags = [];
         foreach ($data['FLAGS'] as $flag) {
-            $flags[] = isset(static::$knownFlags[$flag]) ? static::$knownFlags[$flag] : $flag;
+            $flags[] = static::$knownFlags[$flag] ?? $flag;
         }
 
         return new $this->messageClass(['handler' => $this, 'id' => $id, 'headers' => $header, 'flags' => $flags]);
@@ -213,6 +213,11 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
         $ssl      = isset($params->ssl) ? $params->ssl : false;
 
         $this->protocol = new Protocol\Imap();
+
+        if (isset($params->novalidatecert)) {
+            $this->protocol->setNoValidateCert((bool)$params->novalidatecert);
+        }
+
         $this->protocol->connect($host, $port, $ssl);
         if (! $this->protocol->login($params->user, $password)) {
             throw new Exception\RuntimeException('cannot login, user or password wrong');
