@@ -21,10 +21,10 @@ use Symfony\Component\ExpressionLanguage\Expression;
 
 abstract class AbstractConfigurator
 {
-    const FACTORY = 'unknown';
+    public const FACTORY = 'unknown';
 
     /**
-     * @var callable(mixed $value, bool $allowService)|null
+     * @var callable(mixed, bool $allowService)|null
      */
     public static $valuePreProcessor;
 
@@ -38,6 +38,16 @@ abstract class AbstractConfigurator
         }
 
         throw new \BadMethodCallException(sprintf('Call to undefined method "%s::%s()".', static::class, $method));
+    }
+
+    public function __sleep()
+    {
+        throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
+    }
+
+    public function __wakeup()
+    {
+        throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }
 
     /**
