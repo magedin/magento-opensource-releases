@@ -92,7 +92,7 @@ class Part implements RecursiveIterator, Part\PartInterface
             $this->messageNum = $params['id'];
         }
 
-        $params['strict'] = $params['strict'] ?? false;
+        $params['strict'] = isset($params['strict']) ? $params['strict'] : false;
 
         if (isset($params['raw'])) {
             Mime\Decode::splitMessage(
@@ -134,6 +134,7 @@ class Part implements RecursiveIterator, Part\PartInterface
         }
     }
 
+
     /**
      * Body of part
      *
@@ -166,6 +167,7 @@ class Part implements RecursiveIterator, Part\PartInterface
     {
         return strlen($this->getContent());
     }
+
 
     /**
      * Cache content and split in parts if multipart
@@ -407,7 +409,7 @@ class Part implements RecursiveIterator, Part\PartInterface
     public function hasChildren()
     {
         $current = $this->current();
-        return $current && $current instanceof self && $current->isMultipart();
+        return $current && $current instanceof Part && $current->isMultipart();
     }
 
     /**

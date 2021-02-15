@@ -84,7 +84,7 @@ class Parser implements ParserInterface
         }
 
         $split = explode('n', $joined);
-        $first = $split[0] ?? null;
+        $first = isset($split[0]) ? $split[0] : null;
 
         return [
             $first ? ('-' === $first || '+' === $first ? $int($first.'1') : $int($first)) : 1,

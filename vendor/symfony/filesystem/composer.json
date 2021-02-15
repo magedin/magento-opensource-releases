@@ -1,7 +1,7 @@
 {
     "name": "symfony/filesystem",
     "type": "library",
-    "description": "Provides basic utilities for the filesystem",
+    "description": "Symfony Filesystem Component",
     "keywords": [],
     "homepage": "https://symfony.com",
     "license": "MIT",

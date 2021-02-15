@@ -172,13 +172,13 @@ class QuestionHelper extends Helper
             $choices = $question->getChoices();
 
             if (!$question->isMultiselect()) {
-                return $choices[$default] ?? $default;
+                return isset($choices[$default]) ? $choices[$default] : $default;
             }
 
             $default = explode(',', $default);
             foreach ($default as $k => $v) {
                 $v = $question->isTrimmable() ? trim($v) : $v;
-                $default[$k] = $choices[$v] ?? $v;
+                $default[$k] = isset($choices[$v]) ? $choices[$v] : $v;
             }
         }
 

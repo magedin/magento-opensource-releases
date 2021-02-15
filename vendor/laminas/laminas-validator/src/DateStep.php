@@ -10,8 +10,6 @@ namespace Laminas\Validator;
 
 use DateInterval;
 use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
 use DateTimeZone;
 use Laminas\Stdlib\ArrayUtils;
 use Traversable;
@@ -189,7 +187,7 @@ class DateStep extends Date
     /**
      * Returns true if a date is within a valid step
      *
-     * @param  string|int|DateTime|DateTimeImmutable $value
+     * @param  string|int|\DateTime $value
      * @return bool
      * @throws Exception\InvalidArgumentException
      */
@@ -201,12 +199,7 @@ class DateStep extends Date
 
         $valueDate = $this->convertToDateTime($value, false); // avoid duplicate errors
         $baseDate  = $this->convertToDateTime($this->baseValue, false);
-
-        if (false === $valueDate || false === $baseDate) {
-            return false;
-        }
-
-        $step = $this->getStep();
+        $step      = $this->getStep();
 
         // Same date?
         if ($valueDate == $baseDate) {
@@ -345,17 +338,17 @@ class DateStep extends Date
      * iterations by starting at the lower bound of steps needed to reach
      * the target
      *
-     * @param DateTimeInterface     $baseDate
-     * @param DateTimeInterface     $valueDate
-     * @param int[]                 $intervalParts
-     * @param int[]                 $diffParts
-     * @param DateInterval          $step
+     * @param DateTime     $baseDate
+     * @param DateTime     $valueDate
+     * @param int[]        $intervalParts
+     * @param int[]        $diffParts
+     * @param DateInterval $step
      *
      * @return bool
      */
     private function fallbackIncrementalIterationLogic(
-        DateTimeInterface $baseDate,
-        DateTimeInterface $valueDate,
+        DateTime $baseDate,
+        DateTime $valueDate,
         array $intervalParts,
         array $diffParts,
         DateInterval $step
@@ -366,13 +359,13 @@ class DateStep extends Date
         $dateModificationOperation           = $isIncrementalStepping ? 'add' : 'sub';
 
         for ($offsetIterations = 0; $offsetIterations < $requiredIterations; $offsetIterations += 1) {
-            $baseDate = $baseDate->{$dateModificationOperation}($minimumInterval);
+            $baseDate->{$dateModificationOperation}($minimumInterval);
         }
 
         while (($isIncrementalStepping && $baseDate < $valueDate)
             || (! $isIncrementalStepping && $baseDate > $valueDate)
         ) {
-            $baseDate = $baseDate->{$dateModificationOperation}($step);
+            $baseDate->{$dateModificationOperation}($step);
 
             if ($baseDate == $valueDate) {
                 return true;

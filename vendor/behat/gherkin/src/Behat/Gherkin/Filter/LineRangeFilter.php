@@ -94,24 +94,15 @@ class LineRangeFilter implements FilterInterface
             }
 
             if ($scenario instanceof OutlineNode && $scenario->hasExamples()) {
-                // first accumulate examples and then create scenario
-                $exampleTableNodes = array();
+                $table = $scenario->getExampleTable()->getTable();
+                $lines = array_keys($table);
 
-                foreach ($scenario->getExampleTables() as $exampleTable) {
-                    $table = $exampleTable->getTable();
-                    $lines = array_keys($table);
+                $filteredTable = array($lines[0] => $table[$lines[0]]);
+                unset($table[$lines[0]]);
 
-                    $filteredTable = array($lines[0] => $table[$lines[0]]);
-                    unset($table[$lines[0]]);
-
-                    foreach ($table as $line => $row) {
-                        if ($this->filterMinLine <= $line && $this->filterMaxLine >= $line) {
-                            $filteredTable[$line] = $row;
-                        }
-                    }
-
-                    if (count($filteredTable) > 1) {
-                        $exampleTableNodes[] = new ExampleTableNode($filteredTable, $exampleTable->getKeyword(), $exampleTable->getTags());
+                foreach ($table as $line => $row) {
+                    if ($this->filterMinLine <= $line && $this->filterMaxLine >= $line) {
+                        $filteredTable[$line] = $row;
                     }
                 }
 
@@ -119,7 +110,7 @@ class LineRangeFilter implements FilterInterface
                     $scenario->getTitle(),
                     $scenario->getTags(),
                     $scenario->getSteps(),
-                    $exampleTableNodes,
+                    new ExampleTableNode($filteredTable, $scenario->getExampleTable()->getKeyword()),
                     $scenario->getKeyword(),
                     $scenario->getLine()
                 );

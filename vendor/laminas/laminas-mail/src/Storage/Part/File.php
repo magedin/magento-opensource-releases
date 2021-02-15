@@ -48,7 +48,7 @@ class File extends Part
             fseek($this->fh, $params['startPos']);
         }
         $header = '';
-        $endPos = $params['endPos'] ?? null;
+        $endPos = isset($params['endPos']) ? $params['endPos'] : null;
         while (($endPos === null || ftell($this->fh) < $endPos) && trim($line = fgets($this->fh))) {
             $header .= $line;
         }
@@ -151,10 +151,7 @@ class File extends Part
             throw new Exception\RuntimeException('part not found');
         }
 
-        return new static([
-            'file' => $this->fh,
-            'startPos' => $this->partPos[$num][0],
-            'endPos' => $this->partPos[$num][1],
-        ]);
+        return new static(['file' => $this->fh, 'startPos' => $this->partPos[$num][0],
+                              'endPos' => $this->partPos[$num][1]]);
     }
 }

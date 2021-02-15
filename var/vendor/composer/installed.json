@@ -740,17 +740,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v5.2.3",
-        "version_normalized": "5.2.3.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "89d4b176d12a2946a1ae4e34906a025b7b6b135a"
+            "reference": "47c02526c532fb381374dab26df05e7313978976"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/89d4b176d12a2946a1ae4e34906a025b7b6b135a",
-            "reference": "89d4b176d12a2946a1ae4e34906a025b7b6b135a",
+            "url": "https://api.github.com/repos/symfony/console/zipball/47c02526c532fb381374dab26df05e7313978976",
+            "reference": "47c02526c532fb381374dab26df05e7313978976",
             "shasum": ""
         },
         "require": {
@@ -786,7 +786,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2021-01-28T22:06:19+00:00",
+        "time": "2020-12-18T08:03:05+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -811,7 +811,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Eases the creation of beautiful and testable command line interfaces",
+        "description": "Symfony Console Component",
         "homepage": "https://symfony.com",
         "keywords": [
             "cli",
@@ -836,24 +836,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.2.3",
-        "version_normalized": "5.2.3.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "262d033b57c73e8b59cd6e68a45c528318b15038"
+            "reference": "fa8f8cab6b65e2d99a118e082935344c5ba8c60d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/262d033b57c73e8b59cd6e68a45c528318b15038",
-            "reference": "262d033b57c73e8b59cd6e68a45c528318b15038",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/fa8f8cab6b65e2d99a118e082935344c5ba8c60d",
+            "reference": "fa8f8cab6b65e2d99a118e082935344c5ba8c60d",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2021-01-27T10:01:46+00:00",
+        "time": "2020-11-30T17:05:38+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -878,7 +878,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Provides basic utilities for the filesystem",
+        "description": "Symfony Filesystem Component",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -897,23 +897,23 @@
     },
     {
         "name": "symfony/finder",
-        "version": "v5.2.3",
-        "version_normalized": "5.2.3.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/finder.git",
-            "reference": "4adc8d172d602008c204c2e16956f99257248e03"
+            "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/4adc8d172d602008c204c2e16956f99257248e03",
-            "reference": "4adc8d172d602008c204c2e16956f99257248e03",
+            "url": "https://api.github.com/repos/symfony/finder/zipball/0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
+            "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5"
         },
-        "time": "2021-01-28T22:06:19+00:00",
+        "time": "2020-12-08T17:02:38+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -938,7 +938,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Finds files and directories via an intuitive fluent interface",
+        "description": "Symfony Finder Component",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -1437,24 +1437,24 @@
     },
     {
         "name": "symfony/process",
-        "version": "v5.2.3",
-        "version_normalized": "5.2.3.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/process.git",
-            "reference": "313a38f09c77fbcdc1d223e57d368cea76a2fd2f"
+            "reference": "bd8815b8b6705298beaa384f04fabd459c10bedd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/313a38f09c77fbcdc1d223e57d368cea76a2fd2f",
-            "reference": "313a38f09c77fbcdc1d223e57d368cea76a2fd2f",
+            "url": "https://api.github.com/repos/symfony/process/zipball/bd8815b8b6705298beaa384f04fabd459c10bedd",
+            "reference": "bd8815b8b6705298beaa384f04fabd459c10bedd",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-php80": "^1.15"
         },
-        "time": "2021-01-27T10:15:41+00:00",
+        "time": "2020-12-08T17:03:37+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1479,7 +1479,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Executes commands in sub-processes",
+        "description": "Symfony Process Component",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -1576,17 +1576,17 @@
     },
     {
         "name": "symfony/string",
-        "version": "v5.2.3",
-        "version_normalized": "5.2.3.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/string.git",
-            "reference": "c95468897f408dd0aca2ff582074423dd0455122"
+            "reference": "5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/string/zipball/c95468897f408dd0aca2ff582074423dd0455122",
-            "reference": "c95468897f408dd0aca2ff582074423dd0455122",
+            "url": "https://api.github.com/repos/symfony/string/zipball/5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed",
+            "reference": "5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed",
             "shasum": ""
         },
         "require": {
@@ -1603,7 +1603,7 @@
             "symfony/translation-contracts": "^1.1|^2",
             "symfony/var-exporter": "^4.4|^5.0"
         },
-        "time": "2021-01-25T15:14:59+00:00",
+        "time": "2020-12-05T07:33:16+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1631,7 +1631,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
+        "description": "Symfony String component",
         "homepage": "https://symfony.com",
         "keywords": [
             "grapheme",

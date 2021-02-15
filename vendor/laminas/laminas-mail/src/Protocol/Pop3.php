@@ -17,7 +17,7 @@ class Pop3
     /**
      * Default timeout in seconds for initiating session
      */
-    public const TIMEOUT_CONNECTION = 30;
+    const TIMEOUT_CONNECTION = 30;
 
     /**
      * saves if server supports top
@@ -127,7 +127,7 @@ class Pop3
     public function sendRequest($request)
     {
         ErrorHandler::start();
-        $result = fwrite($this->socket, $request . "\r\n");
+        $result = fputs($this->socket, $request . "\r\n");
         $error  = ErrorHandler::stop();
         if (! $result) {
             throw new Exception\RuntimeException('send failed - connection closed?', 0, $error);
@@ -171,7 +171,7 @@ class Pop3
                 }
                 $message .= $line;
                 $line = fgets($this->socket);
-            }
+            };
         }
 
         return $message;
@@ -209,6 +209,7 @@ class Pop3
         }
     }
 
+
     /**
      * Get capabilities from POP3 server
      *
@@ -219,6 +220,7 @@ class Pop3
         $result = $this->request('CAPA', true);
         return explode("\n", $result);
     }
+
 
     /**
      * Login to POP3 server. Can use APOP
@@ -242,6 +244,7 @@ class Pop3
         $this->request("PASS $password");
     }
 
+
     /**
      * Make STAT call for message count and size sum
      *
@@ -256,6 +259,7 @@ class Pop3
 
         list($messages, $octets) = explode(' ', $result);
     }
+
 
     /**
      * Make LIST call for size of message(s)
@@ -283,6 +287,7 @@ class Pop3
 
         return $messages;
     }
+
 
     /**
      * Make UIDL call for getting a uniqueid
@@ -314,6 +319,7 @@ class Pop3
         return $messages;
     }
 
+
     /**
      * Make TOP call for getting headers and maybe some body lines
      * This method also sets hasTop - before it it's not known if top is supported
@@ -333,9 +339,9 @@ class Pop3
         if ($this->hasTop === false) {
             if ($fallback) {
                 return $this->retrieve($msgno);
+            } else {
+                throw new Exception\RuntimeException('top not supported and no fallback wanted');
             }
-
-            throw new Exception\RuntimeException('top not supported and no fallback wanted');
         }
         $this->hasTop = true;
 

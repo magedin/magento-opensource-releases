@@ -53,8 +53,6 @@ use Aws\AwsClient;
  * @method \GuzzleHttp\Promise\Promise untagResourceAsync(array $args = [])
  * @method \Aws\Result updateBrokerCount(array $args = [])
  * @method \GuzzleHttp\Promise\Promise updateBrokerCountAsync(array $args = [])
- * @method \Aws\Result updateBrokerType(array $args = [])
- * @method \GuzzleHttp\Promise\Promise updateBrokerTypeAsync(array $args = [])
  * @method \Aws\Result updateBrokerStorage(array $args = [])
  * @method \GuzzleHttp\Promise\Promise updateBrokerStorageAsync(array $args = [])
  * @method \Aws\Result updateConfiguration(array $args = [])

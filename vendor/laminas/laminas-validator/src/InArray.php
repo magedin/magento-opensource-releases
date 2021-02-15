@@ -10,7 +10,6 @@ namespace Laminas\Validator;
 
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
-use function is_bool;
 
 class InArray extends AbstractValidator
 {
@@ -114,16 +113,12 @@ class InArray extends AbstractValidator
      * InArray::COMPARE_NOT_STRICT_AND_PREVENT_STR_TO_INT_VULNERABILITY
      * InArray::COMPARE_NOT_STRICT
      *
-     * @param  int|bool $strict
+     * @param  int $strict
      * @return $this Provides a fluent interface
      * @throws Exception\InvalidArgumentException
      */
     public function setStrict($strict)
     {
-        if (is_bool($strict)) {
-            $strict = $strict ? self::COMPARE_STRICT : self::COMPARE_NOT_STRICT_AND_PREVENT_STR_TO_INT_VULNERABILITY;
-        }
-
         $checkTypes = [
             self::COMPARE_NOT_STRICT_AND_PREVENT_STR_TO_INT_VULNERABILITY,    // 0
             self::COMPARE_STRICT,                                             // 1
