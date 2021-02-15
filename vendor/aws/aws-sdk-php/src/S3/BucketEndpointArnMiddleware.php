@@ -13,7 +13,6 @@ use Aws\Endpoint\PartitionEndpointProvider;
 use Aws\Exception\InvalidRegionException;
 use Aws\Exception\UnresolvedEndpointException;
 use Aws\S3\Exception\S3Exception;
-use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 
 /**

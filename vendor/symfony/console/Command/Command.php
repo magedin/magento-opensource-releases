@@ -281,14 +281,7 @@ class Command
         if ($code instanceof \Closure) {
             $r = new \ReflectionFunction($code);
             if (null === $r->getClosureThis()) {
-                set_error_handler(static function () {});
-                try {
-                    if ($c = \Closure::bind($code, $this)) {
-                        $code = $c;
-                    }
-                } finally {
-                    restore_error_handler();
-                }
+                $code = \Closure::bind($code, $this);
             }
         }
 

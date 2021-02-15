@@ -251,23 +251,17 @@ class HeaderUtils
         return $query;
     }
 
-    private static function groupParts(array $matches, string $separators, bool $first = true): array
+    private static function groupParts(array $matches, string $separators): array
     {
         $separator = $separators[0];
         $partSeparators = substr($separators, 1);
 
         $i = 0;
         $partMatches = [];
-        $previousMatchWasSeparator = false;
         foreach ($matches as $match) {
-            if (!$first && $previousMatchWasSeparator && isset($match['separator']) && $match['separator'] === $separator) {
-                $previousMatchWasSeparator = true;
-                $partMatches[$i][] = $match;
-            } elseif (isset($match['separator']) && $match['separator'] === $separator) {
-                $previousMatchWasSeparator = true;
+            if (isset($match['separator']) && $match['separator'] === $separator) {
                 ++$i;
             } else {
-                $previousMatchWasSeparator = false;
                 $partMatches[$i][] = $match;
             }
         }
@@ -275,18 +269,11 @@ class HeaderUtils
         $parts = [];
         if ($partSeparators) {
             foreach ($partMatches as $matches) {
-                $parts[] = self::groupParts($matches, $partSeparators, false);
+                $parts[] = self::groupParts($matches, $partSeparators);
             }
         } else {
             foreach ($partMatches as $matches) {
                 $parts[] = self::unquote($matches[0][0]);
-            }
-
-            if (!$first && 2 < \count($parts)) {
-                $parts = [
-                    $parts[0],
-                    implode($separator, \array_slice($parts, 1)),
-                ];
             }
         }
 

@@ -133,7 +133,7 @@ class Sendmail implements TransportInterface
             $headers = str_replace("\r\n", "\n", $headers);
         }
 
-        ($this->callable)($to, $subject, $body, $headers, $params);
+        call_user_func($this->callable, $to, $subject, $body, $headers, $params);
     }
 
     /**

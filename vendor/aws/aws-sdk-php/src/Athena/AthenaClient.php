@@ -39,8 +39,6 @@ use Aws\AwsClient;
  * @method \GuzzleHttp\Promise\Promise listDataCatalogsAsync(array $args = [])
  * @method \Aws\Result listDatabases(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listDatabasesAsync(array $args = [])
- * @method \Aws\Result listEngineVersions(array $args = [])
- * @method \GuzzleHttp\Promise\Promise listEngineVersionsAsync(array $args = [])
  * @method \Aws\Result listNamedQueries(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listNamedQueriesAsync(array $args = [])
  * @method \Aws\Result listQueryExecutions(array $args = [])

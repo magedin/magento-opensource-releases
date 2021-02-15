@@ -149,7 +149,7 @@ class ProgressIndicator
             self::$formats = self::initFormats();
         }
 
-        return self::$formats[$name] ?? null;
+        return isset(self::$formats[$name]) ? self::$formats[$name] : null;
     }
 
     /**
@@ -182,7 +182,7 @@ class ProgressIndicator
             self::$formatters = self::initPlaceholderFormatters();
         }
 
-        return self::$formatters[$name] ?? null;
+        return isset(self::$formatters[$name]) ? self::$formatters[$name] : null;
     }
 
     private function display()

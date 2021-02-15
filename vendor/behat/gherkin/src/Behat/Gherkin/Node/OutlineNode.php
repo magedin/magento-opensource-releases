@@ -30,9 +30,9 @@ class OutlineNode implements ScenarioInterface
      */
     private $steps;
     /**
-     * @var ExampleTableNode|ExampleTableNode[]
+     * @var ExampleTableNode
      */
-    private $tables;
+    private $table;
     /**
      * @var string
      */
@@ -52,7 +52,7 @@ class OutlineNode implements ScenarioInterface
      * @param null|string      $title
      * @param string[]         $tags
      * @param StepNode[]       $steps
-     * @param ExampleTableNode|ExampleTableNode[]  $tables
+     * @param ExampleTableNode $table
      * @param string           $keyword
      * @param integer          $line
      */
@@ -60,20 +60,16 @@ class OutlineNode implements ScenarioInterface
         $title,
         array $tags,
         array $steps,
-        $tables,
+        ExampleTableNode $table,
         $keyword,
         $line
     ) {
         $this->title = $title;
         $this->tags = $tags;
         $this->steps = $steps;
+        $this->table = $table;
         $this->keyword = $keyword;
         $this->line = $line;
-        if (!is_array($tables)) {
-           $this->tables = array($tables);
-        } else {
-            $this->tables = $tables;
-        }
     }
 
     /**
@@ -155,48 +151,27 @@ class OutlineNode implements ScenarioInterface
      */
     public function hasExamples()
     {
-        return 0 < count($this->tables);
+        return 0 < count($this->table->getColumnsHash());
     }
 
     /**
-     * Builds and returns examples table for the outline.
+     * Returns examples table.
      *
-     * WARNING: it returns a merged table with tags lost.
-     *
-     * @deprecated use getExampleTables instead
      * @return ExampleTableNode
      */
     public function getExampleTable()
     {
-        $table = array();
-        foreach ($this->tables[0]->getTable() as $k => $v) {
-            $table[$k] = $v;
-        }
-
-        /** @var ExampleTableNode $exampleTableNode */
-        $exampleTableNode = new ExampleTableNode($table, $this->tables[0]->getKeyword());
-        for ($i = 1; $i < count($this->tables); $i++) {
-            $exampleTableNode->mergeRowsFromTable($this->tables[$i]);
-        }
-        return $exampleTableNode;
+        return $this->table;
     }
 
     /**
      * Returns list of examples for the outline.
+     *
      * @return ExampleNode[]
      */
     public function getExamples()
     {
-        return $this->examples = $this->examples ?: $this->createExamples();
-    }
-
-    /**
-     * Returns examples tables array for the outline.
-     * @return ExampleTableNode[]
-     */
-    public function getExampleTables()
-    {
-        return $this->tables;
+        return $this->examples = $this->examples ? : $this->createExamples();
     }
 
     /**
@@ -227,18 +202,15 @@ class OutlineNode implements ScenarioInterface
     protected function createExamples()
     {
         $examples = array();
-
-        foreach ($this->getExampleTables() as $exampleTable) {
-            foreach ($exampleTable->getColumnsHash() as $rowNum => $row) {
-                $examples[] = new ExampleNode(
-                    $exampleTable->getRowAsString($rowNum + 1),
-                    array_merge($this->tags, $exampleTable->getTags()),
-                    $this->getSteps(),
-                    $row,
-                    $exampleTable->getRowLine($rowNum + 1),
-                    $this->getTitle()
-                );
-            }
+        foreach ($this->table->getColumnsHash() as $rowNum => $row) {
+            $examples[] = new ExampleNode(
+                $this->table->getRowAsString($rowNum + 1),
+                $this->tags,
+                $this->getSteps(),
+                $row,
+                $this->table->getRowLine($rowNum + 1),
+                $this->getTitle()
+            );
         }
 
         return $examples;

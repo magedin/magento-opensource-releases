@@ -260,6 +260,7 @@ class Smtp extends AbstractProtocol
         }
     }
 
+
     /**
      * Issues MAIL command
      *
@@ -281,6 +282,7 @@ class Smtp extends AbstractProtocol
         $this->data = false;
     }
 
+
     /**
      * Issues RCPT command
      *
@@ -298,6 +300,7 @@ class Smtp extends AbstractProtocol
         $this->_expect([250, 251], 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
         $this->rcpt = true;
     }
+
 
     /**
      * Issues DATA command
@@ -339,6 +342,7 @@ class Smtp extends AbstractProtocol
         $this->_expect(250, 600); // Timeout set for 10 minutes as per RFC 2821 4.5.3.2
         $this->data = true;
     }
+
 
     /**
      * Issues the RSET command end validates answer

@@ -51,9 +51,9 @@ class Maildir extends Folder\Maildir implements WritableInterface
                     throw new StorageException\InvalidArgumentException("parent $dir not found", 0, $error);
                 } elseif (! is_dir($dir)) {
                     throw new StorageException\InvalidArgumentException("parent $dir not a directory", 0, $error);
+                } else {
+                    throw new StorageException\RuntimeException('cannot create maildir', 0, $error);
                 }
-
-                throw new StorageException\RuntimeException('cannot create maildir', 0, $error);
             }
         }
 
@@ -390,12 +390,10 @@ class Maildir extends Folder\Maildir implements WritableInterface
             );
         }
 
-        return [
-            'dirname' => $this->rootdir . '.' . $folder,
-            'uniq' => $uniq,
-            'filename' => $tmpdir . $uniq,
-            'handle' => $fh,
-        ];
+        return ['dirname'  => $this->rootdir . '.' . $folder,
+                     'uniq'     => $uniq,
+                     'filename' => $tmpdir . $uniq,
+                     'handle'   => $fh];
     }
 
     /**
@@ -497,11 +495,9 @@ class Maildir extends Folder\Maildir implements WritableInterface
             throw $exception;
         }
 
-        $this->files[] = [
-            'uniq' => $tempFile['uniq'],
-            'flags' => $flags,
-            'filename' => $newFilename,
-        ];
+        $this->files[] = ['uniq'     => $tempFile['uniq'],
+                                'flags'    => $flags,
+                                'filename' => $newFilename];
         if ($this->quota) {
             $this->addQuotaEntry((int) $size, 1);
         }
@@ -567,11 +563,9 @@ class Maildir extends Folder\Maildir implements WritableInterface
         if ($folder->getGlobalName() == $this->currentFolder
             || ($this->currentFolder == 'INBOX' && $folder->getGlobalName() == '/')
         ) {
-            $this->files[] = [
-                'uniq' => $tempFile['uniq'],
-                'flags' => $flags,
-                'filename' => $newFile,
-            ];
+            $this->files[] = ['uniq'     => $tempFile['uniq'],
+                                    'flags'    => $flags,
+                                    'filename' => $newFile];
         }
 
         if ($this->quota) {
@@ -656,7 +650,7 @@ class Maildir extends Folder\Maildir implements WritableInterface
 
         // NOTE: double dirname to make sure we always move to cur. if recent
         // flag has been set (message is in new) it will be moved to cur.
-        $newFilename = dirname($filedata['filename'], 2)
+        $newFilename = dirname(dirname($filedata['filename']))
             . DIRECTORY_SEPARATOR
             . 'cur'
             . DIRECTORY_SEPARATOR
@@ -847,11 +841,9 @@ class Maildir extends Folder\Maildir implements WritableInterface
             }
         }
 
-        return [
-            'size' => $totalSize,
-            'count' => $messages,
-            'quota' => $quota,
-        ];
+        return ['size'  => $totalSize,
+                     'count' => $messages,
+                     'quota' => $quota];
     }
 
     /**
@@ -929,12 +921,10 @@ class Maildir extends Folder\Maildir implements WritableInterface
             fclose($fh);
         }
 
-        return [
-            'size' => $totalSize,
-            'count' => $messages,
-            'quota' => $quota,
-            'over_quota' => $overQuota,
-        ];
+        return ['size'       => $totalSize,
+                     'count'      => $messages,
+                     'quota'      => $quota,
+                     'over_quota' => $overQuota];
     }
 
     protected function addQuotaEntry($size, $count = 1)

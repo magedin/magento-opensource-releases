@@ -1,7 +1,7 @@
 {
     "name": "symfony/css-selector",
     "type": "library",
-    "description": "Converts CSS selectors to XPath expressions",
+    "description": "Symfony CssSelector Component",
     "keywords": [],
     "homepage": "https://symfony.com",
     "license": "MIT",
